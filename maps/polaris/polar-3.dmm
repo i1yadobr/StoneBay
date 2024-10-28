@@ -3281,7 +3281,7 @@
 "bmk" = (/obj/machinery/atmospherics/pipe/simple/hidden/supply,/obj/machinery/power/apc{dir = 8; name = "west bump"; pixel_x = -24},/obj/structure/cable{d2 = 4; icon_state = "0-4"},/turf/simulated/floor/plating,/area/polarplanet/teleporter/maintenance)
 "bmm" = (/obj/machinery/door/airlock/glass_engineering{name = "Engineering"; req_one_access = list(11,24)},/obj/structure/cable/green{d1 = 1; d2 = 2; icon_state = "1-2"},/obj/machinery/atmospherics/pipe/simple/hidden/supply,/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/turf/simulated/floor/tiled/rough,/area/engineering/break_room)
 "bmn" = (/obj/effect/floor_decal/rust,/turf/simulated/floor/tiled/techfloor/maint,/area/polarplanet/voron/closets)
-"bmo" = (/obj/structure/sign/directions/bridge{dir = 1; pixel_y = 6},/obj/structure/sign/directions/security,/turf/simulated/wall/r_wall,/area/polarplanet/security/brig)
+"bmo" = (/obj/structure/sign/directions/bridge{dir = 1; pixel_y = 6},/obj/structure/sign/directions/security{dir = 4; pixel_z = 10},/turf/simulated/wall/r_wall,/area/polarplanet/security/brig)
 "bmp" = (/obj/machinery/firealarm{dir = 4; pixel_x = 24},/obj/machinery/light/small{dir = 4},/turf/simulated/floor/tiled/dark/rough,/area/polarplanet/server)
 "bmq" = (/turf/simulated/floor/natural/jungle/water/corner{dir = 1},/area/polarplanet/crew_quarters/sleep)
 "bmr" = (/obj/effect/decal/cleanable/dirt,/obj/effect/floor_decal/carpet/gpurpledecal/corners{dir = 5},/obj/machinery/light/small/hl{dir = 8},/turf/simulated/floor/trim/carpet/gpurple,/area/polarplanet/chapel/main)
