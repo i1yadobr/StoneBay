@@ -125,12 +125,12 @@
 	update_icon()
 
 /obj/machinery/slot_machine/attackby(obj/item/W, mob/user)
-	if(pay(W, user))
-		return
 	if((obj_flags & OBJ_FLAG_ANCHORABLE) && isWrench(W))
 		if(wrench_floor_bolts(user))
 			update_standing_icon()
 			power_change()
+		return
+	if(pay(W, user))
 		return
 	else if(W.force >= 10)
 		user.visible_message(SPAN("danger", "\The [src] has been [pick(W.attack_verb)] with [W] by [user]!"))
@@ -161,7 +161,7 @@
 		pay_with_card(I, W, user)
 
 	update_icon()
-	return FALSE
+	return TRUE
 
 /obj/machinery/slot_machine/proc/pay_with_card(obj/item/card/id/I, obj/item/ID_container, mob/user)
 	if(I == ID_container || ID_container == null)
