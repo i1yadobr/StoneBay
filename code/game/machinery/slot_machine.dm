@@ -161,7 +161,7 @@
 		pay_with_card(I, W, user)
 
 	update_icon()
-	return TRUE
+	return FALSE
 
 /obj/machinery/slot_machine/proc/pay_with_card(obj/item/card/id/I, obj/item/ID_container, mob/user)
 	if(I == ID_container || ID_container == null)
