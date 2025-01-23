@@ -1396,6 +1396,7 @@
 #include "code\game\objects\structures\crates_lockers\closets\gimmick.dm"
 #include "code\game\objects\structures\crates_lockers\closets\job_closets.dm"
 #include "code\game\objects\structures\crates_lockers\closets\l3closet.dm"
+#include "code\game\objects\structures\crates_lockers\closets\maintenance.dm"
 #include "code\game\objects\structures\crates_lockers\closets\malfunction.dm"
 #include "code\game\objects\structures\crates_lockers\closets\statue.dm"
 #include "code\game\objects\structures\crates_lockers\closets\syndicate.dm"
