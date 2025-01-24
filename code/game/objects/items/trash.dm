@@ -12,7 +12,7 @@
 
 /obj/item/trash/dish
 	name = "dish"
-	icon_state	= "dish"
+	icon_state = "dish"
 	var/list/stack = list()
 	var/max_stack = 5
 
