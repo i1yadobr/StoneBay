@@ -147,10 +147,10 @@
 	light_overlay = "helmet_light_dual"
 
 /obj/item/clothing/suit/space/void/knight
-	icon_state = "hardsuit_knight"
-	item_state = "hardsuit_knight"
 	name = "strange voidsuit"
 	desc = "A bulky set of space-proof armor, that looks kinda ancient. 'Lancelot X-40' is written on the front plate."
+	icon_state = "hardsuit_knight"
+	item_state = "hardsuit_knight"
 	armor = list(melee = 70, bullet = 35, laser = 35, energy = 25, bomb = 55, bio = 100)
 	allowed = list(/obj/item/gun,/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit,/obj/item/melee/baton)
 	siemens_coefficient = 0.7
@@ -159,17 +159,17 @@
 // Optical
 /obj/item/clothing/head/helmet/space/void/optical
 	name = "experimental voidhelmet"
+	desc = "Strange looking, smoothly contoured helmet. It looks a bit blurry."
 	icon_state = "hardsuit_optical_helm"
 	item_state = "hardsuit_optical_helm"
-	desc = "Strange looking, smoothly contoured helmet. It looks a bit blurry."
 	siemens_coefficient = 0
 	armor = list(melee = 35, bullet = 40, laser = 45, energy = 40, bomb = 20, bio = 100)
 
 /obj/item/clothing/suit/space/void/optical
 	name = "experimental voidsuit"
+	desc = "Strange black voidsuit, with some devices attached to it. It looks a bit blurry."
 	icon_state = "hardsuit_optical"
 	item_state = "hardsuit_optical"
-	desc = "Strange black voidsuit, with some devices attached to it. It looks a bit blurry."
 	action_button_name = "Toggle Optical Disruptor"
 	siemens_coefficient = 0
 	armor = list(melee = 35, bullet = 40, laser = 45, energy = 40, bomb = 20, bio = 100)
