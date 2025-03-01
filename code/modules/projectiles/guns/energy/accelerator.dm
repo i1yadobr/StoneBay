@@ -2,6 +2,7 @@
 	name = "accelerator shotgun"
 	desc = "A NanoTrasen UPA \"Shepherd\". It synthesizes unstable particles and accelerates them, effectively shooting \"temporary\" bullets without using any ammunition besides electric power."
 	icon_state = "phazer"
+	item_state = "phazer"
 	modifystate = "phazer"
 	improper_held_icon = TRUE
 	wielded_item_state = TRUE
@@ -64,6 +65,7 @@
 	name = "accelerator pistol"
 	desc = "An experimental NanoTrasen UPA \"Wingman\", based on the famous VP78. While being almost just as powerful as its larger counterpart, it is as small as a regular pistol."
 	icon_state = "phazer_pistol"
+	item_state = "phazer_pistol"
 	modifystate = "phazer_pistol"
 	improper_held_icon = FALSE
 	wielded_item_state = FALSE
