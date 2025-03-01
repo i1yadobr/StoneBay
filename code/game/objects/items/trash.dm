@@ -127,7 +127,7 @@
 	icon_state = "surstromming"
 
 /obj/item/trash/cans
-	name = "\improper Can"
+	name = "crushed can"
 	icon_state = "can"
 	matter = list(MATERIAL_STEEL = 500)
 	var/base_state = ""
