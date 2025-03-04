@@ -30,8 +30,8 @@
 		return 0
 
 /obj/item/clothing/under/rank/rosa
-	desc = "A dress commonly worn by the nursing staff in the medical departament"
 	name = "rosa dress"
+	desc = "A dress commonly worn by the nursing staff in the medical departament"
 	icon_state = "rosa"
 	permeability_coefficient = 0.50
 	armor = list(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 10)
@@ -51,8 +51,8 @@
 	icon_state = "scratch"
 
 /obj/item/clothing/under/sl_suit
-	desc = "It's a very amish looking suit."
 	name = "amish suit"
+	desc = "It's a very amish looking suit."
 	icon_state = "sl_suit"
 
 /obj/item/clothing/under/waiter
@@ -81,18 +81,14 @@
 	name = "vice officer's jumpsuit"
 	desc = "It's the standard issue pretty-boy outfit, as seen on Holo-Vision."
 	icon_state = "vice"
-	item_state_slots = list(
-		slot_hand_str = "grey"
-		)
+	item_state = "vice"
 
 //This set of uniforms looks fairly fancy and is generally used for high-ranking NT personnel from what I've seen, so lets give them appropriate ranks.
 /obj/item/clothing/under/rank/centcom
-	desc = "Gold trim on space-black cloth, this uniform displays the rank of \"Captain.\"."
 	name = "\improper Officer's Dress Uniform"
+	desc = "Gold trim on space-black cloth, this uniform displays the rank of \"Captain.\"."
 	icon_state = "officer"
-	item_state_slots = list(
-		slot_hand_str = "lawyer_black"
-		)
+	item_state = "officer"
 	displays_id = 0
 
 /obj/item/clothing/under/rank/centcom/officer
@@ -105,9 +101,7 @@
 	name = "ERT tactical uniform"
 	desc = "A short-sleeved black uniform, paired with grey digital-camo cargo pants. It looks very tactical."
 	icon_state = "ert_uniform"
-	item_state_slots = list(
-		slot_hand_str = "black"
-		)
+	item_state = "ert_uniform"
 	armor = list(melee = 20, bullet = 20, laser = 30, energy = 0, bomb = 0, bio = 0)
 	siemens_coefficient = 0.9
 
@@ -185,41 +179,31 @@
 	name = "head of personnel's suit"
 	desc = "A teal suit and yellow necktie. An authoritative yet tacky ensemble."
 	icon_state = "hop_teal"
-	item_state_slots = list(
-		slot_hand_str = "green"
-		)
+	item_state = "hop_teal"
 
 /obj/item/clothing/under/suit_jacket
 	name = "black suit"
 	desc = "A black suit and red tie. Very formal."
 	icon_state = "black_suit"
-	item_state_slots = list(
-		slot_hand_str = "gray"
-		)
+	item_state = "black_suit"
 
 /obj/item/clothing/under/suit_jacket/really_black
 	name = "executive suit"
 	desc = "A formal black suit and red tie, intended for the galaxy's finest."
 	icon_state = "really_black_suit"
-	item_state_slots = list(
-		slot_hand_str = "black"
-		)
+	item_state = "really_black_suit"
 
 /obj/item/clothing/under/suit_jacket/female
 	name = "executive suit"
 	desc = "A formal trouser suit for women, intended for the galaxy's finest."
 	icon_state = "black_suit_fem"
-	item_state_slots = list(
-		slot_hand_str = "lawyer_black"
-		)
+	item_state = "black_suit_fem"
 
 /obj/item/clothing/under/suit_jacket/red
 	name = "red suit"
 	desc = "A red suit and blue tie. Somewhat formal."
 	icon_state = "red_suit"
-	item_state_slots = list(
-		slot_hand_str = "red"
-		)
+	item_state = "red_suit"
 
 /obj/item/clothing/under/blackskirt
 	name = "black skirt"
@@ -334,7 +318,7 @@
 
 /obj/item/clothing/under/dress/dress_purple
 	name = "purple dress"
-	desc= "A simple, tight fitting purple dress."
+	desc = "A simple, tight fitting purple dress."
 	icon_state = "tian_dress"
 	item_state_slots = list(
 		slot_hand_str = "dress_white"
@@ -381,40 +365,37 @@
 	name = "blue plaid skirt"
 	desc = "A preppy blue skirt with a white blouse."
 	icon_state = "plaid_blue"
-	item_state_slots = list(
-		slot_hand_str = "dress_white"
-		)
+	item_state = "plaid_blue"
 
 /obj/item/clothing/under/dress/plaid_red
 	name = "red plaid skirt"
 	desc = "A preppy red skirt with a white blouse."
 	icon_state = "plaid_red"
-	item_state_slots = list(
-		slot_hand_str = "dress_white"
-		)
+	item_state = "plaid_red"
 
 /obj/item/clothing/under/dress/plaid_purple
 	name = "blue purple skirt"
 	desc = "A preppy purple skirt with a white blouse."
 	icon_state = "plaid_purple"
-	item_state_slots = list(
-		slot_hand_str = "dress_white"
-		)
+	item_state = "plaid_purple"
 
 /obj/item/clothing/under/dress/black_tango
 	name = "tango dress"
 	desc = "Por una cabeza..."
 	icon_state = "black_tango"
+	item_state = "black_tango"
 
 /obj/item/clothing/under/dress/franziska_dress
 	name = "prosecutor's formal dress"
 	desc = "The most fashionable prosecutor's dress."
 	icon_state = "franziska_dress"
+	item_state = "franziska_dress"
 
 /obj/item/clothing/under/dress/maid
 	name = "maid uniform"
 	desc = "Traditional French maid uniform."
 	icon_state = "maid"
+	item_state = "maid"
 
 /obj/item/clothing/under/dress/gothic_d
 	name = "Gothic dress"
@@ -497,38 +478,31 @@
 	name = "head of security's male formal uniform"
 	desc = "A male head of security's formal-wear, for special occasions."
 	icon_state = "hos_formal_male"
-	item_state_slots = list(
-		slot_hand_str = "red"
-		)
+	item_state = "hos_formal_male"
 
 /obj/item/clothing/under/hosformalfem // Opyx shop garbage
 	name = "head of security's female formal uniform"
 	desc = "A female head of security's formal-wear, for special occasions."
 	icon_state = "hos_formal_fem"
-	item_state_slots = list(
-		slot_hand_str = "red"
-		)
+	item_state = "hos_formal_fem"
 
 /obj/item/clothing/under/assistantformal
 	name = "assistant's formal uniform"
 	desc = "An assistant's formal-wear. Why an assistant needs formal-wear is still unknown."
 	icon_state = "assistant_formal"
-	item_state_slots = list(
-		slot_hand_str = "grey"
-		)
+	item_state = "assistant_formal"
 
 /obj/item/clothing/under/blazer
 	name = "blue blazer"
 	desc = "A bold but yet conservative outfit, red corduroys, navy blazer and a tie."
 	icon_state = "blue_blazer"
-	item_state_slots = list(
-		slot_hand_str = "blue"
-		)
+	item_state = "blue_blazer"
 
 /obj/item/clothing/under/hazard
 	name = "hazard jumpsuit"
 	desc = "A high visibility jumpsuit made from heat and radiation resistant materials."
 	icon_state = "hazard"
+	item_state = "hazard"
 	siemens_coefficient = 0.8
 	armor = list(melee = 5, bullet = 5, laser = 10, energy = 15, bomb = 5, bio = 0)
 	max_heat_protection_temperature = FIRESUIT_MAX_HEAT_PROTECTION_TEMPERATURE
@@ -537,14 +511,14 @@
 	name = "charcoal suit"
 	desc = "A charcoal suit. Very professional."
 	icon_state = "charcoal_suit"
-	item_state = "ba_suit"
+	item_state = "charcoal_suit"
 	worn_state = "charcoal_suit"
 
 /obj/item/clothing/under/suit_jacket/navy
 	name = "navy suit"
 	desc = "A navy suit, intended for the galaxy's finest."
 	icon_state = "navy_suit"
-	item_state = "sl_suit"
+	item_state = "navy_suit"
 	worn_state = "navy_suit"
 
 /obj/item/clothing/under/suit_jacket/navy/scholar
@@ -556,14 +530,14 @@
 	name = "burgundy suit"
 	desc = "A burgundy suit and black tie. Somewhat formal."
 	icon_state = "burgundy_suit"
-	item_state = "ba_suit"
+	item_state = "burgundy_suit"
 	worn_state = "burgundy_suit"
 
 /obj/item/clothing/under/suit_jacket/checkered
 	name = "checkered suit"
 	desc = "That's a very nice suit you have there. Shame if something were to happen to it, eh?"
 	icon_state = "checkered_suit"
-	item_state = "ba_suit"
+	item_state = "checkered_suit"
 	worn_state = "checkered_suit"
 
 /obj/item/clothing/under/suit_jacket/tan
@@ -593,6 +567,7 @@
 	name = "Orange Veles jumpsuit"
 	desc = "A jumpsuit belonging to Veles Energetics Group, a large Nova Magnitka engineering company specialised on maintaining electrical networks. This one has orange top."
 	icon_state = "veles_orange"
+	item_state = "veles_orange"
 	worn_state = "veles_orange"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
@@ -600,6 +575,7 @@
 	name = "Blue Veles jumpsuit"
 	desc = "A jumpsuit belonging to Veles Energetics Group, a large Nova Magnitka engineering company specialised on maintaining electrical networks. This one has blue top."
 	icon_state = "veles_blue"
+	item_state = "veles_blue"
 	worn_state = "veles_blue"
 
 /obj/item/clothing/under/grayson
