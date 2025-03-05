@@ -11,6 +11,8 @@
 	mod_handy = 0.25
 
 /obj/item/trash/dish
+	name = "dish"
+	icon_state = "dish"
 	var/list/stack = list()
 	var/max_stack = 5
 
@@ -125,6 +127,8 @@
 	icon_state = "surstromming"
 
 /obj/item/trash/cans
+	name = "crushed can"
+	icon_state = "can"
 	matter = list(MATERIAL_STEEL = 500)
 	var/base_state = ""
 
