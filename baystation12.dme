@@ -3207,7 +3207,6 @@
 #include "maps\example\example_levels.dm"
 #include "maps\example\example_shuttles.dm"
 #include "maps\exodus\exodus.dm"
-#include "maps\exodus\exodus_areas_future.dm"
 #include "maps\exodus\exodus_define.dm"
 #include "maps\exodus\exodus_levels.dm"
 #include "maps\frontier\ent_biodome.dm"
