@@ -121,6 +121,32 @@
 	if(istype(mob))
 		Getmob(mob)
 
+/client/proc/UpAllUsers()
+	set category = "Admin"
+	set name = "GO FUTURE!"
+	set desc = "Teleport all users without MOB_FLAG_USED_TIME_CRYSTAL in future"
+
+	if(!check_rights(R_ADMIN|R_MOD|R_DEBUG))
+		return
+
+	for(var/mob/M in GLOB.player_list)
+		if(ishuman(M) && !(M.mob_flags & MOB_FLAG_USED_TIME_CRYSTAL) || isghost(M))
+			do_time_teleport_in_future(M)
+	log_and_message_admins("All teleported to future.")
+
+/client/proc/DownAllUsers()
+	set category = "Admin"
+	set name = "GO POST!"
+	set desc = "Teleport all users without MOB_FLAG_USED_TIME_CRYSTAL in post"
+
+	if(!check_rights(R_ADMIN|R_MOD|R_DEBUG))
+		return
+
+	for(var/mob/M in GLOB.player_list)
+		if(ishuman(M) && !(M.mob_flags & MOB_FLAG_USED_TIME_CRYSTAL) || isghost(M))
+			do_time_teleport_in_past(M)
+	log_and_message_admins("All teleported to post.")
+
 /client/proc/Getkey()
 	set category = "Admin"
 	set name = "Get Key"

@@ -30,6 +30,25 @@
 	var/mode_cooldown = 2 SECONDS       // Hiding performance-heavy things behind a cooldown wall.
 	var/last_mode_toggle = 0
 
+/obj/machinery/power/shield_generator/old
+	field_radius = 255
+	input_cap = 1000000
+	power_usage = 1000000
+	shield_modes = MODEFLAG_MULTIZ | MODEFLAG_ATMOSPHERIC | MODEFLAG_HULL | MODEFLAG_LOWSHIELD
+	mode_changes_locked = 1
+	ai_control_disabled = 1
+	icon_state = "old_generator0"
+
+/obj/machinery/power/shield_generator/old/New()
+	running = SHIELD_RUNNING
+	regenerate_field()
+
+/obj/machinery/power/shield_generator/old/on_update_icon()
+	if(running)
+		icon_state = "old_generator1"
+	else
+		icon_state = "old_generator0"
+
 /obj/machinery/power/shield_generator/on_update_icon()
 	if(running)
 		icon_state = "generator1"

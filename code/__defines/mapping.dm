@@ -26,6 +26,12 @@
 #define MAP_ENG_SINGULARITY "singularity"
 #define MAP_ENG_MATTER      "supermatter"
 
+// Connection between levels in space-time
+#define ZTRAIT_STATION_1	"station_past_1"
+#define ZTRAIT_STATION_1_1	"station_future_1"
+#define ZTRAIT_STATION_2    "station_past_2"
+#define ZTRAIT_STATION_2_2  "station_future_2"
+
 // Biodomes
 
 #define MAP_BIO_RANDOM  	"random"

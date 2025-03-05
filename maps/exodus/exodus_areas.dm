@@ -2225,6 +2225,10 @@
 	dynamic_lighting = FALSE
 	sound_env = LARGE_ENCLOSED
 
+/area/holodeck/bar
+	name = "\improper Holodeck Bar"
+	sound_env = MEDIUM_SOFTFLOOR
+
 /area/prison/solitary
 	name = "Solitary Confinement"
 	icon_state = "brig"

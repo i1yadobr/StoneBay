@@ -35,6 +35,37 @@
 			user.forceMove(T)
 			user.phase_in(T, get_turf(user))
 
+/obj/item/stack/telecrystal/time_bluespace_crystal
+	name = "time bluespace crystal"
+	desc = "A glowing bluespace crystal, nothing is known about how it works. It looks very delicate."
+	icon = 'icons/obj/telescience.dmi'
+	icon_state = "time_bluespace_crystal"
+	singular_name = "time bluespace crystal"
+
+/obj/item/stack/telecrystal/time_bluespace_crystal/afterattack(obj/item/I, mob/user, proximity)
+	return
+
+/obj/item/stack/telecrystal/time_bluespace_crystal/attack_self(mob/user)
+	user.visible_message(SPAN_WARNING("[user] crushes [src]!"), SPAN_DANGER("You crush [src]!"))
+	user.mob_flags |= MOB_FLAG_USED_TIME_CRYSTAL
+	use(1)
+	do_time_teleport(user, null)
+
+/obj/item/stack/telecrystal/time_bluespace_crystal/throw_impact(atom/hit_atom)
+	..()
+	if(ismob(hit_atom))
+		var/mob/M = hit_atom
+		M.mob_flags |= MOB_FLAG_USED_TIME_CRYSTAL
+		use(1)
+		do_time_teleport(M, null)
+
+/obj/item/stack/telecrystal/time_bluespace_crystal/attack(mob/living/M, mob/living/user, target_zone)
+	..()
+	if(ismob(M))
+		use(1)
+		M.mob_flags |= MOB_FLAG_USED_TIME_CRYSTAL
+		do_time_teleport(M, null)
+
 //Bluespace crystals, used in telescience and when crushed it will blink you to a random turf.
 
 /obj/item/stack/telecrystal/bluespace_crystal

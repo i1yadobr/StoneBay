@@ -93,6 +93,8 @@
 	var/mob/autofiring_by
 	var/already_autofiring = FALSE
 
+	var/rand_amout_ammo = FALSE
+
 	drop_sound = SFX_DROP_GUN
 	pickup_sound = SFX_PICKUP_GUN
 

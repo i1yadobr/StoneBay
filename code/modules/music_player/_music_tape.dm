@@ -18,11 +18,15 @@
 
 	var/list/datum/track/tracks = list()
 	var/uploader_ckey
+	var/list/required_tracklist
 
 /obj/item/music_tape/Initialize()
 	. = ..()
 	if(random_color)
 		icon_state = "tape_[pick("white", "blue", "red", "yellow", "purple")]"
+
+	for (var/track_name in required_tracklist)
+		tracks += new /datum/track(track_name, required_tracklist[track_name])
 
 /obj/item/music_tape/on_update_icon()
 	ClearOverlays()

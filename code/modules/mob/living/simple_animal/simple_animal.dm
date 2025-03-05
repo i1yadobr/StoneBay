@@ -59,6 +59,7 @@
 	var/melee_damage_upper = 0
 	var/attacktext = "attacked"
 	var/attack_sound = null
+	var/death_sound
 	var/friendly = "nuzzles"
 	var/environment_smash = 0
 	var/resistance		  = 0	// Damage reduction
@@ -77,6 +78,7 @@
 
 	var/datum/mob_ai/mob_ai
 	var/is_pet = FALSE
+
 
 /mob/living/simple_animal/Initialize()
 	. = ..()
@@ -289,6 +291,8 @@
 		density = 0
 		health = 0 //Make sure dey dead.
 		walk_to(src, 0)
+		if(death_sound)
+			playsound(loc, death_sound, 100, 1, 1)
 
 /mob/living/simple_animal/rejuvenate()
 	..()

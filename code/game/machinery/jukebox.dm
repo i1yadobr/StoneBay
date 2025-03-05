@@ -221,9 +221,9 @@
 			return
 		visible_message(SPAN_NOTICE("[usr] inserts \a [D] into \the [src]."))
 		tape = D
-		if(istype(tape, /obj/item/music_tape/random))
+		if(tape.tracks.len > 0)
 			tracks += tape.tracks
-		else
+		if(!isnull(tape.track))
 			tracks += tape.track
 		verbs += /obj/machinery/media/jukebox/verb/eject
 		return

@@ -47,6 +47,7 @@ GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 204
 #define OBJ_FLAG_ANCHOR_BLOCKS_ROTATION (1<<2)
 
 #define MOB_FLAG_HOLY_BAD                0x001  // If this mob is allergic to holiness
+#define MOB_FLAG_USED_TIME_CRYSTAL       0x002
 
 //Flags for items (equipment)
 #define ITEM_FLAG_NO_BLUDGEON            0x0001 // When an item has this it produces no "X has been hit by Y with Z" message with the default handler.

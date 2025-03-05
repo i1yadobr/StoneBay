@@ -246,6 +246,10 @@
 		set_dir(construct.dir)
 	else
 		lightbulb = new light_type(src)
+		var/turf/T = get_turf(src)
+
+		if((T.z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_1_1)) || (T.z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_2_2)))
+			lightbulb.broken_chance = lightbulb.broken_chance * 45
 		if(prob(lightbulb.broken_chance))
 			broken(1)
 

@@ -125,6 +125,7 @@ Class Procs:
 	var/area/current_power_area // What area are we powering currently
 
 	rad_resist_type = /datum/rad_resist/machinery
+	var/is_stop_processing = FALSE
 
 /datum/rad_resist/machinery
 	alpha_particle_resist = 160 MEGA ELECTRONVOLT
@@ -135,6 +136,9 @@ Class Procs:
 	. = ..()
 	if(d)
 		set_dir(d)
+
+	if(is_stop_processing)
+		return
 
 	SSmachines.machinery.Add(src)
 
@@ -272,6 +276,9 @@ Class Procs:
 		return src.attack_hand(user)
 
 /obj/machinery/attack_hand(mob/user)
+	if (is_stop_processing)
+		to_chat(usr, FEEDBACK_STOP_PROCESS)
+		return TRUE
 	if(inoperable(MAINT))
 		return TRUE
 	if(user.lying || user.stat)

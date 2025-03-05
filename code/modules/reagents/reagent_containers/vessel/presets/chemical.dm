@@ -30,6 +30,13 @@
 	startswith = list(/datum/reagent/soporific)
 
 //////////
+/obj/item/reagent_containers/vessel/bottle/chemical/alkysine
+	name = "alkysine bottle"
+	desc = "A small bottle of alkysine. Will set brain straight."
+	start_label = "Alkysine"
+	startswith = list(/datum/reagent/alkysine)
+
+//////////
 /obj/item/reagent_containers/vessel/bottle/chemical/small/chloralhydrate
 	name = "Chloral Hydrate Bottle"
 	desc = "A small bottle of Choral Hydrate. Mickey's Favorite!"

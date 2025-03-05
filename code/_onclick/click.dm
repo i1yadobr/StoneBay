@@ -625,6 +625,53 @@ var/const/CLICK_HANDLER_ALL                  = (~0)
 	to_chat(user, "We cannot find it's power... call admins")
 	return 0
 
+/datum/click_handler/wizard/transform
+	handler_name = "Transform"
+	var/datum/spell/toggled/transform/spell
+
+/datum/click_handler/wizard/transform/mob_check(mob/living/carbon/human/user)
+	return TRUE
+
+/datum/click_handler/wizard/transform/proc/set_spell(datum/spell/toggled/transform/SP)
+	spell = SP
+
+/datum/click_handler/wizard/transform/OnClick(atom/target)
+	if (!isliving(target))
+		return FALSE
+
+	if (spell != null)
+		spell.cast_copy(target)
+		return TRUE
+
+	to_chat(user, "We cannot find it's power... call admins")
+	return FALSE
+
+/datum/click_handler/wizard/little_paralyse
+	handler_name = "Paralyse"
+	var/datum/spell/toggled/sting_paralize/spell
+
+/datum/click_handler/wizard/little_paralyse/OnClick(atom/target)
+	if (!ishuman(target))
+		return FALSE
+
+	if (get_dist(target, user) > 2)
+		to_chat(user, SPAN("danger", "You need to be closer to your goal!"))
+		return FALSE
+
+	var/mob/living/carbon/human/H = target
+	to_chat(H, SPAN("danger", "Your muscles begin to painfully tighten."))
+	H.Weaken(6)
+	H.Stun(5)
+	var/datum/spell/toggled/transform/T = user.ability_master.get_ability_by_spell_name("False form")
+	if(T)
+		T.off()
+	if(spell)
+		spell.off()
+	return
+
+/datum/click_handler/wizard/little_paralyse/proc/set_spell(datum/spell/toggled/sting_paralize/SP)
+	spell = SP
+
 /datum/click_handler/emotes/target_emote
 	handler_name = "Target emote"
 

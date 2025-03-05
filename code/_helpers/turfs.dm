@@ -147,7 +147,7 @@
 //Transports a turf from a source turf to a target turf, moving all of the turf's contents and making the target a copy of the source.
 /proc/transport_turf_contents(turf/source, turf/target, base)
 	if(!istype(source, base))
-		target = target.ChangeTurf(source.type, 1, 1)
+		target = target.ChangeTurf(source, 1, 1)
 		target.transport_properties_from(source)
 
 	for(var/obj/O in source)

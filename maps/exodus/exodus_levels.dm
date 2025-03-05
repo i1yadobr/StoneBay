@@ -2,7 +2,8 @@
 	path = 'exodus-1.dmm'
 	traits = list(
 		ZTRAIT_STATION,
-		ZTRAIT_CONTACT
+		ZTRAIT_CONTACT,
+		ZTRAIT_STATION_1
 	)
 	travel_chance = 5
 
@@ -10,11 +11,26 @@
 	path = 'exodus-2.dmm'
 	traits = list(
 		ZTRAIT_STATION,
-		ZTRAIT_CONTACT
+		ZTRAIT_CONTACT,
+		ZTRAIT_STATION_2
 	)
 	travel_chance = 5
 
 /datum/space_level/exodus_3
+	path = 'exodus-3.dmm'
+	travel_chance = 0
+	traits = list(
+		ZTRAIT_STATION_1_1
+	)
+
+/datum/space_level/exodus_4
+	path = 'exodus-4.dmm'
+	travel_chance = 0
+	traits = list(
+		ZTRAIT_STATION_2_2
+	)
+
+/datum/space_level/exodus_5
 	path = 'maps/templates/empty_255.dmm'
 	travel_chance = 10
 	traits = list(
@@ -25,7 +41,7 @@
 		/datum/map_generator/planet_generator/asteroid = 1,
 	)
 
-/datum/space_level/exodus_3/generate(z)
+/datum/space_level/exodus_5/generate(z)
 	var/planet_type = util_pick_weight(possible_planet_types)
 	var/datum/map_generator/planet_generator/mapgen = new planet_type()
 
@@ -45,8 +61,8 @@
 	if(ispath(mapgen.weather_controller_type))
 		mapgen.weather_controller_type = new mapgen.weather_controller_type(z)
 
-/datum/space_level/exodus_4
-	path = 'exodus-4.dmm'
+/datum/space_level/exodus_6
+	path = 'exodus-6.dmm'
 	traits = list(
 		ZTRAIT_CENTCOM,
 		ZTRAIT_CONTACT,

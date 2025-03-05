@@ -1,15 +1,29 @@
 // Pre-made cassetes
 /obj/item/music_tape/title2
 	name = "tape - \"Title 2\""
-	track = new /datum/track("Title 2", 'sound/music/classic/title2.ogg')
+	required_tracklist = list("Title 2" = 'sound/music/classic/title2.ogg')
 
 /obj/item/music_tape/clouds
 	name = "tape - \"Clouds\""
-	track = new /datum/track("Clouds of Fire", 'sound/music/classic/clouds.s3m')
+	required_tracklist = list("Clouds of Fire" = 'sound/music/classic/clouds.s3m')
 
 /obj/item/music_tape/syndie
 	name = "Unsuspicious Music Tape"
-	track = new /datum/track("Space Asshole", 'sound/music/space_asshole.ogg')
+	required_tracklist = list("Space Asshole" = 'sound/music/space_asshole.ogg')
+
+/obj/item/music_tape/chipi
+	name = "Chipi Music Tape"
+	required_tracklist = list(
+		"Chipi-chipi"                               = 'sound/music/chipi/Chipi-chipi.ogg',
+		"Boy Ttrain"                                = 'sound/music/chipi/BoyTtrain.ogg',
+		"Demonic Cat Medley Phase 1"                = 'sound/music/chipi/Demonic-Little-Cat-Medley-Phase-1.ogg',
+		"Demonic Cat Medley Phase 2"                = 'sound/music/chipi/Demonic-Little-Cat-Medley-Phase-2.ogg',
+		"Rainbow Kraut"                             = 'sound/music/chipi/Astolfo-Music-Video-Fan-Made.ogg',
+		"Max Raabe Supreme"                         = 'sound/music/chipi/Max-Raabe-Supreme.ogg'
+	)
+	random_color = FALSE
+	icon = 'icons/obj/tapes.dmi'
+	icon_state = "tape_rainbow"
 
 /obj/item/music_tape/random/newyear
 	name = "Christmas Music Tape"
@@ -22,6 +36,10 @@
 		"Zima-Holoda"                   = 'sound/music/newyear/zima_holoda.ogg',
 		"Zima"                          = 'sound/music/newyear/zima.ogg'
 	)
+	random_color = FALSE
+	icon = 'icons/obj/tapes.dmi'
+	icon_state = "tape_xmas"
+
 /obj/item/music_tape/random/jazz
 	name = "Jazzy Jazz Tape"
 	tracklist = list(
@@ -34,6 +52,10 @@
 		"The Only Thing"            	= 'sound/music/jazz/the_only_thing.ogg',
 		"What A Wonderful World"        = 'sound/music/jazz/wonderful_world.ogg'
 	)
+	random_color = FALSE
+	icon = 'icons/obj/tapes.dmi'
+	icon_state = "tape_jazz"
+
 
 /obj/item/music_tape/random/frontier
 	name = "NSS Frontier Tape"
@@ -46,6 +68,10 @@
 		"Split"                  	 	= 'sound/music/frontier/split.ogg',
 		"The Man Who Sold The World"    = 'sound/music/frontier/the_man_who_sold_the_world.ogg'
 	)
+	random_color = FALSE
+	icon = 'icons/obj/tapes.dmi'
+	icon_state = "tape_eos"
+
 
 /obj/item/music_tape/random/exodus
 	name = "NSS Exodus Tape"
@@ -60,6 +86,10 @@
 		"The Other Room"    			= 'sound/music/exodus/the_other_room.ogg',
 		"Whirling Cafeteria"            = 'sound/music/exodus/whirling_cafeteria.ogg'
 	)
+	random_color = FALSE
+	icon = 'icons/obj/tapes.dmi'
+	icon_state = "tape_chaotic"
+
 /obj/item/music_tape/random/classic
 	name = "Classic Music Tape"
 	tracklist = list(
@@ -82,6 +112,9 @@
 		"Space Oddity"                  = 'sound/music/classic/space_oddity.ogg',
 		"Crockett's Theme"              = 'sound/music/classic/crokett_39_s_theme.ogg'
 	)
+	random_color = FALSE
+	icon = 'icons/obj/tapes.dmi'
+	icon_state = "tape_classic"
 
 /obj/item/music_tape/random/valhalla
 	name = "Cyber Bar Tape"
@@ -115,6 +148,7 @@
 		"Ghost Fight"                           = 'sound/music/halloween/ghost_fight.ogg'
 	)
 
+
 /obj/item/music_tape/random/retrojazz
 	name = "Retro Jazz Tape"
 	tracklist = list(
@@ -125,8 +159,13 @@
 		"I Can't Begin To Tell You"           = 'sound/music/retrojazz/i_cant_begin_to_tell_you.ogg',
 		"I Don't Care If It Rains All Night"  = 'sound/music/retrojazz/i_dont_care_if_it_rains_all_night.ogg',
 		"I Wanna Be Loved By You"             = 'sound/music/retrojazz/i_wanna_be_loved_by_you.ogg',
+		"Oops i did it again"                 = 'sound/music/retrojazz/Oops_i_did_it_again.ogg',
 		"We'll Meet Again"                    = 'sound/music/retrojazz/well_meet_again.ogg'
 	)
+	random_color = FALSE
+	icon = 'icons/obj/tapes.dmi'
+	icon_state = "tape_retrojazz"
+
 
 /obj/item/music_tape/custom
 	name = "dusty tape"

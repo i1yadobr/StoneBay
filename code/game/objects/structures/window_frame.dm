@@ -37,6 +37,12 @@
 /datum/windowpane/black/preset_material = MATERIAL_BLACK_GLASS
 /datum/windowpane/rblack/preset_material = MATERIAL_REINFORCED_BLACK_GLASS
 
+/datum/windowpane/rglass/half
+	health = 10
+
+/datum/windowpane/rglass/quarter
+	health = 5
+
 /datum/windowpane/New(obj/structure/window_frame/WF, material/M, inner = FALSE)
 	..()
 	my_frame = WF
@@ -1108,6 +1114,12 @@
 
 	rad_resist_type = /datum/rad_resist/window_frame_rglass
 
+/obj/structure/window_frame/rglass/half
+	preset_outer_pane = /datum/windowpane/rglass/half
+
+/obj/structure/window_frame/rglass/quarter
+	preset_outer_pane = /datum/windowpane/rglass/quarter
+
 /datum/rad_resist/window_frame_rglass
 	alpha_particle_resist = 120 MEGA ELECTRONVOLT
 	beta_particle_resist = 0.4 MEGA ELECTRONVOLT
@@ -1158,6 +1170,13 @@
 	beta_particle_resist = 0.8 MEGA ELECTRONVOLT
 	hawking_resist = 0.4 ELECTRONVOLT
 
+/obj/structure/window_frame/reinforced/hull/half
+	preset_outer_pane = /datum/windowpane/rglass/quarter
+
+/obj/structure/window_frame/reinforced/hull/quarter
+	preset_outer_pane = null
+	preset_inner_pane = /datum/windowpane/rglass/half
+
 // Reinforced window with two reinforced plass panes. Totally the best choice to constrain extremely high temperatures (combustion chamber/engine/etc.)
 /obj/structure/window_frame/reinforced/thermal
 	name = "reinforced window"
@@ -1206,6 +1225,12 @@
 	alpha_particle_resist = 120 MEGA ELECTRONVOLT
 	beta_particle_resist = 0.4 MEGA ELECTRONVOLT
 	hawking_resist = 0.2 ELECTRONVOLT
+
+/obj/structure/window_frame/grille/rglass/half
+	preset_outer_pane = /datum/windowpane/rglass/half
+
+/obj/structure/window_frame/grille/rglass/quarter
+	preset_outer_pane = /datum/windowpane/rglass/quarter
 
 /obj/structure/window_frame/electric/glass
 	name = "electrochromic window"

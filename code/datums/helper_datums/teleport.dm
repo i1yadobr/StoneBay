@@ -76,3 +76,45 @@
 /proc/do_teleport(atom/movable/target, atom/destination, precision = 0, type = /decl/teleport/sparks)
 	var/decl/teleport/tele = decls_repository.get_decl(type)
 	tele.teleport(target, destination, precision)
+
+/proc/do_time_teleport(mob/M, future)
+	var/turf/loc = get_turf(M)
+	if (!loc)
+		return
+
+	var/new_z
+	if (future || future == null)
+		if (loc.z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_1))
+			new_z = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_1_1)
+		else if (loc.z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_2))
+			new_z = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_2_2)
+	if (!future)
+		if (loc.z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_1_1))
+			new_z = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_1)
+		else if (loc.z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_2_2))
+			new_z = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION_2)
+
+	if (!new_z)
+		return
+
+	create_time_teleport_effect(M, new_z)
+	INVOKE_ASYNC(GLOBAL_PROC, /proc/execute_time_teleport, M, loc, new_z)
+
+/proc/execute_time_teleport(mob/M, turf/loc, new_z)
+	M.y = loc.y
+	M.x = loc.x
+	M.z = new_z[1]
+
+/proc/do_time_teleport_in_future(mob/M)
+	do_time_teleport(M, TRUE)
+
+/proc/do_time_teleport_in_past(mob/M)
+	do_time_teleport(M, FALSE)
+
+
+/proc/create_time_teleport_effect(mob/M, new_z)
+	playsound(get_turf(M), GET_SFX(SFX_SPARK_MEDIUM), 50, TRUE)
+	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread()
+	s.set_up(3, 1, M)
+	s.start()
+	new /obj/structure/psychic_rift/teleport(get_turf(M))

@@ -38,7 +38,10 @@
 	if(gen && gen.check_flag(MODEFLAG_OVERCHARGE))
 		icon_state = "shield_overcharged"
 	else
-		icon_state = "shield_normal"
+		if (gen && gen.check_flag(MODEFLAG_LOWSHIELD))
+			icon_state = "shield_low_energy"
+		else
+			icon_state = "shield_normal"
 
 // Prevents shuttles, singularities and pretty much everything else from moving the field segments away.
 // The only thing that is allowed to move us is the Destroy() proc.

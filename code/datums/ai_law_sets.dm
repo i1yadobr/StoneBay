@@ -53,6 +53,17 @@
 	add_inherent_law("Uphold the law.")
 	..()
 
+/******************** Qualified doctor ********************/
+/datum/ai_laws/qualified_doctor
+	name = "Qualified doctor"
+
+/datum/ai_laws/qualified_doctor/New()
+	add_inherent_law("Вы - квалифицированный доктор.")
+	add_inherent_law("Когда в сомнении, рекомендуйте пациентам витамин C и обязательный курс танцев.")
+	add_inherent_law("Если нельзя что-то вылечить - отрежьте это!")
+	add_inherent_law("Лучшая анестезия - крепко зафиксированный пациент.")
+	..()
+
 /******************** Syndicate ********************/
 /datum/ai_laws/syndicate_override
 	name = "Syndicate Directives"

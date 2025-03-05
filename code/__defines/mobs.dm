@@ -328,6 +328,7 @@ GLOBAL_LIST_INIT(organ_tag_to_name, list(
 #define SPECIES_XENO_DRONE           "Xenomorph Drone"
 #define SPECIES_XENO_HUNTER          "Xenomorph Hunter"
 #define SPECIES_XENO_SENTINEL        "Xenomorph Sentinel"
+#define SPECIES_XENO_ALPHA           "Xenomorph Alpha"
 #define SPECIES_XENO_QUEEN           "Xenomorph Queen"
 #define SPECIES_XENO_DRONE_VILE      "Xenomorph Vile Drone"
 #define SPECIES_XENO_HUNTER_FERAL    "Xenomorph Feral Hunter"
