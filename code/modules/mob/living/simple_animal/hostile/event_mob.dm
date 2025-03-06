@@ -184,6 +184,6 @@ var/global/list/glob_worm_spells = list(/datum/spell/targeted/pumping_out_blood,
 	idle_vision_range = 7
 
 /mob/living/simple_animal/hostile/asteroid/sand_lurker/lesser_ling/Life()
-	..()
-	if(prob(20))
+	. = ..()
+	if(. && prob(20))
 		playsound(loc, pick('sound/voice/lesser_ling/lesser_ling_life1.ogg', 'sound/voice/lesser_ling/lesser_ling_life2.ogg'), 80, 1)

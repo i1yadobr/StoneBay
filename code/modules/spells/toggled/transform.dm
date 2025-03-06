@@ -87,7 +87,11 @@
 		H.name = snap.name
 		H.icon = snap.icon
 		H.icon_state = snap.icon_state
-		H.desc = snap.examine
+		var/examine = snap.examine
+		if(islist(examine))
+			H.desc = examine[1]
+		else
+			H.desc = examine
 		H.overlays.Cut()
 		H.overlays = snap.overlays.Copy()
 		H.update_inv_l_hand()

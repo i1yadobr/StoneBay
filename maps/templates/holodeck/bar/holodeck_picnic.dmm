@@ -1,3 +1,4 @@
+"bE" = (/obj/structure/table/woodentable,/obj/item/clothing/head/tank/olive,/turf/simulated/floor/natural/jungle,/area/template_noop)
 "bU" = (/turf/simulated/wall{holodeck_compatible = 1},/area/template_noop)
 "cR" = (/obj/structure/table/woodentable,/turf/simulated/floor/natural/jungle,/area/template_noop)
 "fL" = (/obj/item/stool/bar,/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
@@ -9,6 +10,7 @@
 "nR" = (/turf/simulated/floor/natural/jungle/grassedge{dir = 1},/area/template_noop)
 "ob" = (/obj/structure/flora/ausbushes/sparsegrass,/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
 "ox" = (/obj/item/plant_pot/random,/obj/structure/table/woodentable,/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
+"qu" = (/obj/structure/table/woodentable,/obj/item/clothing/head/helmet/tcc,/turf/simulated/floor/natural/jungle,/area/template_noop)
 "qz" = (/obj/structure/flora/ausbushes/jungleflora/bushb,/obj/structure/flora/junglevines/light,/turf/simulated/floor/natural/jungle,/area/template_noop)
 "uO" = (/obj/machinery/door/window{name = "Bar"; req_one_access = list(25); base_state = "right"},/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
 "vm" = (/obj/item/stool/bar,/turf/simulated/floor/natural/jungle/grasscorner2{dir = 4},/area/template_noop)
@@ -18,7 +20,7 @@
 "yq" = (/turf/simulated/floor/natural/jungle/grasscorner1{dir = 1},/area/template_noop)
 "yJ" = (/obj/structure/flora/junglevines/light,/turf/simulated/floor/natural/jungle/grassedge{dir = 1},/area/template_noop)
 "yY" = (/obj/structure/flora/junglevines/light,/turf/simulated/floor/natural/jungle/grassedge{dir = 8},/area/template_noop)
-"ze" = (/obj/structure/table/woodentable,/obj/item/reagent_containers/food/meatkabob,/obj/item/reagent_containers/food/meatkabob,/obj/item/reagent_containers/food/meatkabob,/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
+"ze" = (/obj/structure/table/woodentable,/obj/item/reagent_containers/food/meatkabob,/obj/item/reagent_containers/food/meatkabob,/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
 "zZ" = (/obj/structure/flora/ausbushes/glowshroom,/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
 "Bq" = (/turf/simulated/floor/natural/jungle/grasscorner2{dir = 4},/area/template_noop)
 "Bw" = (/obj/structure/flora/junglevines/light,/turf/simulated/floor/natural/jungle,/area/template_noop)
@@ -34,7 +36,8 @@
 "KW" = (/obj/structure/bed/chair/comfy/brown{dir = 8},/turf/simulated/floor/natural/jungle/grassedge{dir = 4},/area/template_noop)
 "Ln" = (/turf/simulated/floor/natural/jungle/grasscorner2{dir = 8},/area/template_noop)
 "LO" = (/obj/structure/flora/ausbushes/fullgrass,/turf/simulated/floor/natural/jungle,/area/template_noop)
-"Nh" = (/obj/structure/table/woodentable,/obj/item/reagent_containers/food/bacon{pixel_y = 1; pixel_x = -2},/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
+"Mg" = (/obj/structure/table/woodentable,/obj/item/clothing/head/panama,/obj/item/clothing/gloves/thick/botany,/obj/item/clothing/under/shorts/khaki,/obj/item/clothing/accessory/ubac/tan,/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
+"Nh" = (/obj/structure/table/woodentable,/obj/item/reagent_containers/food/bacon{pixel_y = 1; pixel_x = -2},/obj/item/clothing/head/vpp_cap,/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
 "Nt" = (/obj/structure/table/woodentable,/obj/item/reagent_containers/vessel/mug/punitelli{pixel_y = 7},/obj/item/reagent_containers/vessel/mug/one{pixel_y = -2; pixel_x = 8},/obj/item/reagent_containers/vessel/mug/heart{pixel_x = -5; pixel_y = -1},/turf/simulated/floor/natural/jungle,/area/template_noop)
 "PY" = (/turf/simulated/floor/natural/jungle/grasscorner1{dir = 4},/area/template_noop)
 "QP" = (/obj/structure/flora/ausbushes/jungleflora/busha,/obj/structure/flora/junglevines/light,/turf/simulated/floor/natural/jungle,/area/template_noop)
@@ -57,7 +60,7 @@
 "YJ" = (/obj/structure/table/woodentable,/obj/item/reagent_containers/vessel/flask/vacuumflask{pixel_y = 4},/turf/simulated/floor/natural/jungle/dirt,/area/template_noop)
 
 (1,1,1) = {"
-FcFcbUXHXHSLUaUabUyqFccRbU
+FcFcbUXHXHSLMgUabUyqFccRbU
 FcXNbUXHXHXHXHXHuOTMhmTXbU
 FckGoxobUaXHUaXHUavmyqcRbU
 SjkGUaXHXHzZXHobUafLBqFsbU
@@ -68,5 +71,5 @@ SxNtKWXHobXHobXHQRNhBNTMVy
 SxUlKsLnXHXHXHobfRYmBNTMJF
 FchmBwXtLnXHlPyJPYUMnRPYFc
 FcSoWgqzhRXHyYBwFcIfFcLOIf
-FicRWgQPIAXHyYWgDRcRSoDRcR
+FiquWgQPIAXHyYWgDRbESoDRcR
 "}

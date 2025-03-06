@@ -208,6 +208,9 @@
 		for(var/idx in 1 to icon_keys.len)
 			var/ammo_count = icon_keys[idx]
 			if (ammo_count >= stored_ammo.len)
+				if(ammo_states.len < idx)
+					break
+
 				new_state = ammo_states[idx]
 				break
 		icon_state = (new_state)? new_state : initial(icon_state)

@@ -25,7 +25,7 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 	if(used_weapon)
 		add_autopsy_data("[used_weapon]", brute + burn)
 
-	if(owner) // No need to report damage inflicted on severed limbs
+	if(owner && GAME_STATE >= RUNLEVEL_LOBBY) // No need to report damage inflicted on severed limbs and before the start of the round
 		if(brute)
 			SSstoryteller.report_wound(owner, BRUTE, brute)
 		if(burn)
