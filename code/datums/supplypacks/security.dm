@@ -209,7 +209,7 @@
 	contains = list(/obj/item/gun/energy/accelerator = 2,
 					/obj/item/gun/energy/accelerator/pistol = 2)
 	cost = 60
-	containertype = /obj/structure/closet/crate/secure
+	containertype = /obj/structure/closet/crate/secure/weapon
 	containername = "\improper Accelerator weapons crate"
 	access = access_security
 	security_level = SUPPLY_SECURITY_ELEVATED

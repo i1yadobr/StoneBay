@@ -12,20 +12,21 @@
 	name = "blue plaid skirt"
 	desc = "A preppy blue skirt with a white blouse."
 	icon_state = "plaid_blue"
+	item_state = "plaid_blue"
 	worn_state = "plaid_blue"
 
 /obj/item/clothing/under/skirt/plaid_red
 	name = "red plaid skirt"
 	desc = "A preppy red skirt with a white blouse."
 	icon_state = "plaid_red"
-	item_state = "kilt"
+	item_state = "plaid_red"
 	worn_state = "plaid_red"
 
 /obj/item/clothing/under/skirt/plaid_purple
 	name = "blue purple skirt"
 	desc = "A preppy purple skirt with a white blouse."
 	icon_state = "plaid_purple"
-	item_state = "kilt"
+	item_state = "plaid_purple"
 	worn_state = "plaid_purple"
 
 // discreet skirts, dont cover upper/arms etc
