@@ -40,8 +40,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/Getmob,				//teleports a mob to our location,
 	/client/proc/Getmob_verb,			//allows to choose a mob to teleport to you,
 	/client/proc/Getkey,				//teleports a mob with a certain ckey to our location,
-	/client/proc/UpAllUsers,
-	/client/proc/DownAllUsers,
 //	/client/proc/sendmob,				//sends a mob somewhere, -Removed due to it needing two sorting procs to work, which were executed every time an admin right-clicked. ~Errorage,
 	/client/proc/Jump,
 	/client/proc/jumptokey,				//allows us to jump to the location of a mob with a certain ckey,
@@ -370,7 +368,11 @@ var/list/admin_verbs_mentor = list(
 	if(holder)
 		verbs += admin_verbs_default
 		if(holder.rights & R_BUILDMODE)		verbs += /client/proc/togglebuildmodeself
-		if(holder.rights & R_ADMIN)			verbs += admin_verbs_admin
+		if(holder.rights & R_ADMIN)
+			verbs += admin_verbs_admin
+			if(istype(GLOB.using_map, /datum/map/exodus/exodus_nightmare))
+				verbs += /client/proc/UpAllUsers
+				verbs += /client/proc/DownAllUsers
 		if(holder.rights & R_BAN)			verbs += admin_verbs_ban
 		if(holder.rights & R_FUN)			verbs += admin_verbs_fun
 		if(holder.rights & R_SERVER)		verbs += admin_verbs_server
