@@ -24,3 +24,6 @@
 
 /// Called on '/mob/proc/update_movespeed()' (/mob)
 #define SIGNAL_MOB_MOVESPEED_UPDATED "mob_movespeed_updated"
+
+/// Called when taking damage
+#define TAKING_DAMAGE "taking_damage"

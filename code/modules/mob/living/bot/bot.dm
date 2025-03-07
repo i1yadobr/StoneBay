@@ -88,10 +88,12 @@
 /mob/living/bot/adjustBruteLoss(amount)
 	if(amount > 0)
 		health -= amount
+		SEND_SIGNAL(src, TAKING_DAMAGE, amount, BRUTE)
 
 /mob/living/bot/adjustFireLoss(amount)
 	if(amount > 0)
 		health -= amount
+		SEND_SIGNAL(src, TAKING_DAMAGE, amount, BURN)
 
 /mob/living/bot/death()
 	resetTarget()

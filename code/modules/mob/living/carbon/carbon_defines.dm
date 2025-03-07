@@ -43,5 +43,4 @@
 	var/list/stasis_sources = list()
 	var/stasis_value
 	var/does_not_breathe = FALSE
-	var/seeDarkness = FALSE
 	can_use_hands = TRUE // use only for short-term restrictions (climbing in ventilation, being in stasis, etc.)

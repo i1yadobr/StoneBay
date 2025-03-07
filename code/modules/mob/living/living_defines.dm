@@ -61,3 +61,5 @@
 
 	var/give_ghost_proc_at_initialize = TRUE
 	var/seeThermal = FALSE
+	var/seeDarkness = FALSE
+	var/list/datum/action/action_spells

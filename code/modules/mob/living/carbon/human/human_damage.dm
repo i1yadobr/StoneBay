@@ -135,6 +135,7 @@
 				amount *= M.incoming_damage_percent
 			if(!isnull(M.incoming_fire_damage_percent))
 				amount *= M.incoming_fire_damage_percent
+		SEND_SIGNAL(src, TAKING_DAMAGE, amount, BURN)
 		take_overall_damage(0, amount)
 	else
 		for(var/datum/modifier/M in modifiers)
@@ -183,6 +184,7 @@
 				amount *= M.incoming_hal_damage_percent
 			if(!isnull(M.disable_duration_percent))
 				amount *= M.incoming_hal_damage_percent
+		SEND_SIGNAL(src, TAKING_DAMAGE, amount, CLONE)
 	else if(amount < 0)
 		for(var/datum/modifier/M in modifiers)
 			if(!isnull(M.incoming_healing_percent))
@@ -225,7 +227,7 @@
 			if(!isnull(M.incoming_tox_damage_percent))
 				amount *= M.incoming_tox_damage_percent
 				heal = istype(M, TRAIT_TOXINLOVER)
-
+		SEND_SIGNAL(src, TAKING_DAMAGE, amount, OXY)
 	else if(amount < 0)
 		for(var/datum/modifier/M in modifiers)
 			if(!isnull(M.incoming_healing_percent))
@@ -304,6 +306,7 @@
 				I.damage = 0
 			else
 				I.damage -= amount
+				SEND_SIGNAL(src, TAKING_DAMAGE, amount, TOX)
 				amount = 0
 		else
 			var/cap_dam = I.max_damage - I.damage

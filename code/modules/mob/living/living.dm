@@ -16,6 +16,12 @@
 
 	update_transform() // Some mobs may start bigger or smaller than normal.
 
+/mob/living/New()
+	..()
+	for(var/AT in action_spells)
+		var/datum/action/action = new AT()
+		action.Grant(src)
+
 /mob/living/get_description_fluff()
 	if(flavor_text)
 		return flavor_text
@@ -295,6 +301,8 @@
 	if(status_flags & GODMODE)
 		return 0
 	health = Clamp(health-amount, 0, maxHealth)
+	if(amount > 0)
+		SEND_SIGNAL(src, TAKING_DAMAGE, amount, BRUTE)
 
 /mob/living/proc/getOxyLoss()
 	return 0

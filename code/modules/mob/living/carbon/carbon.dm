@@ -503,11 +503,8 @@
 
 /mob/living/carbon/update_living_sight()
 	..()
-	if(seeDarkness)
-		set_see_in_dark(8)
-		set_see_invisible(SEE_INVISIBLE_NOLIGHTING)
-		if(species)
-			set_sight(species.get_vision_flags(src))
+	if(seeDarkness && species)
+		set_sight(species.get_vision_flags(src))
 
 /mob/living/carbon/proc/should_have_organ(organ_check)
 	return 0
