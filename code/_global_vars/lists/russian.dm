@@ -8,10 +8,11 @@ GLOBAL_LIST_INIT(poly_phrases, world.file2list("code/modules/mob/living/simple_a
 proc/load_phrases_medbot(file)
     var/list/phrases = list()
     var/text = file2text(file)
-    if (!text)
+    if(!text)
         return phrases
-    for (var/line in splittext(text, "\n"))
+		
+    for(var/line in splittext(text, "\n"))
         var/list/data = splittext(line, "=")
-        if (length(data) == 2)
+        if(length(data) == 2)
             phrases[data[1]] = data[2]
     return phrases
