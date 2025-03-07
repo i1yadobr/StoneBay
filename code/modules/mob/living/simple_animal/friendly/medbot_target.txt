@@ -1,0 +1,3 @@
+Эй! Оставайся на месте, я уже иду.=sound/voice/medbot/coming.ogg
+Эй! Подожди, я уже иду!=sound/voice/medbot/help.ogg
+Похоже, ты ранен!=sound/voice/medbot/injured.ogg

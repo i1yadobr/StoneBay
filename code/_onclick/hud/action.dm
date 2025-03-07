@@ -359,3 +359,48 @@
 	text_cooldown = TRUE
 	click_to_activate = TRUE
 	shared_cooldown = MOB_SHARED_COOLDOWN_1
+
+/datum/action/cooldown/say
+    name = "Say standart"
+    button_icon = 'icons/hud/screen_spells.dmi'
+    background_icon_state = "grey_spell_base"
+    cooldown_time = 2 SECONDS
+    var/list/messagevoice
+
+/datum/action/cooldown/say/Activate(atom/target)
+	StartCooldown()
+	var/message = pick(messagevoice)
+	owner.say(message)
+	playsound(owner, messagevoice[message], 75, FALSE)
+
+/datum/action/cooldown/say/standart_medbot
+    name = "Say standart medbot"
+    button_icon_state = "heal_minor"
+
+/datum/action/cooldown/say/standart_medbot/New(Target)
+	. = ..()
+	messagevoice = load_phrases_medbot("code/modules/mob/living/simple_animal/friendly/medbot_standart.txt")
+
+/datum/action/cooldown/say/target_medbot
+    name = "Say someone medbot"
+    button_icon_state = "heal_major"
+
+/datum/action/cooldown/say/target_medbot/New(Target)
+	. = ..()
+	messagevoice = load_phrases_medbot("code/modules/mob/living/simple_animal/friendly/medbot_target.txt")
+
+/datum/action/cooldown/say/after_heal_medbot
+    name = "Say heal medbot"
+    button_icon_state = "heal_area"
+
+/datum/action/cooldown/say/after_heal_medbot/New(Target)
+	. = ..()
+	messagevoice = load_phrases_medbot("code/modules/mob/living/simple_animal/friendly/medbot_heal.txt")
+
+/datum/action/cooldown/say/dead_pacient_medbot
+    name = "Say bad medbot"
+    button_icon_state = "wiz_raiseundead"
+
+/datum/action/cooldown/say/dead_pacient_medbot/New(Target)
+	. = ..()
+	messagevoice = load_phrases_medbot("code/modules/mob/living/simple_animal/friendly/medbot_dead.txt")

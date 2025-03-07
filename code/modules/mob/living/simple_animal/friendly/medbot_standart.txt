@@ -1,0 +1,5 @@
+Зафиксирована ненадетая маска!=sound/voice/medbot/radar.ogg
+Всегда есть подвох, и это лучшее, что есть.=sound/voice/medbot/catch.ogg
+Я знал это, мне следовало стать пластическим хирургом.=sound/voice/medbot/surgeon.ogg
+Это инфекционный отдел? Все падают, как мухи мертвые.=sound/voice/medbot/flies.ogg
+Восхитительно!=sound/voice/medbot/delicious.ogg

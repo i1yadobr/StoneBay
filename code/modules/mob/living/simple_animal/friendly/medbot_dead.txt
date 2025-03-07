@@ -1,0 +1,3 @@
+Нет! НЕТ!=sound/voice/medbot/no.ogg
+Живи, чёрт возьми! Живи!=sound/voice/medbot/live.ogg
+Я... Я никогда раньше не терял пациента... За сегодня, я имею в виду.=sound/voice/medbot/lost.ogg

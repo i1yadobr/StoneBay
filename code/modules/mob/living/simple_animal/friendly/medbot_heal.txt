@@ -1,0 +1,3 @@
+Всё залатано!=sound/voice/medbot/patchedup.ogg
+По яблоку в день, и врач понадобится не скоро.=sound/voice/medbot/apple.ogg
+Скорее поправляйся!=sound/voice/medbot/feelbetter.ogg

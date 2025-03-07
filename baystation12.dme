@@ -2955,7 +2955,6 @@
 #include "code\modules\spells\targeted\no_remorse.dm"
 #include "code\modules\spells\targeted\raise_lich.dm"
 #include "code\modules\spells\targeted\raiseundead.dm"
-#include "code\modules\spells\targeted\say_spell.dm"
 #include "code\modules\spells\targeted\shapeshift.dm"
 #include "code\modules\spells\targeted\shatter_mind.dm"
 #include "code\modules\spells\targeted\shift.dm"
