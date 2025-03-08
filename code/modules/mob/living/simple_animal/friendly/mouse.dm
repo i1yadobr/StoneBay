@@ -97,9 +97,6 @@
 
 /mob/living/simple_animal/mouse/death(gibbed, deathmessage, show_dead_message)
 	. = ..(gibbed, deathmessage, show_dead_message)
-	if(. && holding_item)
-		holding_item.dropInto(src)
-		holding_item = null
 
 /mob/living/simple_animal/mouse/Destroy()
 	QDEL_NULL(holding_item)
