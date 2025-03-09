@@ -54,6 +54,6 @@ var/global/list/glob_worm_actions = list(/datum/action/thermal, /datum/action/co
 	melee_damage_lower = 16
 	melee_damage_upper = 22
 
-/mob/living/simple_animal/hostile/slug/Initialize()
+/mob/living/simple_animal/hostile/slug/worm/Initialize()
 	. = ..()
 	action_spells = glob_worm_actions
