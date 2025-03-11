@@ -55,11 +55,11 @@
 	icon = DRINK_ICON_FILE
 
 /obj/item/glass_extra/cocktail_stick
-	name = "stick"
+	name = "cocktail stick"
 	desc = "This goes in a glass."
-	glass_addition = "cocktail_stick"
+	glass_addition = "stick"
 	glass_desc = "There is a stick in the glass."
-	icon_state = "cocktail_stick"
+	icon_state = "stick"
 
 /obj/item/glass_extra/straw
 	name = "straw"
