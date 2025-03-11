@@ -57,9 +57,9 @@
 /obj/item/glass_extra/cocktail_stick
 	name = "cocktail stick"
 	desc = "This goes in a glass."
-	glass_addition = "stick"
+	glass_addition = "cstick"
 	glass_desc = "There is a stick in the glass."
-	icon_state = "stick"
+	icon_state = "cstick"
 
 /obj/item/glass_extra/straw
 	name = "straw"
