@@ -499,6 +499,7 @@ var/const/NO_EMAG_ACT = -50
 /obj/item/card/id/civilian/clown/gold //Use me in the name of Honkmother
 	icon_state = "card_clownGold"
 	item_state = "card_clownGold"
+	job_access_type = null
 
 /obj/item/card/id/civilian/clown/gold/New()
 	access = get_all_station_access()
@@ -513,6 +514,7 @@ var/const/NO_EMAG_ACT = -50
 /obj/item/card/id/civilian/mime/gold //...
 	icon_state = "card_mimeGold"
 	item_state = "card_mimeGold"
+	job_access_type = null
 
 /obj/item/card/id/civilian/mime/gold/New()
 	access = get_all_station_access()
