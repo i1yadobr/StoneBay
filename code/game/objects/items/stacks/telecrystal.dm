@@ -41,6 +41,7 @@
 	icon = 'icons/obj/telescience.dmi'
 	icon_state = "time_bluespace_crystal"
 	singular_name = "time bluespace crystal"
+	origin_tech = list(TECH_MATERIAL = 3, TECH_BLUESPACE = 7)
 
 /obj/item/stack/telecrystal/time_bluespace_crystal/afterattack(obj/item/I, mob/user, proximity)
 	return

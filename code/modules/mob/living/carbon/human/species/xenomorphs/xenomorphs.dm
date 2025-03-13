@@ -28,7 +28,6 @@
 	src.SetTransform(0.9)
 	default_pixel_x = -16
 	pixel_x = -16
-	faction = "event"
 
 /mob/living/carbon/human/xenos/hunter/New(new_loc)
 	..(new_loc, SPECIES_XENO_HUNTER)

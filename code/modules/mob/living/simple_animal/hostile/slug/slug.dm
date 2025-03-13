@@ -11,7 +11,6 @@ var/global/list/glob_worm_actions = list(/datum/action/thermal, /datum/action/co
 	var/icon_rest = "worm_rest"
 	speak_emote = list("brays")
 	mob_size = MOB_MEDIUM
-	faction = "event"
 	attack_sound = 'sound/weapons/bite.ogg'
 	mouse_opacity = 1
 
