@@ -14,14 +14,9 @@ var/global/list/glob_worm_actions = list(/datum/action/thermal, /datum/action/co
 	faction = "event"
 	attack_sound = 'sound/weapons/bite.ogg'
 	mouse_opacity = 1
-	speed = 8
 
 	universal_speak = 1
 	universal_understand = 1
-
-	stammering = TRUE
-	burrieng = TRUE
-	lisping = TRUE
 
 	health = 120
 	maxHealth = 120

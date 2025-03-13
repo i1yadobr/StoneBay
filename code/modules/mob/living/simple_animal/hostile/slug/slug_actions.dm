@@ -65,6 +65,7 @@
 	button_icon_state = "true_form"
 	button.UpdateIcon()
 	var/datum/icon_snapshot/target_snap = copy_snap(target)
+	owner.PopClickHandler()
 	set_snap(target_snap)
 
 /datum/action/cooldown/toggle/transform/proc/copy_snap(mob/living/target)
@@ -76,7 +77,6 @@
 	entry.examine = H.examine(H)
 	entry.icon_state = H.icon_state
 	entry.overlays = H.overlays.Copy()
-	entry.faction = H.faction
 	return entry
 
 /datum/action/cooldown/toggle/transform/proc/set_snap(datum/icon_snapshot/snap)
@@ -88,7 +88,6 @@
 		H.name = snap.name
 		H.icon = snap.icon
 		H.icon_state = snap.icon_state
-		H.faction = snap.faction
 		var/examine = snap.examine
 		if(islist(examine))
 			H.desc = examine[1]

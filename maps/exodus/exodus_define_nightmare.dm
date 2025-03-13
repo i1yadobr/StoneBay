@@ -11,3 +11,5 @@
 		new /datum/space_level/null_space,
 		new /datum/space_level/telecomms
 	)
+
+	can_be_voted = FALSE

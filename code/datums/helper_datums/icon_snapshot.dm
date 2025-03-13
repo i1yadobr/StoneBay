@@ -7,7 +7,6 @@
 	var/stand_icon
 	var/list/overlays
 	var/list/overlays_standing
-	var/faction
 
 /datum/icon_snapshot/proc/makeImg()
 	if(!icon || !icon_state)
