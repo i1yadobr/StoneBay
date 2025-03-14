@@ -4,7 +4,8 @@
 /obj/item/card/id/guest
 	name = "guest pass"
 	desc = "Allows temporary access to restricted areas."
-	icon_state = "guest"
+	icon_state = "card_guest"
+	item_state = "card_guest"
 	light_color = "#0099ff"
 
 	var/temp_access = list() //to prevent agent cards stealing access as permanent
