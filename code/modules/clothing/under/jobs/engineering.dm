@@ -3,7 +3,7 @@
 	desc = "It's a high visibility jumpsuit given to those engineers insane enough to achieve the rank of \"Chief engineer\". It has minor radiation shielding."
 	name = "chief engineer's jumpsuit"
 	icon_state = "chiefengineer"
-	item_state = "g_suit"
+	item_state = "chief"
 	worn_state = "chief"
 	armor = list(melee = 10, bullet = 5, laser = 5, energy = 0, bomb = 10, bio = 0)
 	siemens_coefficient = 0.6
@@ -22,7 +22,7 @@
 	desc = "It's an orange high visibility jumpsuit worn by engineers. It has minor radiation shielding."
 	name = "engineer's jumpsuit"
 	icon_state = "engine"
-	item_state = "engi_suit"
+	item_state = "engine"
 	worn_state = "engine"
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 0)
 	siemens_coefficient = 0.7
@@ -38,12 +38,13 @@
 	desc = "It's a slimming black jumpsuit with reinforced seams; great for industrial work."
 	name = "roboticist's jumpsuit"
 	icon_state = "robotics"
-	item_state = "bl_suit"
+	item_state = "robotics"
 	worn_state = "robotics"
 
 /obj/item/clothing/under/rank/roboticist/skirt
 	desc = "It's a slimming black jumpskirt with reinforced seams; great for industrial work."
 	name = "roboticist's jumpskirt"
 	icon_state = "roboticsf"
+	item_state = "roboticsf"
 	worn_state = "roboticsf"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS

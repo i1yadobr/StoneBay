@@ -11,6 +11,7 @@
 	name = "orange jumpsuit"
 	desc = "It's standardised prisoner-wear. Its suit sensor controls are permanently set to the \"Fully On\" position."
 	icon_state = "orange"
+	item_state = "orange"
 	has_sensor = 2
 	sensor_mode = 3
 
@@ -20,6 +21,7 @@
 	name = "jumpsuit"
 	desc = "The latest in space fashion."
 	icon_state = "white"
+	item_state = "white"
 
 // legacy colours - these are used somewhere in the game, but aren't available in the loadout
 
@@ -68,9 +70,7 @@
 	name = "jumpskirt"
 	desc = "A slimming, short jumpskirt."
 	icon_state = "jumpskirt"
-	item_state_slots = list(
-		slot_hand_str = "white"
-		)
+	item_state = "jumpskirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 
 /obj/item/clothing/under/jumpskirt/white

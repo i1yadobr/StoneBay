@@ -16,28 +16,26 @@
 	name = "quartermaster's jumpsuit"
 	desc = "It's a jumpsuit worn by the quartermaster. It's specially designed to prevent back injuries caused by pushing paper."
 	icon_state = "qm"
-	item_state_slots = list(
-		slot_hand_str = "cargo"
-		)
+	item_state = "qm"
 
 /obj/item/clothing/under/rank/cargotech
 	name = "cargo technician's jumpsuit"
 	desc = "Shooooorts! They're comfy and easy to wear!"
 	icon_state = "cargo"
+	item_state = "cargo"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/chaplain
 	name = "chaplain's jumpsuit"
 	desc = "It's a black jumpsuit, often worn by religious folk."
 	icon_state = "chaplain"
-	item_state_slots = list(
-		slot_hand_str = "black"
-		)
+	item_state = "chaplain"
 
 /obj/item/clothing/under/rank/chef
 	name = "chef's uniform"
 	desc = "It's an apron which is given only to the most <b>hardcore</b> chefs in space."
 	icon_state = "chef"
+	item_state = "chef"
 
 /obj/item/clothing/under/rank/clown
 	name = "clown suit"
@@ -114,9 +112,7 @@
 /obj/item/clothing/under/lawyer/purpsuit
 	name = "Purple Suit"
 	icon_state = "lawyer_purp"
-	item_state_slots = list(
-		slot_hand_str = "ba_suit"
-		)
+	item_state = "lawyer_purp"
 
 /obj/item/clothing/under/lawyer/oldman
 	name = "Old Man's Suit"
