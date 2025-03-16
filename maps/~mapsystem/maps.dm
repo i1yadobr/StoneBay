@@ -158,11 +158,9 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 /datum/map/proc/send_welcome()
 	return
 
-/datum/map/proc/perform_map_generation(lateloading = FALSE)
+/datum/map/proc/perform_map_generation()
 	for(var/level = 1; level <= length(map_levels); level++)
 		var/datum/space_level/L = map_levels[level]
-		if(L.lateloading_level != lateloading)
-			continue
 
 		L.generate(level)
 

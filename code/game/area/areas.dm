@@ -6,7 +6,7 @@
 /area
 	var/global/global_uid = 0
 	var/uid
-	var/area_flags = AREA_FLAG_UNIQUE_AREA
+	var/area_flags
 	var/used_equip = 0
 	var/used_light = 0
 	var/used_environ = 0
@@ -40,9 +40,6 @@
 	else
 		luminosity = 1
 
-	if(area_flags & AREA_FLAG_UNIQUE_AREA)
-		GLOB.areas_by_type[type] = src
-
 	..()
 
 /area/Initialize()
@@ -65,8 +62,6 @@
 		GLOB.station_areas.Add(src)
 
 /area/Destroy()
-	if(GLOB.areas_by_type[type] == src)
-		GLOB.areas_by_type[type] = null
 	if(is_station)
 		GLOB.station_areas.Remove(src)
 	. = ..()

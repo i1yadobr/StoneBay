@@ -90,7 +90,6 @@
 /area/shuttle/mining/outpost
 	icon_state = "shuttle"
 	base_turf = /turf/simulated/floor/asteroid
-	area_flags = AREA_FLAG_UNIQUE_AREA
 
 /area/shuttle/mining/station
 	icon_state = "shuttle2"
@@ -115,21 +114,21 @@
 
 /area/shuttle/deathsquad/centcom
 	name = "Deathsquad Shuttle"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/deathsquad/transit
 	name = "Deathsquad Shuttle Internim"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/deathsquad/station
 	name = "Deathsquad Shuttle Station"
 
 /area/shuttle/administration
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/syndicate_elite
 	name = "\improper Syndicate Elite Shuttle"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/transport/centcom
 	icon_state = "shuttle"
@@ -165,7 +164,7 @@
 
 /area/shuttle/escape
 	name = "\improper Emergency Shuttle"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/escape/station
 	name = "\improper Emergency Shuttle Station"
@@ -177,7 +176,7 @@
 
 /area/shuttle/escape_pod1
 	name = "\improper Escape Pod One"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/escape_pod1/station
 	icon_state = "shuttle2"
@@ -188,7 +187,7 @@
 
 /area/shuttle/escape_pod2
 	name = "\improper Escape Pod Two"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/escape_pod2/station
 	icon_state = "shuttle2"
@@ -199,7 +198,7 @@
 
 /area/shuttle/escape_pod3
 	name = "\improper Escape Pod Three"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/escape_pod3/station
 	icon_state = "shuttle2"
@@ -210,7 +209,7 @@
 
 /area/shuttle/escape_pod5 // Pod 4 was lost to meteors
 	name = "\improper Escape Pod Five"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/shuttle/escape_pod5/station
 	icon_state = "shuttle2"
@@ -261,7 +260,7 @@
 	icon_state = "yellow"
 	requires_power = 0
 	dynamic_lighting = 1
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/rescue_base/base
 	name = "\improper Barracks"
@@ -310,7 +309,7 @@
 /area/creaker
 	name = "\improper Mining Ship 'Creaker'"
 	icon_state = "yellow"
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/creaker/station
 	name = "\improper Mining Ship 'Creaker'"
@@ -335,7 +334,7 @@
 	name = "\improper Independant Station"
 	icon_state = "yellow"
 	requires_power = 0
-	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
+	area_flags = AREA_FLAG_RAD_SHIELDED
 
 /area/syndicate_station/start
 	name = "\improper Syndicate Forward Operating Base"
@@ -1997,7 +1996,6 @@
 /area/outpost/main_outpost/dock
 	name = "Outpost Dock"
 	icon_state = "bluenew"
-	area_flags = AREA_FLAG_UNIQUE_AREA
 
 /area/outpost/main_outpost/dock/security
 	name = "Outpost Security Dock"
