@@ -5,24 +5,21 @@
 	name = "research director's jumpsuit"
 	desc = "It's a jumpsuit worn by those with the know-how to achieve the position of \"Research Director\". Its fabric provides minor protection from biological contaminants."
 	icon_state = "director"
+	item_state = "director"
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 
 /obj/item/clothing/under/rank/research_director/rdalt
 	name = "head researcher uniform"
 	desc = "A dress suit and slacks stained with hard work and dedication to science. Perhaps other things as well, but mostly hard work and dedication."
 	icon_state = "rdalt"
-	item_state_slots = list(
-		slot_hand_str = "director"
-		)
+	item_state = "rdalt"
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 
 /obj/item/clothing/under/rank/research_director/dress_rd
 	name = "research director dress uniform"
 	desc = "Feminine fashion for the style concious RD. Its fabric provides minor protection from biological contaminants."
 	icon_state = "dress_rd"
-	item_state_slots = list(
-		slot_hand_str = "director"
-		)
+	item_state = "dress_rd"
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
@@ -73,6 +70,7 @@
 	name = "nurse's suit"
 	desc = "It's a jumpsuit commonly worn by nursing staff in the medical department."
 	icon_state = "nursesuit"
+	item_state = "nursesuit"
 	permeability_coefficient = 0.50
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
@@ -81,9 +79,7 @@
 	name = "nurse's dress"
 	desc = "A dress commonly worn by the nursing staff in the medical department."
 	icon_state = "nurse"
-	item_state_slots = list(
-		slot_hand_str = "nursesuit"
-		)
+	item_state = "nurse"
 	permeability_coefficient = 0.50
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
@@ -144,3 +140,4 @@
 	name = "turqouise turtleneck"
 	desc = "A turqouise sweater and a pair of dark blue slacks."
 	icon_state = "psychturtle"
+	item_state = "psychturtle"
