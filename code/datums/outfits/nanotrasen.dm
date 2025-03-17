@@ -38,7 +38,7 @@
 	shoes = /obj/item/clothing/shoes/swat
 	uniform = /obj/item/clothing/under/rank/centcom/captain
 	suit = /obj/item/clothing/suit/armor/bulletproof
-	gloves = /obj/item/clothing/gloves/thick/swat
+	gloves = /obj/item/clothing/gloves/swat
 	l_ear =  /obj/item/device/radio/headset/heads/captain
 	glasses = /obj/item/clothing/glasses/eyepatch
 	l_pocket = /obj/item/flame/lighter/zippo
