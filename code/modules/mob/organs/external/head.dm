@@ -24,8 +24,13 @@
 
 	var/forehead_graffiti
 	var/graffiti_style
+	var/list/forehead_stamps = list()
 
 	var/skull_path = /obj/item/skull
+
+	New()
+		. = ..()
+		forehead_stamps = list()
 
 /obj/item/organ/external/head/droplimb(clean, disintegrate = DROPLIMB_EDGE, ignore_children, silent)
 	if(BP_IS_ROBOTIC(src) && disintegrate == DROPLIMB_BURN)
@@ -80,6 +85,31 @@
 			graffiti_style = style
 			if(owner)
 				log_and_message_admins("has written something on [owner]'s ([owner.ckey]) head: \"[graffiti]\".", penman)
+
+/obj/item/organ/external/head/proc/apply_stamp(stamp_name, stamper)
+	if(!forehead_stamps)
+		forehead_stamps = list()
+	if(!(stamp_name in forehead_stamps))
+		forehead_stamps += stamp_name
+		if(owner == stamper)
+			to_chat(stamper, "<span class='notice'>You stamped yourself with '[stamp_name]'.</span>")
+		else
+			to_chat(stamper,"<span class='notice'>You stamp [owner]'s forehead with '[stamp_name]'!</span>")
+			to_chat(owner, "<span class='notice'>[stamper] stamped your forehead with '[stamp_name]'!</span>")
+			to_chat(stamper, "[stamper] stamps [owner]'s forehead with '[stamp_name]'.", stamper, owner)
+
+/mob/living/carbon/human/proc/wash_forehead()
+	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
+	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
+		to_chat(src,"<span class='warning'>The stamps on your head is washed away by shower.</span>")
+		head.forehead_stamps.Cut()
+
+/mob/living/carbon/human/examine(mob/user, infix)
+	. = ..()
+	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
+	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
+		for(var/stamp in head.forehead_stamps)
+			. += SPAN_NOTICE("[src] has a [stamp] stamped on their forehead!")
 
 /obj/item/organ/external/head/get_agony_multiplier()
 	return (owner && owner.headcheck(organ_tag)) ? 1.50 : 1
