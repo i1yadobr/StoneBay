@@ -243,7 +243,7 @@
 	allowed_roles = list(/datum/job/captain)
 
 /datum/gear/head/captain_alt
-	display_name = "old captain's cap"
+	display_name = "old captain's hat"
 	path = /obj/item/clothing/head/caphat/alt
 	price = 10
 	allowed_roles = list(/datum/job/captain)
