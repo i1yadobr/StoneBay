@@ -12,6 +12,11 @@
 	body_parts_covered = NO_BODYPARTS
 	armor = list(melee = 75, bullet = 90, laser = 90, energy = 25, bomb = 35, bio = 0) //The emperor must be protected
 
+/obj/item/clothing/head/centcom/hat/cheap
+	name = "centcomm. hat"
+	desc = "It's good to be rich and do nothing."
+	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 0)
+
 /obj/item/clothing/head/hairflower
 	name = "hair flower pin"
 	desc = "Smells nice."
