@@ -28,7 +28,7 @@
 
 /obj/item/clothing/head/caphat/cap
 	name = "captain's cap"
-	desc = "You fear to wear it for t`he negligence it brings."
+	desc = "You fear to wear it for the negligence it brings."
 	icon_state = "capcap"
 
 /obj/item/clothing/head/caphat/cap/capcap_alt
