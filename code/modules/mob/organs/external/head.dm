@@ -87,8 +87,13 @@
 				log_and_message_admins("has written something on [owner]'s ([owner.ckey]) head: \"[graffiti]\".", penman)
 
 /obj/item/organ/external/head/proc/apply_stamp(stamp_name, stamper)
+	if(owner && (owner.wear_mask || owner.head))
+		to_chat(stamper, "<span class='notice'>[owner]'s forehead is covered up.</span>")
+		return
+
 	if(!forehead_stamps)
 		forehead_stamps = list()
+
 	if(!(stamp_name in forehead_stamps))
 		forehead_stamps += stamp_name
 		if(owner == stamper)
@@ -108,8 +113,10 @@
 	. = ..()
 	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
 	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
+		var/gender_pronoun = src.gender == "male" ? "He" : "She"
+		var/posessive_pronoun = src.gender == "male" ? "his" : "her"
 		for(var/stamp in head.forehead_stamps)
-			. += SPAN_NOTICE("[src] has a [stamp] stamped on their forehead!")
+			. += SPAN_NOTICE("[gender_pronoun] has a [stamp] stamped on [posessive_pronoun] forehead!")
 
 /obj/item/organ/external/head/get_agony_multiplier()
 	return (owner && owner.headcheck(organ_tag)) ? 1.50 : 1
