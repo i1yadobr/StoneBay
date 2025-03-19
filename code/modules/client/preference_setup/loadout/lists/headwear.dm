@@ -131,7 +131,7 @@
 	flags = GEAR_HAS_COLOR_SELECTION
 
 /datum/gear/head/garland
-	display_name = "garland select"
+	display_name = "garland selection"
 	path = /obj/item/clothing/head
 
 /datum/gear/head/garland/New()
@@ -141,10 +141,10 @@
 	garland["sunflower crown"] = /obj/item/clothing/head/garland/sunflower
 	garland["poppy crown"] = /obj/item/clothing/head/garland/poppy
 	garland["lily crown"] = /obj/item/clothing/head/garland/lily
-	garland["flower crown, red, yellow and white"] = /obj/item/clothing/head/garland/rainbowbunch/ryw
-	garland["flower crown, blue, yellow, green and white"] = /obj/item/clothing/head/garland/rainbowbunch/bygw
-	garland["flower crown, red, blue, purple and pink"] = /obj/item/clothing/head/garland/rainbowbunch/rbpp
-	garland["flower crown, yellow, green and white"] = /obj/item/clothing/head/garland/rainbowbunch/ygw
+	garland["flower crown, red, yellow & white"] = /obj/item/clothing/head/garland/rainbowbunch/ryw
+	garland["flower crown, blue, yellow, green & white"] = /obj/item/clothing/head/garland/rainbowbunch/bygw
+	garland["flower crown, red, blue, purple & pink"] = /obj/item/clothing/head/garland/rainbowbunch/rbpp
+	garland["flower crown, yellow, green & white"] = /obj/item/clothing/head/garland/rainbowbunch/ygw
 	gear_tweaks += new /datum/gear_tweak/path(garland)
 
 //
@@ -230,6 +230,11 @@
 	display_name = "pumpkin head"
 	path = /obj/item/clothing/head/pumpkinhead
 	price = 12
+
+/datum/gear/head/yurihead
+	display_name = "yuri helmet"
+	path = /obj/item/clothing/head/yuri
+	price = 10
 
 /datum/gear/head/capcap_alt
 	display_name = "captain's cap"

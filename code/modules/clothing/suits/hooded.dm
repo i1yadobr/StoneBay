@@ -255,7 +255,7 @@
 	hoodtype = /obj/item/clothing/head/hoodiehood
 
 /obj/item/clothing/suit/storage/hooded/bee
-	name = "bee costume"
+	name = "bee suit"
 	desc = "Bee the true Queen!"
 	icon_state = "bee"
 	min_cold_protection_temperature = -20 CELSIUS

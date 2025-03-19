@@ -701,7 +701,7 @@
 	name = "head of security's formal coat"
 	desc = "For when an armoured vest isn't fashionable enough."
 	icon_state = "hosformal"
-	item_state = "hosformal"
+//	item_state = "hosformal"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/suit/yuri

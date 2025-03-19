@@ -89,6 +89,12 @@
 /obj/item/clothing/under/rank/centcom/captain
 	desc = "Gold trim on space-black cloth, this uniform displays the rank of \"Admiral-Executive.\"."
 
+/obj/item/clothing/under/rank/centcom/official
+	name = "\improper CentCom official's uniform"
+	desc = "The costume worn by CentCom Officials is simple yet stylish enough to define who's in charge."
+	icon_state = "centcom_official"
+	//item_state = "centcom_official"
+
 /obj/item/clothing/under/ert
 	name = "ERT tactical uniform"
 	desc = "A short-sleeved black uniform, paired with grey digital-camo cargo pants. It looks very tactical."
@@ -668,12 +674,6 @@
 		var/pipe = user.start_ventcrawl()
 		if(pipe)
 			user.handle_ventcrawl(pipe)
-
-/obj/item/clothing/under/centcom
-	name = "\improper CentCom official's uniform"
-	desc = "The costume worn by CentCom Officials is simple yet stylish enough to define who's in charge."
-	icon_state = "centcom_official"
-	//item_state = "centcom_official"
 
 /obj/item/clothing/under/camo
 	name = "green camouflage jumpsuit"

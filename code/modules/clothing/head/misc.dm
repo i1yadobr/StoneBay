@@ -1,6 +1,6 @@
 
 
-/obj/item/clothing/head/centhat
+/obj/item/clothing/head/centcom/hat
 	name = "\improper CentComm. hat"
 	desc = "It's good to be emperor."
 	icon_state = "centcom_hat"
@@ -462,7 +462,7 @@
 
 /obj/item/clothing/head/garland/rainbowbunch/ryw //red, yellow and white
 	desc = "A flower crown made out of the flowers of the rainbow bunch plant. This one has red, yellow, and white flowers."
-	icon_state = "rainbow_bunch_crown_2"
+	icon_state = "rainbow_bunch_crown_1"
 
 /obj/item/clothing/head/garland/rainbowbunch/bygw //blue, yellow, green and white
 	desc = "A flower crown made out of the flowers of the rainbow bunch plant. This one has blue, yellow, green, and white flowers."

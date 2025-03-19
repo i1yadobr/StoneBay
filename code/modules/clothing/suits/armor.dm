@@ -323,12 +323,11 @@
 	item_state = "tdgreen"
 	siemens_coefficient = 1
 
-/obj/item/clothing/suit/armor/centcomm
+/obj/item/clothing/suit/armor/centcom
 	name = "\improper Centcomm. coat"
 	desc = "An armored stylish vest that feels like power."
 	icon_state = "centcom_formal"
-	item_state = "centcom_formal"
+//	item_state = "centcom_formal"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	armor = list(melee = 60, bullet = 90, laser = 80, energy = 25, bomb = 30, bio = 10)
-	flags_inv = HIDEJUMPSUIT
 	siemens_coefficient = 0.6
