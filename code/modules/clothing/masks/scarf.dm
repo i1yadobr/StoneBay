@@ -11,7 +11,7 @@
 	use_alt_layer = TRUE
 
 /obj/item/clothing/mask/scarf_c/neck
-	name = "neck scarf"
+	name = "scarf"
 	desc = "A neck scarf used to cover the face."
 	icon_state = "neck_scarf"
 	item_state = "neck_scarf"
