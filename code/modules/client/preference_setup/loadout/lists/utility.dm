@@ -53,7 +53,7 @@
 		<b>Be careful!</b> Don't use it to play music/sounds which can be annoying for other players. Admins can erase your music if they consider it unacceptable or even ban you for abusing it.
 	"}
 	path = /obj/item/music_tape/custom
-	patron_tier = PATREON_SCIENTIST
+	price = 250
 
 /datum/gear/utility/boombox
 	display_name = "boombox"
@@ -64,5 +64,4 @@
 	"}
 	path = /obj/item/music_player/boombox
 	flags = GEAR_HAS_COLOR_SELECTION
-	patron_tier = PATREON_ASSISTANT
-	cost = 4
+	price = 100
