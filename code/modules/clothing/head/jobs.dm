@@ -20,7 +20,7 @@
 	armor = list(melee = 15, bullet = 10, laser = 10, energy = 5, bomb = 0, bio = 0)
 	coverage = 0.5
 
-/obj/item/clothing/head/caphat/alt
+/obj/item/clothing/head/caphat/alt //Kind of like a legacy version of the hat
 	name = "captain's old hat"
 	desc = "It's good being old and wise king."
 	icon_state = "captain_alt"

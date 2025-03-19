@@ -12,7 +12,7 @@
 	icon_state = "captain"
 	item_state = "captain"
 
-/obj/item/clothing/under/rank/captain/alt
+/obj/item/clothing/under/rank/captain/alt //Kind of like a legacy version of the uniform
 	name = "captain's old jumpsuit"
 	desc = "It's a green jumpsuit with some gold markings denoting the rank of \"Captain\"."
 	icon_state = "captain_alt"
