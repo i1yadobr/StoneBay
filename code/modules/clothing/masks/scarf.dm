@@ -11,11 +11,11 @@
 	use_alt_layer = TRUE
 
 /obj/item/clothing/mask/scarf_c/neck
-	name = "scarf"
-	desc = "A neck scarf used to cover the face."
-	icon_state = "neck_scarf"
-	item_state = "neck_scarf"
-	down_icon_state = "neck_scarfdown"
+	name = "rag scarf"
+	desc = "A rag-like scarf used to cover the face."
+	icon_state = "rag_scarf"
+	item_state = "rag_scarf"
+	down_icon_state = "rag_scarfdown"
 
 /obj/item/clothing/mask/scarf_c/neckerchief
 	name = "neckerchief scarf"
