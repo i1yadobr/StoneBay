@@ -706,7 +706,7 @@
 
 /obj/item/clothing/suit/yuri
 	name = "yuri initiate coat"
-	desc = "Yuri is master! Sponsored by DonkSoft Co. for historical reenactment of the Third World War!"
+	desc = "Yuri is master! Sponsored by DonkSoft Co."
 	icon_state = "yuri_coat"
 	//item_state = "yuri_coat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
