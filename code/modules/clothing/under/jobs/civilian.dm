@@ -12,6 +12,12 @@
 	icon_state = "captain"
 	item_state = "captain"
 
+/obj/item/clothing/under/rank/captain/alt
+	name = "captain's old jumpsuit"
+	desc = "It's a green jumpsuit with some gold markings denoting the rank of \"Captain\"."
+	icon_state = "captain_alt"
+	//item_state = "captain_alt"
+
 /obj/item/clothing/under/rank/cargo
 	name = "quartermaster's jumpsuit"
 	desc = "It's a jumpsuit worn by the quartermaster. It's specially designed to prevent back injuries caused by pushing paper."

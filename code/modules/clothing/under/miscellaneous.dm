@@ -461,12 +461,6 @@
 	icon_state = "captain_formal_alt"
 	item_state = "captain_formal_alt"
 
-/obj/item/clothing/under/captain_alt
-	name = "captain's old jumpsuit"
-	desc = "It's a green jumpsuit with some gold markings denoting the rank of \"Captain\"."
-	icon_state = "captain_alt"
-	//item_state = "captain_alt"
-
 /obj/item/clothing/under/hosformalmale // Opyx shop garbage
 	name = "head of security's male formal uniform"
 	desc = "A male head of security's formal-wear, for special occasions."

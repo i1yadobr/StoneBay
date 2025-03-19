@@ -459,7 +459,7 @@
 
 /datum/gear/uniform/captain_alt
 	display_name = "old captain's uniform"
-	path = /obj/item/clothing/under/captain_alt
+	path = /obj/item/clothing/under/rank/captain/alt
 	price = 10
 	allowed_roles = list(/datum/job/captain)
 
