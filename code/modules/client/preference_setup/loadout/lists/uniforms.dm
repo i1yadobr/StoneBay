@@ -456,3 +456,21 @@
 	display_name = "fig leaf"
 	path = /obj/item/clothing/under/fig_leaf
 	price = 5
+
+/datum/gear/uniform/captain_alt
+	display_name = "old captain's uniform"
+	path = /obj/item/clothing/under/captain_alt
+	price = 10
+	allowed_roles = list(/datum/job/captain)
+
+/datum/gear/uniform/camouflage
+	display_name = "camouflage jumpsuits"
+	price = 15
+
+/datum/gear/uniform/camouflage/New()
+	..()
+	var/camo = list()
+	camo += /obj/item/clothing/under/camo
+	camo += /obj/item/clothing/under/camo/firestarter
+	camo += /obj/item/clothing/under/camo/urban
+	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(camo)

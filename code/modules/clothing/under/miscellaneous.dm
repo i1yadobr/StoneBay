@@ -455,6 +455,12 @@
 	icon_state = "captain_formal_alt"
 	item_state = "captain_formal_alt"
 
+/obj/item/clothing/under/captain_alt
+	name = "captain's old jumpsuit"
+	desc = "It's a green jumpsuit with some gold markings denoting the rank of \"Captain\"."
+	icon_state = "captain_alt"
+	//item_state = "captain_alt"
+
 /obj/item/clothing/under/hosformalmale // Opyx shop garbage
 	name = "head of security's male formal uniform"
 	desc = "A male head of security's formal-wear, for special occasions."
@@ -662,3 +668,25 @@
 		var/pipe = user.start_ventcrawl()
 		if(pipe)
 			user.handle_ventcrawl(pipe)
+
+/obj/item/clothing/under/centcom
+	name = "\improper CentCom official's uniform"
+	desc = "The costume worn by CentCom Officials is simple yet stylish enough to define who's in charge."
+	icon_state = "centcom_official"
+	//item_state = "centcom_official"
+
+/obj/item/clothing/under/camo
+	name = "green camouflage jumpsuit"
+	desc = "Camouflage tactical jumpsuit are designed for the most military of people."
+	icon_state = "green_camo"
+	//item_state = "green_camo"
+
+/obj/item/clothing/under/camo/firestarter
+	name = "firestarter camouflage jumpsuit"
+	icon_state = "firestarter_camo"
+	//item_state = "firestarter_camo"
+
+/obj/item/clothing/under/camo/urban
+	name = "urban camouflage jumpsuit"
+	icon_state = "urban_camo"
+	//item_state = "urban_camo"

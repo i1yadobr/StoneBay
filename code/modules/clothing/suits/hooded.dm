@@ -253,3 +253,21 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS
 	action_button_name = "Toggle Hood"
 	hoodtype = /obj/item/clothing/head/hoodiehood
+
+/obj/item/clothing/suit/storage/hooded/bee
+	name = "bee costume"
+	desc = "Bee the true Queen!"
+	icon_state = "bee"
+	min_cold_protection_temperature = -20 CELSIUS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	action_button_name = "Toggle Bee Hood"
+	hoodtype = /obj/item/clothing/head/beehood
+
+/obj/item/clothing/head/beehood
+	name = "bee hood"
+	desc = "A hood attached to a heavy winter jacket."
+	icon_state = "bee_hood"
+	body_parts_covered = HEAD
+	min_cold_protection_temperature = -20 CELSIUS
+	cold_protection = HEAD
+	flags_inv = HIDEEARS | BLOCKHAIR

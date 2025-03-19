@@ -11,18 +11,24 @@
 //Captain
 /obj/item/clothing/head/caphat
 	name = "captain's hat"
-	icon_state = "captain"
 	desc = "It's good being the king."
+	icon_state = "captain"
 	item_state_slots = list(
 		slot_l_hand_str = "caphat",
 		slot_r_hand_str = "caphat",
 		)
-	armor = list(melee = 15, bullet = 10, laser = 10,energy = 5, bomb = 0, bio = 0)
+	armor = list(melee = 15, bullet = 10, laser = 10, energy = 5, bomb = 0, bio = 0)
 	coverage = 0.5
+
+/obj/item/clothing/head/caphat/alt
+	name = "captain's old hat"
+	desc = "It's good being old and wise king."
+	icon_state = "captain_alt"
+	//item_state = "captain_alt"
 
 /obj/item/clothing/head/caphat/cap
 	name = "captain's cap"
-	desc = "You fear to wear it for the negligence it brings."
+	desc = "You fear to wear it for t`he negligence it brings."
 	icon_state = "capcap"
 
 /obj/item/clothing/head/caphat/cap/capcap_alt
@@ -215,8 +221,8 @@
 	..()
 
 /obj/item/clothing/head/det/grey
-	icon_state = "detective2"
 	desc = "A grey fedora - either the cornerstone of a detective's style or a poor attempt at looking cool, depending on the person wearing it."
+	icon_state = "detective2"
 	item_state_slots = list(
 		slot_l_hand_str = "det_hat_grey",
 		slot_r_hand_str = "det_hat_grey",

@@ -130,6 +130,23 @@
 	display_name = "surgical cap, colour select"
 	flags = GEAR_HAS_COLOR_SELECTION
 
+/datum/gear/head/garland
+	display_name = "garland select"
+	path = /obj/item/clothing/head
+
+/datum/gear/head/garland/New()
+	..()
+	var/garland = list()
+	garland["floral garland"] = /obj/item/clothing/head/garland
+	garland["sunflower crown"] = /obj/item/clothing/head/garland/sunflower
+	garland["poppy crown"] = /obj/item/clothing/head/garland/poppy
+	garland["lily crown"] = /obj/item/clothing/head/garland/lily
+	garland["flower crown, red, yellow and white"] = /obj/item/clothing/head/garland/rainbowbunch/ryw
+	garland["flower crown, blue, yellow, green and white"] = /obj/item/clothing/head/garland/rainbowbunch/bygw
+	garland["flower crown, red, blue, purple and pink"] = /obj/item/clothing/head/garland/rainbowbunch/rbpp
+	garland["flower crown, yellow, green and white"] = /obj/item/clothing/head/garland/rainbowbunch/ygw
+	gear_tweaks += new /datum/gear_tweak/path(garland)
+
 //
 // Donator's shop
 //
@@ -219,3 +236,15 @@
 	path = /obj/item/clothing/head/caphat/cap/capcap_alt
 	price = 10
 	allowed_roles = list(/datum/job/captain)
+
+/datum/gear/head/captain_alt
+	display_name = "old captain's cap"
+	path = /obj/item/clothing/head/caphat/alt
+	price = 10
+	allowed_roles = list(/datum/job/captain)
+
+/datum/gear/head/witchhunter
+	display_name = "witchunter hat"
+	path = /obj/item/clothing/head/witchunter_hat
+	price = 10
+	allowed_roles = list(/datum/job/chaplain)
