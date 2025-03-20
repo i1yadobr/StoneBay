@@ -2,7 +2,7 @@
 /area/entrepot
 	name = "\improper NTS Entrepot-17"
 	icon_state = "dark"
-	area_flags = AREA_FLAG_RAD_SHIELDED
+	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
 
 
 /area/entrepot/deck_1
