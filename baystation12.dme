@@ -1774,6 +1774,7 @@
 #include "code\modules\clothing\masks\breath.dm"
 #include "code\modules\clothing\masks\gasmask.dm"
 #include "code\modules\clothing\masks\miscellaneous.dm"
+#include "code\modules\clothing\masks\scarf.dm"
 #include "code\modules\clothing\masks\voice.dm"
 #include "code\modules\clothing\rings\material.dm"
 #include "code\modules\clothing\rings\rings.dm"
