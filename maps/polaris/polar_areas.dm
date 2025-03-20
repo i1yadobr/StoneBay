@@ -14,7 +14,7 @@
 /area/polarplanet/street
 	name = "Polarplanet - street"
 	environment_type = ENVIRONMENT_OUTSIDE
-	area_flags = AREA_FLAG_EXTERNAL
+	area_flags = AREA_FLAG_UNIQUE_AREA | AREA_FLAG_EXTERNAL
 	always_unpowered = TRUE
 	sound_env = SFX_AMBIENT_DESERT
 
@@ -2238,7 +2238,7 @@
 	base_turf = /turf/simulated/floor/natural/frozenground/cave
 	icon_state = "mining"
 	sound_env = 5 // stoneroom
-	area_flags = AREA_FLAG_EXTERNAL
+	area_flags = AREA_FLAG_UNIQUE_AREA | AREA_FLAG_EXTERNAL
 	ambience_off = list(SFX_AMBIENT_MINE)
 	ambience_powered = list(SFX_AMBIENT_MINE)
 	ambient_music_tags = list(MUSIC_TAG_MYSTIC, MUSIC_TAG_SPACE)
