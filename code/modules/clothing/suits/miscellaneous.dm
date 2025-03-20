@@ -701,19 +701,19 @@
 	name = "head of security's formal coat"
 	desc = "For when an armoured vest isn't fashionable enough."
 	icon_state = "hosformal"
-//	item_state = "hosformal"
+	item_state = "hosformal"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/suit/yuri
 	name = "yuri initiate coat"
 	desc = "Yuri is master! Sponsored by DonkSoft Co."
 	icon_state = "yuri_coat"
-	//item_state = "yuri_coat"
+	item_state = "yuri_coat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/suit/witchhunter
 	name = "witchunter garb"
 	desc = "This worn outfit saw much use back in the day."
 	icon_state = "witchhunter"
-	//item_state = "witchhunter"
+	item_state = "witchhunter"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
