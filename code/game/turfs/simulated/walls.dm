@@ -461,3 +461,5 @@
 			return TRUE
 
 	return FALSE
+
+/turf/simulated/wall/white

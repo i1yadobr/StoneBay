@@ -27,7 +27,7 @@
 //unset redraw_mob to prevent the mob from being redrawn at the end.
 //set force to replace items in the slot and ignore blocking overwear
 /mob/proc/equip_to_slot_if_possible(obj/item/W as obj, slot, del_on_fail = 0, disable_warning = 0, redraw_mob = 1, force = 0)
-	if(!istype(W)) return 0
+	if(!W) return 0
 
 	if(!W.mob_can_equip(src, slot, disable_warning, force))
 		if(del_on_fail)

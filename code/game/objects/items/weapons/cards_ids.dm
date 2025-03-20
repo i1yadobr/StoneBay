@@ -477,3 +477,21 @@ var/const/NO_EMAG_ACT = -50
 	desc = "A card issued to Merchants, indicating their right to sell and buy goods."
 	icon_state = "trader"
 	access = list(access_merchant)
+
+/obj/item/card/id/god
+	icon_state = "mimeGold"
+	desc = "This one looks very highly classified."
+
+/obj/item/card/id/god/Initialize()
+	. = ..()
+	access = get_all_accesses() + get_all_centcom_access() + get_all_syndicate_access()
+
+/obj/item/card/id/god/attack_hand(mob/user)
+	if(!user)
+		return
+
+	if(!(istype(user, /mob/living/carbon/human/bluespace_tech) || istype(user, /mob/living/carbon/human/dummy)))
+		to_chat(user, SPAN_WARNING("Your hand seems to go right through [src]. It's like it doesn't exist."))
+		return
+
+	return ..()

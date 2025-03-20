@@ -10,10 +10,22 @@
 	throw_range = 20
 	origin_tech = list(TECH_BLUESPACE = 4)
 
-/obj/item/teleportation_scroll/attack_self(mob/user as mob)
+/obj/item/teleportation_scroll/proc/check_role(mob/user)
 	if((user.mind && !GLOB.wizards.is_antagonist(user.mind)))
-		to_chat(usr, "<span class='warning'>You stare at the scroll but cannot make sense of the markings!</span>")
+		to_chat(user, SPAN_WARNING("You stare at the scroll but cannot make sense of the markings!"))
+		return FALSE
+	return TRUE
+
+/obj/item/teleportation_scroll/attack_self(mob/user as mob)
+	if(!check_role(user))
 		return
+
+	if(uses <= 0)
+		to_chat(user, SPAN_NOTICE("[src] sinks together into a pile of ash."))
+		var/turf/simulated/floor/F = get_turf(src)
+		if (istype(F))
+			new /obj/effect/decal/cleanable/ash(F)
+		qdel(src)
 
 	user.set_machine(src)
 	var/dat = "<meta charset=\"utf-8\"><B>Teleportation Scroll:</B><BR>"
@@ -85,3 +97,11 @@
 
 	smoke.start()
 	src.uses -= 1
+
+/obj/item/teleportation_scroll/not_wiz
+	name = "scroll of teleportation"
+	desc = "A scroll for moving around."
+	uses = 1
+
+/obj/item/teleportation_scroll/not_wiz/check_role(mob/user)
+	return TRUE

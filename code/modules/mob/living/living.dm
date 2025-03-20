@@ -15,6 +15,9 @@
 		GLOB.available_mobs_for_possess["\ref[src]"] += src
 
 	update_transform() // Some mobs may start bigger or smaller than normal.
+	var/obj/structure/god_portal/GB = GLOB.god_portal
+	if(GB)
+		GB.register_signal(src, SIGNAL_MOB_DEATH, nameof(/obj/structure/god_portal.proc/add_dead_queue))
 
 /mob/living/get_description_fluff()
 	if(flavor_text)

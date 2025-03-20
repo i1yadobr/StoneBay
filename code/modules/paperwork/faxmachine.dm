@@ -2,6 +2,7 @@ GLOBAL_LIST_EMPTY(allfaxes)
 GLOBAL_LIST_EMPTY(alldepartments)
 
 GLOBAL_LIST_EMPTY(adminfaxes)	//cache for faxes that have been sent to admins
+GLOBAL_REAL(GODFAX, /obj/machinery/photocopier/faxmachine/god)
 
 #define FAX_PRINT_COOLDOWN 30 SECONDS
 #define FAX_SEND_COOLDOWN 60 SECONDS
@@ -25,6 +26,19 @@ GLOBAL_LIST_EMPTY(adminfaxes)	//cache for faxes that have been sent to admins
 	var/destination = null // the department we're sending to
 
 	var/static/list/admin_departments
+
+/obj/machinery/photocopier/faxmachine/god
+	name = "pray machine"
+	department = "Unknown place"
+
+/obj/machinery/photocopier/faxmachine/god/New()
+	if(GODFAX != src)
+		if(istype(GODFAX))
+			qdel(GODFAX)
+	GODFAX = src
+	..()
+	GLOB.allfaxes -= src
+	GLOB.alldepartments -= department
 
 /obj/machinery/photocopier/faxmachine/Initialize()
 	. = ..()
