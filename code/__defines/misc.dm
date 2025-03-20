@@ -107,8 +107,6 @@
 #define AREA_FLAG_HIDDEN_AREA       (1<<6)
 /// Loading multiple maps with this area type will create multiple instances.
 #define AREA_FLAG_UNIQUE_AREA       (1<<7)
-/// Allows weather effects to affect this area
-#define AREA_FLAG_ALLOW_WEATHER     (1<<8)
 
 //Area gravity flags
 #define AREA_GRAVITY_NEVER  -1 // No gravity, never
