@@ -394,6 +394,10 @@ var/list/name_to_material
 	resilience = 36
 	reflectance = 13
 
+/material/steel/white
+	name = MATERIAL_WHITE_STEEL
+	icon_colour = "#FFFFFF"
+
 /material/diona
 	name = "biomass"
 	icon_colour = null

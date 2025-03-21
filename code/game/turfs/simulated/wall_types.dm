@@ -77,6 +77,9 @@
 	explosion_block = 2
 	. = ..(mapload, MATERIAL_SANDSTONE, MATERIAL_DIAMOND)
 
+/turf/simulated/wall/white/Initialize(mapload)
+	. = ..(mapload, MATERIAL_WHITE_STEEL)
+
 // Kind of wondering if this is going to bite me in the butt.
 /turf/simulated/wall/voxshuttle/Initialize(mapload)
 	. = ..(mapload, MATERIAL_VOX)

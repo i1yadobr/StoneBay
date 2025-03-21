@@ -110,6 +110,13 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 /area/centcom/holding
 	name = "\improper Holding Facility"
 
+/area/centcom/god/holding
+	name = "\improper Holding God"
+
+/area/centcom/god/cabinter
+	name = "\improper Cabinet of God"
+	dynamic_lighting = 1
+
 /area/chapel
 	name = "\improper Chapel"
 	icon_state = "chapel"
@@ -281,3 +288,20 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	dynamic_lighting = 0
 	requires_power = 0
 	area_flags = AREA_FLAG_NO_STATION | AREA_FLAG_UNIQUE_AREA
+
+// Sisyphe
+
+/area/sisyphe
+	name = "\improper Sisyphe"
+	icon_state = "yellow"
+	requires_power = 0
+	dynamic_lighting = 0
+	ambient_music_tags = list(MUSIC_TAG_MYSTIC, MUSIC_TAG_SPACE)
+	area_flags = AREA_FLAG_UNIQUE_AREA
+	sound_env = AREA_FLAG_NO_STATION | LARGE_ENCLOSED
+
+/area/sisyphe/start
+	name = "\improper Sisyphe start"
+
+/area/sisyphe/finish
+	name = "\improper Sisyphe finish"

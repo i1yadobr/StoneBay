@@ -1,0 +1,109 @@
+<html>
+
+<head>
+  <title>Create Object</title>
+  <style type="text/css">
+    body
+    {
+      font-size: 9pt;
+      font-family: Verdana, sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6
+    {
+      color: #00f;
+      font-family: Georgia, Arial, sans-serif;
+    }
+    img {
+      border: 0px;
+    }
+    p.lic {
+      font-size: 6pt;
+    }
+  </style>
+</head>
+
+<body>
+	<form name="spawner" action="byond://?src=/* ref src */" method="get">
+		<input type="hidden" name="src" value="/* ref src */">
+		<input type="hidden" name="action" value="object_list">
+		Type <input type="text" name="filter" value="" onkeypress="submitFirst(event)" style="width:280px;height:25"> <input type = "button" value = "Search" onclick = "updateSearch()" /><br>
+		<br>
+		<input type="submit" value="spawn"><br><br>
+		<div id="selector_hs">
+			<select name="object_list" id="object_list" size="18" multiple style="width:98%">
+			</select>
+		</div>
+
+		<br>
+	</form>
+
+	<script language="JavaScript">
+		var old_search = "";
+		var object_list = document.spawner.object_list;
+		var object_list_container = document.getElementById('selector_hs');
+		var object_paths = null /* object types */;
+		var objects = object_paths == null ? new Array() : object_paths.split(";");
+
+		document.spawner.filter.focus();
+		populateList(objects);
+
+		function populateList(from_list)
+		{
+			var newOpts = '';
+			var i;
+			for (i in from_list)
+			{
+				newOpts += '<option value="' + from_list[i] + '">'
+					+ from_list[i] + '</option>';
+			}
+			object_list_container.innerHTML = '<select name="object_list" id="object_list" size="18" multiple style="width:98%">' +
+			newOpts + '</select>';
+		}
+
+		function updateSearch()
+		{
+			if (old_search == document.spawner.filter.value)
+			{
+				return false;
+			}
+
+			old_search = document.spawner.filter.value;
+
+
+			var filtered = new Array();
+			var i;
+			for (i in objects)
+			{
+				if(objects[i].search(old_search) < 0)
+				{
+					continue;
+				}
+
+				filtered.push(objects[i]);
+			}
+
+			populateList(filtered);
+
+			if (object_list.options.length)
+				object_list.options[0].selected = 'true';
+
+			return true;
+		}
+
+		function submitFirst(event)
+		{
+			if (!object_list.options.length)
+			{
+				return false;
+			}
+
+			if (event.keyCode == 13 || event.which == 13)
+			{
+				object_list.options[0].selected = 'true';
+			}
+		}
+	</script>
+</body>
+
+</html>

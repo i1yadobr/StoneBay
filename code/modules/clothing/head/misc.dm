@@ -493,3 +493,61 @@
 	icon_state = "yuri_helmet"
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|BLOCKHEADHAIR
 	body_parts_covered = HEAD|FACE|EYES
+
+/obj/item/clothing/head/nimbus
+	name = "Floating halo"
+	icon_state = "nimbus"
+	item_state = "nimbus"
+	desc = "A floating halo radiating light."
+	armor = list(melee = 0, bullet = 0, laser = 5, energy = 5, bomb = 0, bio = 0)
+	w_class = ITEM_SIZE_SMALL
+
+/obj/item/clothing/head/nimbus/godbless
+	name = "Blessed Halo"
+	desc = "A halo filled with holiness."
+	armor = list(melee = 10, bullet = 0, laser = 25, energy = 25, bomb = 0, bio = 0)
+	item_flags = ITEM_FLAG_STOPPRESSUREDAMAGE
+	cold_protection = HEAD
+	min_cold_protection_temperature = SPACE_HELMET_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/head/nimbus/godbless/add_blood(source)
+	. = ..()
+
+/obj/item/clothing/head/nimbus/godbless/equipped(mob/living/carbon/human/M, slot)
+	. = ..()
+	if(!isnull(M) && !isnull(M.mind) && player_is_antag(M.mind))
+		M.fire_stacks = max(2, M.fire_stacks)
+		M.IgniteMob()
+		to_chat(M, SPAN_WARNING("There is too little saint in me.."))
+		set_light(0)
+		playsound(src, SFX_BREAK_WINDOW, 70, 1)
+		var/turf/T = get_turf(src)
+		if(!isnull(T))
+			T.create_fire()
+		qdel(src)
+	else if(slot == slot_head)
+		set_light(0.5, 1, 3)
+		set_next_think(world.time + 1 SECONDS)
+	else
+		set_light(0)
+
+/obj/item/clothing/head/nimbus/godbless/dropped()
+	set_light(0)
+
+/obj/item/clothing/head/nimbus/godbless/think()
+
+	var/mob/living/carbon/human/M = loc
+	if(!M)
+		return
+
+	if(M.getBruteLoss() > 0)
+		M.adjustBruteLoss(-0.2)
+
+	if(M.getFireLoss() > 0)
+		M.adjustFireLoss(-0.2)
+
+	if(M.getToxLoss() > 0)
+		M.adjustToxLoss(-0.2)
+
+	if(M.get_equipped_item(slot_head) == src)
+		set_next_think(world.time + 1 SECONDS)

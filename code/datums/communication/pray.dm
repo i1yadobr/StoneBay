@@ -15,6 +15,14 @@
 			receive_communication(communicator, M, "\[<A HREF='?_src_=holder;adminspawncookie=\ref[communicator]'>SC</a>\] \[<A HREF='?_src_=holder;take_ic=\ref[src]'>TAKE</a>\]<span class='notice'>\icon[cross] <b><font color=purple>PRAY: </font>[key_name(communicator, 1)]: </b>[message]</span>")
 		else if(communicator == M) //Give it to ourselves
 			receive_communication(communicator, M, "<span class='notice'>\icon[cross] <b>You send the prayer, \"[message]\" out into the heavens.</b></span>")
+	if(GODFAX)
+		var/obj/item/paper/P = new /obj/item/paper()
+		P.name = "Pray [rand(1000, 99999)]"
+		P.info = "<center><h2>[P.name]</h2></center><br>The new pray from '[communicator.real_name]'.<br><br>[message]"
+		P.info_links = P.info
+		P.icon_state = "paper_words"
+		var/obj/machinery/photocopier/faxmachine/god/GF = GODFAX
+		GF.recievefax(P)
 
 /decl/communication_channel/pray/receive_communication(mob/communicator, mob/receiver, message)
 	..()

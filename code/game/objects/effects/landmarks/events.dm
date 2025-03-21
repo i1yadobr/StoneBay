@@ -68,6 +68,13 @@
 	GLOB.prisonwarp += loc
 	return ..()
 
+/obj/effect/landmark/event/prison/purgatory
+	name = "purgatorywarp"
+
+/obj/effect/landmark/event/prison/purgatory/New()
+	GLOB.purgatorywarp += loc
+	return ..()
+
 /obj/effect/landmark/event/prison/security
 	name = "prisonsecuritywarp"
 

@@ -16,7 +16,7 @@
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 
 /obj/item/melee/cultblade/attack(mob/living/M, mob/living/user, target_zone)
-	if(iscultist(user) || (user.mind in GLOB.godcult.current_antagonists))
+	if(check_role(user))
 		return ..()
 
 	var/zone = (user.hand ? BP_L_ARM : BP_R_ARM)
@@ -45,7 +45,7 @@
 	return 1
 
 /obj/item/melee/cultblade/pickup(mob/living/user as mob)
-	if(!iscultist(user))
+	if(!check_role(user))
 		to_chat(user, "<span class='warning'>An overwhelming feeling of dread comes over you as you pick up the cultist's sword. It would be wise to be rid of this blade quickly.</span>")
 		user.make_dizzy(120)
 
@@ -124,3 +124,27 @@
 /obj/item/clothing/suit/space/cult/New()
 	..()
 	slowdown_per_slot[slot_wear_suit] = 1
+
+/obj/item/melee/cultblade/holyblade
+	name = "holy blade"
+	desc = "An holy weapon wielded by the followers of God."
+	icon_state = "holyblade"
+	item_state = "holyblade"
+	hitsound = SFX_FIGHTING_SWING
+	drop_sound = SFX_DROP_SWORD
+	pickup_sound = SFX_PICKUP_SWORD
+	slot_flags = SLOT_BELT
+	w_class = ITEM_SIZE_HUGE
+
+/obj/item/melee/cultblade/proc/check_role(mob/living/user)
+	if(iscultist(user) || (user.mind in GLOB.godcult.current_antagonists))
+		return TRUE
+	return FALSE
+
+/obj/item/melee/cultblade/holyblade/check_role(mob/living/user)
+	if(!isnull(user.mind) && !player_is_antag(user.mind) && istype(user.get_equipped_item(slot_head), /obj/item/clothing/head/nimbus/godbless))
+		return TRUE
+
+	user.fire_stacks = max(2, user.fire_stacks)
+	user.IgniteMob()
+	return FALSE

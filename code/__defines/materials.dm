@@ -2,6 +2,7 @@
 #define MATERIAL_PLASTIC                 "plastic"
 #define MATERIAL_PLASTEEL                "plasteel"
 #define MATERIAL_STEEL                   "steel"
+#define MATERIAL_WHITE_STEEL             "white_steel"
 #define MATERIAL_GLASS                   "glass"
 #define MATERIAL_GOLD                    "gold"
 #define MATERIAL_SILVER                  "silver"
