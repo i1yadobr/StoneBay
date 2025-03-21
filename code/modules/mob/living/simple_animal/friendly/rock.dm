@@ -163,4 +163,4 @@
 		if(M.stat != DEAD)
 			M.gib()
 	new /mob/living/simple_animal/rock(target_turf)
-	gib(src)
+	qdel(src)
