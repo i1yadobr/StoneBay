@@ -912,6 +912,7 @@
 	seed_name = "lubanana"
 	display_name = "lubanana tree"
 	chems = list(/datum/reagent/lube = list(10,10))
+	trash_type = /obj/item/bananapeel/lubanana
 	mutants = list("banbanana")
 	fun_level = 1
 	canonical_icon = null
