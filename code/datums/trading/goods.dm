@@ -188,7 +188,7 @@
 								/obj/item/clothing/head/beret/deathsquad 				= TRADER_BLACKLIST,
 								/obj/item/clothing/head/bio_hood 						= TRADER_BLACKLIST_ALL,
 								/obj/item/clothing/head/bomb_hood 						= TRADER_BLACKLIST_ALL,
-								/obj/item/clothing/head/centhat 						= TRADER_BLACKLIST,
+								/obj/item/clothing/head/centcom/hat 					= TRADER_BLACKLIST,
 								/obj/item/clothing/head/chameleon 						= TRADER_BLACKLIST,
 								/obj/item/clothing/head/collectable 					= TRADER_BLACKLIST,
 								/obj/item/clothing/head/culthood 						= TRADER_BLACKLIST_ALL,

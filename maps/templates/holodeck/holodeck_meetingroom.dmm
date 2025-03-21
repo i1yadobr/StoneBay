@@ -7,7 +7,7 @@
 "i" = (/obj/effect/floor_decal/corner/grey/full,/obj/effect/floor_decal/siding/wood/corner{dir = 8},/turf/simulated/floor/tiled,/area/template_noop)
 "j" = (/obj/structure/railing/wood,/obj/structure/table/woodentable,/obj/effect/floor_decal/siding/wood,/obj/item/device/megaphone,/turf/simulated/floor/trim/wood,/area/template_noop)
 "k" = (/obj/effect/floor_decal/corner/grey/full,/obj/effect/floor_decal/siding/wood/corner{dir = 4},/turf/simulated/floor/tiled,/area/template_noop)
-"l" = (/obj/structure/railing/wood,/obj/structure/table/woodentable,/obj/effect/floor_decal/siding/wood,/obj/item/clothing/suit/storage/hooded/wintercoat/centcom,/obj/item/clothing/head/centhat,/obj/item/clothing/glasses/sunglasses,/turf/simulated/floor/trim/wood,/area/template_noop)
+"l" = (/obj/structure/railing/wood,/obj/structure/table/woodentable,/obj/effect/floor_decal/siding/wood,/obj/item/clothing/suit/storage/hooded/wintercoat/centcom,/obj/item/clothing/head/centcom/hat/cheap,/obj/item/clothing/glasses/sunglasses,/turf/simulated/floor/trim/wood,/area/template_noop)
 "p" = (/obj/effect/floor_decal/stairs,/turf/simulated/floor/tiled,/area/template_noop)
 "s" = (/obj/random/pottedplant,/obj/effect/floor_decal/siding/wood/end,/obj/effect/floor_decal/siding/wood{dir = 1},/obj/effect/floor_decal/siding/wood/corner{dir = 1},/obj/effect/floor_decal/siding/wood/corner{dir = 4},/turf/simulated/floor/trim/wood,/area/template_noop)
 "w" = (/obj/effect/floor_decal/corner/grey/full,/turf/simulated/floor/tiled,/area/template_noop)
