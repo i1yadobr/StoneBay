@@ -540,7 +540,7 @@ var/const/NO_EMAG_ACT = -50
 	access = list(access_merchant)
 
 /obj/item/card/id/god
-	icon_state = "mimeGold"
+	icon_state = "card_mimeGold"
 	desc = "This one looks very highly classified."
 
 /obj/item/card/id/god/Initialize()
