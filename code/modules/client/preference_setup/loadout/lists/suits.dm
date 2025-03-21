@@ -195,6 +195,28 @@
 	path = /obj/item/clothing/suit/chickensuit
 	price = 10
 
+/datum/gear/suit/yuri
+	display_name = "yuri coat"
+	path = /obj/item/clothing/suit/yuri
+	price = 10
+
+/datum/gear/suit/bee
+	display_name = "bee suit"
+	path = /obj/item/clothing/suit/storage/hooded/bee
+	price = 10
+
+/datum/gear/suit/hos_formal
+	display_name = "head of security's formal coat"
+	path = /obj/item/clothing/suit/hos_formal
+	price = 10
+	allowed_roles = list(/datum/job/hos)
+
+/datum/gear/suit/witchhunter
+	display_name = "witchunter garb"
+	path = /obj/item/clothing/suit/witchhunter
+	price = 10
+	allowed_roles = list(/datum/job/chaplain)
+
 /datum/gear/suit/wizrobe_fake
 	display_name = "wizard robe"
 	path = /obj/item/clothing/suit/wizrobe/fake

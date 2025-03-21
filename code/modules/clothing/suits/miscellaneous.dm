@@ -696,3 +696,24 @@
 	flags_inv = HIDEEARS | BLOCKHAIR
 	min_cold_protection_temperature = ARMOR_MIN_COLD_PROTECTION_TEMPERATURE
 	armor = list(melee = 25, bullet = 10, laser = 0, energy = 40, bomb = 0, bio = 10)
+
+/obj/item/clothing/suit/hos_formal
+	name = "head of security's formal coat"
+	desc = "For when an armoured vest isn't fashionable enough."
+	icon_state = "hosformal"
+	item_state = "hosformal"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/suit/yuri
+	name = "yuri initiate coat"
+	desc = "Yuri is master! Sponsored by DonkSoft Co."
+	icon_state = "yuri_coat"
+	item_state = "yuri_coat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/suit/witchhunter
+	name = "witchunter garb"
+	desc = "This worn outfit saw much use back in the day."
+	icon_state = "witchhunter"
+	item_state = "witchhunter"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS

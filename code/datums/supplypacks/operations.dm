@@ -108,7 +108,7 @@
 					/obj/item/clothing/suit/armor/vest,
 					/obj/item/clothing/under/syndicate,
 					/obj/item/storage/belt/security,
-					/obj/item/clothing/gloves/thick/swat,
+					/obj/item/clothing/gloves/swat,
 					/obj/item/clothing/shoes/combat,
 					/obj/item/storage/backpack)
 	cost = 40
