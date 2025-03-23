@@ -19,7 +19,7 @@
 				head.apply_stamp(src.name, user)
 				return TRUE
 			else
-				to_chat(user, "You can't stamp on that!")
+				to_chat(user, "<span class = 'notice'>You can't stamp on that!</span>")
 				return FALSE
 	return ..()
 

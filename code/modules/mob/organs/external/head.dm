@@ -28,7 +28,7 @@
 
 	var/skull_path = /obj/item/skull
 
-	New()
+/obj/item/organ/external/head/New()
 		. = ..()
 		forehead_stamps = list()
 
@@ -101,12 +101,11 @@
 		else
 			to_chat(stamper,"<span class='notice'>You stamp [owner]'s forehead with '[stamp_name]'!</span>")
 			to_chat(owner, "<span class='notice'>[stamper] stamped your forehead with '[stamp_name]'!</span>")
-			to_chat(stamper, "[stamper] stamps [owner]'s forehead with '[stamp_name]'.", stamper, owner)
+			to_chat(stamper, "<span class = 'notice'>[stamper] stamps [owner]'s forehead with '[stamp_name]'.</span>", stamper, owner)
 
 /mob/living/carbon/human/proc/wash_forehead()
 	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
 	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
-		to_chat(src,"<span class='warning'>The stamps on your head is washed away by shower.</span>")
 		head.forehead_stamps.Cut()
 
 /mob/living/carbon/human/examine(mob/user, infix)
