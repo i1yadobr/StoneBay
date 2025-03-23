@@ -10,6 +10,19 @@
 	matter = list(MATERIAL_STEEL = 60)
 	attack_verb = list("stamped")
 
+/obj/item/stamp/attack(mob/living/M, mob/living/user, target_zone)
+	if(user.a_intent == I_HURT && target_zone == BP_HEAD)
+		if(ishuman(M))
+			var/mob/living/carbon/human/H = M
+			var/obj/item/organ/external/head/head = H.get_organ(BP_HEAD)
+			if(head)
+				head.apply_stamp(src.name, user)
+				return TRUE
+			else
+				to_chat(user, "<span class = 'notice'>You can't stamp on that!</span>")
+				return FALSE
+	return ..()
+
 /obj/item/stamp/captain
 	name = "captain's rubber stamp"
 	icon_state = "stamp-cap"

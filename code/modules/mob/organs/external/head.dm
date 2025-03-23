@@ -24,8 +24,13 @@
 
 	var/forehead_graffiti
 	var/graffiti_style
+	var/list/forehead_stamps = list()
 
 	var/skull_path = /obj/item/skull
+
+/obj/item/organ/external/head/New()
+		. = ..()
+		forehead_stamps = list()
 
 /obj/item/organ/external/head/droplimb(clean, disintegrate = DROPLIMB_EDGE, ignore_children, silent)
 	if(BP_IS_ROBOTIC(src) && disintegrate == DROPLIMB_BURN)
@@ -80,6 +85,37 @@
 			graffiti_style = style
 			if(owner)
 				log_and_message_admins("has written something on [owner]'s ([owner.ckey]) head: \"[graffiti]\".", penman)
+
+/obj/item/organ/external/head/proc/apply_stamp(stamp_name, stamper)
+	if(owner && (owner.wear_mask || owner.head))
+		to_chat(stamper, "<span class='notice'>[owner]'s forehead is covered up.</span>")
+		return
+
+	if(!forehead_stamps)
+		forehead_stamps = list()
+
+	if(!(stamp_name in forehead_stamps))
+		forehead_stamps += stamp_name
+		if(owner == stamper)
+			to_chat(stamper, "<span class='notice'>You stamped yourself with '[stamp_name]'.</span>")
+		else
+			to_chat(stamper,"<span class='notice'>You stamp [owner]'s forehead with '[stamp_name]'!</span>")
+			to_chat(owner, "<span class='notice'>[stamper] stamped your forehead with '[stamp_name]'!</span>")
+			to_chat(stamper, "<span class = 'notice'>[stamper] stamps [owner]'s forehead with '[stamp_name]'.</span>", stamper, owner)
+
+/mob/living/carbon/human/proc/wash_forehead()
+	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
+	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
+		head.forehead_stamps.Cut()
+
+/mob/living/carbon/human/examine(mob/user, infix)
+	. = ..()
+	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
+	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
+		var/gender_pronoun = src.gender == "male" ? "He" : "She"
+		var/posessive_pronoun = src.gender == "male" ? "his" : "her"
+		for(var/stamp in head.forehead_stamps)
+			. += SPAN_NOTICE("[gender_pronoun] has a [stamp] stamped on [posessive_pronoun] forehead!")
 
 /obj/item/organ/external/head/get_agony_multiplier()
 	return (owner && owner.headcheck(organ_tag)) ? 1.50 : 1

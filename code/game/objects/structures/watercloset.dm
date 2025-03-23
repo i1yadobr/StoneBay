@@ -341,6 +341,7 @@
 			if(istype(head))
 				head.forehead_graffiti = null
 				head.graffiti_style = null
+				head.forehead_stamps.Cut()
 		else
 			if(M.wear_mask)						//if the mob is not human, it cleans the mask without asking for bitflags
 				if(M.wear_mask.clean_blood())
