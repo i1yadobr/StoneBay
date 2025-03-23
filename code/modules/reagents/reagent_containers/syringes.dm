@@ -189,7 +189,7 @@
 			user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 			user.do_attack_animation(target)
 
-			if(!do_mob(user, target, injtime))
+			if(!do_mob(user, target, injtime, can_multitask = TRUE))
 				return
 
 			T.take_blood(src, amount)
@@ -264,7 +264,7 @@
 		user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 		user.do_attack_animation(trackTarget)
 
-		if(!do_after(user, injtime, trackTarget, luck_check_type = LUCK_CHECK_MED))
+		if(!do_after(user, injtime, trackTarget, luck_check_type = LUCK_CHECK_MED, can_multitask = TRUE))
 			return
 
 		if(target != trackTarget && target.loc != trackTarget)

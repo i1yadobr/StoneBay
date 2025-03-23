@@ -199,7 +199,7 @@
 	if(!can_multitask)
 		LAZYREMOVE(GLOB.domobs, uniqueid)
 
-/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, incapacitation_flags = INCAPACITATION_DEFAULT, same_direction = FALSE, can_move = FALSE, luck_check_type = LUCK_CHECK_GENERAL, datum/callback/extra_checks)
+/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, incapacitation_flags = INCAPACITATION_DEFAULT, same_direction = FALSE, can_move = FALSE, luck_check_type = LUCK_CHECK_GENERAL, can_multitask = FALSE, datum/callback/extra_checks)
 	if(!user)
 		return FALSE
 
@@ -209,11 +209,13 @@
 			target?.show_splash_text(user, "You fail!", SPAN_DANGER("You fail, miserably!"))
 			return
 
-	var/uniqueid = "doafter_\ref[user]_\ref[target]"
-	if(uniqueid in GLOB.doafters)
-		return FALSE
+	var/uniqueid
+	if(!can_multitask)
+		uniqueid = "doafter_\ref[user]_\ref[target]"
+		if(uniqueid in GLOB.doafters)
+			return FALSE
 
-	LAZYADD(GLOB.doafters, uniqueid)
+		LAZYADD(GLOB.doafters, uniqueid)
 
 	var/atom/target_loc = null
 	var/target_type = null
@@ -265,7 +267,8 @@
 	if(progbar)
 		qdel(progbar)
 
-	LAZYREMOVE(GLOB.doafters, uniqueid)
+	if(!can_multitask)
+		LAZYREMOVE(GLOB.doafters, uniqueid)
 
 /proc/is_species(A, species_datum)
 	. = FALSE
