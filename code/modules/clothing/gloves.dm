@@ -126,10 +126,10 @@
 		species_restricted -= SPECIES_TAJARA
 	return
 
-/obj/item/clothing/gloves/mob_can_equip(mob/user)
+/obj/item/clothing/gloves/mob_can_equip(mob/user, slot)
 	var/mob/living/carbon/human/H = user
 
-	if(istype(H.gloves, /obj/item/clothing/ring))
+	if(istype(H.gloves, /obj/item/clothing/ring) && slot == slot_gloves)
 		var/obj/item/clothing/ring/R = H.gloves
 		ring = weakref(R)
 		if(!R.undergloves)
