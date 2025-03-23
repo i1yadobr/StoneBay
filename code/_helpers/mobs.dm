@@ -209,6 +209,12 @@
 			target?.show_splash_text(user, "You fail!", SPAN_DANGER("You fail, miserably!"))
 			return
 
+	var/uniqueid = "doafter_\ref[user]_\ref[target]"
+	if(uniqueid in GLOB.doafters)
+		return FALSE
+
+	LAZYADD(GLOB.doafters, uniqueid)
+
 	var/atom/target_loc = null
 	var/target_type = null
 
