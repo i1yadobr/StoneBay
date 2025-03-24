@@ -316,9 +316,16 @@
 	item_state = "swim_red"
 	siemens_coefficient = 1
 
-/obj/item/clothing/suit/poncho/colored
+/obj/item/clothing/suit/poncho
 	name = "poncho"
 	desc = "A simple, comfortable poncho."
+	icon_state = "poncho"
+	item_state = "poncho"
+	slot_flags = SLOT_OCLOTHING | SLOT_BACK
+
+/obj/item/clothing/suit/poncho/colored
+	name = "tan poncho"
+	desc = "A simple, comfortable poncho. This one is tan."
 	icon_state = "classicponcho"
 	item_state = "classicponcho"
 
