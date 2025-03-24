@@ -1480,6 +1480,27 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/corner/old/gray/diagonal_edge
 	icon_state = "corner_oldtile_diagonal_edge"
 
+/obj/effect/floor_decal/corner/old/white
+	name = "white corner"
+
+/obj/effect/floor_decal/corner/old/white/diagonal
+	icon_state = "corner_oldtile_diagonal"
+
+/obj/effect/floor_decal/corner/old/white/three_quarters
+	icon_state = "corner_oldtile_three_quarters"
+
+/obj/effect/floor_decal/corner/old/white/full
+	icon_state = "corner_oldtile_full"
+
+/obj/effect/floor_decal/corner/old/white/mono
+	icon_state = "corner_oldtile_mono"
+
+/obj/effect/floor_decal/corner/old/white/diagonal_centre
+	icon_state = "corner_oldtile_diagonal_centre"
+
+/obj/effect/floor_decal/corner/old/white/diagonal_edge
+	icon_state = "corner_oldtile_diagonal_edge"
+
 /obj/effect/floor_decal/corner_steel_grid
 	name = "corner steel_grid"
 	icon_state = "steel_grid"
