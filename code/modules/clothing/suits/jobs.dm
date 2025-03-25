@@ -104,6 +104,7 @@
 	item_state = "detective_open"
 	icon_open = "detective_open"
 	icon_closed = "detective"
+	hidesuitstorage = FALSE //So that the weapon on your back, or other things, don't go missing after button up.
 	valid_accessory_slots = list(ACCESSORY_SLOT_INSIGNIA)
 	blood_overlay_type = "coatblood"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS

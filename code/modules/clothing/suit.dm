@@ -26,6 +26,7 @@
 	if (ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_wear_suit()
+		M.update_inv_s_store()
 
 /obj/item/clothing/suit/get_mob_overlay(mob/user_mob, slot)
 	. = ..()
