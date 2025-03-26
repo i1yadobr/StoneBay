@@ -61,7 +61,7 @@ var/list/mining_floors = list()
 	return ..()
 
 /turf/simulated/mineral/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_ROCK, -10, 5, 1)
+	AddElement(/datum/element/debris, DEBRIS_ROCK, -40, 5, 1)
 
 /turf/simulated/mineral/can_build_cable()
 	return !density
