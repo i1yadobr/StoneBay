@@ -146,26 +146,29 @@ GLOBAL_LIST_EMPTY(blood_particles)
 	spawning = 10
 	lifespan = 0.7 SECONDS
 	fade = 0.4 SECONDS
-	drift = generator("circle", 0, 7)
-	scale = 0.7
+	position = generator("circle", 3, 3)
+	scale = 1
 	velocity = list(50, 0)
-	friction = generator("num", 0.1, 0.15)
+	friction = generator("num", 0.3, 0.6)
+	rotation = generator("num", -20, 20)
 	spin = generator("num", -20, 20)
+	drift = generator("circle", 0, 9, SQUARE_RAND)
 
 /particles/impact_smoke
-	icon = 'icons/effects/effects.dmi'
-	icon_state = "smoke"
+	icon = 'icons/effects/96x96.dmi'
+	icon_state = "smoke5"
 	width = 500
 	height = 500
-	count = 20
-	spawning = 20
+	count = 5
+	spawning = 15
 	lifespan = 0.7 SECONDS
-	fade = 8 SECONDS
-	grow = 0.1
-	scale = 0.2
+	fade = 3.3 SECONDS
+	grow = 0.065
+	drift = generator("circle", 8, 8)
+	scale = 0.1
 	spin = generator("num", -20, 20)
 	velocity = list(50, 0)
-	friction = generator("num", 0.1, 0.5)
+	friction = generator("num", 0.3, 0.6)
 
 /particles/firing_smoke
 	icon = 'icons/effects/96x96.dmi'

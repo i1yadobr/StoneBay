@@ -13,7 +13,7 @@
 	var/reinforcing = 0
 
 /obj/structure/girder/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_SPARKS, -15, 8, 1)
+	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 8, 1)
 
 /obj/structure/girder/displaced
 	icon_state = "displaced"

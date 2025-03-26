@@ -18,7 +18,7 @@
 		add_think_ctx("store_contents_mapload", CALLBACK(src, nameof(.proc/store_contents)), world.time + 1 SECOND)
 
 /obj/structure/largecrate/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
+	AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
 
 /obj/structure/largecrate/proc/store_contents()
 	for(var/obj/I in loc)

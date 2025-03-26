@@ -5,19 +5,19 @@
 	///Icon state of debris when impacted by a projectile
 	var/debris = null
 	///Velocity of debris particles
-	var/debris_velocity = -15
+	var/debris_velocity = -40
 	///Amount of debris particles
 	var/debris_amount = 8
 	///Scale of particle debris
-	var/debris_scale = 0.7
+	var/debris_scale = 1
 
-/datum/element/debris/attach(datum/target, debris_icon_state, debris_velocity = -15, debris_amount = 8, debris_scale = 0.7)
+/datum/element/debris/attach(datum/target, _debris_icon_state, _debris_velocity = -40, _debris_amount = 8, _debris_scale = 1)
 	. = ..()
-	src.debris = debris_icon_state
-	src.debris_velocity = debris_velocity
-	src.debris_amount = debris_amount
-	src.debris_scale = debris_scale
-	register_signal(target, SIGNAL_BULLET_ACT, nameof(.proc/register_for_impact))
+	src.debris = _debris_icon_state
+	src.debris_velocity = _debris_velocity
+	src.debris_amount = _debris_amount
+	src.debris_scale = _debris_scale
+	register_signal(target, SIGNAL_BULLET_ACT, nameof(.proc/register_for_impact), TRUE) //override because the element gets overriden
 
 /datum/element/debris/detach(datum/source)
 	. = ..()
@@ -31,8 +31,8 @@
 	var/angle = !isnull(P.Angle) ? P.Angle : round(Get_Angle(P.starting, source), 1)
 	var/x_component = sin(angle) * debris_velocity
 	var/y_component = cos(angle) * debris_velocity
-	var/x_component_smoke = sin(angle) * -15
-	var/y_component_smoke = cos(angle) * -15
+	var/x_component_smoke = sin(angle) * -37
+	var/y_component_smoke = cos(angle) * -37
 	var/position_offset = rand(-6,6)
 	var/atom/movable/particle_emitter/smoke_visuals/smoke_visuals = new(source)
 	smoke_visuals.particles.position = list(position_offset, position_offset)

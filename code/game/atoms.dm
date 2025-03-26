@@ -830,4 +830,4 @@ its easier to just keep the beam vertical.
 
 /// Adds the debris element for projectile impacts
 /atom/proc/add_debris_element()
-	AddElement(/datum/element/debris, null, -15, 8, 0.7)
+	AddElement(/datum/element/debris, null, -40, 8, 0.7)

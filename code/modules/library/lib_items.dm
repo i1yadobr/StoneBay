@@ -19,6 +19,9 @@
 	opacity = 1
 	obj_flags = OBJ_FLAG_ANCHORABLE
 
+/obj/structure/bookcase/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_PAPER, -40, 5)
+
 /obj/structure/bookcase/Initialize()
 	for(var/obj/item/I in loc)
 		if(istype(I, /obj/item/book))

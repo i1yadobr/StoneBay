@@ -221,7 +221,7 @@
 	update_nearby_icons()
 
 /obj/structure/window_frame/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_GLASS, -10, 5)
+	AddElement(/datum/element/debris, DEBRIS_GLASS, -40, 5)
 
 /obj/structure/window_frame/GetExplosionBlock()
 	. += outer_pane?.explosion_block

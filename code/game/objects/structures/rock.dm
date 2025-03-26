@@ -15,7 +15,7 @@
 	icon_state = pick(iconlist)
 
 /obj/structure/rock/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_ROCK, -10, 5, 1)
+	AddElement(/datum/element/debris, DEBRIS_ROCK, -40, 5, 1)
 
 /obj/structure/rock/Destroy()
 	var/mineralSpawnChanceList = list(uranium = 10, osmium = 10, iron = 20, coal = 20, diamond = 2, gold = 10, silver = 10, plasma = 20)

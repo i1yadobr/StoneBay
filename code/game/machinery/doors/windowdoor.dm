@@ -30,7 +30,7 @@
 	hitsound = pick(SFX_GLASS_HIT)
 
 /obj/machinery/door/window/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_GLASS, -10, 5)
+	AddElement(/datum/element/debris, DEBRIS_GLASS, -40, 5)
 
 /obj/machinery/door/window/on_update_icon()
 	if(density)

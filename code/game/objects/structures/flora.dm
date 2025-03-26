@@ -13,7 +13,7 @@
 	var/cut_hits = 20
 
 /obj/structure/flora/tree/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
+	AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
 
 /obj/structure/flora/tree/attackby(obj/item/W, mob/living/user)
 	if(istype(W, /obj/item/material/twohanded/chainsaw))

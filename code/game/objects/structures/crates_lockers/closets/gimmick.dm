@@ -13,7 +13,7 @@
 		icon_state = icon_opened
 
 /obj/structure/closet/cabinet/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_WOOD, -10, 5)
+	AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
 
 /obj/structure/closet/cabinet/wizcabinet
 	desc = "Magic will forever be in fashion."

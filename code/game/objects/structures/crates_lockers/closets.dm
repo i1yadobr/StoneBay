@@ -57,7 +57,7 @@
 	intact_closet = FALSE
 
 /obj/structure/closet/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_SPARKS, -10, 5)
+	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 5)
 
 /obj/item/shield/closet
 	name = "closet door"
