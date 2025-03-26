@@ -156,7 +156,7 @@ GLOBAL_LIST_EMPTY(blood_particles)
 
 /particles/impact_smoke
 	icon = 'icons/effects/96x96.dmi'
-	icon_state = "smoke5"
+	icon_state = "smoke3"
 	width = 500
 	height = 500
 	count = 5
