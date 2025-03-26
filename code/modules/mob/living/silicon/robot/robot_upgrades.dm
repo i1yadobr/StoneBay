@@ -674,7 +674,7 @@
 
 /obj/item/borg/upgrade/death_alarm
 	name = "death alarm module"
-	desc = "An alarm which monitors cyborg signals and transmits a radio message upon destruction."
+	desc = "A module which monitors a cyborg's status and transmits a radio message upon destruction."
 	icon_state = "cyborg_upgrade1"
 	origin_tech = list(TECH_MATERIAL = 2, TECH_DATA = 2)
 	var/mob/living/silicon/robot/host = null
@@ -690,9 +690,9 @@
 		var/area/default = world.area
 		location = initial(default.name)
 
-	var/death_message = "Message from [name] acquired successful. [host] has been destroyed in [location]!"
+	var/death_message = "[host] has been destroyed in [location]!"
 	if(!cause)
-		death_message = "Message from [name] acquired successful. [host] has been destroyed-zzzzt in-in-in..."
+		death_message = "[host] has been destroyed-zzzzt in-in-in..."
 	var/obj/item/robot_module/CH = host.module
 	for(var/channel in CH.channels)
 		if (channel != "Science")
@@ -721,10 +721,10 @@
 		activate("emp")	//let's shout that this borg is dead
 	if(severity == 1)
 		if(prob(60) && !broken)	//small chance of obvious meltdown
-			to_chat(host, "<span class='warning'>Your's \the [src] stopped recive signals!</span>")
+			to_chat(host, SPAN_WARNING("Your \the [src] stopped receiving signals!"))
 			broken = 1
 			name = "melted circuit"
-			desc = "Charred circuit. Wonder what that used to be..."
+			desc = "A charred circuit. Wonder what that used to be..."
 			set_next_think(0)
 
 /obj/item/borg/upgrade/death_alarm/action(mob/living/silicon/robot/R)
