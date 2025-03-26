@@ -43,9 +43,9 @@ LINEN BINS
 			icon_state = initial(icon_state)
 	return
 
-/obj/item/bedsheet/gray
-	icon_state = "sheetgray"
-	item_state = "sheetgray"
+/obj/item/bedsheet/grey
+	icon_state = "sheetgrey"
+	item_state = "sheetgrey"
 
 /obj/item/bedsheet/blue
 	icon_state = "sheetblue"
