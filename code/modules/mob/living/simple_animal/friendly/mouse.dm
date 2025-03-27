@@ -113,7 +113,7 @@
 	. = ..()
 
 	if(holding_item)
-		. += SPAN_NOTICE("You may notice that she has \a [holding_item] glued with tape.")
+		. += SPAN_NOTICE("You may notice that it has \a [holding_item] taped to its back.")
 
 /mob/living/simple_animal/mouse/proc/splat()
 	icon_dead = "mouse_[body_color]_splat"

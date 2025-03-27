@@ -18,7 +18,7 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	turns_since_scan = 0
-	var/mob/living/simple_animal/mouse/movement_target
+	var/mob/living/simple_animal/movement_target
 	var/mob/flee_target
 	minbodytemp = -50 CELSIUS
 	maxbodytemp = 50 CELSIUS
@@ -27,28 +27,33 @@
 	possession_candidate = 1
 	bodyparts = /decl/simple_animal_bodyparts/quadruped
 
+	var/list/prey_types = list(
+		/mob/living/simple_animal/mouse,
+		/mob/living/simple_animal/lizard,
+		/mob/living/simple_animal/hamster
+		)
+
 /mob/living/simple_animal/cat/Life()
 	if(!..() || incapacitated() || client)
 		return
 	//MICE!
-	if((src.loc) && isturf(src.loc))
-		if(!resting && !buckled)
-			for(var/mob/living/simple_animal/mouse/M in loc)
-				if(!M.stat)
-					M.splat()
-					visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
-					movement_target = null
-					stop_automated_movement = 0
-					break
+	if(isturf(loc) && !resting && !buckled)
+		for(var/mob/living/simple_animal/M in loc)
+			if(M.stat || !(M.type in prey_types))
+				continue
+			if(ismouse(M))
+				var/mob/living/simple_animal/mouse/mouse = M
+				mouse.splat()
+			visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
+			movement_target = null
+			stop_automated_movement = 0
+			break
 
-
-
-	for(var/mob/living/simple_animal/mouse/snack in oview(src,5))
-		if(snack.stat < DEAD && prob(15))
-			audible_emote(pick("hisses and spits!","mrowls fiercely!","eyes [snack] hungrily."))
+	for(var/mob/living/simple_animal/snack in oview(src, 5))
+		if(snack.type in prey_types)
+			if(snack.stat < DEAD && prob(15))
+				audible_emote(pick("hisses and spits!", "mrowls fiercely!", "eyes [snack] hungrily."))
 		break
-
-
 
 	turns_since_scan++
 	if (turns_since_scan > 5)
@@ -81,8 +86,8 @@
 	if( !movement_target || !(movement_target.loc in oview(src, 4)) )
 		movement_target = null
 		stop_automated_movement = 0
-		for(var/mob/living/simple_animal/mouse/snack in oview(src)) //search for a new target
-			if(isturf(snack.loc) && !snack.stat)
+		for(var/mob/living/simple_animal/snack in oview(src)) //search for a new target
+			if(isturf(snack.loc) && !snack.stat && (snack.type in prey_types))
 				movement_target = snack
 				break
 
@@ -144,7 +149,7 @@
 		var/current_dist = get_dist(src, friend)
 
 		if (movement_target != friend)
-			if (current_dist > follow_dist && !istype(movement_target, /mob/living/simple_animal/mouse) && (friend in oview(src)))
+			if (current_dist > follow_dist && !istype(movement_target, /mob/living/simple_animal) && (friend in oview(src)))
 				//stop existing movement
 				walk_to(src,0)
 				turns_since_scan = 0

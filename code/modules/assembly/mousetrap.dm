@@ -45,8 +45,14 @@
 			H.updatehealth()
 	else if(ismouse(target))
 		var/mob/living/simple_animal/mouse/M = target
-		visible_message("<span class='danger'>SPLAT!</span>")
+		visible_message(SPAN("danger", "SPLAT!"))
 		M.splat()
+	else if(istype(target, /mob/living/simple_animal/hamster) || istype(target, /mob/living/simple_animal/lizard))
+		var/mob/living/simple_animal/splatee = target
+		visible_message(SPAN("danger", "SPLAT!"))
+		splatee.adjustBruteLoss(splatee.maxHealth)  // Enough damage to kill
+		splatee.death()
+
 	playsound(target.loc, 'sound/effects/snap.ogg', 50, 1)
 	reset_plane_and_layer()
 	armed = FALSE
@@ -91,7 +97,7 @@
 				triggered(H)
 				H.visible_message("<span class='warning'>[H] accidentally steps on [src].</span>", \
 									"<span class='warning'>You accidentally step on [src]</span>")
-		if(ismouse(AM))
+		if(ismouse(AM) || istype(AM, /mob/living/simple_animal/hamster) || istype(AM, /mob/living/simple_animal/lizard))
 			triggered(AM)
 	..()
 
