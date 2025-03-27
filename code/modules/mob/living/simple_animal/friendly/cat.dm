@@ -1,3 +1,12 @@
+
+#define CHECK_PREY_TYPE(ret, M) \
+	for(var/mob_type in prey_types) { \
+		if(istype(M, mob_type)) { \
+			ret = TRUE; \
+		} \
+	} \
+	ret = FALSE;
+
 //Cat
 /mob/living/simple_animal/cat
 	name = "cat"
@@ -39,21 +48,32 @@
 	//MICE!
 	if(isturf(loc) && !resting && !buckled)
 		for(var/mob/living/simple_animal/M in loc)
-			if(M.stat || !(M.type in prey_types))
+			if(M.stat)
 				continue
-			if(ismouse(M))
-				var/mob/living/simple_animal/mouse/mouse = M
-				mouse.splat()
+
+			var/prey_check
+			CHECK_PREY_TYPE(prey_check, M)
+			if(!prey_check)
+				continue
+
+			if(prob(67))
+				visible_emote("toys with \the [M].")
 			else
-				M.adjustBruteLoss(splatee.maxHealth)  // Enough damage to kill
-				M.death()
-			visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
-			movement_target = null
-			stop_automated_movement = 0
+				if(ismouse(M))
+					var/mob/living/simple_animal/mouse/mouse = M
+					mouse.splat()
+				else
+					M.adjustBruteLoss(M.maxHealth)  // Enough damage to kill
+					M.death()
+				visible_emote(pick("bites \the [M]!","claws at \the [M].","chomps on \the [M]!"))
+				movement_target = null
+				stop_automated_movement = 0
 			break
 
 	for(var/mob/living/simple_animal/snack in oview(src, 5))
-		if(snack.type in prey_types)
+		var/prey_check
+		CHECK_PREY_TYPE(prey_check, snack)
+		if(prey_check)
 			if(snack.stat < DEAD && prob(15))
 				audible_emote(pick("hisses and spits!", "mrowls fiercely!", "eyes [snack] hungrily."))
 		break
@@ -90,7 +110,11 @@
 		movement_target = null
 		stop_automated_movement = 0
 		for(var/mob/living/simple_animal/snack in oview(src)) //search for a new target
-			if(isturf(snack.loc) && !snack.stat && (snack.type in prey_types))
+			if(isturf(snack.loc) && !snack.stat)
+				var/prey_check
+				CHECK_PREY_TYPE(prey_check, snack)
+				if(!prey_check)
+					continue
 				movement_target = snack
 				break
 
