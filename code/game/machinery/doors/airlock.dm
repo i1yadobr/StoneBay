@@ -66,6 +66,9 @@
 		return
 	..()
 
+/obj/machinery/door/airlock/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 5)
+
 /obj/machinery/door/airlock/get_material()
 	return get_material_by_name(mineral ? mineral : MATERIAL_STEEL)
 
