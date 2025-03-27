@@ -520,7 +520,7 @@ var/global/list/damage_icon_parts = list()
 
 // Suit Storage
 /mob/living/carbon/human/update_inv_s_store(update_icons=1)
-	if(s_store)
+	if(s_store && !((wear_suit && wear_suit.flags_inv & HIDESUITSTORAGE)))
 		overlays_standing[HO_SUIT_STORE_LAYER] = s_store.get_mob_overlay(src, slot_s_store_str)
 	else
 		overlays_standing[HO_SUIT_STORE_LAYER] = null
