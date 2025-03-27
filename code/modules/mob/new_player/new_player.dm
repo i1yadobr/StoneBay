@@ -667,3 +667,19 @@
 
 /mob/new_player/is_eligible_for_antag_spawn(antag_id)
 	return TRUE
+
+/mob/new_player/proc/show_game_tip()
+	var/static/game_tip = pick(world.file2list("strings/game_tips.txt"))
+	var/atom/movable/screen/text = new()
+
+	text.screen_loc = "CENTER,SOUTH+1%"
+	text.maptext_width = 256
+	text.maptext_height = 100
+	text.maptext_y = -50
+	text.maptext_x = -112
+	text.maptext = MAPTEXT("<center><font size=5>Подсказка раунда</font><br><br>[game_tip]</center>")
+	text.plane = FULLSCREEN_PLANE
+
+	client.screen += text
+
+	animate(text, 3 SECONDS, maptext_y = 0)
