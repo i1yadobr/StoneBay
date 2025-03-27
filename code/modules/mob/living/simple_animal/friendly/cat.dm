@@ -3,9 +3,10 @@
 	for(var/mob_type in prey_types) { \
 		if(istype(M, mob_type)) { \
 			ret = TRUE; \
+			visible_message("LITTLE SHIT FOUND"); \
+			break; \
 		} \
-	} \
-	ret = FALSE;
+	}
 
 //Cat
 /mob/living/simple_animal/cat
@@ -54,7 +55,10 @@
 			var/prey_check
 			CHECK_PREY_TYPE(prey_check, M)
 			if(!prey_check)
+				visible_message("PREY CHECK FAILED: [prey_check]");
 				continue
+			else
+				visible_message("PREY CHECK NOT FAILED: [prey_check]");
 
 			if(prob(67))
 				visible_emote("toys with \the [M].")
@@ -71,11 +75,15 @@
 			break
 
 	for(var/mob/living/simple_animal/snack in oview(src, 5))
+		if(snack.stat || prob(85))
+			continue
+
 		var/prey_check
 		CHECK_PREY_TYPE(prey_check, snack)
-		if(prey_check)
-			if(snack.stat < DEAD && prob(15))
-				audible_emote(pick("hisses and spits!", "mrowls fiercely!", "eyes [snack] hungrily."))
+		if(!prey_check)
+			continue
+
+		audible_emote(pick("hisses and spits!", "mrowls fiercely!", "eyes [snack] hungrily."))
 		break
 
 	turns_since_scan++
@@ -110,13 +118,16 @@
 		movement_target = null
 		stop_automated_movement = 0
 		for(var/mob/living/simple_animal/snack in oview(src)) //search for a new target
-			if(isturf(snack.loc) && !snack.stat)
-				var/prey_check
-				CHECK_PREY_TYPE(prey_check, snack)
-				if(!prey_check)
-					continue
-				movement_target = snack
-				break
+			if(!isturf(snack.loc) || snack.stat)
+				continue
+
+			var/prey_check
+			CHECK_PREY_TYPE(prey_check, snack)
+			if(!prey_check)
+				continue
+
+			movement_target = snack
+			break
 
 	if(movement_target)
 		stop_automated_movement = 1
