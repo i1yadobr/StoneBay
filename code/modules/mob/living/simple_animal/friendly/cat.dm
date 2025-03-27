@@ -280,3 +280,5 @@
 /mob/living/simple_animal/cat/kitten/New()
 	gender = pick(MALE, FEMALE)
 	..()
+
+#undef CHECK_PREY_TYPE
