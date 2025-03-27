@@ -44,6 +44,9 @@
 			if(ismouse(M))
 				var/mob/living/simple_animal/mouse/mouse = M
 				mouse.splat()
+			else
+				M.adjustBruteLoss(splatee.maxHealth)  // Enough damage to kill
+				M.death()
 			visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
 			movement_target = null
 			stop_automated_movement = 0
