@@ -35,6 +35,7 @@
 								/mob/living/simple_animal/crab 								= TRADER_THIS_TYPE,
 								/mob/living/simple_animal/lizard 							= TRADER_THIS_TYPE,
 								/mob/living/simple_animal/mouse 							= TRADER_THIS_TYPE,
+								/mob/living/simple_animal/hamster 							= TRADER_THIS_TYPE,
 								/mob/living/simple_animal/mushroom 							= TRADER_THIS_TYPE,
 								/mob/living/simple_animal/parrot 							= TRADER_THIS_TYPE,
 								/mob/living/simple_animal/tindalos 							= TRADER_THIS_TYPE,

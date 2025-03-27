@@ -56,7 +56,9 @@ var/list/holder_mob_icon_cache = list()
 		check_condition()
 
 /obj/item/holder/proc/check_condition()
-	if(isturf(loc) || !held_mob || !(held_mob in src))
+	if(!held_mob || !(held_mob in src))
+		qdel(src)
+	if(isturf(loc) && !throwing) // Throwing 'em little bastards is fun
 		qdel(src)
 
 /obj/item/holder/onDropInto(atom/movable/AM)
@@ -114,6 +116,9 @@ var/list/holder_mob_icon_cache = list()
 	origin_tech = list(TECH_MAGNET = 3, TECH_ENGINEERING = 5)
 
 /obj/item/holder/mouse
+	w_class = ITEM_SIZE_TINY
+
+/obj/item/holder/hamster
 	w_class = ITEM_SIZE_TINY
 
 /obj/item/holder/borer

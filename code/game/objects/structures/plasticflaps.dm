@@ -12,6 +12,8 @@
 		/mob/living/bot,
 		/mob/living/carbon/metroid,
 		/mob/living/simple_animal/mouse,
+		/mob/living/simple_animal/lizard,
+		/mob/living/simple_animal/hamster,
 		/mob/living/silicon/robot/drone
 		)
 

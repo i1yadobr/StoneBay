@@ -90,6 +90,11 @@ var/list/ventcrawl_machinery = list(
 		return TRUE
 	return ..()
 
+/mob/living/simple_animal/hamster/is_allowed_vent_crawl_item(obj/item/carried_item)
+	if(carried_item == holding_item)
+		return TRUE
+	return ..()
+
 /mob/living/simple_animal/spiderbot/is_allowed_vent_crawl_item(obj/item/carried_item)
 	if(carried_item in list(held_item, radio, connected_ai, cell, camera, mmi))
 		return 1
