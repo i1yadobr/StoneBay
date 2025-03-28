@@ -105,7 +105,7 @@
 
 /decl/hierarchy/outfit/job/merchant
 	name = OUTFIT_JOB_NAME("Merchant")
-	uniform = /obj/item/clothing/under/color/black
+	uniform = /obj/item/clothing/under/color/black //TODO: Draw a unique sprite and code a uniform for the merchants.
 	l_ear = /obj/item/device/radio/headset
 	shoes = /obj/item/clothing/shoes/black
 	pda_type = /obj/item/device/pda
@@ -133,7 +133,7 @@
 /decl/hierarchy/outfit/job/mime
 	name = OUTFIT_JOB_NAME("Mime")
 	head = /obj/item/clothing/head/beret/classique
-	uniform = /obj/item/clothing/under/mime
+	uniform = /obj/item/clothing/under/rank/mime
 	id_type = /obj/item/card/id/civilian/mime
 	pda_type = /obj/item/device/pda/mime
 	shoes = /obj/item/clothing/shoes/mime

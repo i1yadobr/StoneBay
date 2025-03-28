@@ -319,23 +319,11 @@
 	icon_state = "dress_saloon"
 	item_state = "dress_saloon"
 
-/obj/item/clothing/under/dress/dress_cap
+/obj/item/clothing/under/dress/captain_dress_alt
 	name = "captain's dress uniform"
 	desc = "Feminine fashion for the style concious captain."
-	icon_state = "dress_cap"
-	item_state = "dress_cap"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-
-/obj/item/clothing/under/dress/dress_cap/captain_dress_alt
 	icon_state = "captain_dress_alt"
 	item_state = "captain_dress_alt"
-
-/obj/item/clothing/under/dress/dress_hop
-	name = "head of personnel dress uniform"
-	desc = "Feminine fashion for the style concious HoP."
-	icon_state = "dress_hop"
-	item_state = "dress_hop"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/dress/dress_hr
 	name = "human resources director uniform"

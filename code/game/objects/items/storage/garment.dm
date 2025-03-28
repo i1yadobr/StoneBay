@@ -66,8 +66,8 @@
 		/obj/item/clothing/head/caphat/hop,
 		/obj/item/clothing/accessory/holster/waist,
 		/obj/item/clothing/under/dress/dress_hr,
-		/obj/item/clothing/under/dress/dress_hop,
 		/obj/item/clothing/under/rank/head_of_personnel,
+		/obj/item/clothing/under/rank/head_of_personnel/skirt,
 		/obj/item/clothing/under/rank/head_of_personnel/whimsy,
 		/obj/item/clothing/suit/armor/vest,
 		/obj/item/clothing/shoes/black,
@@ -85,8 +85,8 @@
 		/obj/item/clothing/gloves/captain,
 		/obj/item/clothing/accessory/holster/thigh,
 		/obj/item/clothing/under/rank/captain,
+		/obj/item/clothing/under/rank/captain/skirt,
 		/obj/item/clothing/under/captainformal,
-		/obj/item/clothing/under/dress/dress_cap,
 		/obj/item/clothing/suit/captunic,
 		/obj/item/clothing/suit/captunic/formal,
 		/obj/item/clothing/suit/captunic/capjacket,
@@ -115,7 +115,7 @@
 		/obj/item/clothing/glasses/hud/standard/meson,
 		/obj/item/clothing/head/soft,
 		/obj/item/clothing/gloves/thick,
-		/obj/item/clothing/under/rank/cargo,
+		/obj/item/clothing/under/rank/qm,
 		/obj/item/clothing/shoes/brown
 	)
 
@@ -146,7 +146,7 @@
 		/obj/item/clothing/gloves/latex,
 		/obj/item/clothing/under/rank/research_director,
 		/obj/item/clothing/under/rank/research_director/rdalt,
-		/obj/item/clothing/under/rank/research_director/dress_rd,
+		/obj/item/clothing/under/rank/research_director/skirt,
 		/obj/item/clothing/suit/storage/toggle/labcoat/rd,
 		/obj/item/clothing/shoes/leather
 	)

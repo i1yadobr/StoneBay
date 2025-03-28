@@ -16,6 +16,13 @@
 	armor = list(melee = 20, bullet = 20, laser = 20, energy = 0, bomb = 0, bio = 0)
 	siemens_coefficient = 0.8
 
+/obj/item/clothing/under/rank/security/skirt
+	name = "security officer's jumpskirt"
+	desc = "It's made of a slightly sturdier material than standard jumpskirt, to allow for robust protection."
+	icon_state = "officer_red_skirt"
+	item_state = "officer_red_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/warden
 	name = "warden's jumpsuit"
 	desc = "It's made of a slightly sturdier material than standard jumpsuits, to allow for more robust protection. It has the word \"Warden\" written on the shoulders."
@@ -23,6 +30,13 @@
 	item_state = "warden_red"
 	armor = list(melee = 20, bullet = 20, laser = 20, energy = 0, bomb = 0, bio = 0)
 	siemens_coefficient = 0.8
+
+/obj/item/clothing/under/rank/warden/skirt
+	name = "warden's jumpskirt"
+	desc = "It's made of a slightly sturdier material than standard jumpskirt, to allow for more robust protection. It has the word \"Warden\" written on the shoulders."
+	icon_state = "warden_red_skirt"
+	item_state = "warden_red_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/tactical
 	name = "tactical jumpsuit"
@@ -48,7 +62,7 @@
 /*
  * Detective
  */
-/obj/item/clothing/under/det
+/obj/item/clothing/under/rank/det
 	name = "detective's suit"
 	desc = "A rumpled white dress shirt paired with well-worn grey slacks."
 	icon_state = "detective"
@@ -57,13 +71,20 @@
 	siemens_coefficient = 0.9
 	starting_accessories = list(/obj/item/clothing/accessory/blue_clip)
 
-/obj/item/clothing/under/det/grey
+/obj/item/clothing/under/rank/det/skirt
+	name = "detective's skirt"
+	desc = "A rumpled white dress shirt paired with well-worn grey skirt."
+	icon_state = "detective_skirt"
+	item_state = "detective_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/det/grey
 	desc = "A serious-looking tan dress shirt paired with freshly-pressed black slacks."
 	icon_state = "det_grey"
 	item_state = "det_grey"
 	starting_accessories = list(/obj/item/clothing/accessory/red_long)
 
-/obj/item/clothing/under/det/black
+/obj/item/clothing/under/rank/det/black
 	desc = "An immaculate white dress shirt, paired with a pair of dark grey dress pants, a red tie, and a charcoal vest."
 	icon_state = "det_black"
 	item_state = "det_black"
@@ -79,6 +100,13 @@
 	item_state = "hos_red"
 	armor = list(melee = 20, bullet = 25, laser = 25, energy = 0, bomb = 0, bio = 0)
 	siemens_coefficient = 0.7
+
+/obj/item/clothing/under/rank/head_of_security/skirt
+	name = "head of security's jumpskirt"
+	desc = "It's a jumpskirt worn by those few with the dedication to achieve the position of \"Head of Security\". It has additional armor to protect the wearer."
+	icon_state = "hos_red_skirt"
+	item_state = "hos_red_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/head_of_security/jensen
 	name = "head of security's jumpsuit"

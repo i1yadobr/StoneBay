@@ -15,11 +15,11 @@
 	item_state = "rdalt"
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 
-/obj/item/clothing/under/rank/research_director/dress_rd
-	name = "research director dress uniform"
+/obj/item/clothing/under/rank/research_director/skirt
+	name = "research director's jumpskirt"
 	desc = "Feminine fashion for the style concious RD. Its fabric provides minor protection from biological contaminants."
-	icon_state = "dress_rd"
-	item_state = "dress_rd"
+	icon_state = "director_skirt"
+	item_state = "director_skirt"
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
@@ -31,13 +31,26 @@
 	permeability_coefficient = 0.50
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 10, bio = 0)
 
-/obj/item/clothing/under/rank/chemist
-	name = "chemist's jumpsuit"
-	desc = "It's made of a special fiber that gives special protection against biohazards. It has a chemist rank stripe on it."
-	icon_state = "chemistry"
-	item_state = "chemistry"
-	permeability_coefficient = 0.50
-	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
+/obj/item/clothing/under/rank/scientist/skirt
+	name = "scientist's jumpskirt"
+	icon_state = "science_skirt"
+	item_state = "science_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/roboticist
+	name = "roboticist's jumpsuit"
+	desc = "It's a slimming black jumpsuit with reinforced seams; great for industrial work."
+	icon_state = "robotics"
+	item_state = "robotics"
+	worn_state = "robotics"
+
+/obj/item/clothing/under/rank/roboticist/skirt
+	name = "roboticist's jumpskirt"
+	desc = "It's a slimming black jumpskirt with reinforced seams; great for industrial work."
+	icon_state = "robotics_skirt"
+	item_state = "robotics_skirt"
+	worn_state = "robotics_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /*
  * Medical
@@ -50,6 +63,13 @@
 	permeability_coefficient = 0.50
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 
+/obj/item/clothing/under/rank/chief_medical_officer/skirt
+	name = "chief medical officer's jumpskirt"
+	desc = "It's a jumpskirt worn by those with the experience to be \"Chief Medical Officer\". It provides minor biological protection."
+	icon_state = "cmo_skirt"
+	item_state = "cmo_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/geneticist
 	name = "geneticist's jumpsuit"
 	desc = "It's made of a special fiber that gives special protection against biohazards. It has a genetics rank stripe on it."
@@ -58,6 +78,12 @@
 	permeability_coefficient = 0.50
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 
+/obj/item/clothing/under/rank/geneticist/skirt
+	name = "geneticist's jumpskirt"
+	icon_state = "genetics_skirt"
+	item_state = "genetics_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/virologist
 	name = "virologist's jumpsuit"
 	desc = "It's made of a special fiber that gives special protection against biohazards. It has a virologist rank stripe on it."
@@ -65,6 +91,26 @@
 	item_state = "virology"
 	permeability_coefficient = 0.50
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
+
+/obj/item/clothing/under/rank/virologist/skirt
+	name = "virologist's jumpskirt"
+	icon_state = "virology_skirt"
+	item_state = "virology_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/chemist
+	name = "chemist's jumpsuit"
+	desc = "It's made of a special fiber that gives special protection against biohazards. It has a chemist rank stripe on it."
+	icon_state = "chemistry"
+	item_state = "chemistry"
+	permeability_coefficient = 0.50
+	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
+
+/obj/item/clothing/under/rank/chemist/skirt
+	name = "chemist's jumpskirt"
+	icon_state = "chemistry_skirt"
+	item_state = "chemistry_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/nursesuit
 	name = "nurse's suit"
@@ -92,12 +138,24 @@
 	permeability_coefficient = 0.5
 	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 30)
 
+/obj/item/clothing/under/rank/medical/skirt
+	name = "medical doctor's jumpskirt"
+	icon_state = "medical_skirt"
+	item_state = "medical_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/medical/paramedic
-	name = "short sleeve medical jumpsuit"
+	name = "paramedic jumpsuit"
 	desc = "It's made of a special fiber that provides minor protection against biohazards. This one has a cross on the chest denoting that the wearer is trained medical personnel."
-	icon_state = "paramedic_dark"
+	icon_state = "paramedic"
 	item_state = "paramedic_dark"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+/obj/item/clothing/under/rank/medical/paramedic/skirt
+	name = "paramedic jumpskirt"
+	icon_state = "paramedic_skirt"
+	item_state = "paramedic_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 
 /obj/item/clothing/under/rank/medical/scrubs
 	name = "scrubs"
@@ -135,6 +193,13 @@
 	desc = "A basic white jumpsuit. It has turqouise markings that denote the wearer as a psychiatrist."
 	icon_state = "psych"
 	item_state = "psych"
+
+/obj/item/clothing/under/rank/psych/skirt
+	name = "psychiatrist's jumpskirt"
+	desc = "A basic white jumpskirt. It has turqouise markings that denote the wearer as a psychiatrist."
+	icon_state = "psych_skirt"
+	item_state = "psych_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/psych/turtleneck
 	name = "turqouise turtleneck"

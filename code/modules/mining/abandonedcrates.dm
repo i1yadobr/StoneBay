@@ -125,7 +125,7 @@
 			new /obj/item/pen/crayon/rainbow(src)
 			new /obj/item/reagent_containers/spray/waterflower(src)
 		if(95)
-			new /obj/item/clothing/under/mime(src)
+			new /obj/item/clothing/under/rank/mime(src)
 			new /obj/item/clothing/shoes/black(src)
 			new /obj/item/device/pda/mime(src)
 			new /obj/item/clothing/gloves/white(src)
