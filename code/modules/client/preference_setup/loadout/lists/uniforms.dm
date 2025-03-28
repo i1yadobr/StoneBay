@@ -474,3 +474,9 @@
 	camo += /obj/item/clothing/under/camo/firestarter
 	camo += /obj/item/clothing/under/camo/urban
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(camo)
+
+/datum/gear/uniform/victorian_dress
+	display_name = "late victorian dress"
+	path = /obj/item/clothing/under/dress/victorian
+	price = 20
+	author_ckey = MemoryDreams
