@@ -479,4 +479,4 @@
 	display_name = "late victorian dress"
 	path = /obj/item/clothing/under/dress/victorian
 	price = 20
-	author_ckey = MemoryDreams
+	author_ckey = "MemoryDreams"
