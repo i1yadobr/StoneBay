@@ -64,7 +64,7 @@
 //when user attached an accessory to S
 /obj/item/clothing/accessory/proc/on_attached(obj/item/clothing/S, mob/user)
 	if(!istype(S))
-		return
+		return FALSE
 	has_suit = S
 	forceMove(has_suit)
 	has_suit.AddOverlays(get_inv_overlay())
@@ -72,6 +72,7 @@
 	if(user)
 		to_chat(user, "<span class='notice'>You attach \the [src] to \the [has_suit].</span>")
 		src.add_fingerprint(user)
+	return TRUE
 
 /obj/item/clothing/accessory/proc/on_removed(mob/user)
 	if(!has_suit)

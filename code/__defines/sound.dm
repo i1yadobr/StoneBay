@@ -350,6 +350,7 @@
 #define SFX_OINK                    "oink"
 #define SFX_PLANTCROSS              "plantcross"
 #define SFX_THUNDER                 "thunder"
+#define SFX_SHOE_COVERS             "shoe_covers"
 
 // FOOTSTEPS
 #define SFX_DISTANT_MOVEMENT        "distant_movement"

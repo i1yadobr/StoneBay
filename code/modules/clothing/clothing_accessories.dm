@@ -5,7 +5,7 @@
 		return 0
 	if(LAZYLEN(accessories) && LAZYISIN(restricted_accessory_slots, A.slot))
 		for(var/obj/item/clothing/accessory/AC in accessories)
-			if (AC.slot == A.slot)
+			if (AC.slot == A.slot && AC.slot != ACCESSORY_SLOT_COVER)
 				return 0
 
 /obj/item/clothing/attackby(obj/item/I, mob/user)
@@ -82,10 +82,12 @@
  */
 /obj/item/clothing/proc/attach_accessory(mob/user, obj/item/clothing/accessory/A)
 	LAZYADD(accessories, A)
-	A.on_attached(src, user)
-	src.verbs |= /obj/item/clothing/proc/removetie_verb
-	update_accessory_slowdown()
-	update_clothing_icon()
+	if(A.on_attached(src, user))
+		src.verbs |= /obj/item/clothing/proc/removetie_verb
+		update_accessory_slowdown()
+		update_clothing_icon()
+	else
+		LAZYREMOVE(accessories, A)
 
 /obj/item/clothing/proc/remove_accessory(mob/user, obj/item/clothing/accessory/A)
 	if(!A || !LAZYISIN(accessories, A))
