@@ -21,7 +21,7 @@
 	var/elastic
 	var/dispenser = 0
 	var/breakouttime = 1200 //Deciseconds = 120s = 2 minutes
-	var/cuff_sound = "handcuffs"
+	var/cuff_sound = 'sound/effects/handcuffs.ogg'
 	var/cuff_type = "handcuffs"
 
 	drop_sound = SFX_DROP_ACCESSORY
