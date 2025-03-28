@@ -101,6 +101,8 @@
 	to_chat(user, SPAN("notice", "You remove the [container.name] from the [name]."))
 	container = null
 	update_icon()
+	if(!(stat & (BROKEN|NOPOWER)))
+		playsound(src, clicksound, clickvol)
 
 /obj/machinery/chemical_dispenser/attackby(obj/item/W, mob/user)
 	if(default_deconstruction_crowbar(user, W))

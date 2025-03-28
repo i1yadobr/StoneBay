@@ -289,7 +289,8 @@
 
 	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
 	beaker = null
-	playsound(src, clicksound, clickvol)
+	if(!(stat & (BROKEN|NOPOWER)))
+		playsound(src, clicksound, clickvol)
 
 /obj/machinery/atmospherics/unary/cryo_cell/on_update_icon()
 	ClearOverlays()

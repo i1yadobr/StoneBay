@@ -108,6 +108,8 @@
 	beaker = null
 	reagents.clear_reagents()
 	update_icon()
+	if(!(stat & (BROKEN|NOPOWER)))
+		playsound(src, clicksound, clickvol)
 
 /obj/machinery/chem_master/attackby(obj/item/W, mob/user)
 	if(default_deconstruction_screwdriver(user, W))
@@ -574,6 +576,8 @@
 	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
 	beaker = null
 	update_icon()
+	if(!(stat & (BROKEN|NOPOWER)))
+		playsound(src, clicksound, clickvol)
 
 /obj/machinery/reagentgrinder/proc/show_choices(mob/user)
 	if(!length(choices))
