@@ -283,7 +283,7 @@
 		return
 
 	if(issilicon(user))
-		beaker:dropInto(get_step(loc, SOUTH))
+		beaker.dropInto(get_step(loc, SOUTH))
 	else
 		user.pick_or_drop(beaker, get_step(loc, SOUTH))
 

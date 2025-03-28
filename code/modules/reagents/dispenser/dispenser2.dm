@@ -94,7 +94,7 @@
 		return
 
 	if(issilicon(user))
-		container:dropInto(loc)
+		container.dropInto(loc)
 	else
 		user.pick_or_drop(container, get_turf(src))
 

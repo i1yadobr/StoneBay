@@ -100,7 +100,7 @@
 		return
 
 	if(issilicon(user))
-		beaker:dropInto(loc)
+		beaker.dropInto(loc)
 	else
 		user.pick_or_drop(beaker, get_turf(src))
 
@@ -567,7 +567,7 @@
 		return
 
 	if(issilicon(user))
-		beaker:dropInto(loc)
+		beaker.dropInto(loc)
 	else
 		user.pick_or_drop(beaker, get_turf(src))
 
