@@ -81,13 +81,13 @@
 			return
 
 		if(!can_use(user))
-			to_chat(user, "<span class='notice'>You cannot remove [container.name].</span>")
+			to_chat(user, SPAN("notice", "You cannot remove [container.name]."))
 			return
 
 	if(container)
 		grab_container(user)
 	else
-		to_chat(user, "<span class='notice'>\The [src] does not have a container in it.</span>")
+		to_chat(user, SPAN("notice", "\The [src] does not have a container in it."))
 
 /obj/machinery/chemical_dispenser/proc/grab_container(mob/M)
 	if(!container)

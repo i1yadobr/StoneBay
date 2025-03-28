@@ -87,13 +87,13 @@
 			return
 
 		if(!can_use(user))
-			to_chat(user, "<span class='notice'>You cannot remove [beaker.name].</span>")
+			to_chat(user, SPAN("notice", "You cannot remove [beaker.name]."))
 			return
 
 	if(beaker)
 		grab_beaker(user)
 	else
-		to_chat(user, "<span class='notice'>\The [src] does not have a beaker in it.</span>")
+		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
 
 /obj/machinery/chem_master/proc/grab_beaker(mob/M)
 	if(!beaker)
@@ -554,13 +554,13 @@
 		return
 		
 	if(!can_use(user))
-		to_chat(user, "<span class='notice'>You cannot remove [beaker.name].</span>")
+		to_chat(user, SPAN("notice", "You cannot remove [beaker.name]."))
 		return
 
 	if(beaker)
 		grab_beaker(user)
 	else
-		to_chat(user, "<span class='notice'>\The [src] does not have a beaker in it.</span>")
+		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
 
 /obj/machinery/reagentgrinder/proc/grab_beaker(mob/M)
 	if(!beaker)
