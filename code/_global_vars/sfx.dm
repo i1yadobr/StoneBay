@@ -1595,6 +1595,11 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/heelsstep1.ogg',
 		'sound/effects/heelsstep2.ogg'
 	),
+	SFX_SHOE_COVERS = list(
+		'sound/effects/coversstep1.ogg',
+		'sound/effects/coversstep2.ogg',
+		'sound/effects/coversstep3.ogg'
+	),
 	SFX_HISS = list(
 		'sound/voice/hiss1.ogg',
 		'sound/voice/hiss2.ogg',

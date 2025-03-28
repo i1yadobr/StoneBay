@@ -89,7 +89,8 @@ var/global/list/image/splatter_cache=list()
 		var/obj/item/clothing/shoes/S = H.shoes
 		if(istype(S))
 			S.add_blood(basecolor, amount)
-			S.blood_DNA |= blood_DNA
+			if(blood_DNA)
+				S.blood_DNA |= blood_DNA
 
 	else if(hasfeet) // Or feet
 		H.feet_blood_color = basecolor

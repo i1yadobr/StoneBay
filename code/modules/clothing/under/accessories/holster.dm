@@ -128,8 +128,10 @@
 		. += "It is empty."
 
 /obj/item/clothing/accessory/holster/on_attached(obj/item/clothing/under/S, mob/user)
-	..()
-	has_suit.verbs += /obj/item/clothing/accessory/holster/verb/holster_verb
+	. = ..()
+	if(.)
+		has_suit.verbs += /obj/item/clothing/accessory/holster/verb/holster_verb
+	return .
 
 /obj/item/clothing/accessory/holster/on_removed(mob/user)
 	if(has_suit)

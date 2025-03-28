@@ -32,6 +32,14 @@
 	build_path = /obj/item/device/mass_spectrometer/adv
 	sort_string = "MACAB"
 
+/datum/design/item/medical/shoe_covers
+	desc = "Technological shoe covers."
+	id = "shoe_covers"
+	req_tech = list(TECH_MATERIAL = 2, TECH_BIO = 2)
+	materials = list(MATERIAL_PLASTIC = 20)
+	build_path = /obj/item/compact_shoe_covers
+	sort_string = "MACAC"
+
 /datum/design/item/medical/reagent_scanner
 	desc = "A device for identifying chemicals."
 	id = "reagent_scanner"
