@@ -237,6 +237,7 @@
 					/obj/item/clothing/head/surgery/blue,
 					/obj/item/clothing/head/surgery/green,
 					/obj/item/storage/box/masks,
+					/obj/item/storage/box/compact_shoe_covers,
 					/obj/item/storage/box/gloves)
 	cost = 15
 	containertype = /obj/structure/closet/crate/secure
@@ -275,6 +276,7 @@
 					/obj/item/clothing/suit/storage/toggle/labcoat/virologist,
 					/obj/item/clothing/suit/storage/toggle/labcoat/chemist,
 					/obj/item/storage/box/masks,
+					/obj/item/storage/box/compact_shoe_covers,
 					/obj/item/storage/box/gloves)
 	cost = 15
 	containertype = /obj/structure/closet/crate/secure

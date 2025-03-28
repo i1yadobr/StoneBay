@@ -78,8 +78,7 @@
 	if(isliving(A))
 		var/mob/living/M = A
 
-		// Dirt overlays.
-		update_dirt()
+		var/need_update_dirt = TRUE
 
 		if(M.buckled && !istype(M.buckled, /obj/structure/bed/chair/wheelchair)) // No bloody trails for rollerbedded dudes pls
 			return ..()
@@ -91,14 +90,21 @@
 			var/bloodcolor = ""
 
 			if(H.shoes)
-				var/obj/item/clothing/shoes/S = H.shoes
-				if(istype(S))
-					S.handle_movement(src,(H.m_intent == M_RUN ? 1 : 0))
-					if(S.track_blood)
-						if(S.blood_DNA)
-							bloodDNA = S.blood_DNA
-						bloodcolor = S.blood_color
-						S.track_blood--
+				var/obj/item/clothing/accessory/shoe_covers/SC = H.shoes
+				if(istype(SC))
+					SC.handle_movement(src, (H.m_intent == M_RUN ? 1 : 0), TRUE)
+					need_update_dirt = FALSE
+				else
+					var/obj/item/clothing/shoes/S = H.shoes
+					if(istype(S))
+						S.handle_movement(src, (H.m_intent == M_RUN ? 1 : 0))
+						if(S.get_accessory_cover())
+							need_update_dirt = FALSE
+						if(S.track_blood)
+							if(S.blood_DNA)
+								bloodDNA = S.blood_DNA
+							bloodcolor = S.blood_color
+							S.track_blood--
 
 			else if(H.track_blood)
 				if(H.feet_blood_DNA)
@@ -113,6 +119,10 @@
 					from.AddTracks(H.species.get_move_trail(H), bloodDNA, 0, H.dir, bloodcolor) // Going
 
 				bloodDNA = null
+
+		// Dirt overlays.
+		if(need_update_dirt)
+			update_dirt()
 
 		if(M.lying)
 			return ..()

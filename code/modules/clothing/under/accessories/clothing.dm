@@ -81,8 +81,10 @@
 	..()
 
 /obj/item/clothing/accessory/toggleable/on_attached(obj/item/clothing/under/S, mob/user as mob)
-	..()
-	has_suit.verbs += /obj/item/clothing/accessory/toggleable/verb/toggle
+	. = ..()
+	if(.)
+		has_suit.verbs += /obj/item/clothing/accessory/toggleable/verb/toggle
+	return .
 
 /obj/item/clothing/accessory/toggleable/on_removed(mob/user as mob)
 	if(has_suit)
@@ -193,9 +195,11 @@
 	var/buttoned = 0
 
 /obj/item/clothing/accessory/toggleable/flannel/on_attached(obj/item/clothing/under/S, mob/user as mob)
-	..()
-	has_suit.verbs += /obj/item/clothing/accessory/toggleable/flannel/verb/tuck
-	has_suit.verbs += /obj/item/clothing/accessory/toggleable/flannel/verb/roll_up_sleeves
+	. = ..()
+	if(.)
+		has_suit.verbs += /obj/item/clothing/accessory/toggleable/flannel/verb/tuck
+		has_suit.verbs += /obj/item/clothing/accessory/toggleable/flannel/verb/roll_up_sleeves
+	return .
 
 /obj/item/clothing/accessory/toggleable/flannel/on_removed(mob/user as mob)
 	if(has_suit)
@@ -284,8 +288,10 @@
 	var/rolled = FALSE
 
 /obj/item/clothing/accessory/security_shirt/on_attached(obj/item/clothing/under/S, mob/user)
-	..()
-	has_suit.verbs += /obj/item/clothing/accessory/security_shirt/verb/roll_up_sleeves
+	. = ..()
+	if(.)
+		has_suit.verbs += /obj/item/clothing/accessory/security_shirt/verb/roll_up_sleeves
+	return .
 
 /obj/item/clothing/accessory/security_shirt/on_removed(mob/user)
 	if(has_suit)

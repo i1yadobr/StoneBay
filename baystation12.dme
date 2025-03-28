@@ -1750,6 +1750,7 @@
 #include "code\modules\clothing\head.dm"
 #include "code\modules\clothing\mask.dm"
 #include "code\modules\clothing\rings.dm"
+#include "code\modules\clothing\shoe_covers.dm"
 #include "code\modules\clothing\shoes.dm"
 #include "code\modules\clothing\suit.dm"
 #include "code\modules\clothing\under.dm"

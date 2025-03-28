@@ -281,6 +281,7 @@ Loot piles can be depleted, if loot_depleted is turned on.  Note that players wh
 		/obj/item/storage/box/lights/tubes,
 		/obj/item/storage/box/lights/bulbs,
 		/obj/item/storage/box/masks,
+		/obj/item/storage/box/compact_shoe_covers,
 		/obj/item/storage/box/ids,
 		/obj/item/storage/box/mousetraps,
 		/obj/item/storage/box/syringes,
