@@ -95,16 +95,16 @@
 	else
 		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
 
-/obj/machinery/chem_master/proc/grab_beaker(mob/M)
+/obj/machinery/chem_master/proc/grab_beaker(mob/user)
 	if(!beaker)
 		return
 
-	if(issilicon(M))
+	if(issilicon(user))
 		beaker:dropInto(loc)
 	else
-		M.pick_or_drop(beaker, get_turf(src))
+		user.pick_or_drop(beaker, get_turf(src))
 
-	to_chat(M, SPAN("notice", "You remove the [beaker.name] from the [name]."))
+	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
 	beaker = null
 	reagents.clear_reagents()
 	update_icon()
@@ -562,16 +562,16 @@
 	else
 		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
 
-/obj/machinery/reagentgrinder/proc/grab_beaker(mob/M)
+/obj/machinery/reagentgrinder/proc/grab_beaker(mob/user)
 	if(!beaker)
 		return
 
-	if(issilicon(M))
+	if(issilicon(user))
 		beaker:dropInto(loc)
 	else
-		M.pick_or_drop(beaker, get_turf(src))
+		user.pick_or_drop(beaker, get_turf(src))
 
-	to_chat(M, SPAN("notice", "You remove the [beaker.name] from the [name]."))
+	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
 	beaker = null
 	update_icon()
 

@@ -89,16 +89,16 @@
 	else
 		to_chat(user, SPAN("notice", "\The [src] does not have a container in it."))
 
-/obj/machinery/chemical_dispenser/proc/grab_container(mob/M)
+/obj/machinery/chemical_dispenser/proc/grab_container(mob/user)
 	if(!container)
 		return
 
-	if(issilicon(M))
+	if(issilicon(user))
 		container:dropInto(loc)
 	else
-		M.pick_or_drop(container, get_turf(src))
+		user.pick_or_drop(container, get_turf(src))
 
-	to_chat(M, SPAN("notice", "You remove the [container.name] from the [name]."))
+	to_chat(user, SPAN("notice", "You remove the [container.name] from the [name]."))
 	container = null
 	update_icon()
 
