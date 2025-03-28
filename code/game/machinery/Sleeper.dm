@@ -216,6 +216,39 @@
 			stasis = text2num(href_list["stasis"])
 			return TOPIC_REFRESH
 
+/obj/machinery/sleeper/AltClick(mob/user)
+	if(!issilicon(user))
+		if(!user.Adjacent(get_turf(src)))
+			return
+
+		if(!can_use(user))
+			to_chat(user, SPAN("notice", "You cannot remove [beaker.name]."))
+			return
+
+	if(beaker)
+		grab_beaker(user)
+	else
+		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
+
+/obj/machinery/sleeper/proc/grab_beaker(mob/user)
+	if(!beaker)
+		return
+
+	if(issilicon(user))
+		beaker.dropInto(loc)
+	else
+		user.pick_or_drop(beaker, get_turf(src))
+
+	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
+	beaker = null
+	toggle_filter()
+	toggle_pump()
+	for(var/obj/item/reagent_containers/vessel/beaker/A in component_parts)
+		component_parts -= A
+	update_icon()
+	if(!(stat & (BROKEN|NOPOWER)))
+		playsound(src, clicksound, clickvol)
+
 /obj/machinery/sleeper/attack_ai(mob/user)
 	return attack_hand(user)
 
