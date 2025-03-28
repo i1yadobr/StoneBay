@@ -337,7 +337,7 @@
 	camera_alarm.clearAlarm(loc, src)
 
 //if false, then the camera is listed as DEACTIVATED and cannot be used
-/obj/machinery/camera/proc/can_use()
+/obj/machinery/camera/can_use()
 	if(!status)
 		return 0
 	if(stat & (EMPED|BROKEN))

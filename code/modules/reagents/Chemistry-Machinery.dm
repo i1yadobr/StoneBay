@@ -81,6 +81,34 @@
 				qdel(src)
 				return
 
+/obj/machinery/chem_master/AltClick(mob/user)
+	if(!issilicon(user))
+		if(!user.Adjacent(get_turf(src)))
+			return
+
+		if(!can_use(user))
+			to_chat(user, "<span class='notice'>You cannot remove [beaker.name].</span>")
+			return
+
+	if(beaker)
+		grab_beaker(user)
+	else
+		to_chat(user, "<span class='notice'>\The [src] does not have a beaker in it.</span>")
+
+/obj/machinery/chem_master/proc/grab_beaker(mob/M)
+	if(!beaker)
+		return
+
+	if(issilicon(M))
+		beaker:dropInto(loc)
+	else
+		M.pick_or_drop(beaker, get_turf(src))
+
+	to_chat(M, SPAN("notice", "You remove the [beaker.name] from the [name]."))
+	beaker = null
+	reagents.clear_reagents()
+	update_icon()
+
 /obj/machinery/chem_master/attackby(obj/item/W, mob/user)
 	if(default_deconstruction_screwdriver(user, W))
 		return
@@ -520,6 +548,32 @@
 		//Calling attack_hand(user) to make ensure no functionality is missed.
 		//If attack_hand is updated, this segment won't have to be updated as well.
 		return attack_hand(user)
+
+/obj/machinery/reagentgrinder/AltClick(mob/user)
+	if(!user.Adjacent(get_turf(src)))
+		return
+		
+	if(!can_use(user))
+		to_chat(user, "<span class='notice'>You cannot remove [beaker.name].</span>")
+		return
+
+	if(beaker)
+		grab_beaker(user)
+	else
+		to_chat(user, "<span class='notice'>\The [src] does not have a beaker in it.</span>")
+
+/obj/machinery/reagentgrinder/proc/grab_beaker(mob/M)
+	if(!beaker)
+		return
+
+	if(issilicon(M))
+		beaker:dropInto(loc)
+	else
+		M.pick_or_drop(beaker, get_turf(src))
+
+	to_chat(M, SPAN("notice", "You remove the [beaker.name] from the [name]."))
+	beaker = null
+	update_icon()
 
 /obj/machinery/reagentgrinder/proc/show_choices(mob/user)
 	if(!length(choices))

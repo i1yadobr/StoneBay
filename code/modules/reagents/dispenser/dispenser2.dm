@@ -75,6 +75,33 @@
 	cartridges -= label
 	SSnano.update_uis(src)
 
+/obj/machinery/chemical_dispenser/AltClick(mob/user)
+	if(!issilicon(user))
+		if(!user.Adjacent(get_turf(src)))
+			return
+
+		if(!can_use(user))
+			to_chat(user, "<span class='notice'>You cannot remove [container.name].</span>")
+			return
+
+	if(container)
+		grab_container(user)
+	else
+		to_chat(user, "<span class='notice'>\The [src] does not have a container in it.</span>")
+
+/obj/machinery/chemical_dispenser/proc/grab_container(mob/M)
+	if(!container)
+		return
+
+	if(issilicon(M))
+		container:dropInto(loc)
+	else
+		M.pick_or_drop(container, get_turf(src))
+
+	to_chat(M, SPAN("notice", "You remove the [container.name] from the [name]."))
+	container = null
+	update_icon()
+
 /obj/machinery/chemical_dispenser/attackby(obj/item/W, mob/user)
 	if(default_deconstruction_crowbar(user, W))
 		return

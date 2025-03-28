@@ -234,6 +234,14 @@ Class Procs:
 /obj/machinery/proc/inoperable(additional_flags = 0)
 	return (stat & (POWEROFF|NOPOWER|BROKEN|additional_flags))
 
+/obj/machinery/proc/can_use(mob/user)
+	if(user.stat || user.restrained() || user.paralysis || user.stunned || user.weakened)
+		return 0
+	if(in_range(src, user))
+		return 1
+	else
+		return 0
+
 /obj/machinery/CanUseTopic(mob/user)
 	if(stat & BROKEN)
 		return STATUS_CLOSE
