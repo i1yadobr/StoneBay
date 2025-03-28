@@ -395,6 +395,13 @@
 	item_state = "bar_f"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/dress/victorian
+	name = "late victorian dress"
+	desc = "A fancy blue dress with corsette. Its soft on touch. Seems to be made of velvet."
+	icon_state = "victorian_dress"
+	item_state = "victorian_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+
 //wedding stuff
 /obj/item/clothing/under/wedding
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
