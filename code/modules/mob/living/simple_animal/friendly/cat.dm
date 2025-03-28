@@ -3,7 +3,6 @@
 	for(var/mob_type in prey_types) { \
 		if(istype(M, mob_type)) { \
 			ret = TRUE; \
-			visible_message("LITTLE SHIT FOUND"); \
 			break; \
 		} \
 	}
@@ -55,10 +54,7 @@
 			var/prey_check
 			CHECK_PREY_TYPE(prey_check, M)
 			if(!prey_check)
-				visible_message("PREY CHECK FAILED: [prey_check]");
 				continue
-			else
-				visible_message("PREY CHECK NOT FAILED: [prey_check]");
 
 			if(prob(67))
 				visible_emote("toys with \the [M].")
