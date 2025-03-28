@@ -366,6 +366,7 @@
 #include "code\datums\configuration\events_section.dm"
 #include "code\datums\configuration\external_section.dm"
 #include "code\datums\configuration\game_section.dm"
+#include "code\datums\configuration\game_tips.dm"
 #include "code\datums\configuration\gamemode_section.dm"
 #include "code\datums\configuration\general_section.dm"
 #include "code\datums\configuration\ghost_section.dm"
