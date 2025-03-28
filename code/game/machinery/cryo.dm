@@ -264,6 +264,33 @@
 			user.visible_message(SPAN("notice", "\The [user] places \the [M] into \the [src]."), SPAN("notice", "You place \the [M] into \the [src]."))
 	return
 
+/obj/machinery/atmospherics/unary/cryo_cell/AltClick(mob/user)
+	if(!issilicon(user))
+		if(!user.Adjacent(get_turf(src)))
+			return
+
+		if(!can_use(user))
+			to_chat(user, SPAN("notice", "You cannot remove [beaker.name]."))
+			return
+
+	if(beaker)
+		grab_beaker(user)
+	else
+		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
+
+/obj/machinery/atmospherics/unary/cryo_cell/proc/grab_beaker(mob/user)
+	if(!beaker)
+		return
+
+	if(issilicon(user))
+		beaker:dropInto(get_step(loc, SOUTH))
+	else
+		user.pick_or_drop(beaker, get_step(loc, SOUTH))
+
+	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
+	beaker = null
+	playsound(src, clicksound, clickvol)
+
 /obj/machinery/atmospherics/unary/cryo_cell/on_update_icon()
 	ClearOverlays()
 	var/overlays_state = 0
