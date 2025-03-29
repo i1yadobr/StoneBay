@@ -13,14 +13,12 @@
 	desc = "A dress suit and slacks stained with hard work and dedication to science. Perhaps other things as well, but mostly hard work and dedication."
 	icon_state = "rdalt"
 	item_state = "rdalt"
-	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 
 /obj/item/clothing/under/rank/research_director/skirt
 	name = "research director's jumpskirt"
 	desc = "Feminine fashion for the style concious RD. Its fabric provides minor protection from biological contaminants."
 	icon_state = "director_skirt"
 	item_state = "director_skirt"
-	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/scientist

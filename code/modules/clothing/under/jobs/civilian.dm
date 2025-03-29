@@ -6,7 +6,7 @@
 	icon_state = "ba_suit"
 	item_state = "ba_suit"
 
-/obj/item/clothing/under/rank/bartender/skirt
+/obj/item/clothing/under/rank/bartender/skirt //Essentially we already have a similar dress, but it's donated, so...
 	name = "bartender's skirt"
 	icon_state = "bartender_skirt"
 	item_state = "bartender_skirt"
@@ -68,6 +68,7 @@
 	desc = "It's a snappy jumpskirt with a sturdy set of vest. It is very dirty."
 	icon_state = "miner_skirt"
 	item_state = "miner_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/chaplain
 	name = "chaplain's jumpsuit"
@@ -111,6 +112,7 @@
 	desc = "It's a jumpskirt worn by someone who works in the position of \"Head of Personnel\"."
 	icon_state = "hop_skirt"
 	item_state = "hop_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/head_of_personnel/whimsy
 	name = "head of personnel's suit"
