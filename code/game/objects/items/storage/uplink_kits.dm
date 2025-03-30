@@ -60,28 +60,6 @@
 	desc = "A sleek, sturdy box. That one has an explosion warning on it."
 	startswith = list(/obj/item/grenade/chem_grenade = 5)
 
-
-/obj/item/storage/box/syndie_kit/gland
-	desc = "A sleek, sturdy box. That one has an biohazard warning on it."
-	var/random_gland = list(
-		/obj/item/organ/internal/heart/gland/chem = 5, 
-		/obj/item/organ/internal/heart/gland/access = 5,
-		/obj/item/organ/internal/heart/gland/blood = 10,
-		/obj/item/organ/internal/heart/gland/egg = 8,
-		/obj/item/organ/internal/heart/gland/emp = 7,
-		/obj/item/organ/internal/heart/gland/heal = 2,
-		/obj/item/organ/internal/heart/gland/metroid = 1,
-		/obj/item/organ/internal/heart/gland/mindshock = 7,
-		/obj/item/organ/internal/heart/gland/plasma = 5,
-		/obj/item/organ/internal/heart/gland/ventcrawling = 8,    
-		/obj/item/organ/internal/heart/gland/transform = 10,
-		/obj/item/organ/internal/heart/gland/quantum = 4,    
-		)
-
-/obj/item/storage/box/syndie_kit/gland/Initialize()
-	contents = list(pickweight(random_gland))
-	. = ..()
-
 /obj/item/storage/box/syndie_kit/strange_seeds 
 	startswith = list(/obj/item/seeds/maneaterseed = 3)
 

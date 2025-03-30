@@ -96,8 +96,7 @@
 		playsound(mime.loc, SFX_EAT, rand(45, 60), FALSE)
 	. = ..()
 
-/obj/item/melee/mimesword/_examine_text(mob/user)
+/obj/item/melee/mimesword/examine(mob/user, infix)
 	. = ..()
 	if(times_consumed)
 		.+="\nIt has been sharpened [times_consumed] times."
-	

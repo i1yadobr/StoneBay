@@ -169,9 +169,10 @@
 	..()
 	if(can_wet_floor)
 		can_wet_floor = FALSE
-		var/turf/simulated/loc = get_turf(usr)
-		loc.wet_floor(2) // Lubbing floor for unlucky officers to slip on.
-		spawn(50) // So at max there will be 4 lubbed tiles.
+		spawn(1) // Small delay to prevent slipping on the tile you just walked on.
+			var/turf/simulated/loc = get_turf(usr)
+			loc.wet_floor(2) // Lubbing floor for unlucky officers to slip on.
+		spawn(51) // So at max there will be 4 lubbed tiles.
 			can_wet_floor = TRUE
 
 /obj/item/clothing/shoes/cult

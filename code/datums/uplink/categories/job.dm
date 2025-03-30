@@ -46,30 +46,23 @@
 	job_specific = list("Chief Medical Officer", "Chemist")
 	path = /obj/item/storage/box/syndie_kit/empty_grenades
 
-/datum/uplink_item/item/job/random_gland
-	name = "Random mutated organ."
-	desc = "A box with a special organ inside. Just put it inside someone, and see, what it does!"
-	item_cost = 5
-	job_specific = list("Chief Medical Officer", "Medical Doctor")
-	path = /obj/item/storage/box/syndie_kit/gland
-
 /datum/uplink_item/item/job/strange_seeds
 	name = "Strange Seeds"
 	desc = "A box of strange seeds. Just put it in tray and watch something horrible grow."
 	item_cost = 2
-	job_specific = list("Xenobotanist", "Gardener")
+	job_specific = list("Gardener")
 	path = /obj/item/storage/box/syndie_kit/strange_seeds
 
 /datum/uplink_item/item/job/applenades
 	name = "Box of applenades"
 	desc = "A box of grenades, that look like apples. Comes with water-pottasium sollution, but you can experiment and change reaction!"
 	item_cost = 5
-	job_specific = list("Xenobotanist", "Gardener")
+	job_specific = list("Gardener")
 	path = /obj/item/storage/box/syndie_kit/applenades
 
 /datum/uplink_item/item/job/emitter_controller
 	name = "Emitter Controller"
 	desc = "A remote emitter controller, disguised as a T-ray Scanner. It can store in its memory up to 3 emitters."
 	item_cost = 5
-	job_specific = list("Chief Engineer", "Engineer")
+	job_specific = list("Chief Engineer", "Station Engineer", "Atmospheric Technician")
 	path = /obj/item/device/t_scanner/emitter_controller
