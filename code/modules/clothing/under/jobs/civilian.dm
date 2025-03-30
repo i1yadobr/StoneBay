@@ -38,7 +38,7 @@
 	item_state = "qm"
 
 /obj/item/clothing/under/rank/qm/skirt
-	name = "quartermaster's jumpsskirt"
+	name = "quartermaster's jumpskirt"
 	desc = "It's a jumpskirt worn by the quartermaster. It's specially designed to prevent back injuries caused by pushing paper."
 	icon_state = "qm_skirt"
 	item_state = "qm_skirt"
