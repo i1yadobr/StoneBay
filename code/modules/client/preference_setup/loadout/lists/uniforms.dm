@@ -14,12 +14,12 @@
 
 /datum/gear/uniform/department_jumpskirt
 	display_name = "departmental jumpskirt selection"
-	path = /obj/item/clothing/under/rank
+	path = /obj/item/clothing/under/jumpskirt
 
-/datum/gear/suit/department_jumpskirt/New()
+/datum/gear/uniform/department_jumpskirt/New()
 	..()
 	var/list/paths_to_jobs = list(
-	/datum/job = list(/obj/item/clothing/under/jumpskirt/grey),
+	/datum/job = list(/obj/item/clothing/under/jumpskirt),
 	/datum/job/captain = list(/obj/item/clothing/under/rank/captain/skirt),
 	/datum/job/hos = list(
 		/obj/item/clothing/under/rank/head_of_security/skirt,
