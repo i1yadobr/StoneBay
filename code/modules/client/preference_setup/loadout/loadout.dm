@@ -489,7 +489,6 @@ var/list/hash_to_gear = list()
 		ASSERT(G.price)
 		ASSERT(!user.client.donator_info.has_item(G.type))
 		pref.loadout_is_busy = TRUE
-
 		var/comment = "Donation store purchase: [G.type]"
 		var/adjusted_price = G.discount ? G.price * G.discount : G.price
 		var/transaction = SSdonations.create_transaction(user.client, -adjusted_price, DONATIONS_TRANSACTION_TYPE_PURCHASE, comment)
@@ -706,7 +705,6 @@ var/list/hash_to_gear = list()
 	var/sort_category = "General"
 	var/flags              //Special tweaks in new
 	var/list/gear_tweaks = list() //List of datums which will alter the item after it has been spawned.
-	var/author_ckey // speaks for itself
 
 /datum/gear/New()
 	gear_hash = md5(display_name)
