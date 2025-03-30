@@ -21,7 +21,9 @@
 	var/list/paths_to_jobs = list(
 	/datum/job = list(/obj/item/clothing/under/jumpskirt/grey),
 	/datum/job/captain = list(/obj/item/clothing/under/rank/captain/skirt),
-	/datum/job/hos = list(/obj/item/clothing/under/rank/head_of_security/skirt),
+	/datum/job/hos = list(
+		/obj/item/clothing/under/rank/head_of_security/skirt,
+		/obj/item/clothing/under/rank/head_of_security/jensen/skirt),
 	/datum/job/warden = list(/obj/item/clothing/under/rank/warden/skirt),
 	/datum/job/detective = list(/obj/item/clothing/under/rank/det/skirt),
 	/datum/job/officer = list(/obj/item/clothing/under/rank/security/skirt),

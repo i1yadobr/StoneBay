@@ -109,8 +109,12 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/head_of_security/jensen
-	name = "head of security's jumpsuit"
 	desc = "You never asked for anything that stylish."
 	icon_state = "jensen"
 	item_state = "jensen"
 	siemens_coefficient = 0.6
+
+/obj/item/clothing/under/rank/head_of_security/jensen/skirt
+	icon_state = "jensen_skirt"
+	item_state = "jensen_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS

@@ -93,7 +93,11 @@
 	name = "\improper CentCom official's uniform"
 	desc = "The costume worn by CentCom Officials is simple yet stylish enough to define who's in charge."
 	icon_state = "centcom_official"
-	//item_state = "centcom_official"
+	item_state = "centcom_official"
+
+/obj/item/clothing/under/rank/centcom/official/skirt
+	icon_state = "centcom_official_skirt"
+	item_state = "centcom_official_skirt"
 
 /obj/item/clothing/under/ert
 	name = "ERT tactical uniform"
@@ -661,14 +665,14 @@
 	name = "green camouflage jumpsuit"
 	desc = "Camouflage tactical jumpsuit are designed for the most military of people."
 	icon_state = "green_camo"
-	//item_state = "green_camo"
+	item_state = "green_camo"
 
 /obj/item/clothing/under/camo/firestarter
 	name = "firestarter camouflage jumpsuit"
 	icon_state = "firestarter_camo"
-	//item_state = "firestarter_camo"
+	item_state = "firestarter_camo"
 
 /obj/item/clothing/under/camo/urban
 	name = "urban camouflage jumpsuit"
 	icon_state = "urban_camo"
-	//item_state = "urban_camo"
+	item_state = "urban_camo"
