@@ -8,9 +8,9 @@
 	density = 1
 	anchored = 1
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "mixer0"
+	icon_state = "mixer"
 	layer = BELOW_OBJ_LAYER
-	idle_power_usage = 20
+	idle_power_usage = 20 WATTS
 	clicksound = SFX_USE_BUTTON
 	clickvol = 20
 	var/obj/item/reagent_containers/vessel/beaker
@@ -41,6 +41,10 @@
 	create_reagents(capacity)
 	..()
 
+/obj/machinery/chem_master/Initialize()
+	. = ..()
+	update_icon()
+
 /obj/machinery/chem_master/Destroy()
 	if(loaded_pill_bottle)
 		loaded_pill_bottle.forceMove(get_turf(src))
@@ -50,7 +54,22 @@
 		beaker = null
 	if(matter_storage >= matter_amount_per_sheet)
 		new /obj/item/stack/material/glass(get_turf(src), Floor(matter_storage / matter_amount_per_sheet))
-	..()
+	return ..()
+
+/obj/machinery/chem_master/on_update_icon()
+	ClearOverlays()
+	if(stat & (NOPOWER | BROKEN))
+		set_light(0)
+		if(stat & BROKEN)
+			AddOverlays(OVERLAY(icon, "[icon_state]_b"))
+	else
+		var/overlay_icon_state = "[icon_state]_over[!!beaker]"
+		AddOverlays(OVERLAY(icon, overlay_icon_state))
+		AddOverlays(emissive_appearance(icon, overlay_icon_state))
+		set_light(0.8, 0.5, 2, 3, "#0099FF")
+
+	if(beaker)
+		AddOverlays(OVERLAY(icon, "[icon_state]_vessel"))
 
 /obj/machinery/chem_master/ex_act(severity)
 	switch(severity)
@@ -74,20 +93,20 @@
 		if(beaker)
 			to_chat(user, "A beaker is already loaded into the machine.")
 			return
+		if(!user.drop(W, src))
+			return
 		beaker = W
-		user.drop_item()
-		W.forceMove(src)
 		to_chat(user, "You add \the [W] to the machine!")
 		updateUsrDialog()
-		icon_state = "mixer1"
+		update_icon()
 
 	else if(istype(W, /obj/item/storage/pill_bottle))
 		if(loaded_pill_bottle)
 			to_chat(user, "A pill bottle is already loaded into the machine.")
 			return
+		if(!user.drop(W, src))
+			return
 		loaded_pill_bottle = W
-		user.drop_item()
-		W.forceMove(src)
 		to_chat(user, "You add \the [W] into the dispenser slot!")
 		updateUsrDialog()
 
@@ -113,7 +132,7 @@
 
 	if (href_list["ejectp"])
 		if(loaded_pill_bottle)
-			loaded_pill_bottle.loc = src.loc
+			loaded_pill_bottle.dropInto(loc)
 			loaded_pill_bottle = null
 	else if(href_list["close"])
 		close_browser(usr, "window=chemmaster")
@@ -184,10 +203,10 @@
 			return
 		else if (href_list["eject"])
 			if(beaker)
-				beaker:loc = src.loc
+				beaker:dropInto(loc)
 				beaker = null
 				reagents.clear_reagents()
-				icon_state = "mixer0"
+				update_icon()
 		else if (href_list["createpill"] || href_list["createpill_multiple"])
 			var/count = 1
 
@@ -218,7 +237,7 @@
 				reagents.trans_to_obj(P,amount_per_pill)
 				if(src.loaded_pill_bottle)
 					if(loaded_pill_bottle.contents.len < loaded_pill_bottle.max_storage_space)
-						P.loc = loaded_pill_bottle
+						P.forceMove(loaded_pill_bottle)
 						src.updateUsrDialog()
 
 		else if(href_list["createbottle"])
@@ -255,6 +274,18 @@
 			dat += "</table>"
 			show_browser(usr, dat, "window=chem_master")
 			return
+
+		else if(href_list["condiment_pack"])
+			if(!condi)
+				return
+
+			if(!spend_material(50, usr))
+				return
+
+			var/obj/item/reagent_containers/vessel/condiment/pack/P = new /obj/item/reagent_containers/vessel/condiment/pack(get_turf(loc))
+			reagents.trans_to_obj(P, 10)
+			return
+
 		else if(href_list["pill_sprite"])
 			pillsprite = href_list["pill_sprite"]
 		else if(href_list["bottle_sprite"])
@@ -278,8 +309,9 @@
 		else
 			B = new /obj/item/reagent_containers/vessel/bottle/chemical(loc)
 	B.AddComponent(/datum/component/label, bottle_name)
+	if(B.atom_flags | ATOM_FLAG_OPEN_CONTAINER)
+		B.lid.toggle()
 	reagents.trans_to_obj(B, reagent_amount)
-	B.atom_flags |= ATOM_FLAG_OPEN_CONTAINER // No automatic corking because fuck you chemist
 	B.update_icon()
 
 /obj/machinery/chem_master/proc/spend_material(amount = 0, mob/user)
@@ -352,7 +384,8 @@
 			dat +=        "<A href='?src=\ref[src];createbottle=1'>Create normal bottle | 60 units max | Glass: 2000</A><BR>"
 			dat +=    "<A href='?src=\ref[src];createbottle_big=1'>Create big bottle    | 90 units max | Glass: 3000</A>"
 		else
-			dat += "<A href='?src=\ref[src];createbottle=1'>Create bottle | 50 units max | Glass: 2000</A>"
+			dat += "<A href='?src=\ref[src];createbottle=1'>Create bottle | 50 units max | Glass: 2000</A><BR>"
+			dat += "<A href='?src=\ref[src];condiment_pack=1'>Create condiment pack | 10 units max | Glass: 50</A>"
 	if(!condi)
 		show_browser(user, "<meta charset=\"utf-8\"><TITLE>Chemmaster 3000</TITLE>Chemmaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
 	else
@@ -373,19 +406,23 @@
 	layer = BELOW_OBJ_LAYER
 	density = 0
 	anchored = 0
-	idle_power_usage = 5
-	active_power_usage = 100
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
+	idle_power_usage = 5 WATTS
+	active_power_usage = 100 WATTS
+
 	component_types = list(
 		/obj/item/circuitboard/grinder,
 		/obj/item/stock_parts/scanning_module,
 		/obj/item/stock_parts/manipulator = 2,
 		/obj/item/stock_parts/console_screen,
 	)
-	var/inuse = 0
-	var/obj/item/reagent_containers/beaker
+
+	var/inuse = FALSE
+	var/obj/item/reagent_containers/vessel/beaker/beaker
 	var/limit = 10
 	var/list/holdingitems = list()
+
+	/// Associative list of text -> image, where text is a name of an action.
+	var/static/list/choices
 
 /obj/machinery/reagentgrinder/Initialize(mapload)
 	. = ..()
@@ -393,7 +430,7 @@
 		beaker = new /obj/item/reagent_containers/vessel/beaker/large(src)
 	update_icon()
 
-/obj/machinery/reagentgrinder/update_icon()
+/obj/machinery/reagentgrinder/on_update_icon()
 	icon_state = "juicer"+num2text(!isnull(beaker))
 	return
 
@@ -401,7 +438,7 @@
 	if(beaker)
 		beaker.forceMove(get_turf(src))
 		beaker = null
-	..()
+	return ..()
 
 /obj/machinery/reagentgrinder/attackby(obj/item/O as obj, mob/user as mob)
 	if(default_deconstruction_screwdriver(user, O))
@@ -414,12 +451,10 @@
 	if(istype(O, /obj/item/reagent_containers/vessel/beaker))
 		if(beaker)
 			return TRUE
-		else
-			src.beaker =  O
-			user.drop_item()
-			O.loc = src
+		else if(user.drop(O, src))
+			beaker =  O
 			update_icon()
-			src.updateUsrDialog()
+			updateUsrDialog()
 			return FALSE
 
 	if(holdingitems && holdingitems.len >= limit)
@@ -466,17 +501,18 @@
 		to_chat(user, "\The [O] is not suitable for blending.")
 		return 1
 
-	user.remove_from_mob(O)
-	O.loc = src
+	if(!user.drop(O, src))
+		return
 	holdingitems += O
-	src.updateUsrDialog()
+	updateUsrDialog()
 	return 0
 
 /obj/machinery/reagentgrinder/attack_ai(mob/user as mob)
 	return 0
 
-/obj/machinery/reagentgrinder/attack_hand(mob/user as mob)
-	interact(user)
+/obj/machinery/reagentgrinder/attack_hand(mob/user)
+	if(!inuse)
+		show_choices(user)
 
 /obj/machinery/reagentgrinder/attack_robot(mob/user)
 	//Calling for adjacency as I don't think grinders are wireless.
@@ -485,81 +521,44 @@
 		//If attack_hand is updated, this segment won't have to be updated as well.
 		return attack_hand(user)
 
-/obj/machinery/reagentgrinder/interact(mob/user) // The microwave Menu
-	if(inoperable())
-		return
-	user.set_machine(src)
-	var/is_chamber_empty = 0
-	var/is_beaker_ready = 0
-	var/processing_chamber = ""
-	var/beaker_contents = ""
-	var/dat = ""
+/obj/machinery/reagentgrinder/proc/show_choices(mob/user)
+	if(!length(choices))
+		_generate_buttons()
 
-	if(!inuse)
-		for (var/obj/item/O in holdingitems)
-			processing_chamber += "\A [O.name]<BR>"
-
-		if (!processing_chamber)
-			is_chamber_empty = 1
-			processing_chamber = "Nothing."
-		if (!beaker)
-			beaker_contents = "<B>No beaker attached.</B><br>"
-		else
-			is_beaker_ready = 1
-			beaker_contents = "<B>The beaker contains:</B><br>"
-			var/anything = 0
-			for(var/datum/reagent/R in beaker.reagents.reagent_list)
-				anything = 1
-				beaker_contents += "[R.volume] - [R.name]<br>"
-			if(!anything)
-				beaker_contents += "Nothing<br>"
-
-
-		dat = {"
-	<b>Processing chamber contains:</b><br>
-	[processing_chamber]<br>
-	[beaker_contents]<hr>
-	"}
-		if (is_beaker_ready && !is_chamber_empty && !(stat & (NOPOWER|BROKEN)))
-			dat += "<A href='?src=\ref[src];action=grind'>Process the reagents</a><BR>"
-		if(holdingitems && holdingitems.len > 0)
-			dat += "<A href='?src=\ref[src];action=eject'>Eject the reagents</a><BR>"
-		if (beaker)
-			dat += "<A href='?src=\ref[src];action=detach'>Detach the beaker</a><BR>"
-	else
-		dat += "Please wait..."
-	show_browser(user, "<meta charset=\"utf-8\"><HEAD><TITLE>All-In-One Grinder</TITLE></HEAD><TT>[dat]</TT>", "window=reagentgrinder")
-	onclose(user, "reagentgrinder")
-	return
-
-
-/obj/machinery/reagentgrinder/OnTopic(user, href_list)
-	if(href_list["action"])
-		switch(href_list["action"])
-			if ("grind")
-				grind()
-			if("eject")
-				eject()
-			if ("detach")
+	var/choice = show_radial_menu(user, src, choices, require_near = TRUE)
+	switch(choice)
+		if("grind")
+			grind()
+		if("dump")
+			show_splash_text(user, "contents dumped", SPAN("notice", "You dump the contents of \the [src]."))
+			eject()
+		if("detach")
+			if(beaker)
+				show_splash_text(user, "beaker detached", SPAN("notice", "You detach \the [beaker] from \the [src]."))
 				detach()
-		interact(user)
-		return TOPIC_REFRESH
+			else
+				show_splash_text(user, "no beaker present!", SPAN("notice", "There's no beaker in \the [src]."))
 
-/obj/machinery/reagentgrinder/proc/detach()
-	if (!beaker)
-		return
-	beaker.dropInto(loc)
-	beaker = null
-	update_icon()
+/obj/machinery/reagentgrinder/proc/_generate_buttons()
+	LAZYINITLIST(choices)
+	for(var/action as anything in list("grind", "dump", "detach"))
+		choices[action] = image('icons/hud/radial.dmi', "radial_[action]")
 
 /obj/machinery/reagentgrinder/proc/eject()
-	if (!holdingitems || holdingitems.len == 0)
+	if(!length(holdingitems))
 		return
 
 	for(var/obj/item/O in holdingitems)
-		O.loc = src.loc
 		holdingitems -= O
-	holdingitems.Cut()
+		O.dropInto(loc)
+
+/obj/machinery/reagentgrinder/proc/detach()
+	if(!beaker)
+		return
+
+	beaker.dropInto(loc)
+	beaker = null
+	update_icon()
 
 /obj/machinery/reagentgrinder/proc/grind()
 
@@ -568,7 +567,12 @@
 		return
 
 	// Sanity check.
-	if (!beaker || (beaker && beaker.reagents.total_volume >= beaker.reagents.maximum_volume))
+	if(!beaker || beaker.reagents.total_volume >= beaker.reagents.maximum_volume)
+		return
+
+	if(!(beaker.atom_flags & ATOM_FLAG_OPEN_CONTAINER))
+		audible_message(SPAN("warning", "<b>The [src]</b> states, \"The beaker is closed, reagent processing is impossible.\""), splash_override = "The beaker is closed, reagent processing is impossible.")
+		playsound(src.loc, 'sound/signals/error28.ogg', 50, 1)
 		return
 
 	playsound(src.loc, 'sound/machines/blender.ogg', 50, 1)

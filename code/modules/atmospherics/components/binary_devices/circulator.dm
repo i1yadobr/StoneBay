@@ -7,6 +7,7 @@
 	icon = 'icons/obj/pipes.dmi'
 	icon_state = "circ-off"
 	anchored = 0
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 
 	var/kinetic_efficiency = 0.04 //combined kinetic and kinetic-to-electric efficiency
 	var/volume_ratio = 0.2
@@ -22,10 +23,12 @@
 
 	density = 1
 
-/obj/machinery/atmospherics/binary/circulator/New()
-	..()
+/obj/machinery/atmospherics/binary/circulator/Initialize()
+	. = ..()
 	desc = initial(desc) + " Its outlet port is to the [dir2text(dir)]."
 	air1.volume = 400
+
+	AddElement(/datum/element/simple_rotation)
 
 /obj/machinery/atmospherics/binary/circulator/proc/return_transfer_air()
 	var/datum/gas_mixture/removed
@@ -72,7 +75,7 @@
 		recent_moles_transferred = 0
 		update_icon()
 
-/obj/machinery/atmospherics/binary/circulator/update_icon()
+/obj/machinery/atmospherics/binary/circulator/on_update_icon()
 	if(stat & (BROKEN|NOPOWER) || !anchored)
 		icon_state = "circ-p"
 	else if(last_pressure_delta > 0 && recent_moles_transferred > 0)
@@ -121,25 +124,12 @@
 	else
 		..()
 
-/obj/machinery/atmospherics/binary/circulator/verb/rotate_clockwise()
-	set category = "Object"
-	set name = "Rotate Circulator (Clockwise)"
-	set src in view(1)
+/obj/machinery/atmospherics/binary/circulator/rotate()
+	..()
 
-	if (usr.stat || usr.restrained() || anchored)
-		return
-
-	src.set_dir(turn(src.dir, 90))
 	desc = initial(desc) + " Its outlet port is to the [dir2text(dir)]."
 
+/obj/machinery/atmospherics/binary/circulator/rotate_counter()
+	..()
 
-/obj/machinery/atmospherics/binary/circulator/verb/rotate_anticlockwise()
-	set category = "Object"
-	set name = "Rotate Circulator (Counterclockwise)"
-	set src in view(1)
-
-	if (usr.stat || usr.restrained() || anchored)
-		return
-
-	src.set_dir(turn(src.dir, -90))
 	desc = initial(desc) + " Its outlet port is to the [dir2text(dir)]."

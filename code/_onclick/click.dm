@@ -48,6 +48,26 @@
 	var/dragged = modifiers["drag"]
 	if(dragged && !modifiers[dragged])
 		return
+	if(modifiers["right"])
+		if(modifiers["shift"] && modifiers["ctrl"])
+			CtrlShiftRightClickOn(A)
+			return 1
+		if(modifiers["alt"] && modifiers["ctrl"])
+			CtrlAltRightClickOn(A)
+			return 1
+		if(modifiers["shift"] && modifiers["alt"])
+			ShiftAltRightClickOn(A)
+			return 1
+		if(modifiers["alt"])
+			AltRightClickOn(A)
+			return 1
+		if(modifiers["shift"])
+			ShiftRightClickOn(A)
+			return 1
+		if(modifiers["ctrl"])
+			CtrlRightClickOn(A)
+			return 1
+		return
 	if(modifiers["shift"] && modifiers["ctrl"])
 		CtrlShiftClickOn(A)
 		return 1
@@ -222,6 +242,9 @@
 	Only used for swapping hands
 */
 /mob/proc/MiddleClickOn(atom/A)
+	if(A.MiddleClick(src))
+		return
+
 	if(get_preference_value(/datum/client_preference/pointing) == GLOB.PREF_MIDDLE_CLICK)
 		if(pointed(A))
 			return
@@ -233,12 +256,8 @@
 		if(pointed(A))
 			return
 
-
-// In case of use break glass
-/*
-/atom/proc/MiddleClick(mob/M as mob)
+/atom/proc/MiddleClick(mob/M)
 	return
-*/
 
 /*
 	Shift click
@@ -247,7 +266,9 @@
 */
 /mob/proc/ShiftClickOn(atom/A)
 	A.ShiftClick(src)
+	SEND_SIGNAL(src, SIGNAL_MOB_SHIFT_CLICK, src, A)
 	return
+
 /atom/proc/ShiftClick(mob/user)
 	if(user.client && (src in view(user.client.eye)))
 		user.examinate(src)
@@ -260,7 +281,9 @@
 */
 /mob/proc/CtrlClickOn(atom/A)
 	A.CtrlClick(src)
+	SEND_SIGNAL(src, SIGNAL_MOB_CTRL_CLICK, src, A)
 	return
+
 /atom/proc/CtrlClick(mob/user)
 	return
 
@@ -276,14 +299,20 @@
 	A.AltClick(src)
 
 /atom/proc/AltClick(mob/user)
+	var/cancel = SEND_SIGNAL(src, SIGNAL_ALT_CLICKED, src, user)
+	if(cancel)
+		return
+
 	var/turf/T = get_turf(src)
+
 	if(T && user.TurfAdjacent(T))
 		if(user.listed_turf == T)
 			user.listed_turf = null
 		else
 			user.listed_turf = T
 			user.client.statpanel = "Turf"
-	return 1
+
+	return TRUE
 
 /mob/proc/TurfAdjacent(turf/T)
 	return T.AdjacentQuick(src)
@@ -291,7 +320,9 @@
 /mob/observer/ghost/TurfAdjacent(turf/T)
 	if(!isturf(loc) || !client)
 		return FALSE
-	return z == T.z && (get_dist(loc, T) <= client.view)
+
+	var/list/view_sizes = get_view_size(client.view)
+	return z == T.z && (get_dist(loc, T) <= max(view_sizes[1], view_sizes[2]))
 
 /*
 	Control+Shift click
@@ -312,6 +343,72 @@
 	return
 
 /atom/proc/CtrlAltClick(mob/user)
+	var/cancel = SEND_SIGNAL(src, SIGNAL_CTRL_ALT_CLICKED, src, user)
+	if(cancel)
+		return
+
+/*
+	Rclick.
+*/
+
+/*
+	Control+Rclick
+*/
+
+/mob/proc/CtrlRightClickOn(atom/A)
+	A.CtrlRightClick(src)
+
+/atom/proc/CtrlRightClick(mob/user)
+	return
+
+/*
+	Alt+Rclick
+*/
+
+/mob/proc/AltRightClickOn(atom/A)
+	A.AltRightClick(src)
+
+/atom/proc/AltRightClick(mob/user)
+	return
+
+/*
+	Shift+Rclick
+*/
+
+/mob/proc/ShiftRightClickOn(atom/A)
+	A.ShiftRightClick(src)
+
+/atom/proc/ShiftRightClick(mob/user)
+	return
+
+/*
+	Control+Alt+Rclick
+*/
+
+/mob/proc/CtrlAltRightClickOn(atom/A)
+	A.CtrlAltRightClick(src)
+
+/atom/proc/CtrlAltRightClick(mob/user)
+	return
+
+/*
+	Control+Shift+Rclick
+*/
+
+/mob/proc/CtrlShiftRightClickOn(atom/A)
+	A.CtrlShiftRightClick(src)
+
+/atom/proc/CtrlShiftRightClick(mob/user)
+	return
+
+/*
+	Shift+Alt+Rclick
+*/
+
+/mob/proc/ShiftAltRightClickOn(atom/A)
+	A.ShiftAltRightClick(src)
+
+/atom/proc/ShiftAltRightClick(mob/user)
 	return
 
 /*
@@ -332,10 +429,11 @@
 	LE.icon_state = "eyelasers"
 	playsound(usr.loc, 'sound/effects/weapons/energy/taser2.ogg', 75, 1)
 	LE.launch(A)
+
 /mob/living/carbon/human/LaserEyes()
 	if(nutrition>0)
 		..()
-		nutrition = max(nutrition - rand(1,5),0)
+		remove_nutrition(rand(1, 5))
 		handle_regular_hud_updates()
 	else
 		to_chat(src, "<span class='warning'>You're out of energy!  You need food!</span>")
@@ -357,48 +455,12 @@
 	if(direction != dir)
 		facedir(direction)
 
-/obj/screen/click_catcher
-	icon = 'icons/mob/screen_gen.dmi'
-	icon_state = "click_catcher"
-	plane = CLICKCATCHER_PLANE
-	mouse_opacity = 2
-	screen_loc = "CENTER-7,CENTER-7"
-
-/obj/screen/click_catcher/Destroy()
-	..()
-	return QDEL_HINT_LETMELIVE
-
-/proc/create_click_catcher()
-	. = list()
-	for(var/i = 0, i<15, i++)
-		for(var/j = 0, j<15, j++)
-			var/obj/screen/click_catcher/CC = new()
-			CC.screen_loc = "NORTH-[i],EAST-[j]"
-			. += CC
-
-/obj/screen/click_catcher/Click(location, control, params)
-	var/list/modifiers = params2list(params)
-	if(modifiers["middle"] && istype(usr, /mob/living/carbon))
-		var/mob/living/carbon/C = usr
-		C.swap_hand()
-	else
-		var/turf/T = screen_loc2turf(screen_loc, get_turf(usr))
-		if(T)
-			T.Click(location, control, params)
-	. = 1
-
 /*
 	Custom click handling
 */
 
 /mob
 	var/datum/stack/click_handlers
-
-/mob/Destroy()
-	if(click_handlers)
-		click_handlers.QdelClear()
-		QDEL_NULL(click_handlers)
-	. = ..()
 
 var/const/CLICK_HANDLER_NONE                 = 0
 var/const/CLICK_HANDLER_REMOVE_ON_MOB_LOGOUT = 1
@@ -410,16 +472,17 @@ var/const/CLICK_HANDLER_ALL                  = (~0)
 	var/species
 	var/mouse_icon
 	var/handler_name
+	var/list/parameters
 
 /datum/click_handler/New(mob/user)
 	..()
 	src.user = user
 	if(flags & (CLICK_HANDLER_REMOVE_ON_MOB_LOGOUT))
-		register_signal(user, SIGNAL_LOGGED_OUT, /datum/click_handler/proc/OnMobLogout)
+		register_signal(user, SIGNAL_LOGGED_OUT, nameof(/datum/click_handler.proc/OnMobLogout))
 
 /datum/click_handler/Destroy()
 	if(flags & (CLICK_HANDLER_REMOVE_ON_MOB_LOGOUT))
-		unregister_signal(user, SIGNAL_LOGGED_OUT, /datum/click_handler/proc/OnMobLogout)
+		unregister_signal(user, SIGNAL_LOGGED_OUT, nameof(/datum/click_handler.proc/OnMobLogout))
 	user = null
 	. = ..()
 
@@ -473,7 +536,7 @@ var/const/CLICK_HANDLER_ALL                  = (~0)
 		return
 	RemoveClickHandler(click_handlers.Top())
 
-/mob/proc/PushClickHandler(datum/click_handler/new_click_handler_type)
+/mob/proc/PushClickHandler(datum/click_handler/new_click_handler_type, list/parameters = null)
 	if((initial(new_click_handler_type.flags) & CLICK_HANDLER_REMOVE_ON_MOB_LOGOUT) && !client)
 		return FALSE
 	if(!click_handlers)
@@ -485,6 +548,7 @@ var/const/CLICK_HANDLER_ALL                  = (~0)
 	click_handler = new new_click_handler_type(src)
 	click_handler.Enter()
 	click_handlers.Push(click_handler)
+	click_handler.parameters = parameters
 
 	return click_handler
 
@@ -560,3 +624,11 @@ var/const/CLICK_HANDLER_ALL                  = (~0)
 			return spell_storage.perform(user,0,target)
 	to_chat(user, "We cannot find it's power... call admins")
 	return 0
+
+/datum/click_handler/emotes/target_emote
+	handler_name = "Target emote"
+
+/datum/click_handler/emotes/target_emote/OnClick(atom/target)
+	user.prepare_target_emote(target, parameters)
+	user.PopClickHandler()
+	return

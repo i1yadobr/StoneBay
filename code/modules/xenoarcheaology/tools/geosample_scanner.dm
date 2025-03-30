@@ -7,8 +7,8 @@
 	icon = 'icons/obj/virology.dmi'
 	icon_state = "analyser"
 
-	idle_power_usage = 20
-	active_power_usage = 300
+	idle_power_usage = 20 WATTS
+	active_power_usage = 300 WATTS
 
 	//var/obj/item/reagent_containers/glass/coolant_container
 	var/scanning = 0
@@ -47,7 +47,7 @@
 	..()
 	create_reagents(500)
 	coolant_reagents_purity[/datum/reagent/water] = 0.5
-	coolant_reagents_purity[/datum/reagent/drink/coffee/icecoffee] = 0.6
+	coolant_reagents_purity[/datum/reagent/caffeine/coffee/icecoffee] = 0.6
 	coolant_reagents_purity[/datum/reagent/drink/tea/icetea] = 0.6
 	coolant_reagents_purity[/datum/reagent/drink/milkshake] = 0.6
 	coolant_reagents_purity[/datum/reagent/leporazine] = 0.7
@@ -93,8 +93,8 @@
 		if(scanned_item)
 			to_chat(user, "<span class=warning>\The [src] already has \a [scanned_item] inside!</span>")
 			return
-		user.drop_item()
-		I.loc = src
+		if(!user.drop(I, src))
+			return
 		scanned_item = I
 		to_chat(user, "<span class=notice>You put \the [I] into \the [src].</span>")
 
@@ -197,7 +197,8 @@
 					radiation = rand() * 15 + 85
 					if(!rad_shield)
 						//irradiate nearby mobs
-						SSradiation.radiate(src, radiation / 25)
+						var/datum/radiation_source/rad_source = SSradiation.radiate(src, new /datum/radiation/preset/carbon_14(radiation))
+						rad_source.schedule_decay(30 SECONDS)
 				else
 					t_left_radspike = pick(10,15,25)
 
@@ -315,12 +316,12 @@
 		text += data
 		var/obj/item/paper/P = new(src, text, title)
 		P.stamped = list(/obj/item/stamp)
-		P.overlays = list("paper_stamped")
+		P.AddOverlays("paper_stamped")
 
 		last_scan_data = text
 
-		P.loc = src.loc
-		scanned_item.loc = src.loc
+		P.dropInto(loc)
+		scanned_item.dropInto(loc)
 		scanned_item = null
 
 /obj/machinery/radiocarbon_spectrometer/OnTopic(user, href_list)
@@ -357,6 +358,6 @@
 
 	else if(href_list["ejectItem"])
 		if(scanned_item)
-			scanned_item.loc = src.loc
+			scanned_item.dropInto(loc)
 			scanned_item = null
 		. = TOPIC_REFRESH

@@ -5,6 +5,7 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 	var/total_volume = 0
 	var/maximum_volume = 120
 	var/atom/my_atom = null
+	var/list/rad_sources = list()
 
 /datum/reagents/New(maximum_volume = 120, atom/my_atom)
 	if(!istype(my_atom))
@@ -14,20 +15,17 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 	src.maximum_volume = maximum_volume
 
 /datum/reagents/Destroy()
-	. = ..()
-
 	QDEL_NULL_LIST(reagent_list)
 	my_atom = null
+	return ..()
 
-/datum/reagents/Process()
+/datum/reagents/think()
 	if(!my_atom?.loc)
-		return PROCESS_KILL
-
-	THROTTLE(rad_cooldown, 10 SECOND)
+		return
 
 	// Add another update_*_effect procs here.
-	if(rad_cooldown)
-		update_radiation_effect()
+	update_radiation_effect()
+	set_next_think(world.time + CHEM_THINKING)
 
 /* Internal procs */
 /datum/reagents/proc/get_free_space() // Returns free space.
@@ -118,7 +116,7 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 	if(reaction_occured)
 		process_reactions() // Check again in case the new reagents can react again
 	else
-		update_processing()
+		update_thinking()
 
 	return reaction_occured
 
@@ -156,6 +154,10 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 	else
 		warning("[log_info_line(my_atom)] attempted to add a reagent of type '[reagent_type]' which doesn't exist. ([usr])")
 	return 0
+
+/datum/reagents/proc/_delayed_add_reagents(reagent_type, amount, data = null, safety = 0)
+	remove_think_ctx("delayed_add_reagents")
+	return add_reagent(reagent_type, amount, data, safety)
 
 /datum/reagents/proc/remove_reagent(reagent_type, amount, safety = 0)
 	if(!isnum(amount))
@@ -199,6 +201,13 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 				return 0
 	return 0
 
+/datum/reagents/proc/has_reagent_or_subtypes(reagent_type)
+	for(var/datum/reagent/current in reagent_list)
+		if(istype(current, reagent_type))
+			return TRUE
+
+	return FALSE
+
 /datum/reagents/proc/has_all_reagents(list/check_reagents)
 	//this only works if check_reagents has no duplicate entries... hopefully okay since it expects an associative list
 	var/missing = check_reagents.len
@@ -236,55 +245,47 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 		. += "[current.name] ([current.volume])"
 	return english_list(., "EMPTY", "", ", ", ", ")
 
-/// Calculate total radiation level.
+/// Return all the `/datum/radiation` from reagents.
 /datum/reagents/proc/get_radiation()
-	var/radiation = 0
+	var/list/info = list()
 
 	for(var/datum/reagent/R in reagent_list)
-		radiation += R.get_radiation()
+		if(!R.radiation)
+			continue
 
-	return radiation
+		info += R.radiation
 
-/// Starts processing if reagents has some persistent effects, stop otherwise.
-/datum/reagents/proc/update_processing()
+	return info
+
+/// Starts thinking if reagents has some persistent effects, stop otherwise.
+/datum/reagents/proc/update_thinking()
 	var/has_effects = 0
 
 	for(var/datum/reagent/R in reagent_list)
-		if(R.get_radiation())
+		if(R.radiation)
 			has_effects = TRUE
 			break
 
 	if(has_effects)
-		if(!is_processing)
-			START_PROCESSING(SSprocessing, src)
+		set_next_think(world.time)
 	else
-		if(is_processing)
-			STOP_PROCESSING(SSprocessing, src)
-
-#define CHECK_FLAG_R(target, flag, bool) \
-var/atom/__##target = target;\
-while(__##target != null)\
-{\
-	if(__##target.effect_flags & flag) {\
-		bool = TRUE;\
-		break;\
-	} else {\
-		__##target = __##target.loc;\
-	}\
-}
+		QDEL_LIST(rad_sources)
+		set_next_think(0)
 
 // Update effects.
 /// Update radiation effect.
 /datum/reagents/proc/update_radiation_effect()
-	var/has_flag = FALSE
-	CHECK_FLAG_R(my_atom, EFFECT_FLAG_RAD_SHIELDED, has_flag)
+	QDEL_LIST(rad_sources)
 
-	if(has_flag)
+	if(my_atom.atom_flags & ATOM_FLAG_IGNORE_RADIATION)
 		return
 
-	SSradiation.radiate(my_atom, get_radiation())
+	for(var/datum/reagent/R in reagent_list)
+		if(!R.radiation)
+			continue
 
-#undef CHECK_FLAG_R
+		R.radiation.activity = (R.radiation.specific_activity * R.volume)
+		rad_sources += SSradiation.radiate(my_atom, R.radiation)
 
 /* Holder-to-holder and similar procs */
 

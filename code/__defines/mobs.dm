@@ -9,16 +9,17 @@
 #define CANPARALYSE 0x4
 #define CANPUSH     0x8
 #define LEAPING     0x10
-#define PASSEMOTES  0x32    // Mob has a cortical borer or holders inside of it that need to see emotes.
+#define PASSEMOTES  0x20    // Mob has a cortical borer or holders inside of it that need to see emotes.
 #define GODMODE     0x1000
 #define FAKEDEATH   0x2000  // Replaces stuff like changeling.changeling_fakedeath.
 #define NO_ANTAG    0x4000  // Players are restricted from gaining antag roles when occupying this mob
 #define XENO_HOST   0x8000  // Tracks whether we're gonna be a baby alien's mummy.
+#define FAKELIVING  0x10000 // For vampire Revitalise()
+#define UNDEAD      0x20000 // For undead creatures
 
 // Grab Types
 #define GRAB_NORMAL			"normal"
-#define GRAB_NAB			"nab"
-#define GRAB_NAB_SPECIAL	"special nab"
+#define GRAB_QUICKCHOKE     "choke"
 
 // Grab levels.
 #define NORM_PASSIVE    "normal passive"
@@ -26,10 +27,6 @@
 #define NORM_AGGRESSIVE "normal aggressive"
 #define NORM_NECK       "normal neck"
 #define NORM_KILL       "normal kill"
-
-#define NAB_PASSIVE		"nab passive"
-#define NAB_AGGRESSIVE	"nab aggressive"
-#define NAB_KILL		"nab kill"
 
 #define BORGMESON 0x1
 #define BORGTHERM 0x2
@@ -225,6 +222,11 @@
 #define BP_CANCER   "cancer"
 #define BP_EMBRYO   "alien embryo"
 #define BP_GANGLION "spinal ganglion"
+#define BP_ADAMANTINE_RESONATOR "adamantine resonator"
+#define BP_ADAMANTINE_VOCAL_CORDS "adamantine vocal cords"
+#define BP_METROID 	"metroid jelly vessel"
+
+#define BP_INTERNAL_ORGANS list(BP_BRAIN, BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS)
 
 // Robo Organs.
 #define BP_POSIBRAIN	"posibrain"
@@ -247,10 +249,20 @@
 #define BP_ALL_LIMBS list(BP_CHEST, BP_GROIN, BP_HEAD, BP_L_ARM, BP_R_ARM, BP_L_HAND, BP_R_HAND, BP_L_LEG, BP_R_LEG, BP_L_FOOT, BP_R_FOOT)
 #define BP_BY_DEPTH list(BP_HEAD, BP_L_HAND, BP_R_HAND, BP_L_ARM, BP_R_ARM, BP_L_FOOT, BP_R_FOOT, BP_L_LEG, BP_R_LEG, BP_GROIN, BP_CHEST)
 #define BP_FEET list(BP_L_FOOT, BP_R_FOOT)
+#define BP_LIMBS_LOCOMOTION list(BP_L_LEG, BP_R_LEG, BP_L_FOOT, BP_R_FOOT)
+#define BP_LIMBS_ARM_LOCOMOTION list(BP_L_HAND, BP_R_HAND, BP_L_ARM, BP_R_ARM)
 
 // Prosthetic helpers.
 #define BP_IS_ROBOTIC(org)  (org.status & ORGAN_ROBOTIC)
 #define BP_IS_ASSISTED(org) (org.status & ORGAN_ASSISTED)
+
+GLOBAL_LIST_INIT(organ_tag_to_name, list(
+	BP_HEAD  = "head", BP_CHEST = "full body",
+	BP_GROIN = "lower body", BP_L_LEG = "left leg",
+	BP_R_LEG  = "right leg", BP_L_ARM = "left arm",
+	BP_R_ARM = "right arm", BP_L_HAND = "left hand",
+	BP_R_HAND = "right hand", BP_L_FOOT = "left foot",
+	BP_R_FOOT = "right foot"))
 
 #define SYNTH_BLOOD_COLOUR "#030303"
 #define SYNTH_FLESH_COLOUR "#575757"
@@ -291,20 +303,27 @@
 #define CORPSE_CAN_REENTER_AND_RESPAWN 2
 
 #define SPECIES_HUMAN       "Human"
+#define SPECIES_GRAVWORLDER	"Grav-Adapted Human"
+#define SPECIES_SPACER		"Space-Adapted Human"
+#define SPECIES_VATGROWN 	"Vat-Grown Human"
 #define SPECIES_TAJARA      "Tajara"
 #define SPECIES_DIONA       "Diona"
 #define SPECIES_VOX         "Vox"
-#define SPECIES_IPC         "Machine"
 #define SPECIES_UNATHI      "Unathi"
 #define SPECIES_SKRELL      "Skrell"
-#define SPECIES_NABBER      "Giant Armoured Serpentid"
 #define SPECIES_PROMETHEAN  "Promethean"
+#define SPECIES_STARGAZER  	"Stargazer"
+#define SPECIES_SLIMEPERSON "Slimeperson"
+#define SPECIES_LUMINESCENT "Luminescent"
 #define SPECIES_EGYNO       "Egyno"
-#define SPECIES_MONKEY      "Monkey"
-#define SPECIES_GOLEM       "Golem"
-#define SPECIES_ABDUCTOR    "Abductor"
+#define SPECIES_SWINE		"Trottine"
 
-// Ayyy IDs.
+#define SPECIES_MONKEY      "Monkey"
+#define SPECIES_FARWA       "Farwa"
+#define SPECIES_NEAERA      "Naera"
+#define SPECIES_STOK        "Stok"
+
+// Xenomorphs IDs.
 #define SPECIES_XENO                 "Xenomorph"
 #define SPECIES_XENO_DRONE           "Xenomorph Drone"
 #define SPECIES_XENO_HUNTER          "Xenomorph Hunter"
@@ -313,6 +332,29 @@
 #define SPECIES_XENO_DRONE_VILE      "Xenomorph Vile Drone"
 #define SPECIES_XENO_HUNTER_FERAL    "Xenomorph Feral Hunter"
 #define SPECIES_XENO_SENTINEL_PRIMAL "Xenomorph Primal Sentinel"
+
+//Defines for Golem Species IDs
+#define SPECIES_GOLEM 				"Golem"
+#define SPECIES_GOLEM_ADAMANTINE 	"Adamantine Golem"
+#define SPECIES_GOLEM_PLASMA 		"Plasma Golem"
+#define SPECIES_GOLEM_DIAMOND 		"Diamond Golem"
+#define SPECIES_GOLEM_GOLD 			"Gold Golem"
+#define SPECIES_GOLEM_SILVER 		"Silver Golem"
+#define SPECIES_GOLEM_PLASTEEL 		"Plasteel Golem"
+#define SPECIES_GOLEM_TITANIUM 		"Titanium Golem"
+#define SPECIES_GOLEM_PLASTITANIUM 	"Plastitanium Golem"
+#define SPECIES_GOLEM_WOOD 			"Wood Golem"
+#define SPECIES_GOLEM_URANIUM 		"Uranium Golem"
+#define SPECIES_GOLEM_SAND 			"Sand Golem"
+#define SPECIES_GOLEM_GLASS 		"Glass Golem"
+#define SPECIES_GOLEM_BLUESPACE 	"Bluespace Golem"
+#define SPECIES_GOLEM_CULT 			"Cult Golem"
+#define SPECIES_GOLEM_CLOTH 		"Cloth Golem"
+#define SPECIES_GOLEM_PLASTIC 		"Plastic Golem"
+#define SPECIES_GOLEM_BRONZE 		"Bronze Golem"
+#define SPECIES_GOLEM_CARDBOARD 	"Cardboard Golem"
+#define SPECIES_GOLEM_LEATHER 		"Leather Golem"
+#define SPECIES_GOLEM_HYDROGEN 		"Hydrogen Golem"
 
 #define SURGERY_CLOSED 0
 #define SURGERY_OPEN 1
@@ -369,6 +411,21 @@
 #define HUMAN_HEIGHT_LARGE  1.04
 #define HUMAN_HEIGHT_HUGE   1.07
 
+#define POSSIBLE_LIZARD_TOXINS list(/datum/reagent/toxin/plasticide,\
+									/datum/reagent/toxin/amatoxin,\
+									/datum/reagent/toxin/carpotoxin,\
+									/datum/reagent/toxin/plasma,\
+									/datum/reagent/toxin/chlorine,\
+									/datum/reagent/toxin/potassium_chloride,\
+									/datum/reagent/toxin/potassium_chlorophoride,\
+									/datum/reagent/toxin/fertilizer,\
+									/datum/reagent/mutagen,\
+									/datum/reagent/space_drugs,\
+									/datum/reagent/mindbreaker,\
+									/datum/reagent/psilocybin)
+
+#define SPELL_NOREMORSE_GHOST_DAMAGE 1 ///How much damage the ghosts do when attacking mobs during no remorse spell
+
 /proc/human_height_text(x)
 	switch(x)
 		if(HUMAN_HEIGHT_TINY) return "Dwarfish"
@@ -377,3 +434,44 @@
 		if(HUMAN_HEIGHT_LARGE) return "Tall"
 		if(HUMAN_HEIGHT_HUGE) return "Towering"
 	return "Unusual"
+
+// Human Overlays Indexes
+#define HO_L_HAND_LOW_LAYER         1
+#define HO_R_HAND_LOW_LAYER         2
+#define HO_BODY_LAYER               3
+#define HO_MUTATIONS_LAYER          4
+#define HO_SKIN_LAYER               5
+#define HO_DAMAGE_LAYER             6
+#define HO_SURGERY_LAYER            7
+#define HO_UNDERWEAR_LAYER          8
+#define HO_UNDERWEAR_PLUS_LAYER     9
+#define HO_UNIFORM_LAYER           10
+#define HO_BANDAGE_LAYER           11
+#define HO_ID_LAYER                12
+#define HO_SHOES_LAYER             13
+#define HO_GLOVES_LAYER            14
+#define HO_BELT_LAYER              15
+#define HO_UNDERWEAR_UNIFORM_LAYER 16
+#define HO_SUIT_LAYER              17
+#define HO_TAIL_LAYER              18
+#define HO_FACIAL_HAIR_LAYER       19
+#define HO_FACEMASK_ALT_LAYER      20
+#define HO_GLASSES_LAYER           21
+#define HO_BELT_LAYER_ALT          22
+#define HO_SUIT_STORE_LAYER        23
+#define HO_BACK_LAYER              24
+#define HO_DEFORM_LAYER            25
+#define HO_HAIR_LAYER              26
+#define HO_GOGGLES_LAYER           27
+#define HO_EARS_LAYER              28
+#define HO_FACEMASK_LAYER          29
+#define HO_HEAD_LAYER              30
+#define HO_COLLAR_LAYER            31
+#define HO_UNDERWEAR_SUIT_LAYER    32
+#define HO_HANDCUFF_LAYER          33
+#define HO_L_HAND_LAYER            34
+#define HO_R_HAND_LAYER            35
+#define HO_FIRE_LAYER              36
+#define HO_MODIFIER_EFFECTS_LAYER  37
+#define HO_TARGETED_LAYER          38
+#define HO_TOTAL_LAYERS            39

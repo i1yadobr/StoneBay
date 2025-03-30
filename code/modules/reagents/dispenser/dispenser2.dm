@@ -24,7 +24,7 @@
 		/obj/item/stock_parts/console_screen,
 	)
 
-	idle_power_usage = 100
+	idle_power_usage = 100 WATTS
 	density = 1
 	anchored = 1
 	obj_flags = OBJ_FLAG_ANCHORABLE
@@ -35,9 +35,9 @@
 		for(var/type in spawn_cartridges)
 			add_cartridge(new type(src))
 
-/obj/machinery/chemical_dispenser/_examine_text(mob/user)
+/obj/machinery/chemical_dispenser/examine(mob/user, infix)
 	. = ..()
-	. += "\nIt has [cartridges.len] cartridges installed, and has space for [DISPENSER_MAX_CARTRIDGES - cartridges.len] more."
+	. += "It has [cartridges.len] cartridges installed, and has space for [DISPENSER_MAX_CARTRIDGES - cartridges.len] more."
 
 /obj/machinery/chemical_dispenser/proc/add_cartridge(obj/item/reagent_containers/chem_disp_cartridge/C, mob/user)
 	if(!istype(C))
@@ -61,10 +61,11 @@
 		return
 
 	if(user)
-		user.drop_from_inventory(C)
+		if(!user.drop(C, src))
+			return
 		to_chat(user, "<span class='notice'>You add \the [C] to \the [src].</span>")
-
-	C.loc = src
+	else
+		C.forceMove(src)
 	cartridges[C.label] = C
 	cartridges = sortAssoc(cartridges)
 	SSnano.update_uis(src)
@@ -91,7 +92,7 @@
 		var/obj/item/reagent_containers/chem_disp_cartridge/C = remove_cartridge(label)
 		if(C)
 			to_chat(user, "<span class='notice'>You remove \the [C] from \the [src].</span>")
-			C.loc = loc
+			C.dropInto(loc)
 
 	else if(istype(W, /obj/item/reagent_containers/vessel) || istype(W, /obj/item/reagent_containers/food))
 		if(container)
@@ -112,9 +113,9 @@
 			to_chat(user, "<span class='warning'>You don't see how \the [src] could dispense reagents into \the [RC].</span>")
 			return
 
+		if(!user.drop(RC, src))
+			return
 		container =  RC
-		user.drop_from_inventory(RC)
-		RC.loc = src
 		update_icon()
 		to_chat(user, "<span class='notice'>You set \the [RC] on \the [src].</span>")
 		SSnano.update_uis(src) // update all UIs attached to src
@@ -185,10 +186,10 @@
 /obj/machinery/chemical_dispenser/attack_hand(mob/user as mob)
 	ui_interact(user)
 
-/obj/machinery/chemical_dispenser/update_icon()
-	overlays.Cut()
+/obj/machinery/chemical_dispenser/on_update_icon()
+	ClearOverlays()
 	if(container)
 		var/mutable_appearance/beaker_overlay
 		beaker_overlay = image('icons/obj/chemical.dmi', src, "lil_beaker")
 		beaker_overlay.pixel_x = rand(-10, 5)
-		overlays += beaker_overlay
+		AddOverlays(beaker_overlay)

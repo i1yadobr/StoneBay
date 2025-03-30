@@ -26,6 +26,7 @@ var/global/datum/controller/occupations/job_master
 		for(var/J in all_jobs)
 			var/datum/job/job = decls_repository.get_decl(J)
 			if(!job)	continue
+			if(!job.show_in_setup) continue
 			occupations += job
 			occupations_by_type[job.type] = job
 			occupations_by_title[job.title] = job
@@ -66,10 +67,18 @@ var/global/datum/controller/occupations/job_master
 
 
 	proc/GetJob(rank)
-		if(!rank)	return null
+		if(!rank)
+			return null
+
+		rank = lowertext(rank)
+
 		for(var/datum/job/J in occupations)
-			if(!J)	continue
-			if(J.title == rank)	return J
+			if(!J)
+				continue
+
+			if(lowertext(J.title) == rank)
+				return J
+
 		return null
 
 	proc/ShouldCreateRecords(rank)
@@ -104,7 +113,7 @@ var/global/datum/controller/occupations/job_master
 		if(job.minimum_character_age && (joining.client.prefs.age < job.minimum_character_age))
 			to_chat(joining, SPAN_WARNING("Your character's in-game age is too low for this job."))
 			return FALSE
-		if(job.faction_restricted && (joining.client.prefs.faction != GLOB.using_map.company_name || (joining.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
+		if(job.faction_restricted && (joining.client.prefs.background != GLOB.using_map.company_name || (joining.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
 			to_chat(joining, SPAN_WARNING("Your characte must be loyal to [GLOB.using_map.company_name]."))
 			return FALSE
 		if(!job.player_old_enough(joining.client))
@@ -116,12 +125,12 @@ var/global/datum/controller/occupations/job_master
 		return TRUE
 
 	proc/CheckUnsafeSpawn(mob/living/spawner, turf/spawn_turf)
-		var/radlevel = SSradiation.get_rads_at_turf(spawn_turf)
+		var/rad_dose = SSradiation.get_total_absorbed_dose_at_turf(spawn_turf, AVERAGE_HUMAN_WEIGHT)
 		var/airstatus = IsTurfAtmosUnsafe(spawn_turf)
-		if(airstatus || radlevel > 0)
+		if(airstatus || rad_dose > SAFE_RADIATION_DOSE)
 			var/reply = alert(spawner, "Warning. Your selected spawn location seems to have unfavorable conditions. \
 			You may die shortly after spawning. \
-			Spawn anyway? More information: [airstatus] Radiation: [radlevel] Bq", "Atmosphere warning", "Abort", "Spawn anyway")
+			Spawn anyway? More information: [airstatus] Radiation: [fmt_siunit(rad_dose, "Gy/s", 3)]", "Atmosphere warning", "Abort", "Spawn anyway")
 			if(reply == "Abort")
 				return FALSE
 			else
@@ -137,7 +146,7 @@ var/global/datum/controller/occupations/job_master
 				return FALSE
 			if(job.minimum_character_age && (player.client.prefs.age < job.minimum_character_age))
 				return FALSE
-			if(job.faction_restricted && (player.client.prefs.faction != GLOB.using_map.company_name || (player.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
+			if(job.faction_restricted && (player.client.prefs.background != GLOB.using_map.company_name || (player.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
 				return FALSE
 			if(jobban_isbanned(player, rank))
 				return FALSE
@@ -181,7 +190,7 @@ var/global/datum/controller/occupations/job_master
 			if(job.minimum_character_age && (player.client.prefs.age < job.minimum_character_age))
 				Debug("FOC character not old enough, Player: [player]")
 				continue
-			if(job.faction_restricted && (player.client.prefs.faction != GLOB.using_map.company_name || (player.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
+			if(job.faction_restricted && (player.client.prefs.background != GLOB.using_map.company_name || (player.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
 				Debug("FOC character is not loyal to [GLOB.using_map.company_name]")
 				continue
 			if(flag && !(flag in player.client.prefs.be_special_role))
@@ -201,7 +210,7 @@ var/global/datum/controller/occupations/job_master
 			if(job.minimum_character_age && (player.client.prefs.age < job.minimum_character_age))
 				continue
 
-			if(job.faction_restricted && (player.client.prefs.faction != GLOB.using_map.company_name || (player.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
+			if(job.faction_restricted && (player.client.prefs.background != GLOB.using_map.company_name || (player.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
 				continue
 
 			if(istype(job, GetJob("Assistant"))) // We don't want to give him assistant, that's boring!
@@ -246,33 +255,16 @@ var/global/datum/controller/occupations/job_master
 				var/list/candidates = FindOccupationCandidates(job, level)
 				if(!candidates.len)	continue
 
-				// Build a weighted list, weight by age.
-				var/list/weightedCandidates = list()
 				for(var/mob/V in candidates)
 					// Log-out during round-start? What a bad boy, no head position for you!
-					if(!V.client) continue
+					if(!V.client)
+						continue
 					var/age = V.client.prefs.age
 
 					if(age < job.minimum_character_age) // Nope.
 						continue
 
-					switch(age)
-						if(job.minimum_character_age to (job.minimum_character_age+10))
-							weightedCandidates[V] = 3 // Still a bit young.
-						if((job.minimum_character_age+10) to (job.ideal_character_age-10))
-							weightedCandidates[V] = 6 // Better.
-						if((job.ideal_character_age-10) to (job.ideal_character_age+10))
-							weightedCandidates[V] = 10 // Great.
-						if((job.ideal_character_age+10) to (job.ideal_character_age+20))
-							weightedCandidates[V] = 6 // Still good.
-						if((job.ideal_character_age+20) to INFINITY)
-							weightedCandidates[V] = 3 // Geezer.
-						else
-							// If there's ABSOLUTELY NOBODY ELSE
-							if(candidates.len == 1) weightedCandidates[V] = 1
-
-
-				var/mob/new_player/candidate = pickweight(weightedCandidates)
+				var/mob/new_player/candidate = pick(candidates)
 				if(AssignRole(candidate, command_position))
 					return 1
 		return 0
@@ -487,9 +479,6 @@ var/global/datum/controller/occupations/job_master
 					return H.Robotize()
 				if("AI")
 					return H
-				if("Captain")
-					var/sound/announce_sound = (GAME_STATE <= RUNLEVEL_SETUP)? null : sound('sound/misc/boatswain.ogg', volume=20)
-					captain_announcement.Announce("All hands, Captain [H.real_name] on deck!", new_sound=announce_sound)
 
 		// put any loadout items that couldn't spawn into storage or on the ground
 		for(var/datum/gear/G in spawn_in_storage)
@@ -514,8 +503,8 @@ var/global/datum/controller/occupations/job_master
 		to_chat(H, "<b>To speak on your department's radio channel use :h. For the use of other channels, examine your headset.</b>")
 
 		if(rank == "Merchant" && GLOB.merchant_illegalness)
-			to_chat(H, SPAN_DANGER("<b>Your trading license is a forgery. Trading on NSS \"Exodus\" is illegal!</b>"))
-			H.mind.store_memory("Your trading license is a forgery. Trading on NSS \"Exodus\" is illegal.")
+			to_chat(H, SPAN_DANGER("<b>Your trading license is a forgery. Trading on [station_name()] is illegal!</b>"))
+			H.mind.store_memory("Your trading license is a forgery. Trading on [station_name()] is illegal.")
 
 		if(job.req_admin_notify)
 			to_chat(H, "<b>You are playing a job that is important for Game Progression. If you have to disconnect, please notify the admins via adminhelp.</b>")
@@ -565,39 +554,21 @@ var/global/datum/controller/occupations/job_master
 		BITSET(H.hud_updateflag, SPECIALROLE_HUD)
 		return H
 
-	proc/LoadJobs(jobsfile) //ran during round setup, reads info from jobs.txt -- Urist
+	proc/LoadJobs()
 		if(!config.misc.load_jobs_from_txt)
-			return 0
+			return FALSE
 
-		var/list/jobEntries = file2list(jobsfile)
+		var/list/job_entries = config.jobs.maps[lowertext(GLOB.using_map.name)] || list()
 
-		for(var/job in jobEntries)
-			if(!job)
+		for(var/job in job_entries)
+			var/datum/job/J = GetJob(job)
+
+			if(!J)
 				continue
 
-			job = trim(job)
-			if (!length(job))
-				continue
+			J.set_positions(job_entries[job])
 
-			var/pos = findtext(job, "=")
-			var/name = null
-			var/value = null
-
-			if(pos)
-				name = copytext(job, 1, pos)
-				value = copytext(job, pos + 1)
-			else
-				continue
-
-			if(name && value)
-				var/datum/job/J = GetJob(name)
-				if(!J)	continue
-				J.total_positions = text2num(value)
-				J.spawn_positions = text2num(value)
-				if(name == "AI" || name == "Cyborg")//I dont like this here but it will do for now
-					J.total_positions = 0
-
-		return 1
+		return TRUE
 
 
 	proc/HandleFeedbackGathering()
@@ -708,7 +679,7 @@ var/global/datum/controller/occupations/job_master
 	if(J.no_latejoin)
 		return FALSE
 
-	var/datum/storyteller_character/ST = SSstoryteller.get_character()
+	var/datum/storyteller_character/ST = SSstoryteller.character
 	var/available_vacancies = ST ? ST.get_available_vacancies() : job_master.get_available_vacancies()
 	if(length(GLOB.vacancies) >= available_vacancies)
 		return FALSE

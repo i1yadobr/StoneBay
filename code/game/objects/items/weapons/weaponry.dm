@@ -24,7 +24,7 @@
 		return
 
 	if(!user.IsAdvancedToolUser())
-		to_chat(user, SPAN_WARNING("You don't have the dexterity to do this!</span>"))
+		to_chat(user, FEEDBACK_YOU_LACK_DEXTERITY)
 		return
 
 	if((MUTATION_CLUMSY in user.mutations) && prob(50))
@@ -130,7 +130,7 @@
 
 /obj/effect/energy_net/Initialize()
 	. = ..()
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
 
 /obj/effect/energy_net/Destroy()
 	if(istype(captured, /mob/living/carbon))
@@ -138,11 +138,10 @@
 			captured.handcuffed = null
 	if(captured)
 		unbuckle_mob()
-	STOP_PROCESSING(SSobj, src)
 	captured = null
 	return ..()
 
-/obj/effect/energy_net/Process()
+/obj/effect/energy_net/think()
 	if(temporary)
 		countdown--
 	if(captured.buckled != src)
@@ -153,8 +152,12 @@
 		health = 0
 	healthcheck()
 
-/obj/effect/energy_net/Move()
-	..()
+	set_next_think(world.time + 1 SECOND)
+
+/obj/effect/energy_net/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
 
 	if(buckled_mob)
 		buckled_mob.forceMove(loc, unbuckle_mob = FALSE)
@@ -210,7 +213,7 @@
 		else
 			health -= rand(1,3)
 
-	else if (MUTATION_HULK in user.mutations)
+	else if((MUTATION_HULK in user.mutations) || (MUTATION_STRONG in user.mutations))
 		health = 0
 	else
 		health -= rand(5,8)
@@ -233,7 +236,7 @@
 		"<span class='warning'>\The [user] attempts to free themselves from \the [src]!</span>",
 		"<span class='warning'>You attempt to free yourself from \the [src]!</span>"
 		)
-	if(do_after(user, rand(min_free_time, max_free_time), src, incapacitation_flags = INCAPACITATION_DISABLED))
+	if(do_after(user, rand(min_free_time, max_free_time), src, , luck_check_type = LUCK_CHECK_COMBAT, incapacitation_flags = INCAPACITATION_DISABLED))
 		health = 0
 		healthcheck()
 		return 1

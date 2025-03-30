@@ -6,6 +6,7 @@
 	icon = 'icons/obj/flamer.dmi'
 	icon_state = "flamer"
 	item_state = "flamer"
+	improper_held_icon = TRUE
 	wielded_item_state = "flamer-wielded"
 	slot_flags = SLOT_BACK
 	w_class = ITEM_SIZE_HUGE
@@ -28,48 +29,53 @@
 	var/last_use = 0
 	var/last_fired = 0
 	fire_delay = 35
+	has_safety = FALSE
 
-/obj/item/gun/flamer/Initialize()
+/obj/item/gun/flamer/Destroy()
+	QDEL_NULL(fuel_tank)
+	QDEL_NULL(pressure_tank)
+	igniter = null
+	gauge = null
+	QDEL_NULL_LIST(attached_electronics)
 	. = ..()
-	START_PROCESSING(SSobj, src)
 
-/obj/item/gun/flamer/_examine_text(mob/user)
+/obj/item/gun/flamer/examine(mob/user, infix)
 	. = ..()
 
 	if(igniter)
-		. += "\nIt's turned [lit? "on" : "off"]."
+		. += "It's turned [lit? "on" : "off"]."
 	else
-		. += "\n[SPAN_WARNING("Igniter not installed in [src]!")]"
+		. += SPAN_WARNING("Igniter not installed in [src]!")
 
 	if(pressure_tank)
-		. += "\nThe pressure tank wrenched into the [src]."
+		. += "The pressure tank wrenched into the [src]."
 
 	if(gauge)
 		if(fuel_tank)
-			. += "\nThe fuel tank contains [round(get_fuel())]/[fuel_tank.max_fuel] units of fuel."
+			. += "The fuel tank contains [round(get_fuel())]/[fuel_tank.max_fuel] units of fuel."
 		else
-			. += "\n[SPAN_WARNING("There's no fuel tank in [src]!")]"
+			. += SPAN_WARNING("There's no fuel tank in [src]!")
 
 		if(pressure_tank)
-			. += "\nThe pressure gauge shows the current tank is [pressure_tank.air_contents.return_pressure()]."
+			. += "The pressure gauge shows the current tank is [pressure_tank.air_contents.return_pressure()]."
 		else
-			. += "\n[SPAN_WARNING("There's no pressure tank in [src]!")]"
+			. += SPAN_WARNING("There's no pressure tank in [src]!")
 
 	else
-		. += "\n[SPAN_WARNING("Gauge not installed, you have no idea how much fuel left in [src]!")]"
+		. += SPAN_WARNING("Gauge not installed, you have no idea how much fuel left in [src]!")
 
-/obj/item/gun/flamer/update_icon()
-	overlays.Cut()
+/obj/item/gun/flamer/on_update_icon()
+	ClearOverlays()
 	if(igniter)
-		overlays += "+igniter"
+		AddOverlays("+igniter")
 	if(fuel_tank)
-		overlays += "+fuel_tank"
+		AddOverlays("+fuel_tank")
 	if(pressure_tank)
-		overlays += "+pressure_tank"
+		AddOverlays("+pressure_tank")
 	if(gauge)
-		overlays += "+gauge"
+		AddOverlays("+gauge")
 	if (lit && fuel_tank)
-		overlays += "+lit"
+		AddOverlays("+lit")
 	. = ..()
 
 /obj/item/gun/flamer/proc/remove_fuel_tank(mob/user)
@@ -79,7 +85,7 @@
 	lit = 0
 	to_chat(user, "You twist the valve and pop the fuel tank out of [src].")
 	playsound(loc, 'sound/weapons/flipblade.ogg', 50, 1)
-	user.put_in_hands(fuel_tank)
+	user.pick_or_drop(fuel_tank, loc)
 	fuel_tank = null
 	update_icon()
 	return
@@ -102,7 +108,7 @@
 		if(fuel_tank)
 			to_chat(user, "Remove the current fuel tank first.")
 			return
-		user.drop_from_inventory(W, src)
+		user.drop(W, src)
 		fuel_tank = W
 		playsound(loc, 'sound/weapons/flipblade.ogg', 50, 1)
 		user.visible_message("[user] slot \a [W] into \the [src].", "You slot \a [W] into \the [src].")
@@ -116,7 +122,7 @@
 		var/turf/T = get_turf(src)
 		to_chat(user, "You twist the valve and pop the pressure tank out of [src].")
 		playsound(loc, 'sound/effects/refill.ogg', 25, 1, 3)
-		pressure_tank.loc = T
+		pressure_tank.dropInto(T)
 		pressure_tank = null
 		update_icon()
 		return
@@ -125,10 +131,10 @@
 		if(igniter)
 			to_chat(user, "Remove the current igniter first.")
 			return
-		user.drop_from_inventory(W, src)
+		user.drop(W, src)
 		igniter = W
 		playsound(loc, 'sound/weapons/flipblade.ogg', 50, 1)
-		attached_electronics += new /obj/item/device/assembly/igniter
+		attached_electronics += W
 		user.visible_message("[user] slots \a [W] into \the [src].", "You slot \a [W] into \the [src].")
 		update_icon()
 		return
@@ -137,10 +143,11 @@
 		if(gauge)
 			to_chat(user, "Remove the current analyzer first.")
 			return
-		user.drop_from_inventory(W, src)
+		if(!user.drop(W, src))
+			return
 		gauge = W
 		playsound(loc, 'sound/weapons/flipblade.ogg', 50, 1)
-		attached_electronics += new /obj/item/device/analyzer
+		attached_electronics += W
 		user.visible_message("[user] slots \a [W] into \the [src].", "You slot \a [W] into \the [src].")
 		update_icon()
 		return
@@ -149,7 +156,8 @@
 		if(pressure_tank)
 			to_chat(user, "Remove the current pressure tank first.")
 			return
-		user.drop_from_inventory(W, src)
+		if(!user.drop(W, src))
+			return
 		pressure_tank = W
 		playsound(loc, 'sound/effects/refill.ogg', 25, 1, 3)
 		user.visible_message("[user] wrench \a [W] into \the [src].", "You wrench \a [W] into \the [src].")
@@ -162,13 +170,13 @@
 			return
 
 		if(istype(electonics_to_remove, /obj/item/device/assembly/igniter))
-			igniter.loc = user.loc
+			igniter.forceMove(user.loc)
 			igniter = null
 			playsound(loc, 'sound/weapons/flipblade.ogg', 50, 1)
 			attached_electronics -= electonics_to_remove
 
 		if(istype(electonics_to_remove, /obj/item/device/analyzer))
-			gauge.loc = user.loc
+			gauge.forceMove(user.loc)
 			gauge = null
 			playsound(loc, 'sound/weapons/flipblade.ogg', 50, 1)
 			attached_electronics -= electonics_to_remove
@@ -190,13 +198,14 @@
 		to_chat(user, SPAN_WARNING("Install fuel tank first!"))
 		playsound(loc, 'sound/signals/warning3.ogg', 50, 0)
 		return
-	if(!lit)
-		playsound(user, pick(ignite_sound), 100,1)
 	lit = !lit
 	update_icon()
+	if(lit)
+		playsound(user, pick(ignite_sound), 100, 1)
+		set_next_think(world.time)
 	return TRUE
 
-/obj/item/gun/flamer/Fire(atom/target, mob/living/user, params, pointblank=0, reflex=0)
+/obj/item/gun/flamer/Fire(atom/target, mob/living/user, params, pointblank=0, reflex=0, target_zone = BP_CHEST)
 	var/turf/curloc = get_turf(user) //In case the target or we are expired.
 	var/turf/targloc = get_turf(target)
 	if(!targloc || !curloc)
@@ -238,8 +247,9 @@
 		playsound(loc, 'sound/signals/warning3.ogg', 50, 0)
 		return
 
-	if(pressure_tank.air_contents.return_pressure() > 200)
-		pressure_tank.air_contents.remove_ratio(0.02*(pressure_for_shot/100))
+	var/datum/gas_mixture/M = pressure_tank.return_air()
+	if(M.return_pressure() > 200)
+		M.remove_ratio(0.02*(pressure_for_shot/100))
 	else
 		to_chat(user, SPAN_WARNING("Not enough pressure!"))
 		playsound(loc, 'sound/signals/warning3.ogg', 50, 0)
@@ -256,18 +266,13 @@
 		return
 	. = ..()
 
-/obj/item/gun/flamer/Destroy()
-	QDEL_NULL(fuel_tank)
-	QDEL_NULL(pressure_tank)
-	QDEL_NULL(igniter)
-	QDEL_NULL(gauge)
-	STOP_PROCESSING(SSobj, src)
-	. = ..()
-
-/obj/item/gun/flamer/Process()
-	if(lit)
-		if(!lited(0.05))
-			lit = FALSE
+/obj/item/gun/flamer/think()
+	if(!lit)
+		return
+	if(!lited(0.05))
+		lit = FALSE
+		return
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/gun/flamer/proc/lited(amount) //remove fuel from fuel_tank
 	if(!lit && !fuel_tank)

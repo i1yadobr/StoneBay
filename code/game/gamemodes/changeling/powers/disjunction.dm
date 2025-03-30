@@ -96,9 +96,9 @@
 	for(var/obj/item/I in H.contents)
 		if(isorgan(I))
 			continue
-		H.drop_from_inventory(I)
+		H.drop(I, force = TRUE)
 
-	var/atom/movable/overlay/effect = new /atom/movable/overlay(get_turf(H))
+	var/atom/movable/fake_overlay/effect = new /atom/movable/fake_overlay(get_turf(H))
 
 	effect.density = FALSE
 	effect.anchored = TRUE

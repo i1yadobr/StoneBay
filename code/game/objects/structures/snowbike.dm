@@ -1,11 +1,13 @@
-/obj/vehicle/bike/snowbike
+/obj/vehicle/bike/thermal/snowbike
 	name = "Snowbike"
 	icon = 'icons/obj/vehicles.dmi'
 	icon_state = "snowbike_1_on"
 	bike_icon = "snowbike"
-	engine_type = /obj/item/engine/thermal
+	prefilled = 1
+	land_speed = 2
+	space_speed = 0
 
-/obj/vehicle/bike/snowbike/New()
+/obj/vehicle/bike/thermal/snowbike/New()
 	bike_icon = "snowbike_[rand(1,3)]"
 	..()
 
@@ -16,5 +18,5 @@
 	icon_state = "seckeys"
 	w_class = 1
 
-/obj/vehicle/bike/update_icon()
+/obj/vehicle/bike/on_update_icon()
 	..()

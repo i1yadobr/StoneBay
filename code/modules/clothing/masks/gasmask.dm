@@ -13,7 +13,13 @@
 	var/gas_filter_strength = 1			//For gas mask filters
 	var/list/filtered_gases = list("plasma", "sleeping_agent")
 	var/istinted = 0
-	armor = list(melee = 10, bullet = 5, laser = 10, energy = 0, bomb = 0, bio = 75, rad = 25)
+	armor = list(melee = 10, bullet = 5, laser = 10, energy = 0, bomb = 0, bio = 75)
+	rad_resist_type = /datum/rad_resist/mask_syrgical
+
+/datum/rad_resist/mask_syrgical
+	alpha_particle_resist = 23 MEGA ELECTRONVOLT
+	beta_particle_resist = 6.6 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/item/clothing/mask/gas/Initialize()
 	. = ..()
@@ -39,7 +45,7 @@
 	icon_state = "gas_mask"
 	item_state = "gas_mask"
 
-	armor = list(melee = 10, bullet = 5, laser = 10, energy = 0, bomb = 0, bio = 55, rad = 25)
+	armor = list(melee = 10, bullet = 5, laser = 10, energy = 0, bomb = 0, bio = 55)
 
 //Plague Dr suit can be found in clothing/suits/bio.dm
 /obj/item/clothing/mask/gas/plaguedoctor
@@ -47,7 +53,7 @@
 	desc = "A modernised version of the classic design, this mask will not only filter out plasma but it can also be connected to an air supply."
 	icon_state = "plaguedoctor"
 	item_state = "plaguedoctor"
-	armor = list(melee = 5, bullet = 5, laser = 5,energy = 2, bomb = 0, bio = 90, rad = 10)
+	armor = list(melee = 5, bullet = 5, laser = 5,energy = 2, bomb = 0, bio = 90)
 	body_parts_covered = HEAD|FACE|EYES
 	siemens_coefficient = 0.9
 
@@ -59,7 +65,7 @@
 	istinted = 0
 	siemens_coefficient = 0.5
 	body_parts_covered = FACE|EYES
-	armor = list(melee = 15, bullet = 15, laser = 15, energy = 0, bomb = 0, bio = 75, rad = 50)
+	armor = list(melee = 15, bullet = 15, laser = 15, energy = 0, bomb = 0, bio = 75)
 
 /obj/item/clothing/mask/gas/tactical
 	name = "\improper tactical mask"
@@ -75,7 +81,7 @@
 	flags_inv = HIDEEARS
 	istinted = 0
 	siemens_coefficient = 0.9
-	armor = list(melee = 5, bullet = 2.5, laser = 5, energy = 0, bomb = 0, bio = 75, rad = 25)
+	armor = list(melee = 5, bullet = 2.5, laser = 5, energy = 0, bomb = 0, bio = 75)
 
 /obj/item/clothing/mask/gas/captain
 	name = "captain's gas mask"
@@ -106,7 +112,7 @@
 /obj/item/clothing/mask/gas/swat/vox
 	name = "alien mask"
 	desc = "Clearly not designed for a human face."
-	body_parts_covered = 0 //Hack to allow vox to eat while wearing this mask.
+	body_parts_covered = NO_BODYPARTS //Hack to allow vox to eat while wearing this mask.
 	species_restricted = list(SPECIES_VOX)
 
 /obj/item/clothing/mask/gas/syndicate
@@ -116,7 +122,7 @@
 	item_state = "swat"
 	istinted = 0
 	siemens_coefficient = 0.5
-	armor = list(melee = 15, bullet = 15, laser = 15, energy = 0, bomb = 0, bio = 75, rad = 50)
+	armor = list(melee = 15, bullet = 15, laser = 15, energy = 0, bomb = 0, bio = 75)
 
 /obj/item/clothing/mask/gas/clown_hat
 	name = "clown wig and mask"
@@ -124,6 +130,11 @@
 	icon_state = "clown"
 	item_state = "clown"
 	istinted = 0
+
+	item_state_slots = list(
+		slot_l_hand_str = "clown_hat",
+		slot_r_hand_str = "clown_hat",
+		)
 
 /obj/item/clothing/mask/gas/sexyclown
 	name = "sexy-clown wig and mask"
@@ -176,13 +187,18 @@
 	istinted = 0
 	siemens_coefficient = 1.0
 
+	item_state_slots = list(
+		slot_l_hand_str = "owl_mask",
+		slot_r_hand_str = "owl_mask",
+		)
+
 /obj/item/clothing/mask/gas/vox
 	name = "vox breathing mask"
 	desc = "A small oxygen filter for use by Vox"
 	icon_state = "respirator"
 	istinted = 0
 	flags_inv = 0
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	species_restricted = list(SPECIES_VOX)
 	filtered_gases = list("plasma", "sleeping_agent", "oxygen")
 
@@ -199,3 +215,8 @@
 	filtered_gases = list("phoron", "sleeping_agent", "oxygen")
 	say_messages = list("Mmfph!", "Mmmf mrrfff!", "Mmmf mnnf!")
 	say_verbs = list("mumbles")
+
+	item_state_slots = list(
+		slot_l_hand_str = "plasticbag",
+		slot_r_hand_str = "plasticbag",
+		)

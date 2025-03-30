@@ -26,8 +26,8 @@
 
 	var/locked = 0
 
-	idle_power_usage = 15
-	active_power_usage = 200 //builtin health analyzer, dialysis machine, injectors.
+	idle_power_usage = 15 WATTS
+	active_power_usage = 200 WATTS //builtin health analyzer, dialysis machine, injectors.
 
 	beepsounds = SFX_BEEP_MEDICAL
 
@@ -55,19 +55,23 @@
 		new /obj/item/reagent_containers/vessel/beaker/large(src))
 	RefreshParts()
 
-/obj/machinery/sleeper/_examine_text(mob/user)
+/obj/machinery/sleeper/examine(mob/user, infix)
 	. = ..()
-	if (user.Adjacent(src))
-		if (beaker)
-			. += "\nIt is loaded with a beaker."
-		if(occupant)
-			. += "\n[occupant._examine_text(user)]"
+
+	if(!user.Adjacent(src))
+		return
+
+	if(beaker)
+		. += "It is loaded with a beaker."
+
+	if(occupant)
+		. += "It has [SPAN_NOTICE("[occupant]")] inside."
 
 /obj/machinery/sleeper/Process()
 	if(stat & (NOPOWER|BROKEN))
 		return
 
-	if (!(occupant in src))
+	if(occupant && !(occupant in src))
 		go_out()
 
 	play_beep()
@@ -96,7 +100,7 @@
 	if(iscarbon(occupant) && stasis > 1)
 		occupant.SetStasis(stasis)
 
-/obj/machinery/sleeper/update_icon()
+/obj/machinery/sleeper/on_update_icon()
 	if(panel_open)
 		icon_state = "sleeper_1"
 		return
@@ -202,7 +206,7 @@
 			toggle_lock()
 			return TOPIC_REFRESH
 	if(href_list["chemical"] && href_list["amount"])
-		if(occupant && occupant.stat != DEAD)
+		if(occupant && !occupant.is_ic_dead())
 			if(href_list["chemical"] in available_chemicals) // Your hacks are bad and you should feel bad
 				inject_chemical(user, href_list["chemical"], text2num(href_list["amount"]))
 				return TOPIC_REFRESH
@@ -219,16 +223,16 @@
 	if(istype(I, /obj/item/reagent_containers/vessel))
 		add_fingerprint(user)
 		if(!beaker)
+			if(!user.drop(I, src))
+				return
 			beaker = I
-			user.drop_item()
-			I.forceMove(src)
 			component_parts += I
 			user.visible_message("<span class='notice'>\The [user] adds \a [I] to \the [src].</span>", "<span class='notice'>You add \a [I] to \the [src].</span>")
 		else
 			to_chat(user, "<span class='warning'>\The [src] has a beaker already.</span>")
 			return
-	if(occupant && panel_open && istype(I,/obj/item/crowbar))
-		occupant.loc = get_turf(src)
+	if(occupant && panel_open && isCrowbar(I))
+		occupant.forceMove(get_turf(src))
 		occupant = null
 		update_use_power(1)
 		update_icon()
@@ -391,8 +395,10 @@
 /obj/machinery/sleeper/proc/go_out()
 	if(!occupant)
 		return
+
 	if(locked)
 		return
+
 	if(occupant.client)
 		occupant.client.eye = occupant.client.mob
 		occupant.client.perspective = MOB_PERSPECTIVE
@@ -402,6 +408,7 @@
 	for(var/atom/movable/A in src) // In case an object was dropped inside or something
 		if(locate(A) in component_parts)
 			continue
+
 		A.dropInto(loc)
 	update_use_power(POWER_USE_IDLE)
 	update_icon()
@@ -430,3 +437,7 @@
 			to_chat(user, "The subject has too many chemicals.")
 	else
 		to_chat(user, "There's no suitable occupant in \the [src].")
+
+/obj/machinery/sleeper/Destroy()
+	go_out()
+	return ..()

@@ -25,7 +25,6 @@
 
 /obj/item/circuitboard/sleeper
 	name = T_BOARD("sleeper")
-	desc = "The circuitboard for a sleeper."
 	build_path = /obj/machinery/sleeper
 	board_type = "machine"
 	origin_tech = list(TECH_MAGNET = 2, TECH_BIO = 2, TECH_ENGINEERING = 2)
@@ -38,10 +37,18 @@
 
 /obj/item/circuitboard/microwave
 	name = T_BOARD("microwave")
-	desc = "The circuitboard for a microwave."
 	build_path = /obj/machinery/microwave
 	board_type = "machine"
 	origin_tech = list(TECH_ENGINEERING = 1)
 	req_components = list(
 							/obj/item/stock_parts/micro_laser = 3,
 							/obj/item/stock_parts/manipulator = 1)
+
+/obj/item/circuitboard/sauna
+	name = T_BOARD("sauna")
+	build_path = /obj/machinery/sauna
+	board_type = "machine"
+	origin_tech = list(TECH_POWER = 2, TECH_ENGINEERING = 2)
+	req_components = list(
+							/obj/item/reagent_containers/vessel/beaker/large = 1,
+							/obj/item/stock_parts/capacitor = 1)

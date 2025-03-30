@@ -127,7 +127,7 @@
 		return 1
 
 	// Okay, it wasn't a terminal being touched, check for all the simple insertions.
-	if(input_device.type in list(/obj/item/device/paicard, /obj/item/device/mmi, /obj/item/organ/internal/posibrain))
+	if(input_device.type in list(/obj/item/device/paicard, /obj/item/organ/internal/cerebrum/mmi, /obj/item/organ/internal/cerebrum/posibrain))
 		if(integrated_ai)
 			integrated_ai.attackby(input_device,user)
 			// If the transfer was successful, we can clear out our vars.
@@ -182,7 +182,7 @@
 				qdel(ai_card)
 				ai_card = null
 		else if(user)
-			user.put_in_hands(ai_card)
+			user.pick_or_drop(ai_card)
 		else if(loc) // No trying to get_turf out of nullspace plz
 			ai_card.forceMove(get_turf(src))
 		else
@@ -214,9 +214,7 @@
 						return 0
 				else
 					return 0
-			else
-				user.drop_from_inventory(ai)
-				ai.forceMove(src)
+			else if(user.drop(ai, src))
 				ai_card = ai
 				to_chat(ai_mob, "<span class='notice'>You have been transferred to \the [holder]'s [src.name].</span>")
 				to_chat(user, "<span class='notice'>You load \the [ai_mob] into \the [holder]'s [src.name].</span>")
@@ -375,7 +373,7 @@
 	var/atom/interfaced_with // Currently draining power from this device.
 	var/total_power_drained = 0
 	var/drain_loc
-	var/max_draining_rate = 120 KILOWATTS // The same as unupgraded cyborg recharger.
+	var/max_draining_rate = 120 KILO WATTS // The same as unupgraded cyborg recharger.
 
 /obj/item/rig_module/power_sink/deactivate()
 

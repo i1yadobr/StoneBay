@@ -1,7 +1,6 @@
 #define PROGRESSBAR_ICON_HEIGHT 7
 
-/client
-	var/list/progressbars = list()
+/client/var/list/progressbars = list()
 
 /datum/progressbar
 	var/goal = 1
@@ -39,6 +38,9 @@
 		if(target in client.progressbars)
 			if(--client.progressbars[target] <= 0)
 				client.progressbars -= target
+		client = null
+	target = null
+	user = null
 
 	qdel(bar)
 	. = ..()

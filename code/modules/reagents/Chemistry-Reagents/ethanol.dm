@@ -29,7 +29,7 @@
 	return
 
 /datum/reagent/ethanol/affect_ingest(mob/living/carbon/M, alien, removed)
-	M.nutrition += nutriment_factor * removed
+	M.add_nutrition(nutriment_factor * removed)
 	var/strength_mod = 1
 	if(alien == IS_SKRELL)
 		strength_mod *= 5
@@ -241,7 +241,7 @@
 		M.apply_effect(3, STUTTER)
 	M.make_jittery(5)
 
-/datum/reagent/ethanol/coffee/kahlua
+/datum/reagent/ethanol/kahlua
 	name = "Kahlua"
 	description = "A widely known, Mexican coffee-flavoured liqueur. In production since 1936!"
 	taste_description = "spiked latte"
@@ -338,7 +338,7 @@
 
 /datum/reagent/ethanol/vodka/affect_ingest(mob/living/carbon/M, alien, removed)
 	..()
-	M.apply_effect(- 0.5 * removed, IRRADIATE, blocked = 0)
+	M.radiation = max(SPACE_RADIATION, M.radiation - ((0.009 SIEVERT) * removed))
 
 /datum/reagent/ethanol/vodka/premium
 	name = "Premium Vodka"
@@ -379,7 +379,7 @@
 
 /datum/reagent/ethanol/wine/affect_ingest(mob/living/carbon/M, alien, removed)
 	..()
-	M.radiation = max(M.radiation - 5 * removed, 0)
+	M.radiation = max(SPACE_RADIATION, M.radiation - ((0.005 SIEVERT) * removed))
 
 /datum/reagent/ethanol/wine/premium
 	name = "White Wine"
@@ -541,7 +541,7 @@
 	color = "#997650"
 	strength = 12
 
-	glass_required = "vodkaglass"
+	glass_required = "vodka"
 	glass_icon_state = "b52"
 	glass_name = "B-52"
 	glass_desc = "Kahlua, Irish cream, and congac. You will get bombed."
@@ -1029,7 +1029,7 @@
 	color = "#4c3100"
 	strength = 15
 
-	glass_required = "vodkaglass"
+	glass_required = "vodka"
 	glass_icon_state = "irishcoffee"
 	glass_name = "Irish coffee"
 	glass_desc = "Coffee and alcohol. More fun than a Mimosa to drink in the morning."
@@ -1116,6 +1116,7 @@
 	strength = 13
 
 	glass_required = "rocks"
+	glass_name = "Magellan"
 	glass_desc = "A tasty sweetened blend of wine and fine whiskey. Named for Ferdinand Magellan, who led the first expedition to circumnavigate Earth in the 15th century."
 	glass_special = list(DRINK_ICE)
 
@@ -1314,6 +1315,9 @@
 	if(M.confused)
 		M.confused = max(0, M.confused - 5)
 
+	if(isundead(M) && prob(3))
+		to_chat(M, SPAN("notice", "For some reason, you feel a distant homely feeling..."))
+
 /datum/reagent/ethanol/shroombeer
 	name = "shroom berr"
 	description = "A brew made of toxic mushrooms. What can go wrong?"
@@ -1414,7 +1418,7 @@
 	color = "#00a86b"
 	strength = 100
 
-	glass_required = "dpint"
+	glass_required = "hurricane"
 	glass_icon_state = "suidream"
 	glass_name = "Sui Dream"
 	glass_desc = "A froofy, fruity, and sweet mixed drink. Understanding the name only brings shame."

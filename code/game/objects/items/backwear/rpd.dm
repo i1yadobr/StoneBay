@@ -49,16 +49,16 @@
 	var/activate_sound = 'sound/items/polaroid3.ogg'
 	var/recycling_time = 30
 
-/obj/item/rpd/_examine_text(mob/user)
+/obj/item/rpd/examine(mob/user, infix)
 	. = ..()
-	. += "\n[selected.name] is chosen to be produced."
+	. += "[selected.name] is chosen to be produced."
 
 /obj/item/rpd/New(newloc, obj/item/backwear/base)
 	selected = item_types[1]
 	base_unit = base
 	..(newloc)
 
-/obj/item/rpd/update_icon()
+/obj/item/rpd/on_update_icon()
 	icon_state = "rpd_[interaction_mode]"
 
 /obj/item/rpd/Destroy() //it shouldn't happen unless the base unit is destroyed but still
@@ -119,7 +119,7 @@
 			if(istype(A, T.item_type))
 				inuse = 1
 				user.visible_message(SPAN("notice", "[user] starts recycling \the [A]..."))
-				if(do_after(user, recycling_time, src))
+				if(do_after(user, recycling_time, src, luck_check_type = LUCK_CHECK_ENG))
 					to_chat(user, SPAN("notice", "\The [src] consumes [A] and you get some energy back."))
 					qdel(A)
 					BC.add_charge(T.energy / 2)
@@ -143,7 +143,7 @@
 		playsound(src.loc, activate_sound, 10, 1)
 		to_chat(user, SPAN("notice", "Dispensing [selected.name]..."))
 		inuse = 1
-		if(do_after(user, selected.delay, src))
+		if(do_after(user, selected.delay, src, luck_check_type = LUCK_CHECK_ENG))
 			inuse = 0
 			var/obj/product = null
 			if(selected.item_type == /obj/item/pipe)
@@ -164,7 +164,7 @@
 				O.update()
 
 			user.visible_message(SPAN("notice", "[user]'s [src] spits out \the [selected.name]."))
-			product.loc = get_turf(A)
+			product.dropInto(get_turf(A))
 			BC.use(selected.energy)
 		else
 			inuse = 0

@@ -2,6 +2,7 @@
 	name = "mounted proto-kinetic accelerator"
 	self_recharge = 1
 	use_external_power = 1
+	has_safety = FALSE
 
 /obj/item/gun/energy/kinetic_accelerator
 	name = "proto-kinetic accelerator"
@@ -35,13 +36,14 @@
 				)
 			power_supply.charge = power_supply.maxcharge
 
-/obj/item/gun/energy/kinetic_accelerator/_examine_text(mob/user)
+/obj/item/gun/energy/kinetic_accelerator/examine(mob/user, infix)
 	. = ..()
+
 	if(max_mod_capacity)
-		. += "\n<b>[get_remaining_mod_capacity()]%</b> mod capacity remaining."
+		. += "<b>[get_remaining_mod_capacity()]%</b> mod capacity remaining."
 		for(var/A in get_modkits())
 			var/obj/item/borg/upgrade/modkit/M = A
-			. += "\n<span class='notice'>There is a [M.name] mod installed, using <b>[M.cost]%</b> capacity.</span>"
+			. += "<span class='notice'>There is a [M.name] mod installed, using <b>[M.cost]%</b> capacity.</span>"
 
 /obj/item/gun/energy/kinetic_accelerator/attackby(obj/item/A, mob/user)
 	if(isCrowbar(A))
@@ -84,13 +86,11 @@
 	var/mob_aoe = 0
 	var/list/hit_overlays = list()
 
-/obj/item/projectile/kinetic/launch_from_gun(atom/target, mob/user, obj/item/gun/launcher, target_zone, x_offset=0, y_offset=0)
-	if(istype(launcher, /obj/item/gun/energy/kinetic_accelerator))
-		var/obj/item/gun/energy/kinetic_accelerator/KA = launcher
-		for(var/obj/item/borg/upgrade/modkit/M in KA.get_modkits())
-			M.modify_projectile(src)
-	..()
-
+/obj/item/projectile/kinetic/launch(atom/target, target_zone, mob/user, params, obj/item/gun/launcher)
+	var/obj/item/gun/energy/kinetic_accelerator/KA = launcher
+	for(var/obj/item/borg/upgrade/modkit/M in KA.get_modkits())
+		M.modify_projectile(src)
+	return ..()
 
 /obj/item/projectile/kinetic/on_impact(atom/A)
 	strike_thing(A)
@@ -135,9 +135,9 @@
 	var/cost = 30
 	var/modifier = 1 //For use in any mod kit that has numerical modifiers
 
-/obj/item/borg/upgrade/modkit/_examine_text(mob/user)
+/obj/item/borg/upgrade/modkit/examine(mob/user, infix)
 	. = ..()
-	. += "\n<span class='notice'>Occupies <b>[cost]%</b> of mod capacity.</span>"
+	. += SPAN_NOTICE("Occupies <b>[cost]%</b> of mod capacity.")
 
 /obj/item/borg/upgrade/modkit/attackby(obj/item/A, mob/user)
 	if(istype(A, /obj/item/gun/energy/kinetic_accelerator) && !issilicon(user))
@@ -167,8 +167,10 @@
 		if(.)
 			to_chat(user, "<span class='notice'>You install the modkit.</span>")
 			playsound(loc, 'sound/items/Screwdriver.ogg', 100, 1)
-			user.unEquip(src)
-			forceMove(KA)
+			if(loc == user)
+				user.drop(src, KA)
+			else
+				forceMove(KA)
 			KA.modkits += src
 		else
 			to_chat(user, "<span class='notice'>The modkit you're trying to install would conflict with an already installed modkit. Use a crowbar to remove existing modkits.</span>")

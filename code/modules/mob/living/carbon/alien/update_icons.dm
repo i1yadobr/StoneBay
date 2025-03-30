@@ -1,5 +1,5 @@
 /mob/living/carbon/alien/regenerate_icons()
-	overlays = list()
+	ClearOverlays()
 	update_icons()
 
 /mob/living/carbon/alien/update_icons()
@@ -10,7 +10,7 @@
 	else if(amount_grown > max_grown*0.25)
 		state = 1
 
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		icon_state = "[initial(icon_state)][state]_dead"
 	else if (stunned)
 		icon_state = "[initial(icon_state)][state]_stun"

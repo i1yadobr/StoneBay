@@ -5,7 +5,7 @@
 
 /obj/item/device/multitool
 	name = "multitool"
-	desc = "This small, handheld device is made of durable, insulated plastic, and tipped with electrodes, perfect for interfacing with numerous machines."
+	desc = "This small, handheld device is made of durable alloy steel and tipped with electrodes, perfect for interfacing with numerous machines."
 	description_info = "Multitools are incredibly versatile and can be used on a wide variety of machines. The most common use for this is to trip a device's wires without having to cut them. Simply click on an object with exposed wiring to use it. There might be other uses, as well..."
 	description_fluff = "The common, every day multitool is descended from certain electrical tools from Earth's early space age. Though none too cheap, they are incredibly handy, and can be found in any self-respecting technician's toolbox."
 	description_antag = "This handy little tool can get you through doors, turn off power, and anything else you might need."
@@ -18,6 +18,7 @@
 	w_class = ITEM_SIZE_SMALL
 	throwforce = 5.0
 	throw_range = 15
+	tool_behaviour = TOOL_MULTITOOL
 
 	matter = list(MATERIAL_STEEL = 50, MATERIAL_GLASS = 20)
 
@@ -25,6 +26,9 @@
 
 	var/buffer_name
 	var/atom/buffer_object
+
+	drop_sound = SFX_DROP_MULTITOOL
+	pickup_sound = SFX_PICKUP_MULTITOOL
 
 /obj/item/device/multitool/Destroy()
 	unregister_buffer(buffer_object)
@@ -51,7 +55,7 @@
 			unregister_buffer(buffer_object)
 			buffer_object = buffer
 			if(buffer_object)
-				register_signal(buffer_object, SIGNAL_QDELETING, /obj/item/device/multitool/proc/unregister_buffer)
+				register_signal(buffer_object, SIGNAL_QDELETING, nameof(.proc/unregister_buffer))
 
 /obj/item/device/multitool/proc/unregister_buffer(atom/buffer_to_unregister)
 	// Only remove the buffered object, don't reset the name

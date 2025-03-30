@@ -25,7 +25,7 @@
 		var/turf/T = get_turf(src)
 		T.visible_message(generate_lighting_message(used_tool, holder))
 		smokeamount = reagents.total_volume / smoketime
-		START_PROCESSING(SSobj, src)
+		set_next_think(world.time)
 		if(ismob(loc))
 			var/mob/living/M = loc
 			M.update_inv_wear_mask(0)
@@ -68,12 +68,12 @@
 	return ..()
 
 
-/obj/item/clothing/mask/smokable/pipe/attack_self(mob/user as mob)
+/obj/item/clothing/mask/smokable/pipe/attack_self(mob/user)
 	if(lit == 1)
 		user.visible_message("<span class='notice'>[user] puts out [src].</span>", "<span class='notice'>You put out [src].</span>")
 		lit = 0
 		update_icon()
-		STOP_PROCESSING(SSobj, src)
+		set_next_think(0)
 	else if(smoketime)
 		var/turf/location = get_turf(user)
 		user.visible_message("<span class='notice'>[user] empties out [src].</span>", "<span class='notice'>You empty out [src].</span>")
@@ -82,7 +82,7 @@
 		reagents.clear_reagents()
 		SetName("empty [initial(name)]")
 
-/obj/item/clothing/mask/smokable/pipe/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/clothing/mask/smokable/pipe/attackby(obj/item/W, mob/user)
 	..()
 
 	if(istype(W, /obj/item/reagent_containers/food))
@@ -122,8 +122,10 @@
 		return SPAN("rose", "With much care, [holder] lights \his [name] with \a [tool].")
 	if(istype(tool, /obj/item/flame/candle))
 		return SPAN_NOTICE("[holder] lights \his [name] with a hot wax from \a [tool].")
-	if(istype(tool, /obj/item/weldingtool))
-		return SPAN_NOTICE("[holder] recklessly \his [name] with \a [tool].")
+	if(isitem(tool))
+		var/obj/item/I = tool
+		if(isWelder(I))
+			return SPAN_NOTICE("[holder] recklessly \his [name] with \a [tool].")
 	if(istype(tool, /obj/item/reagent_containers/rag))
 		return SPAN_WARNING("[holder] puts a piece of \a [tool] into \a [name] to light it up.")
 	if(istype(tool, /obj/item/clothing/mask/smokable/cigarette))

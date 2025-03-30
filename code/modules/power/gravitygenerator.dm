@@ -31,7 +31,7 @@
 	var/sprite_number = 0
 	var/broken_state = 0
 
-/obj/machinery/gravity_generator/update_icon()
+/obj/machinery/gravity_generator/on_update_icon()
 	icon_state = "[broken_state]_[sprite_number]"
 
 /obj/machinery/gravity_generator/proc/show_broken_info()
@@ -76,8 +76,8 @@ GLOBAL_VAR(station_gravity_generator)
 /obj/machinery/gravity_generator/main
 	name = "gravitational generator panel"
 	icon_state = "0_8"
-	idle_power_usage = 0
-	active_power_usage = 100000
+	idle_power_usage = 0 WATTS
+	active_power_usage = 100 KILO WATTS
 	power_channel = STATIC_ENVIRON
 	sprite_number = 8
 	use_power = POWER_USE_ACTIVE
@@ -93,6 +93,7 @@ GLOBAL_VAR(station_gravity_generator)
 	var/list/connected_areas = list()
 	var/datum/wires/gravity_generator/wires = null
 	var/obj/machinery/gravity_generator/part/middle = null
+	var/datum/radiation_source/rad_source = null
 
 	// Wires
 	var/announcer = TRUE                  // if true - notifies about the switching of the state of the generator to the engineering channel
@@ -108,6 +109,7 @@ GLOBAL_VAR(station_gravity_generator)
 	wires = new(src)
 
 /obj/machinery/gravity_generator/main/Destroy()
+	qdel(rad_source)
 	QDEL_NULL(wires)
 	for(var/obj/machinery/gravity_generator/part/P in parts)
 		P.main_part = null
@@ -122,10 +124,12 @@ GLOBAL_VAR(station_gravity_generator)
 	connected_areas = null
 	return ..()
 
-/obj/machinery/gravity_generator/main/_examine_text(mob/user)
+/obj/machinery/gravity_generator/main/examine(mob/user, infix)
 	. = ..()
+
 	if(panel_open)
-		. += "\nThe maintenance hatch is open."
+		. += "The maintenance hatch is open."
+
 	. += "[show_broken_info()]"
 
 /obj/machinery/gravity_generator/main/show_broken_info()
@@ -229,7 +233,7 @@ GLOBAL_VAR(station_gravity_generator)
 									SPAN_NOTICE("You begin to add plasteel to the destroyed frame."))
 
 				playsound(loc, 'sound/machines/click.ogg', 75, 1)
-				if(!do_after(user, 15 SECONDS, middle) || PS.amount < 10)
+				if(!do_after(user, 15 SECONDS, middle, luck_check_type = LUCK_CHECK_ENG) || PS.amount < 10)
 					return
 				PS.use(10)
 				health += 250
@@ -247,8 +251,12 @@ GLOBAL_VAR(station_gravity_generator)
 
 				playsound(loc, 'sound/items/Welder2.ogg', 50, 1)
 				var/obj/item/weldingtool/WT = I
-				if(!do_after(user, 15 SECONDS, middle) || !WT.remove_fuel(1, user) || broken_state != GRAV_NEEDS_WELDING)
+				if(!WT.use_tool(src, user, delay = 15 SECONDS, amount = 5))
 					return
+
+				if(QDELETED(src) || !user || broken_state != GRAV_NEEDS_WELDING)
+					return
+
 				health += 250
 				user.visible_message(SPAN_NOTICE("[user] fixed the damaged parts."),
 									SPAN_NOTICE("You fixed the damaged parts."))
@@ -263,7 +271,7 @@ GLOBAL_VAR(station_gravity_generator)
 									SPAN_NOTICE("You begin to screw the parts back."))
 
 				playsound(loc, 'sound/items/Ratchet.ogg', 75, 1)
-				if(!do_after(user, 15 SECONDS, middle) || broken_state != GRAV_NEEDS_WRENCH)
+				if(!do_after(user, 15 SECONDS, middle, luck_check_type = LUCK_CHECK_ENG) || broken_state != GRAV_NEEDS_WRENCH)
 					return
 				health += 250
 				user.visible_message(SPAN_NOTICE("[user] screwed the parts back."),
@@ -279,7 +287,7 @@ GLOBAL_VAR(station_gravity_generator)
 									SPAN_NOTICE("You begin to attach the details in the desired order."))
 
 				playsound(loc, 'sound/items/Screwdriver.ogg', 75, 1)
-				if(!do_after(user, 15 SECONDS, middle) || broken_state != GRAV_NEEDS_SCREWDRIVER)
+				if(!do_after(user, 15 SECONDS, middle, luck_check_type = LUCK_CHECK_ENG) || broken_state != GRAV_NEEDS_SCREWDRIVER)
 					return
 				health += max(initial(health), health + 250)
 				user.visible_message(SPAN_NOTICE("[user] attached the details."),
@@ -291,7 +299,7 @@ GLOBAL_VAR(station_gravity_generator)
 				return
 
 	if(isCrowbar(I))
-		if(!do_after(user, 5 SECONDS, middle))
+		if(!do_after(user, 5 SECONDS, middle, luck_check_type = LUCK_CHECK_ENG))
 			return
 		playsound(loc, 'sound/items/Crowbar.ogg', 50, 1)
 		panel_open = !panel_open
@@ -361,7 +369,7 @@ GLOBAL_VAR(station_gravity_generator)
 
 		user.visible_message(SPAN_WARNING("[user] starts to press a lot of buttons on \the [src]!"),
                              SPAN_NOTICE("You start to press many buttons on \the [src], as if you know what you are doing."))
-		if(do_after(user, 15 SECONDS, src))
+		if(do_after(user, 15 SECONDS, src, luck_check_type = LUCK_CHECK_ENG))
 			emergency_shutoff()
 
 /obj/machinery/gravity_generator/main/proc/emergency_shutoff()
@@ -398,17 +406,19 @@ GLOBAL_VAR(station_gravity_generator)
 	update_icon()
 
 	if(announcer)
-		GLOB.global_announcer.autosay("Alert! Gravitational Generator has been discharged! Gravitation is disabled.", get_announcement_computer("Gravity Generator Alert System"))
+		GLOB.global_announcer.autosay("Alert! Gravitational Generator has been discharged! Gravitation is disabled.", "Gravity Generator Alert System")
 
-	SSradiation.radiate(src, 3 * charge)
+	var/datum/radiation_source/temp_source = SSradiation.radiate(src, new /datum/radiation/preset/gravitaty_generator(2))
+	temp_source.schedule_decay(2 MINUTES)
+
 	playsound(loc, 'sound/effects/EMPulse.ogg', 100, 1)
 	empulse(loc, 7 * (charge * 0.01), 14 * (charge * 0.01))
 
-/obj/machinery/gravity_generator/main/update_icon()
+/obj/machinery/gravity_generator/main/on_update_icon()
 	. = ..()
-	overlays.Cut()
+	ClearOverlays()
 	for(var/obj/machinery/gravity_generator/part/P in lights)
-		P.overlays.Cut()
+		P.ClearOverlays()
 
 	var/console
 	if(power_supply && !(stat & (BROKEN|NOPOWER)))
@@ -416,16 +426,16 @@ GLOBAL_VAR(station_gravity_generator)
 			console = charge_count ? "console_charged" : "console_discharged"
 		else
 			console = "console_charging"
-		overlays += console
+		AddOverlays(console)
 		if(breaker)
 			for(var/obj/machinery/gravity_generator/part/P in lights)
-				P.overlays += "[P.sprite_number]_light"
+				P.AddOverlays("[P.sprite_number]_light")
 
 	if(!panel_open)
 		if(power_supply && !(stat & BROKEN|NOPOWER))
-			overlays += "keyboard_on"
+			AddOverlays("keyboard_on")
 		else
-			overlays += "keyboard_off"
+			AddOverlays("keyboard_off")
 
 	var/overlay_state
 	switch(charge_count)
@@ -446,9 +456,9 @@ GLOBAL_VAR(station_gravity_generator)
 			set_light(1, 1, 8, 2, "#7de1e1")
 
 	if(middle)
-		middle.overlays.Cut()
+		middle.ClearOverlays()
 		if(overlay_state)
-			middle.overlays += overlay_state
+			middle.AddOverlays(overlay_state)
 
 	for(var/obj/machinery/gravity_generator/part/P in parts)
 		P.update_icon()
@@ -486,7 +496,10 @@ GLOBAL_VAR(station_gravity_generator)
 		return
 
 	if(charge_count > 0)
-		SSradiation.radiate(src, 30 * (charge_count * 0.01))
+		if(rad_source == null)
+			rad_source = SSradiation.radiate(src, new /datum/radiation/preset/gravitaty_generator(charge_count / 20))
+		else
+			rad_source.info.activity = rad_source.info.specific_activity * (charge_count / 20)
 
 	if(charging_state != POWER_IDLE)
 		update_icon()
@@ -504,7 +517,7 @@ GLOBAL_VAR(station_gravity_generator)
 				update_gravity_status()
 				playsound(loc, 'sound/effects/alert.ogg', 50, 1)
 				if(announcer)
-					GLOB.global_announcer.autosay("Gravitational Generator has been fully charged. Gravitation is enabled!", get_announcement_computer("Gravity Generator Alert System"))
+					GLOB.global_announcer.autosay("Gravitational Generator has been fully charged. Gravitation is enabled!", "Gravity Generator Alert System")
 
 		if(POWER_DOWN)
 			charge_count = max(0, charge_count - 2)
@@ -516,9 +529,9 @@ GLOBAL_VAR(station_gravity_generator)
 				update_gravity_status()
 				playsound(loc, 'sound/effects/alert.ogg', 50, 1)
 				if(announcer)
-					GLOB.global_announcer.autosay("Alert! Gravitational Generator has been discharged! Gravitation is disabled.", get_announcement_computer("Gravity Generator Alert System"))
+					GLOB.global_announcer.autosay("Alert! Gravitational Generator has been discharged! Gravitation is disabled.", "Gravity Generator Alert System")
 			else if(announcer && charge_count <= 50 && charge_count % 5 == 0)
-				GLOB.global_announcer.autosay("Danger! Gravitational Generator discharges detected! Charge status at [charge_count]%", get_announcement_computer("Gravity Generator Alert System"), "Engineering")
+				GLOB.global_announcer.autosay("Danger! Gravitational Generator discharges detected! Charge status at [charge_count]%", "Gravity Generator Alert System", "Engineering")
 
 
 /obj/machinery/gravity_generator/main/proc/update_gravity_status()
@@ -555,7 +568,7 @@ GLOBAL_VAR(station_gravity_generator)
 		QDEL_NULL(main_part)
 	return ..()
 
-/obj/machinery/gravity_generator/part/_examine_text(mob/user)
+/obj/machinery/gravity_generator/part/examine(mob/user, infix)
 	. = ..()
 	. += "[main_part.show_broken_info()]"
 

@@ -62,10 +62,12 @@
 		deactivate()
 	. = ..()
 
-/obj/item/device/uplink_service/_examine_text(user)
+/obj/item/device/uplink_service/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 1)
 		return
+
 	var/msg
 	switch(state)
 		if(AWAITING_ACTIVATION)
@@ -74,7 +76,8 @@
 			msg = "It is labeled '[service_label]' and appears to be active."
 		if(HAS_BEEN_ACTIVATED)
 			msg = "It is labeled '[service_label]' and appears to be permanently disabled."
-	. += "\n[msg]"
+
+	. += "[msg]"
 
 /obj/item/device/uplink_service/attack_self(mob/user)
 	if(state != AWAITING_ACTIVATION)
@@ -88,9 +91,12 @@
 	log_and_message_admins("has activated the service '[service_label]'", user)
 
 	if(service_duration)
-		addtimer(CALLBACK(src,/obj/item/device/uplink_service/proc/deactivate), service_duration)
+		set_next_think(world.time + service_duration)
 	else
 		deactivate()
+
+/obj/item/device/uplink_service/think()
+	deactivate()
 
 /obj/item/device/uplink_service/proc/deactivate()
 	if(state != CURRENTLY_ACTIVE)
@@ -101,7 +107,7 @@
 	playsound(loc, SFX_SPARK, 50, 1)
 	visible_message("<span class='warning'>\The [src] shuts down with a spark.</span>")
 
-/obj/item/device/uplink_service/update_icon()
+/obj/item/device/uplink_service/on_update_icon()
 	switch(state)
 		if(AWAITING_ACTIVATION)
 			icon_state = initial(icon_state)
@@ -151,7 +157,8 @@
 	service_label = "Ion Storm Announcement"
 
 /obj/item/device/uplink_service/fake_ion_storm/enable(mob/user = usr)
-	GLOB.using_map.ion_storm_announcement()
+	SSannounce.play_station_announce(/datum/announce/ion_storm)
+
 	. = ..()
 
 /*****************
@@ -161,8 +168,7 @@
 	service_label = "Radiation Storm Announcement"
 
 /obj/item/device/uplink_service/fake_rad_storm/enable(mob/user = usr)
-	var/datum/event_meta/EM = new(EVENT_LEVEL_MUNDANE, "Fake Radiation Storm", add_to_queue = 0)
-	new /datum/event/radiation_storm/syndicate(EM)
+	SSevents.fire_event_with_type(/datum/event/radiation_storm/syndicate)
 	. = ..()
 
 /***************************
@@ -197,13 +203,13 @@
 
 	switch(alert("Should this be announced to the general population?",,"Yes","No"))
 		if("Yes")
-			command_announcement.Announce(input, customname, new_sound = GLOB.using_map.command_report_sound, msg_sanitized = 1);
+			SSannounce.play_announce(/datum/announce/command_report, input, customname, msg_sanitized = TRUE)
 			deactivate()
 		if("No")
-			minor_announcement.Announce(message = "New [GLOB.using_map.company_name] Update available at all communication consoles.")
+			SSannounce.play_announce(/datum/announce/command_report, "New [GLOB.using_map.company_name] Update available at all communication consoles.")
 			deactivate()
 
-/obj/item/device/uplink_service/fake_update_announcement/update_icon()
+/obj/item/device/uplink_service/fake_update_announcement/on_update_icon()
 	switch(state)
 		if(AWAITING_ACTIVATION)
 			icon_state = initial(icon_state)
@@ -221,7 +227,7 @@
 	var/obj/item/card/id/id_card = null
 
 /obj/item/device/uplink_service/fake_crew_announcement/attackby(obj/item/I, mob/user = usr)
-	id_card = I.GetIdCard()
+	id_card = I.get_id_card()
 	if(istype(id_card))
 		to_chat(user, SPAN("notice", "Card saved!"))
 
@@ -275,5 +281,5 @@
 
 	if(does_announce_visit)
 		var/datum/spawnpoint/arrivals/spawnpoint = new()
-		AnnounceArrival(id_card.registered_name, job, spawnpoint, arrival_sound_volume = 60, captain_sound_volume = 40)
+		SSannounce.announce_arrival(id_card.registered_name, job, spawnpoint, arrival_sound_volume = 60)
 	. = ..()

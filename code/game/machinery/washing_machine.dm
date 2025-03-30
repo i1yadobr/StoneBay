@@ -27,8 +27,8 @@
 	clickvol = 40
 
 	// Power
-	idle_power_usage = 10
-	active_power_usage = 150
+	idle_power_usage = 10 WATTS
+	active_power_usage = 150 WATTS
 
 /obj/machinery/washing_machine/Destroy()
 	qdel(crayon)
@@ -84,19 +84,18 @@
 
 	sleep(20)
 	if(state in list(1,3,6) )
-		usr.loc = src.loc
+		usr.forceMove(src.loc)
 
 
-/obj/machinery/washing_machine/update_icon()
+/obj/machinery/washing_machine/on_update_icon()
 	icon_state = "wm_[state][panel]"
 
 /obj/machinery/washing_machine/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W,/obj/item/pen/crayon) || istype(W,/obj/item/stamp))
 		if( state in list(	1, 3, 6 ) )
 			if(!crayon)
-				user.drop_item()
-				crayon = W
-				crayon.forceMove(src)
+				if(user.drop(W, src))
+					crayon = W
 			else
 				..()
 		else
@@ -105,7 +104,7 @@
 		if( (state == 1) && hacked)
 			var/obj/item/grab/G = W
 			if(ishuman(G.assailant) && iscorgi(G.affecting))
-				G.affecting.loc = src
+				G.affecting.forceMove(src)
 				qdel(G)
 				state = 3
 		else
@@ -156,10 +155,9 @@
 			return
 
 		if(contents.len < 5)
-			if ( state in list(1, 3) )
-				user.drop_item()
-				W.loc = src
-				state = 3
+			if(state in list(1, 3))
+				if(user.drop(W, src))
+					state = 3
 			else
 				to_chat(user, SPAN("notice", "You can't put the item in right now."))
 		else

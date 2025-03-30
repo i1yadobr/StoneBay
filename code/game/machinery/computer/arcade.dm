@@ -4,6 +4,10 @@
 	icon_state = "arcade"
 	icon_keyboard = null
 	icon_screen = "invaders"
+	light_color = "#41E0FC"
+	light_max_bright_on = 0.75
+	light_inner_range_on = 0.5
+	light_outer_range_on = 2
 	var/list/prizes = list(	/obj/item/storage/box/snappops										= 2,
 							/obj/item/toy/blink															= 2,
 							/obj/item/clothing/under/syndicate/tacticool								= 2,
@@ -42,7 +46,7 @@
 
 /obj/machinery/computer/arcade/proc/prizevend()
 	if(!contents.len)
-		var/prizeselect = pickweight(prizes)
+		var/prizeselect = util_pick_weight(prizes)
 		new prizeselect(src.loc)
 
 		if(istype(prizeselect, /obj/item/clothing/suit/syndicatefake)) //Helmet is part of the suit
@@ -68,7 +72,7 @@
 		if(2)
 			num_of_prizes = rand(0,2)
 	for(num_of_prizes; num_of_prizes > 0; num_of_prizes--)
-		empprize = pickweight(prizes)
+		empprize = util_pick_weight(prizes)
 		new empprize(src.loc)
 
 	..(severity)

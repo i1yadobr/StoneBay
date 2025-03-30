@@ -165,13 +165,13 @@
 	update_icons()
 
 /mob/living/bot/mulebot/handleFrustrated()
-	custom_emote(2, "makes a sighing buzz.")
+	audible_emote("makes a sighing buzz.")
 	playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, 0)
 	..()
 
 /mob/living/bot/mulebot/handleAdjacentTarget()
 	if(target == src.loc)
-		custom_emote(2, "makes a chiming sound.")
+		audible_emote("makes a chiming sound.")
 		playsound(loc, 'sound/machines/chime.ogg', 50, 0)
 		UnarmedAttack(target)
 		resetTarget()
@@ -200,11 +200,11 @@
 	..()
 
 /mob/living/bot/mulebot/Bump(mob/living/carbon/human/M)
-	if(!safety && istype(M))
+	. = ..()
+	if(. && !safety && istype(M))
 		visible_message("<span class='warning'>[src] knocks over [M]!</span>")
 		M.Stun(8)
 		M.Weaken(5)
-	..()
 
 /mob/living/bot/mulebot/proc/runOver(mob/living/carbon/human/H)
 	if(istype(H)) // No safety checks - WILL run over lying humans. Stop ERPing in the maint!
@@ -261,7 +261,7 @@
 			return
 
 	if(crates_only && !istype(C,/obj/structure/closet/crate))
-		custom_emote(2, "makes a sighing buzz.")
+		audible_emote("makes a sighing buzz.")
 		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, 0)
 		return
 
@@ -282,7 +282,7 @@
 	if(C.layer < layer)
 		C.layer = layer + 0.1
 	C.plane = plane
-	overlays += C
+	AddOverlays(C)
 
 	if(ismob(C))
 		var/mob/M = C
@@ -297,7 +297,7 @@
 		return
 
 	busy = 1
-	overlays.Cut()
+	ClearOverlays()
 
 	load.forceMove(loc)
 	load.pixel_y -= 9

@@ -22,10 +22,8 @@
 	if(current_item)
 		to_chat(user, SPAN_NOTICE("\The [src] already has something inside!"))
 		return
-	if(istype(O, /obj/item/book) || istype(O, /obj/item/canvas))
-		user.drop_item()
+	if((istype(O, /obj/item/book) || istype(O, /obj/item/canvas)) && user.drop(O, src))
 		current_item = O
-		O.forceMove(src)
 
 /obj/machinery/libraryscanner/attack_hand(mob/user)
 	usr.set_machine(src)
@@ -78,6 +76,10 @@
 	obj_flags = OBJ_FLAG_ANCHORABLE
 	var/obj/item/print_object
 
+/obj/machinery/bookbinder/Initialize()
+	. = ..()
+	add_think_ctx("handle_paper", CALLBACK(src, nameof(.proc/handle_paper)), 0)
+
 /obj/machinery/bookbinder/attack_hand(mob/user)
 	if(print_object)
 		src.visible_message("[src] whirs as it spitting out \the [print_object].")
@@ -95,16 +97,12 @@
 			..()
 			to_chat(user, "\The [src] already has item inside.")
 			return
-		if(istype(O, /obj/item/paper) || istype(O, /obj/item/book/wiki/template))
-			user.drop_item()
-			O.forceMove(src)
+		if((istype(O, /obj/item/paper) || istype(O, /obj/item/book/wiki/template)) && user.drop(O, src))
 			user.visible_message("[user] loads some paper into [src].", "You load some paper into [src].")
-			src.visible_message("[src] begins to hum as it warms up its printing drums.")
-			addtimer(CALLBACK(src, .proc/handle_paper, O), rand(200,400))
-		else if(istype(O, /obj/item/canvas))
+			visible_message("[src] begins to hum as it warms up its printing drums.")
+			set_next_think_ctx("handle_paper", world.time + rand(20 SECONDS, 40 SECONDS), O)
+		else if(istype(O, /obj/item/canvas) && user.drop(O, src))
 			print_object = O
-			user.drop_item()
-			O.forceMove(src)
 			user.visible_message("[user] loads \the [O] into [src].", "You load \the [O] into [src].")
 		else
 			..()

@@ -2,6 +2,7 @@
 	name = "box"
 	desc = "A sleek, sturdy box."
 	icon_state = "box_of_doom"
+	inspect_state = "doom-open"
 
 //For uplink kits that provide bulkier items
 /obj/item/storage/backpack/satchel/syndie_kit
@@ -14,6 +15,11 @@
 	desc = "A sleek, sturdy dufflebag."
 	icon_state = "duffle_syndie"
 
+/obj/item/storage/backpack/dufflebag/syndie_kit/chainsaw
+	startswith = list(
+		/obj/item/material/twohanded/chainsaw,
+		/obj/item/welder_tank/large
+		)
 
 /obj/item/storage/box/syndie_kit/imp_freedom
 	name = "box (F)"

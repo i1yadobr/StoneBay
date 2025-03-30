@@ -19,7 +19,8 @@
 	response_harm   = "kicks"
 	faction = "goat"
 	attacktext = "kicked"
-	health = 40
+	maxHealth = 50
+	health = 50
 	melee_damage_lower = 1
 	melee_damage_upper = 5
 	bodyparts = /decl/simple_animal_bodyparts/quadruped
@@ -135,7 +136,8 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	attacktext = "kicked"
-	health = 50
+	maxHealth = 75
+	health = 75
 	bodyparts = /decl/simple_animal_bodyparts/quadruped
 
 	var/milktype = /datum/reagent/drink/milk
@@ -186,6 +188,7 @@
 	icon_living = "cowcownut"
 	icon_dead = "cowcownut_dead"
 	emote_see = list("shakes its nuts")
+	maxHealth = 100
 	health = 100
 	faction = "floral"
 

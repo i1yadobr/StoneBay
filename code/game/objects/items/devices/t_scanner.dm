@@ -23,15 +23,15 @@
 	var/global/list/overlay_cache = list() //cache recent overlays
 
 /obj/item/device/t_scanner/Destroy()
-	. = ..()
 	if(on)
 		set_active(FALSE)
+	return ..()
 
-/obj/item/device/t_scanner/update_icon()
+/obj/item/device/t_scanner/on_update_icon()
 	icon_state = "[base_state][on]"
 
 /obj/item/device/t_scanner/emp_act()
-	audible_message(src, "<span class = 'notice'> \The [src] buzzes oddly.</span>")
+	audible_message(src, "<span class = 'notice'> \The [src] buzzes oddly.</span>", splash_override = "*buzz-z-z*")
 	set_active(FALSE)
 
 /obj/item/device/t_scanner/attack_self(mob/user)
@@ -41,14 +41,14 @@
 /obj/item/device/t_scanner/proc/set_active(active)
 	on = active
 	if(on)
-		START_PROCESSING(SSobj, src)
+		set_next_think(world.time + 1 SECOND)
 	else
-		STOP_PROCESSING(SSobj, src)
+		set_next_think(0)
 		set_user_client(null)
 	update_icon()
 
 //If reset is set, then assume the client has none of our overlays, otherwise we only send new overlays.
-/obj/item/device/t_scanner/Process()
+/obj/item/device/t_scanner/think()
 	if(!on)
 		return
 
@@ -61,6 +61,7 @@
 
 	//no sense processing if no-one is going to see it.
 	if(!user_client)
+		set_next_think(world.time + 1 SECOND)
 		return
 
 	//get all objects in scan range
@@ -79,12 +80,15 @@
 		user_client.images -= active_scanned[O]
 		active_scanned -= O
 
+	set_next_think(world.time + 1 SECOND)
+
 //creates a new overlay for a scanned object
 /obj/item/device/t_scanner/proc/get_overlay(atom/movable/scanned)
 	//Use a cache so we don't create a whole bunch of new images just because someone's walking back and forth in a room.
 	//Also means that images are reused if multiple people are using t-rays to look at the same objects.
-	if(scanned in overlay_cache)
-		. = overlay_cache[scanned]
+	var/weakref/S = weakref(scanned)
+	if(S in overlay_cache)
+		. = overlay_cache[S]
 	else
 		var/image/I = image(loc = scanned, icon = scanned.icon, icon_state = scanned.icon_state)
 		I.plane = HUD_PLANE
@@ -94,25 +98,25 @@
 		if(istype(scanned, /obj/machinery/atmospherics/pipe))
 			var/obj/machinery/atmospherics/pipe/P = scanned
 			I.color = P.pipe_color
-			I.overlays += P.overlays
-			I.underlays += P.underlays
+			I.CopyOverlays(P)
+			I.underlays += P.underlays.Copy()
 
 		if(ismob(scanned))
 			if(ishuman(scanned))
 				var/mob/living/carbon/human/H = scanned
-				if(H.species.appearance_flags & HAS_SKIN_COLOR)
+				if(H.species.species_appearance_flags & HAS_SKIN_COLOR)
 					I.color = rgb(H.r_skin, H.g_skin, H.b_skin)
 			var/mob/M = scanned
 			I.color = M.color
-			I.overlays += M.overlays
-			I.underlays += M.underlays
+			I.CopyOverlays(M)
+			I.underlays += M.underlays.Copy()
 
 		I.alpha = 128
 		I.mouse_opacity = 0
 		. = I
 
 	// Add it to cache, cutting old entries if the list is too long
-	overlay_cache[scanned] = .
+	overlay_cache[S] = .
 	if(overlay_cache.len > OVERLAY_CACHE_LEN)
 		overlay_cache.Cut(1, overlay_cache.len-OVERLAY_CACHE_LEN-1)
 

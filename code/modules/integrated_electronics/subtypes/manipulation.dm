@@ -73,8 +73,7 @@
 	if(istype(G))
 		if(attached_grenade)
 			to_chat(user, SPAN("warning", "There is already a grenade attached!"))
-		else if(user.canUnEquip(G))
-			user.drop_item(G)
+		else if(user.drop(G))
 			user.visible_message(SPAN("warning", "\The [user] attaches \a [G] to \the [src]!"), SPAN("notice", "You attach \the [G] to \the [src]."))
 			attach_grenade(G)
 	else
@@ -83,12 +82,12 @@
 /obj/item/integrated_circuit/manipulation/grenade/attack_self(mob/user)
 	if(attached_grenade && !grenade_activated)
 		user.visible_message(SPAN("warning", "\The [user] removes \an [attached_grenade] from \the [src]!"), SPAN("notice", "You remove \the [attached_grenade] from \the [src]."))
-		user.put_in_hands(attached_grenade)
+		user.pick_or_drop(attached_grenade)
 		detach_grenade()
 	else
 		return ..()
 
-/obj/item/integrated_circuit/manipulation/grenade/proc/before_activation_action()
+/obj/item/integrated_circuit/manipulation/grenade/think()
 	grenade_activated = FALSE
 	detach_grenade()
 
@@ -100,8 +99,8 @@
 			dt = Clamp(detonation_time.data, 1, 12)*10
 		else
 			dt = 15
-		addtimer(CALLBACK(attached_grenade, /obj/item/grenade.proc/activate), dt)
-		addtimer(CALLBACK(src, .proc/before_activation_action), dt - 1)
+		attached_grenade.set_next_think_ctx("think_activate", world.time + dt)
+		set_next_think(world.time + dt - 1)
 		grenade_activated = TRUE
 		var/atom/holder = loc
 		var/atom/A = get_object()
@@ -111,8 +110,7 @@
 // These procs do not relocate the grenade, that's the callers responsibility
 /obj/item/integrated_circuit/manipulation/grenade/proc/attach_grenade(obj/item/grenade/G, mob/user)
 	if(istype(G) && !grenade_activated)
-		if(user)
-			user.drop_item(G)
+		if(user?.drop(G))
 			user.visible_message(SPAN("warning", "\The [user] attaches \a [G] to \the [src]!"), SPAN("notice", "You attach \the [G] to \the [src]."))
 		attached_grenade = G
 		G.forceMove(src)
@@ -358,9 +356,9 @@
 					set_pin_data(IC_OUTPUT, 1, TRUE)
 					pulling = to_pull
 					acting_object.visible_message("\The [acting_object] starts pulling \the [to_pull] around.")
-					register_signal(to_pull, SIGNAL_MOVED, .proc/check_pull) // Whenever the target moves, make sure we can still pull it!
-					register_signal(to_pull, SIGNAL_QDELETING, .proc/stop_pulling) // Stop pulling if it gets destroyed.
-					register_signal(acting_object, SIGNAL_MOVED, .proc/pull) // Make sure we actually pull it.
+					register_signal(to_pull, SIGNAL_MOVED, nameof(.proc/check_pull)) // Whenever the target moves, make sure we can still pull it!
+					register_signal(to_pull, SIGNAL_QDELETING, nameof(.proc/stop_pulling)) // Stop pulling if it gets destroyed.
+					register_signal(acting_object, SIGNAL_MOVED, nameof(.proc/pull)) // Make sure we actually pull it.
 					var/atom/A = get_object()
 					A.investigate_log("started pulling [pulling] with [src].", INVESTIGATE_CIRCUIT)
 			push_data()
@@ -467,7 +465,7 @@
 	// If the item is in mob's inventory, try to remove it from there.
 	if(ismob(A.loc))
 		var/mob/living/M = A.loc
-		if(!M.unEquip(A))
+		if(!M.drop(A))
 			return
 
 	// If the item is in a grabber circuit we'll update the grabber's outputs after we've thrown it.
@@ -523,8 +521,10 @@
 	if(isnum_safe(step_dir) && (!step_dir || (step_dir in GLOB.cardinal)))
 		rift_location = get_step(rift_location, step_dir) || rift_location
 
-	if(tporter && tporter.locked && !tporter.one_time_use && tporter.operable())
-		new /obj/effect/portal(rift_location, get_turf(tporter.locked))
+	if(tporter && tporter?.gate?.is_ready())
+		if(!tporter.target_ref)
+			return
+		new /obj/effect/portal(rift_location, get_turf(tporter.target_ref.resolve()))
 	else
 		var/turf/destination = get_random_turf_in_range(src, 10)
 		if(destination)

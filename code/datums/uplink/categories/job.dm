@@ -11,6 +11,13 @@
 	job_specific = list("Chef")
 	path = /obj/item/material/knife/butch/kitchen/syndie
 
+/datum/uplink_item/item/job/meathook
+	name = "Meat Hook"
+	desc = "A high-tech version of an ancient assassin weapon, disguised as a meat hook. It can be thrown with an incredible accuracy, and will snag the first target it encounters, dragging it back to you. However, all the witnesses will know for sure that you're up for something."
+	item_cost = 5
+	job_specific = list("Chef")
+	path = /obj/item/gun/meathook
+
 /datum/uplink_item/item/job/mimesword
 	name = "Baguette Sword"
 	desc = "A sword made from a baguette. It's not very sharp, but it's still a good weapon. You can sharpen it, if you are brave enough."

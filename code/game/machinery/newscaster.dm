@@ -168,6 +168,7 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 	var/c_locked=0;        //Will our new channel be locked to public submissions?
 	var/hitstaken = 0      //Death at 3 hits from an item with force>=15
 	var/datum/feed_channel/viewing_channel = null
+	var/last_state = -1
 	light_outer_range = 0
 	anchored = 1
 	layer = ABOVE_WINDOW_LAYER
@@ -188,25 +189,34 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 	allCasters -= src
 	return ..()
 
-/obj/machinery/newscaster/update_icon()
-	if(inoperable())
+/obj/machinery/newscaster/on_update_icon()
+	var/new_state = !inoperable()
+	if(new_state)
+		new_state += !!news_network.wanted_issue // results in 0 for unoperable, 1 for normal, 2 for wanted
+	if(new_state == last_state)
+		return
+	last_state = new_state
+
+	ClearOverlays() //reset overlays
+
+	if(!new_state)
+		set_light(0)
 		icon_state = "newscaster_off"
 		if(stat & BROKEN) //If the thing is smashed, add crack overlay on top of the unpowered sprite.
-			overlays.Cut()
-			overlays += image(src.icon, "crack3")
+			AddOverlays(OVERLAY(icon, "crack3"))
 		return
 
-	src.overlays.Cut() //reset overlays
-
+	set_light(1.0, 0.5, 1, 1.5, "#11A05F")
+	AddOverlays(emissive_appearance(icon, "newscaster_ea"))
 	if(news_network.wanted_issue) //wanted icon state, there can be no overlays on it as it's a priority message
 		icon_state = "newscaster_wanted"
 		return
 
 	if(alert) //new message alert overlay
-		src.overlays += "newscaster_alert"
+		AddOverlays(OVERLAY(icon, "newscaster_alert"))
 
 	if(hitstaken > 0) //Cosmetic damage overlay
-		src.overlays += image(src.icon, "crack[hitstaken]")
+		AddOverlays(OVERLAY(icon, "crack[hitstaken]"))
 
 	icon_state = "newscaster_normal"
 	return
@@ -761,16 +771,15 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 		if(!photo_data.is_synth)
 			photo_data.photo.forceMove(get_turf(src))
 			if(!issilicon(user))
-				user.put_in_hands(photo_data.photo)
+				user.pick_or_drop(photo_data.photo)
 		qdel(photo_data)
 		photo_data = null
 		return
 
 	if(istype(user.get_active_hand(), /obj/item/photo))
 		var/obj/item/photo = user.get_active_hand()
-		user.drop_item()
-		photo.loc = src
-		photo_data = new(photo, 0)
+		if(user.drop(photo, src))
+			photo_data = new(photo, 0)
 	else if(istype(user,/mob/living/silicon))
 		var/mob/living/silicon/tempAI = user
 		var/obj/item/photo/selection = tempAI.GetPicture()
@@ -933,27 +942,18 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 ////////////////////////////////////helper procs
 
 
-/obj/machinery/newscaster/proc/scan_user(mob/living/user as mob)
-	if(istype(user,/mob/living/carbon/human))                       //User is a human
-		var/mob/living/carbon/human/human_user = user
-		if(human_user.wear_id)                                      //Newscaster scans you
-			if(istype(human_user.wear_id, /obj/item/device/pda) )	//autorecognition, woo!
-				var/obj/item/device/pda/P = human_user.wear_id
-				if(P.id)
-					src.scanned_user = GetNameAndAssignmentFromId(P.id)
-				else
-					src.scanned_user = "Unknown"
-			else if(istype(human_user.wear_id, /obj/item/card/id) )
-				var/obj/item/card/id/ID = human_user.wear_id
-				src.scanned_user = GetNameAndAssignmentFromId(ID)
-			else
-				src.scanned_user ="Unknown"
+/obj/machinery/newscaster/proc/scan_user(mob/living/user)
+	if(ishuman(user))
+		var/mob/living/carbon/human/H = user
+		var/obj/item/card/id/I = H.get_id_card()
+
+		if(!QDELETED(I))
+			scanned_user = GetNameAndAssignmentFromId(I)
 		else
-			src.scanned_user ="Unknown"
+			scanned_user = "Unknown"
 	else
 		var/mob/living/silicon/ai_user = user
 		src.scanned_user = "[ai_user.name] ([ai_user.job])"
-
 
 /obj/machinery/newscaster/proc/print_paper()
 	feedback_inc("newscaster_newspapers_printed",1)
@@ -962,7 +962,7 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 		NEWSPAPER.news_content += FC
 	if(news_network.wanted_issue)
 		NEWSPAPER.important_message = news_network.wanted_issue
-	NEWSPAPER.loc = get_turf(src)
+	NEWSPAPER.forceMove(get_turf(src))
 	src.paper_remaining--
 	return
 

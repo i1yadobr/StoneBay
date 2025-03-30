@@ -1,70 +1,140 @@
-//todo: toothbrushes, and some sort of "toilet-filthinator" for the hos
-
+#define SHOWER_MAX_WORKING_TIME 30 SECONDS
+#define MIST_SPAWN_DELAY 10 SECONDS
+#define SHOWER_WASH_FLOOR_INTERVAL 10 SECONDS
+#define TOILET_BRUTELOSS_PER_LIDSTOMP 8
+#define TOILET_OXYLOSS_PER_SWIRLIE 10
 /obj/structure/toilet
 	name = "toilet"
 	desc = "The HT-451, a torque rotation-based, waste disposal unit for small matter. This one seems remarkably clean."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "toilet00"
-	density = 0
-	anchored = 1
-	var/open = 0			//if the lid is up
-	var/cistern = 0			//if the cistern bit is open
-	var/w_items = 0			//the combined w_class of all the items in the cistern
-	var/mob/living/swirlie = null	//the mob being given a swirlie
+	base_icon_state = "toilet"
+	density = FALSE
+	anchored = TRUE
+	/// State of the lid (raised or lowered)
+	var/lid_open = FALSE
+	/// State of the cistern bit (closed or lid_open)
+	var/cistern = FALSE
+	// combined w_class of all the items in the cistern
+	var/w_items = 0
+	/// The mob being given a swirlie
+	var/mob/living/swirlie = null
 
-/obj/structure/toilet/New()
-	open = round(rand(0, 1))
+/obj/structure/toilet/Initialize()
+	. = ..()
+	lid_open = round(rand(FALSE, TRUE))
 	update_icon()
 
-/obj/structure/toilet/attack_hand(mob/living/user as mob)
+/obj/structure/toilet/attack_hand(mob/living/user)
 	if(swirlie)
-		usr.visible_message("<span class='danger'>[user] slams the toilet seat onto [swirlie.name]'s head!</span>", "<span class='notice'>You slam the toilet seat onto [swirlie.name]'s head!</span>", "You hear reverberating porcelain.")
-		swirlie.adjustBruteLoss(8)
+		THROTTLE(cooldown, 0.5 SECONDS)
+		if(!cooldown)
+			return
+
+		visible_message(SPAN_DANGER("[user] slams the toilet seat onto [swirlie.name]'s head!"), \
+		"You hear reverberating porcelain.")
+		swirlie.adjustBruteLoss(TOILET_BRUTELOSS_PER_LIDSTOMP)
+		playsound(get_turf(src), GET_SFX(SFX_FIGHTING_PUNCH), 100, TRUE)
 		return
 
-	if(cistern && !open)
+	if(cistern && !lid_open)
 		if(!contents.len)
-			to_chat(user, "<span class='notice'>The cistern is empty.</span>")
+			show_splash_text(user, "the cistern is empty!", SPAN("notice", "The cistern is empty."))
 			return
 		else
 			var/obj/item/I = pick(contents)
 			if(ishuman(user))
-				user.put_in_hands(I)
+				user.pick_or_drop(I)
 			else
-				I.loc = get_turf(src)
+				I.dropInto(loc)
 			to_chat(user, "<span class='notice'>You find \an [I] in the cistern.</span>")
 			w_items -= I.w_class
 			return
 
-	open = !open
+	lid_open = !lid_open
 	update_icon()
 
-/obj/structure/toilet/update_icon()
-	icon_state = "toilet[open][cistern]"
+/obj/structure/toilet/on_update_icon()
+	icon_state = "[base_icon_state][lid_open][cistern]"
 
-/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
+/obj/structure/toilet/attackby(obj/item/I, mob/living/user)
 	if(isCrowbar(I))
-		to_chat(user, "<span class='notice'>You start to [cistern ? "replace the lid on the cistern" : "lift the lid off the cistern"].</span>")
+		show_splash_text(user, "[cistern? "replacing the lid" : "lifting the lid"]", SPAN("notice", "You start to [cistern ? "replace the lid on the cistern" : "lift the lid off the cistern"]."))
 		playsound(loc, 'sound/effects/stonedoor_openclose.ogg', 50, 1)
-		if(do_after(user, 30, src))
-			user.visible_message("<span class='notice'>[user] [cistern ? "replaces the lid on the cistern" : "lifts the lid off the cistern"]!</span>", "<span class='notice'>You [cistern ? "replace the lid on the cistern" : "lift the lid off the cistern"]!</span>", "You hear grinding porcelain.")
-			cistern = !cistern
-			update_icon()
+		if(!do_after(user, 3 SECONDS, src))
 			return
 
-	if(cistern && !istype(user,/mob/living/silicon/robot)) //STOP PUTTING YOUR MODULES IN THE TOILET.
-		if(I.w_class > ITEM_SIZE_NORMAL)
-			to_chat(user, "<span class='notice'>\The [I] does not fit.</span>")
+		if(QDELETED(src))
 			return
-		if(w_items + I.w_class > 5)
-			to_chat(user, "<span class='notice'>The cistern is full.</span>")
-			return
-		user.drop_item()
-		I.loc = src
-		w_items += I.w_class
-		to_chat(user, "You carefully place \the [I] into the cistern.")
+
+		visible_message(SPAN_NOTICE("[user] [cistern ? "replaces the lid on the cistern" : "lifts the lid off the cistern"]!"), \
+		"You hear grinding porcelain.")
+		cistern = !cistern
+		update_icon()
 		return
 
+	else if(istype(I, /obj/item/grab) && lid_open && !swirlie)
+		var/obj/item/grab/G = I
+
+		if(!isliving(G.affecting))
+			return
+
+		if(G.current_grab.state_name == NORM_PASSIVE)
+			show_splash_text(user, "tighter grip is needed!", SPAN("warning", "You need a tigher grip!"))
+			return
+
+		if(get_dist(G.affecting, get_turf(src)) > 1)
+			show_splash_text(user, "victim needs to be on the toilet!", SPAN("warning", "The victim must be held right above the toilet!"))
+			return
+
+		if(lid_open && !swirlie)
+			user.visible_message(SPAN_DANGER("[user] starts to give [G.affecting.name] a swirlie!"), \
+									SPAN_DANGER("You start to give [G.affecting.name] a swirlie!"))
+			swirlie = G.affecting
+			if(!do_after(user, 3 SECONDS, src, FALSE))
+				swirlie = null
+				return
+
+			if(QDELETED(src) || !G?.affecting)
+				swirlie = null
+				return
+
+			user.visible_message(SPAN_DANGER("[user] gives [G.affecting.name] a swirlie!"), \
+									SPAN_DANGER("You give [G.affecting.name] a swirlie!"))
+			playsound(src, 'sound/effects/toilet_flush.ogg', 100, TRUE)
+			if(!G?.affecting?.internal && !G.affecting.isSynthetic())
+				G.affecting.adjustOxyLoss(TOILET_OXYLOSS_PER_SWIRLIE)
+				G.affecting.emote("gasp")
+			swirlie = null
+			return
+		else
+			user.visible_message(SPAN_DANGER("[user] slams [G.affecting.name] into the [src]!"), \
+									SPAN_DANGER("You slam [G.affecting.name] into the [src]!"))
+			G.affecting.adjustBruteLoss(TOILET_BRUTELOSS_PER_LIDSTOMP)
+			return
+
+	if(cistern && !istype(user, /mob/living/silicon/robot)) //STOP PUTTING YOUR MODULES IN THE TOILET.
+		if(I.w_class > ITEM_SIZE_NORMAL)
+			show_splash_text(user, "won't fit!", SPAN("notice", "\The [I] does not fit."))
+			return
+
+		if(w_items + I.w_class > 5)
+			show_splash_text(user, "cistern is full!", SPAN("notice", "The cistern is full."))
+			return
+
+		if(!user.drop(I, src))
+			return
+		w_items += I.w_class
+		show_splash_text(user, "item placed into the cistern", "You carefully place \the [I] into the cistern.")
+		return
+
+	return ..()
+
+/obj/structure/toilet/gold
+	name = "golden toilet"
+	desc = "The HT-451, a torque rotation-based, waste disposal unit for small matter. This one is LUXURIOUS."
+	icon_state = "goldtoilet00"
+	base_icon_state = "goldtoilet"
 
 
 /obj/structure/urinal
@@ -84,80 +154,113 @@
 	anchored = TRUE
 	use_power = 0
 	layer = ABOVE_WINDOW_LAYER
-	var/on = 0
-	var/obj/effect/mist/mymist = null
-	var/ismist = 0				//needs a var so we can make it linger~
 	var/watertemp = "normal"	//freezing, normal, or boiling
 	var/is_washing = 0
-	var/list/temperature_settings = list("normal" = 310, "boiling" = T0C+100, "freezing" = T0C)
+	/// Used to track when it should stop processing automatically.
+	var/time_enabled
+	/// Tracks interval at which it should wash the floor
+	var/next_wash_time
+	var/list/temperature_settings = list("normal" = 310, "boiling" = 100 CELSIUS, "freezing" = 0 CELSIUS)
+	/// Mist effect will be spawned only once per activation.
+	var/hasmist = FALSE
 
-/obj/machinery/shower/New()
-	..()
+/obj/machinery/shower/ex_act(severity)
+	switch(severity)
+		if(EXPLODE_DEVASTATE)
+			qdel_self()
+		if(EXPLODE_HEAVY)
+			if(prob(50))
+				if(prob(50))
+					new /obj/item/shower_parts(get_turf(src))
+				qdel_self()
+		if(EXPLODE_LIGHT)
+			if(prob(25))
+				new /obj/item/shower_parts(get_turf(src))
+				qdel_self()
+
+/obj/machinery/shower/Initialize(mapload, ...)
+	. = ..()
 	create_reagents(50)
 
 //add heat controls? when emagged, you can freeze to death in it?
 
-/obj/effect/mist
-	name = "mist"
+/obj/item/shower_parts
+	name = "shower parts"
+	desc = "It has everything you need to assemble your own shower. Isn't it beautiful?"
 	icon = 'icons/obj/watercloset.dmi'
-	icon_state = "mist"
+	icon_state = "shower_parts"
 
-	layer = ABOVE_HUMAN_LAYER
-	anchored = 1
-	mouse_opacity = 0
+/obj/item/shower_parts/attack_self(mob/user)
+	add_fingerprint(user)
+
+	if(!isturf(user.loc))
+		return
+
+	place_shower(user)
+
+/obj/item/shower_parts/proc/place_shower(mob/user)
+	if(!in_use)
+		to_chat(user, SPAN("notice", "Assembling shower..."))
+		in_use = TRUE
+		if(!do_after(user, 1 SECOND))
+			in_use = FALSE
+			return
+		var/obj/machinery/shower/S = new /obj/machinery/shower(user.loc)
+		to_chat(user, SPAN("notice", "You assemble a shower"))
+		in_use = FALSE
+		S.add_fingerprint(user)
+		qdel_self()
+	return
 
 /obj/machinery/shower/attack_hand(mob/M as mob)
-	on = !on
+	if(is_processing)
+		STOP_PROCESSING(SSmachines, src)
+	else
+		time_enabled = world.time
+		hasmist = FALSE
+		START_PROCESSING(SSmachines, src)
+
 	update_icon()
-	if(on)
-		if (M.loc == loc)
-			wash(M)
-			process_heat(M)
-		for (var/atom/movable/G in src.loc)
-			G.clean_blood()
 
 /obj/machinery/shower/attackby(obj/item/I as obj, mob/user as mob)
+	if(isScrewdriver(I))
+		if(is_processing)
+			to_chat(user, SPAN("warning", "The first thing to do is to turn off the water."))
+			return
+
+		playsound(loc, 'sound/items/Screwdriver.ogg', 100, 1)
+		new /obj/item/shower_parts(get_turf(src))
+		qdel_self()
+
 	if(I.type == /obj/item/device/analyzer)
-		to_chat(user, "<span class='notice'>The water temperature seems to be [watertemp].</span>")
+		to_chat(user, SPAN_NOTICE("The water temperature seems to be [watertemp]."))
+		return
+
 	if(isWrench(I))
-		var/newtemp = input(user, "What setting would you like to set the temperature valve to?", "Water Temperature Valve") in temperature_settings
-		to_chat(user, "<span class='notice'>You begin to adjust the temperature valve with \the [I].</span>")
+		var/newtemp = tgui_input_list(user, "What setting would you like to set the temperature valve to?", "Water Temperature Valve", temperature_settings)
+		if(!Adjacent(user))
+			return
+
+		to_chat(user, SPAN_NOTICE("You begin to adjust the temperature valve with \the [I]."))
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 		if(do_after(user, 50, src))
 			watertemp = newtemp
-			user.visible_message("<span class='notice'>\The [user] adjusts \the [src] with \the [I].</span>", "<span class='notice'>You adjust the shower with \the [I].</span>")
+			user.visible_message(SPAN_NOTICE("\The [user] adjusts \the [src] with \the [I]."), SPAN_NOTICE("You adjust the shower with \the [I]."))
 			add_fingerprint(user)
+		return
 
-/obj/machinery/shower/update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
-	overlays.Cut()					//once it's been on for a while, in addition to handling the water overlay.
-	if(mymist)
-		qdel(mymist)
-		mymist = null
+	return ..()
 
-	if(on)
-		overlays += image('icons/obj/watercloset.dmi', src, "water", MOB_LAYER + 1, dir)
-		if(temperature_settings[watertemp] < T20C)
-			return //no mist for cold water
-		if(!ismist)
-			spawn(50)
-				if(src && on)
-					ismist = 1
-					mymist = new /obj/effect/mist(loc)
-		else
-			ismist = 1
-			mymist = new /obj/effect/mist(loc)
-	else if(ismist)
-		ismist = 1
-		mymist = new /obj/effect/mist(loc)
-		spawn(250)
-			if(src && !on)
-				qdel(mymist)
-				mymist = null
-				ismist = 0
+/obj/machinery/shower/on_update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
+	ClearOverlays()					//once it's been on for a while, in addition to handling the water overlay.
+
+	if(is_processing)
+		AddOverlays(image('icons/obj/watercloset.dmi', src, "water", MOB_LAYER + 1, dir))
 
 //Yes, showers are super powerful as far as washing goes.
-/obj/machinery/shower/proc/wash(atom/movable/O as obj|mob)
-	if(!on) return
+/obj/machinery/shower/proc/wash(atom/movable/O)
+	if(!is_processing)
+		return
 
 	if(isliving(O))
 		var/mob/living/L = O
@@ -238,6 +341,7 @@
 			if(istype(head))
 				head.forehead_graffiti = null
 				head.graffiti_style = null
+				head.forehead_stamps.Cut()
 		else
 			if(M.wear_mask)						//if the mob is not human, it cleans the mask without asking for bitflags
 				if(M.wear_mask.clean_blood())
@@ -255,7 +359,14 @@
 	reagents.splash(O, 10)
 
 /obj/machinery/shower/Process()
-	if(!on) return
+	if(world.time >= time_enabled + SHOWER_MAX_WORKING_TIME)
+		STOP_PROCESSING(SSmachines, src)
+		update_icon()
+		return
+
+	if(!hasmist && world.time >= time_enabled + MIST_SPAWN_DELAY && temperature_settings[watertemp] > (20 CELSIUS))
+		new /obj/effect/mist/showermist(get_turf(src))
+		hasmist = TRUE
 
 	for(var/thing in loc)
 		var/atom/movable/AM = thing
@@ -264,21 +375,21 @@
 			wash(AM)
 			if(istype(L))
 				process_heat(L)
-	wash_floor()
+
+	if(world.time >= next_wash_time)
+		next_wash_time = world.time + SHOWER_WASH_FLOOR_INTERVAL
+		wash_floor()
+
 	reagents.add_reagent(/datum/reagent/water, reagents.get_free_space())
 
 /obj/machinery/shower/proc/wash_floor()
-	if(!ismist && is_washing)
-		return
-	is_washing = 1
 	var/turf/T = get_turf(src)
 	reagents.splash(T, reagents.total_volume)
 	T.clean(src)
-	spawn(100)
-		is_washing = 0
 
 /obj/machinery/shower/proc/process_heat(mob/living/M)
-	if(!on || !istype(M)) return
+	if(!is_processing || !istype(M))
+		return
 
 	var/temperature = temperature_settings[watertemp]
 	var/temp_adj = between(BODYTEMP_COOLING_MAX, temperature - M.bodytemperature, BODYTEMP_HEATING_MAX)
@@ -287,9 +398,22 @@
 	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
 		if(temperature >= H.species.heat_level_1)
-			to_chat(H, "<span class='danger'>The water is searing hot!</span>")
+			to_chat(H, SPAN_DANGER("The water is searing hot!"))
 		else if(temperature <= H.species.cold_level_1)
-			to_chat(H, "<span class='warning'>The water is freezing cold!</span>")
+			to_chat(H, SPAN_WARNING("The water is freezing cold!"))
+
+/obj/effect/mist
+	name = "mist"
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "mist"
+
+	layer = ABOVE_HUMAN_LAYER
+	anchored = TRUE
+	mouse_opacity = 0
+
+/obj/effect/mist/showermist/Initialize(mapload, ...) // This mist self-deletes after some time, ridding us of tracking mist in shower's Process()
+	. = ..()
+	QDEL_IN(src, SHOWER_MAX_WORKING_TIME)
 
 /obj/item/bikehorn/rubberducky
 	name = "rubber ducky"
@@ -297,6 +421,7 @@
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "rubberducky"
 	item_state = "rubberducky"
+	slot_flags = SLOT_HEAD
 
 
 
@@ -388,6 +513,8 @@
 					R.cell.charge -= 20
 				else
 					B.deductcharge(B.hitcost)
+
+				playsound(get_turf(src), GET_SFX(SFX_SPARK_SMALL), 50, TRUE, -1)
 				user.visible_message( \
 					"<span class='danger'>[user] was stunned by \his wet [O]!</span>", \
 					"<span class='userdanger'>[user] was stunned by \his wet [O]!</span>")
@@ -449,3 +576,9 @@
 	icon_state = "puddle-splash"
 	..()
 	icon_state = "puddle"
+
+#undef SHOWER_MAX_WORKING_TIME
+#undef MIST_SPAWN_DELAY
+#undef SHOWER_WASH_FLOOR_INTERVAL
+#undef TOILET_BRUTELOSS_PER_LIDSTOMP
+#undef TOILET_OXYLOSS_PER_SWIRLIE

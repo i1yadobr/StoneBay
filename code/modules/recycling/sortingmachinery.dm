@@ -1,7 +1,7 @@
 /obj/structure/bigDelivery
 	desc = "A big wrapped package."
 	name = "large parcel"
-	icon = 'icons/obj/storage.dmi'
+	icon = 'icons/obj/delivery.dmi'
 	icon_state = "deliverycloset"
 	var/obj/wrapped = null
 	density = 1
@@ -83,10 +83,10 @@
 					                     SPAN("notice", "You label \the [src]: \"[examtext]\""),
 					                     "You hear the sound of a small printer.")
 
-/obj/structure/bigDelivery/update_icon()
-	overlays = new()
+/obj/structure/bigDelivery/on_update_icon()
+	ClearOverlays()
 	if(nameset || examtext)
-		var/image/I = new /image('icons/obj/storage.dmi',"delivery_label")
+		var/image/I = new /image(icon, "delivery_label")
 		if(icon_state == "deliverycloset")
 			I.pixel_x = 2
 			if(label_y == null)
@@ -97,9 +97,9 @@
 				label_x = rand(-8, 6)
 			I.pixel_x = label_x
 			I.pixel_y = -3
-		overlays += I
+		AddOverlays(I)
 	if(src.sortTag)
-		var/image/I = new /image('icons/obj/storage.dmi',"delivery_tag")
+		var/image/I = new /image(icon, "delivery_tag")
 		if(icon_state == "deliverycloset")
 			if(tag_x == null)
 				tag_x = rand(-2, 3)
@@ -110,16 +110,19 @@
 				tag_x = rand(-8, 6)
 			I.pixel_x = tag_x
 			I.pixel_y = -3
-		overlays += I
+		AddOverlays(I)
 
-/obj/structure/bigDelivery/_examine_text(mob/user)
+/obj/structure/bigDelivery/examine(mob/user, infix)
 	. = ..()
-	if(get_dist(src, user) <= 4)
-		if(sortTag)
-			. += "\n<span class='notice'>It is labeled \"[sortTag]\"</span>"
-		if(examtext)
-			. += "\n<span class='notice'>It has a note attached which reads, \"[examtext]\"</span>"
-	return
+
+	if(get_dist(src, user) > 4)
+		return
+
+	if(sortTag)
+		. += SPAN_NOTICE("It is labeled \"[sortTag]\"")
+	if(examtext)
+		. += SPAN_NOTICE("It has a note attached which reads, \"[examtext]\"")
+
 
 /obj/structure/bigDelivery/Destroy()
 	if(wrapped) //sometimes items can disappear. For example, bombs. --rastaf0
@@ -136,7 +139,7 @@
 /obj/item/smallDelivery
 	desc = "A small wrapped package."
 	name = "small parcel"
-	icon = 'icons/obj/storage.dmi'
+	icon = 'icons/obj/delivery.dmi'
 	icon_state = "deliverycrate3"
 	var/obj/item/wrapped = null
 	var/sortTag = null
@@ -144,26 +147,28 @@
 	var/nameset = 0
 	var/tag_x
 
-/obj/item/smallDelivery/proc/unwrap(mob/user)
-	if (!wrapped)
-		qdel(src)
+	drop_sound = SFX_DROP_CARDBOARD
+	pickup_sound = SFX_PICKUP_CARDBOARD
 
-	if (!Adjacent(user))
+/obj/item/smallDelivery/proc/unwrap(mob/user)
+	if(!Adjacent(user))
 		return
-	wrapped.forceMove(user.loc)
-	user.drop_item()
+
+	if(!wrapped)
+		qdel(src)
+		return
+
+	playsound(user, 'sound/effects/using/wrapper/unwrap1.ogg', rand(50, 75), TRUE)
 	if(ishuman(user))
-		user.put_in_hands(wrapped)
+		user.replace_item(src, wrapped, TRUE, TRUE)
 	else
 		wrapped.forceMove(get_turf(src))
+		qdel(src)
 
-	playsound(src, 'sound/effects/using/wrapper/unwrap1.ogg', rand(50, 75), TRUE)
-	qdel(src)
-
-/obj/item/smallDelivery/attack_robot(mob/user as mob)
+/obj/item/smallDelivery/attack_robot(mob/user)
 	unwrap(user)
 
-/obj/item/smallDelivery/attack_self(mob/user as mob)
+/obj/item/smallDelivery/attack_self(mob/user)
 	unwrap(user)
 
 /obj/item/smallDelivery/attackby(obj/item/W as obj, mob/user as mob)
@@ -225,41 +230,46 @@
 					                     "You hear the sound of a small printer.")
 	return
 
-/obj/item/smallDelivery/update_icon()
-	overlays = new()
+/obj/item/smallDelivery/on_update_icon()
+	ClearOverlays()
 	if((nameset || examtext) && icon_state != "deliverycrate1")
-		var/image/I = new /image('icons/obj/storage.dmi',"delivery_label")
-		if(icon_state == "deliverycrate5")
-			I.pixel_y = -1
-		overlays += I
+		var/image/I
+		if(icon_state == "deliverycrate1")
+			I = image(icon, "delivery_label_small")
+		else
+			I = image(icon, "delivery_label")
+		AddOverlays(I)
 	if(src.sortTag)
-		var/image/I = new /image('icons/obj/storage.dmi',"delivery_tag")
+		var/image/I = image(icon, "delivery_tag")
 		switch(icon_state)
 			if("deliverycrate1")
-				I.pixel_y = -5
+				I.pixel_y = -4
 			if("deliverycrate2")
 				I.pixel_y = -2
 			if("deliverycrate3")
 				I.pixel_y = 0
 			if("deliverycrate4")
 				if(tag_x == null)
-					tag_x = rand(0,5)
+					tag_x = rand(0, 5)
 				I.pixel_x = tag_x
 				I.pixel_y = 3
 			if("deliverycrate5")
-				I.pixel_y = -3
+				I.pixel_y = 0
 			if("deliverybox")
 				I.pixel_y = 1
-		overlays += I
+		AddOverlays(I)
 
-/obj/item/smallDelivery/_examine_text(mob/user)
+/obj/item/smallDelivery/examine(mob/user, infix)
 	. = ..()
-	if(get_dist(src, user) <= 4)
-		if(sortTag)
-			. += "\n<span class='notice'>It is labeled \"[sortTag]\"</span>"
-		if(examtext)
-			. += "\n<span class='notice'>It has a note attached which reads, \"[examtext]\"</span>"
-	return
+
+	if(get_dist(src, user) > 4)
+		return
+
+	if(sortTag)
+		. += SPAN_NOTICE("It is labeled \"[sortTag]\".")
+	if(examtext)
+		. += SPAN_NOTICE("It has a note attached which reads, \"[examtext]\".")
+
 
 /obj/item/packageWrap
 	name = "package wrapper"
@@ -267,6 +277,9 @@
 	icon_state = "deliveryPaper"
 	w_class = ITEM_SIZE_NORMAL
 	var/amount = 25.0
+
+	drop_sound = SFX_DROP_WRAPPER
+	pickup_sound = SFX_PICKUP_WRAPPER
 
 /obj/item/c_tube
 	name = "cardboard tube"
@@ -293,40 +306,59 @@
 
 	if (istype(target, /obj/item) && !(istype(target, /obj/item/storage) && !istype(target,/obj/item/storage/box)))
 		var/obj/item/O = target
-		if (src.amount > 1)
+		if(amount)
 			var/obj/item/smallDelivery/P = new /obj/item/smallDelivery(get_turf(O.loc))	//Aaannd wrap it up!
+
 			if(!istype(O.loc, /turf))
 				if(user.client)
 					user.client.screen -= O
+
 			P.wrapped = O
 			P.w_class = O.w_class
+
+			var/size_text = "ambiguous"
 			var/i = round(O.w_class)
-			if(i in list(1,2,3,4,5))
+			if(i in list(1, 2, 3, 4, 5))
 				P.icon_state = "deliverycrate[i]"
 				switch(i)
-					if(1) P.SetName("tiny parcel")
-					if(3) P.SetName("normal-sized parcel")
-					if(4) P.SetName("large parcel")
-					if(5) P.SetName("huge parcel")
+					if(1)
+						size_text = "tiny"
+					if(2)
+						size_text = "small"
+					if(3)
+						size_text = "normal-sized"
+					if(4)
+						size_text = "large"
+					if(5)
+						size_text = "huge"
 			if(i < 1)
 				P.icon_state = "deliverycrate1"
-				P.SetName("tiny parcel")
+				size_text = "tiny parcel"
 			if(i > 5)
 				P.icon_state = "deliverycrate5"
-				P.SetName("huge parcel")
+				size_text = "huge parcel"
+
+			P.SetName("[size_text] parcel")
+			P.desc = "A [size_text] wrapped package."
+
 			P.add_fingerprint(usr)
 			O.add_fingerprint(usr)
-			src.add_fingerprint(usr)
-			src.amount -= 1
+			add_fingerprint(usr)
+
+			amount -= 1
+
 			user.visible_message("\The [user] wraps \a [target] with \a [src].",\
 			SPAN("notice", "You wrap \the [target], leaving [amount] units of paper on \the [src]."),\
 			"You hear someone taping paper around a small object.")
+
 			if(istype(O, /obj/item/storage/box))
 				var/obj/item/storage/box/B = O
 				B.close(user)
 				P.SetName("box-shaped parcel")
 				P.icon_state = "deliverybox"
+
 			O.forceMove(P)
+
 	else if (istype(target, /obj/structure/closet/crate))
 		var/obj/structure/closet/crate/O = target
 		if (src.amount > 3 && !O.opened)
@@ -361,11 +393,11 @@
 		return
 	return
 
-/obj/item/packageWrap/_examine_text(mob/user)
+/obj/item/packageWrap/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 0)
-		. += "\n<span class='notice'>There are [amount] units of package wrap left!</span>"
-	return
+		. += SPAN_NOTICE("There are [amount] units of package wrap left!")
 
 /obj/item/device/destTagger
 	name = "destination tagger"
@@ -432,7 +464,7 @@
 /obj/machinery/disposal/deliveryChute/interact()
 	return
 
-/obj/machinery/disposal/deliveryChute/update_icon()
+/obj/machinery/disposal/deliveryChute/on_update_icon()
 	return
 
 /obj/machinery/disposal/deliveryChute/Bumped(atom/movable/AM) //Go straight into the chute
@@ -503,24 +535,23 @@
 			playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
 			to_chat(user, "You attach the screws around the power connection.")
 			return
-	else if(isWelder(I) && c_mode==1)
-		var/obj/item/weldingtool/W = I
-		if(W.remove_fuel(1,user))
-			to_chat(user, "You start slicing the floorweld off the delivery chute.")
-			if(do_after(user,20, src))
-				playsound(src.loc, 'sound/items/Welder2.ogg', 100, 1)
-				if(!src || !W.isOn()) return
-				to_chat(user, "You sliced the floorweld off the delivery chute.")
-				var/obj/structure/disposalconstruct/C = new (src.loc)
-				C.ptype = 8 // 8 =  Delivery chute
-				C.update()
-				C.anchored = 1
-				C.set_density(1)
-				qdel(src)
+	else if(isWelder(I) && c_mode == 1)
+		var/obj/item/weldingtool/WT = I
+		to_chat(user, "You start slicing the floorweld off the delivery chute.")
+		if(!WT.use_tool(src, user, delay = 2 SECONDS, amount = 1))
 			return
-		else
-			to_chat(user, "You need more welding fuel to complete this task.")
+
+		if(QDELETED(src) || !user)
 			return
+
+		to_chat(user, "You sliced the floorweld off the delivery chute.")
+		var/obj/structure/disposalconstruct/C = new (src.loc)
+		C.ptype = 8 // 8 =  Delivery chute
+		C.update()
+		C.anchored = TRUE
+		C.set_density(TRUE)
+		qdel(src)
+		return
 
 /obj/machinery/disposal/deliveryChute/Destroy()
 	if(trunk)

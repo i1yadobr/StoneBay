@@ -1,25 +1,47 @@
 /mob/Destroy()//This makes sure that mobs with clients/keys are not just deleted from the game.
 	STOP_PROCESSING(SSmobs, src)
+
+	unregister_signal(src, SIGNAL_SEE_IN_DARK_SET)
+	unregister_signal(src, SIGNAL_SEE_INVISIBLE_SET)
+	unregister_signal(src, SIGNAL_SIGHT_SET)
+
 	remove_from_dead_mob_list()
 	remove_from_living_mob_list()
 	GLOB.player_list.Remove(src)
+	SSmobs.mob_list.Remove(src)
 
 	unset_machine()
+	//SStgui.force_close_all_windows(src) Needs further investigating
+
 	QDEL_NULL(hud_used)
 	QDEL_NULL(show_inventory)
+	QDEL_NULL(skybox)
+	QDEL_NULL(ability_master)
+	QDEL_NULL(shadow)
+	QDEL_NULL(bugreporter)
+	QDEL_NULL(language_menu)
 
 	LAssailant = null
 	for(var/obj/item/grab/G in grabbed_by)
 		qdel(G)
+	grabbed_by.Cut()
 
 	clear_fullscreen()
 	if(ability_master)
 		QDEL_NULL(ability_master)
 
+	if(click_handlers)
+		click_handlers.QdelClear()
+		QDEL_NULL(click_handlers)
+
+	if(eyeobj)
+		eyeobj.release(src)
+		QDEL_NULL(eyeobj)
+
 	remove_screen_obj_references()
 	if(client)
 		for(var/atom/movable/AM in client.screen)
-			var/obj/screen/screenobj = AM
+			var/atom/movable/screen/screenobj = AM
 			if(!istype(screenobj) || !screenobj.globalscreen)
 				qdel(screenobj)
 		client.screen = list()
@@ -54,6 +76,7 @@
 	pain = null
 	item_use_icon = null
 	gun_move_icon = null
+	radio_use_icon = null
 	gun_setting_icon = null
 	ability_master = null
 	zone_sel = null
@@ -61,10 +84,26 @@
 
 /mob/Initialize(mapload)
 	. = ..()
+	if(species_language)
+		add_language(species_language)
+	language_menu = new (src)
+	update_move_intent_slowdown()
+	if(ignore_pull_slowdown)
+		add_movespeed_mod_immunities(src, /datum/movespeed_modifier/pull_slowdown)
+	add_think_ctx("dust", CALLBACK(src, nameof(.proc/dust)), 0)
+	add_think_ctx("dust_deletion", CALLBACK(src, nameof(.proc/dust_check_delete)), 0)
+	add_think_ctx("weaken_context", CALLBACK(src, nameof(.proc/Weaken)), 0)
+	add_think_ctx("post_close_winset", CALLBACK(src, nameof(.proc/post_close_winset)), 0)
+	register_signal(src, SIGNAL_SEE_IN_DARK_SET,	nameof(.proc/set_blackness))
+	register_signal(src, SIGNAL_SEE_INVISIBLE_SET,	nameof(.proc/set_blackness))
+	register_signal(src, SIGNAL_SIGHT_SET,			nameof(.proc/set_blackness))
 	START_PROCESSING(SSmobs, src)
 
 /mob/proc/show_message(msg, type, alt, alt_type)//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
 	if(!client)	return
+
+	if(is_blind() && is_deaf())
+		return // We're both blind & deaf, nothing to do here
 
 	//spaghetti code
 	if(type)
@@ -146,6 +185,8 @@
 		var/mob/M = m
 		if(self_message && M == src)
 			M.show_message(self_message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE)
+		else if(isghost(M))
+			M.show_message(message + " (<a href='byond://?src=\ref[M];track=\ref[src]'>F</a>)", AUDIBLE_MESSAGE)
 		else if(M.see_invisible >= invisibility || narrate) // Cannot view the invisible
 			M.show_message(message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE)
 		else
@@ -158,37 +199,10 @@
 	return 0
 
 /mob/proc/movement_delay()
-	. = 0
-	if(istype(loc, /turf))
-		var/turf/T = loc
-		. += T.movement_delay
+	if(istype(loc, /turf/space))
+		return cached_slowdown_space
 
-	switch(m_intent)
-		if(M_RUN)
-			if(drowsyness > 0)
-				. += config.movement.walk_speed
-			else
-				. += config.movement.run_speed
-		if(M_WALK)
-			. += config.movement.walk_speed
-
-	if(lying) //Crawling, it's slower
-		. += 10 + (weakened * 2)
-
-	if(pulling && !ignore_pull_slowdown)
-		var/area/A = get_area(src)
-		if(A.has_gravity)
-			if(istype(pulling, /obj))
-				var/obj/O = pulling
-				if(O.pull_slowdown == PULL_SLOWDOWN_WEIGHT)
-					. += between(0, O.w_class, ITEM_SIZE_GARGANTUAN) / 5
-				else
-					. += O.pull_slowdown
-			else if(istype(pulling, /mob))
-				var/mob/M = pulling
-				. += max(0, M.mob_size) / MOB_MEDIUM * (M.lying ? 2 : 0.5)
-			else
-				. += 1
+	return cached_slowdown
 
 /mob/proc/Life()
 //	if(organStructure)
@@ -221,7 +235,7 @@
 	if((incapacitation_flags & INCAPACITATION_STUNNED) && stunned)
 		return 1
 
-	if((incapacitation_flags & INCAPACITATION_FORCELYING) && (weakened || resting || pinned.len))
+	if((incapacitation_flags & INCAPACITATION_FORCELYING) && (weakened || resting || LAZYLEN(pinned)))
 		return 1
 
 	if((incapacitation_flags & INCAPACITATION_KNOCKOUT) && (stat || paralysis || sleeping || (status_flags & FAKEDEATH)))
@@ -261,29 +275,36 @@
 				client.eye = loc
 	return
 
+/**
+ * This proc creates content for nano inventory.
+ * Returns TRUE if there is content to show.
+ * In case there's nothing to show - returns FALSE.
+ * This is done to prevent UI from showing last opened inventory.
+ * Do not forget to check what this proc has returned before actually opening UI!
+ */
 /mob/proc/show_inv(mob/user)
-	return
+	return FALSE
 
-//mob verbs are faster than object verbs. See http://www.byond.com/forum/?post=1326139&page=2#comment8198716 for why this isn't atom/verb/_examine_text()
-/mob/verb/examinate(atom/A as mob|obj|turf in view(src.client.eye))
+// Mob verbs are faster than object verbs. See http://www.byond.com/forum/?post=1326139&page=2#comment8198716 for why this isn't atom/verb/examine()
+/mob/verb/examinate(atom/A as mob|obj|turf in view(client.eye))
 	set name = "Examine"
 	set category = "IC"
 
 	if((is_blind(src) || usr?.stat) && !isobserver(src))
-		to_chat(src, "<span class='notice'>Something is there but you can't see it.</span>")
-		return 1
+		to_chat(src, SPAN("notice", "Something is there but you can't see it."))
+		return
 
 	var/examine_result
 
 	face_atom(A)
-	if(istype(src, /mob/living/carbon))
+	if(iscarbon(src))
 		var/mob/living/carbon/C = src
 		var/mob/fake = C.get_fake_appearance(A)
 		if(fake)
-			examine_result = fake.examine(src)
+			examine_result = fake.baked_examine(src)
 
-	if (isnull(examine_result))
-		examine_result = A.examine(src)
+	if(isnull(examine_result))
+		examine_result = A.baked_examine(src)
 
 	to_chat(usr, examine_result)
 
@@ -406,9 +427,9 @@
 	if (flavor_text && flavor_text != "")
 		var/msg = replacetext(flavor_text, "\n", " ")
 		if(length(msg) <= 40)
-			return "<span class='notice'>[msg]</span>"
+			. += "<span class='notice'>[msg]</span>"
 		else
-			return "<span class='notice'>[copytext_preserve_html(msg, 1, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
+			. += "<span class='notice'>[copytext_preserve_html(msg, 1, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
 
 /*
 /mob/verb/help()
@@ -430,80 +451,6 @@
 		prefs.lastchangelog = changelog_hash
 		SScharacter_setup.queue_preferences_save(prefs)
 
-/mob/new_player/verb/observe()
-	set name = "Observe"
-	set category = "OOC"
-
-	if(GAME_STATE < RUNLEVEL_LOBBY)
-		to_chat(src, "<span class='warning'>Please wait for server initialization to complete...</span>")
-		return
-
-	var/is_admin = 0
-
-	if(client.holder && (client.holder.rights & R_ADMIN))
-		is_admin = 1
-
-	if(is_admin && stat == DEAD)
-		is_admin = 0
-
-	var/list/names = list()
-	var/list/namecounts = list()
-	var/list/creatures = list()
-
-	for(var/obj/O in world)				//EWWWWWWWWWWWWWWWWWWWWWWWW ~needs to be optimised
-		if(!O.loc)
-			continue
-		if(istype(O, /obj/item/disk/nuclear))
-			var/name = "Nuclear Disk"
-			if (names.Find(name))
-				namecounts[name]++
-				name = "[name] ([namecounts[name]])"
-			else
-				names.Add(name)
-				namecounts[name] = 1
-			creatures[name] = O
-
-		if(istype(O, /obj/singularity))
-			var/name = "Singularity"
-			if (names.Find(name))
-				namecounts[name]++
-				name = "[name] ([namecounts[name]])"
-			else
-				names.Add(name)
-				namecounts[name] = 1
-			creatures[name] = O
-
-	for(var/mob/M in sortAtom(SSmobs.mob_list))
-		var/name = M.name
-		if (names.Find(name))
-			namecounts[name]++
-			name = "[name] ([namecounts[name]])"
-		else
-			names.Add(name)
-			namecounts[name] = 1
-
-		creatures[name] = M
-
-
-	client.perspective = EYE_PERSPECTIVE
-
-	var/eye_name = null
-
-	var/ok = "[is_admin ? "Admin Observe" : "Observe"]"
-	eye_name = input("Please, select a player!", ok, null, null) as null|anything in creatures
-
-	if (!eye_name)
-		return
-
-	var/mob/mob_eye = creatures[eye_name]
-
-	if(client && mob_eye)
-		client.eye = mob_eye
-		if (is_admin)
-			client.adminobs = 1
-			if(mob_eye == client.mob || client.eye == client.mob)
-				client.adminobs = 0
-
 /mob/verb/cancel_camera()
 	set name = "Cancel Camera View"
 	set category = "OOC"
@@ -522,8 +469,7 @@
 	if(href_list["flavor_change"])
 		update_flavor_text()
 
-//	..()
-	return
+	return ..()
 
 /mob/proc/pull_damage()
 	return 0
@@ -551,19 +497,33 @@
 		return
 	if(istype(M,/mob/living/silicon/ai))
 		return
-	show_inv(usr)
+
+	if(!show_inv(usr))
+		return
+
 	usr.show_inventory?.open()
 
-/mob/verb/stop_pulling()
-
+/mob/verb/stop_pulling_verb()
 	set name = "Stop Pulling"
 	set category = "IC"
 
+	stop_pulling() // Verbs are less CPU time efficient than procs.
+
+/mob/proc/stop_pulling()
 	if(pulling)
+		pulling.set_glide_size(8)
+		unregister_signal(pulling, SIGNAL_QDELETING)
 		pulling.pulledby = null
 		pulling = null
-		if(pullin)
-			pullin.icon_state = "pull0"
+
+		var/datum/movement_handler/mob/delay/delay = GetMovementHandler(/datum/movement_handler/mob/delay)
+		if(delay)
+			delay.InstantUpdateGlideSize()
+
+	if(pullin)
+		pullin.icon_state = "pull0"
+
+	remove_movespeed_modifier(/datum/movespeed_modifier/pull_slowdown)
 
 /mob/proc/start_pulling(atom/movable/AM)
 	if ( !AM || !usr || src==AM || !isturf(src.loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
@@ -617,6 +577,13 @@
 	if(pullin)
 		pullin.icon_state = "pull1"
 
+	register_signal(AM, SIGNAL_QDELETING, nameof(.proc/stop_pulling))
+	update_pull_slowdown(AM)
+	var/datum/movement_handler/mob/delay/delay = GetMovementHandler(/datum/movement_handler/mob/delay)
+	if(delay)
+		delay.InstantUpdateGlideSize()
+	AM.set_glide_size(glide_size)
+
 	if(ishuman(AM))
 		var/mob/living/carbon/human/H = AM
 		if(H.pull_damage())
@@ -632,7 +599,11 @@
 /mob/proc/is_active()
 	return (0 >= usr.stat)
 
-/mob/proc/is_dead()
+/mob/proc/is_ooc_dead()
+	return stat == DEAD
+
+// Returns true if the mob is dead for IC objects (runes, machines, etc.)
+/mob/proc/is_ic_dead()
 	return stat == DEAD
 
 /mob/proc/is_ready()
@@ -698,7 +669,6 @@
 						continue
 					stat(A)
 
-
 // facing verbs
 /mob/proc/canface()
 	return !incapacitated()
@@ -727,9 +697,9 @@
 	if(lying)
 		set_density(0)
 		if(l_hand)
-			unEquip(l_hand)
+			drop_l_hand()
 		if(r_hand)
-			unEquip(r_hand)
+			drop_r_hand()
 	else
 		set_density(initial(density))
 	reset_layer()
@@ -738,11 +708,14 @@
 		if(G.force_stand())
 			lying = 0
 
-	if(!prevent_update_icons && lying_old != lying)
-		update_icons()
+	if(lying_old != lying)
+		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/lying, slowdown = (lying ? 10 + (weakened * 2) : 0))
+		if(!prevent_update_icons)
+			update_icons()
 
 /mob/proc/reset_layer()
 	if(lying)
+		plane = DEFAULT_PLANE
 		layer = LYING_MOB_LAYER
 	else
 		reset_plane_and_layer()
@@ -903,6 +876,7 @@
 			to_chat(src, "You have nothing stuck in your body that is large enough to remove.")
 		else
 			to_chat(U, "[src] has nothing stuck in their wounds that is large enough to remove.")
+		src.verbs -= /mob/proc/yank_out_object
 		return
 
 	var/obj/item/selection = input("What do you want to yank out?", "Embedded objects") in valid_objects
@@ -920,9 +894,6 @@
 		visible_message("<span class='warning'><b>[src] rips [selection] out of their body.</b></span>","<span class='warning'><b>You rip [selection] out of your body.</b></span>")
 	else
 		visible_message("<span class='warning'><b>[usr] rips [selection] out of [src]'s body.</b></span>","<span class='warning'><b>[usr] rips [selection] out of your body.</b></span>")
-	valid_objects = get_visible_implants(0)
-	if(valid_objects.len == 1) //Yanking out last object - removing verb.
-		src.verbs -= /mob/proc/yank_out_object
 
 	if(ishuman(src))
 		var/mob/living/carbon/human/H = src
@@ -935,7 +906,7 @@
 
 		affected.implants -= selection
 		for(var/datum/wound/wound in affected.wounds)
-			wound.embedded_objects -= selection
+			LAZYREMOVE(wound.embedded_objects, selection)
 
 		H.shock_stage+=20
 		affected.take_external_damage((selection.w_class * 3), 0, DAM_EDGE, "Embedded object extraction")
@@ -955,13 +926,18 @@
 
 	selection.forceMove(get_turf(src))
 	if(!(U.l_hand && U.r_hand))
-		U.put_in_hands(selection)
+		U.pick_or_drop(selection)
 
 	for(var/obj/item/O in pinned)
 		if(O == selection)
 			pinned -= O
-		if(!pinned.len)
+		if(!LAZYLEN(pinned))
 			anchored = 0
+
+	valid_objects = get_visible_implants(0)
+	if(!valid_objects.len)
+		src.verbs -= /mob/proc/yank_out_object
+
 	return 1
 
 //Check for brain worms in head.
@@ -973,7 +949,7 @@
 
 	return 0
 
-/mob/update_icon()
+/mob/on_update_icon()
 	return update_icons()
 
 // /mob/verb/face_direction()
@@ -1073,7 +1049,7 @@
 	return (!alpha || !mouse_opacity || viewer.see_invisible < invisibility)
 
 /client/proc/check_has_body_select()
-	return mob && mob.hud_used && istype(mob.zone_sel, /obj/screen/zone_sel)
+	return mob && mob.hud_used && istype(mob.zone_sel, /atom/movable/screen/zone_sel)
 
 /client/verb/body_toggle_head()
 	set name = "body-toggle-head"
@@ -1113,7 +1089,7 @@
 /client/proc/toggle_zone_sel(list/zones)
 	if(!check_has_body_select())
 		return
-	var/obj/screen/zone_sel/selector = mob.zone_sel
+	var/atom/movable/screen/zone_sel/selector = mob.zone_sel
 	selector.set_selected_zone(next_in_list(mob.zone_sel.selecting,zones))
 
 /mob/proc/has_chem_effect(chem, threshold)
@@ -1152,3 +1128,9 @@
 	if(old_sight != new_sight)
 		sight = new_sight
 		SEND_SIGNAL(src, SIGNAL_SIGHT_SET, src, old_sight, new_sight)
+
+/mob/proc/set_blackness()			//Applies SEE_BLACKNESS if necessary and turns it off when you don't need it. Should be called if see_in_dark, see_invisible or sight has changed
+	if((see_invisible <= SEE_INVISIBLE_NOLIGHTING) || (see_in_dark >= 8) || (sight&(SEE_TURFS|SEE_MOBS|SEE_OBJS)))
+		set_sight(sight&(~SEE_BLACKNESS))
+	else
+		set_sight(sight|SEE_BLACKNESS)

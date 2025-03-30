@@ -1,6 +1,6 @@
 //Dionaea regenerate health and nutrition in light.
 /mob/living/carbon/alien/diona/handle_environment(datum/gas_mixture/environment)
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		return
 
 	var/light_amount = 0 //how much light there is in the place, affects receiving nutrition and healing
@@ -8,7 +8,7 @@
 		var/turf/T = loc
 		light_amount = T.get_lumcount() * 5
 
-	nutrition += light_amount
+	add_nutrition(light_amount)
 
 	if(nutrition > 450)
 		nutrition = 450

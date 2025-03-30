@@ -31,6 +31,7 @@
 #define MATERIAL_OSMIUM_CARBIDE_PLASTEEL "osmium-carbide plasteel"
 #define MATERIAL_OSMIUM                  "osmium"
 #define MATERIAL_HYDROGEN                "hydrogen"
+#define MATERIAL_ADAMANTINE				 "adamantine"
 #define MATERIAL_WASTE                   "waste"
 #define MATERIAL_ELEVATORIUM             "elevatorium"
 #define MATERIAL_ALIUMIUM                "aliumium"
@@ -75,7 +76,7 @@
 		MATERIAL_GOLD                       = icon(MATERIALS_ICON, "gold"),
 		MATERIAL_SILVER                     = icon(MATERIALS_ICON, "silver"),
 		MATERIAL_DIAMOND                    = icon(MATERIALS_ICON, "diamond"),
-		MATERIAL_PLASMA                     = icon(MATERIALS_ICON, "plasma"),
+		MATERIAL_PLASMA                     = icon(MATERIALS_ICON, "solid_plasma"),
 		MATERIAL_URANIUM                    = icon(MATERIALS_ICON, "uranium"),
 		MATERIAL_COTTON                     = icon(MATERIALS_ICON, "cotton"),
 		MATERIAL_CARBON                     = icon(MATERIALS_ICON, "carbon"),
@@ -84,6 +85,7 @@
 		MATERIAL_LEATHER                    = icon(MATERIALS_ICON, "leather"),
 		MATERIAL_IRON                       = icon(MATERIALS_ICON, "iron"),
 		MATERIAL_PLATINUM                   = icon(MATERIALS_ICON, "adamantine"),
+		MATERIAL_ADAMANTINE					= icon(MATERIALS_ICON, "adamantine"),
 		MATERIAL_BRONZE                     = icon(MATERIALS_ICON, "bronze"),
 		MATERIAL_REINFORCED_GLASS           = icon(MATERIALS_ICON, "rglass"),
 		MATERIAL_PLASS                      = icon(MATERIALS_ICON, "plass"),

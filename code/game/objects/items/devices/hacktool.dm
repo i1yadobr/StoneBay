@@ -23,7 +23,7 @@
 	hack_state = null
 	return ..()
 
-/obj/item/device/multitool/hacktool/attackby(obj/W, mob/user)
+/obj/item/device/multitool/hacktool/attackby(obj/item/W, mob/user)
 	if(isScrewdriver(W))
 		in_hack_mode = !in_hack_mode
 		playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
@@ -54,14 +54,14 @@
 	to_chat(user, "<span class='notice'>You begin hacking \the [target]...</span>")
 	is_hacking = 1
 	// Hackin takes roughly 15-25 seconds. Fairly small random span to avoid people simply aborting and trying again.
-	var/hack_result = do_after(user, (15 SECONDS + rand(0, 5 SECONDS) + rand(0, 5 SECONDS)), progress = 0)
+	var/hack_result = do_after(user, (15 SECONDS + rand(0, 5 SECONDS) + rand(0, 5 SECONDS)), progress = 0, luck_check_type = LUCK_CHECK_ENG)
 	is_hacking = 0
 
 	if(hack_result && in_hack_mode)
 		to_chat(user, "<span class='notice'>Your hacking attempt was succesful!</span>")
 		user.playsound_local(get_turf(src), 'sound/piano/A#6.ogg', 50)
 		known_targets.Insert(1, target)	// Insert the newly hacked target first,
-		register_signal(target, SIGNAL_QDELETING, /obj/item/device/multitool/hacktool/proc/on_target_destroy)
+		register_signal(target, SIGNAL_QDELETING, nameof(.proc/on_target_destroy))
 	else
 		to_chat(user, "<span class='warning'>Your hacking attempt failed!</span>")
 	return 1

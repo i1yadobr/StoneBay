@@ -10,10 +10,13 @@
 	icon_state = "emitter"
 	anchored = 0
 	density = 1
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 	req_access = list(access_engine_equip)
+	rad_resist_type = /datum/rad_resist/none
+
 	var/id = null
 
-	active_power_usage = 100 KILOWATTS
+	active_power_usage = 100 KILO WATTS
 
 	var/efficiency = 0.6	// Energy efficiency. 60% at this time, so 50kW+1 load means 30kW+0,6 laser pulses.
 	var/active = 0
@@ -34,26 +37,14 @@
 	anchored = 1
 	state = 2
 
-/obj/machinery/power/emitter/verb/rotate()
-	set name = "Rotate"
-	set category = "Object"
-	set src in oview(1)
-
-	if(usr.incapacitated())
-		return
-
-	if(anchored)
-		to_chat(usr, "It is fastened to the floor!")
-		return 0
-	set_dir(turn(dir, 90))
-	return 1
-
 /obj/machinery/power/emitter/Initialize()
 	. = ..()
 	if(state == 2 && anchored)
 		connect_to_network()
 		if(_wifi_id)
 			wifi_receiver = new(_wifi_id, src)
+
+	AddElement(/datum/element/simple_rotation)
 
 /obj/machinery/power/emitter/Destroy()
 	log_and_message_admins("deleted \the [src]")
@@ -62,7 +53,7 @@
 	wifi_receiver = null
 	return ..()
 
-/obj/machinery/power/emitter/update_icon()
+/obj/machinery/power/emitter/on_update_icon()
 	if(active && powernet && avail(active_power_usage))
 		icon_state = "emitter_+a"
 	else
@@ -155,6 +146,8 @@
 		var/obj/item/projectile/beam/emitter/A = get_emitter_beam()
 		playsound(loc, A.fire_sound, 25, 1)
 		A.damage = round(power_per_shot/EMITTER_DAMAGE_POWER_TRANSFER)
+		A.pixel_x = 0
+		A.pixel_y = 0
 		A.launch(get_step(loc, dir))
 
 /obj/machinery/power/emitter/attackby(obj/item/W, mob/user)
@@ -191,31 +184,27 @@
 			if(0)
 				to_chat(user, "<span class='warning'>\The [src] needs to be wrenched to the floor.</span>")
 			if(1)
-				if(WT.remove_fuel(0,user))
-					playsound(loc, 'sound/items/Welder2.ogg', 50, 1)
-					user.visible_message("[user.name] starts to weld [src] to the floor.", \
+				user.visible_message("[user.name] starts to weld [src] to the floor.", \
 						"You start to weld [src] to the floor.", \
 						"You hear welding")
-					if(do_after(user,20,src))
-						if(!src || !WT.isOn()) return
-						state = 2
-						to_chat(user, "You weld [src] to the floor.")
-						connect_to_network()
-				else
-					to_chat(user, "<span class='warning'>You need more welding fuel to complete this task.</span>")
+				if(WT.use_tool(src, user, delay = 2 SECONDS, amount = 1))
+					if(QDELETED(src) || !user)
+						return
+
+					state = 2
+					to_chat(user, "You weld [src] to the floor.")
+					connect_to_network()
 			if(2)
-				if(WT.remove_fuel(0,user))
-					playsound(loc, 'sound/items/Welder2.ogg', 50, 1)
-					user.visible_message("[user.name] starts to cut [src] free from the floor.", \
+				user.visible_message("[user.name] starts to cut [src] free from the floor.", \
 						"You start to cut [src] free from the floor.", \
 						"You hear welding")
-					if(do_after(user,20,src))
-						if(!src || !WT.isOn()) return
-						state = 1
-						to_chat(user, "You cut [src] free from the floor.")
-						disconnect_from_network()
-				else
-					to_chat(user, "<span class='warning'>You need more welding fuel to complete this task.</span>")
+				if(WT.use_tool(src, user, delay = 2 SECONDS, amount = 1))
+					if(QDELETED(src) || !user)
+						return
+
+					state = 1
+					to_chat(user, "You cut [src] free from the floor.")
+					disconnect_from_network()
 		return
 
 	if(istype(W, /obj/item/card/id) || istype(W, /obj/item/device/pda))

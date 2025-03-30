@@ -12,10 +12,11 @@
 	var/turf/T = get_turf(src)
 	to_chat(user, "<span class='notice'>\icon[src] \The [src] flashes <i>[T.x]:[T.y]:[T.z]</i>.</span>")
 
-/obj/item/device/gps/_examine_text(mob/user)
+/obj/item/device/gps/examine(mob/user, infix)
 	. = ..()
+
 	var/turf/T = get_turf(src)
-	. += "\n<span class='notice'>\The [src]'s screen shows: <i>[T.x]:[T.y]:[T.z]</i>.</span>"
+	. += SPAN_NOTICE("\The [src]'s screen shows: <i>[T.x]:[T.y]:[T.z]</i>.")
 
 /obj/item/device/measuring_tape
 	name = "measuring tape"
@@ -246,8 +247,8 @@
 	var/turf/T = get_turf(src)
 	var/zlevels = GetConnectedZlevels(T.z)
 	var/cur_dist = world.maxx+world.maxy
-	for(var/obj/item/device/radio/beacon/R in world)
-		if((R.z in zlevels) && R.frequency == tracking_freq)
+	for(var/obj/item/device/bluespace_beacon/R as anything in GLOB.bluespace_beacons)
+		if((R.z in zlevels))
 			var/check_dist = get_dist(src,R)
 			if(check_dist < cur_dist)
 				cur_dist = check_dist

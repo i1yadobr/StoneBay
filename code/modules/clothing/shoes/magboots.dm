@@ -16,8 +16,23 @@
 	center_of_mass = null
 	randpixel = 0
 
-	armor = list(melee = 80, bullet = 60, laser = 60,energy = 25, bomb = 50, bio = 10, rad = 0)
+	armor = list(melee = 90, bullet = 90, laser = 100, energy = 45, bomb = 50, bio = 10)
 	siemens_coefficient = 0.3
+
+	drop_sound = SFX_DROP_BOOTS
+	pickup_sound = SFX_PICKUP_BOOTS
+
+	item_state_slots = list(
+		slot_l_hand_str = "magboots",
+		slot_r_hand_str = "magboots",
+		)
+
+	rad_resist_type = /datum/rad_resist/magboots
+
+/datum/rad_resist/magboots
+	alpha_particle_resist = 33.8 MEGA ELECTRONVOLT
+	beta_particle_resist = 6.42 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/item/clothing/shoes/magboots/proc/set_slowdown()
 	slowdown_per_slot[slot_shoes] = shoes? max(0, shoes.slowdown_per_slot[slot_shoes]): 0	//So you can't put on magboots to make you walk faster.
@@ -54,8 +69,7 @@
 			to_chat(user, "You are unable to wear \the [src] as \the [H.shoes] are in the way.")
 			shoes = null
 			return 0
-		H.drop_from_inventory(shoes)	//Remove the old shoes so you can put on the magboots.
-		shoes.forceMove(src)
+		H.drop(shoes, src, TRUE) //Remove the old shoes so you can put on the magboots.
 
 	if(!..())
 		if(shoes) 	//Put the old shoes back on if the check fails.
@@ -88,9 +102,11 @@
 	wearer.update_floating()
 	wearer = null
 
-/obj/item/clothing/shoes/magboots/_examine_text(mob/user)
+/obj/item/clothing/shoes/magboots/examine(mob/user, infix)
 	. = ..()
+
 	var/state = "disabled"
 	if(item_flags & ITEM_FLAG_NOSLIP)
 		state = "enabled"
-	. += "\nIts [traction_system] traction system appears to be [state]."
+
+	. += "Its [traction_system] traction system appears to be [state]."

@@ -121,11 +121,54 @@
 
 /datum/hallucination/sound/spooky
 	min_power = 50
-	sounds = list('sound/effects/ghost.ogg', 'sound/effects/ghost2.ogg', 'sound/effects/Heart Beat.ogg', 'sound/effects/screech.ogg',\
-	'sound/hallucinations/behind_you1.ogg', 'sound/hallucinations/behind_you2.ogg', 'sound/hallucinations/far_noise.ogg', 'sound/hallucinations/growl1.ogg', 'sound/hallucinations/growl2.ogg',\
-	'sound/hallucinations/growl3.ogg', 'sound/hallucinations/im_here1.ogg', 'sound/hallucinations/im_here2.ogg', 'sound/hallucinations/i_see_you1.ogg', 'sound/hallucinations/i_see_you2.ogg',\
-	'sound/hallucinations/look_up1.ogg', 'sound/hallucinations/look_up2.ogg', 'sound/hallucinations/over_here1.ogg', 'sound/hallucinations/over_here2.ogg', 'sound/hallucinations/over_here3.ogg',\
-	'sound/hallucinations/turn_around1.ogg', 'sound/hallucinations/turn_around2.ogg', 'sound/hallucinations/veryfar_noise.ogg', 'sound/hallucinations/wail.ogg')
+	sounds = list(
+		'sound/effects/ghost.ogg',
+		'sound/effects/ghost2.ogg',
+		'sound/effects/Heart Beat.ogg',
+		'sound/effects/screech.ogg',
+		'sound/hallucinations/behind_you1.ogg',
+		'sound/hallucinations/behind_you2.ogg',
+		'sound/hallucinations/far_noise.ogg',
+		'sound/hallucinations/growl1.ogg',
+		'sound/hallucinations/growl2.ogg',
+		'sound/hallucinations/growl3.ogg',
+		'sound/hallucinations/im_here1.ogg',
+		'sound/hallucinations/im_here2.ogg',
+		'sound/hallucinations/i_see_you1.ogg',
+		'sound/hallucinations/i_see_you2.ogg',
+		'sound/hallucinations/look_up1.ogg',
+		'sound/hallucinations/look_up2.ogg',
+		'sound/hallucinations/over_here1.ogg',
+		'sound/hallucinations/over_here2.ogg',
+		'sound/hallucinations/over_here3.ogg',
+		'sound/hallucinations/turn_around1.ogg',
+		'sound/hallucinations/turn_around2.ogg',
+		'sound/hallucinations/veryfar_noise.ogg',
+		'sound/hallucinations/wail.ogg',
+		'sound/hallucinations/goblin_aggro0.ogg',
+		'sound/hallucinations/goblin_aggro1.ogg',
+		'sound/hallucinations/goblin_aggro2.ogg',
+		'sound/hallucinations/goblin_aggro3.ogg',
+		'sound/hallucinations/goblin_death0.ogg',
+		'sound/hallucinations/goblin_death1.ogg',
+		'sound/hallucinations/goblin_idle0.ogg',
+		'sound/hallucinations/goblin_idle1.ogg',
+		'sound/hallucinations/goblin_idle2.ogg',
+		'sound/hallucinations/goblin_idle3.ogg',
+		'sound/hallucinations/goblin_idle4.ogg',
+		'sound/hallucinations/goblin_laugh0.ogg',
+		'sound/hallucinations/goblin_laugh1.ogg',
+		'sound/hallucinations/goblin_pain0.ogg',
+		'sound/hallucinations/goblin_pain1.ogg',
+		'sound/hallucinations/goblin_pain2.ogg',
+		'sound/hallucinations/goblin_pain3.ogg',
+		'sound/hallucinations/goblin_pain4.ogg',
+		'sound/hallucinations/goblin_painscream0.ogg',
+		'sound/hallucinations/goblin_painscream1.ogg',
+		'sound/hallucinations/goblin_painscream2.ogg',
+		'sound/hallucinations/goblin_painscream3.ogg',
+		'sound/hallucinations/goblin_painscream4.ogg',
+	)
 
 //Hearing someone being shot twice
 /datum/hallucination/gunfire
@@ -171,11 +214,7 @@
 			to_chat(holder,"<B>[talker.name]</B> points at [holder.name]")
 			to_chat(holder,"<span class='game say'><span class='name'>[talker.name]</span> says something softly.</span>")
 
-		var/image/speech_bubble = image('icons/mob/talk.dmi',talker,"h[holder.say_test(message)]")
-		speech_bubble.alpha = 0
-		speech_bubble.plane = MOUSE_INVISIBLE_PLANE
-		speech_bubble.layer = FLOAT_LAYER
-		INVOKE_ASYNC(GLOBAL_PROC, /.proc/animate_speech_bubble, speech_bubble, list(holder.client), 3 SECONDS)
+		holder.show_bubble_to_client(holder.bubble_icon, holder.say_test(message), talker, holder.client)
 
 		sanity-- //don't spam them in very populated rooms.
 		if(!sanity)
@@ -206,16 +245,6 @@
 		if(organ)
 			effects.Add(ITCH_EFFECT_WARNING(organ.name), IMMORTAL_RECOVER_EFFECT_WARNING(organ.name), IMMORTAL_HEALING_EFFECT_WARNING(organ.name), ORGANS_SHUTDOWN_EFFECT_WARNING(organ.name), GIBBINGTONS_EFFECT_WARNING(organ.name))
 	to_chat(holder, pick(effects))
-
-/datum/hallucination/evacuation
-	min_power = 60 // Very high
-
-/datum/hallucination/evacuation/can_affect()
-	return prob(5)
-
-/datum/hallucination/evacuation/start()
-	holder.playsound_local(holder, 'sound/effects/Evacuation.ogg', 35)
-	to_chat(holder, "<h1 class='alert'>Priority Announcement</h1><br>[SPAN("alert", replacetext(GLOB.using_map.emergency_shuttle_docked_message, "%ETD%", "3 minutes"))]")
 
 //Seeing stuff
 /datum/hallucination/mirage
@@ -321,7 +350,7 @@
 		creatures += C
 	creatures -= usr
 	var/mob/target = input("Who do you want to project your mind to ?") as null|anything in creatures
-	if (isnull(target))
+	if (QDELETED(target))
 		return
 
 	var/msg = sanitize(input(usr, "What do you wish to transmit"))
@@ -434,6 +463,7 @@
 	if(fake.lying)
 		fake_look.SetTransform(others = fake.transform, rotation = -90)
 	holder.client.images |= fake_look
+
 	log_misc("[holder.name] is hallucinating that [origin.name] is the [fake.name]")
 
 /datum/hallucination/fake_appearance/proc/get_living_sublist(list/subtypes, list/exclude)
@@ -456,8 +486,10 @@
 	holder.hallucinations -= src
 	if(!fake_look)
 		return // No ASSERT is needed, ending is correct
+
 	if(holder.client)
 		holder.client.images -= fake_look
+
 	QDEL_NULL(fake_look)
 
 /datum/hallucination/fake_appearance/Destroy()
@@ -472,7 +504,7 @@
 /datum/hallucination/hud_error
 	duration = 10 SECONDS
 	min_power = 30
-	var/obj/screen/fake
+	var/atom/movable/screen/fake
 
 /datum/hallucination/hud_error/can_affect(mob/living/carbon/C)
 	if(!..())
@@ -482,12 +514,11 @@
 /datum/hallucination/hud_error/start()
 	ASSERT(istype(holder, /mob/living/carbon/human))
 	var/mob/living/carbon/human/H = holder
-	var/obj/screen/origin = pick(H.toxin, H.oxygen, H.fire, H.bodytemp, H.pressure, H.nutrition_icon)
+	var/atom/movable/screen/origin = pick(H.toxin, H.oxygen, H.fire, H.bodytemp, H.pressure, H.nutrition_icon)
 	fake = new()
 	fake.name = origin.name
 	fake.icon = origin.icon
 	fake.appearance_flags = origin.appearance_flags
-	fake.unacidable = origin.unacidable
 	fake.globalscreen = FALSE
 	fake.plane = HUD_PLANE
 	fake.layer = HUD_ABOVE_ITEM_LAYER

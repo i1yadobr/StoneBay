@@ -93,8 +93,8 @@ Class Procs:
 		//0 = dont run the auto
 		//1 = run auto, use idle
 		//2 = run auto, use active
-	var/idle_power_usage = 0
-	var/active_power_usage = 0
+	var/idle_power_usage = 0 WATTS
+	var/active_power_usage = 0 WATTS
 	var/power_channel = STATIC_EQUIP //STATIC_EQUIP, STATIC_ENVIRON or STATIC_LIGHT
 	/* List of types that should be spawned as component_parts for this machine.
 		Structure:
@@ -121,30 +121,50 @@ Class Procs:
 	var/beep_last_played = 0
 	var/list/beepsounds = null
 
-	var/current_power_usage = 0 // How much power are we currently using, dont change by hand, change power_usage vars and then use set_power_use
+	var/current_power_usage = 0 WATTS // How much power are we currently using, dont change by hand, change power_usage vars and then use set_power_use
 	var/area/current_power_area // What area are we powering currently
+
+	rad_resist_type = /datum/rad_resist/machinery
+
+/datum/rad_resist/machinery
+	alpha_particle_resist = 160 MEGA ELECTRONVOLT
+	beta_particle_resist = 26.6 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/machinery/Initialize(mapload, d=0, populate_components = TRUE)
 	. = ..()
 	if(d)
 		set_dir(d)
 
-	GLOB.machines += src
+	SSmachines.machinery.Add(src)
 
-	if (populate_components && component_types)
+	if(populate_components && component_types)
 		component_parts = list()
-		for (var/type in component_types)
+		for(var/type in component_types)
 			var/count = component_types[type]
-			if (count > 1)
-				for (var/i in 1 to count)
-					component_parts += new type(src)
+			if(count > 1)
+				for(var/i in 1 to count)
+					component_parts.Add(new type(src))
 			else
-				component_parts += new type(src)
+				component_parts.Add(new type(src))
 
-		if(component_parts.len)
+		if(length(component_parts))
 			RefreshParts()
 
+	if(!mapload)
+		power_change()
+
 	START_PROCESSING(SSmachines, src) // It's safe to remove machines from here.
+
+/obj/machinery/Destroy()
+	SSmachines.machinery.Remove(src)
+	set_power_use(NO_POWER_USE)
+	STOP_PROCESSING(SSmachines, src)
+	if(component_parts)
+		QDEL_NULL_LIST(component_parts)
+	component_parts = null
+	current_power_area = null
+	return ..()
 
 
 /obj/machinery/proc/play_beep()
@@ -154,18 +174,6 @@ Class Procs:
 	if(!stat && world.time > beep_last_played + 60 SECONDS && prob(10))
 		beep_last_played = world.time
 		playsound(src.loc, pick(beepsounds), 30)
-
-/obj/machinery/Destroy()
-	GLOB.machines -= src
-	set_power_use(NO_POWER_USE)
-	STOP_PROCESSING(SSmachines, src)
-	if(component_parts)
-		for(var/atom/A in component_parts)
-			if(A.loc == src) // If the components are inside the machine, delete them.
-				qdel(A)
-			else // Otherwise we assume they were dropped to the ground during deconstruction, and were not removed from the component_parts list by deconstruction code.
-				component_parts -= A
-	return ..()
 
 /obj/machinery/Process()
 	return PROCESS_KILL // Only process if you need to.
@@ -198,8 +206,6 @@ Class Procs:
 			if (prob(25))
 				qdel(src)
 				return
-		else
-	return
 
 /obj/machinery/blob_act()
 	if(stat & BROKEN)
@@ -226,7 +232,7 @@ Class Procs:
 	return !inoperable(additional_flags)
 
 /obj/machinery/proc/inoperable(additional_flags = 0)
-	return (stat & (NOPOWER|BROKEN|additional_flags))
+	return (stat & (POWEROFF|NOPOWER|BROKEN|additional_flags))
 
 /obj/machinery/CanUseTopic(mob/user)
 	if(stat & BROKEN)
@@ -256,7 +262,7 @@ Class Procs:
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-/obj/machinery/attack_ai(mob/user as mob)
+/obj/machinery/attack_ai(mob/user)
 	if(isrobot(user))
 		// For some reason attack_robot doesn't work
 		// This is to stop robots from using cameras to remotely control machines.
@@ -265,14 +271,13 @@ Class Procs:
 	else
 		return src.attack_hand(user)
 
-/obj/machinery/attack_hand(mob/user as mob)
+/obj/machinery/attack_hand(mob/user)
 	if(inoperable(MAINT))
 		return TRUE
 	if(user.lying || user.stat)
 		return TRUE
-	if ( ! (istype(usr, /mob/living/carbon/human) || \
-			istype(usr, /mob/living/silicon)))
-		to_chat(usr, "<span class='warning'>You don't have the dexterity to do this!</span>")
+	if (!(istype(usr, /mob/living/carbon/human) || istype(usr, /mob/living/silicon)))
+		to_chat(usr, FEEDBACK_YOU_LACK_DEXTERITY)
 		return TRUE
 /*
 	//distance checks are made by atom/proc/DblClick
@@ -330,27 +335,33 @@ Class Procs:
 			return 1
 	return 0
 
-/obj/machinery/proc/default_deconstruction_crowbar(mob/user, obj/item/crowbar/C)
-	if(!istype(C))
+/obj/machinery/proc/default_deconstruction_crowbar(mob/user, obj/item/C)
+	if(!isCrowbar(C))
 		return 0
 	if(!panel_open)
 		return 0
 	. = dismantle()
 
-/obj/machinery/proc/default_deconstruction_screwdriver(mob/user, obj/item/screwdriver/S)
-	if(!istype(S))
+/obj/machinery/proc/default_deconstruction_screwdriver(mob/user, obj/item/S, update_appearance = TRUE)
+	if(!isScrewdriver(S))
 		return 0
 	playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
 	panel_open = !panel_open
-	to_chat(user, "<span class='notice'>You [panel_open ? "open" : "close"] the maintenance hatch of \the [src].</span>")
-	update_icon()
+	to_chat(user, SPAN_NOTICE("You [panel_open ? "open" : "close"] the maintenance hatch of \the [src]."))
+	if(update_appearance)
+		update_icon()
 	return 1
 
 /obj/machinery/proc/default_part_replacement(mob/user, obj/item/storage/part_replacer/R)
 	if(!istype(R))
-		return 0
+		return FALSE
+
+	if(!R.active)
+		return FALSE
+
 	if(!component_parts)
-		return 0
+		return FALSE
+
 	if(panel_open)
 		var/obj/item/circuitboard/CB = locate(/obj/item/circuitboard) in component_parts
 		var/P
@@ -364,26 +375,29 @@ Class Procs:
 					if(B.rating > A.rating)
 						R.remove_from_storage(B, src)
 						R.handle_item_insertion(A, 1)
-						component_parts -= A
-						component_parts += B
-						B.loc = null
-						to_chat(user, "<span class='notice'>[A.name] replaced with [B.name].</span>")
+						component_parts.Remove(A)
+						component_parts.Add(B)
+						B.forceMove(src)
+						to_chat(user, SPAN("notice", "[A.name] has been replaced with [B.name]."))
+						R.post_usage()
 						break
 			update_icon()
 			RefreshParts()
 	else
 		to_chat(user, get_parts_infotext())
-	return 1
+
+	return TRUE
 
 /obj/machinery/proc/dismantle()
 	playsound(loc, 'sound/items/Crowbar.ogg', 50, 1)
 	var/obj/machinery/constructable_frame/machine_frame/M = new /obj/machinery/constructable_frame/machine_frame(get_turf(src))
-	M.set_dir(src.dir)
-	M.state = 2
-	M.icon_state = "box_1"
+	M.set_dir(dir)
+	M.state = 1
+	M.update_icon()
 	for(var/obj/I in component_parts)
-		I.forceMove(get_turf(src))
-
+		if(!QDELETED(I))
+			I.forceMove(get_turf(src))
+	LAZYCLEARLIST(component_parts)
 	qdel(src)
 	return 1
 
@@ -418,10 +432,11 @@ Class Procs:
 	for(var/obj/item/C in component_parts)
 		. += "\n<span class='notice'>	[C.name]</span>"
 
-/obj/machinery/_examine_text(mob/user)
+/obj/machinery/examine(mob/user, infix)
 	. = ..()
+
 	if(component_parts && hasHUD(user, HUD_SCIENCE))
-		. += "\n[get_parts_infotext()]"
+		. += "[get_parts_infotext()]"
 
 /obj/machinery/proc/update_power_use()
 	set_power_use(use_power)
@@ -432,7 +447,7 @@ Class Procs:
 		current_power_area.removeStaticPower(current_power_usage, power_channel)
 		current_power_area = null
 
-	current_power_usage = 0
+	current_power_usage = 0 WATTS
 	use_power = new_use_power
 
 	var/area/A = get_area(src)

@@ -18,7 +18,7 @@
 		return
 	use_chems()
 
-/datum/changeling_power/toggled/regeneration/Process()
+/datum/changeling_power/toggled/regeneration/think()
 	. = ..()
 	if(!.)
 		return
@@ -53,6 +53,7 @@
 				any_effect = TRUE
 			if(regen_organ.status & ORGAN_DEAD)
 				regen_organ.status &= ~ORGAN_DEAD
+				to_chat(H, SPAN("changeling", "Our [regen_organ] is functioning again."))
 				any_effect = TRUE
 
 	if(prob(10))

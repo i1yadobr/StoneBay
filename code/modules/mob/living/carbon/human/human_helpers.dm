@@ -41,6 +41,32 @@
 #undef HUMAN_EATING_NBP_MOUTH
 #undef HUMAN_EATING_BLOCKED_MOUTH
 
+/// Check whether mob is lying down on something we can operate him on.
+/mob/living/carbon/human/proc/can_operate(mob/user)
+	var/turf/T = get_turf(src)
+	if(lying && locate(/obj/structure/table, T))
+		. = TRUE
+	if(lying && locate(/obj/machinery/optable, T))
+		. = TRUE
+	if(lying && locate(/obj/effect/rune/, T))
+		. = TRUE
+	if(buckled && istype(buckled, /obj/structure/bed))
+		. = TRUE
+
+	if(src == user)
+		var/mob/living/carbon/human/H = user // No way it can't be human at this point.
+		var/hitzone = check_zone(H.zone_sel.selecting)
+		var/list/badzones = list(BP_HEAD)
+		if(H.hand)
+			badzones += BP_L_ARM
+			badzones += BP_L_HAND
+		else
+			badzones += BP_R_ARM
+			badzones += BP_R_HAND
+
+		if(hitzone in badzones)
+			return FALSE
+
 /mob/living/carbon/human/proc/update_equipment_vision()
 	flash_protection = 0
 	equipment_tint_total = 0
@@ -64,12 +90,8 @@
 
 	// Removes zoom effect
 	if (client && machine_visual)
-		if (client.view != world.view)
-			client.view = world.view
-
 		if (client.pixel_x != 0 || client.pixel_y != 0)
-			client.pixel_y = 0
-			client.pixel_x = 0
+			shift_view(0, 0)
 
 /mob/living/carbon/human/proc/process_glasses(obj/item/clothing/glasses/G)
 	if(machine_visual && !istype(G, /obj/item/clothing/glasses/regular)) //Doesn't allow the use of night vision devices and other funny devices except glasses for vision correction
@@ -183,9 +205,10 @@
 	next_sonar_ping += 10 SECONDS
 	var/heard_something = FALSE
 	to_chat(src, "<span class='notice'>You take a moment to listen in to your environment...</span>")
-	for(var/mob/living/L in range(client.view, src))
+	var/list/view_sizes = get_view_size(client.view)
+	for(var/mob/living/L in range(max(view_sizes[1], view_sizes[2]), src))
 		var/turf/T = get_turf(L)
-		if(!T || L == src || L.stat == DEAD || is_below_sound_pressure(T))
+		if(!T || L == src || L.is_ic_dead() || is_below_sound_pressure(T))
 			continue
 		heard_something = TRUE
 		var/image/ping_image = image(icon = 'icons/effects/effects.dmi', icon_state = "sonar_ping", loc = src)
@@ -235,6 +258,10 @@
 	if(!victim.get_organ(attacker.zone_sel.selecting))
 		to_chat(attacker, SPAN("warning", "[victim] is missing the body part you tried to grab!"))
 		return FALSE
+
+	if(!prob(attacker.client?.get_luck_for_type(LUCK_CHECK_COMBAT)))
+		visible_message(SPAN_DANGER("[attacker] attempted to swing at \the [victim], but failed miserably!"))
+		return
 
 	if(!grab_tag)
 		G = new attacker.current_grab_type(attacker, victim)
@@ -311,7 +338,7 @@
 
 	if(rogue_entries.len) // These entries did not cleanup after themselves before being destroyed
 		var/rogue_entries_as_string = jointext(map(rogue_entries, /proc/log_info_line), ", ")
-		crash_with("[log_info_line(src)] - Following cloaking entries were removed during cleanup: [rogue_entries_as_string]")
+		util_crash_with("[log_info_line(src)] - Following cloaking entries were removed during cleanup: [rogue_entries_as_string]")
 
 	UNSETEMPTY(cloaking_sources)
 	return !cloaking_sources // If cloaking_sources wasn't initially null but is now, we've uncloaked

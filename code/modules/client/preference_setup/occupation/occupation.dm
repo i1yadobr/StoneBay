@@ -110,7 +110,7 @@
 			continue
 
 		if(job.faction_restricted)
-			if(user.client?.prefs.faction != GLOB.using_map.company_name)
+			if(user.client?.prefs.background != GLOB.using_map.company_name)
 				. += "<del>[rank]</del></td><td><b> \[FOR [uppertext(GLOB.using_map.company_name)] EMPLOYESS ONLY]</b></td></tr>"
 				continue
 			if(user.client?.prefs.nanotrasen_relation in COMPANY_OPPOSING)
@@ -243,7 +243,6 @@
 		if(JOB_PRIORITY_HIGH)
 			pref.job_high = null
 		if(JOB_PRIORITY_MIDDLE)
-			pref.job_medium |= pref.job_high
 			pref.job_high = switched_job.title
 			pref.job_medium -= switched_job.title
 		if(JOB_PRIORITY_LOW)

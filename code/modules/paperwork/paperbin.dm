@@ -11,6 +11,8 @@
 	var/amount = 30					//How much paper is in the bin.
 	var/list/papers = new /list()	//List of papers put in the bin for reference.
 
+	drop_sound = SFX_DROP_CARDBOARD
+	pickup_sound = SFX_PICKUP_CARDBOARD
 
 /obj/item/paper_bin/MouseDrop(mob/user)
 	if((user == usr && (!( usr.restrained() ) && (!( usr.stat ) && (usr.contents.Find(src) || in_range(src, usr))))))
@@ -26,7 +28,7 @@
 					return
 
 				to_chat(user, SPAN("notice", "You pick up the [src]."))
-				user.put_in_hands(src)
+				user.pick_or_drop(src)
 
 	return
 
@@ -65,8 +67,7 @@
 			else if (response == "Carbon-Copy")
 				P = new /obj/item/paper/carbon
 
-		P.loc = user.loc
-		user.put_in_hands(P)
+		user.pick_or_drop(P, loc)
 		to_chat(user, SPAN("notice", "You take [P] out of the [src]."))
 	else
 		to_chat(user, SPAN("notice", "[src] is empty!"))
@@ -79,8 +80,8 @@
 	if(istype(I, /obj/item/paper))
 		if(istype(I, /obj/item/paper/talisman))
 			return
-		user.drop_item()
-		I.forceMove(src)
+		if(!user.drop(I, src))
+			return
 		to_chat(user, SPAN("notice", "You put [I] in [src]."))
 		papers.Add(I)
 		update_icon()
@@ -100,24 +101,24 @@
 				bundleitem.reset_plane_and_layer()
 		update_icon()
 		bundle.pages.Cut()
-		user.drop_from_inventory(bundle)
 		qdel(bundle)
 		if(was_there_a_photo)
 			to_chat(user, SPAN("notice", "The photo cannot go into \the [src]."))
 	return
 
 
-/obj/item/paper_bin/_examine_text(mob/user)
+/obj/item/paper_bin/examine(mob/user, infix)
 	. = ..()
-	if(get_dist(src, user) <= 1)
-		if(amount)
-			. += "\n<span class='notice'>There " + (amount > 1 ? "are [amount] papers" : "is one paper") + " in the bin.</span>"
-		else
-			. += "\n<span class='notice'>There are no papers in the bin.</span>"
-	return
 
+	if(get_dist(src, user) > 1)
+		return
 
-/obj/item/paper_bin/update_icon()
+	if(amount)
+		. += SPAN_NOTICE("There [amount > 1 ? "are [amount] papers" : "is one paper"] in the bin.")
+	else
+		. += SPAN_NOTICE("There are no papers in the bin.")
+
+/obj/item/paper_bin/on_update_icon()
 	if(amount < 1)
 		icon_state = "paper_bin0"
 	else

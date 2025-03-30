@@ -60,6 +60,7 @@ SUBSYSTEM_DEF(explosions)
 	msg += "TO:[throwturf.len]"
 
 	msg += "} "
+
 	..(msg)
 
 #define SSEX_TURF "turf"
@@ -323,6 +324,9 @@ SUBSYSTEM_DEF(explosions)
 			creaking = TRUE // prob over 100 always returns true
 		else
 			creaking = FALSE
+
+	if(creaking)
+		SSmachines.flicker_all_lights()
 
 	for(var/mob/listener as anything in GLOB.player_list)
 		var/turf/listener_turf = get_turf(listener)

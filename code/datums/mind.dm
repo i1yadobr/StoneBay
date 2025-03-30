@@ -58,7 +58,7 @@
 	var/datum/changeling/changeling		// Changeling holder
 	var/datum/vampire/vampire 			// Vampire holder
 	var/datum/wizard/wizard				// Wizard holder
-	var/datum/abductor/abductor 		// Abductor holder
+	var/weakref/enslaved_to
 	var/rev_cooldown = 0
 
 	// the world.time since the mob has been brigged, or -1 if not at all
@@ -75,11 +75,6 @@
 	//used to store what traits the player had picked out in their preferences before joining, in text form.
 	var/list/traits = list()
 
-	var/thunder_points = 0
-	var/thunder_respawns = 0
-	var/mob/living/carbon/human/thunderfield_owner
-	var/thunderfield_cheater = FALSE
-
 /datum/mind/New(key)
 	src.key = key
 	..()
@@ -92,12 +87,12 @@
 
 /datum/mind/proc/set_current(mob/new_current)
 	if(new_current && QDELETED(new_current))
-		crash_with("Tried to set a mind's current var to a qdeleted mob, what the fuck")
+		util_crash_with("Tried to set a mind's current var to a qdeleted mob, what the fuck")
 	if(current)
 		unregister_signal(src, SIGNAL_QDELETING)
 	current = new_current
 	if(current)
-		register_signal(src, SIGNAL_QDELETING, .proc/clear_current)
+		register_signal(src, SIGNAL_QDELETING, nameof(.proc/clear_current))
 
 /datum/mind/proc/clear_current(datum/source)
 	set_current(null)
@@ -108,11 +103,9 @@
 		return FALSE
 
 	if(current)					//remove ourself from our old body's mind variable
-		if(vampire)
-			current.remove_vampire_powers()
 		current.mind = null
-
 		SSnano.user_transferred(current, new_character) // transfer active NanoUI instances to new user
+
 	if(new_character.mind)		//remove any mind currently in our new body's mind variable
 		new_character.mind.set_current(null)
 
@@ -126,7 +119,7 @@
 		changeling.transfer_to(new_character)
 
 	if(vampire)
-		new_character.make_vampire()
+		vampire.transfer_to(new_character)
 
 	if(active)
 		new_character.key = key		//now transfer the key to link the client to our new body
@@ -392,7 +385,6 @@
 				to_chat(H, "<span class='danger'><font size =3>You somehow have become the recepient of a loyalty transplant, and it just activated!</font></span>")
 				H.implant_loyalty(H, override = TRUE)
 				log_admin("[key_name_admin(usr)] has loyalty implanted [current].")
-			else
 	else if (href_list["silicon"])
 		BITSET(current.hud_updateflag, SPECIALROLE_HUD)
 		switch(href_list["silicon"])
@@ -437,20 +429,21 @@
 		switch(href_list["common"])
 			if("undress")
 				for(var/obj/item/I in current)
-					current.drop_from_inventory(I)
+					current.drop(I)
 			if("takeuplink")
 				take_uplink()
 				memory = null//Remove any memory they may have had.
 			if("crystals")
 				if (usr.client.holder.rights & R_FUN)
-					var/obj/item/device/uplink/suplink = find_syndicate_uplink()
+					var/datum/component/uplink/suplink = find_syndicate_uplink()
 					if(!suplink)
-						to_chat(usr, "<span class='warning'>Failed to find an uplink.</span>")
+						to_chat(usr, SPAN_WARNING("Failed to find an uplink."))
 						return
-					var/crystals = suplink.uses
-					crystals = input("Amount of telecrystals for [key]","Operative uplink", crystals) as null|num
-					if (!isnull(crystals) && !QDELETED(suplink))
-						suplink.uses = crystals
+
+					var/crystals = suplink.telecrystals
+					crystals = tgui_input_number(usr, "Amount of telecrystals for [key]", "Operative uplink", crystals, min_value = 0)
+					if(!isnull(crystals) && !QDELETED(suplink))
+						suplink.telecrystals = crystals
 						log_and_message_admins("set the telecrystals for [key] to [crystals]")
 
 	else if (href_list["obj_announce"])
@@ -462,17 +455,15 @@
 	edit_memory()
 
 /datum/mind/proc/find_syndicate_uplink()
+	var/datum/component/uplink/uplink
 	var/list/L = current.get_contents()
-	for (var/obj/item/I in L)
-		if (I.hidden_uplink)
-			return I.hidden_uplink
-	return null
+	for(var/atom/movable/I in L)
+		uplink = I.get_component(/datum/component/uplink)
+		if(istype(uplink))
+			return uplink
 
 /datum/mind/proc/take_uplink()
-	var/obj/item/device/uplink/H = find_syndicate_uplink()
-	if(H)
-		qdel(H)
-
+	qdel(find_syndicate_uplink())
 
 // check whether this mind's mob has been brigged for the given duration
 // have to call this periodically for the duration to work properly

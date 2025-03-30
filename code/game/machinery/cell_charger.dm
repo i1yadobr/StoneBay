@@ -4,8 +4,8 @@
 	icon = 'icons/obj/power.dmi'
 	icon_state = "ccharger0"
 	anchored = 1
-	idle_power_usage = 5
-	active_power_usage = 60 KILOWATTS	//This is the power drawn when charging
+	idle_power_usage = 5 WATTS
+	active_power_usage = 60 KILO WATTS	// This is the power drawn when charging
 	power_channel = STATIC_EQUIP
 	var/obj/item/cell/charging = null
 	var/chargelevel = -1
@@ -15,29 +15,31 @@
 		/obj/item/stock_parts/capacitor
 	)
 
-/obj/machinery/cell_charger/update_icon()
+/obj/machinery/cell_charger/on_update_icon()
 	icon_state = "ccharger[charging ? 1 : 0]"
 	if(charging)
-		overlays.Cut()
+		ClearOverlays()
 		if(charging.icon == icon)
-			overlays += charging.icon_state
+			AddOverlays(charging.icon_state)
 		else
-			overlays += "cell"
-		overlays += "ccharger-wires"
+			AddOverlays("cell")
+		AddOverlays("ccharger-wires")
 		if(!(stat & (BROKEN|NOPOWER)))
-			chargelevel = round(charging.percent() * 4.0 / 99)
-			overlays += "ccharger-o[chargelevel]"
+			chargelevel = round(CELL_PERCENT(charging) * 4.0 / 99)
+			AddOverlays("ccharger-o[chargelevel]")
 	else
-		overlays.Cut()
+		ClearOverlays()
 
-/obj/machinery/cell_charger/_examine_text(mob/user)
+/obj/machinery/cell_charger/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 5)
 		return
 
-	. += "\nThere's [charging ? "a" : "no"] cell in the charger."
+	. += "There's [charging ? "a" : "no"] cell in the charger."
+
 	if(charging)
-		. += "\nCurrent charge: [charging.charge]"
+		. += "Current charge: [charging.charge]"
 
 /obj/machinery/cell_charger/attackby(obj/item/W, mob/user)
 	if(stat & BROKEN)
@@ -47,13 +49,16 @@
 		if(charging)
 			to_chat(user, "<span class='warning'>There is already a cell in the charger.</span>")
 			return
+		else if(istype(W, /obj/item/cell/ammo))
+			to_chat(user, SPAN("warning", "You can't seem to find a way to charge \the [W] using \the [src]."))
+			return
 		else
 			var/area/a = get_area(loc)
 			if(a.power_equip == 0) // There's no APC in this area, don't try to cheat power!
 				to_chat(user, "<span class='warning'>The [name] blinks red as you try to insert the cell!</span>")
 				return
-			user.drop_item()
-			W.forceMove(src)
+			if(!user.drop(W, src))
+				return
 			charging = W
 			set_power()
 			START_PROCESSING(SSmachines, src)
@@ -79,7 +84,7 @@
 
 /obj/machinery/cell_charger/attack_hand(mob/user)
 	if(charging)
-		user.put_in_hands(charging)
+		user.pick_or_drop(charging, loc)
 		charging.add_fingerprint(user)
 		charging.update_icon()
 
@@ -90,10 +95,10 @@
 
 /obj/machinery/cell_charger/attack_ai(mob/user)
 	if(istype(user, /mob/living/silicon/robot) && Adjacent(user)) // Borgs can remove the cell if they are near enough
-		if(!src.charging)
+		if(!charging)
 			return
 
-		charging.loc = src.loc
+		charging.forceMove(loc)
 		charging.update_icon()
 		charging = null
 		user.visible_message("[user] removes the cell from the charger.", "You remove the cell from the charger.")

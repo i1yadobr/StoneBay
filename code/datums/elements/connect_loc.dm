@@ -14,7 +14,7 @@
 
 	src.connections = connections
 
-	register_signal(listener, SIGNAL_MOVED, .proc/on_moved, override = TRUE)
+	register_signal(listener, SIGNAL_MOVED, nameof(.proc/on_moved), override = TRUE)
 	update_signals(listener)
 
 /datum/element/connect_loc/detach(atom/movable/listener)
@@ -24,7 +24,7 @@
 
 /datum/element/connect_loc/proc/update_signals(atom/movable/listener)
 	var/atom/listener_loc = listener.loc
-	if(isnull(listener_loc))
+	if(QDELETED(listener_loc))
 		return
 
 	for (var/signal in connections)
@@ -32,7 +32,7 @@
 		listener.register_signal(listener_loc, signal, connections[signal], override=TRUE)
 
 /datum/element/connect_loc/proc/unregister_signals(datum/listener, atom/old_loc)
-	if(isnull(old_loc))
+	if(QDELETED(old_loc))
 		return
 
 	listener.unregister_signal(old_loc, connections)

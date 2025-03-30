@@ -13,9 +13,8 @@
 	var/obj/item/clothing/glasses/hud/health/mech/hud
 
 /obj/mecha/medical/odysseus/Initialize()
-	. = ..()
 	hud = new /obj/item/clothing/glasses/hud/health/mech(src)
-	return
+	. = ..()
 
 /obj/mecha/medical/odysseus/moved_inside(mob/living/carbon/human/H)
 	if(..())
@@ -99,7 +98,7 @@
 					break
 
 			holder = patient.hud_list[HEALTH_HUD]
-			if(patient.stat == DEAD)
+			if(patient.is_ic_dead())
 				holder.icon_state = "hudhealth-100"
 				C.images += holder
 			else
@@ -107,18 +106,12 @@
 				C.images += holder
 
 			holder = patient.hud_list[STATUS_HUD]
-			if(patient.stat == DEAD)
+			if(patient.is_ic_dead() || (isundead(patient) && !isfakeliving(patient)))
 				holder.icon_state = "huddead"
 			else if(patient.status_flags & XENO_HOST)
 				holder.icon_state = "hudxeno"
 			else if(foundVirus)
 				holder.icon_state = "hudill"
-			else if(patient.has_brain_worms())
-				var/mob/living/simple_animal/borer/B = patient.has_brain_worms()
-				if(B.controlling)
-					holder.icon_state = "hudbrainworm"
-				else
-					holder.icon_state = "hudhealthy"
 			else
 				holder.icon_state = "hudhealthy"
 

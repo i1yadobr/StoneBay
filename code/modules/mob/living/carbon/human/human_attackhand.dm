@@ -1,4 +1,8 @@
 /mob/living/carbon/human/proc/get_unarmed_attack(mob/living/carbon/human/target, hit_zone)
+	var/obj/item/clothing/gloves/boxing/b_gloves = gloves
+	if(istype(b_gloves))
+		return b_gloves.attack
+
 	for(var/datum/unarmed_attack/u_attack in species.unarmed_attacks)
 		if(u_attack.is_usable(src, target, hit_zone))
 			if(pulling_punches)
@@ -16,7 +20,7 @@
 		var/obj/item/organ/external/temp = H.organs_by_name[BP_R_HAND]
 		if(H.hand)
 			temp = H.organs_by_name[BP_L_HAND]
-		if(!temp || (!temp.is_usable() && !M.nabbing))
+		if(!temp || !temp.is_usable())
 			to_chat(H, "<span class='warning'>You can't use your hand.</span>")
 			return
 
@@ -28,7 +32,7 @@
 			H.do_attack_animation(src)
 			return 0
 
-		if(istype(H.gloves, /obj/item/clothing/gloves/boxing/hologlove))
+		if(istype(H.gloves, /obj/item/clothing/gloves/boxing/hologloves))
 			H.do_attack_animation(src)
 			var/damage = rand(0, 9)
 			if(!damage)
@@ -39,6 +43,9 @@
 			var/armor_block = run_armor_check(affecting, "melee")
 
 			if(MUTATION_HULK in H.mutations)
+				damage += 5
+
+			if(MUTATION_STRONG in H.mutations)
 				damage += 5
 
 			playsound(loc, SFX_FIGHTING_PUNCH, rand(80, 100), 1, -1)
@@ -65,7 +72,7 @@
 
 	switch(M.a_intent)
 		if(I_HELP)
-			if(istype(H) && (is_asystole() || (status_flags & FAKEDEATH)))
+			if(istype(H) && ((is_asystole() && !isundead(src)) || (status_flags & FAKEDEATH)))
 				if (!cpr_time)
 					return 0
 
@@ -83,7 +90,7 @@
 					var/obj/item/organ/external/chest = get_organ(BP_CHEST)
 					if(chest)
 						chest.fracture()
-				if(stat != DEAD)
+				if(!is_ic_dead())
 					if(prob(15))
 						resuscitate()
 
@@ -120,6 +127,10 @@
 			return H.make_grab(H, src)
 
 		if(I_HURT)
+			if(!prob(M.client?.get_luck_for_type(LUCK_CHECK_COMBAT)))
+				visible_message(SPAN_DANGER("[M] attempted to swing at \the [src], but failed miserably!"))
+				return
+
 			if(M.zone_sel.selecting == "mouth" && wear_mask && istype(wear_mask, /obj/item/grenade))
 				var/obj/item/grenade/G = wear_mask
 				if(!G.active)
@@ -193,9 +204,10 @@
 
 										for(var/obj/item/organ/internal/heart/I in internal_organs)
 											if(I && istype(I))
+												if(!H.put_in_active_hand(I))
+													return 0
 												I.cut_away(src)
 												O.implants -= I
-												H.put_in_active_hand(I)
 												H.visible_message(SPAN("danger", "[H] rips [src]'s [I.name] out!"))
 												playsound(src.loc, 'sound/effects/squelch1.ogg', 50, 1)
 												admin_attack_log(H, src, "Ripped their victim's heart out", "Got their heart ripped out", "ripped out")
@@ -273,6 +285,9 @@
 			attack_damage *= damage_multiplier
 			if(MUTATION_HULK in H.mutations)
 				real_damage *= 2 // Hulks do twice the damage
+				attack_damage *= 2
+			if(MUTATION_STRONG in H.mutations)
+				real_damage *= 2
 				attack_damage *= 2
 			real_damage = max(1, real_damage)
 

@@ -19,12 +19,12 @@
 	blood = nblood
 	update_icon()
 
-/obj/effect/rune/update_icon()
-	overlays.Cut()
+/obj/effect/rune/on_update_icon()
+	ClearOverlays()
 	if(GLOB.cult.rune_strokes[type])
 		var/list/f = GLOB.cult.rune_strokes[type]
 		for(var/i in f)
-			overlays += image(make_uristword(i, animated))
+			AddOverlays(image(make_uristword(i, animated)))
 	else
 		var/list/q = list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 		var/list/f = list()
@@ -32,7 +32,7 @@
 			var/j = pick(q)
 			f += j
 			q -= f
-			overlays += image(make_uristword(j, animated))
+			AddOverlays(image(make_uristword(j, animated)))
 		GLOB.cult.rune_strokes[type] = f.Copy()
 
 	if(animated)
@@ -119,8 +119,9 @@
 		else
 			animate(src)
 
-/obj/effect/rune/_examine_text(mob/user)
-	. = ..(user)
+/obj/effect/rune/examine(mob/user, infix)
+	. = ..()
+
 	if(iscultist(user) || isghost(user))
 		. += "This is \a [cultname] rune."
 
@@ -214,7 +215,7 @@
 
 	var/mob/living/carbon/target = null
 	for(var/mob/living/carbon/M in get_turf(src))
-		if(!iscultist(M) && M.stat != DEAD)
+		if(!iscultist(M) && !M.is_ic_dead())
 			target = M
 			break
 
@@ -225,7 +226,7 @@
 	target.visible_message(SPAN_WARNING("The markings below [target] glow a bloody red."))
 
 	var/list/mob/living/cultists = get_cultists()
-	if((GLOB.changelings && (target.mind in GLOB.changelings.current_antagonists)) || isalien(target) || istype(target, /mob/living/carbon/human/diona) || istype(target, /mob/living/carbon/human/xenos) || istype(target, /mob/living/carbon/human/abductor))
+	if((GLOB.changelings && (target.mind in GLOB.changelings.current_antagonists)) || isalien(target) || istype(target, /mob/living/carbon/human/diona) || istype(target, /mob/living/carbon/human/xenos) || HAS_TRAIT(target, TRAIT_HOLY))
 		to_chat(target, SPAN("changeling", "You feel a slight buzz in your head as a foreign mental force makes futile attempts at invading your mind."))
 		for(var/mob/living/M in cultists)
 			to_chat(M, SPAN_DANGER("You feel a strong mental force blocking your belief from entering their mind.<br>Seems like you won't be able to convert \the [target]..."))
@@ -288,10 +289,11 @@
 		A.forceMove(T)
 	return ..()
 
-/obj/effect/rune/teleport/_examine_text(mob/user)
-	. = ..(user)
+/obj/effect/rune/teleport/examine(mob/user, infix)
+	. = ..()
+
 	if(iscultist(user))
-		. += "<br>Its name is [destination]."
+		. += "It's name is [destination]."
 
 /obj/effect/rune/teleport/cast(mob/living/user)
 	if(user.loc == src)
@@ -413,15 +415,16 @@
 		rune = null
 	return ..()
 
-/obj/effect/cultwall/_examine_text(mob/user)
-	. = ..(user)
+/obj/effect/cultwall/examine(mob/user, infix)
+	. = ..()
+
 	if(iscultist(user))
 		if(health == max_health)
-			. += "<br>It is fully intact."
+			. += "It is fully intact."
 		else if(health > max_health * 0.5)
-			. += "<br>It is damaged."
+			. += "It is damaged."
 		else
-			. += "<br>It is about to dissipate."
+			. += "It is about to dissipate."
 
 /obj/effect/cultwall/attack_hand(mob/living/user)
 	if(iscultist(user))
@@ -473,7 +476,7 @@
 			soul = O
 			break
 	while(user)
-		if(user.stat == DEAD)
+		if(user.is_ooc_dead())
 			return
 		if(user.key)
 			return
@@ -518,13 +521,13 @@
 
 	var/obj/O = user.get_equipped_item(slot_head) // This will most likely kill you if you are wearing a spacesuit, and it's 100% intended
 	if(O && !istype(O, /obj/item/clothing/head/culthood))
-		user.unEquip(O)
+		user.drop(O)
 	O = user.get_equipped_item(slot_wear_suit)
 	if(O && !istype(O, /obj/item/clothing/suit/cultrobes))
-		user.unEquip(O)
+		user.drop(O)
 	O = user.get_equipped_item(slot_shoes)
 	if(O && !istype(O, /obj/item/clothing/shoes/cult))
-		user.unEquip(O)
+		user.drop(O)
 
 	user.equip_to_slot_or_del(new /obj/item/clothing/head/culthood/alt(user), slot_head)
 	user.equip_to_slot_or_del(new /obj/item/clothing/suit/cultrobes/alt(user), slot_wear_suit)
@@ -532,7 +535,7 @@
 
 	O = user.get_equipped_item(slot_back)
 	if(istype(O, /obj/item/storage) && !istype(O, /obj/item/storage/backpack/cultpack)) // We don't want to make the vox drop their nitrogen tank, though
-		user.unEquip(O)
+		user.drop(O)
 		var/obj/item/storage/backpack/cultpack/C = new /obj/item/storage/backpack/cultpack(user)
 		user.equip_to_slot_or_del(C, slot_back)
 		if(C)
@@ -561,7 +564,7 @@
 		return fizzle(user)
 	var/turf/T = get_turf(src)
 	for(var/mob/living/M in T)
-		if(M.stat != DEAD && !iscultist(M))
+		if(!M.is_ic_dead() && !iscultist(M))
 			victim = M
 			break
 	if(!victim)
@@ -570,7 +573,7 @@
 	for(var/mob/living/M in cultists)
 		M.say("Barhah hra zar[pick("'","`")]garis!")
 
-	while(victim && victim.loc == T && victim.stat != DEAD)
+	while(victim && victim.loc == T && !victim.is_ic_dead())
 		var/list/mob/living/casters = get_cultists()
 		if(casters.len < 3)
 			break
@@ -583,7 +586,7 @@
 			if(H.is_asystole())
 				H.adjustBrainLoss(2 + casters.len)
 		sleep(40)
-	if(victim && victim.loc == T && victim.stat == DEAD)
+	if(victim && victim.loc == T && victim.is_ic_dead())
 		GLOB.cult.add_cultiness(CULTINESS_PER_SACRIFICE)
 		var/obj/item/device/soulstone/full/F = new(get_turf(src))
 		for(var/mob/M in cultists | get_cultists())
@@ -785,7 +788,7 @@
 		to_chat(user, SPAN_WARNING("This rune needs to be placed on defiled ground."))
 		return fizzle(user)
 	speak_incantation(user, "N'ath reth sh'yro eth d[pick("'","`")]raggathnor!")
-	user.put_in_hands(new /obj/item/melee/cultblade(user))
+	user.pick_or_drop(new /obj/item/melee/cultblade(user), loc)
 	qdel(src)
 
 /obj/effect/rune/shell
@@ -852,7 +855,7 @@
 	var/mob/living/carbon/human/target
 	var/obj/item/device/soulstone/source
 	for(var/mob/living/carbon/human/M in get_turf(src))
-		if(M.stat == DEAD)
+		if(M.is_ic_dead())
 			if(iscultist(M))
 				if(M.key)
 					target = M
@@ -943,7 +946,7 @@
 	log_and_message_admins_many(cultists, "started summoning Nar-sie.")
 
 	var/area/A = get_area(src)
-	command_announcement.Announce("High levels of bluespace interference detected at \the [A]. Suspected wormhole forming. Investigate it immediately.")
+	SSannounce.play_station_announce(/datum/announce/wormholes, "High levels of bluespace interference detected at \the [A]. Suspected wormhole forming. Investigate it immediately.")
 	while(cultists.len > 4 || the_end_comes)
 		cultists = get_cultists()
 		if(cultists.len > 8)
@@ -966,7 +969,7 @@
 	if(the_end_comes >= the_time_has_come)
 		HECOMES = new /obj/singularity/narsie(get_turf(src))
 	else
-		command_announcement.Announce("Bluespace anomaly has ceased.")
+		SSannounce.play_station_announce(/datum/announce/wormholes_end)
 		qdel(src)
 
 /obj/effect/rune/tearreality/attack_hand(mob/living/user)

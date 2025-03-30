@@ -26,7 +26,7 @@ var/global/list/plant_seed_sprites = list()
 	if(!seed) return
 
 	// Update icon.
-	overlays.Cut()
+	ClearOverlays()
 	var/is_seeds = ((seed.seed_noun in list(SEED_NOUN_SEEDS, SEED_NOUN_PITS, SEED_NOUN_NODES)) ? 1 : 0)
 	var/image/seed_mask
 	var/seed_base_key = "base-[is_seeds ? seed.get_trait(TRAIT_PLANT_COLOUR) : "spores"]"
@@ -47,8 +47,8 @@ var/global/list/plant_seed_sprites = list()
 		seed_overlay.color = seed.get_trait(TRAIT_PRODUCT_COLOUR)
 		plant_seed_sprites[seed_overlay_key] = seed_overlay
 
-	overlays |= seed_mask
-	overlays |= seed_overlay
+	AddOverlays(seed_mask)
+	AddOverlays(seed_overlay)
 
 	if(is_seeds)
 		src.SetName("packet of [seed.seed_name] [seed.seed_noun]")
@@ -57,10 +57,11 @@ var/global/list/plant_seed_sprites = list()
 		src.SetName("sample of [seed.seed_name] [seed.seed_noun]")
 		src.desc = "It's labelled as coming from [seed.display_name]."
 
-/obj/item/seeds/_examine_text(mob/user)
-	. = ..(user)
+/obj/item/seeds/examine(mob/user, infix)
+	. = ..()
+
 	if(seed && !seed.roundstart)
-		. += "\nIt's tagged as variety #[seed.uid]."
+		. += "It's tagged as variety #[seed.uid]."
 
 /obj/item/seeds/cutting
 	name = "cuttings"
@@ -329,3 +330,6 @@ var/global/list/plant_seed_sprites = list()
 
 /obj/item/seeds/cowcownutseed
 	seed_type = "cowcownut"
+
+/obj/item/seeds/coffeea
+	seed_type = "coffeea"

@@ -2,11 +2,11 @@
 	name = "\improper Protolathe"
 	icon_state = "protolathe"
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
+
 	layer = BELOW_OBJ_LAYER
 
-	idle_power_usage = 30
-	active_power_usage = 5000
+	idle_power_usage = 30 WATTS
+	active_power_usage = 5 KILO WATTS
 
 	var/max_material_storage = 100000
 
@@ -62,7 +62,10 @@
 	var/T = 0
 	for(var/obj/item/reagent_containers/vessel/G in component_parts)
 		T += G.reagents.maximum_volume
-	create_reagents(T)
+	if(reagents)
+		reagents.maximum_volume = T
+	else
+		create_reagents(T)
 	max_material_storage = 0
 	for(var/obj/item/stock_parts/matter_bin/M in component_parts)
 		max_material_storage += M.rating * 75000
@@ -73,7 +76,7 @@
 	speed = T / 2
 
 
-/obj/machinery/r_n_d/protolathe/update_icon()
+/obj/machinery/r_n_d/protolathe/on_update_icon()
 	if(panel_open)
 		icon_state = "protolathe_t"
 	else if(busy)
@@ -118,14 +121,14 @@
 	var/amount = min(stack.get_amount(), round((max_material_storage - TotalMaterials()) / SHEET_MATERIAL_AMOUNT))
 
 	var/t = stack.material.name
-	overlays += "protolathe_[t]"
+	AddOverlays("protolathe_[t]")
 	spawn(10)
-		overlays -= "protolathe_[t]"
+		CutOverlays("protolathe_[t]")
 
 	busy = 1
 	use_power_oneoff(max(1000, (SHEET_MATERIAL_AMOUNT * amount / 10)))
 	if(t)
-		if(do_after(user, 16,src))
+		if(do_after(user, 16,src, luck_check_type = LUCK_CHECK_RND))
 			if(stack.use(amount))
 				to_chat(user, "<span class='notice'>You add [amount] sheet\s to \the [src].</span>")
 				materials[t] += amount * SHEET_MATERIAL_AMOUNT
@@ -145,7 +148,7 @@
 	queue.Cut(index, index + 1)
 	return
 
-/obj/machinery/r_n_d/protolathe/proc/canBuild(datum/design/D, amount_build)
+/obj/machinery/r_n_d/protolathe/proc/canBuild(datum/design/D, amount_build = 1)
 	for(var/M in D.materials)
 		if(materials[M] < D.materials[M] * mat_efficiency * amount_build)
 			return 0

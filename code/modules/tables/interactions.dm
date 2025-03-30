@@ -62,15 +62,31 @@
 	return 1
 
 
-/obj/structure/table/MouseDrop_T(obj/O, mob/user)
-	if(!istype(O, /obj/item) || user.get_active_hand() != O)
+/obj/structure/table/MouseDrop_T(obj/O, mob/user, params)
+	if(!istype(O, /obj/item))
 		return ..()
-	if(isrobot(user))
+
+	var/turf/T = get_turf(O)
+	var/table_found = FALSE
+	for(var/obj/item in T.contents)
+		if(istype(item, /obj/structure/table))
+			table_found = TRUE
+			break
+
+	var/do_slide = FALSE
+	if(O.loc == loc)
+		do_slide = TRUE // Sliding on the same time
+	else if(ishuman(user) && O == user.get_active_hand() && user.drop(O))
+		do_slide = TRUE // Dropping from the inventory
+	else if(table_found && T.Adjacent(src, user))
+		do_slide = TRUE // Sliding across tables
+
+	if(do_slide)
+		O.forceMove(loc)
+		auto_align(O, params)
 		return
-	user.drop_item()
-	if(O.loc != src.loc)
-		step(O, get_dir(O, src))
-	return
+
+	return ..()
 
 /obj/structure/table/attack_hand(mob/user as mob)
 	if(ishuman(user))
@@ -109,10 +125,15 @@
 			if(G.force_danger())
 				G.assailant.next_move = world.time + 13 //also should prevent user from triggering this repeatedly
 				visible_message("<span class='warning'>[G.assailant] starts putting [G.affecting] on \the [src].</span>")
-				if(!do_after(G.assailant, 13))
-					return 0
+				if(!do_after(G.assailant, 13, luck_check_type = LUCK_CHECK_COMBAT))
+					return FALSE
+
 				if(!G) //check that we still have a grab
-					return 0
+					return FALSE
+
+				if(QDELETED(src))
+					return FALSE
+
 				G.affecting.forceMove(src.loc)
 				G.affecting.Weaken(rand(1,4))
 				G.affecting.Stun(1)
@@ -163,7 +184,7 @@
 		return
 
 	// Placing stuff on tables
-	if(user.unEquip(W, target = loc))
+	if(user.drop(W, loc))
 		auto_align(W, click_params)
 		return 1
 
@@ -182,6 +203,9 @@ Note: This proc can be overwritten to allow for different types of auto-alignmen
 */
 /obj/item/var/center_of_mass = "x=16;y=16" //can be null for no exact placement behaviour
 /obj/structure/table/proc/auto_align(obj/item/W, click_params)
+	// If item is anchored, we can't move it.
+	if(W.anchored)
+		return
 	if (!W.center_of_mass) // Clothing, material stacks, generally items with large sprites where exact placement would be unhandy.
 		W.pixel_x = rand(-W.randpixel, W.randpixel)
 		W.pixel_y = rand(-W.randpixel, W.randpixel)
@@ -223,3 +247,16 @@ Note: This proc can be overwritten to allow for different types of auto-alignmen
 
 /obj/structure/table/attack_tk() // no telehulk sorry
 	return
+
+/obj/structure/table/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
+	if(the_rcd.mode == RCD_DECONSTRUCT)
+		return list("delay" = 2.4 SECONDS, "cost" = 16)
+
+	return FALSE
+
+/obj/structure/table/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	if(rcd_data["[RCD_DESIGN_MODE]"] == RCD_DECONSTRUCT)
+		qdel_self()
+		return TRUE
+
+	return FALSE

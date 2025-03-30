@@ -3,7 +3,7 @@
 	desc = "Looks unstable. Best to test it with the clown."
 	icon = 'icons/obj/portals.dmi'
 	icon_state = "portal"
-	density = FALSE
+	density = TRUE
 	unacidable = TRUE // Can't destroy energy portals.
 	var/atom/target = null
 	var/creator = null
@@ -12,7 +12,8 @@
 	var/failchance = 0
 	var/teleport_type = /decl/teleport/sparks
 
-/obj/effect/portal/Crossed(AM)
+/obj/effect/portal/Bumped(AM)
+	. = ..()
 	teleport(AM)
 
 /obj/effect/portal/attack_hand(mob/user)
@@ -21,7 +22,10 @@
 /obj/effect/portal/Initialize(mapload, end, delete_after = 300, failure_rate)
 	. = ..()
 	setup_portal(end, delete_after, failure_rate)
-	addtimer(CALLBACK(src, .proc/move_all_objects), 1.5 SECONDS)
+	set_next_think(world.time + 1.5 SECONDS)
+
+/obj/effect/portal/think()
+	move_all_objects()
 
 /obj/effect/portal/Destroy()
 	target = null
@@ -149,7 +153,7 @@
 		I1.Blend(I2,ICON_MULTIPLY)
 		portal_cache["icon[initial(T.icon)]_iconstate[T.icon_state]_[type]"] = I1 // And cache it!
 
-	overlays += portal_cache["icon[initial(T.icon)]_iconstate[T.icon_state]_[type]"]
+	AddOverlays(portal_cache["icon[initial(T.icon)]_iconstate[T.icon_state]_[type]"])
 
 // In layman's terms, speedy thing goes in, speedy thing comes out.
 // projectile redirect is not cool, I made my own cool method!
@@ -217,7 +221,7 @@
 		target_turf = get_step(target_turf, thrown_dir)
 		if(target_dist <= 0)
 			break
-	INVOKE_ASYNC(hit_atom, /atom/movable/proc/throw_at, target_turf, throw_range-dist_travelled, speed, thrower)
+	INVOKE_ASYNC(hit_atom, nameof(/atom/movable.proc/throw_at), target_turf, throw_range-dist_travelled, speed, thrower)
 
 /obj/effect/portal/linked/teleport(atom/movable/M, ignore_checks = FALSE)
 	if(!target)

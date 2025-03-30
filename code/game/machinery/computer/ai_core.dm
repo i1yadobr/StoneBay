@@ -13,7 +13,7 @@
 	var/state = AI_STAGE_FRAME
 	var/datum/ai_laws/laws = new /datum/ai_laws/nanotrasen
 	var/obj/item/circuitboard/circuit = null
-	var/obj/item/device/mmi/brain = null
+	var/obj/item/organ/internal/cerebrum/mmi/brain = null
 	var/authorized = FALSE
 
 /obj/structure/AIcore/emag_act(remaining_charges, mob/user, emag_source)
@@ -24,7 +24,7 @@
 		return 1
 	. = ..()
 
-/obj/structure/AIcore/attackby(obj/item/P as obj, mob/user as mob)
+/obj/structure/AIcore/attackby(obj/item/P, mob/user)
 	if(!authorized)
 		if(access_ai_upload in P.GetAccess())
 			to_chat(user, SPAN("notice", "You swipe [P] at [src] and authorize it to connect into the systems of [GLOB.using_map.full_name]."))
@@ -33,36 +33,36 @@
 		if(AI_STAGE_FRAME)
 			if(isWrench(P))
 				playsound(loc, 'sound/items/Ratchet.ogg', 50, 1)
-				if(do_after(user, 20, src))
+				if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 					to_chat(user, SPAN("notice", "You wrench the frame into place."))
 					anchored = TRUE
 					state = AI_STAGE_CIRCUIT
 			if(isWelder(P))
 				var/obj/item/weldingtool/WT = P
-				if(!WT.isOn())
-					to_chat(user, "The welder must be on for this task.")
+				if(!WT.use_tool(src, user, delay = 4 SECONDS, amount = 5))
 					return
-				playsound(loc, 'sound/items/Welder.ogg', 50, 1)
-				if(do_after(user, 20, src))
-					if(!src || !WT.remove_fuel(0, user)) return
-					to_chat(user, SPAN("notice", "You deconstruct the frame."))
-					new /obj/item/stack/material/plasteel(loc, 4)
-					qdel(src)
+
+				if(QDELETED(src) || !user)
 					return
+
+				to_chat(user, SPAN("notice", "You deconstruct the frame."))
+				new /obj/item/stack/material/plasteel(loc, 4)
+				qdel(src)
+				return
 		if(AI_STAGE_CIRCUIT)
 			if(isWrench(P))
 				playsound(loc, 'sound/items/Ratchet.ogg', 50, 1)
-				if(do_after(user, 20, src))
+				if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 					to_chat(user, SPAN("notice", "You unfasten the frame."))
 					anchored = FALSE
 					state = AI_STAGE_FRAME
 			if(istype(P, /obj/item/circuitboard/aicore) && !circuit)
+				if(!user.drop(P, src))
+					return
 				playsound(loc, 'sound/items/Deconstruct.ogg', 50, 1)
 				to_chat(user, SPAN("notice", "You place the circuit board inside the frame."))
 				icon_state = "1"
 				circuit = P
-				user.drop_item()
-				P.loc = src
 			if(isScrewdriver(P) && circuit)
 				playsound(loc, 'sound/items/Screwdriver.ogg', 50, 1)
 				to_chat(user, SPAN("notice", "You screw the circuit board into place."))
@@ -72,7 +72,7 @@
 				playsound(loc, 'sound/items/Crowbar.ogg', 50, 1)
 				to_chat(user, SPAN("notice", "You remove the circuit board."))
 				icon_state = "0"
-				circuit.loc = loc
+				circuit.dropInto(loc)
 				circuit = null
 		if(AI_STAGE_CABLE)
 			if(isScrewdriver(P) && circuit)
@@ -140,18 +140,18 @@
 				laws.add_inherent_law(M.newFreeFormLaw)
 				to_chat(usr, "Added a freeform law.")
 
-			if(!brain && (istype(P, /obj/item/device/mmi) || istype(P, /obj/item/organ/internal/posibrain)))
+			if(!brain && (istype(P, /obj/item/organ/internal/cerebrum/mmi) || istype(P, /obj/item/organ/internal/cerebrum/posibrain)))
 				var/mob/living/carbon/brain/B
-				if(istype(P, /obj/item/device/mmi))
-					var/obj/item/device/mmi/M = P
+				if(istype(P, /obj/item/organ/internal/cerebrum/mmi))
+					var/obj/item/organ/internal/cerebrum/mmi/M = P
 					B = M.brainmob
 				else
-					var/obj/item/organ/internal/posibrain/PB = P
+					var/obj/item/organ/internal/cerebrum/posibrain/PB = P
 					B = PB.brainmob
 				if(!B)
 					to_chat(user, SPAN("warning", "Sticking an empty [P] into the frame would sort of defeat the purpose."))
 					return
-				if(B.stat == DEAD)
+				if(B.is_ooc_dead())
 					to_chat(user, SPAN("warning", "Sticking a dead [P] into the frame would sort of defeat the purpose."))
 					return
 
@@ -159,11 +159,12 @@
 					to_chat(user, SPAN("warning", "This [P] does not seem to fit."))
 					return
 
+				if(!user.drop(P, src))
+					return
+
 				if(B.mind)
 					clear_antag_roles(B.mind, 1)
 
-				user.drop_item()
-				P.loc = src
 				brain = P
 				to_chat(usr, "Added [P].")
 				icon_state = "3b"
@@ -171,7 +172,7 @@
 			if(isCrowbar(P) && brain)
 				playsound(loc, 'sound/items/Crowbar.ogg', 50, 1)
 				to_chat(user, SPAN("notice", "You remove the brain."))
-				brain.loc = loc
+				brain.dropInto(loc)
 				brain = null
 				icon_state = "3"
 
@@ -226,7 +227,7 @@
 	transfer.aiRestorePowerRoutine = 0
 	transfer.control_disabled = 0
 	transfer.ai_radio.disabledAi = 0
-	transfer.loc = get_turf(src)
+	transfer.dropInto(get_turf(src))
 	transfer.create_eyeobj()
 	transfer.cancel_camera()
 	to_chat(user, "<span class='notice'>Transfer successful:</span> [transfer.name] ([rand(1000,9999)].exe) downloaded to host terminal. Local copy wiped.")
@@ -253,10 +254,10 @@
 		else
 			to_chat(user, "<span class='danger'>ERROR:</span> Unable to locate artificial intelligence.")
 		return
-	else if(istype(W, /obj/item/wrench))
+	else if(isWrench(W))
 		if(anchored)
 			user.visible_message("<span class='notice'>\The [user] starts to unbolt \the [src] from the plating...</span>")
-			if(!do_after(user,40,src))
+			if(!do_after(user,40,src,luck_check_type = LUCK_CHECK_ENG))
 				user.visible_message("<span class='notice'>\The [user] decides not to unbolt \the [src].</span>")
 				return
 			user.visible_message("<span class='notice'>\The [user] finishes unfastening \the [src]!</span>")
@@ -264,7 +265,7 @@
 			return
 		else
 			user.visible_message("<span class='notice'>\The [user] starts to bolt \the [src] to the plating...</span>")
-			if(!do_after(user,40,src))
+			if(!do_after(user,40,src, luck_check_type = LUCK_CHECK_ENG))
 				user.visible_message("<span class='notice'>\The [user] decides not to bolt \the [src].</span>")
 				return
 			user.visible_message("<span class='notice'>\The [user] finishes fastening down \the [src]!</span>")

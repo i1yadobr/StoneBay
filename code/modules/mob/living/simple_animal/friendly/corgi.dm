@@ -40,14 +40,16 @@
 	response_disarm = "bops"
 	response_harm   = "kicks"
 
-/mob/living/simple_animal/corgi/Move(a, b, flag)
-	..()
+/mob/living/simple_animal/corgi/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
+
 	update_hat()
 
 /mob/living/simple_animal/corgi/Life()
 	..()
 	update_hat() // In case somewhere something unpredictable happens - it'll fix it, I guess.
-	regular_hud_updates()
 
 	// Feeding, chasing food, FOOOOODDDD
 	if(!stat && !resting && !buckled)
@@ -100,7 +102,10 @@
 					sleep(1)
 
 
-/mob/living/simple_animal/corgi/proc/regular_hud_updates()
+/mob/living/simple_animal/corgi/handle_regular_hud_updates()
+	if(!..())
+		return FALSE
+
 	if(pullin)
 		if(pulling)
 			pullin.icon_state = "pull1"
@@ -123,32 +128,14 @@
 		else
 			toxin.icon_state = "tox0"
 
-	if (healths)
-		switch(health)
-			if(30 to INFINITY)
-				healths.icon_state = "health0"
-			if(26 to 29)
-				healths.icon_state = "health1"
-			if(21 to 25)
-				healths.icon_state = "health2"
-			if(16 to 20)
-				healths.icon_state = "health3"
-			if(11 to 15)
-				healths.icon_state = "health4"
-			if(6 to 10)
-				healths.icon_state = "health5"
-			if(1 to 5)
-				healths.icon_state = "health6"
-			else
-				healths.icon_state = "health7"
-
 /obj/item/reagent_containers/food/meat/corgi
 	name = "Corgi meat"
 	desc = "Tastes like... well you know..."
 
 /mob/living/simple_animal/corgi/show_inv(mob/user)
 	user.set_machine(src)
-	if(user.stat) return
+	if(user.stat)
+		return FALSE
 
 	var/dat = 	"<meta charset=\"utf-8\"><div align='center'><b>Inventory of [name]</b></div><p>"
 	if(hat)
@@ -157,7 +144,7 @@
 		dat +=	"<br><b>Head:</b> <a href='?src=\ref[src];add_inv=hat'>Nothing</a>"
 	show_browser(user, dat, text("window=mob[];size=325x325", name))
 	onclose(user, "mob[real_name]")
-	return
+	return TRUE
 
 /mob/living/simple_animal/corgi/Topic(href, href_list)
 	//Can the usr physically do this?
@@ -172,9 +159,9 @@
 			switch(remove_from)
 				if("hat")
 					if(hat)
-						hat.loc = loc
+						hat.dropInto(loc)
 						hat = null
-						overlays.Cut()
+						ClearOverlays()
 					else
 						to_chat(usr, SPAN_WARNING("There is nothing to remove from [name]"))
 						return
@@ -201,7 +188,7 @@
 						if(istype(item_to_add, /obj/item/clothing/head/kitty)) // Tail of kitty ears in not properly aligned
 							to_chat(usr, SPAN_WARNING("[name] cannot wear \the [item_to_add]!"))
 							return
-						usr.unEquip(item_to_add)
+						usr.drop(item_to_add)
 						wear_hat(item_to_add)
 						usr.visible_message(SPAN_WARNING("[usr] puts \the [item_to_add] on [name]."))
 
@@ -219,7 +206,7 @@
 		if(hat)
 			to_chat(user, SPAN_WARNING("[name] is already wearing \the [hat]."))
 			return
-		user.unEquip(O)
+		user.drop(O)
 		wear_hat(O)
 		user.visible_message(SPAN_WARNING("[user] puts \the [O] on [name]."))
 		return
@@ -267,8 +254,8 @@
 /mob/living/simple_animal/corgi/proc/update_hat()
 	if(!hat)
 		return
-	if(stat == DEAD)
-		overlays.Cut()
+	if(is_ic_dead())
+		ClearOverlays()
 		hat.dropInto(loc)
 		hat = null
 		return
@@ -283,8 +270,8 @@
 	else if(dir == 8)
 		hat_offset_x = -8
 		hat_offset_y = -8
-	overlays.Cut()
-	overlays |= get_hat_icon(hat, hat_offset_x, hat_offset_y)
+	ClearOverlays()
+	AddOverlays(get_hat_icon(hat, hat_offset_x, hat_offset_y))
 ///////////////////////
 // END OF HAT STUFF //
 /////////////////////
@@ -354,7 +341,7 @@
 
 
 		if(prob(1))
-			visible_emote(pick("dances around","chases her tail"))
+			visible_emote(pick("dances around.","chases her tail."))
 			spawn(0)
 				for(var/i in list(1,2,4,8,4,2,1,2,4,8,4,2,1,2,4,8,4,2))
 					set_dir(i)

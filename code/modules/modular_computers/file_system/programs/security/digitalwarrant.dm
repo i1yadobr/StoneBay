@@ -11,6 +11,7 @@ LEGACY_RECORD_STRUCTURE(all_warrants, warrant)
 	program_icon_state = "warrant"
 	program_key_state = "security_key"
 	program_menu_icon = "star"
+	program_light_color = "#C00E0E"
 	requires_ntnet = 1
 	available_on_ntnet = 1
 	required_access = access_security
@@ -82,7 +83,7 @@ LEGACY_RECORD_STRUCTURE(all_warrants, warrant)
 	var/mob/user = usr
 	if(!istype(user))
 		return
-	var/obj/item/card/id/I = user.GetIdCard()
+	var/obj/item/card/id/I = user.get_id_card()
 	if(!istype(I) || !I.registered_name || !(access_security in I.access))
 		to_chat(user, "Authentication error: Unable to locate ID with apropriate access to allow this operation.")
 		return

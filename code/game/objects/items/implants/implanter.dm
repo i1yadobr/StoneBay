@@ -14,7 +14,7 @@
 	..()
 	update_icon()
 
-/obj/item/implanter/update_icon()
+/obj/item/implanter/on_update_icon()
 	if (imp)
 		icon_state = "implanter1"
 	else
@@ -32,8 +32,7 @@
 		if(!imp)
 			to_chat(usr, "<span class='notice'>There is no implant to remove.</span>")
 			return
-		imp.forceMove(get_turf(src))
-		usr.put_in_hands(imp)
+		usr.pick_or_drop(imp, loc)
 		to_chat(usr, "<span class='notice'>You remove \the [imp] from \the [src].</span>")
 		name = "implanter"
 		imp = null
@@ -57,8 +56,9 @@
 
 /obj/item/implanter/attackby(obj/item/I, mob/user)
 	if(!imp && istype(I, /obj/item/implant))
+		if(!user.drop(I, src))
+			return
 		to_chat(usr, "<span class='notice'>You slide \the [I] into \the [src].</span>")
-		user.drop_from_inventory(I,src)
 		imp = I
 		update_icon()
 	else
@@ -77,7 +77,7 @@
 		if(src.imp.can_implant(M, user, target_zone))
 			var/imp_name = imp.name
 
-			if(do_after(user, 50, M) && src.imp?.implant_in_mob(M, target_zone))
+			if(do_after(user, 50, M, luck_check_type = LUCK_CHECK_COMBAT) && src.imp?.implant_in_mob(M, target_zone))
 				M.visible_message("<span class='warning'>[M] has been implanted by [user].</span>")
 				admin_attack_log(user, M, "Implanted using \the [src] ([imp_name])", "Implanted with \the [src] ([imp_name])", "used an implanter, \the [src] ([imp_name]), on")
 

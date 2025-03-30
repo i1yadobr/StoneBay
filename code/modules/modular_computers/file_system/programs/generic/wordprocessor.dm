@@ -4,6 +4,7 @@
 	extended_desc = "This program allows the editing and preview of text documents."
 	program_icon_state = "word"
 	program_key_state = "atmos_key"
+	program_light_color = "#4273E7"
 	size = 4
 	category = PROG_OFFICE
 	requires_ntnet = 0
@@ -26,7 +27,7 @@
 	var/datum/computer_file/data/F = get_file(filename)
 	if(!F) //try to make one if it doesn't exist
 		F = create_file(filename, loaded_data)
-		return !isnull(F)
+		return !QDELETED(F)
 	var/datum/computer_file/data/backup = F.clone()
 	var/obj/item/computer_hardware/hard_drive/HDD = computer.hard_drive
 	if(!HDD)
@@ -168,7 +169,7 @@
 		if(!computer.nano_printer)
 			error = "Missing Hardware: Your computer does not have the required hardware to complete this operation."
 			return 1
-		if(!computer.nano_printer.print_text(loaded_data))
+		if(!computer.nano_printer.print_text(loaded_data, rawhtml=TRUE))
 			error = "Hardware error: Printer was unable to print the file. It may be out of paper."
 			return 1
 

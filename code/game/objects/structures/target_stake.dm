@@ -13,7 +13,7 @@
 		..()
 		// Move the pinned target along with the stake
 		if(pinned_target in view(3, src))
-			pinned_target.loc = loc
+			pinned_target.forceMove(loc)
 
 		else // Sanity check: if the pinned target can't be found in immediate view
 			pinned_target = null
@@ -27,8 +27,7 @@
 		if(istype(W, /obj/item/target))
 			set_density(0)
 			W.set_density(1)
-			user.remove_from_mob(W)
-			W.forceMove(loc)
+			user.drop(W, loc)
 			W.layer = ABOVE_OBJ_LAYER
 			pinned_target = W
 			to_chat(user, "You slide the target into the stake.")
@@ -41,13 +40,13 @@
 			pinned_target.set_density(0)
 			pinned_target.layer = OBJ_LAYER
 
-			pinned_target.loc = user.loc
+			pinned_target.dropInto(user.loc)
 			if(ishuman(user))
 				if(!user.get_active_hand())
 					user.put_in_hands(pinned_target)
 					to_chat(user, "You take the target out of the stake.")
 			else
-				pinned_target.loc = get_turf(user)
+				pinned_target.dropInto(get_turf(user))
 				to_chat(user, "You take the target out of the stake.")
 
 			pinned_target = null

@@ -1,4 +1,4 @@
-
+GLOBAL_LIST_EMPTY(all_synthetic_mind_to_data) // data: list of name and type of synthetic
 
 /mob/living/silicon
 	gender = NEUTER
@@ -31,6 +31,13 @@
 	var/list/avaliable_huds
 	var/active_hud
 
+	rad_resist_type = /datum/rad_resist/mob_silicon
+
+/datum/rad_resist/mob_silicon
+	alpha_particle_resist = 41.7 MEGA ELECTRONVOLT
+	beta_particle_resist = 23.9 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
+
 /mob/living/silicon/New()
 	if(playable_mob)
 		GLOB.silicon_mob_list += src
@@ -51,11 +58,28 @@
 
 /mob/living/silicon/Destroy()
 	GLOB.silicon_mob_list -= src
+
 	QDEL_NULL(silicon_radio)
 	QDEL_NULL(silicon_camera)
+
 	for(var/datum/alarm_handler/AH in SSalarm.all_handlers)
 		AH.unregister_alarm(src)
+
+	if(istype(idcard))
+		QDEL_NULL(idcard)
+
+	queued_alarms.Cut()
+
 	return ..()
+
+/mob/living/silicon/mind_initialize()
+	. = ..()
+	GLOB.all_synthetic_mind_to_data[mind] = list(name, type, weakref(src))
+
+/mob/living/silicon/SetName(new_name)
+	. = ..()
+	if(mind)
+		GLOB.all_synthetic_mind_to_data[mind][1] = name
 
 /mob/living/silicon/fully_replace_character_name(new_name)
 	..()
@@ -71,7 +95,10 @@
 /mob/living/silicon/proc/show_laws()
 	return
 
-/mob/living/silicon/drop_item(user)
+/mob/living/silicon/can_unequip(obj/item/I)
+	return FALSE // Let's just not
+
+/mob/living/silicon/drop_active_hand(user)
 	if(isrobot(user))
 		var/mob/living/silicon/robot/R = user
 		R.hud_used.update_robot_modules_display()
@@ -158,7 +185,6 @@
 		if(eta_status)
 			stat(null, eta_status)
 
-
 // This adds the basic clock, shuttle recall timer, and malf_ai info to all silicon lifeforms
 /mob/living/silicon/Stat()
 	if(statpanel("Status"))
@@ -166,6 +192,7 @@
 		show_system_integrity()
 		show_malf_ai()
 	. = ..()
+
 
 // this function displays the stations manifest in a separate window
 /mob/living/silicon/proc/show_station_manifest()
@@ -204,30 +231,6 @@
 
 	..(rem_language)
 	speech_synthesizer_langs -= removed_language
-
-/mob/living/silicon/check_languages()
-	set name = "Check Known Languages"
-	set category = "IC"
-	set src = usr
-
-	var/dat = "<meta charset=\"utf-8\"><b><font size = 5>Known Languages</font></b><br/><br/>"
-
-	if(default_language)
-		dat += "Current default language: [default_language] - <a href='byond://?src=\ref[src];default_lang=reset'>reset</a><br/><br/>"
-
-	for(var/datum/language/L in languages)
-		if(!(L.flags & NONGLOBAL))
-			var/default_str
-			if(L == default_language)
-				default_str = " - default - <a href='byond://?src=\ref[src];default_lang=reset'>reset</a>"
-			else
-				default_str = " - <a href='byond://?src=\ref[src];default_lang=\ref[L]'>set default</a>"
-
-			var/synth = (L in speech_synthesizer_langs)
-			dat += "<b>[L.name] ([get_language_prefix()][L.key])</b>[synth ? default_str : null]<br/>Speech Synthesizer: <i>[synth ? "YES" : "NOT SUPPORTED"]</i><br/>[L.desc]<br/><br/>"
-
-	show_browser(src, dat, "window=checklanguage")
-	return
 
 /mob/living/silicon/proc/toggle_sensor_mode()
 	active_hud = null
@@ -293,7 +296,7 @@
 		if(1.0)
 			brute = 400
 			burn = 100
-			if(!anchored && !prob(getarmor(null, "bomb")))
+			if(!anchored && !prob(get_flat_armor(null, "bomb")))
 				gib()
 		if(2.0)
 			brute = 60
@@ -301,7 +304,7 @@
 		if(3.0)
 			brute = 30
 
-	var/protection = blocked_mult(getarmor(null, "bomb"))
+	var/protection = blocked_mult(get_flat_armor(null, "bomb"))
 	brute *= protection
 	burn *= protection
 
@@ -311,10 +314,10 @@
 	updatehealth()
 
 /mob/living/silicon/blob_act(damage)
-	if(is_dead())
+	if(is_ic_dead())
 		return
 
-	var/protection = blocked_mult(getarmor(null, "bomb"))
+	var/protection = blocked_mult(get_flat_armor(null, "bomb"))
 	var/brute = damage * 2
 
 	brute *= protection
@@ -420,7 +423,7 @@
 	ghostize(0)
 	qdel(src)
 
-/mob/living/silicon/flash_eyes(intensity = FLASH_PROTECTION_MODERATE, override_blindness_check = FALSE, affect_silicon = FALSE, visual = FALSE, type = /obj/screen/fullscreen/flash)
+/mob/living/silicon/flash_eyes(intensity = FLASH_PROTECTION_MODERATE, override_blindness_check = FALSE, affect_silicon = FALSE, visual = FALSE, type = /atom/movable/screen/fullscreen/flash)
 	if(affect_silicon)
 		return ..()
 

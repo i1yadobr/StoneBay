@@ -5,8 +5,8 @@
 	icon = 'icons/obj/machines/shielding.dmi'
 	icon_state = "fdiffuser_on"
 	use_power = POWER_USE_ACTIVE
-	idle_power_usage = 100
-	active_power_usage = 2000
+	idle_power_usage = 100 WATTS
+	active_power_usage = 2 KILO WATTS
 	anchored = 1
 	density = 0
 	level = 1
@@ -27,7 +27,7 @@
 		for(var/obj/effect/shield/S in shielded_tile)
 			qdel(S)
 
-/obj/machinery/shield_diffuser/attackby(obj/item/O as obj, mob/user as mob)
+/obj/machinery/shield_diffuser/attackby(obj/item/O, mob/user)
 	if(default_deconstruction_screwdriver(user, O))
 		return
 	if(default_deconstruction_crowbar(user, O))
@@ -35,7 +35,7 @@
 	if(default_part_replacement(user, O))
 		return
 
-/obj/machinery/shield_diffuser/update_icon()
+/obj/machinery/shield_diffuser/on_update_icon()
 	if(alarm)
 		icon_state = "fdiffuser_emergency"
 		return
@@ -61,8 +61,10 @@
 	alarm = round(max(alarm, duration))
 	update_icon()
 
-/obj/machinery/shield_diffuser/_examine_text(mob/user)
+/obj/machinery/shield_diffuser/examine(mob/user, infix)
 	. = ..()
-	. += "\nIt is [enabled ? "enabled" : "disabled"]."
+
+	. += "It is [enabled ? "enabled" : "disabled"]."
+
 	if(alarm)
-		. += "\nA red LED labeled \"Proximity Alarm\" is blinking on the control panel."
+		. += "A red LED labeled \"Proximity Alarm\" is blinking on the control panel."

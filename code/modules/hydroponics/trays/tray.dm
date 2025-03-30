@@ -1,13 +1,14 @@
 /obj/machinery/portable_atmospherics/hydroponics
 	name = "hydroponics tray"
-	icon = 'icons/obj/hydroponics_machines.dmi'
-	icon_state = "hydrotray3"
+	icon = 'icons/obj/machines/hydrotray.dmi'
+	icon_state = "hydrotray4"
 	density = 1
 	anchored = 1
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
 	volume = 100
 
 	var/mechanical = 1         // Set to 0 to stop it from drawing the alert lights.
+	var/vertical_shift = 0     // As we want plants to grow from the visual center of soil trays
 	var/base_name = "tray"
 
 	// Plant maintenance vars.
@@ -147,7 +148,7 @@
 	if(istype(user,/mob/living/carbon/alien/diona))
 		var/mob/living/carbon/alien/diona/nymph = user
 
-		if(nymph.stat == DEAD || nymph.paralysis || nymph.weakened || nymph.stunned || nymph.restrained())
+		if(nymph.is_ooc_dead() || nymph.paralysis || nymph.weakened || nymph.stunned || nymph.restrained())
 			return
 
 		if(weedlevel > 0)
@@ -156,7 +157,7 @@
 			nymph.visible_message("<span class='info'><b>[nymph]</b> begins rooting through [src], ripping out weeds and eating them noisily.</span>","<span class='info'>You begin rooting through [src], ripping out weeds and eating them noisily.</span>")
 			playsound(loc, 'sound/effects/plantshake.ogg', rand(50, 75), TRUE)
 		else if(nymph.nutrition > 100 && nutrilevel < 10)
-			nymph.nutrition -= ((10-nutrilevel)*5)
+			nymph.remove_nutrition((10 - nutrilevel) * 5)
 			nutrilevel = 10
 			nymph.visible_message("<span class='info'><b>[nymph]</b> secretes a trickle of green liquid, refilling [src].</span>","<span class='info'>You secrete a trickle of green liquid, refilling [src].</span>")
 		else
@@ -219,11 +220,13 @@
 		update_icon()
 
 /obj/machinery/portable_atmospherics/hydroponics/proc/die()
-	dead = 1
+	dead = TRUE
 	mutation_level = 0
 	harvest = 0
 	weedlevel += 1 * HYDRO_SPEED_MULTIPLIER
 	pestlevel = 0
+
+	update_icon() // Explicitly calling update_icons here since our processing is an entangled mess.
 
 //Process reagents being input into the tray.
 /obj/machinery/portable_atmospherics/hydroponics/proc/process_reagents()
@@ -494,10 +497,8 @@
 				return
 			S.handle_item_insertion(G, 1)
 
-	else if ( istype(O, /obj/item/plantspray) )
-
+	else if(istype(O, /obj/item/plantspray))
 		var/obj/item/plantspray/spray = O
-		user.remove_from_mob(O)
 		toxins += spray.toxicity
 		pestlevel -= spray.pest_kill_str
 		weedlevel -= spray.weed_kill_str
@@ -566,31 +567,30 @@
 	else if(dead)
 		remove_dead(user)
 
-/obj/machinery/portable_atmospherics/hydroponics/_examine_text(mob/user)
-
+/obj/machinery/portable_atmospherics/hydroponics/examine(mob/user, infix)
 	. = ..()
 
 	if(!seed)
-		. += "\n[src] is empty."
+		. += "[src] is empty."
 		return
 
-	. += "\n<span class='notice'>[seed.display_name] are growing here.</span>"
+	. += SPAN_NOTICE("[seed.display_name] are growing here.")
 
 	if(!Adjacent(usr))
 		return
 
-	. += "\nWater: [round(waterlevel,0.1)]/100"
-	. += "\nNutrient: [round(nutrilevel,0.1)]/10"
+	. += "Water: [round(waterlevel,0.1)]/100"
+	. += "Nutrient: [round(nutrilevel,0.1)]/10"
 
 	if(weedlevel >= 5)
-		. += "\n\The [src] is <span class='danger'>infested with weeds</span>!"
+		. += "\The [src] is <span class='danger'>infested with weeds</span>!"
 	if(pestlevel >= 5)
-		. += "\n\The [src] is <span class='danger'>infested with tiny worms</span>!"
+		. += "\The [src] is <span class='danger'>infested with tiny worms</span>!"
 
 	if(dead)
-		. += "\n<span class='danger'>The plant is dead.</span>"
+		. += SPAN_DANGER("The plant is dead.")
 	else if(health <= (seed.get_trait(TRAIT_ENDURANCE)/ 2))
-		. += "\nThe plant looks <span class='danger'>unhealthy</span>."
+		. += "The plant looks [SPAN_DANGER("unhealthy")]."
 
 	if(mechanical)
 		var/turf/T = loc
@@ -613,7 +613,7 @@
 			var/light_available = T.get_lumcount() * 5
 			light_string = "a light level of [light_available] lumens"
 
-		. += "\nThe tray's sensor suite is reporting [light_string] and a temperature of [environment.temperature]K."
+		. += "The tray's sensor suite is reporting [light_string] and a temperature of [environment.temperature]K."
 
 /obj/machinery/portable_atmospherics/hydroponics/verb/close_lid_verb()
 	set name = "Toggle Tray Lid"

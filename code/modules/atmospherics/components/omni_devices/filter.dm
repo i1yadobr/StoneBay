@@ -5,21 +5,21 @@
 	name = "omni gas filter"
 	icon_state = "map_filter"
 
-	var/list/gas_filters = new()
+	var/list/gas_filters = list()
 	var/datum/omni_port/input
 	var/datum/omni_port/output
 	var/max_output_pressure = MAX_OMNI_PRESSURE
 
-	idle_power_usage = 150		//internal circuitry, friction losses and stuff
-	power_rating = 7500			//7500 W ~ 10 HP
+	idle_power_usage = 150 WATTS		//internal circuitry, friction losses and stuff
+	power_rating = 7.500 KILO WATTS		//7500 W ~ 10 HP
 
 	var/max_flow_rate = ATMOS_DEFAULT_VOLUME_FILTER
 	var/set_flow_rate = ATMOS_DEFAULT_VOLUME_FILTER
 
 	var/list/filtering_outputs = list()	//maps gasids to gas_mixtures
 
-/obj/machinery/atmospherics/omni/filter/New()
-	..()
+/obj/machinery/atmospherics/omni/filter/Initialize()
+	. = ..()
 	rebuild_filtering_list()
 	for(var/datum/omni_port/P in ports)
 		P.air.volume = ATMOS_DEFAULT_VOLUME_FILTER
@@ -28,7 +28,8 @@
 	input = null
 	output = null
 	gas_filters.Cut()
-	. = ..()
+	filtering_outputs.Cut()
+	return ..()
 
 /obj/machinery/atmospherics/omni/filter/sort_ports()
 	for(var/datum/omni_port/P in ports)
@@ -169,6 +170,7 @@
 	if(..()) return 1
 	switch(href_list["command"])
 		if("power")
+			playsound(src.loc, 'sound/effects/using/switch/lever2.ogg', 50)
 			if(!configuring)
 				update_use_power(!use_power)
 			else

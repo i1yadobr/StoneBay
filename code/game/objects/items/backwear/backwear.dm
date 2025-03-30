@@ -33,7 +33,7 @@
 		else
 			QDEL_NULL(gear)
 
-/obj/item/backwear/reagent/update_icon()
+/obj/item/backwear/reagent/on_update_icon()
 	..()
 	if(!gear_detachable)
 		if(gear && gear.loc == src)
@@ -63,7 +63,7 @@
 
 	if(ismob(gear.loc))
 		var/mob/M = gear.loc
-		M.drop_from_inventory(gear, src)
+		M.drop(gear, src, TRUE)
 	else
 		gear.forceMove(src)
 	if(user)
@@ -117,25 +117,25 @@
 		..()
 
 /obj/item/backwear/MouseDrop()
-	if(ismob(src.loc))
+	if(ismob(loc))
 		if(!CanMouseDrop(src))
 			return
-		var/mob/M = src.loc
-		if(!M.unEquip(src))
+		var/mob/M = loc
+		if(!M.drop(src))
 			return
-		src.add_fingerprint(usr)
-		M.put_in_hands(src)
+		add_fingerprint(usr)
+		M.pick_or_drop(src)
 
 
 ///// These use power cells to function
 /obj/item/backwear/powered
 	var/obj/item/cell/bcell = null
 
-/obj/item/backwear/powered/update_icon()
+/obj/item/backwear/powered/on_update_icon()
 	..()
-	overlays.Cut()
+	ClearOverlays()
 	if(!bcell)
-		overlays += image(icon = 'icons/obj/backwear.dmi', icon_state = "[base_icon]_nocell")
+		AddOverlays(OVERLAY(icon, "[base_icon]_nocell"))
 
 /obj/item/backwear/powered/Initialize()
 	. = ..()
@@ -147,22 +147,21 @@
 	. = ..()
 	QDEL_NULL(bcell)
 
-/obj/item/backwear/powered/_examine_text(mob/user)
+/obj/item/backwear/powered/examine(mob/user, infix)
 	. = ..()
 	if(bcell)
-		. += "\nIt has \the [bcell] installed."
-		. += "\nThe charge meter reads [round(bcell.percent(), 0.1)]%"
+		. += "It has \the [bcell] installed."
+		. += "The charge meter reads [round(CELL_PERCENT(bcell), 0.1)]%"
 	else
-		. += "\nIt has no power cell installed!"
+		. += "It has no power cell installed!"
 
 /obj/item/backwear/powered/attackby(obj/item/W, mob/user, params)
 	if(istype(W, /obj/item/cell))
 		if(bcell)
 			to_chat(user, SPAN("notice", "\The [src] already has a cell."))
 		else
-			if(!user.unEquip(W))
+			if(!user.drop(W, src))
 				return
-			W.forceMove(src)
 			bcell = W
 			to_chat(user, SPAN("notice", "You install \the [W] into \the [src]."))
 			update_icon()
@@ -197,16 +196,16 @@
 	if(!possible_transfer_amounts)
 		src.verbs -= /obj/item/backwear/reagent/verb/set_APTFT
 
-/obj/item/backwear/reagent/_examine_text(mob/user)
+/obj/item/backwear/reagent/examine(mob/user, infix)
 	. = ..()
 	if(get_dist(src, user) > 2)
 		return
-	. += "\n<span class='notice'>It contains:</span>"
+	. += "<span class='notice'>It contains:</span>"
 	if(reagents.reagent_list.len) // OOP be cool
 		for(var/datum/reagent/R in reagents.reagent_list)
-			. += "\n<span class='notice'>[R.volume] units of [R.name]</span>"
+			. += "<span class='notice'>[R.volume] units of [R.name]</span>"
 	else
-		. += "\n<span class='notice'>Nothing.</span>"
+		. += "<span class='notice'>Nothing.</span>"
 
 /obj/item/backwear/reagent/verb/set_APTFT() //set amount_per_transfer_from_this
 	set name = "Set transfer amount"

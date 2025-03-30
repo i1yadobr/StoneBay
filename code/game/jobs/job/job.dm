@@ -42,6 +42,7 @@
 	var/off_station = FALSE
 
 	var/hud_icon						  //icon used for Sec HUD overlay
+	var/show_in_setup = TRUE
 
 /datum/job/New()
 	..()
@@ -114,9 +115,9 @@
 		return FALSE
 	if(!isnull(preview_override))
 		if(!islist(preview_override) || length(preview_override) != 2)
-			crash_with("Job [title] uses preview_override and it's broken. Someone's fucked things up.")
+			util_crash_with("Job [title] uses preview_override and it's broken. Someone's fucked things up.")
 			return FALSE
-		H.overlays.Cut()
+		H.ClearOverlays()
 		H.update_icon = FALSE
 		H.icon = preview_override[2]
 		H.icon_state = preview_override[1]
@@ -134,7 +135,7 @@
 	return (available_in_days(C) == 0) //Available in 0 days = available right now = player is old enough to play.
 
 /datum/job/proc/available_in_days(client/C)
-	if(C && config.game.use_age_restriction_for_jobs && isnull(C.holder) && isnum(C.player_age) && isnum(minimal_player_age))
+	if(C && config.game.use_age_restriction_for_jobs && QDELETED(C.holder) && isnum(C.player_age) && isnum(minimal_player_age))
 		return max(0, minimal_player_age - C.player_age)
 	return FALSE
 
@@ -167,3 +168,7 @@
 
 /datum/job/proc/is_species_allowed(datum/species/S)
 	return !GLOB.using_map.is_species_job_restricted(S, src)
+
+/datum/job/proc/set_positions(value)
+	total_positions = value
+	spawn_positions = value

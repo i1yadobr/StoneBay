@@ -113,11 +113,11 @@
 
 	src.verbs |= secbot_verbs_default
 
-	hud_list[ID_HUD]          = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[WANTED_HUD]      = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[IMPLOYAL_HUD]    = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[IMPCHEM_HUD]     = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[IMPTRACK_HUD]    = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
+	hud_list[ID_HUD]          = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[WANTED_HUD]      = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[IMPLOYAL_HUD]    = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[IMPCHEM_HUD]     = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[IMPTRACK_HUD]    = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
 
 /mob/living/bot/secbot/Destroy()
 	qdel(stun_baton)
@@ -208,7 +208,7 @@
 		broadcast_security_hud_message("[src] is arresting a level [threat] suspect <b>[suspect_name]</b> in <b>[get_area(src)]</b>.", src)
 	say("Down on the floor, [suspect_name]! You have [SECBOT_WAIT_TIME] seconds to comply.")
 	playsound(src.loc, pick(preparing_arrest_sounds), 50)
-	register_signal(target, SIGNAL_MOVED, /mob/living/bot/secbot/proc/target_moved)
+	register_signal(target, SIGNAL_MOVED, nameof(.proc/target_moved))
 
 /mob/living/bot/secbot/proc/target_moved(atom/movable/moving_instance, atom/old_loc, atom/new_loc)
 	if(get_dist(get_turf(src), get_turf(target)) >= 1)
@@ -247,14 +247,14 @@
 
 /mob/living/bot/secbot/lookForTargets()
 	for(var/mob/living/M in view(src))
-		if(M.stat == DEAD)
+		if(M.is_ic_dead())
 			continue
 		if(confirmTarget(M))
 			var/threat = check_threat(M)
 			target = M
 			awaiting_surrender = -1
 			say("Level [threat] infraction alert!")
-			custom_emote(1, "points at [M.name]!")
+			visible_emote("points at [M.name]!")
 			playsound(src.loc, pick(threat_found_sounds), 50)
 			return
 
@@ -301,7 +301,7 @@
 
 	var/obj/item/secbot_assembly/Sa = new /obj/item/secbot_assembly(Tsec)
 	Sa.build_step = 1
-	Sa.overlays += image('icons/obj/aibots.dmi', "hs_hole")
+	Sa.AddOverlays(image('icons/obj/aibots.dmi', "hs_hole"))
 	Sa.created_name = name
 	new /obj/item/device/assembly/prox_sensor(Tsec)
 	new /obj/item/melee/baton(Tsec)
@@ -309,6 +309,7 @@
 		new /obj/item/robot_parts/l_arm(Tsec)
 	if(with_nade)
 		var/obj/item/grenade/frag/new_nade = new /obj/item/grenade/frag(Tsec)
+		QDEL_NULL(new_nade.safety_pin)
 		new_nade.activate()
 
 	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
@@ -325,7 +326,7 @@
 	return "unidentified lifeform"
 
 /mob/living/bot/secbot/proc/check_threat(mob/living/M)
-	if(!M || !istype(M) || M.stat == DEAD || src == M)
+	if(!M || !istype(M) || M.is_ic_dead() || src == M)
 		return 0
 
 	if(emagged && !M.incapacitated()) //check incapacitated so emagged secbots don't keep attacking the same target forever
@@ -348,11 +349,12 @@
 		return
 
 	if(S.secured)
+		if(!user.drop(S))
+			return
 		qdel(S)
 		var/obj/item/secbot_assembly/A = new /obj/item/secbot_assembly
-		user.put_in_hands(A)
+		user.pick_or_drop(A)
 		to_chat(user, "You add the signaler to the helmet.")
-		user.drop_from_inventory(src)
 		qdel(src)
 	else
 		return
@@ -370,29 +372,34 @@
 	..()
 	if(isWelder(O) && !build_step)
 		var/obj/item/weldingtool/WT = O
-		if(WT.remove_fuel(0, user))
-			build_step = 1
-			overlays += image('icons/obj/aibots.dmi', "hs_hole")
-			to_chat(user, "You weld a hole in \the [src].")
+		if(!WT.use_tool(src, user, amount = 1))
+			return
+
+		build_step = 1
+		AddOverlays(image('icons/obj/aibots.dmi', "hs_hole"))
+		to_chat(user, "You weld a hole in \the [src].")
 
 	else if(isprox(O) && (build_step == 1))
-		user.drop_item()
+		if(!user.drop(O))
+			return
 		build_step = 2
 		to_chat(user, "You add \the [O] to [src].")
-		overlays += image('icons/obj/aibots.dmi', "hs_eye")
+		AddOverlays(image('icons/obj/aibots.dmi', "hs_eye"))
 		SetName("helmet/signaler/prox sensor assembly")
 		qdel(O)
 
 	else if((istype(O, /obj/item/robot_parts/l_arm) || istype(O, /obj/item/robot_parts/r_arm)) && build_step == 2)
-		user.drop_item()
+		if(!user.drop(O))
+			return
 		build_step = 3
 		to_chat(user, "You add \the [O] to [src].")
 		SetName("helmet/signaler/prox sensor/robot arm assembly")
-		overlays += image('icons/obj/aibots.dmi', "hs_arm")
+		AddOverlays(image('icons/obj/aibots.dmi', "hs_arm"))
 		qdel(O)
 
 	else if(istype(O, /obj/item/melee/baton) && build_step == 3)
-		user.drop_item()
+		if(!user.drop(O))
+			return
 		to_chat(user, "You complete the Securitron! Beep boop.")
 		var/mob/living/bot/secbot/S = new /mob/living/bot/secbot(get_turf(src))
 		S.SetName(created_name)
@@ -449,7 +456,7 @@
 		var/mob/custom_target = input("Which subject is dangerous?", "Nearby subjects:") as null|anything in mobs_in_secbot_range
 		if(check_threat(custom_target) > 0)
 			say("Level [check_threat(custom_target)] infraction alert!")
-			custom_emote(1, "points at [custom_target.name]!")
+			visible_emote("points at [custom_target.name]!")
 			playsound(src.loc, pick(threat_found_sounds), 50)
 		else
 			to_chat(usr,"<span class='warning'>This target is safe.</span>")

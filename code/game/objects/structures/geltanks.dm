@@ -7,17 +7,19 @@
 	anchored = 0
 	pull_sound = SFX_PULL_MACHINE
 	pull_slowdown = PULL_SLOWDOWN_LIGHT
+	turf_height_offset = 25
 	var/capacity_max = 300
 	var/capacity = 300
 	var/gel_type = "unknown"
 	atom_flags = ATOM_FLAG_CLIMBABLE
 
-/obj/structure/geltank/_examine_text(mob/user)
+/obj/structure/geltank/examine(mob/user, infix)
 	. = ..()
+
 	if(capacity >= 0)
-		. += "\nIt contains [capacity]/[capacity_max] units of gel."
+		. += "It contains [capacity]/[capacity_max] units of gel."
 	else
-		. += "\nIt's empty."
+		. += "It's empty."
 
 /obj/structure/geltank/proc/use(amt = 1)
 	capacity -= amt

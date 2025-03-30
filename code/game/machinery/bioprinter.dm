@@ -10,8 +10,8 @@
 	layer = BELOW_OBJ_LAYER
 	anchored = 1
 	density = 1
-	idle_power_usage = 40
-	active_power_usage = 300
+	idle_power_usage = 40 WATTS
+	active_power_usage = 300 WATTS
 
 	var/stored_matter = 0
 	var/max_stored_matter = 0
@@ -28,12 +28,13 @@
 		BP_LIVER   = list("Liver",      /obj/item/organ/internal/liver,      25),
 		BP_STOMACH = list("Stomach",    /obj/item/organ/internal/stomach,    25),
 		BP_L_ARM   = list("Left Arm",   /obj/item/organ/external/arm,        65),
-		BP_R_ARM   = list("Right Arm",  /obj/item/organ/external/arm/right,  65),
 		BP_L_HAND  = list("Left Hand",  /obj/item/organ/external/hand,       40),
+		BP_R_ARM   = list("Right Arm",  /obj/item/organ/external/arm/right,  65),
 		BP_R_HAND  = list("Right Hand", /obj/item/organ/external/hand/right, 40),
+		BP_GROIN   = list("Lower Body",	/obj/item/organ/external/groin,      65),
 		BP_L_LEG   = list("Left Leg",   /obj/item/organ/external/leg,        65),
-		BP_R_LEG   = list("Right Leg",  /obj/item/organ/external/leg/right,  65),
 		BP_L_FOOT  = list("Left Foot",  /obj/item/organ/external/foot,       40),
+		BP_R_LEG   = list("Right Leg",  /obj/item/organ/external/leg/right,  65),
 		BP_R_FOOT  = list("Right Foot", /obj/item/organ/external/foot/right, 40)
 		)
 
@@ -47,12 +48,12 @@
 		return
 	return ..()
 
-/obj/machinery/organ_printer/update_icon()
-	overlays.Cut()
+/obj/machinery/organ_printer/on_update_icon()
+	ClearOverlays()
 	if(panel_open)
-		overlays += "bioprinter_panel_open"
+		AddOverlays("bioprinter_panel_open")
 	if(printing)
-		overlays += "bioprinter_working"
+		AddOverlays("bioprinter_working")
 
 /obj/machinery/organ_printer/New()
 	..()
@@ -63,9 +64,9 @@
 	component_parts += new /obj/item/stock_parts/manipulator(src)
 	RefreshParts()
 
-/obj/machinery/organ_printer/_examine_text(mob/user)
+/obj/machinery/organ_printer/examine(mob/user, infix)
 	. = ..()
-	. += "\n<span class='notice'>It is loaded with [stored_matter]/[max_stored_matter] matter units.</span>"
+	. += SPAN_NOTICE("It is loaded with [stored_matter]/[max_stored_matter] matter units.")
 
 /obj/machinery/organ_printer/RefreshParts()
 	print_delay = initial(print_delay)
@@ -145,6 +146,9 @@
 /obj/machinery/organ_printer/proc/print_organ(choice)
 	var/new_organ = products[choice][2]
 	var/obj/item/organ/O = new new_organ(get_turf(src))
+	var/obj/item/organ/external/externalOrgan = O
+	if(istype(O, /obj/item/organ/external/groin))
+		externalOrgan.cavity_max_w_class = 1
 	O.status |= ORGAN_CUT_AWAY
 	O.dir = SOUTH // TODO: refactor external organ's /New, /update_icon and more so they'll generate proper icons upon being spawned outside a mob
 	return O
@@ -158,6 +162,21 @@
 
 	var/matter_amount_per_sheet = 10
 	var/matter_type = MATERIAL_STEEL
+
+	var/company = "NanoTrasen"
+
+/obj/machinery/organ_printer/robot/verb/selected_company()
+	set name = "Select Company"
+	set category = "Object"
+	set src in oview(1)
+
+	if(!CanPhysicallyInteract(usr))
+		return
+
+	var/choice = tgui_input_list(usr, "Select a company for the prosthetic.", "Selection", GLOB.all_robolimbs)
+	if(isnull(choice))
+		return
+	company = choice
 
 /obj/machinery/organ_printer/robot/mapped/Initialize()
 	. = ..()
@@ -176,15 +195,15 @@
 
 /obj/machinery/organ_printer/robot/print_organ(choice)
 	var/obj/item/organ/O = ..()
-	var/obj/item/organ/external/externalOrgan = O
-	if(istype(externalOrgan))
-		externalOrgan.robotize("NanoTrasen", just_printed = TRUE)
-		// TODO [V] Add other companies and ability to choose from input
+	var/obj/item/organ/external/E = O
+	if(istype(E))
+		E.robotize(company)
 	else
 		O.robotize()
-		O.status |= ORGAN_CUT_AWAY // Default robotize() resets status to ORGAN_ROBOTIC only
+	O.status |= ORGAN_CUT_AWAY // Default robotize() resets status to ORGAN_ROBOTIC only
 
 	visible_message("<span class='info'>\The [src] churns for a moment, then spits out \a [O].</span>")
+	O.update_icon()
 	return O
 
 /obj/machinery/organ_printer/robot/attackby(obj/item/W, mob/user)
@@ -265,8 +284,9 @@
 			if(max_stored_matter == stored_matter)
 				to_chat(user, "<span class='warning'>\The [src] is too full.</span>")
 				return
+			if(!user.drop(W))
+				return
 			stored_matter += min(amount_list[path], max_stored_matter - stored_matter)
-			user.drop_item()
 			to_chat(user, "<span class='info'>\The [src] processes \the [W]. Levels of stored biomass now: [stored_matter]</span>")
 			qdel(W)
 			return

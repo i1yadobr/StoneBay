@@ -16,11 +16,10 @@
 	var/str_max = 7 //how powerful the effect COULD be
 
 /obj/item/device/flash/proc/clown_check(mob/user)
-	if(user && (MUTATION_CLUMSY in user.mutations) && prob(50))
-		to_chat(user, "<span class='warning'>\The [src] slips out of your hand.</span>")
-		user.drop_item()
-		return 0
-	return 1
+	if(user && (MUTATION_CLUMSY in user.mutations) && prob(50) && user.drop(src))
+		to_chat(user, SPAN("warning", "\The [src] slips out of your hand."))
+		return FALSE
+	return TRUE
 
 /obj/item/device/flash/proc/flash_recharge()
 	//capacitor recharges over time
@@ -101,7 +100,7 @@
 		var/mob/living/silicon/S = user
 		if (S.sensor_mode != FLASH_PROTECTION_VISION)
 			spawn(0)
-				var/atom/movable/overlay/animation = new(user.loc)
+				var/atom/movable/fake_overlay/animation = new(user.loc)
 				animation.plane = user.plane
 				animation.layer = user.layer + 0.01
 				animation.icon_state = "blank"
@@ -153,7 +152,7 @@
 		var/mob/living/silicon/robot/S = user
 		if (S.sensor_mode != FLASH_PROTECTION_VISION)
 			spawn(0)
-				var/atom/movable/overlay/animation = new(user.loc)
+				var/atom/movable/fake_overlay/animation = new(user.loc)
 				animation.plane = user.plane
 				animation.layer = user.layer + 0.01
 				animation.icon_state = "blank"

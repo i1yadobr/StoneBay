@@ -3,7 +3,7 @@
 	desc = "A coilgun hastily thrown together out of a basic frame and advanced power storage components. Is it safe for it to be duct-taped together like that?"
 	icon_state = "coilgun"
 	item_state = "coilgun"
-	icon = 'icons/obj/railgun.dmi'
+	icon = 'icons/obj/guns/railgun.dmi'
 	one_hand_penalty = 1
 	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 4, TECH_ILLEGAL = 2, TECH_MAGNET = 4)
 	w_class = ITEM_SIZE_LARGE
@@ -24,23 +24,23 @@
 	var/able_to_overheat = TRUE							       // Changes whether it should or should not overheat.
 
 	var/power_cost = 950                                       // Cost per fire, should consume almost an entire basic cell.
-	var/power_per_tick                                         // Capacitor charge per process(). Updated based on capacitor rating.
+	var/power_per_tick                                         // Capacitor charge per think(). Updated based on capacitor rating.
+	has_safety = FALSE
 
 /obj/item/gun/magnetic/Initialize()
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
 	if(capacitor)
 		power_per_tick = (power_cost*0.15) * capacitor.rating
 	update_icon()
 	. = ..()
 
 /obj/item/gun/magnetic/Destroy()
-	STOP_PROCESSING(SSobj, src)
 	QDEL_NULL(cell)
 	QDEL_NULL(loaded)
 	QDEL_NULL(capacitor)
 	. = ..()
 
-/obj/item/gun/magnetic/Process()
+/obj/item/gun/magnetic/think()
 	if(capacitor)
 		if(cell)
 			if(capacitor.charge < capacitor.max_charge && cell.checked_use(power_per_tick))
@@ -51,7 +51,9 @@
 	if(able_to_overheat && heat_level > 0)
 		heat_level--
 
-/obj/item/gun/magnetic/update_icon()
+	set_next_think(world.time + 1 SECOND)
+
+/obj/item/gun/magnetic/on_update_icon()
 	var/list/overlays_to_add = list()
 	if(removable_components)
 		if(cell)
@@ -67,38 +69,39 @@
 	if(loaded)
 		overlays_to_add += image(icon, "[icon_state]_loaded")
 
-	overlays = overlays_to_add
+	SetOverlays(overlays_to_add)
 	..()
 
 /obj/item/gun/magnetic/proc/show_ammo()
 	if(loaded)
 		return "<span class='notice'>It has \a [loaded] loaded.</span>"
 
-/obj/item/gun/magnetic/_examine_text(mob/user)
+/obj/item/gun/magnetic/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 2)
 		var/ret = show_ammo()
 		if (ret)
-			. += "\n[ret]"
+			. += "[ret]"
 
 		if(cell)
-			. += "\n<span class='notice'>The installed [cell.name] has a charge level of [round((cell.charge/cell.maxcharge)*100)]%.</span>"
+			. += SPAN_NOTICE("The installed [cell.name] has a charge level of [round((cell.charge/cell.maxcharge)*100)]%.")
 		if(capacitor)
-			. += "\n<span class='notice'>The installed [capacitor.name] has a charge level of [round((capacitor.charge/capacitor.max_charge)*100)]%.</span>"
+			. += SPAN_NOTICE("The installed [capacitor.name] has a charge level of [round((capacitor.charge/capacitor.max_charge)*100)]%.")
 
 		if(!cell || !capacitor)
-			. += "\n<span class='notice'>The capacitor charge indicator is blinking <font color ='[COLOR_RED]'>red</font>. Maybe you should check the cell or capacitor.</span>"
+			. += SPAN_NOTICE("The capacitor charge indicator is blinking <font color ='[COLOR_RED]'>red</font>. Maybe you should check the cell or capacitor.")
 		else
 			if(capacitor.charge < power_cost)
-				. += "\n<span class='notice'>The capacitor charge indicator is <font color ='[COLOR_ORANGE]'>amber</font>.</span>"
+				. += SPAN_NOTICE("The capacitor charge indicator is <font color ='[COLOR_ORANGE]'>amber</font>.")
 			else
-				. += "\n<span class='notice'>The capacitor charge indicator is <font color ='[COLOR_GREEN]'>green</font>.</span>"
+				. += SPAN_NOTICE("The capacitor charge indicator is <font color ='[COLOR_GREEN]'>green</font>.")
 
 		if(able_to_overheat && heat_level > 15)
 			if(heat_level < 25)
-				. += "\n<span class='warning'>\The [src]'s wiring glows faintly.</span>"
+				. += SPAN_WARNING("\The [src]'s wiring glows faintly.")
 			else
-				. += "\n<span class='danger'>\The [src]'s wiring is glowing brightly!</span>"
+				. += SPAN_WARNING("\The [src]'s wiring is glowing brightly!")
 
 		return
 
@@ -109,9 +112,9 @@
 			if(cell)
 				to_chat(user, "<span class='warning'>\The [src] already has \a [cell] installed.</span>")
 				return
+			if(!user.drop(thing, src))
+				return
 			cell = thing
-			user.drop_from_inventory(cell)
-			cell.forceMove(src)
 			playsound(loc, 'sound/machines/click.ogg', 10, 1)
 			user.visible_message("<span class='notice'>\The [user] slots \the [cell] into \the [src].</span>")
 			update_icon()
@@ -121,8 +124,7 @@
 			if(!capacitor)
 				to_chat(user, "<span class='warning'>\The [src] has no capacitor installed.</span>")
 				return
-			capacitor.forceMove(get_turf(src))
-			user.put_in_hands(capacitor)
+			user.pick_or_drop(capacitor, loc)
 			user.visible_message("<span class='notice'>\The [user] unscrews \the [capacitor] from \the [src].</span>")
 			playsound(loc, 'sound/items/Screwdriver.ogg', 50, 1)
 			capacitor = null
@@ -134,8 +136,7 @@
 				to_chat(user, "<span class='warning'>\The [src] already has \a [capacitor] installed.</span>")
 				return
 			capacitor = thing
-			user.drop_from_inventory(capacitor)
-			capacitor.forceMove(src)
+			user.drop(capacitor, src)
 			playsound(loc, 'sound/machines/click.ogg', 10, 1)
 			power_per_tick = (power_cost*0.15) * capacitor.rating
 			user.visible_message("<span class='notice'>\The [user] slots \the [capacitor] into \the [src].</span>")
@@ -153,8 +154,7 @@
 		var/obj/item/stack/ammo = thing
 		if(!istype(ammo))
 			loaded = thing
-			user.drop_from_inventory(thing)
-			thing.forceMove(src)
+			user.drop(thing, src)
 		else
 			loaded = new load_type(src, 1)
 			ammo.use(1)
@@ -177,8 +177,7 @@
 			cell = null
 
 		if(removing)
-			removing.forceMove(get_turf(src))
-			user.put_in_hands(removing)
+			user.pick_or_drop(removing)
 			user.visible_message("<span class='notice'>\The [user] removes \the [removing] from \the [src].</span>")
 			playsound(loc, 'sound/machines/click.ogg', 10, 1)
 			update_icon()

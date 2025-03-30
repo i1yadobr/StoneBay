@@ -6,9 +6,10 @@ var/list/fuel_injectors = list()
 	icon_state = "injector0"
 	density = 1
 	anchored = 0
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 	req_access = list(access_engine)
-	idle_power_usage = 10
-	active_power_usage = 500
+	idle_power_usage = 10 WATTS
+	active_power_usage = 500 WATTS
 
 	var/fuel_usage = 0.0001
 	var/id_tag
@@ -19,6 +20,8 @@ var/list/fuel_injectors = list()
 	..()
 	fuel_injectors += src
 	tag = null
+
+	AddElement(/datum/element/simple_rotation)
 
 /obj/machinery/fusion_fuel_injector/Destroy()
 	if(cur_assembly)
@@ -57,11 +60,9 @@ var/list/fuel_injectors = list()
 		else
 			visible_message("<span class='notice'>\The [user] inserts \a [W] into \the [src].</span>")
 
-		user.drop_from_inventory(W)
-		W.forceMove(src)
+		user.drop(W, src)
 		if(cur_assembly)
-			cur_assembly.forceMove(get_turf(src))
-			user.put_in_hands(cur_assembly)
+			user.pick_or_drop(cur_assembly, loc)
 		cur_assembly = W
 		return
 
@@ -89,7 +90,7 @@ var/list/fuel_injectors = list()
 
 	if(cur_assembly)
 		cur_assembly.forceMove(get_turf(src))
-		user.put_in_hands(cur_assembly)
+		user.pick_or_drop(cur_assembly, loc)
 		visible_message("<span class='notice'>\The [user] removes \the [cur_assembly] from \the [src].</span>")
 		cur_assembly = null
 		return
@@ -123,7 +124,6 @@ var/list/fuel_injectors = list()
 				var/obj/effect/accelerated_particle/A = new /obj/effect/accelerated_particle(get_turf(src), dir)
 				A.particle_type = reagent
 				A.additional_particles = numparticles - 1
-				A.move(1)
 				if(cur_assembly)
 					cur_assembly.rod_quantities[reagent] -= amount
 					amount_left += cur_assembly.rod_quantities[reagent]
@@ -132,23 +132,3 @@ var/list/fuel_injectors = list()
 		flick("injector-emitting",src)
 	else
 		StopInjecting()
-
-/obj/machinery/fusion_fuel_injector/verb/rotate_clock()
-	set category = "Object"
-	set name = "Rotate Generator (Clockwise)"
-	set src in view(1)
-
-	if (usr.incapacitated() || usr.restrained()  || anchored)
-		return
-
-	src.dir = turn(src.dir, -90)
-
-/obj/machinery/fusion_fuel_injector/verb/rotate_anticlock()
-	set category = "Object"
-	set name = "Rotate Generator (Counter-clockwise)"
-	set src in view(1)
-
-	if (usr.incapacitated() || usr.restrained()  || anchored)
-		return
-
-	src.dir = turn(src.dir, 90)

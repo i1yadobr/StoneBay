@@ -19,12 +19,14 @@
 	body_parts_covered = HEAD
 	attack_verb = list("bapped")
 
-	var/info = ""   //What's actually written on the paper.
-	var/info_links  //A different version of the paper which includes html links at fields and EOF
-	var/stamps      //The (text for the) stamps on the paper.
+	var/info = ""   	//What's actually written on the paper.
+	var/info_links  	//A different version of the paper which includes html links at fields and EOF
+	var/stamps      	//The (text for the) stamps on the paper.
+	var/stamps_images 	//The stamps on the paper
+	var/photocopied = FALSE
 	var/free_space = MAX_PAPER_MESSAGE_LEN
 	var/stamps_generated = TRUE
-	var/list/stamped
+	var/list/stamped = list()
 	var/list/ico[0]      //Icons and
 	var/list/offset_x[0] //offsets stored for later
 	var/list/offset_y[0] //usage by the photocopier
@@ -94,6 +96,9 @@
 	var/static/regex/field_regex = regex(@#<!--paper_field_(\w+)-->#, "g")
 	var/static/regex/field_link_regex = regex("<font face=\"[deffont]\"><A href='\\?src=\[^'\]+?;write=\[^'\]+'>write</A></font>", "g")
 
+	drop_sound = SFX_DROP_PAPER
+	pickup_sound = SFX_PICKUP_PAPER
+
 /obj/item/paper/Initialize(mapload, text, title, rawhtml = TRUE, noinit = FALSE)
 	. = ..()
 
@@ -108,6 +113,7 @@
 	P.info_links = info_links
 	P.migrateinfolinks(src)
 	P.stamps = stamps
+	P.stamps_images = stamps_images
 	P.free_space = free_space
 	P.stamped = stamped
 	P.ico = ico
@@ -159,7 +165,7 @@
 		if (grayscale)
 			img.color = list(0.3,0.3,0.3, 59,59,59, 11,11,11)
 		img.alpha = saturation * 255
-		overlays += img
+		AddOverlays(img)
 	update_icon()
 
 /obj/item/paper/proc/set_content(text, title, rawhtml = FALSE)
@@ -173,7 +179,7 @@
 	update_space()
 	update_icon()
 
-/obj/item/paper/update_icon()
+/obj/item/paper/on_update_icon()
 	if(dynamic_icon)
 		return
 	if(!crumpled)
@@ -198,14 +204,25 @@
 			break
 	return !length(strip_html_properly(info)) && !is_visible_html_tag
 
-/obj/item/paper/_examine_text(mob/user)
+/obj/item/paper/examine(mob/user, infix)
 	. = ..()
+
 	if(name != "sheet of paper")
-		. += "\nIt's titled '[name]'."
+		. += "It's titled '[name]'."
+
+	if(length(stamped))
+		if(is_type_in_list(/obj/item/stamp/void, stamped))
+			. += SPAN_NOTICE("It looks like it's been marked as 'VOID' on the front. It's unlikely that anyone will accept these now.")
+		else
+			if(photocopied)
+				. += SPAN_NOTICE("The stamp on the front appears to be smudged and faded. Central Command will probably still accept these, right?")
+
+		. += stamps
+
 	if(user && (in_range(user, src) || isghost(user)))
 		show_content(user)
 	else
-		. += "\n[SPAN_NOTICE("You have to go closer if you want to read it.")]"
+		. += SPAN_NOTICE("You have to go closer if you want to read it.")
 
 /obj/item/paper/proc/show_content(mob/user, forceshow)
 	var/can_read = (istype(user, /mob/living/carbon/human) || isghost(user) || istype(user, /mob/living/silicon)) || forceshow
@@ -225,7 +242,7 @@
 		<style>[styles]</style>
 	</head>
 	<body bgcolor='[color ? color : COLOR_WHITE]' text='[text_color]'>
-		[can_read ? info : stars(info)][stamps]
+		[can_read ? info : stars(info)][stamps_images]
 	</body>
 </html>
 "}
@@ -324,8 +341,7 @@
 			to_chat(user, SPAN_NOTICE("You cannot reach that from here.")) // Can only place stuck papers in cardinal directions, to
 			return                                                         // Reduce papers around corners issue.
 
-	user.drop_from_inventory(src)
-	forceMove(source_turf)
+	user.drop(src, source_turf)
 	anchored = TRUE
 
 	if(!params)
@@ -364,18 +380,20 @@
 				add_fingerprint(user)
 				return
 		var/obj/item/paper_bundle/B = new(loc)
-		if (name != "paper")
+		if(name != "paper")
 			B.SetName(name)
-		else if (P.name != "paper" && P.name != "photo")
+		else if(P.name != "paper" && P.name != "photo")
 			B.SetName(P.name)
 
-		user.drop_from_inventory(P)
-		user.drop_from_inventory(src)
-		user.put_in_hands(B)
+		if(loc == user)
+			user.drop(src)
 		forceMove(B)
+
+		if(P.loc == user)
+			user.replace_item(P, B)
 		P.forceMove(B)
 
-		to_chat(user, SPAN_NOTICE("You clip the [P.name] to \the [src.name]."))
+		to_chat(user, SPAN("notice", "You clip the [P.name] to \the [name]."))
 
 		B.pages += src
 		B.pages += P
@@ -399,7 +417,7 @@
 		<style>[styles]</style>
 	</head>
 	<body bgcolor='[color]'>
-		[info_links][stamps]
+		[info_links][stamps_images]
 	</body>
 </html>
 "}
@@ -411,6 +429,7 @@
 			return
 
 		stamps += (stamps=="" ? "<hr>" : "<br>") + "<i>This paper has been stamped with the [P.name].</i>"
+		stamps_images += (stamps=="" ? "<hr>" : "<br>") + "<img src = [P.icon_state].png>"
 
 		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
 		var/x
@@ -440,7 +459,7 @@
 		if(!stamped)
 			stamped = new
 		stamped += P.type
-		overlays += stampoverlay
+		AddOverlays(stampoverlay)
 
 		to_chat(user, SPAN_NOTICE("You stamp the paper with your [P.name]."))
 
@@ -449,7 +468,7 @@
 
 	else if(istype(P, /obj/item/paper_bundle))
 		var/obj/item/paper_bundle/attacking_bundle = P
-		attacking_bundle.insert_sheet_at(user, (attacking_bundle.pages.len)+1, src)
+		attacking_bundle.insert_sheet_at(user, length(attacking_bundle.pages) + 1, src)
 		attacking_bundle.update_icon()
 
 	else if(istype(P, /obj/item/reagent_containers/food/grown))
@@ -473,7 +492,7 @@
 		qdel(src)
 		qdel(G)
 		if(roll_in_hands)
-			user.put_in_hands(R)
+			user.pick_or_drop(R)
 		return
 
 	add_fingerprint(user)
@@ -513,7 +532,7 @@
 	stamps = null
 	free_space = MAX_PAPER_MESSAGE_LEN
 	stamped = list()
-	overlays.Cut()
+	ClearOverlays()
 	generateinfolinks()
 	update_icon()
 
@@ -602,7 +621,7 @@
 				"<span class='[class]'>You burn right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap.</span>")
 
 				if(user.get_inactive_hand() == src)
-					user.drop_from_inventory(src)
+					user.drop(src)
 
 				new /obj/effect/decal/cleanable/ash(src.loc)
 				qdel(src)
@@ -660,7 +679,7 @@
 		<style>[styles]</style>
 	</head>
 	<body bgcolor='[color]'>
-		[info_links][stamps]
+		[info_links][stamps_images]
 	</body>
 </html>
 "}
@@ -728,7 +747,7 @@
 		<style>[styles]</style>
 	</head>
 	<body bgcolor='[color]'>
-		[info_links][stamps]
+		[info_links][stamps_images]
 	</body>
 </html>
 "}

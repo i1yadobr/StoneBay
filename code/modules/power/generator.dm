@@ -4,9 +4,10 @@
 	icon_state = "teg"
 	density = 1
 	anchored = 0
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 
 	use_power = POWER_USE_IDLE
-	idle_power_usage = 100 //Watts, I hope.  Just enough to do the computer and display things.
+	idle_power_usage = 100 WATTS // Just enough to do the computer and display things.
 
 	var/max_power = 500000
 	var/thermal_efficiency = 0.65
@@ -34,6 +35,8 @@
 	spawn(1)
 		reconnect()
 
+	AddElement(/datum/element/simple_rotation)
+
 //generators connect in dir and reverse_dir(dir) directions
 //mnemonic to determine circulator/generator directions: the cirulators orbit clockwise around the generator
 //so a circulator to the NORTH of the generator connects first to the EAST, then to the WEST
@@ -60,14 +63,14 @@
 				circ1 = null
 				circ2 = null
 
-/obj/machinery/power/generator/update_icon()
+/obj/machinery/power/generator/on_update_icon()
 	if(stat & (NOPOWER|BROKEN))
-		overlays.Cut()
+		ClearOverlays()
 	else
-		overlays.Cut()
+		ClearOverlays()
 
 		if(lastgenlev != 0)
-			overlays += image('icons/obj/power.dmi', "teg-op[lastgenlev]")
+			AddOverlays(image('icons/obj/power.dmi', "teg-op[lastgenlev]"))
 
 /obj/machinery/power/generator/Process()
 	if(!circ1 || !circ2 || !anchored || stat & (BROKEN|NOPOWER))
@@ -216,23 +219,3 @@
 		ui.open()
 		// auto update every Master Controller tick
 		ui.set_auto_update(1)
-
-/obj/machinery/power/generator/verb/rotate_clock()
-	set category = "Object"
-	set name = "Rotate Generator (Clockwise)"
-	set src in view(1)
-
-	if (usr.stat || usr.restrained()  || anchored)
-		return
-
-	src.set_dir(turn(src.dir, 90))
-
-/obj/machinery/power/generator/verb/rotate_anticlock()
-	set category = "Object"
-	set name = "Rotate Generator (Counterclockwise)"
-	set src in view(1)
-
-	if (usr.stat || usr.restrained()  || anchored)
-		return
-
-	src.set_dir(turn(src.dir, -90))

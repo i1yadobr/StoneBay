@@ -12,7 +12,7 @@ LEGACY_RECORD_STRUCTURE(virus_records, virus_record)
 	var/mob/living/carbon/human/infected = null // Someone who will suffer from disease
 	var/antigen = list() // 16 bits describing the antigens, when one bit is set, a cure with that bit can dock here
 	var/max_stage = 4
-	var/list/affected_species = list(SPECIES_HUMAN, SPECIES_UNATHI, SPECIES_SKRELL, SPECIES_TAJARA)
+	var/list/affected_species = list(SPECIES_HUMAN, SPECIES_UNATHI, SPECIES_SKRELL, SPECIES_TAJARA, SPECIES_SWINE)
 
 /datum/disease2/disease/New(random_severity = 0)
 	uniqueID = rand(0, 10000)
@@ -90,7 +90,7 @@ LEGACY_RECORD_STRUCTURE(virus_records, virus_record)
 		cure()
 		return
 
-	if(infected.stat == DEAD)
+	if(infected.is_ic_dead())
 		return
 
 	if(stage <= 1 && clicks == 0) 	// with a certain chance, the mob may become immune to the disease before it starts properly
@@ -103,7 +103,7 @@ LEGACY_RECORD_STRUCTURE(virus_records, virus_record)
 		cure()
 		return
 
-	if(infected.radiation > 50)
+	if(infected.radiation > (0.1 SIEVERT))
 		if(prob(4))
 			majormutate()
 
@@ -178,7 +178,8 @@ LEGACY_RECORD_STRUCTURE(virus_records, virus_record)
 	var/datum/disease2/effect/new_effect = get_mutated_effect(mutating_effect)
 	if(!new_effect)
 		return 0
-	mutating_effect.deactivate()
+	if(infected)
+		mutating_effect.deactivate(infected)
 	effects -= mutating_effect
 	effects += new_effect
 	update_disease()
@@ -192,9 +193,9 @@ LEGACY_RECORD_STRUCTURE(virus_records, virus_record)
 	for(var/datum/disease2/effect/D in effects)
 		if(D != E)
 			exclude += D.type
-
 	var/effect_stage = E.stage
-	E.deactivate()
+	if(infected)
+		E.deactivate(infected)
 	effects -= E
 	qdel(E)
 

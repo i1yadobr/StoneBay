@@ -14,6 +14,9 @@
 	volume = 30
 	var/mimic_color = FALSE
 
+	drop_sound = SFX_DROP_FOOD
+	pickup_sound = SFX_PICKUP_FOOD
+
 /obj/item/reagent_containers/pill/Initialize()
 	. = ..()
 	if(!icon_state)
@@ -24,13 +27,11 @@
 
 /obj/item/reagent_containers/pill/attack(mob/M as mob, mob/user as mob, def_zone)
 		//TODO: replace with standard_feed_mob() call.
-
 	if(M == user)
 		if(!M.can_eat(src))
 			return
 
 		to_chat(M, "<span class='notice'>You swallow \the [src].</span>")
-		M.drop_from_inventory(src) //icon update
 		if(reagents.total_volume)
 			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
 		qdel(src)
@@ -45,10 +46,9 @@
 		if(!do_mob(user, M))
 			return
 
-		if(user.get_active_hand() != src)
+		if(!isrobot(user) && user.get_active_hand() != src)
 			return
 
-		user.drop_from_inventory(src) //icon update
 		user.visible_message("<span class='warning'>[user] forces [M] to swallow \the [src].</span>")
 		var/contained = reagentlist()
 		admin_attack_log(user, M, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
@@ -270,4 +270,72 @@
 	desc = "Sugar pressed together in block shape that is used to sweeten drinks."
 	icon_state = "sugar_cubes"
 	startswith = list(/datum/reagent/sugar = 5)
+	mimic_color = TRUE
+
+//Not actually a pill, but pills type provide everything needed for this
+/obj/item/reagent_containers/pill/cleanerpod
+	name = "space cleaner pod"
+	desc = "BLAM!-brand non-foaming space cleaner in concentrated form! Use one pod per 100u of water. Should not be consumed, but hey I'm not your mom nor a doctor."
+	icon_state = "cleanerpod"
+	startswith = list(/datum/reagent/space_cleaner/dry = 10)
+	mimic_color = FALSE
+
+//Pills that probably won't be used anywhere, except in merchants or mapping, but who cares?
+
+/obj/item/reagent_containers/pill/oxycodone
+	name = "Oxycodone (15u)"
+	desc = "A complex painkiller."
+	icon_state = "pill3"
+	startswith = list(/datum/reagent/painkiller/tramadol/oxycodone = 15)
+	mimic_color = TRUE
+
+/obj/item/reagent_containers/pill/metazine
+	name = "Metazine (10u)"
+	desc = "A combat painkiller."
+	icon_state = "pill24"
+	startswith = list(/datum/reagent/painkiller = 10)
+	mimic_color = FALSE
+
+/obj/item/reagent_containers/pill/tricordrazine
+	name = "Tricordrazine (20u)"
+	desc = "Used to slowly treat external injuries."
+	icon_state = "pill2"
+	startswith = list(/datum/reagent/tricordrazine = 20)
+	mimic_color = TRUE
+
+/obj/item/reagent_containers/pill/alkysine
+	name = "Alkysine (5u)"
+	desc = "Do you have a headache? Just eat me!"
+	icon_state = "pill2"
+	startswith = list(/datum/reagent/alkysine = 5)
+	mimic_color = TRUE
+
+/obj/item/reagent_containers/pill/imidazoline
+	name = "Imidazoline (10u)"
+	desc = "Used to treat eye injuries."
+	icon_state = "pill2"
+	startswith = list(/datum/reagent/imidazoline = 10)
+	mimic_color = TRUE
+
+/obj/item/reagent_containers/pill/ryetalyn
+	name = "Ryetalyn (5u)"
+	desc = "Used for genetic defects, including cataracts."
+	icon_state = "pill3"
+	startswith = list(/datum/reagent/ryetalyn = 5)
+	mimic_color = TRUE
+
+/obj/item/reagent_containers/pill/peridaxon
+	name = "Peridaxon (10u)"
+	desc = "Used to restore the internal organs and nervous system."
+	icon_state = "pill2"
+	startswith = list(/datum/reagent/peridaxon = 10)
+	mimic_color = TRUE
+
+/obj/item/reagent_containers/pill/albumin
+	name = "Albumin (20u)"
+	desc = "Used to restore blood loss."
+	icon_state = "pill3"
+	startswith = list(
+		/datum/reagent/albumin = 15,
+		/datum/reagent/iron = 5)
 	mimic_color = TRUE

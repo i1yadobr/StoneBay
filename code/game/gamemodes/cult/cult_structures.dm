@@ -111,12 +111,11 @@
 		/mob/living/simple_animal/hostile/faithless/cult
 	)
 
-/obj/effect/gateway/active/New()
-	..()
-	addtimer(CALLBACK(src, .proc/create_and_delete), rand(30,60) SECONDS)
+/obj/effect/gateway/active/Initialize()
+	. = ..()
+	set_next_think(world.time + (rand(30, 60) SECONDS))
 
-
-/obj/effect/gateway/active/proc/create_and_delete()
+/obj/effect/gateway/active/think()
 	var/t = pick(spawnable)
 	new t(src.loc)
 	qdel(src)
@@ -127,7 +126,7 @@
 
 	var/mob/living/M = A
 
-	if(M.stat != DEAD)
+	if(!M.is_ic_dead())
 		if(M.HasMovementHandler(/datum/movement_handler/mob/transformation))
 			return
 		if(M.has_brain_worms())
@@ -139,7 +138,7 @@
 		M.AddMovementHandler(/datum/movement_handler/mob/transformation)
 
 		M.icon = null
-		M.overlays.len = 0
+		M.ClearOverlays()
 		M.set_invisibility(101)
 
 		if(istype(M, /mob/living/silicon/robot))
@@ -151,7 +150,7 @@
 				if(istype(I, /obj/item/implant))
 					qdel(I)
 					continue
-				M.drop_from_inventory(I)
+				M.drop(I, force = TRUE)
 
 		var/mob/living/new_mob = new /mob/living/simple_animal/corgi(A.loc)
 		new_mob.a_intent = I_HURT

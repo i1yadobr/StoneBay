@@ -1,5 +1,5 @@
 /////SINGULARITY SPAWNER
-/obj/machinery/the_singularitygen/
+/obj/machinery/the_singularitygen
 	name = "Gravitational Singularity Generator"
 	desc = "An Odd Device which produces a Gravitational Singularity when set up."
 	icon = 'icons/obj/singularity.dmi'
@@ -8,15 +8,16 @@
 	density = 1
 	use_power = POWER_USE_OFF
 	var/energy = 0
+	var/singulo_children = TRUE
 
 /obj/machinery/the_singularitygen/Process()
 	var/turf/T = get_turf(src)
 	if(src.energy >= 200)
-		new /obj/singularity/(T, 50)
+		new /obj/singularity/(T, 50, 0, singulo_children)
 		if(src) qdel(src)
 
 /obj/machinery/the_singularitygen/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/wrench))
+	if(isWrench(W))
 		anchored = !anchored
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 75, 1)
 		if(anchored)
@@ -29,3 +30,6 @@
 				"You hear a ratchet")
 		return
 	return ..()
+
+/obj/machinery/the_singularitygen/no_children
+	singulo_children = FALSE

@@ -5,7 +5,7 @@
 	name = "Door"
 	desc = "It opens and closes."
 	icon = 'icons/obj/doors/doorint.dmi'
-	icon_state = "door1"
+	icon_state = "door_closed"
 	anchored = 1
 	opacity = 1
 	density = 1
@@ -36,7 +36,19 @@
 	var/turf/filler
 	var/tryingToLock = FALSE // for autoclosing
 	// turf animation
-	var/atom/movable/overlay/c_animation = null
+	var/atom/movable/fake_overlay/c_animation = null
+	/// Determines whether this door already has thinkg_close context running or not
+	var/thinking_about_closing = FALSE
+	rad_resist_type = /datum/rad_resist/door
+
+/datum/rad_resist/door
+	alpha_particle_resist = 350 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.5 MEGA ELECTRONVOLT
+	hawking_resist = 81 MILLI ELECTRONVOLT
+
+/obj/machinery/door/Initialize()
+	. = ..()
+	add_think_ctx("close_context", CALLBACK(src, nameof(.proc/close)), 0)
 
 /obj/machinery/door/attack_generic(mob/user, damage)
 	if(damage >= 10)
@@ -86,15 +98,15 @@
 	update_nearby_tiles()
 	. = ..()
 
-/obj/machinery/door/proc/can_open()
+/obj/machinery/door/proc/can_open(forced = 0)
 	if(!density || operating)
-		return 0
-	return 1
+		return FALSE
+	return TRUE
 
-/obj/machinery/door/proc/can_close()
+/obj/machinery/door/proc/can_close(forced = 0)
 	if(density || operating)
-		return 0
-	return 1
+		return FALSE
+	return TRUE
 
 /obj/machinery/door/Bumped(atom/AM)
 	if(p_open || operating) return
@@ -143,7 +155,7 @@
 	return !density
 
 
-/obj/machinery/door/proc/bumpopen(mob/user as mob)
+/obj/machinery/door/proc/bumpopen(mob/user)
 	if(operating)	return
 	if(user.last_airflow > world.time - vsc.airflow_delay) //Fakkit
 		return
@@ -186,18 +198,18 @@
 	take_damage(tforce)
 	return
 
-/obj/machinery/door/attack_ai(mob/user as mob)
+/obj/machinery/door/attack_ai(mob/user)
 	return src.attack_hand(user)
 
-/obj/machinery/door/attack_hand(mob/user as mob)
+/obj/machinery/door/attack_hand(mob/user)
 	return src.attackby(user, user)
 
-/obj/machinery/door/attack_tk(mob/user as mob)
+/obj/machinery/door/attack_tk(mob/user)
 	if(requiresID() && !allowed(null))
 		return
 	..()
 
-/obj/machinery/door/attackby(obj/item/I as obj, mob/user as mob)
+/obj/machinery/door/attackby(obj/item/I, mob/user)
 	src.add_fingerprint(user, 0, I)
 
 	if(istype(I, /obj/item/stack/material) && I.get_material_name() == src.get_material_name())
@@ -224,7 +236,7 @@
 		else
 			repairing = stack.split(amount_needed, force=TRUE)
 			if(repairing)
-				repairing.loc = src
+				repairing.forceMove(src)
 				transfer = repairing.amount
 				repairing.uses_charge = FALSE //for clean robot door repair - stacks hint immortal if true
 
@@ -238,22 +250,26 @@
 			to_chat(user, "<span class='warning'>\The [src] must be closed before you can repair it.</span>")
 			return
 
-		var/obj/item/weldingtool/welder = I
-		if(welder.remove_fuel(0,user))
-			to_chat(user, "<span class='notice'>You start to fix dents and weld \the [repairing] into place.</span>")
-			playsound(src, 'sound/items/Welder.ogg', 100, 1)
-			if(do_after(user, 5 * repairing.amount, src) && welder && welder.isOn())
-				to_chat(user, "<span class='notice'>You finish repairing the damage to \the [src].</span>")
-				health = between(health, health + repairing.amount*DOOR_REPAIR_AMOUNT, maxhealth)
-				update_icon()
-				qdel(repairing)
-				repairing = null
+		var/obj/item/weldingtool/WT = I
+
+		to_chat(user, SPAN_NOTICE("You start to fix dents and weld \the [repairing] into place."))
+		if(!WT.use_tool(src, user, delay = 5 * repairing.amount, amount = 5))
+			return
+
+		if(QDELETED(src) || !user)
+			return
+
+		to_chat(user, SPAN_NOTICE("You finish repairing the damage to \the [src]."))
+		health = between(health, health + repairing.amount*DOOR_REPAIR_AMOUNT, maxhealth)
+		update_icon()
+		qdel(repairing)
+		repairing = null
 		return
 
 	if(repairing && isCrowbar(I))
 		to_chat(user, "<span class='notice'>You remove \the [repairing].</span>")
 		playsound(src.loc, 'sound/items/Crowbar.ogg', 100, 1)
-		repairing.loc = user.loc
+		repairing.dropInto(user.loc)
 		repairing = null
 		return
 
@@ -279,11 +295,8 @@
 
 	if(src.operating) return
 
-	if(src.allowed(user) && operable())
-		if(src.density)
-			open()
-		else
-			close()
+	if(allowed(user) && operable())
+		density ? open() : close()
 		return
 
 	if(src.density)
@@ -313,14 +326,15 @@
 	return
 
 
-/obj/machinery/door/_examine_text(mob/user)
+/obj/machinery/door/examine(mob/user, infix)
 	. = ..()
-	if(src.health < src.maxhealth / 4)
-		. += "\n\The [src] looks like it's about to break!"
+
+	if(health < maxhealth / 4)
+		. += "\The [src] looks like it's about to break!"
 	else if(src.health < src.maxhealth / 2)
-		. += "\n\The [src] looks seriously damaged!"
+		. += "\The [src] looks seriously damaged!"
 	else if(src.health < src.maxhealth * 3/4)
-		. += "\n\The [src] shows signs of damage!"
+		. += "\The [src] shows signs of damage!"
 
 
 /obj/machinery/door/set_broken(new_state)
@@ -347,12 +361,11 @@
 	return
 
 
-/obj/machinery/door/update_icon()
+/obj/machinery/door/on_update_icon()
 	if(density)
 		icon_state = "door1"
 	else
 		icon_state = "door0"
-	SSradiation.resistance_cache.Remove(get_turf(src))
 	return
 
 
@@ -381,7 +394,7 @@
 /obj/machinery/door/proc/open(forced = FALSE)
 	var/wait = normalspeed ? 150 : 5
 	if(!can_open(forced))
-		return
+		return FALSE
 	operating = TRUE
 
 	do_animate("opening")
@@ -402,8 +415,9 @@
 		filler.set_opacity(opacity)
 	operating = FALSE
 
-	if(autoclose)
-		addtimer(CALLBACK(src, .proc/close), wait, TIMER_UNIQUE|TIMER_OVERRIDE)
+	if(autoclose && !thinking_about_closing)
+		thinking_about_closing = TRUE
+		set_next_think_ctx("close_context", world.time + wait)
 
 	return TRUE
 
@@ -412,8 +426,10 @@
 	if(!can_close(forced))
 		if(autoclose)
 			tryingToLock = TRUE
-			addtimer(CALLBACK(src, .proc/close), wait, TIMER_UNIQUE|TIMER_OVERRIDE)
-		return
+			set_next_think_ctx("close_context", world.time + wait)
+		return FALSE
+
+	thinking_about_closing = FALSE
 	operating = TRUE
 
 	do_animate("closing")
@@ -437,7 +453,7 @@
 	var/obj/fire/fire = locate() in loc
 	if(fire)
 		qdel(fire)
-	return
+	return TRUE
 
 /obj/machinery/door/proc/requiresID()
 	return 1

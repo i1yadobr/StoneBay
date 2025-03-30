@@ -4,12 +4,23 @@
 	icon_state = "cabinet_closed"
 	icon_closed = "cabinet_closed"
 	icon_opened = "cabinet_open"
+	dremovable = FALSE
 
-/obj/structure/closet/cabinet/update_icon()
+/obj/structure/closet/cabinet/on_update_icon()
 	if(!opened)
 		icon_state = icon_closed
 	else
 		icon_state = icon_opened
+
+/obj/structure/closet/cabinet/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
+
+/obj/structure/closet/cabinet/wizcabinet
+	desc = "Magic will forever be in fashion."
+	icon_state = "wizcabinet_closed"
+	icon_closed = "wizcabinet_closed"
+	icon_opened = "wizcabinet_open"
+	dremovable = FALSE
 
 /obj/structure/closet/acloset
 	name = "strange closet"
@@ -49,11 +60,11 @@
 	return list(
 		/obj/item/clothing/glasses/eyepatch,
 		/obj/item/clothing/glasses/sunglasses,
-		/obj/item/clothing/gloves/thick/swat = 2,
+		/obj/item/clothing/gloves/swat = 2,
 		/obj/item/clothing/head/helmet/swat = 2,
 		/obj/item/clothing/mask/gas = 2,
 		/obj/item/clothing/shoes/swat = 2,
-		/obj/item/clothing/suit/space/void/swat = 2,
+		/obj/item/clothing/suit/space/void/deathsquad = 2,
 		/obj/item/clothing/under/syndicate/tacticool = 2)
 
 /obj/structure/closet/thunderdome

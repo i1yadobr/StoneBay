@@ -11,8 +11,10 @@
 	var/active = 0
 	var/beeping = 2
 
+	drop_sound = SFX_DROP_DEVICE
+	pickup_sound = SFX_PICKUP_DEVICE
+
 /obj/item/pinpointer/Destroy()
-	STOP_PROCESSING(SSobj,src)
 	target = null
 	. = ..()
 
@@ -23,11 +25,11 @@
 	active = !active
 	to_chat(user, "You [active ? "" : "de"]activate [src].")
 	if(!active)
-		STOP_PROCESSING(SSobj,src)
+		set_next_think(0)
 	else
 		if(!target)
 			target = acquire_target()
-		START_PROCESSING(SSobj,src)
+		set_next_think(world.time)
 	update_icon()
 
 /obj/item/pinpointer/advpinpointer/verb/toggle_sound()
@@ -46,7 +48,7 @@
 	var/obj/item/disk/nuclear/the_disk = locate() in nuke_disks
 	return weakref(the_disk)
 
-/obj/item/pinpointer/Process()
+/obj/item/pinpointer/think()
 	update_icon()
 	if(!target)
 		return
@@ -55,6 +57,7 @@
 		return
 
 	if(beeping < 0)
+		set_next_think(world.time + 1 SECOND)
 		return
 	if(beeping == 0)
 		var/turf/here = get_turf(src)
@@ -73,32 +76,34 @@
 	else
 		beeping--
 
-/obj/item/pinpointer/update_icon()
-	overlays.Cut()
+	set_next_think(world.time + 1 SECOND)
+
+/obj/item/pinpointer/on_update_icon()
+	ClearOverlays()
 	if(!active)
 		return
 	if(!target || !target.resolve())
-		overlays += image(icon,"pin_invalid")
+		AddOverlays(image(icon,"pin_invalid"))
 		return
 
 	var/turf/here = get_turf(src)
 	var/turf/there = get_turf(target.resolve())
 	if(!istype(there))
-		overlays += image(icon,"pin_invalid")
+		AddOverlays(image(icon,"pin_invalid"))
 		return
 
 	if(here == there)
-		overlays += image(icon,"pin_here")
+		AddOverlays(image(icon,"pin_here"))
 		return
 
 	if(!(there.z in GetConnectedZlevels(here.z)))
-		overlays += image(icon,"pin_invalid")
+		AddOverlays(image(icon,"pin_invalid"))
 		return
 	if(here.z > there.z)
-		overlays += image(icon,"pin_down")
+		AddOverlays(image(icon,"pin_down"))
 		return
 	if(here.z < there.z)
-		overlays += image(icon,"pin_up")
+		AddOverlays(image(icon,"pin_up"))
 		return
 
 	dir = get_dir(here,there)
@@ -110,13 +115,13 @@
 		pointer.color = COLOR_RED
 	else
 		pointer.color = COLOR_BLUE
-	overlays += pointer
+	AddOverlays(pointer)
 
 //Nuke ops locator
 /obj/item/pinpointer/nukeop
 	var/locate_shuttle = 0
 
-/obj/item/pinpointer/nukeop/Process()
+/obj/item/pinpointer/nukeop/think()
 	var/new_mode
 	if(!locate_shuttle && bomb_set)
 		locate_shuttle = 1
@@ -128,6 +133,7 @@
 		playsound(loc, 'sound/signals/ping2.ogg', 50, 0)
 		visible_message("<span class='notice'>[new_mode] active.</span>")
 		target = acquire_target()
+
 	..()
 
 /obj/item/pinpointer/nukeop/acquire_target()

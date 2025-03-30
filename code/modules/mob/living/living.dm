@@ -1,6 +1,9 @@
+/mob/living
+	is_poi = TRUE
+
 /mob/living/Initialize()
 	. = ..()
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		add_to_dead_mob_list()
 	else
 		add_to_living_mob_list()
@@ -9,9 +12,15 @@
 		verbs |= /mob/living/proc/ghost
 
 	if(controllable)
-		GLOB.available_mobs_for_possess += src
+		GLOB.available_mobs_for_possess["\ref[src]"] += src
 
 	update_transform() // Some mobs may start bigger or smaller than normal.
+
+/mob/living/get_description_fluff()
+	if(flavor_text)
+		return flavor_text
+
+	return ..()
 
 //mob verbs are faster than object verbs. See mob/verb/examine.
 /mob/living/verb/pulled(atom/movable/AM as mob|obj in oview(1))
@@ -69,16 +78,17 @@
 	return ..()
 
 /mob/living/Bump(atom/movable/AM, yes)
+	if(now_pushing || !yes || !loc)
+		return FALSE
+
 	spawn(0)
-		if ((!( yes ) || now_pushing) || !loc)
-			return
 		if(!istype(AM, /mob/living/bot/mulebot))
 			now_pushing = 1
 		if (istype(AM, /mob/living))
 			var/mob/living/tmob = AM
 
 			for(var/mob/living/M in range(tmob, 1))
-				if(tmob.pinned.len ||  ((M.pulling == tmob && ( tmob.restrained() && !( M.restrained() ) && M.stat == 0)) || locate(/obj/item/grab, tmob.grabbed_by.len)) )
+				if(LAZYLEN(tmob.pinned) ||  ((M.pulling == tmob && ( tmob.restrained() && !( M.restrained() ) && M.stat == 0)) || locate(/obj/item/grab, tmob.grabbed_by.len)) )
 					if ( !(world.time % 5) )
 						to_chat(src, "<span class='warning'>[tmob] is restrained, you cannot push past</span>")
 					now_pushing = 0
@@ -91,7 +101,7 @@
 
 			//Leaping mobs just land on the tile, no pushing, no anything.
 			if(status_flags & LEAPING)
-				loc = tmob.loc
+				forceMove(tmob.loc)
 				status_flags &= ~LEAPING
 				now_pushing = 0
 				return
@@ -130,6 +140,7 @@
 				now_pushing = 0
 				return
 			tmob.LAssailant = weakref(src)
+
 		if(isobj(AM) && !AM.anchored)
 			var/obj/I = AM
 			if(!can_pull_size || can_pull_size < I.w_class)
@@ -141,45 +152,68 @@
 		spawn(0)
 			..()
 			var/saved_dir = AM.dir
-			if (!istype(AM, /atom/movable) || AM.anchored)
+
+			if(!istype(AM, /atom/movable) || AM.anchored || AM.atom_flags & ATOM_FLAG_UNPUSHABLE)
 				if(confused && prob(50) && m_intent == M_RUN && !lying)
 					var/obj/machinery/disposal/D = AM
+
 					if(istype(D) && !(D.stat & BROKEN))
 						Weaken(6)
 						playsound(AM, 'sound/effects/clang.ogg', 75)
 						visible_message(SPAN_WARNING("[src] falls into \the [AM]!"), SPAN_WARNING("You fall into \the [AM]!"))
-						if (client)
+
+						if(client)
 							client.perspective = EYE_PERSPECTIVE
 							client.eye = src
+
 						forceMove(AM)
 					else
 						Weaken(2)
 						playsound(loc, SFX_FIGHTING_PUNCH, rand(80, 100), 1, -1)
 						visible_message(SPAN_WARNING("[src] [pick("ran", "slammed")] into \the [AM]!"))
+
 					src.apply_damage(5, BRUTE)
 				return
+
 			if (!now_pushing)
 				now_pushing = 1
 
 				var/t = get_dir(src, AM)
-				if (istype(AM, /obj/structure/window))
+
+				if(istype(AM, /obj/structure/window))
 					for(var/obj/structure/window/win in get_step(AM,t))
 						now_pushing = 0
 						return
-				step(AM, t)
-				if (istype(AM, /mob/living))
+
+				var/pulled_pushing = (AM.pulledby == src && pulling == AM)
+				if(pulled_pushing)
+					step_glide(AM, t, AM.glide_size)
+				else
+					step(AM, t)
+
+				if(istype(AM, /mob/living))
 					var/mob/living/tmob = AM
 					if(istype(tmob.buckled, /obj/structure/bed))
 						if(!tmob.buckled.anchored)
-							step(tmob.buckled, t)
+							step_glide(tmob.buckled, t, tmob.buckled.glide_size)
+
 				if(ishuman(AM))
 					var/mob/living/carbon/human/M = AM
 					for(var/obj/item/grab/G in M.grabbed_by)
 						step(G.assailant, get_dir(G.assailant, AM))
 						G.adjust_position()
+
 				if(saved_dir)
 					AM.set_dir(saved_dir)
+
+				if(pulled_pushing)
+					step_glide(src, t, glide_size)
+					if(pulling != AM)
+						start_pulling(AM, TRUE)
+
 				now_pushing = 0
+
+	return TRUE
 
 /proc/swap_density_check(mob/swapper, mob/swapee)
 	var/turf/T = get_turf(swapper)
@@ -217,7 +251,6 @@
 		set_stat(CONSCIOUS)
 	else
 		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss() - getHalLoss()
-
 
 //This proc is used for mobs which are affected by pressure to calculate the amount of pressure that actually
 //affects them once clothing is factored in. ~Errorage
@@ -261,7 +294,7 @@
 /mob/living/proc/adjustBruteLoss(amount)
 	if(status_flags & GODMODE)
 		return 0
-	health = max(health-amount, 0)
+	health = Clamp(health-amount, 0, maxHealth)
 
 /mob/living/proc/getOxyLoss()
 	return 0
@@ -441,8 +474,8 @@
 	if(iscarbon(src))
 		var/mob/living/carbon/C = src
 
-		if (C.handcuffed && !initial(C.handcuffed))
-			C.drop_from_inventory(C.handcuffed)
+		if(C.handcuffed && !initial(C.handcuffed))
+			C.drop(C.handcuffed, force = TRUE)
 		C.handcuffed = initial(C.handcuffed)
 	BITSET(hud_updateflag, HEALTH_HUD)
 	BITSET(hud_updateflag, STATUS_HUD)
@@ -464,8 +497,8 @@
 	SetWeakened(0)
 
 	// shut down ongoing problems
-	radiation = 0
-	bodytemperature = T20C
+	radiation = SPACE_RADIATION
+	bodytemperature = 20 CELSIUS
 	sdisabilities = 0
 	disabilities = 0
 
@@ -481,7 +514,7 @@
 	restore_all_organs(ignore_prosthetic_prefs)
 
 	// remove the character from the list of the dead
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		switch_from_dead_to_living_mob_list()
 		timeofdeath = 0
 
@@ -521,7 +554,7 @@
 
 	return
 
-/mob/living/Move(a, b, flag)
+/mob/living/Move(newloc, direct)
 	if(buckled)
 		return
 
@@ -530,22 +563,22 @@
 
 	var/turf/old_loc = get_turf(src)
 
-	if(lying)
-		pull_sound = SFX_PULL_BODY
-	else
-		pull_sound = null
+	pull_sound = lying ? SFX_PULL_BODY : null
 
 	. = ..()
+	if(!.)
+		return
 
-	if(. && pulling)
+	if(pulling)
 		handle_pulling_after_move(old_loc)
 
-	if(s_active && !(s_active in contents) && get_turf(s_active) != get_turf(src))
+	if(s_active && !((s_active in contents) || Adjacent(s_active)))
 		s_active.close(src)
 
 	if(update_metroids)
 		for(var/mob/living/carbon/metroid/M in view(1, src))
 			M.UpdateFeed()
+
 
 /mob/living/proc/can_pull()
 	if(!moving)
@@ -597,6 +630,8 @@
 			step_glide(M, get_dir(pulling.loc, old_loc), glide_size)
 			if(t)
 				M.start_pulling(t)
+
+	SEND_SIGNAL(src, SIGNAL_MOVED, src, old_loc, pulling.loc)
 
 	handle_dir_after_pull()
 
@@ -656,6 +691,8 @@
 			process_resist()
 
 /mob/living/proc/process_resist()
+
+	SEND_SIGNAL(src, SIGNAL_MOB_RESIST, src)
 	//Getting out of someone's inventory.
 	if(istype(src.loc, /obj/item/holder))
 		escape_inventory(src.loc)
@@ -668,14 +705,14 @@
 
 	//Breaking out of a locker?
 	if(src.loc && (istype(src.loc, /obj/structure/closet)) )
-		var/obj/structure/closet/C = loc
-		spawn() C.mob_breakout(src)
+		var/obj/structure/closet/closet = loc
+		spawn() closet.mob_breakout(src)
 		return TRUE
 
-	//Trying to escape from abductors?
-	if(src.loc && (istype(src.loc, /obj/machinery/abductor/experiment)))
-		var/obj/machinery/abductor/experiment/E = loc
-		spawn() E.mob_breakout(src)
+	//Trying to escape from Spider?
+	if(src.loc && (istype(src.loc, /obj/structure/spider/cocoon)))
+		var/obj/structure/spider/cocoon/cocoon = loc
+		spawn() cocoon.mob_breakout(src)
 		return TRUE
 
 /mob/living/proc/escape_inventory(obj/item/holder/H)
@@ -684,7 +721,7 @@
 	var/mob/M = H.loc //Get our mob holder (if any).
 
 	if(istype(M))
-		M.drop_from_inventory(H)
+		M.drop(H)
 		to_chat(M, "<span class='warning'>\The [H] wriggles out of your grip!</span>")
 		to_chat(src, "<span class='warning'>You wriggle out of \the [M]'s grip!</span>")
 
@@ -733,7 +770,7 @@
 		to_chat(src, SPAN("notice", "You are now [resting ? "resting" : "getting up"]."))
 
 //called when the mob receives a bright flash
-/mob/living/flash_eyes(intensity = FLASH_PROTECTION_MODERATE, override_blindness_check = FALSE, affect_silicon = FALSE, visual = FALSE, type = /obj/screen/fullscreen/flash, effect_duration = 25)
+/mob/living/flash_eyes(intensity = FLASH_PROTECTION_MODERATE, override_blindness_check = FALSE, affect_silicon = FALSE, visual = FALSE, type = /atom/movable/screen/fullscreen/flash, effect_duration = 25)
 	if(override_blindness_check || !(disabilities & BLIND))
 		overlay_fullscreen("flash", type)
 		spawn(effect_duration)
@@ -758,7 +795,7 @@
 /mob/living/proc/slip_on_obj(/obj/slipped_on, stun_duration = 8, slip_dist = 0)
 	return 0
 
-/mob/living/carbon/drop_from_inventory(obj/item/W, atom/Target = null, force = null)
+/mob/living/carbon/drop(obj/item/W, atom/Target = null, force = null, changing_slots)
 	if(W in internal_organs)
 		return
 	. = ..()
@@ -816,6 +853,8 @@
 
 	to_chat(src, "<b>You are now \the [src]!</b>")
 	to_chat(src, "<span class='notice'>Remember to stay in character for a mob of this type!</span>")
+	if("\ref[src]" in GLOB.available_mobs_for_possess)
+		GLOB.available_mobs_for_possess -= "\ref[src]"
 	return 1
 
 /mob/living/reset_layer()
@@ -826,7 +865,7 @@
 
 /mob/living/update_icons()
 	if(auras)
-		overlays |= auras
+		AddOverlays(auras)
 
 /mob/living/proc/add_aura(obj/aura/aura)
 	LAZYDISTINCTADD(auras,aura)
@@ -847,13 +886,17 @@
 	QDEL_NULL(aiming)
 	if(controllable)
 		controllable = FALSE
-		GLOB.available_mobs_for_possess -= src
+		GLOB.available_mobs_for_possess -= "\ref[src]"
 	return ..()
 
-/mob/living/proc/set_m_intent(intent)
+/mob/proc/set_m_intent(intent)
 	if(intent != M_WALK && intent != M_RUN)
-		return 0
+		return FALSE
+
 	m_intent = intent
+
+	update_move_intent_slowdown()
+
 	if(hud_used)
 		if(hud_used.move_intent)
 			hud_used.move_intent.icon_state = (intent == M_WALK ? "walking" : "running")

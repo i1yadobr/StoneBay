@@ -7,7 +7,7 @@
 	name = "Gas mixer"
 
 	use_power = POWER_USE_IDLE
-	idle_power_usage = 150		//internal circuitry, friction losses and stuff
+	idle_power_usage = 150 WATTS //internal circuitry, friction losses and stuff
 	power_rating = 3700	//This also doubles as a measure of how powerful the mixer is, in Watts. 3700 W ~ 5 HP
 
 	var/set_flow_rate = ATMOS_DEFAULT_VOLUME_MIXER
@@ -19,7 +19,7 @@
 
 	//node 3 is the outlet, nodes 1 & 2 are intakes
 
-/obj/machinery/atmospherics/trinary/mixer/update_icon(safety = 0)
+/obj/machinery/atmospherics/trinary/mixer/on_update_icon(safety = 0)
 	if(istype(src, /obj/machinery/atmospherics/trinary/mixer/m_mixer))
 		icon_state = "m"
 	else if(istype(src, /obj/machinery/atmospherics/trinary/mixer/t_mixer))
@@ -57,8 +57,8 @@
 /obj/machinery/atmospherics/trinary/mixer/hide(i)
 	update_underlays()
 
-/obj/machinery/atmospherics/trinary/mixer/New()
-	..()
+/obj/machinery/atmospherics/trinary/mixer/Initialize()
+	. = ..()
 	air1.volume = ATMOS_DEFAULT_VOLUME_MIXER
 	air2.volume = ATMOS_DEFAULT_VOLUME_MIXER
 	air3.volume = ATMOS_DEFAULT_VOLUME_MIXER * 1.5
@@ -108,12 +108,12 @@
 		return 1
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 	to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
-	if (do_after(user, 40, src))
+	if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		user.visible_message( \
 			"<span class='notice'>\The [user] unfastens \the [src].</span>", \
 			"<span class='notice'>You have unfastened \the [src].</span>", \
 			"You hear ratchet.")
-		new /obj/item/pipe(loc, make_from=src)
+		new /obj/item/pipe(loc, null, null, src)
 		qdel(src)
 
 /obj/machinery/atmospherics/trinary/mixer/attack_hand(user as mob)
@@ -177,8 +177,8 @@
 
 	//node 3 is the outlet, nodes 1 & 2 are intakes
 
-/obj/machinery/atmospherics/trinary/mixer/t_mixer/New()
-	..()
+/obj/machinery/atmospherics/trinary/mixer/t_mixer/Initialize()
+	. = ..()
 	switch(dir)
 		if(NORTH)
 			initialize_directions = EAST|NORTH|WEST
@@ -223,8 +223,8 @@
 
 	//node 3 is the outlet, nodes 1 & 2 are intakes
 
-/obj/machinery/atmospherics/trinary/mixer/m_mixer/New()
-	..()
+/obj/machinery/atmospherics/trinary/mixer/m_mixer/Initialize()
+	. = ..()
 	switch(dir)
 		if(NORTH)
 			initialize_directions = WEST|NORTH|SOUTH

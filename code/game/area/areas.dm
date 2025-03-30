@@ -6,7 +6,7 @@
 /area
 	var/global/global_uid = 0
 	var/uid
-	var/area_flags
+	var/area_flags = AREA_FLAG_UNIQUE_AREA
 	var/used_equip = 0
 	var/used_light = 0
 	var/used_environ = 0
@@ -19,6 +19,11 @@
 	var/is_station         = FALSE
 	var/importance         = 1
 	var/loyalty            = 0
+
+	/// The base turf type of the area, which can be used to override the z-level's base turf
+	var/base_turf
+	/// The base turf of the area if it has a turf below it in multizi. Overrides turf-specific open type
+	var/open_turf
 
 /area/New()
 	icon_state = ""
@@ -34,6 +39,9 @@
 		luminosity = 0
 	else
 		luminosity = 1
+
+	if(area_flags & AREA_FLAG_UNIQUE_AREA)
+		GLOB.areas_by_type[type] = src
 
 	..()
 
@@ -57,6 +65,8 @@
 		GLOB.station_areas.Add(src)
 
 /area/Destroy()
+	if(GLOB.areas_by_type[type] == src)
+		GLOB.areas_by_type[type] = null
 	if(is_station)
 		GLOB.station_areas.Remove(src)
 	. = ..()
@@ -99,64 +109,50 @@
 	return 0
 
 /area/proc/air_doors_close()
-	if(!air_doors_activated)
-		air_doors_activated = 1
-		if(!all_doors)
-			return
-		for(var/obj/machinery/door/firedoor/E in all_doors)
-			if(!E.blocked)
-				if(E.operating)
-					E.nextstate = FIREDOOR_CLOSED
-				else if(!E.density)
-					spawn(0)
-						E.close()
+	if(air_doors_activated)
+		return
+	air_doors_activated = 1
+	if(!all_doors)
+		return
+	for(var/obj/machinery/door/firedoor/E in all_doors)
+		INVOKE_ASYNC(E, nameof(/obj/machinery/door.proc/close))
 
 /area/proc/air_doors_open()
-	if(air_doors_activated)
-		air_doors_activated = 0
-		if(!all_doors)
-			return
-		for(var/obj/machinery/door/firedoor/E in all_doors)
-			if(!E.blocked)
-				if(E.operating)
-					E.nextstate = FIREDOOR_OPEN
-				else if(E.density)
-					spawn(0)
-						if(E.can_safely_open())
-							E.open()
+	if(!air_doors_activated)
+		return
+	air_doors_activated = 0
+	if(!all_doors)
+		return
+	for(var/obj/machinery/door/firedoor/E in all_doors)
+		if(!E.density || (E.stat & (BROKEN|NOPOWER)))
+			continue
+		if(E.can_safely_open())
+			INVOKE_ASYNC(E, nameof(/obj/machinery/door.proc/open))
 
 
 /area/proc/fire_alert()
-	if(!fire)
-		fire = TRUE	//used for firedoor checks
-		update_icon()
-		mouse_opacity = 0
-		set_lighting_mode(LIGHTMODE_ALARM, TRUE)
-		if(!all_doors)
-			return
-		for(var/obj/machinery/door/firedoor/D in all_doors)
-			if(!D.blocked)
-				if(D.operating)
-					D.nextstate = FIREDOOR_CLOSED
-				else if(!D.density)
-					spawn()
-						D.close()
+	if(fire)
+		return
+	fire = TRUE	//used for firedoor checks
+	update_icon()
+	mouse_opacity = 0
+	set_lighting_mode(LIGHTMODE_ALARM, TRUE)
+	if(!all_doors)
+		return
+	for(var/obj/machinery/door/firedoor/D in all_doors)
+		INVOKE_ASYNC(D, nameof(/obj/machinery/door.proc/close))
 
 /area/proc/fire_reset()
-	if (fire)
-		fire = FALSE	//used for firedoor checks
-		update_icon()
-		mouse_opacity = 0
-		set_lighting_mode(LIGHTMODE_ALARM, FALSE)
-		if(!all_doors)
-			return
-		for(var/obj/machinery/door/firedoor/D in all_doors)
-			if(!D.blocked)
-				if(D.operating)
-					D.nextstate = FIREDOOR_OPEN
-				else if(D.density)
-					spawn(0)
-					D.open()
+	if (!fire)
+		return
+	fire = FALSE	//used for firedoor checks
+	update_icon()
+	mouse_opacity = 0
+	set_lighting_mode(LIGHTMODE_ALARM, FALSE)
+	if(!all_doors)
+		return
+	for(var/obj/machinery/door/firedoor/D in all_doors)
+		INVOKE_ASYNC(D, nameof(/obj/machinery/door.proc/open))
 
 /area/proc/readyalert()
 	if(!eject)
@@ -171,27 +167,22 @@
 	return
 
 /area/proc/partyalert()
-	if (!( party ))
-		party = 1
-		update_icon()
-		mouse_opacity = 0
-	return
+	if (party)
+		return
+	party = 1
+	update_icon()
+	mouse_opacity = 0
 
 /area/proc/partyreset()
-	if (party)
-		party = 0
-		mouse_opacity = 0
-		update_icon()
-		for(var/obj/machinery/door/firedoor/D in src)
-			if(!D.blocked)
-				if(D.operating)
-					D.nextstate = FIREDOOR_OPEN
-				else if(D.density)
-					spawn(0)
-					D.open()
-	return
+	if (!party)
+		return
+	party = 0
+	mouse_opacity = 0
+	update_icon()
+	for(var/obj/machinery/door/firedoor/D in src)
+		INVOKE_ASYNC(D, nameof(/obj/machinery/door.proc/open))
 
-/area/update_icon()
+/area/on_update_icon()
 	if ((eject || party) && (!requires_power||power_environ))//If it doesn't require power, can still activate this proc.
 		/*else if(atmosalm && !fire && !eject && !party)
 			icon_state = "bluenew"*/
@@ -333,8 +324,13 @@ var/list/mob/living/forced_ambiance_list = new
 		var/mob/living/carbon/human/H = mob
 		if(istype(H.shoes, /obj/item/clothing/shoes/magboots) && (H.shoes.item_flags & ITEM_FLAG_NOSLIP))
 			return
+
+		if(istype(H.buckled, /obj/effect/dummy/immaterial_form))
+			return
+
 		if(H.species?.can_overcome_gravity(H))
 			return
+
 		H.AdjustStunned(1)
 		H.AdjustWeakened(1)
 		to_chat(mob, SPAN_WARNING("The sudden appearance of gravity makes you fall to the floor!"))

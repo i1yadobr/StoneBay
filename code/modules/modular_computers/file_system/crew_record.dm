@@ -117,8 +117,7 @@ GLOBAL_LIST_INIT(department_flags_to_text, list(
 	// Employment record
 	set_emplRecord((H && H.gen_record && !jobban_isbanned(H, "Records") ? H.gen_record : "No record supplied"))
 	set_homeSystem(H ? H.home_system : "Unset")
-	set_citizenship(H ? H.citizenship : "Unset")
-	set_faction(H ? H.personal_faction : "Unset")
+	set_background(H ? H.personal_background : "Unset")
 	set_religion(H ? H.religion : "Unset")
 
 	// Antag record
@@ -126,8 +125,9 @@ GLOBAL_LIST_INIT(department_flags_to_text, list(
 
 /datum/computer_file/crew_record/proc/take_mob_photo(mob/living/carbon/human/H)
 	if(istype(H))
-		photo_front = getFlatIcon(H, SOUTH, always_use_defdir = TRUE)
-		photo_side = getFlatIcon(H, WEST, always_use_defdir = TRUE)
+		H.ImmediateOverlayUpdate()
+		photo_front = H.get_flat_icon(H, SOUTH)
+		photo_side = H.get_flat_icon(H, WEST)
 	else
 		photo_front = icon('icons/mob/human_races/r_human.dmi', "preview_m", SOUTH)
 		photo_side = icon('icons/mob/human_races/r_human.dmi', "preview_m", WEST)
@@ -246,7 +246,7 @@ var/const/record_field_context_universal   = ~record_field_context_none
 		if(EDIT_SHORTTEXT)
 			newval = sanitize(newval)
 		if(EDIT_LONGTEXT)
-			newval = sanitize(replacetext(newval, "\n", "\[br\]"), MAX_PAPER_MESSAGE_LEN)
+			newval = sanitize(replacetext(newval, "\n", "\[br\]"), MAX_BOOK_MESSAGE_LEN)
 	value = newval
 	announce(automatic)
 	return TRUE
@@ -420,11 +420,9 @@ FIELD_CONTEXT_BOTH(emplRecord, CONTEXT(crew))
 FIELD_SHORT_SECURE("Home System", homeSystem, FALSE, access_heads);
 FIELD_CONTEXT_BOTH(homeSystem, CONTEXT(crew))
 
-FIELD_SHORT_SECURE("Citizenship", citizenship, FALSE, access_heads);
-FIELD_CONTEXT_BOTH(citizenship, CONTEXT(crew))
 
-FIELD_SHORT_SECURE("Faction", faction, FALSE, access_heads);
-FIELD_CONTEXT_BOTH(faction, CONTEXT(crew))
+FIELD_SHORT_SECURE("Background", background, FALSE, access_heads);
+FIELD_CONTEXT_BOTH(background, CONTEXT(crew))
 
 FIELD_SHORT_SECURE("Religion", religion, FALSE, access_heads);
 FIELD_CONTEXT_BOTH(religion, CONTEXT(crew))

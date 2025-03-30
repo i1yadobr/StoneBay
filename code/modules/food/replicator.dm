@@ -1,11 +1,11 @@
 /obj/machinery/food_replicator
 	name = "replicator"
 	desc = "like a microwave, except better. It has label \"Voice activation device\""
-	icon = 'icons/obj/vending.dmi'
+	icon = 'icons/obj/machines/vending/soda.dmi'
 	icon_state = "soda"
 	density = 1
 	anchored = 1
-	idle_power_usage = 40
+	idle_power_usage = 40 WATTS
 	obj_flags = OBJ_FLAG_ANCHORABLE
 	var/biomass = 100
 	var/biomass_max = 100
@@ -34,7 +34,8 @@
 /obj/machinery/food_replicator/attackby(obj/item/O, mob/user)
 	if(istype(O, /obj/item/reagent_containers/food))
 		var/obj/item/reagent_containers/food/S = O
-		user.drop_item(O)
+		if(!user.drop(O))
+			return
 		for(var/datum/reagent/nutriment/N in S.reagents.reagent_list)
 			biomass = Clamp(biomass + round(N.volume*deconstruct_eff),1,biomass_max)
 		qdel(O)
@@ -59,13 +60,25 @@
 		..()
 	return
 
-/obj/machinery/food_replicator/update_icon()
+/obj/machinery/food_replicator/on_update_icon()
 	if(stat & BROKEN)
 		icon_state = "[initial(icon_state)]-broken"
 	else if( !(stat & NOPOWER) )
 		icon_state = initial(icon_state)
 	else
 		src.icon_state = "[initial(icon_state)]-off"
+
+	var/should_glow = update_glow()
+	if(should_glow)
+		AddOverlays(emissive_appearance(icon, "soda_ea"))
+
+/obj/machinery/food_replicator/proc/update_glow()
+	if(inoperable(MAINT))
+		set_light(0)
+		return FALSE
+
+	set_light(0.15, 1, 2, 3.5, "#f86060")
+	return TRUE
 
 /obj/machinery/food_replicator/hear_talk(mob/M as mob, text, verb, datum/language/speaking)
 	if(!speaking || speaking.machine_understands)
@@ -92,23 +105,23 @@
 		message_bio = "Biomass is near maximum capacity!"
 	else
 		message_bio = "Biomass is full!"
-	src.audible_message("<b>\The [src]</b> states, \"[message_bio]\"")
+	src.audible_message("<b>\The [src]</b> states, \"[message_bio]\"", splash_override = "[message_bio]")
 
 /obj/machinery/food_replicator/proc/state_menu()
-	src.audible_message("<b>\The [src]</b> states, \"Greetings! I serve the following dishes: [english_list(menu)]\"")
+	src.audible_message("<b>\The [src]</b> states, \"Greetings! I serve the following dishes: [english_list(menu)]\"", splash_override = "Greetings! I serve the following dishes: [english_list(menu)]")
 
 /obj/machinery/food_replicator/proc/dispense_food(text)
 	var/type = menu[text]
 	if(!type)
-		src.audible_message("<b>\The [src]</b> states, \"Error! I cannot find the recipe for that item.\"")
+		src.audible_message("<b>\The [src]</b> states, \"Error! I cannot find the recipe for that item.\"", splash_override = "Error! I cannot find the recipe for that item.")
 		return 0
 
 	if(biomass < biomass_per)
-		src.audible_message("<b>\The [src]</b> states, \"Error! I do not have enough biomass to serve any more dishes.\"")
+		src.audible_message("<b>\The [src]</b> states, \"Error! I do not have enough biomass to serve any more dishes.\"", splash_override = "Error! I do not have enough biomass to serve any more dishes.")
 		queued_dishes.Cut()
 		return 0
 	biomass -= biomass_per
-	src.audible_message("<b>\The [src]</b> states, \"Your [text] is ready!\"")
+	src.audible_message("<b>\The [src]</b> states, \"Your [text] is ready!\"", splash_override = "Your [text] is ready!")
 	playsound(src.loc, 'sound/machines/ding.ogg', 50, 1)
 	var/atom/A = new type(src.loc)
 	A.SetName(text)
@@ -143,7 +156,7 @@
 /obj/machinery/food_replicator/Process()
 	if(queued_dishes && queued_dishes.len)
 		if(start_making) //want to do this first so that the first dish won't instantly come out
-			src.audible_message("<b>\The [src]</b> rumbles and vibrates.")
+			src.audible_message("<b>\The [src]</b> rumbles and vibrates.", splash_override = "*brzhrzhrzh*")
 			playsound(src.loc, 'sound/machines/juicer.ogg', 50, 1)
 			make_time = world.time + rand(100, 300)
 			start_making = 0
@@ -154,7 +167,8 @@
 				start_making = 1
 	..()
 
-/obj/machinery/food_replicator/_examine_text(mob/user)
+/obj/machinery/food_replicator/examine(mob/user, infix)
 	. = ..()
+
 	if(panel_open)
-		. += "\nThe maintenance hatch is open."
+		. += "The maintenance hatch is open."

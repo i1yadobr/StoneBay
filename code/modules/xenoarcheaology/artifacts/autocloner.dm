@@ -10,8 +10,8 @@
 	density = 1
 	var/previous_power_state = 0
 
-	active_power_usage = 2000
-	idle_power_usage = 1000
+	active_power_usage = 2 KILO WATTS
+	idle_power_usage = 1 KILO WATT
 
 /obj/machinery/auto_cloner/New()
 	..()
@@ -36,6 +36,7 @@
 		/mob/living/simple_animal/metroid,
 		/mob/living/simple_animal/crab,
 		/mob/living/simple_animal/mouse,
+		/mob/living/simple_animal/hamster,
 		/mob/living/simple_animal/hostile/retaliate/goat)
 
 //todo: how the hell is the asteroid permanently powered?

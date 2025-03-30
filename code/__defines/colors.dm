@@ -60,6 +60,14 @@
 #define COLOR_CYAN_BLUE        "#3366cc"
 #define COLOR_LIGHT_CYAN       "#66ccff"
 #define COLOR_PAKISTAN_GREEN   "#006600"
+#define COLOR_DARK_RED         "#B11111"
+#define COLOR_DARK_BLUE	       "#486091"
+#define COLOR_DARK_GREEN       "#439C1E"
+#define COLOR_GRAY_SPECIAL     "#8d8c8c"
+#define COLOR_DARK             "#0e0f0f"
+#define COLOR_BLACK30          "#333333"
+#define COLOR_WOOD             "#55391A"
+#define COLOR_DARKWOOD         "#512B0F"
 
 //Color defines used by the assembly detailer.
 
@@ -80,7 +88,7 @@
 #define COLOR_ASSEMBLY_BLUE    "#38559e"
 #define COLOR_ASSEMBLY_PURPLE  "#6f6192"
 
-//Color defines used by pipes.
+//Color defines used by pipes & floor lights.
 
 #define	PIPE_COLOR_GREY        "#ffffff"	//yes white is grey
 #define	PIPE_COLOR_RED         "#ff0000"
@@ -92,3 +100,6 @@
 #define	PIPE_COLOR_ORANGE      "#b95a00"
 
 #define COLOR_BLOOD_HUMAN "#a10808"
+#define COLOR_BLOOD_UNATHI "#f24b2e"
+#define COLOR_BLOOD_TAJARAN "#862a51"
+#define COLOR_BLOOD_SKRELL "#1d2cbf"

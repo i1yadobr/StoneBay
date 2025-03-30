@@ -18,8 +18,8 @@ using metal and glass, it uses glass and reagents (usually sulphuric acid).
 
 	var/list/item_type = list("Machine Boards", "Console Boards", "Mecha Boards", "Module Boards", "Engineering Boards", "Device")
 
-	idle_power_usage = 30
-	active_power_usage = 2500
+	idle_power_usage = 30 WATTS
+	active_power_usage = 2.500 KILO WATTS
 
 /obj/machinery/r_n_d/circuit_imprinter/Initialize()
 	materials = default_material_composition.Copy()
@@ -63,7 +63,10 @@ using metal and glass, it uses glass and reagents (usually sulphuric acid).
 	var/T = 0
 	for(var/obj/item/reagent_containers/vessel/G in component_parts)
 		T += G.reagents.maximum_volume
-	create_reagents(T)
+	if(reagents)
+		reagents.maximum_volume = T
+	else
+		create_reagents(T)
 	max_material_storage = 0
 	for(var/obj/item/stock_parts/matter_bin/M in component_parts)
 		max_material_storage += M.rating * 75000
@@ -73,7 +76,7 @@ using metal and glass, it uses glass and reagents (usually sulphuric acid).
 	mat_efficiency = 1 - (T - 1) / 4
 	speed = T
 
-/obj/machinery/r_n_d/circuit_imprinter/update_icon()
+/obj/machinery/r_n_d/circuit_imprinter/on_update_icon()
 	if(panel_open)
 		icon_state = "circuit_imprinter_t"
 	else if(busy)
@@ -123,7 +126,7 @@ using metal and glass, it uses glass and reagents (usually sulphuric acid).
 
 	var/t = stack.material.name
 	if(t)
-		if(do_after(usr, 16, src))
+		if(do_after(usr, 16, src, , luck_check_type = LUCK_CHECK_RND))
 			if(stack.use(amount))
 				to_chat(user, "<span class='notice'>You add [amount] sheet\s to \the [src].</span>")
 				materials[t] += amount * SHEET_MATERIAL_AMOUNT
@@ -164,7 +167,7 @@ using metal and glass, it uses glass and reagents (usually sulphuric acid).
 
 	if(D.build_path)
 		var/obj/new_item = D.Fabricate(src, src)
-		new_item.loc = loc
+		new_item.dropInto(loc)
 		if(mat_efficiency != 1) // No matter out of nowhere
 			if(new_item.matter && new_item.matter.len > 0)
 				for(var/i in new_item.matter)

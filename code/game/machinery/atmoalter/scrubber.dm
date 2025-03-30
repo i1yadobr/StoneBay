@@ -5,6 +5,7 @@
 	icon_state = "pscrubber:0"
 	density = 1
 	w_class = ITEM_SIZE_NORMAL
+	turf_height_offset = 12
 
 	var/on = 0
 	var/volume_rate = 800
@@ -43,8 +44,8 @@
 
 	..(severity)
 
-/obj/machinery/portable_atmospherics/powered/scrubber/update_icon()
-	src.overlays = 0
+/obj/machinery/portable_atmospherics/powered/scrubber/on_update_icon()
+	ClearOverlays()
 
 	if(on && cell && cell.charge)
 		icon_state = "pscrubber:1"
@@ -52,10 +53,10 @@
 		icon_state = "pscrubber:0"
 
 	if(holding)
-		overlays += "scrubber-open"
+		AddOverlays("scrubber-open")
 
 	if(connected_port)
-		overlays += "scrubber-connector"
+		AddOverlays("scrubber-connector")
 
 	return
 
@@ -67,7 +68,7 @@
 	if(on && cell && cell.charge)
 		var/datum/gas_mixture/environment
 		if(holding)
-			environment = holding.air_contents
+			environment = holding.return_air()
 		else
 			environment = loc.return_air()
 
@@ -158,8 +159,8 @@
 	volume_rate = 5000
 
 	use_power = POWER_USE_IDLE
-	idle_power_usage = 500		//internal circuitry, friction losses and stuff
-	active_power_usage = 100000	//100 kW ~ 135 HP
+	idle_power_usage = 500 WATTS		//internal circuitry, friction losses and stuff
+	active_power_usage = 100 KILO WATTS	//100 kW ~ 135 HP
 
 	var/global/gid = 1
 	var/id = 0
@@ -176,8 +177,8 @@
 /obj/machinery/portable_atmospherics/powered/scrubber/huge/attack_hand(mob/user as mob)
 		to_chat(usr, "<span class='notice'>You can't directly interact with this machine. Use the scrubber control console.</span>")
 
-/obj/machinery/portable_atmospherics/powered/scrubber/huge/update_icon()
-	src.overlays = 0
+/obj/machinery/portable_atmospherics/powered/scrubber/huge/on_update_icon()
+	ClearOverlays()
 
 	if(on && !(stat & (NOPOWER|BROKEN)))
 		icon_state = "scrubber:1"

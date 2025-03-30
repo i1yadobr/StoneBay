@@ -24,14 +24,24 @@ would spawn and follow the beaker, even if it is carried or thrown.
 	number = min(n, 10)
 	cardinals = c
 	location = loc
+	register_signal(holder, SIGNAL_QDELETING, nameof(.proc/onHolderDeleted))
 	setup = 1
 
 /datum/effect/effect/system/proc/attach(atom/atom)
+	if(holder)
+		unregister_signal(holder, SIGNAL_QDELETING)
+	if(QDELETED(atom))
+		qdel(src)
+		return
 	holder = atom
+	register_signal(holder, SIGNAL_QDELETING, nameof(.proc/onHolderDeleted))
 
 /datum/effect/effect/system/proc/start()
 
 /datum/effect/effect/system/proc/spread()
+
+/datum/effect/effect/system/proc/onHolderDeleted()
+	holder = null
 
 /datum/effect/effect/system/Destroy()
 	holder = null
@@ -71,7 +81,7 @@ steam.start() -- spawns the effect
 
 /datum/effect/effect/system/steam_spread/start()
 	for(var/i = 0, i < src.number, i++)
-		addtimer(CALLBACK(src, /datum/effect/effect/system/proc/spread, i), 0)
+		INVOKE_ASYNC(src, nameof(.proc/spread), i)
 
 /datum/effect/effect/system/steam_spread/spread(i)
 	set waitfor = 0
@@ -103,30 +113,37 @@ steam.start() -- spawns the effect
 	anchored = 1.0
 	mouse_opacity = 0
 
-/obj/effect/sparks/New()
-	..()
-	playsound(src.loc, SFX_SPARK, 100, 1)
-	var/turf/T = src.loc
-	if (istype(T, /turf))
-		T.hotspot_expose(1000,100)
-
-/obj/effect/sparks/Initialize()
+/obj/effect/sparks/Initialize(mapload, volume)
 	. = ..()
+	playsound(src.loc, SFX_SPARK, volume, 1)
+	var/turf/T = loc
+	if(istype(T, /turf))
+		T.hotspot_expose(1000, 100)
 	QDEL_IN(src, 5 SECONDS)
 
 /obj/effect/sparks/Destroy()
-	var/turf/T = src.loc
+	var/turf/T = loc
 	if (istype(T, /turf))
-		T.hotspot_expose(1000,100)
+		T.hotspot_expose(1000, 100)
 	return ..()
 
-/obj/effect/sparks/Move()
-	..()
-	var/turf/T = src.loc
-	if (istype(T, /turf))
-		T.hotspot_expose(1000,100)
+/obj/effect/sparks/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
+
+	var/turf/T = loc
+	if(isturf(T))
+		T.hotspot_expose(1000, 100)
 
 /datum/effect/effect/system/spark_spread
+	var/sparks_volume = 100
+
+/datum/effect/effect/system/spark_spread/New(volume = null)
+	if(!isnull(volume))
+		sparks_volume = volume
+
+	return ..()
 
 /datum/effect/effect/system/spark_spread/set_up(n = 3, c = 0, loca)
 	if(n > 10)
@@ -140,13 +157,13 @@ steam.start() -- spawns the effect
 
 /datum/effect/effect/system/spark_spread/start()
 	for(var/i = 0, i < src.number, i++)
-		addtimer(CALLBACK(src, /datum/effect/effect/system/proc/spread, i), 0)
+		INVOKE_ASYNC(src, nameof(.proc/spread), i)
 
 /datum/effect/effect/system/spark_spread/spread(i)
 	set waitfor = 0
 	if(holder)
 		src.location = get_turf(holder)
-	var/obj/effect/sparks/sparks = new /obj/effect/sparks(location)
+	var/obj/effect/sparks/sparks = new /obj/effect/sparks(location, sparks_volume)
 	var/direction
 	if(src.cardinals)
 		direction = pick(GLOB.cardinal)
@@ -177,27 +194,40 @@ steam.start() -- spawns the effect
 	pixel_x = -32
 	pixel_y = -32
 
-/obj/effect/effect/smoke/New()
-	..()
-	QDEL_IN(src, time_to_live)
+/obj/effect/effect/smoke/Initialize()
+	. = ..()
+	set_next_think(world.time + time_to_live)
+
+/obj/effect/effect/smoke/think()
+	fade_out()
 
 /obj/effect/effect/smoke/Crossed(mob/living/carbon/M as mob)
 	..()
 	if(istype(M))
 		affect(M)
 
+/obj/effect/effect/smoke/proc/fade_out(frames = 16)
+	set_opacity(FALSE)
+	frames = max(frames, 1) //We will just assume that by 0 frames, the coder meant "during one frame".
+	var/alpha_step = round(alpha / frames)
+	while(alpha > 0)
+		alpha = max(0, alpha - alpha_step)
+		stoplag()
+	qdel(src)
+
 /obj/effect/effect/smoke/proc/affect(mob/living/carbon/M)
 	if (!istype(M))
-		return 0
+		return FALSE
+
 	if (M.internal != null)
 		if(M.wear_mask && (M.wear_mask.item_flags & ITEM_FLAG_AIRTIGHT))
-			return 0
+			return FALSE
 		if(istype(M,/mob/living/carbon/human))
 			var/mob/living/carbon/human/H = M
 			if(H.head && (H.head.item_flags & ITEM_FLAG_AIRTIGHT))
-				return 0
-		return 0
-	return 1
+				return FALSE
+		return FALSE
+	return TRUE
 
 /////////////////////////////////////////////
 // Illumination
@@ -220,15 +250,25 @@ steam.start() -- spawns the effect
 /obj/effect/effect/smoke/bad
 	time_to_live = 200
 
-/obj/effect/effect/smoke/bad/Move()
-	..()
+/obj/effect/effect/smoke/bad/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
+
 	for(var/mob/living/carbon/M in get_turf(src))
 		affect(M)
 
 /obj/effect/effect/smoke/bad/affect(mob/living/carbon/M)
-	if (!..())
-		return 0
-	M.drop_item()
+	if(!..())
+		return FALSE
+
+	if(M.isSynthetic())
+		return FALSE
+
+	if(prob(50))
+		M.drop_active_hand()
+	else
+		M.drop_inactive_hand()
 	M.adjustOxyLoss(1)
 	if (M.coughedtime != 1)
 		M.coughedtime = 1
@@ -241,23 +281,29 @@ steam.start() -- spawns the effect
 	if(istype(mover, /obj/item/projectile/beam))
 		var/obj/item/projectile/beam/B = mover
 		B.damage = (B.damage/2)
-	return 1
+	return TRUE
 /////////////////////////////////////////////
 // Sleep smoke
 /////////////////////////////////////////////
 
 /obj/effect/effect/smoke/sleepy
 
-/obj/effect/effect/smoke/sleepy/Move()
-	..()
+/obj/effect/effect/smoke/sleepy/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
+
 	for(var/mob/living/carbon/M in get_turf(src))
 		affect(M)
 
 /obj/effect/effect/smoke/sleepy/affect(mob/living/carbon/M as mob )
 	if (!..())
-		return 0
+		return FALSE
 
-	M.drop_item()
+	if(prob(50))
+		M.drop_active_hand()
+	else
+		M.drop_inactive_hand()
 	M:sleeping += 1
 	if (M.coughedtime != 1)
 		M.coughedtime = 1
@@ -273,16 +319,19 @@ steam.start() -- spawns the effect
 	name = "mustard gas"
 	icon_state = "mustard"
 
-/obj/effect/effect/smoke/mustard/Move()
-	..()
+/obj/effect/effect/smoke/mustard/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
+
 	for(var/mob/living/carbon/human/R in get_turf(src))
 		affect(R)
 
 /obj/effect/effect/smoke/mustard/affect(mob/living/carbon/human/R)
 	if (!..())
-		return 0
+		return FALSE
 	if (R.wear_suit != null)
-		return 0
+		return FALSE
 
 	R.burn_skin(0.75)
 	if (R.coughedtime != 1)
@@ -318,7 +367,8 @@ steam.start() -- spawns the effect
 	for(var/i in 0 to src.number - 1)
 		if(src.total_smoke > 20)
 			return
-		addtimer(CALLBACK(src, /datum/effect/effect/system/proc/spread, i), 0)
+
+		INVOKE_ASYNC(src, nameof(.proc/spread), i)
 
 /datum/effect/effect/system/smoke_spread/spread(i)
 	if(holder)
@@ -366,6 +416,11 @@ steam.start() -- spawns the effect
 	var/list/specific_turfs = list()
 	var/trail_type
 	var/duration_of_effect = 10
+
+/datum/effect/effect/system/trail/Destroy()
+	oldposition = null
+	specific_turfs.Cut()
+	return ..()
 
 /datum/effect/effect/system/trail/set_up(atom/atom)
 	attach(atom)
@@ -498,3 +553,17 @@ steam.start() -- spawns the effect
 /obj/effect/effect/hitmarker/Initialize()
 	. = ..()
 	QDEL_IN(src, 0.1 SECONDS)
+
+//healing
+/obj/effect/heal
+	name = "heal"
+	icon_state = "heal"
+	anchored = TRUE
+	mouse_opacity = FALSE
+
+/obj/effect/mummy_animation
+	icon_state = "mummy_revive"
+
+/obj/effect/mummy_animation/Initialize()
+	..()
+	QDEL_IN(src, 2 SECONDS)

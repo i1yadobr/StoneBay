@@ -1,9 +1,8 @@
-//This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:33
 var/global/list/rad_collectors = list()
 
 /obj/machinery/power/rad_collector
-	name = "Radiation Collector Array"
-	desc = "A device which uses radiation and plasma to produce power."
+	name = "Hawking Collector Array"
+	desc = "A device which uses Hawking radiation and plasma to produce power. WARNING: Working with temperature 400C and higher can break the device"
 	icon = 'icons/obj/singularity.dmi'
 	icon_state = "ca"
 	anchored = 0
@@ -11,13 +10,14 @@ var/global/list/rad_collectors = list()
 	req_access = list(access_engine_equip)
 	var/obj/item/tank/plasma/P = null
 	var/last_power = 0
+	var/last_temp_dif = 0
 	var/last_power_new = 0
 	var/active = 0
 	var/locked = 0
 	var/drainratio = 1
 
 	var/health = 100
-	var/max_safe_temp = 1000 + T0C
+	var/max_safe_temp = 400 CELSIUS
 	var/melted
 
 /obj/machinery/power/rad_collector/New()
@@ -36,24 +36,32 @@ var/global/list/rad_collectors = list()
 		var/datum/gas_mixture/our_turfs_air = T.return_air()
 		if(our_turfs_air.temperature > max_safe_temp)
 			health -= ((our_turfs_air.temperature - max_safe_temp) / 10)
-			if(health <= 0)
-				collector_break()
 
 	//so that we don't zero out the meter if the SM is processed first.
 	last_power = last_power_new
 	last_power_new = 0
 
 	if(P && active)
-		var/rads = SSradiation.get_rads_at_turf(get_turf(src))
-		if(rads)
-			receive_pulse(rads * 5) //Maths is hard
+		if(health <= 0)
+			collector_break()
+
+		var/list/sources = SSradiation.get_sources_in_range(src)
+		for(var/datum/radiation_source/source in sources)
+			if(source.info.radiation_type != RADIATION_HAWKING)
+				continue
+
+			var/datum/radiation/R = source.travel(src)
+			var/total_energy = R.energy * R.activity
+
+			receive_pulse(total_energy)
 
 	if(P)
-		if(P.air_contents.gas["plasma"] == 0)
+		var/datum/gas_mixture/M = P.return_air()
+		if(M.gas["plasma"] == 0)
 			investigate_log("<font color='red'>out of fuel</font>.","singulo")
 			eject()
 		else
-			P.air_contents.adjust_gas("plasma", -0.001 * drainratio)
+			M.adjust_gas("plasma", -0.001 * drainratio)
 	return
 
 
@@ -81,9 +89,9 @@ var/global/list/rad_collectors = list()
 		if(P)
 			to_chat(user, "<span class='warning'>There's already a plasma tank loaded.</span>")
 			return 1
-		user.drop_item()
+		if(!user.drop(W, src))
+			return 1
 		P = W
-		W.loc = src
 		update_icon()
 		return 1
 	else if(isCrowbar(W))
@@ -121,10 +129,21 @@ var/global/list/rad_collectors = list()
 		return 1
 	return ..()
 
-/obj/machinery/power/rad_collector/_examine_text(mob/user, distance)
+/obj/machinery/power/rad_collector/examine(mob/user, infix)
 	. = ..()
-	if (distance <= 3 && !(stat & BROKEN))
-		. += "\nThe meter indicates that \the [src] is collecting [last_power] W."
+
+	if(get_dist(user, src) > 3 || (stat & BROKEN))
+		return
+
+	. += "Sensor readings:"
+	. += "Power rate: [fmt_siunit(last_power, "W/s", 3)]"
+
+	if(P?.air_contents)
+		. += "Tank temperature: [P.air_contents.temperature]K"
+	else
+		. += "Tank temperature: N/A"
+
+	. += "Entropy drift: [last_temp_dif] K/s"
 
 /obj/machinery/power/rad_collector/ex_act(severity)
 	switch(severity)
@@ -136,8 +155,8 @@ var/global/list/rad_collectors = list()
 	if(P?.air_contents)
 		var/turf/T = get_turf(src)
 		if(T)
-			T.assume_air(P.air_contents)
-			audible_message(SPAN_DANGER("\The [P] detonates, sending shrapnel flying!"))
+			T.assume_air(P.return_air())
+			audible_message(SPAN_DANGER("\The [P] detonates, sending shrapnel flying!"), splash_override = "*KA-BOOM*")
 			fragmentate(T, 2, 4, list(/obj/item/projectile/bullet/pellet/fragment/tank/small = 3, /obj/item/projectile/bullet/pellet/fragment/tank = 1))
 			explosion(T, -1, -1, 0)
 			QDEL_NULL(P)
@@ -168,27 +187,39 @@ var/global/list/rad_collectors = list()
 
 /obj/machinery/power/rad_collector/proc/receive_pulse(pulse_strength)
 	if(P && active)
-		var/power_produced = 0
-		power_produced = P.air_contents.gas["plasma"] * pulse_strength * 20
+		var/power_produced = P.air_contents.gas["plasma"] * (pulse_strength * 150 MEGA WATT)
 		add_avail(power_produced)
 		last_power_new = power_produced
-		return
+
+		var/turf/T = get_turf(src)
+		var/datum/gas_mixture/air_gas = T.return_air()
+		var/datum/gas_mixture/plasma_gas = P.return_air()
+		last_temp_dif = max((power_produced / (1500000 KELVIN)) - 0.4, 0)
+
+		if(last_temp_dif == 0)
+			return
+
+		plasma_gas.add_thermal_energy(plasma_gas.get_thermal_energy_change(plasma_gas.temperature + last_temp_dif))
+		if(plasma_gas.temperature > air_gas.temperature)
+			var/new_temp = air_gas.temperature + last_temp_dif
+			air_gas.add_thermal_energy(air_gas.get_thermal_energy_change(new_temp))
+
 	return
 
-/obj/machinery/power/rad_collector/update_icon()
+/obj/machinery/power/rad_collector/on_update_icon()
 	if(melted)
 		icon_state = "ca_melt"
 	else if(active)
 		icon_state = "ca_on"
 	else
 		icon_state = "ca"
-	overlays.Cut()
+	ClearOverlays()
 	if(P)
-		overlays += image('icons/obj/singularity.dmi', "ptank")
+		AddOverlays(image('icons/obj/singularity.dmi', "ptank"))
 	if(stat & (NOPOWER|BROKEN))
 		return
 	if(active)
-		overlays += image('icons/obj/singularity.dmi', "on")
+		AddOverlays(image('icons/obj/singularity.dmi', "on"))
 
 
 /obj/machinery/power/rad_collector/proc/toggle_power()

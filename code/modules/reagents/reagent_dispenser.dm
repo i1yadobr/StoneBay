@@ -13,6 +13,7 @@
 	var/initial_reagent_types  // A list of reagents and their ratio relative the initial capacity. list(/datum/reagent/water = 0.5) would fill the dispenser halfway to capacity.
 	var/amount_per_transfer_from_this = 10
 	var/possible_transfer_amounts = "10;25;50;100;500"
+	var/filling_overlay_levels = 0
 
 /obj/structure/reagent_dispensers/attackby(obj/item/W, mob/user)
 	return
@@ -29,16 +30,18 @@
 
 	..()
 
-/obj/structure/reagent_dispensers/_examine_text(mob/user)
+/obj/structure/reagent_dispensers/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 2)
 		return
-	. += "\n<span class='notice'>It contains:</span>"
+
+	. += SPAN_NOTICE("It contains:")
 	if(reagents && reagents.reagent_list.len)
 		for(var/datum/reagent/R in reagents.reagent_list)
-			. += "\n<span class='notice'>[R.volume] units of [R.name]</span>"
+			. += SPAN_NOTICE("[R.volume] units of [R.name]")
 	else
-		. += "\n<span class='notice'>Nothing.</span>"
+		. += SPAN_NOTICE("Nothing.")
 
 /obj/structure/reagent_dispensers/verb/set_APTFT() //set amount_per_transfer_from_this
 	set name = "Set transfer amount"
@@ -63,7 +66,6 @@
 				new /obj/effect/effect/water(src.loc)
 				qdel(src)
 				return
-		else
 	return
 
 /obj/structure/reagent_dispensers/AltClick(mob/user)
@@ -73,6 +75,20 @@
 	else
 		return ..()
 
+/obj/structure/reagent_dispensers/on_reagent_change()
+	..()
+	update_icon()
+
+/obj/structure/reagent_dispensers/on_update_icon()
+	ClearOverlays()
+	if(filling_overlay_levels)
+		if(reagents?.reagent_list?.len)
+			var/reagents_amt = 0
+			for(var/datum/reagent/R in reagents.reagent_list)
+				reagents_amt += R.volume
+			AddOverlays(image(icon, src, "[icon_state]-[ceil(reagents_amt / (initial_capacity / filling_overlay_levels))]"))
+		else
+			AddOverlays(image(icon, src, "[icon_state]-0"))
 
 //Dispensers
 /obj/structure/reagent_dispensers/watertank
@@ -81,79 +97,115 @@
 	icon_state = "watertank"
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = "10;25;50;100"
-	initial_capacity = 50000
+	initial_capacity = 5000
 	initial_reagent_types = list(/datum/reagent/water = 1)
 	atom_flags = ATOM_FLAG_CLIMBABLE
+	filling_overlay_levels = 7
+	turf_height_offset = 25
 
 /obj/structure/reagent_dispensers/fueltank
 	name = "fueltank"
 	desc = "A tank containing fuel."
 	icon_state = "weldtank"
 	amount_per_transfer_from_this = 10
-	var/modded = 0
+	var/modded = FALSE
 	var/obj/item/device/assembly_holder/rig = null
 	initial_reagent_types = list(/datum/reagent/fuel = 1)
 	atom_flags = ATOM_FLAG_CLIMBABLE
+	filling_overlay_levels = 6
+	turf_height_offset = 25
 
-/obj/structure/reagent_dispensers/fueltank/_examine_text(mob/user)
+/obj/structure/reagent_dispensers/fueltank/Destroy()
+	QDEL_NULL(rig)
+	return ..()
+
+/obj/structure/reagent_dispensers/fueltank/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 2)
 		return
+
 	if(modded)
-		. += "\n<span class='warning'>Fuel faucet is wrenched open, leaking the fuel!</span>"
+		. += SPAN("warning", "Fuel faucet is wrenched open, leaking the fuel!")
 	if(rig)
-		. += "\n<span class='notice'>There is some kind of device rigged to the tank.</span>"
+		. += SPAN("notice", "There is some kind of device rigged to the tank.")
 
-/obj/structure/reagent_dispensers/fueltank/attack_hand()
-	if (rig)
-		usr.visible_message("<span class='notice'>\The [usr] begins to detach [rig] from \the [src].</span>", "<span class='notice'>You begin to detach [rig] from \the [src].</span>")
-		if(do_after(usr, 20, src))
-			usr.visible_message("<span class='notice'>\The [usr] detaches \the [rig] from \the [src].</span>", "<span class='notice'>You detach [rig] from \the [src]</span>")
-			rig.loc = get_turf(usr)
+/obj/structure/reagent_dispensers/fueltank/attack_hand(mob/user)
+	if(rig)
+		user.visible_message(
+		  SPAN("notice", "\The [user] begins to detach [rig] from \the [src]."),
+		  SPAN("notice", "You begin to detach [rig] from \the [src].")
+		)
+		if(do_after(user, 20, src, , luck_check_type = LUCK_CHECK_COMBAT))
+			user.visible_message(
+			  SPAN("notice", "\The [user] detaches \the [rig] from \the [src]."),
+			  SPAN("notice", "You detach [rig] from \the [src]")
+			)
+			rig.forceMove(get_turf(user))
 			rig = null
-			overlays = new /list()
+			ClearOverlays()
 
-/obj/structure/reagent_dispensers/fueltank/attackby(obj/item/W as obj, mob/user as mob)
-	src.add_fingerprint(user)
-	if (istype(W,/obj/item/wrench))
-		user.visible_message("[user] wrenches [src]'s faucet [modded ? "closed" : "open"].", \
-			"You wrench [src]'s faucet [modded ? "closed" : "open"]")
-		modded = modded ? 0 : 1
-		if (modded)
+/obj/structure/reagent_dispensers/fueltank/attackby(obj/item/W, mob/user)
+	add_fingerprint(user)
+	if(isWrench(W))
+		user.visible_message(
+		  "[user] wrenches [src]'s faucet [modded ? "closed" : "open"].",
+		  "You wrench [src]'s faucet [modded ? "closed" : "open"]"
+		)
+		modded = !modded
+		if(modded)
 			message_admins("[key_name_admin(user)] opened fueltank at [loc.loc.name] ([loc.x],[loc.y],[loc.z]), leaking fuel. (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[loc.x];Y=[loc.y];Z=[loc.z]'>JMP</a>)")
 			log_game("[key_name(user)] opened fueltank at [loc.loc.name] ([loc.x],[loc.y],[loc.z]), leaking fuel.")
 			leak_fuel(amount_per_transfer_from_this)
-	else if (istype(W,/obj/item/device/assembly_holder))
-		if (rig)
-			to_chat(user, "<span class='warning'>There is another device in the way.</span>")
+	else if(istype(W, /obj/item/device/assembly_holder))
+		if(rig)
+			to_chat(user, SPAN("warning", "There is another device in the way."))
 			return ..()
-		user.visible_message("\The [user] begins rigging [W] to \the [src].", "You begin rigging [W] to \the [src]")
+		user.visible_message(
+		  "\The [user] begins rigging [W] to \the [src].",
+		  "You begin rigging [W] to \the [src]"
+		)
 		if(do_after(user, 20, src))
-			user.visible_message("<span class='notice'>The [user] rigs [W] to \the [src].</span>", "<span class='notice'>You rig [W] to \the [src].</span>")
+			if(!user.drop(W, src))
+				return
 
 			var/obj/item/device/assembly_holder/H = W
-			if (istype(H.a_left,/obj/item/device/assembly/igniter) || istype(H.a_right,/obj/item/device/assembly/igniter))
+			if(istype(H.a_left, /obj/item/device/assembly/igniter) || istype(H.a_right, /obj/item/device/assembly/igniter))
 				message_admins("[key_name_admin(user)] rigged fueltank at [loc.loc.name] ([loc.x],[loc.y],[loc.z]) for explosion. (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[loc.x];Y=[loc.y];Z=[loc.z]'>JMP</a>)")
 				log_game("[key_name(user)] rigged fueltank at [loc.loc.name] ([loc.x],[loc.y],[loc.z]) for explosion.")
 
 			rig = W
-			user.drop_item()
-			W.loc = src
 
-			var/icon/test = getFlatIcon(W)
-			test.Shift(NORTH,1)
-			test.Shift(EAST,6)
-			overlays += test
+			user.visible_message(
+			  SPAN("notice", "The [user] rigs [W] to \the [src]."),
+			  SPAN("notice", "You rig [W] to \the [src].")
+			)
+			update_icon()
 
 	else if(W.get_temperature_as_from_ignitor())
+		if (reagents.total_volume == 0)
+			user.visible_message(
+		 	 SPAN("danger", "[user] puts [W] to [src]."),
+		 	 SPAN("danger", "You put \the [W] to \the [src] and nothing happens.")
+			)
+			return
 		log_and_message_admins("triggered a fueltank explosion with [W].")
-		user.visible_message("<span class='danger'>[user] puts [W] to [src]!</span>", "<span class='danger'>You put \the [W] to \the [src] and with a moment of lucidity you realize, this might not have been the smartest thing you've ever done.</span>")
-		src.explode()
+		user.visible_message(
+		  SPAN("danger", "[user] puts [W] to [src]!"),
+		  SPAN("danger", "You put \the [W] to \the [src] and with a moment of lucidity you realize, this might not have been the smartest thing you've ever done.")
+		)
+		explode()
 
 		return
-
 	return ..()
 
+/obj/structure/reagent_dispensers/fueltank/on_update_icon()
+	..()
+	if(rig)
+		var/icon/rig_icon = getFlatIcon(rig)
+		rig_icon.Shift(NORTH,1)
+		rig_icon.Shift(EAST,6)
+		AddOverlays(rig_icon)
 
 /obj/structure/reagent_dispensers/fueltank/bullet_act(obj/item/projectile/Proj)
 	if(Proj.get_structure_damage())
@@ -170,7 +222,19 @@
 		if(!istype(Proj ,/obj/item/projectile/beam/lasertag) && !istype(Proj ,/obj/item/projectile/beam/practice) )
 			explode()
 
-/obj/structure/reagent_dispensers/fueltank/ex_act()
+/obj/structure/reagent_dispensers/fueltank/ex_act(severity)
+	switch(severity)
+		if(1.0)
+			qdel(src)
+			return
+		if(2.0)
+			if (prob(50))
+				qdel(src)
+				return
+		if(3.0)
+			if (prob(5))
+				qdel(src)
+				return
 	explode()
 
 /obj/structure/reagent_dispensers/fueltank/proc/explode()
@@ -180,18 +244,21 @@
 		explosion(src.loc,0,1,3,sfx_to_play=SFX_EXPLOSION_FUEL)
 	else if (reagents.total_volume > 50)
 		explosion(src.loc,-1,1,2,sfx_to_play=SFX_EXPLOSION_FUEL)
+	else if (reagents.total_volume == 0)
+		return
 	if(src)
 		qdel(src)
 
 /obj/structure/reagent_dispensers/fueltank/fire_act(datum/gas_mixture/air, temperature, volume)
 	if (modded)
 		explode()
-	else if (temperature > T0C+500)
+	else if (temperature > (500 CELSIUS))
 		explode()
 	return ..()
 
 /obj/structure/reagent_dispensers/fueltank/Move()
-	if (..() && modded)
+	. = ..()
+	if (. && modded)
 		leak_fuel(amount_per_transfer_from_this/10.0)
 
 /obj/structure/reagent_dispensers/fueltank/proc/leak_fuel(amount)
@@ -211,6 +278,7 @@
 	initial_capacity = 500
 	initial_reagent_types = list(/datum/reagent/toxin/fertilizer/compost = 1)
 	atom_flags = ATOM_FLAG_CLIMBABLE
+	turf_height_offset = 25
 
 /obj/structure/reagent_dispensers/composttank/attackby(obj/item/W, mob/user)
 	src.add_fingerprint(user)
@@ -235,15 +303,17 @@
 	name = "Water-Cooler"
 	desc = "A machine that dispenses water to drink."
 	amount_per_transfer_from_this = 5
+	icon = 'icons/obj/water_cooler.dmi'
 	icon_state = "water_cooler"
 	possible_transfer_amounts = null
 	anchored = 1
 	initial_capacity = 500
 	initial_reagent_types = list(/datum/reagent/water = 1)
 
-/obj/structure/reagent_dispensers/water_cooler/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/wrench))
-		src.add_fingerprint(user)
+
+/obj/structure/reagent_dispensers/water_cooler/attackby(obj/item/W, mob/user)
+	if(isWrench(W))
+		add_fingerprint(user)
 		if(anchored)
 			user.visible_message("\The [user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
 		else
@@ -265,6 +335,7 @@
 	initial_reagent_types = list(/datum/reagent/ethanol/beer = 1)
 	atom_flags = ATOM_FLAG_CLIMBABLE
 	pull_slowdown = PULL_SLOWDOWN_MEDIUM
+	turf_height_offset = 16
 
 /obj/structure/reagent_dispensers/virusfood
 	name = "Virus Food Dispenser"

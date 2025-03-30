@@ -20,7 +20,7 @@
 	..()
 	throw_spin = TRUE
 
-/obj/item/syringe_cartridge/update_icon()
+/obj/item/syringe_cartridge/on_update_icon()
 	underlays.Cut()
 	if(syringe)
 		underlays += image(syringe.icon, src, syringe.icon_state)
@@ -35,11 +35,10 @@
 		if(S.mode == SYRINGE_PACKAGED)
 			to_chat(user, SPAN("notice", "This syringe must be unwrapped first."))
 			return
-
+		if(!user.drop(I, src))
+			return
 		syringe = S
 		to_chat(user, "<span class='notice'>You carefully insert [syringe] into [src].</span>")
-		user.remove_from_mob(syringe)
-		syringe.loc = src
 		sharp = 1
 		name = "syringe dart"
 		update_icon()
@@ -47,7 +46,7 @@
 /obj/item/syringe_cartridge/attack_self(mob/user)
 	if(syringe)
 		to_chat(user, "<span class='notice'>You remove [syringe] from [src].</span>")
-		user.put_in_hands(syringe)
+		user.pick_or_drop(syringe)
 		syringe = null
 		sharp = initial(sharp)
 		SetName(initial(name))
@@ -63,7 +62,7 @@
 	if(syringe)
 		//check speed to see if we hit hard enough to trigger the rapid injection
 		//incidentally, this means syringe_cartridges can be used with the pneumatic launcher
-		if(speed >= 10 && isliving(hit_atom))
+		if((speed >= 10 || speed <= 0.9) && isliving(hit_atom))
 			var/mob/living/L = hit_atom
 			//unfortuately we don't know where the dart will actually hit, since that's done by the parent.
 			if(L.can_inject(null, ran_zone()) && syringe.reagents)
@@ -93,7 +92,7 @@
 	fire_sound = 'sound/weapons/empty.ogg'
 	fire_sound_text = "a metallic thunk"
 	screen_shake = 0
-	release_force = 2
+	release_force = 0.1
 	throw_distance = 10
 
 	var/list/darts = list()
@@ -131,7 +130,7 @@
 			return
 		var/obj/item/syringe_cartridge/C = darts[1]
 		darts -= C
-		user.put_in_hands(C)
+		user.pick_or_drop(C)
 		user.visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
 	else
 		..()
@@ -142,8 +141,7 @@
 		if(darts.len >= max_darts)
 			to_chat(user, "<span class='warning'>[src] is full!</span>")
 			return
-		user.remove_from_mob(C)
-		C.loc = src
+		user.drop(C, src)
 		darts += C //add to the end
 		user.visible_message("[user] inserts \a [C] into [src].", "<span class='notice'>You insert \a [C] into [src].</span>")
 	else
@@ -171,7 +169,8 @@
 	throw_distance = 7
 	release_force = 7
 
-/obj/item/gun/launcher/syringe/disguised/_examine_text(mob/user)
+/obj/item/gun/launcher/syringe/disguised/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 0)
-		. += "\nThe button is a little stiff."
+		. += "The button is a little stiff."

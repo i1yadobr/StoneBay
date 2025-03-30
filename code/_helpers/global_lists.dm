@@ -5,7 +5,6 @@ GLOBAL_LIST_EMPTY(landmarks_list) // List of all landmarks created.
 
 var/global/list/cable_list = list()					//Index for all cables, so that powernets don't have to look through the entire world all the time
 var/global/list/chemical_reactions_list				//list of all /datum/chemical_reaction datums. Used during chemical reactions
-var/global/list/surgery_steps = list()				//list of all surgery steps  |BS12
 var/global/list/side_effects = list()				//list of all medical sideeffects types by thier names |BS12
 var/global/list/mechas_list = list()				//list of all mechs. Used by hostile mobs target tracking.
 var/global/list/joblist = list()					//list of all jobstypes, minus borg and AI
@@ -41,13 +40,17 @@ var/global/list/all_grabstates[0]
 var/global/list/all_grabobjects[0]
 
 // Uplinks
-var/list/obj/item/device/uplink/world_uplinks = list()
+GLOBAL_LIST_EMPTY(uplinks)
+
+// Surgery steps
+GLOBAL_LIST_EMPTY(surgery_steps)
 
 //Preferences stuff
 //Hairstyles
 GLOBAL_LIST_EMPTY(hair_styles_list)        //stores /datum/sprite_accessory/hair indexed by name
-GLOBAL_LIST_EMPTY(hair_styles_icons)   // Stores all icon states from icons/mob/human_face.dmi
 GLOBAL_LIST_EMPTY(facial_hair_styles_list) //stores /datum/sprite_accessory/facial_hair indexed by name
+GLOBAL_LIST_EMPTY(hair_icons)
+GLOBAL_LIST_EMPTY(facial_hair_icons)
 
 var/global/list/skin_styles_female_list = list()		//unused
 GLOBAL_LIST_EMPTY(body_marking_styles_list)		//stores /datum/sprite_accessory/marking indexed by name
@@ -68,6 +71,9 @@ var/datum/visualnet/camera/cameranet = new()
 var/global/list/rune_list = new()
 
 var/global/list/syndicate_access = list(access_maint_tunnels, access_syndicate, access_external_airlocks)
+
+/// Implants
+GLOBAL_LIST_EMPTY(implants_list)
 
 // Strings which corraspond to bodypart covering flags, useful for outputting what something covers.
 var/global/list/string_part_flags = list(
@@ -128,6 +134,28 @@ var/global/list/string_slot_flags = list(
 		"Red" = COLOR_RED,
 		"White" = COLOR_WHITE
 	))
+	GLOB.hair_icons = list(
+		"default" = list(
+			SPECIES_HUMAN = 'icons/mob/human_races/face/hair.dmi',
+			SPECIES_TAJARA = 'icons/mob/human_races/face/hair_tajaran.dmi',
+			SPECIES_UNATHI = 'icons/mob/human_races/face/hair_unathi.dmi',
+			SPECIES_SKRELL = 'icons/mob/human_races/face/hair_skrell.dmi',
+			SPECIES_VOX = 'icons/mob/human_races/face/hair_vox.dmi',
+			SPECIES_SWINE = 'icons/mob/human_races/face/hair_swine.dmi'),
+		"slim" = list(
+			SPECIES_HUMAN = 'icons/mob/human_races/face/hair_slim.dmi',
+			SPECIES_TAJARA = 'icons/mob/human_races/face/hair_tajaran_slim.dmi',
+			SPECIES_SKRELL = 'icons/mob/human_races/face/hair_skrell_slim.dmi')
+	)
+	GLOB.facial_hair_icons = list(
+		"default" = list(
+			SPECIES_HUMAN = 'icons/mob/human_races/face/facial.dmi',
+			SPECIES_TAJARA = 'icons/mob/human_races/face/facial_tajaran.dmi',
+			SPECIES_SWINE = 'icons/mob/human_races/face/facial_swine.dmi'),
+		"slim" = list(
+			SPECIES_HUMAN = 'icons/mob/human_races/face/facial_slim.dmi',
+			SPECIES_TAJARA = 'icons/mob/human_races/face/facial_tajaran_slim.dmi')
+	)
 	return 1
 
 /proc/get_mannequin(ckey)
@@ -148,7 +176,7 @@ var/global/list/string_slot_flags = list(
 	for(var/path in paths)
 		var/datum/sprite_accessory/hair/H = new path()
 		GLOB.hair_styles_list[H.name] = H
-	GLOB.hair_styles_icons = icon_states('icons/mob/human_face.dmi')
+
 	//Facial Hair - Initialise all /datum/sprite_accessory/facial_hair into an list indexed by facialhair-style name
 	paths = typesof(/datum/sprite_accessory/facial_hair) - /datum/sprite_accessory/facial_hair
 	for(var/path in paths)
@@ -162,10 +190,10 @@ var/global/list/string_slot_flags = list(
 		GLOB.body_marking_styles_list[M.name] = M
 
 	//Surgery Steps - Initialize all /datum/surgery_step into a list
-	paths = typesof(/datum/surgery_step)-/datum/surgery_step
-	for(var/T in paths)
-		var/datum/surgery_step/S = new T
-		surgery_steps += S
+	paths = typesof(/datum/surgery_step) - /datum/surgery_step
+	for(var/path in paths)
+		var/datum/surgery_step/S = new path()
+		GLOB.surgery_steps += S
 	sort_surgeries()
 
 	//List of job. I can't believe this was calculated multiple times per tick!
@@ -183,7 +211,7 @@ var/global/list/string_slot_flags = list(
 
 	for (var/language_name in all_languages)
 		var/datum/language/L = all_languages[language_name]
-		if(!(L.flags & NONGLOBAL))
+		if(!(L.language_flags & NONGLOBAL))
 			language_keys[lowertext(L.key)] = L
 
 	var/rkey = 0

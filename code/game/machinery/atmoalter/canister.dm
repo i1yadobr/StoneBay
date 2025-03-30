@@ -6,6 +6,7 @@
 	var/health = 100.0
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	w_class = ITEM_SIZE_GARGANTUAN
+	turf_height_offset = 21
 
 	var/valve_open = 0
 	var/release_pressure = ONE_ATMOSPHERE
@@ -14,7 +15,7 @@
 	var/canister_color = "yellow"
 	var/can_label = 1
 	start_pressure = 45 * ONE_ATMOSPHERE
-	var/temperature_resistance = 1000 + T0C
+	var/temperature_resistance = 1000 CELSIUS
 	volume = 1000
 	interact_offline = 1 // Allows this to be used when not in powered area.
 	var/release_log = ""
@@ -37,6 +38,9 @@
 
 /obj/machinery/portable_atmospherics/canister/nitrogen/prechilled
 	name = "\improper Canister: \[N2 (Cooling)\]"
+
+/obj/machinery/portable_atmospherics/canister/nitrogen/airlock
+	start_pressure = 3 * ONE_ATMOSPHERE
 
 /obj/machinery/portable_atmospherics/canister/oxygen
 	name = "\improper Canister: \[O2\]"
@@ -134,7 +138,7 @@
 	else
 		return 0
 
-/obj/machinery/portable_atmospherics/canister/update_icon()
+/obj/machinery/portable_atmospherics/canister/on_update_icon()
 /*
 update_flag
 1 = holding
@@ -145,9 +149,9 @@ update_flag
 32 = tank_pressure go boom.
 */
 
-	if (src.destroyed)
-		src.overlays = 0
-		src.icon_state = text("[]-1", src.canister_color)
+	if(destroyed)
+		ClearOverlays()
+		icon_state = text("[]-1", src.canister_color)
 		return
 
 	if(icon_state != "[canister_color]")
@@ -156,20 +160,20 @@ update_flag
 	if(check_change()) //Returns 1 if no change needed to icons.
 		return
 
-	src.overlays = 0
+	ClearOverlays()
 
 	if(update_flag & 1)
-		overlays += "can-open"
+		AddOverlays("can-open")
 	if(update_flag & 2)
-		overlays += "can-connector"
+		AddOverlays("can-connector")
 	if(update_flag & 4)
-		overlays += "can-o0"
+		AddOverlays("can-o0")
 	if(update_flag & 8)
-		overlays += "can-o1"
+		AddOverlays("can-o1")
 	else if(update_flag & 16)
-		overlays += "can-o2"
+		AddOverlays("can-o2")
 	else if(update_flag & 32)
-		overlays += "can-o3"
+		AddOverlays("can-o3")
 	return
 
 /obj/machinery/portable_atmospherics/canister/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
@@ -188,6 +192,7 @@ update_flag
 		src.destroyed = 1
 		playsound(src.loc, 'sound/effects/spray.ogg', 10, 1, -3)
 		src.set_density(0)
+		set_turf_height_offset(12)
 		update_icon()
 
 		if (src.holding)
@@ -199,15 +204,24 @@ update_flag
 		return 1
 
 /obj/machinery/portable_atmospherics/canister/Process()
-	if (destroyed)
-		return
+	if(destroyed)
+		return PROCESS_KILL
 
 	..()
+
+	if(air_contents.return_pressure() < 1)
+		can_label = TRUE
+		// Not significant enought to process all the gassy stuff below
+		// It prevents us from completely emptying canisters by opening their valves in space
+		// But I'm fully willing to sacrifice that for the sake of performance ~~Toby
+		return
+	else
+		can_label = FALSE
 
 	if(valve_open)
 		var/datum/gas_mixture/environment
 		if(holding)
-			environment = holding.air_contents
+			environment = holding.return_air()
 		else
 			environment = loc.return_air()
 
@@ -216,18 +230,11 @@ update_flag
 
 		if((air_contents.temperature > 0) && (pressure_delta > 0))
 			var/transfer_moles = calculate_transfer_moles(air_contents, environment, pressure_delta)
-			transfer_moles = min(transfer_moles, (release_flow_rate/air_contents.volume)*air_contents.total_moles) //flow rate limit
+			transfer_moles = min(transfer_moles, (release_flow_rate / air_contents.volume) * air_contents.total_moles) //flow rate limit
 
 			var/returnval = pump_gas_passive(src, air_contents, environment, transfer_moles)
 			if(returnval >= 0)
-				src.update_icon()
-
-	if(air_contents.return_pressure() < 1)
-		can_label = 1
-	else
-		can_label = 0
-
-	air_contents.react() //cooking up air cans - add plasma and oxygen, then heat above PLASMA_MINIMUM_BURN_TEMPERATURE
+				update_icon()
 
 /obj/machinery/portable_atmospherics/canister/proc/return_temperature()
 	var/datum/gas_mixture/GM = src.return_air()
@@ -309,17 +316,23 @@ update_flag
 
 /obj/machinery/portable_atmospherics/canister/OnTopic(mob/user, href_list, state)
 	if(href_list["toggle"])
-		if (valve_open)
-			if (holding)
-				release_log += "Valve was <b>closed</b> by [user] ([user.ckey]), stopping the transfer into the [holding]<br>"
+		var/msg_log
+		var/msg_vis
+		if(valve_open)
+			if(holding)
+				msg_log = "Valve was <b>closed</b> by [user] ([user.ckey]), stopping the transfer into the [holding]<br>"
 			else
-				release_log += "Valve was <b>closed</b> by [user] ([user.ckey]), stopping the transfer into the <font color='red'><b>air</b></font><br>"
+				msg_log = "Valve was <b>closed</b> by [user] ([user.ckey]), stopping the transfer into the <font color='red'><b>air</b></font><br>"
+			msg_vis = "\The [user] closed \the [src]'s valve, stopping the transfer into [holding ? "\the [holding]" : "the <font color='red'><b>air</b></font>"]."
 		else
-			if (holding)
-				release_log += "Valve was <b>opened</b> by [user] ([user.ckey]), starting the transfer into the [holding]<br>"
+			if(holding)
+				msg_log = "Valve was <b>opened</b> by [user] ([user.ckey]), starting the transfer into the [holding]<br>"
 			else
-				release_log += "Valve was <b>opened</b> by [user] ([user.ckey]), starting the transfer into the <font color='red'><b>air</b></font><br>"
+				msg_log = "Valve was <b>opened</b> by [user] ([user.ckey]), starting the transfer into the <font color='red'><b>air</b></font><br>"
 				log_open()
+			msg_vis = "\The [user] opened \the [src]'s valve, starting the transfer into [holding ? "\the [holding]" : "the <font color='red'><b>air</b></font>"]."
+		release_log += msg_log
+		visible_message(msg_vis, "You hear the sound of a moving valve.", 4)
 		valve_open = !valve_open
 		. = TOPIC_REFRESH
 

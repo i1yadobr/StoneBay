@@ -32,7 +32,7 @@
 	desc = "A shoulder-mounted micro-explosive dispenser."
 	selectable = 1
 	icon_state = "grenadelauncher"
-	use_power_cost = 2 KILOWATTS	// 2kJ per shot, a mass driver that propels the grenade?
+	use_power_cost = 2 KILO WATTS	// 2kJ per shot, a mass driver that propels the grenade?
 
 	suit_overlay = "grenade"
 
@@ -46,6 +46,11 @@
 		list("flashbang",   "flashbang",   /obj/item/grenade/flashbang,  3),
 		list("smoke bomb",  "smoke bomb",  /obj/item/grenade/smokebomb,  3),
 		list("EMP grenade", "EMP grenade", /obj/item/grenade/empgrenade, 3),
+		)
+	timings = list(
+		list("2 seconds", "short",  20),
+		list("3 seconds", "medium", 30),
+		list("5 seconds", "long",	50),
 		)
 
 /obj/item/rig_module/grenade_launcher/accepts_item(obj/item/input_device, mob/living/user)
@@ -68,7 +73,6 @@
 		return 0
 
 	to_chat(user, "<span class='info'><b>You slot \the [input_device] into the suit module.</b></span>")
-	user.drop_from_inventory(input_device)
 	qdel(input_device)
 	accepted_item.charges++
 	return 1
@@ -84,7 +88,7 @@
 	var/mob/living/carbon/human/H = holder.wearer
 
 	if(!charge_selected)
-		to_chat(H, "<span class='danger'>You have not selected a grenade type.</span>")
+		to_chat(H, SPAN("danger","You have not selected a grenade type."))
 		return 0
 
 	var/datum/rig_charge/charge = charges[charge_selected]
@@ -93,16 +97,17 @@
 		return 0
 
 	if(charge.charges <= 0)
-		to_chat(H, "<span class='danger'>Insufficient grenades!</span>")
+		to_chat(H, SPAN("danger","Insufficient grenades!"))
 		return 0
 
 	charge.charges--
 	var/obj/item/grenade/new_grenade = new charge.product_type(get_turf(H))
-	H.visible_message("<span class='danger'>[H] launches \a [new_grenade]!</span>")
-	new_grenade.safety_pin = null
-	new_grenade.det_time = 10
+	
+	QDEL_NULL(new_grenade.safety_pin)
+	new_grenade.new_timing(timings[timing_selected].timing)
 	new_grenade.activate(H)
 	new_grenade.throw_at(target, fire_distance, fire_force)
+	H.visible_message(SPAN("danger","[H] launches \a [new_grenade]!"))
 
 /obj/item/rig_module/grenade_launcher/cleaner
 	name = "mounted cleaning grenade launcher"
@@ -219,7 +224,7 @@
 	usable = 0
 	selectable = 1
 	toggleable = 1
-	use_power_cost = 10 KILOWATTS
+	use_power_cost = 10 KILO WATTS
 	active_power_cost = 500
 	passive_power_cost = 0
 
@@ -247,7 +252,7 @@
 
 	var/obj/item/melee/energy/blade/blade = new(M)
 	blade.creator = weakref(M)
-	M.put_in_hands(blade)
+	M.pick_or_drop(blade)
 
 /obj/item/rig_module/mounted/energy_blade/deactivate()
 
@@ -259,7 +264,6 @@
 		return
 
 	for(var/obj/item/melee/energy/blade/blade in M.contents)
-		M.drop_from_inventory(blade)
 		qdel(blade)
 
 /obj/item/rig_module/fabricator
@@ -268,7 +272,7 @@
 	desc = "A self-contained microfactory system for powersuit integration."
 	selectable = 1
 	usable = 1
-	use_power_cost = 5 KILOWATTS
+	use_power_cost = 5 KILO WATTS
 	icon_state = "enet"
 
 	engage_string = "Fabricate Star"
@@ -299,13 +303,13 @@
 			var/obj/item/new_weapon = new fabrication_type()
 			new_weapon.forceMove(H)
 			to_chat(H, "<span class='info'><b>You quickly fabricate \a [new_weapon].</b></span>")
-			H.put_in_hands(new_weapon)
+			H.pick_or_drop(new_weapon)
 
 	return 1
 
 /obj/item/rig_module/fabricator/wf_sign
 	name = "wet floor sign fabricator"
-	use_power_cost = 50 KILOWATTS
+	use_power_cost = 50 KILO WATTS
 	engage_string = "Fabricate Sign"
 
 	interface_name = "work saftey launcher"

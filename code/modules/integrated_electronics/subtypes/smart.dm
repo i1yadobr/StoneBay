@@ -143,22 +143,22 @@
 	demands_object_input = TRUE
 	radial_menu_icon = "mmi_holder"
 
-	var/obj/item/device/mmi/installed_brain
+	var/obj/item/organ/internal/cerebrum/mmi/installed_brain
 
 /obj/item/integrated_circuit/input/mmi_tank/ask_for_input(mob/user)
 	attack_self(user)
 
-/obj/item/integrated_circuit/input/mmi_tank/attackby(obj/item/device/mmi/O, mob/user)
-	if(!istype(O,/obj/item/device/mmi))
+/obj/item/integrated_circuit/input/mmi_tank/attackby(obj/item/organ/internal/cerebrum/mmi/O, mob/user)
+	if(!istype(O,/obj/item/organ/internal/cerebrum/mmi))
 		to_chat(user,SPAN("warning", "You can't put that inside."))
 		return
 	if(installed_brain)
 		to_chat(user,SPAN("warning", "There's already a brain inside."))
 		return
-	user.drop_item(O)
-	O.forceMove(src)
+	if(!user.drop(O, src))
+		return
 	installed_brain = O
-	to_chat(user, SPAN("notice", "You gently place \the man-machine interface inside the tank."))
+	to_chat(user, SPAN("notice", "You gently place the man-machine interface inside the tank."))
 	to_chat(O, SPAN("notice", "You are slowly being placed inside the man-machine-interface tank."))
 	set_pin_data(IC_OUTPUT, 1, O)
 
@@ -201,8 +201,8 @@
 /mob/living/carbon/brain/ClickOn(atom/A, params)
 	..()
 	var/obj/item/integrated_circuit/input/mmi_tank/brainholder
-	if(istype(loc, /obj/item/device/mmi))
-		var/obj/item/device/mmi/H = loc
+	if(istype(loc, /obj/item/organ/internal/cerebrum/mmi))
+		var/obj/item/organ/internal/cerebrum/mmi/H = loc
 		if(istype(H.loc, /obj/item/integrated_circuit/input/mmi_tank))
 			brainholder = H.loc
 	if(!istype(brainholder))
@@ -276,8 +276,8 @@
 	if(installed_pai)
 		to_chat(user,SPAN("warning", "There's already a pAI connected to this."))
 		return
-	user.drop_item(O)
-	O.forceMove(src)
+	if(!user.drop(O, src))
+		return
 	installed_pai = O
 	to_chat(user, SPAN("notice", "You slowly connect the circuit's pins to the [installed_pai]."))
 	to_chat(O, SPAN("notice", "You are slowly being connected to the pAI connector."))

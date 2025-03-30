@@ -14,11 +14,20 @@
 /obj/machinery/computer/cryopod
 	name = "cryogenic oversight console"
 	desc = "An interface between crew and the cryogenic storage oversight systems."
+
 	icon = 'icons/obj/cryogenic2.dmi'
 	icon_state = "cellconsole"
+	icon_screen = "cellconsole_on"
+	icon_keyboard = "cellconsole_key"
+	light_color = "#00FF25"
+	light_max_bright_on = 1.0
+	light_inner_range_on = 0.5
+	light_outer_range_on = 3
+
 	circuit = /obj/item/circuitboard/cryopodcontrol
 	density = 0
 	interact_offline = 1
+	turf_height_offset = 0
 	var/datum/browser/browser = null
 	var/menu = MAIN
 
@@ -36,6 +45,9 @@
 	desc = "An interface between crew and the robotic storage systems."
 	icon = 'icons/obj/robot_storage.dmi'
 	icon_state = "console"
+	icon_screen = "console_on"
+	icon_keyboard = "console_key"
+	light_color = "#0099FF"
 	circuit = /obj/item/circuitboard/robotstoragecontrol
 
 	storage_type = "cyborgs"
@@ -184,7 +196,7 @@
 	dir = WEST
 	req_one_access = list(access_security)
 
-	var/base_icon_state = "body_scanner_0"
+	base_icon_state = "body_scanner_0"
 	var/occupied_icon_state = "body_scanner_1"
 	var/on_store_message = "has entered long-term storage."
 	var/on_store_name = "Cryogenic Oversight"
@@ -208,7 +220,7 @@
 		/obj/item/integrated_circuit/input/teleporter_locator,
 		/obj/item/card/id/captains_spare,
 		/obj/item/aicard,
-		/obj/item/device/mmi,
+		/obj/item/organ/internal/cerebrum/mmi,
 		/obj/item/device/paicard,
 		/obj/item/gun,
 		/obj/item/pinpointer,
@@ -248,7 +260,7 @@
 /obj/machinery/cryopod/lifepod/Initialize()
 	. = ..()
 	airtank = new()
-	airtank.temperature = T0C
+	airtank.temperature = 0 CELSIUS
 	airtank.adjust_gas("oxygen", MOLES_O2STANDARD, 0)
 	airtank.adjust_gas("nitrogen", MOLES_N2STANDARD)
 
@@ -293,18 +305,21 @@
 	find_control_computer()
 	announce = new /obj/item/device/radio/intercom(src)
 
-/obj/machinery/cryopod/_examine_text(mob/user)
+/obj/machinery/cryopod/examine(mob/user, infix)
 	. = ..()
-	if (user.Adjacent(src))
-		if(occupant)
-			. += "\n[occupant._examine_text(user)]"
+
+	if(!user.Adjacent(src))
+		return
+
+	if(occupant)
+		. += "It has [SPAN_NOTICE("[occupant]")] inside."
 
 /obj/machinery/cryopod/emag_act(remaining_charges, mob/user)
 	if(!emagged)
 		playsound(src.loc, 'sound/effects/computer_emag.ogg', 25)
-		to_chat(user, "<span class='notice'The locking mechanism has been disabled.</span>")
-		emagged = 1
-		return 1
+		to_chat(user, SPAN_NOTICE("The locking mechanism has been disabled."))
+		emagged = TRUE
+		return TRUE
 
 /obj/machinery/cryopod/proc/find_control_computer(urgent=0)
 	// Workaround for http://www.byond.com/forum/?post=2007448
@@ -380,18 +395,21 @@
 		return
 	despawning_now = TRUE
 	//Drop all items into the pod.
-	for(var/obj/item/I in occupant)
-		occupant.drop_from_inventory(I)
-		I.forceMove(src)
-
-		if(I.contents.len) //Make sure we catch anything not handled by qdel() on the items.
+	for(var/obj/item/I in occupant.contents)
+		if(QDELETED(I))
+			continue
+		if(I in occupant.contents) // Since things may actually be dropped upon removing other things (i.e. removing uniform first causes belts to drop)
+			occupant.drop(I, src)
+		else
+			I.forceMove(src)
+		if(length(I.contents)) // Make sure we catch anything not handled by qdel() on the items.
 			for(var/obj/item/O in I.contents)
-				if(istype(O, /obj/item/storage/internal)) //Stop eating pockets, you fuck!
+				if(istype(O, /obj/item/storage/internal)) // Stop eating pockets, you fuck!
 					continue
 				O.forceMove(src)
 
 	//Delete all items not on the preservation list.
-	var/list/items = src.contents.Copy()
+	var/list/items = contents.Copy()
 	items -= occupant // Don't delete the occupant
 	items -= announce // or the autosay radio.
 
@@ -399,8 +417,8 @@
 
 		var/preserve = null
 		// Snowflaaaake.
-		if(istype(I, /obj/item/device/mmi))
-			var/obj/item/device/mmi/brain = I
+		if(istype(I, /obj/item/organ/internal/cerebrum/mmi))
+			var/obj/item/organ/internal/cerebrum/mmi/brain = I
 			if(brain.brainmob && brain.brainmob.client && brain.brainmob.key)
 				preserve = 1
 			else
@@ -416,9 +434,9 @@
 		else
 			if(control_computer && control_computer.allow_items)
 				control_computer.frozen_items += I
-				I.loc = null
+				I.forceMove(null)
 			else
-				I.forceMove(src.loc)
+				I.dropInto(loc)
 
 	//Update any existing objectives involving this mob.
 	for(var/datum/antag_contract/AC in GLOB.all_contracts)
@@ -461,7 +479,7 @@
 		control_computer._admin_logs += "[key_name(occupant)] ([role_alt_title]) at [stationtime2text()]"
 	log_and_message_admins("[key_name(occupant)] ([role_alt_title]) entered cryostorage.")
 
-	announce.autosay("[occupant.real_name], [role_alt_title], [on_store_message]", get_announcement_computer("[on_store_name]"))
+	announce.autosay("[occupant.real_name], [role_alt_title], [on_store_message]", "[on_store_name]")
 	visible_message("<span class='notice'>\The [initial(name)] hums and hisses as it moves [occupant.real_name] into storage.</span>")
 
 	//This should guarantee that ghosts don't spawn.
@@ -545,12 +563,12 @@
 	if(occupant)
 		to_chat(user, "<span class='warning'>\The [src] is already occupied.</span>")
 		return
-	if(name == "cryogenic freezer" && M.stat == DEAD)
+	if(name == "cryogenic freezer" && M.is_ic_dead())
 		to_chat(user, "<span class='warning'>\The [src]s are not designed to store bodies. Contact the medical unit.</span>")
 		var/area/t = get_area(M)
 		var/location = t.name
 		for(var/channel in list("Security", "Medical"))
-			GLOB.global_headset.autosay("Someone is trying to store a dead body in [name] at [location]!", get_announcement_computer("[name] warning"), channel)
+			GLOB.global_headset.autosay("Someone is trying to store a dead body in [name] at [location]!", ("[name] warning"), channel)
 		return
 	if(M == user)
 		visible_message("\The [user] starts climbing into \the [src].")

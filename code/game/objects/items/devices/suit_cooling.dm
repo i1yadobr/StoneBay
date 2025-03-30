@@ -1,8 +1,8 @@
 /obj/item/device/suit_cooling_unit
 	name = "portable cooling unit"
 	desc = "A large portable heat sink with liquid cooled radiator packaged into a modified backpack."
-	description_info = "You may wear this instead of your packpack to cool yourself down. It is commonly used by IPCs, \
-	as it allows them to go into low pressure environments for more than few seconds without overheating. It runs off energy provided by an internal power cell. \
+	description_info = "You may wear this instead of your packpack to cool yourself down. \
+	It allows them to go into low pressure environments for more than few seconds without overheating. It runs off energy provided by an internal power cell. \
 	Remember to turn it on by clicking it when it's your in your hand before you put it on."
 	description_fluff = "Before the advent of ultra-heat-resistant fibers and flexible alloyed shielding, portable coolers were most commonly used to keep technicians from roasting alive in their suits. Nowadays they have been repurposed to keep IPCs from overheating in vacuum environments."
 
@@ -27,27 +27,29 @@
 	var/cover_open = 0						//is the cover open?
 	var/obj/item/cell/cell
 	var/max_cooling = 12					// in degrees per second - probably don't need to mess with heat capacity here
-	var/charge_consumption = 2 KILOWATTS	// energy usage at full power
-	var/thermostat = T20C
+	var/charge_consumption = 2 KILO WATTS	// energy usage at full power
+	var/thermostat = 20 CELSIUS
 
 /obj/item/device/suit_cooling_unit/ui_action_click()
 	toggle(usr)
 
 /obj/item/device/suit_cooling_unit/Initialize()
 	. = ..()
-	START_PROCESSING(SSobj, src)
-	cell = new /obj/item/cell/high()		// 10K rated cell.
-	cell.forceMove(src)
+	cell = new /obj/item/cell/high(src)
+	if(on)
+		set_next_think(world.time)
 
 /obj/item/device/suit_cooling_unit/Destroy()
-	. = ..()
-	STOP_PROCESSING(SSobj, src)
+	QDEL_NULL(cell)
+	return ..()
 
-/obj/item/device/suit_cooling_unit/Process()
+/obj/item/device/suit_cooling_unit/think()
 	if (!on || !cell)
+		turn_off(1)
 		return
 
 	if (!is_in_slot())
+		turn_off(1)
 		return
 
 	var/mob/living/carbon/human/H = loc
@@ -55,6 +57,7 @@
 	var/temp_adj = min(H.bodytemperature - thermostat, max_cooling)
 
 	if (temp_adj < 0.5)	//only cools, doesn't heat, also we don't need extreme precision
+		set_next_think(world.time + 1 SECOND)
 		return
 
 	var/charge_usage = (temp_adj/max_cooling)*charge_consumption
@@ -66,6 +69,9 @@
 
 	if(cell.charge <= 0)
 		turn_off(1)
+		return
+
+	set_next_think(world.time + 1 SECOND)
 
 // Checks whether the cooling unit is being worn on the back/suit slot.
 // That way you can't carry it in your hands while it's running to cool yourself down.
@@ -84,16 +90,18 @@
 
 	on = 1
 	update_icon()
+	set_next_think(world.time)
 
 /obj/item/device/suit_cooling_unit/proc/turn_off(failed)
 	if(failed) visible_message("\The [src] clicks and whines as it powers down.")
 	on = 0
 	update_icon()
+	set_next_think(0)
 
 /obj/item/device/suit_cooling_unit/attack_self(mob/user)
 	if(cover_open && cell)
 		if(ishuman(user))
-			user.put_in_hands(cell)
+			user.pick_or_drop(cell)
 		else
 			cell.forceMove(get_turf(src))
 
@@ -129,9 +137,7 @@
 		if(cover_open)
 			if(cell)
 				to_chat(user, "There is a [cell] already installed here.")
-			else
-				user.drop_item()
-				W.forceMove(src)
+			else if(user.drop(W, src))
 				cell = W
 				to_chat(user, "You insert the [cell].")
 		update_icon()
@@ -139,8 +145,8 @@
 
 	return ..()
 
-/obj/item/device/suit_cooling_unit/update_icon()
-	overlays.Cut()
+/obj/item/device/suit_cooling_unit/on_update_icon()
+	ClearOverlays()
 	if (cover_open)
 		if (cell)
 			icon_state = "suitcooler1"
@@ -153,33 +159,34 @@
 	if(!cell || !on)
 		return
 
-	switch(round(cell.percent()))
+	switch(round(CELL_PERCENT(cell)))
 		if(86 to INFINITY)
-			overlays.Add("battery-0")
+			AddOverlays("battery-0")
 		if(69 to 85)
-			overlays.Add("battery-1")
+			AddOverlays("battery-1")
 		if(52 to 68)
-			overlays.Add("battery-2")
+			AddOverlays("battery-2")
 		if(35 to 51)
-			overlays.Add("battery-3")
+			AddOverlays("battery-3")
 		if(18 to 34)
-			overlays.Add("battery-4")
+			AddOverlays("battery-4")
 		if(-INFINITY to 17)
-			overlays.Add("battery-5")
+			AddOverlays("battery-5")
 
 
-/obj/item/device/suit_cooling_unit/_examine_text(mob/user)
+/obj/item/device/suit_cooling_unit/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 1)
 		return
 
-	if (on)
-		. += "\nIt's switched on and running."
+	if(on)
+		. += "It's switched on and running."
 	else
-		. += "\nIt is switched off."
+		. += "It is switched off."
 
-	if (cover_open)
-		. += "\nThe panel is open."
+	if(cover_open)
+		. += "The panel is open."
 
-	if (cell)
-		. += "\nThe charge meter reads [round(cell.percent())]%."
+	if(cell)
+		. += "The charge meter reads [round(CELL_PERCENT(cell))]%."

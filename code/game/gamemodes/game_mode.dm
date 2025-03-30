@@ -27,13 +27,9 @@ var/global/list/additional_antag_types = list()
 	var/round_autoantag = 0                  // Will this round attempt to periodically spawn more antagonists?
 	var/antag_scaling_coeff = 5              // Coefficient for scaling max antagonists to player count. How many players for one antag
 	var/require_all_templates = 0            // Will only start if all templates are checked and can spawn.
-	var/addantag_allowed = ADDANTAG_ADMIN | ADDANTAG_AUTO
 
 	var/station_was_nuked = 0                // See nuclearbomb.dm and malfunction.dm.
 	var/explosion_in_progress = 0            // Sit back and relax
-
-	var/event_delay_mod_moderate             // Modifies the timing of random events.
-	var/event_delay_mod_major                // As above.
 
 	var/waittime_l = 60 SECONDS				 // Lower bound on time before start of shift report
 	var/waittime_h = 180 SECONDS		     // Upper bounds on time before start of shift report
@@ -86,18 +82,6 @@ var/global/list/additional_antag_types = list()
 				if(isnull(choice) || choice < 0 || choice > 100)
 					return
 				antag_scaling_coeff = choice
-			if("event_modifier_moderate")
-				choice = input("Enter a new moderate event time modifier.") as num
-				if(isnull(choice) || choice < 0 || choice > 100)
-					return
-				event_delay_mod_moderate = choice
-				refresh_event_modifiers()
-			if("event_modifier_severe")
-				choice = input("Enter a new moderate event time modifier.") as num
-				if(isnull(choice) || choice < 0 || choice > 100)
-					return
-				event_delay_mod_major = choice
-				refresh_event_modifiers()
 		message_admins("Admin [key_name_admin(usr)] set game mode option '[href_list["set"]]' to [choice].")
 	else if(href_list["debug_antag"])
 		if(href_list["debug_antag"] == "self")
@@ -191,16 +175,6 @@ var/global/list/additional_antag_types = list()
 	else
 		return TRUE
 
-/datum/game_mode/proc/refresh_event_modifiers()
-	if(event_delay_mod_moderate || event_delay_mod_major)
-		SSevent.report_at_round_end = 1
-		if(event_delay_mod_moderate)
-			var/datum/event_container/EModerate = SSevent.event_containers[EVENT_LEVEL_MODERATE]
-			EModerate.delay_modifier = event_delay_mod_moderate
-		if(event_delay_mod_moderate)
-			var/datum/event_container/EMajor = SSevent.event_containers[EVENT_LEVEL_MAJOR]
-			EMajor.delay_modifier = event_delay_mod_major
-
 /datum/game_mode/proc/pre_setup()
 	for(var/datum/antagonist/antag in antag_templates)
 		antag.update_current_antag_max(src)
@@ -214,8 +188,6 @@ var/global/list/additional_antag_types = list()
 /datum/game_mode/proc/post_setup()
 
 	next_spawn = world.time + rand(min_autotraitor_delay, max_autotraitor_delay)
-
-	refresh_event_modifiers()
 
 	spawn (ROUNDSTART_LOGOUT_REPORT_TIME)
 		display_roundstart_logout_report()
@@ -273,7 +245,6 @@ var/global/list/additional_antag_types = list()
 		"malfunctioning von Neumann probe swarms",
 		"shadowy interlopers",
 		"a stranded Vox arkship",
-		"haywire IPC constructs",
 		"rogue Unathi exiles",
 		"artifacts of eldritch horror",
 		"a brain slug infestation",
@@ -284,7 +255,8 @@ var/global/list/additional_antag_types = list()
 		"radical Skrellian transevolutionaries",
 		"classified security operations"
 		)
-	command_announcement.Announce("The presence of [pick(reasons)] in the region is tying up all available local emergency resources; emergency response teams cannot be called at this time, and post-evacuation recovery efforts will be substantially delayed.","Emergency Transmission")
+
+	SSannounce.play_station_announce(/datum/announce/ert_cancelled, "The presence of [pick(reasons)] in the region is tying up all available local emergency resources; emergency response teams cannot be called at this time, and post-evacuation recovery efforts will be substantially delayed.")
 
 /datum/game_mode/proc/check_finished()
 	if(evacuation_controller.round_over() || station_was_nuked)
@@ -390,7 +362,7 @@ var/global/list/additional_antag_types = list()
 	return
 
 // Manipulates the end-game cinematic in conjunction with GLOB.cinematic
-/datum/game_mode/proc/nuke_act(obj/screen/cinematic_screen, station_missed = 0)
+/datum/game_mode/proc/nuke_act(atom/movable/screen/cinematic_screen, station_missed = 0)
 	if(!cinematic_icon_states)
 		return
 	if(station_missed < 2)
@@ -438,7 +410,7 @@ var/global/list/additional_antag_types = list()
 				if(L.stat == UNCONSCIOUS)
 					msg += "<b>[L.name]</b> ([L.ckey]), the [L.job] (Dying)\n"
 					continue //Unconscious
-				if(L.stat == DEAD)
+				if(L.is_ooc_dead())
 					msg += "<b>[L.name]</b> ([L.ckey]), the [L.job] (Dead)\n"
 					continue //Dead
 
@@ -446,7 +418,7 @@ var/global/list/additional_antag_types = list()
 		for(var/mob/observer/ghost/D in SSmobs.mob_list)
 			var/mob/living/original_mob = D.mind?.original_mob?.resolve()
 			if(D.mind && ((istype(original_mob) && original_mob == L) || D.mind.current == L))
-				if(L.stat == DEAD)
+				if(L.is_ooc_dead())
 					msg += "<b>[L.name]</b> ([ckey(D.mind.key)]), the [L.job] (Dead)\n"
 					continue //Dead mob, ghost abandoned
 				else

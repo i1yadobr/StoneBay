@@ -10,8 +10,8 @@
 	layer = ABOVE_HUMAN_LAYER // this needs to be fairly high so it displays over most things, but it needs to be under lighting
 
 	var/on = 0
-	idle_power_usage = 20
-	active_power_usage = 200
+	idle_power_usage = 20 WATTS
+	active_power_usage = 200 WATTS
 	clicksound = 'sound/machines/buttonbeep.ogg'
 	clickvol = 30
 
@@ -42,14 +42,13 @@
 		'sound/effects/machinery/medical/beep6.ogg'
 	)
 
-/obj/machinery/atmospherics/unary/cryo_cell/New()
-	..()
+/obj/machinery/atmospherics/unary/cryo_cell/Initialize()
+	. = ..()
 	icon = 'icons/obj/cryogenics_split.dmi'
 	update_icon()
-	initialize_directions = dir
 
 	RefreshParts()
-	update_icon()
+	atmos_init()
 
 /obj/machinery/atmospherics/unary/cryo_cell/Destroy()
 	var/turf/T = loc
@@ -72,13 +71,16 @@
 			node = target
 			break
 
-/obj/machinery/atmospherics/unary/cryo_cell/_examine_text(mob/user)
+/obj/machinery/atmospherics/unary/cryo_cell/examine(mob/user, infix)
 	. = ..()
-	if(user.Adjacent(src))
-		if(beaker)
-			. += "\nIt is loaded with a beaker."
-		if(emagged)
-			. += "\nThe panel is loose and the circuitry is charred."
+
+	if(!user.Adjacent(src))
+		return
+
+	if(beaker)
+		. += "It is loaded with a beaker."
+	if(emagged)
+		. += "The panel is loose and the circuitry is charred."
 
 /obj/machinery/atmospherics/unary/cryo_cell/Process()
 	if(stat & (BROKEN|NOPOWER))
@@ -93,7 +95,7 @@
 	play_beep()
 
 	if(occupant)
-		if(occupant.stat != DEAD)
+		if(!occupant.is_ic_dead())
 			THROTTLE(icon_update_cooldown, 3 SECONDS)
 			if(icon_update_cooldown)
 				update_icon()
@@ -102,7 +104,7 @@
 	if(air_contents)
 		temperature_archived = air_contents.temperature
 		heat_gas_contents()
-		if(occupant && iscarbon(occupant) && occupant.stat != DEAD && !occupant.is_asystole() && !occupant.losebreath)
+		if(occupant && iscarbon(occupant) && !occupant.is_ic_dead() && !occupant.is_asystole() && !occupant.losebreath)
 			expel_gas()
 
 	if(abs(temperature_archived-air_contents.temperature) > 1)
@@ -163,9 +165,9 @@
 
 	data["cellTemperature"] = round(air_contents.temperature)
 	data["cellTemperatureStatus"] = "good"
-	if(air_contents.temperature > T0C) // if greater than 273.15 kelvin (0 celcius)
+	if(air_contents.temperature > (0 CELSIUS))
 		data["cellTemperatureStatus"] = "bad"
-	else if(air_contents.temperature > 170)
+	else if(air_contents.temperature > (170 KELVIN))
 		data["cellTemperatureStatus"] = "average"
 
 	data["isBeakerLoaded"] = beaker ? 1 : 0
@@ -240,10 +242,9 @@
 		if(beaker)
 			to_chat(user, SPAN("warning", "A beaker is already loaded into the machine."))
 			return
-
-		beaker =  G
-		user.drop_item()
-		G.forceMove(src)
+		if(!user.drop(G, src))
+			return
+		beaker = G
 		user.visible_message("[user] adds \a [G] to \the [src]!", "You add \a [G] to \the [src]!")
 	else if(istype(G, /obj/item/grab))
 		if(!ismob(G:affecting))
@@ -263,8 +264,8 @@
 			user.visible_message(SPAN("notice", "\The [user] places \the [M] into \the [src]."), SPAN("notice", "You place \the [M] into \the [src]."))
 	return
 
-/obj/machinery/atmospherics/unary/cryo_cell/update_icon()
-	overlays.Cut()
+/obj/machinery/atmospherics/unary/cryo_cell/on_update_icon()
+	ClearOverlays()
 	var/overlays_state = 0
 	if(stat & (BROKEN|NOPOWER))
 		overlays_state = 0
@@ -276,27 +277,27 @@
 	I = image(icon, "pod[overlays_state]_top")
 
 	I.pixel_z = 32
-	overlays += I
+	AddOverlays(I)
 
 	if(occupant)
 		occupant.UpdateDamageIcon()
 		var/image/pickle = image(occupant.icon, occupant.icon_state)
-		pickle.overlays = occupant.overlays
+		pickle.CopyOverlays(occupant)
 		pickle.pixel_z = 18
-		overlays += pickle
+		AddOverlays(pickle)
 
 	I = image(icon, "lid[overlays_state]")
-	overlays += I
+	AddOverlays(I)
 
 	I = image(icon, "lid[overlays_state]_top")
 	I.pixel_z = 32
-	overlays += I
+	AddOverlays(I)
 
 /obj/machinery/atmospherics/unary/cryo_cell/proc/process_occupant()
 	if(air_contents.total_moles < 10)
 		return
 	if(occupant)
-		if(occupant.stat == DEAD)
+		if(occupant.is_ic_dead())
 			return
 
 		// Just empty a cryo if occupant isn't here
@@ -337,7 +338,7 @@
 	var/air_heat_capacity = air_contents.heat_capacity()
 	var/combined_heat_capacity = current_heat_capacity + air_heat_capacity
 	if(combined_heat_capacity > 0)
-		var/combined_energy = T20C*current_heat_capacity + air_heat_capacity*air_contents.temperature
+		var/combined_energy = (20 CELSIUS) * current_heat_capacity + air_heat_capacity * air_contents.temperature
 		air_contents.temperature = combined_energy/combined_heat_capacity
 
 /obj/machinery/atmospherics/unary/cryo_cell/proc/expel_gas()
@@ -386,7 +387,7 @@
 	M.stop_pulling()
 	M.forceMove(src)
 	M.ExtinguishMob()
-	if(M.stat != DEAD && air_contents.temperature <= 278)
+	if(!M.is_ic_dead() && air_contents.temperature <= 278)
 		to_chat(M, SPAN("notice", "<b>You feel a cold liquid surround you. Your skin starts to freeze up.</b>"))
 	occupant = M
 	current_heat_capacity = HEAT_CAPACITY_HUMAN

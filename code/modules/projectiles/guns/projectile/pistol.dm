@@ -13,7 +13,7 @@
 	magazine_type = /obj/item/ammo_magazine/c45m
 	allowed_magazines = /obj/item/ammo_magazine/c45m
 	caliber = ".45"
-/obj/item/gun/projectile/pistol/secgun/update_icon()
+/obj/item/gun/projectile/pistol/secgun/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "secguncomp"
@@ -30,7 +30,7 @@
 	icon_state = "secgundark"
 	accuracy = 0
 
-/obj/item/gun/projectile/pistol/secgun/wood/update_icon()
+/obj/item/gun/projectile/pistol/secgun/wood/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "secgundark"
@@ -46,7 +46,7 @@
 	caliber = ".45"
 	fire_sound = 'sound/effects/weapons/gun/fire_colt2.ogg'
 
-/obj/item/gun/projectile/pistol/colt/update_icon()
+/obj/item/gun/projectile/pistol/colt/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "colt"
@@ -60,7 +60,7 @@
 	accuracy = 0.35
 	fire_delay = 6.5
 
-/obj/item/gun/projectile/pistol/colt/officer/update_icon()
+/obj/item/gun/projectile/pistol/colt/officer/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "usp"
@@ -77,7 +77,7 @@
 	caliber = ".45"
 	accuracy = -0.35
 
-/obj/item/gun/projectile/pistol/vp78/update_icon()
+/obj/item/gun/projectile/pistol/vp78/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "VP78"
@@ -91,7 +91,7 @@
 	accuracy = 0.35
 	fire_delay = 4.5
 
-/obj/item/gun/projectile/pistol/vp78/wood/update_icon()
+/obj/item/gun/projectile/pistol/vp78/wood/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "VP78wood"
@@ -107,7 +107,7 @@
 	auto_eject_sound = 'sound/effects/weapons/misc/smg_empty_alarm.ogg'
 	fire_delay = 6.5
 
-/obj/item/gun/projectile/pistol/vp78/tactical/update_icon()
+/obj/item/gun/projectile/pistol/vp78/tactical/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "VP78tactic"
@@ -118,6 +118,7 @@
 	name = "silenced pistol"
 	desc = "A handgun with an integral silencer. Uses .45 rounds."
 	icon_state = "silenced_pistol"
+	item_state = "silenced_pistol"
 	w_class = ITEM_SIZE_NORMAL
 	caliber = ".45"
 	silenced = 1
@@ -128,6 +129,13 @@
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2, TECH_ILLEGAL = 8)
 	magazine_type = /obj/item/ammo_magazine/c45m
 	allowed_magazines = /obj/item/ammo_magazine/c45m
+
+/obj/item/gun/projectile/pistol/silenced/on_update_icon()
+	..()
+	if(ammo_magazine && ammo_magazine.stored_ammo.len)
+		icon_state = "silenced_pistol"
+	else
+		icon_state = "silenced_pistol-e"
 
 /obj/item/gun/projectile/pistol/magnum_pistol
 	name = ".50 magnum pistol"
@@ -145,7 +153,7 @@
 	allowed_magazines = /obj/item/ammo_magazine/a50
 	fire_sound = 'sound/effects/weapons/gun/fire2.ogg'
 
-/obj/item/gun/projectile/pistol/magnum_pistol/update_icon()
+/obj/item/gun/projectile/pistol/magnum_pistol/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "magnum"
@@ -169,7 +177,7 @@
 	auto_eject_sound = 'sound/effects/weapons/misc/smg_empty_alarm.ogg'
 	fire_sound = 'sound/effects/weapons/gun/fire3.ogg'
 
-/obj/item/gun/projectile/pistol/gyropistol/update_icon()
+/obj/item/gun/projectile/pistol/gyropistol/on_update_icon()
 	..()
 	if(ammo_magazine)
 		icon_state = "gyropistolloaded"
@@ -191,7 +199,7 @@
 	allowed_magazines = /obj/item/ammo_magazine/mc9mm
 	fire_sound = 'sound/effects/weapons/gun/fire_9mm.ogg'
 
-/obj/item/gun/projectile/pistol/det_m9/update_icon()
+/obj/item/gun/projectile/pistol/det_m9/on_update_icon()
 	..()
 	if(ammo_magazine && ammo_magazine.stored_ammo.len)
 		icon_state = "det-m9"
@@ -226,7 +234,7 @@
 				..()
 				return
 			to_chat(user, "<span class='notice'>You unscrew [silenced] from [src].</span>")
-			user.put_in_hands(silenced)
+			user.pick_or_drop(silenced, loc)
 			silenced = initial(silenced)
 			w_class = initial(w_class)
 			fire_sound = 'sound/effects/weapons/gun/fire_9mm2.ogg'
@@ -239,17 +247,17 @@
 		if(user.l_hand != src && user.r_hand != src)	//if we're not in his hands
 			to_chat(user, "<span class='notice'>You'll need [src] in your hands to do that.</span>")
 			return
-		user.drop_item()
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "<span class='notice'>You screw [I] onto [src].</span>")
 		silenced = I	//dodgy?
 		w_class = ITEM_SIZE_NORMAL
-		I.forceMove(src)		//put the silencer into the gun
 		update_icon()
 		fire_sound = SFX_SILENT_FIRE
 		return
 	..()
 
-/obj/item/gun/projectile/pistol/holdout/update_icon()
+/obj/item/gun/projectile/pistol/holdout/on_update_icon()
 	..()
 	if(silenced)
 		icon_state = "pistol-silencer"
@@ -261,7 +269,7 @@
 /obj/item/silencer
 	name = "silencer"
 	desc = "A silencer."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "silencer"
 	w_class = ITEM_SIZE_SMALL
 
@@ -278,6 +286,8 @@
 	max_shells = 1 //literally just a barrel
 	fire_sound = 'sound/effects/weapons/gun/fire6.ogg'
 
+	has_safety = FALSE
+
 	var/global/list/ammo_types = list(
 		/obj/item/ammo_casing/a357              = ".357",
 		/obj/item/ammo_casing/a762              = "7.62mm",
@@ -285,12 +295,12 @@
 		)
 
 /obj/item/gun/projectile/pirate/Initialize()
+	. = ..()
 	ammo_type = pick(ammo_types)
 	desc += " Uses [ammo_types[ammo_type]] rounds."
 
 	var/obj/item/ammo_casing/ammo = ammo_type
 	caliber = initial(ammo.caliber)
-	..()
 
 // Zip gun construction.
 /obj/item/zipgunframe
@@ -305,24 +315,24 @@
 	mod_handy = 0.75
 	var/buildstate = 0
 
-/obj/item/zipgunframe/update_icon()
+/obj/item/zipgunframe/on_update_icon()
 	icon_state = "zipgun[buildstate]"
 
-/obj/item/zipgunframe/_examine_text(mob/user)
+/obj/item/zipgunframe/examine(mob/user, infix)
 	. = ..()
+
 	switch(buildstate)
-		if(1) . += "\nIt has a barrel loosely fitted to the stock."
-		if(2) . += "\nIt has a barrel that has been secured to the stock with tape."
-		if(3) . += "\nIt has a trigger and firing pin assembly loosely fitted into place."
+		if(1) . += "It has a barrel loosely fitted to the stock."
+		if(2) . += "It has a barrel that has been secured to the stock with tape."
+		if(3) . += "It has a trigger and firing pin assembly loosely fitted into place."
 
 /obj/item/zipgunframe/attackby(obj/item/thing, mob/user)
 	if(istype(thing,/obj/item/pipe) && buildstate == 0)
-		user.drop_from_inventory(thing)
-		qdel(thing)
 		user.visible_message("<span class='notice'>\The [user] fits \the [thing] to \the [src] as a crude barrel.</span>")
 		add_fingerprint(user)
 		buildstate++
 		update_icon()
+		qdel(thing)
 		return
 	else if(istype(thing,/obj/item/tape_roll) && buildstate == 1)
 		user.visible_message("<span class='notice'>\The [user] secures the assembly with \the [thing].</span>")
@@ -331,24 +341,23 @@
 		update_icon()
 		return
 	else if(istype(thing,/obj/item/device/assembly/mousetrap) && buildstate == 2)
-		user.drop_from_inventory(thing)
-		qdel(thing)
 		user.visible_message("<span class='notice'>\The [user] takes apart \the [thing] and uses the parts to construct a crude trigger and firing mechanism inside the assembly.</span>")
 		add_fingerprint(user)
 		buildstate++
 		update_icon()
+		qdel(thing)
 		return
 	else if(isScrewdriver(thing) && buildstate == 3)
 		user.visible_message("<span class='notice'>\The [user] secures the trigger assembly with \the [thing].</span>")
 		playsound(loc, 'sound/items/Screwdriver.ogg', 50, 1)
 		var/obj/item/gun/projectile/pirate/zipgun
 		zipgun = new /obj/item/gun/projectile/pirate { starts_loaded = 0 } (loc)
+		transfer_fingerprints_to(zipgun)
 		if(ismob(loc))
 			var/mob/M = loc
-			M.drop_from_inventory(src)
-			M.put_in_hands(zipgun)
-		transfer_fingerprints_to(zipgun)
-		qdel(src)
+			M.replace_item(src, zipgun, TRUE)
+		else
+			qdel(src)
 		return
 	else
 		..()

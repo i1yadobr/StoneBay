@@ -9,3 +9,18 @@
 
 /// Called on `/mob/living/set_stat` (/mob/living, old_stat, new_stat)
 #define SIGNAL_STAT_SET "set_stat"
+
+/// Called on `/mob/proc/shift_view` (/mob, old_stat, new_stat)
+#define SIGNAL_VIEW_SHIFTED_SET "view_shift_set"
+
+/// Called on `/mob/proc/ghostize` (/mob, can_reenter_corpse)
+#define SIGNAL_MOB_GHOSTIZED "mob_ghostized"
+
+/// from turf ShiftClickOn(): (/mob)
+#define SIGNAL_MOB_SHIFT_CLICK "mob_shift_click"
+
+/// from turf CtrlClickOn(): (/mob)
+#define SIGNAL_MOB_CTRL_CLICK "mob_ctrl_click"
+
+/// Called on '/mob/proc/update_movespeed()' (/mob)
+#define SIGNAL_MOB_MOVESPEED_UPDATED "mob_movespeed_updated"

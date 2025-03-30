@@ -5,6 +5,7 @@
 	program_icon_state = "comm_monitor"
 	program_key_state = "generic_key"
 	program_menu_icon = "mail-open"
+	program_light_color = "#00CC00"
 	size = 12
 	category = PROG_ADMIN
 	requires_ntnet = 1
@@ -75,7 +76,7 @@
 		return 1
 
 	// High security - can only be operated when the user has an ID with access on them.
-	var/obj/item/card/id/I = user.GetIdCard()
+	var/obj/item/card/id/I = user.get_id_card()
 	if(!istype(I) || !(access_network in I.access))
 		return 1
 

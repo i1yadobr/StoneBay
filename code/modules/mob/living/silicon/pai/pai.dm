@@ -84,7 +84,7 @@
 
 /mob/living/silicon/pai/New(obj/item/device/paicard)
 	status_flags |= NO_ANTAG
-	src.loc = paicard
+	forceMove(paicard)
 	card = paicard
 	sradio = new(src)
 
@@ -244,7 +244,7 @@
 	if(istype(card.loc, /obj/item/rig_module) || istype(card.loc, /obj/item/integrated_circuit/input/pAI_connector))
 		to_chat(src, "There is no room to unfold inside \the [card.loc]. You're good and stuck.")
 		return 0
-	else if(istype(card.loc,/mob))
+	else if(istype(card.loc, /mob))
 		var/mob/holder = card.loc
 		if(ishuman(holder))
 			var/mob/living/carbon/human/H = holder
@@ -254,7 +254,7 @@
 					affecting.implants -= card
 					H.visible_message("<span class='danger'>\The [src] explodes out of \the [H]'s [affecting.name] in a shower of gore!</span>")
 					break
-		holder.drop_from_inventory(card)
+		holder.drop(card, force = TRUE)
 	else if(istype(card.loc,/obj/item/device/pda))
 		var/obj/item/device/pda/holder = card.loc
 		holder.pai = null
@@ -300,6 +300,7 @@
 		finalized = alert("Look at your sprite. Is this what you wish to use?",,"No","Yes")
 
 	chassis = possible_chassis[choice]
+
 	verbs -= /mob/living/silicon/pai/proc/choose_chassis
 	verbs += /mob/living/proc/hide
 
@@ -371,7 +372,7 @@
 	if(istype(H))
 		var/mob/living/M = H.loc
 		if(istype(M))
-			M.drop_from_inventory(H)
+			M.drop(H, force = TRUE)
 		H.dropInto(get_turf(M))
 
 	// Move us into the card and move the card to the ground.
@@ -408,4 +409,3 @@
 	visible_message("<b>[src]</b> fades away from the screen, the pAI device goes silent.")
 	card.removePersonality()
 	clear_client()
-

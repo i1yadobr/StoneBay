@@ -1,6 +1,8 @@
 /datum/species/human
 	name = SPECIES_HUMAN
 	name_plural = "Humans"
+	hair_key = SPECIES_HUMAN
+	facial_hair_key = SPECIES_HUMAN
 	primitive_form = "Monkey"
 	unarmed_types = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
 	blurb = "Humanity originated in the Sol system, and over the last five centuries has spread \
@@ -19,12 +21,13 @@
 		new /datum/body_build,
 		new /datum/body_build/slim,
 		new /datum/body_build/slim/alt,
+		new /datum/body_build/slim/flat,
 		new /datum/body_build/slim/male,
 		new /datum/body_build/fat
 	)
 
 	spawn_flags = SPECIES_CAN_JOIN
-	appearance_flags = HAS_HAIR_COLOR | HAS_SKIN_TONE_NORMAL | HAS_LIPS | HAS_UNDERWEAR | HAS_EYE_COLOR
+	species_appearance_flags = HAS_HAIR_COLOR | HAS_SKIN_TONE_NORMAL | HAS_LIPS | HAS_UNDERWEAR | HAS_EYE_COLOR
 
 	sexybits_location = BP_GROIN
 
@@ -42,7 +45,7 @@
 		H.emote("scream")
 
 	if(!H.restrained() && H.lying && H.shock_stage >= 60 && prob(3))
-		H.custom_emote("thrashes in agony")
+		H.visible_emote("thrashes in agony.")
 
 	if(!H.restrained() && H.shock_stage < 40 && prob(3))
 		var/maxdam = 0
@@ -58,19 +61,19 @@
 		var/datum/gender/T = gender_datums[H.get_gender()]
 		if(damaged_organ)
 			if(damaged_organ.status & ORGAN_BLEEDING)
-				H.custom_emote("clutches [T.his] [damaged_organ.name], trying to stop the blood.")
+				H.visible_emote("clutches [T.his] [damaged_organ.name], trying to stop the blood.")
 			else if(damaged_organ.status & ORGAN_BROKEN)
-				H.custom_emote("holds [T.his] [damaged_organ.name] carefully.")
+				H.visible_emote("holds [T.his] [damaged_organ.name] carefully.")
 			else if(damaged_organ.burn_dam > damaged_organ.brute_dam && damaged_organ.organ_tag != BP_HEAD)
-				H.custom_emote("blows on [T.his] [damaged_organ.name] carefully.")
+				H.visible_emote("blows on [T.his] [damaged_organ.name] carefully.")
 			else
-				H.custom_emote("rubs [T.his] [damaged_organ.name] carefully.")
+				H.visible_emote("rubs [T.his] [damaged_organ.name] carefully.")
 
 		for(var/obj/item/organ/I in H.internal_organs)
 			if((I.status & ORGAN_DEAD) || BP_IS_ROBOTIC(I)) continue
 			if(I.damage > 2) if(prob(2))
 				var/obj/item/organ/external/parent = H.get_organ(I.parent_organ)
-				H.custom_emote("clutches [T.his] [parent.name]!")
+				H.visible_emote("clutches [T.his] [parent.name]!")
 
 /datum/species/human/get_ssd(mob/living/carbon/human/H)
 	if(H.stat == CONSCIOUS)
@@ -81,15 +84,17 @@
 	name = SPECIES_TAJARA
 	name_plural = "Tajaran"
 	icobase = 'icons/mob/human_races/r_tajaran.dmi'
-	deform = 'icons/mob/human_races/r_def_tajaran.dmi'
 	tail = "tajtail"
+	var/tail_slim = "tajtail_slim"
 	tail_animation = 'icons/mob/species/tajaran/tail.dmi'
-	default_h_style = "Tajaran Ears"
+	default_h_style = "Ears"
+	hair_key = SPECIES_TAJARA
+	facial_hair_key = SPECIES_TAJARA
 	unarmed_types = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
 	generic_attack_mod = 2.0
 	darksight_range = 8
 	darksight_tint = DARKTINT_GOOD
-	slowdown = -0.5
+	movespeed_modifier = /datum/movespeed_modifier/tajaran
 	brute_mod = 1.15
 	burn_mod =  1.15
 	gluttonous = GLUT_TINY
@@ -128,11 +133,12 @@
 	primitive_form = "Farwa"
 
 	spawn_flags = SPECIES_CAN_JOIN | SPECIES_IS_WHITELISTED
-	appearance_flags = HAS_HAIR_COLOR | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR | HAS_EYE_COLOR
+	species_appearance_flags = HAS_HAIR_COLOR | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR | HAS_EYE_COLOR
 
 	flesh_color = "#663300"
 	base_color = "#333333"
-	blood_color = "#862a51"
+	default_eye_color = "#339900"
+	blood_color = COLOR_BLOOD_TAJARAN
 	organs_icon = 'icons/mob/human_races/organs/tajaran.dmi'
 	reagent_tag = IS_TAJARA
 
@@ -154,13 +160,17 @@
 	..()
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H),slot_shoes)
 
+/datum/species/tajaran/get_tail(mob/living/carbon/human/H)
+	if(istype(H.body_build, /datum/body_build/slim/alt/tajaran))
+		return tail_slim
+	return ..()
+
 /datum/species/skrell
 	name = SPECIES_SKRELL
 	name_plural = SPECIES_SKRELL
 	icobase = 'icons/mob/human_races/r_skrell.dmi'
-	deform = 'icons/mob/human_races/r_def_skrell.dmi'
-	eye_icon = "skrell_eyes_s"
 	primitive_form = "Neaera"
+	hair_key = SPECIES_SKRELL
 	unarmed_types = list(/datum/unarmed_attack/punch)
 	blurb = "An amphibious species, Skrell come from the star system known as Qerr'Vallis, which translates to 'Star of \
 	the royals' or 'Light of the Crown'.<br/><br/>Skrell are a highly advanced and logical race who live under the rule \
@@ -171,6 +181,7 @@
 	secondary_langs = list(LANGUAGE_SKRELLIAN)
 	name_language = LANGUAGE_SKRELLIAN
 	health_hud_intensity = 1.75
+	troublesome_sexual_dimorphism = TRUE
 
 	min_age = 18
 	max_age = 90
@@ -191,17 +202,18 @@
 	warning_high_pressure = WARNING_HIGH_PRESSURE / 0.8125
 	hazard_high_pressure = HAZARD_HIGH_PRESSURE / 0.84615
 
-	body_temperature = null // cold-blooded, implemented the same way nabbers do it
+	body_temperature = null // cold-blooded
 
 	darksight_range = 4
 	darksight_tint = DARKTINT_MODERATE
 
 	spawn_flags = SPECIES_CAN_JOIN | SPECIES_IS_WHITELISTED
-	appearance_flags = HAS_HAIR_COLOR | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR
+	species_appearance_flags = HAS_HAIR_COLOR | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR
 
 	flesh_color = "#339966"
-	blood_color = "#1d2cbf"
+	blood_color = COLOR_BLOOD_SKRELL
 	base_color = "#006666"
+	default_eye_color = "#ffffff"
 	organs_icon = 'icons/mob/human_races/organs/skrell.dmi'
 
 	cold_level_1 = 280 //Default 260 - Lower is better
@@ -237,11 +249,13 @@
 	name = SPECIES_DIONA
 	name_plural = "Dionaea"
 	icobase = 'icons/mob/human_races/r_diona.dmi'
-	deform = 'icons/mob/human_races/r_def_plant.dmi'
+
+	has_eyes_icon = FALSE
+
 	language = LANGUAGE_ROOTLOCAL
 	unarmed_types = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/diona)
 	//primitive_form = "Nymph"
-	slowdown = 7
+	movespeed_modifier = /datum/movespeed_modifier/diona
 	rarity_value = 3
 	hud_type = /datum/hud_data/diona
 	siemens_coefficient = 0.3
@@ -253,7 +267,6 @@
 	spawns_with_stack = 0
 	health_hud_intensity = 2
 	hunger_factor = 3
-	eye_icon = "blank_eyes"
 
 	min_age = 1
 	max_age = 300
@@ -282,7 +295,7 @@
 	has_limbs = list(
 		BP_CHEST =  list("path" = /obj/item/organ/external/diona/chest),
 		BP_GROIN =  list("path" = /obj/item/organ/external/diona/groin),
-		BP_HEAD =   list("path" = /obj/item/organ/external/head/no_eyes/diona),
+		BP_HEAD =   list("path" = /obj/item/organ/external/head/diona),
 		BP_L_ARM =  list("path" = /obj/item/organ/external/diona/arm),
 		BP_R_ARM =  list("path" = /obj/item/organ/external/diona/arm/right),
 		BP_L_LEG =  list("path" = /obj/item/organ/external/diona/leg),
@@ -309,10 +322,10 @@
 	heat_level_2 = 3000
 	heat_level_3 = 4000
 
-	body_temperature = T0C + 15		//make the plant people have a bit lower body temperature, why not
+	body_temperature = 15 CELSIUS		//make the plant people have a bit lower body temperature, why not
 
 	species_flags = SPECIES_FLAG_NO_SCAN | SPECIES_FLAG_IS_PLANT | SPECIES_FLAG_NO_PAIN | SPECIES_FLAG_NO_SLIP | SPECIES_FLAG_NO_BLOOD | SPECIES_FLAG_NO_ANTAG_TARGET
-	appearance_flags = 0
+	species_appearance_flags = 0
 	spawn_flags = SPECIES_IS_RESTRICTED | SPECIES_NO_FBP_CONSTRUCTION | SPECIES_NO_FBP_CHARGEN | SPECIES_NO_LACE
 
 	blood_color = "#004400"
@@ -385,7 +398,7 @@
 	return "sap"
 
 /datum/species/diona/handle_environment_special(mob/living/carbon/human/H)
-	if(H.InStasis() || H.stat == DEAD)
+	if(H.InStasis() || H.is_ic_dead())
 		return
 	if(H.nutrition < 10)
 		H.take_overall_damage(2,0)
@@ -393,21 +406,21 @@
 		// Heals normal damage.
 		if(H.getBruteLoss())
 			H.adjustBruteLoss(-4)
-			H.nutrition -= 2
+			H.remove_nutrition(2)
 		if(H.getFireLoss())
 			H.adjustFireLoss(-4)
-			H.nutrition -= 2
+			H.remove_nutrition(2)
 
 		if(prob(10) && H.nutrition > 200 && !H.getBruteLoss() && !H.getFireLoss())
 			var/obj/item/organ/external/head/D = H.organs_by_name["head"]
 			if(D.status & ORGAN_DISFIGURED)
 				D.status &= ~ORGAN_DISFIGURED
-				H.nutrition -= 20
+				H.remove_nutrition(20)
 
 		for(var/obj/item/organ/I in H.internal_organs)
 			if(I.damage > 0)
 				I.damage = max(I.damage - 2, 0)
-				H.nutrition -= 2
+				H.remove_nutrition(2)
 				if (prob(5))
 					to_chat(H, SPAN("warning", "You sense your nymphs shifting internally to regenerate your [I.name]..."))
 
@@ -424,7 +437,7 @@
 					var/obj/item/organ/O = new limb_path(H)
 					organ_data["descriptor"] = O.name
 					to_chat(H, SPAN("notice", "Some of your nymphs split and hurry to reform your [O.name]."))
-					H.nutrition -= 60
+					H.remove_nutrition(60)
 					H.update_body()
 				else
 					for(var/datum/wound/W in E.wounds)

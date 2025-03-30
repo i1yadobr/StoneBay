@@ -4,6 +4,7 @@
 	extended_desc = "This program allows access to the crew's various records."
 	program_icon_state = "generic"
 	program_key_state = "generic_key"
+	program_light_color = "#00B000"
 	size = 14
 	category = PROG_OFFICE
 	requires_ntnet = 1
@@ -23,8 +24,10 @@
 
 	data["message"] = message
 	if(active_record)
-		send_rsc(user, active_record.photo_front, "front_[active_record.uid].png")
-		send_rsc(user, active_record.photo_side, "side_[active_record.uid].png")
+		if(!isnull(active_record.photo_front))
+			send_rsc(user, active_record.photo_front, "front_[active_record.uid].png")
+		if(!isnull(active_record.photo_side))
+			send_rsc(user, active_record.photo_side, "side_[active_record.uid].png")
 		data["pic_edit"] = check_access(user, access_heads) || check_access(user, access_security)
 		data["uid"] = active_record.uid
 		var/list/fields = list()

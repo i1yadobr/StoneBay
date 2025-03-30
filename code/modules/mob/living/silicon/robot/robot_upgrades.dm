@@ -25,7 +25,7 @@
 	return 1
 
 /obj/item/borg/upgrade/proc/action(mob/living/silicon/robot/R)
-	if(R.stat == DEAD)
+	if(R.is_ic_dead())
 		to_chat(usr, "<span class='warning'>The [src] will not function on a deceased robot.</span>")
 		return 1
 	return 0
@@ -39,6 +39,9 @@
 /obj/item/borg/upgrade/reset/action(mob/living/silicon/robot/R)
 	if(..()) return 0
 	R.uneq_all()
+	if(R.restore_modtype_in_global_pull)
+		GLOB.robot_module_types |= R.modtype
+		R.restore_modtype_in_global_pull = FALSE
 	R.modtype = initial(R.modtype)
 	R.hands.icon_state = initial(R.hands.icon_state)
 
@@ -72,11 +75,14 @@
 			if (R.shown_robot_modules)
 				R.shown_robot_modules = !R.shown_robot_modules
 				R.hud_used.update_robot_modules_display()
+			if(R.restore_modtype_in_global_pull)
+				GLOB.robot_module_types |= R.modtype
+				R.restore_modtype_in_global_pull = FALSE
 			R.module.Reset(R)
 			qdel(R.module)
 			R.module = null
 		R.drop_all_upgrades()
-		var/module_type = robot_modules[module]
+		var/module_type = GLOB.robot_modules[module]
 		new module_type(R)
 		R.modtype = module
 		R.hands.icon_state = lowertext(module)
@@ -143,8 +149,10 @@
 /obj/item/borg/upgrade/rename/action(mob/living/silicon/robot/R)
 	if(..()) return 0
 	spawn(1)
-		if (held_name == initial(held_name))
+		while(held_name == initial(held_name))
 			held_name = sanitizeSafe(input(R, "Enter new robot name", "Robot Reclassification", held_name), MAX_NAME_LEN)
+			if(!held_name)
+				held_name = initial(held_name)
 		R.notify_ai(ROBOT_NOTIFICATION_NEW_NAME, R.name, held_name)
 		R.SetName(held_name)
 		R.custom_name = held_name
@@ -201,15 +209,14 @@
 	require_module = 1
 
 /obj/item/borg/upgrade/vtec/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..()) return FALSE
 
-	if(R.speed == -1)
-		return 0
+	if(R.has_movespeed_modifier(/datum/movespeed_modifier/vtec_speedup))
+		return FALSE
 
-	R.speed--
-	installed = 1
-	return 1
-
+	R.add_movespeed_modifier(/datum/movespeed_modifier/vtec_speedup)
+	installed = TRUE
+	return TRUE
 
 /obj/item/borg/upgrade/tasercooler
 	name = "robotic Rapid Taser Cooling Module"
@@ -389,7 +396,7 @@
 	if(!can_install(src, R))
 		return 0
 	else
-		R.module.modules += new /obj/item/rcd/borg(R.module)
+		R.module.modules += new /obj/item/construction/rcd/borg(R.module)
 		installed = 1
 		return 1
 
@@ -667,7 +674,7 @@
 
 /obj/item/borg/upgrade/death_alarm
 	name = "death alarm module"
-	desc = "An alarm which monitors cyborg signals and transmits a radio message upon destruction."
+	desc = "A module which monitors a cyborg's status and transmits a radio message upon destruction."
 	icon_state = "cyborg_upgrade1"
 	origin_tech = list(TECH_MATERIAL = 2, TECH_DATA = 2)
 	var/mob/living/silicon/robot/host = null
@@ -683,41 +690,42 @@
 		var/area/default = world.area
 		location = initial(default.name)
 
-	var/death_message = "Message from [name] acquired successful. [host] has been destroyed in [location]!"
+	var/death_message = "[host] has been destroyed in [location]!"
 	if(!cause)
-		death_message = "Message from [name] acquired successful. [host] has been destroyed-zzzzt in-in-in..."
+		death_message = "[host] has been destroyed-zzzzt in-in-in..."
 	var/obj/item/robot_module/CH = host.module
 	for(var/channel in CH.channels)
 		if (channel != "Science")
-			GLOB.global_headset.autosay(death_message, get_announcement_computer("[host]'s Death Alarm"), channel)
-	GLOB.global_headset.autosay(death_message, get_announcement_computer("[host]'s Death Alarm"), "Science")
+			GLOB.global_headset.autosay(death_message, ("[host]'s Death Alarm"), channel)
+	GLOB.global_headset.autosay(death_message, ("[host]'s Death Alarm"), "Science")
 
-/obj/item/borg/upgrade/death_alarm/Process()
+/obj/item/borg/upgrade/death_alarm/think()
 	if (!installed) return
 
-	if(isnull(host)) // If the mob got gibbed
+	if(QDELETED(host)) // If the mob got gibbed
 		activate()
-		STOP_PROCESSING(SSobj, src)
 		installed = 0
-	else if (!broken && active && host.stat == DEAD)
+		return
+	else if (!broken && active && host.is_ic_dead())
 		active = 0
 		activate("death")
 	else if (broken)
 		qdel(src)
-	else if(host.stat != DEAD)
+	else if(!host.is_ooc_dead())
 		active = 1
 
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/borg/upgrade/death_alarm/emp_act(severity)
 	if(prob(20))
 		activate("emp")	//let's shout that this borg is dead
 	if(severity == 1)
 		if(prob(60) && !broken)	//small chance of obvious meltdown
-			to_chat(host, "<span class='warning'>Your's \the [src] stopped recive signals!</span>")
+			to_chat(host, SPAN_WARNING("Your \the [src] stopped receiving signals!"))
 			broken = 1
 			name = "melted circuit"
-			desc = "Charred circuit. Wonder what that used to be..."
-			STOP_PROCESSING(SSobj, src)
+			desc = "A charred circuit. Wonder what that used to be..."
+			set_next_think(0)
 
 /obj/item/borg/upgrade/death_alarm/action(mob/living/silicon/robot/R)
 	if(..()) return 0
@@ -726,7 +734,7 @@
 	else
 		host = R
 		installed = 1
-		START_PROCESSING(SSobj, src)
+		set_next_think(world.time)
 		return 1
 
 /obj/item/borg/upgrade/integrated_circuit_upgrade

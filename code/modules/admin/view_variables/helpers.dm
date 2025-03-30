@@ -59,6 +59,8 @@
 
 		<option value='?_src_=vars;addverb=\ref[src]'>Add Verb</option>
 		<option value='?_src_=vars;remverb=\ref[src]'>Remove Verb</option>
+		<option value='?_src_=vars;addmodifier=\ref[src]'>Add Modifier</option>
+		<option value='?_src_=vars;remmodifier=\ref[src]'>Remove Modifier</option>
 		<option>---</option>
 		<option value='?_src_=vars;gib=\ref[src]'>Gib</option>
 		<option value='?_src_=vars;explode=\ref[src]'>Trigger explosion</option>
@@ -196,8 +198,35 @@
 	return TRUE
 
 /proc/forbidden_varedit_object_types()
- 	return list(
-		/datum/admins,						//Admins editing their own admin-power object? Yup, sounds like a good idea.,
-		/obj/machinery/blackbox_recorder,	//Prevents people messing with feedback gathering,
-		/datum/feedback_variable			//Prevents people messing with feedback gathering
+	return list(
+		/datum/admins,						    //Admins editing their own admin-power object? Yup, sounds like a good idea.,
+		/obj/machinery/blackbox_recorder,	    //Prevents people messing with feedback gathering,
+		/datum/feedback_variable,			    //Prevents people messing with feedback gathering
+		/atom/movable/screen/splash/persistent, // Prevents morons from fucking up lobby screen.
+		/datum/lobby_art                        // Same as above
 	)
+
+/proc/input_bitfield(mob/User, title, bitfield, current_value, nwidth = 350, nheight = 350, nslidecolor, allowed_edit_list = null)
+	if(!User || !(bitfield in GLOB.bitfields))
+		return
+
+	var/list/pickerlist = list()
+	for(var/i in GLOB.bitfields[bitfield])
+		var/can_edit = 1
+		if(!isnull(allowed_edit_list) && !(allowed_edit_list & GLOB.bitfields[bitfield][i]))
+			can_edit = 0
+		if (current_value & GLOB.bitfields[bitfield][i])
+			pickerlist += list(list("checked" = 1, "value" = GLOB.bitfields[bitfield][i], "name" = i, "allowed_edit" = can_edit))
+		else
+			pickerlist += list(list("checked" = 0, "value" = GLOB.bitfields[bitfield][i], "name" = i, "allowed_edit" = can_edit))
+
+	var/list/result = listpicker(User, "", title, Button1="Save", Button2 = "Cancel", values = pickerlist, width = nwidth, height = nheight, slidecolor = nslidecolor)
+
+	if(islist(result))
+		if (result["button"] == 2) // If the user pressed the cancel button
+			return
+		. = 0
+		for (var/flag in result["values"])
+			. |= GLOB.bitfields[bitfield][flag]
+	else
+		return

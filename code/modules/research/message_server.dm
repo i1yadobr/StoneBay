@@ -53,8 +53,8 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 	name = "Messaging Server"
 	density = 1
 	anchored = 1.0
-	idle_power_usage = 10
-	active_power_usage = 100
+	idle_power_usage = 10 WATTS
+	active_power_usage = 100 WATTS
 
 	var/list/datum/data_pda_msg/pda_msgs = list()
 	var/list/datum/data_rc_msg/rc_msgs = list()
@@ -80,7 +80,7 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 	if(message_servers.len >= 1)
 		new /obj/machinery/dead_message_server(src.loc)
 		qdel(src)
-		crash_with("Two or more PDA message servers are placed in the world. Please, replace leftovers with dead ones until one server remains.")
+		util_crash_with("Two or more PDA message servers are placed in the world. Please, replace leftovers with dead ones until one server remains.")
 	name = "[name] ([get_area(src)])"
 	message_servers += src
 	decryptkey = GenerateKey()
@@ -132,12 +132,12 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 				Console.icon_state = "req_comp[priority]"
 			if(priority > 1)
 				playsound(Console.loc, 'sound/signals/warning7.ogg', 75, 0)
-				Console.audible_message("\icon[Console]<span class='warning'>\The [Console] announces: 'High priority message received from [sender]!'</span>", hearing_distance = 8)
+				Console.audible_message("\icon[Console]<span class='warning'>\The [Console] announces: 'High priority message received from [sender]!'</span>", hearing_distance = 8, splash_override = "High priority message received from [sender]!")
 				Console.message_log += "<FONT color='red'>High Priority message from <A href='?src=\ref[Console];write=[sender]'>[sender]</A></FONT><BR>[authmsg]"
 			else
 				if(!Console.silent)
 					playsound(Console.loc, 'sound/signals/ping8.ogg', 75, 0)
-					Console.audible_message("\icon[Console]<span class='notice'>\The [Console] announces: 'Message received from [sender].'</span>", hearing_distance = 5)
+					Console.audible_message("\icon[Console]<span class='notice'>\The [Console] announces: 'Message received from [sender].'</span>", hearing_distance = 5, splash_override = "Message received from [sender].")
 				Console.message_log += "<B>Message from <A href='?src=\ref[Console];write=[sender]'>[sender]</A></B><BR>[authmsg]"
 		Console.set_light(0.3, 0.1, 2)
 
@@ -154,13 +154,12 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 	if (active && !(stat & (BROKEN|NOPOWER)) && (spamfilter_limit < MESSAGE_SERVER_DEFAULT_SPAM_LIMIT*2) && \
 		istype(O,/obj/item/circuitboard/message_monitor))
 		spamfilter_limit += round(MESSAGE_SERVER_DEFAULT_SPAM_LIMIT / 2)
-		user.drop_item()
 		qdel(O)
 		to_chat(user, "You install additional memory and processors into message server. Its filtering capabilities been enhanced.")
 	else
 		..(O, user)
 
-/obj/machinery/message_server/update_icon()
+/obj/machinery/message_server/on_update_icon()
 	if((stat & (BROKEN|NOPOWER)))
 		icon_state = "server-nopower"
 	else if (!active)
@@ -247,8 +246,8 @@ var/obj/machinery/blackbox_recorder/blackbox
 	name = "Blackbox Recorder"
 	density = 1
 	anchored = 1.0
-	idle_power_usage = 10
-	active_power_usage = 100
+	idle_power_usage = 10 WATTS
+	active_power_usage = 100 WATTS
 	var/list/messages = list()		//Stores messages of non-standard frequencies
 	var/list/messages_admin = list()
 
@@ -263,7 +262,6 @@ var/obj/machinery/blackbox_recorder/blackbox
 	var/list/msg_raider = list()
 	var/list/msg_cargo = list()
 	var/list/msg_service = list()
-	var/list/msg_exploration = list()
 
 	var/list/datum/feedback_variable/feedback = new()
 
@@ -313,7 +311,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 	var/pda_msg_amt = 0
 	var/rc_msg_amt = 0
 
-	for(var/obj/machinery/message_server/MS in GLOB.machines)
+	for(var/obj/machinery/message_server/MS in SSmachines.machinery)
 		if(MS.pda_msgs.len > pda_msg_amt)
 			pda_msg_amt = MS.pda_msgs.len
 		if(MS.rc_msgs.len > rc_msg_amt)

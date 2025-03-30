@@ -8,7 +8,7 @@
 	setup = CLOSET_CAN_BE_WELDED
 	dremovable = 0
 
-/obj/structure/closet/coffin/update_icon()
+/obj/structure/closet/coffin/on_update_icon()
 	if (welded)
 		icon_state = icon_screwed
 	else if(!opened)
@@ -19,7 +19,7 @@
 /obj/structure/closet/coffin/attackby(obj/item/W, mob/user)
 	if(opened && !isWelder(W))
 		..()
-	else if(istype(W, /obj/item/screwdriver))
+	else if(isScrewdriver(W))
 		if(welded)
 			user.visible_message(SPAN("notice", "[user] unscrewed bolts from [src]."))
 			welded = !welded

@@ -27,7 +27,7 @@
 	. = ..()
 	RefreshParts()
 
-/obj/machinery/disease2/isolator/update_icon()
+/obj/machinery/disease2/isolator/on_update_icon()
 	if (stat & (BROKEN|NOPOWER))
 		icon_state = "isolator"
 		return
@@ -61,16 +61,13 @@
 	if(sample)
 		to_chat(user, "\The [src] is already loaded.")
 		return
-
+	if(!user.drop(S, src))
+		return
 	sample = S
-	user.drop_item()
-	S.loc = src
-
 	user.visible_message("[user] adds \a [O] to \the [src]!", "You add \a [O] to \the [src]!")
 	SSnano.update_uis(src)
 	update_icon()
-
-	src.attack_hand(user)
+	attack_hand(user)
 
 /obj/machinery/disease2/isolator/attack_hand(mob/user)
 	if(stat & (NOPOWER|BROKEN)) return

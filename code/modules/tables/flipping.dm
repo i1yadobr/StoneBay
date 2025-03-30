@@ -1,15 +1,15 @@
 
 /obj/structure/table/proc/straight_table_check(direction)
-	if(health > 100)
-		return 0
+	if(reinforced)
+		return FALSE
 	var/obj/structure/table/T
 	for(var/angle in list(-90,90))
 		T = locate() in get_step(src.loc,turn(direction,angle))
-		if(T && T.flipped == 0 && T.material && material && T.material.name == material.name)
-			return 0
+		if(T && T.flipped == FALSE && T.material && material && T.material.name == material.name)
+			return FALSE
 	T = locate() in get_step(src.loc,direction)
-	if (!T || T.flipped == 1 || T.material != material)
-		return 1
+	if (!T || T.flipped == TRUE || T.material != material)
+		return TRUE
 	return T.straight_table_check(direction)
 
 /obj/structure/table/verb/do_flip()
@@ -92,6 +92,7 @@
 	take_damage(rand(5, 10))
 	update_connections(1)
 	update_icon()
+	set_turf_height_offset(0)
 
 	return TRUE
 
@@ -112,6 +113,7 @@
 
 	update_connections(1)
 	update_icon()
+	set_turf_height_offset(initial(turf_height_offset))
 
 	return TRUE
 

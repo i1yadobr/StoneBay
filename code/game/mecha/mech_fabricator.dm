@@ -1,17 +1,17 @@
 /obj/machinery/mecha_part_fabricator
-	icon = 'icons/obj/robotics.dmi'
+	icon = 'icons/obj/machines/robotics.dmi'
 	icon_state = "fab-idle"
 	name = "Exosuit Fabricator"
 	desc = "A machine used for construction of robotcs and mechas."
 	layer = BELOW_OBJ_LAYER
 	density = 1
 	anchored = 1
-	idle_power_usage = 20
-	active_power_usage = 5000
+	idle_power_usage = 20 WATTS
+	active_power_usage = 5 KILO WATTS
 	req_access = list(access_robotics)
 	clicksound = 'sound/effects/using/console/press2.ogg'
 	clickvol = 30
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
+
 
 	var/speed = 1
 	var/mat_efficiency = 1
@@ -57,14 +57,14 @@
 		update_use_power(POWER_USE_IDLE)
 	update_icon()
 
-/obj/machinery/mecha_part_fabricator/update_icon()
-	overlays.Cut()
+/obj/machinery/mecha_part_fabricator/on_update_icon()
+	ClearOverlays()
 	if(panel_open)
 		icon_state = "fab-o"
 	else
 		icon_state = "fab-idle"
 	if(busy)
-		overlays += "fab-active"
+		AddOverlays("fab-active")
 
 /obj/machinery/mecha_part_fabricator/dismantle()
 	for(var/f in materials)
@@ -86,8 +86,7 @@
 /obj/machinery/mecha_part_fabricator/attack_hand(mob/user)
 	if(..())
 		return
-	if(!allowed(user))
-		return
+
 	tgui_interact(user)
 
 /obj/machinery/mecha_part_fabricator/tgui_interact(mob/user, datum/tgui/ui)
@@ -107,11 +106,11 @@
 		"categories" = categories
 	)
 
-	if(all_robolimbs)
+	if(GLOB.all_robolimbs)
 		var/list/T = list()
 
-		for(var/A in all_robolimbs)
-			var/datum/robolimb/R = all_robolimbs[A]
+		for(var/A in GLOB.all_robolimbs)
+			var/datum/robolimb/R = GLOB.all_robolimbs[A]
 
 			if(R.unavailable_at_fab || R.applies_to_part.len)
 				continue
@@ -193,9 +192,9 @@
 	if(materials[material] + amnt <= res_max_amount)
 		if(stack && stack.amount >= 1)
 			var/count = 0
-			overlays += "fab-load-metal"
+			AddOverlays("fab-load")
 			spawn(10)
-				overlays -= "fab-load-metal"
+				CutOverlays("fab-load")
 			while(materials[material] + amnt <= res_max_amount && stack.amount >= 1)
 				materials[material] += amnt
 				stack.use(1)

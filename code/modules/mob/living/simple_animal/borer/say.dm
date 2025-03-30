@@ -18,12 +18,12 @@
 			return
 
 	if (copytext(message, 1, 2) == "*")
-		return emote(copytext(message, 2))
+		return emote(copytext(message, 2), intentional = TRUE)
 
 	var/datum/language/L = parse_language(message)
 	if(!L)
 		L = get_default_language()
-	if(L && L.flags & HIVEMIND)
+	if(L && L.language_flags & HIVEMIND)
 		L.broadcast(src,trim(copytext(message,3)),src.truename)
 		return
 
@@ -35,8 +35,9 @@
 	to_chat(src, "You drop words into [host]'s mind: \"[message]\"")
 	to_chat(host, "Your own thoughts speak: \"[message]\"")
 
+	log_say("\[BORER\] [name]([key])->[host.name]([host.key]): \"[message]\"")
 	for (var/mob/M in GLOB.player_list)
 		if (istype(M, /mob/new_player))
 			continue
-		else if(M.stat == DEAD && M.get_preference_value(/datum/client_preference/ghost_ears) == GLOB.PREF_ALL_SPEECH)
+		else if(M.is_ooc_dead() && M.get_preference_value(/datum/client_preference/ghost_ears) == GLOB.PREF_ALL_SPEECH)
 			to_chat(M, "[src.truename] whispers to [host], \"[message]\"")

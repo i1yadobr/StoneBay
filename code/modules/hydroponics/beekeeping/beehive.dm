@@ -16,28 +16,29 @@
 	var/maxFrames = 5
 	var/list/owned_bee_swarms = list()//all bees that spawned from the hive
 
-/obj/machinery/beehive/update_icon()
-	overlays.Cut()
+/obj/machinery/beehive/on_update_icon()
+	ClearOverlays()
 	icon_state = "beehive"
 	if(closed)
-		overlays += "lid"
+		AddOverlays("lid")
 	if(frames)
-		overlays += "empty[frames]"
+		AddOverlays("empty[frames]")
 	if(honeycombs >= 100)
-		overlays += "full[round(honeycombs / 100)]"
+		AddOverlays("full[round(honeycombs / 100)]")
 	if(!smoked)
 		switch(bee_count)
 			if(1 to 40)
-				overlays += "bees1"
+				AddOverlays("bees1")
 			if(41 to 80)
-				overlays += "bees2"
+				AddOverlays("bees2")
 			if(81 to 100)
-				overlays += "bees3"
+				AddOverlays("bees3")
 
-/obj/machinery/beehive/_examine_text(mob/user)
+/obj/machinery/beehive/examine(mob/user, infix)
 	. = ..()
+
 	if(!closed)
-		. += "\nThe lid is open."
+		. += "The lid is open."
 
 /obj/machinery/beehive/attackby(obj/item/I, mob/user)
 	if(isCrowbar(I))
@@ -71,7 +72,6 @@
 		++frames
 		user.visible_message("<span class='notice'>\The [user] loads \the [I] into \the [src].</span>", "<span class='notice'>You load \the [I] into \the [src].</span>")
 		update_icon()
-		user.drop_from_inventory(I)
 		qdel(I)
 		return
 	else if(istype(I, /obj/item/bee_pack))
@@ -211,7 +211,7 @@
 
 /obj/item/honey_frame/filled/New()
 	..()
-	overlays += "honeycomb"
+	AddOverlays("honeycomb")
 
 /obj/item/beehive_assembly
 	name = "beehive assembly"
@@ -224,7 +224,6 @@
 	if(do_after(user, 30, src))
 		user.visible_message("<span class='notice'>\The [user] constructs a beehive.</span>", "<span class='notice'>You construct a beehive.</span>")
 		new /obj/machinery/beehive(get_turf(user))
-		user.drop_from_inventory(src)
 		qdel(src)
 	return
 
@@ -253,21 +252,21 @@ var/global/list/datum/stack_recipe/wax_recipes = list( \
 
 /obj/item/bee_pack/New()
 	..()
-	overlays += "beepack-full"
+	AddOverlays("beepack-full")
 
 /obj/item/bee_pack/proc/empty()
 	full = 0
 	name = "empty bee pack"
 	desc = "A stasis pack for moving bees. It's empty."
-	overlays.Cut()
-	overlays += "beepack-empty"
+	ClearOverlays()
+	AddOverlays("beepack-empty")
 
 /obj/item/bee_pack/proc/fill()
 	full = initial(full)
 	SetName(initial(name))
 	desc = initial(desc)
-	overlays.Cut()
-	overlays += "beepack-full"
+	ClearOverlays()
+	AddOverlays("beepack-full")
 
 /obj/structure/closet/crate/hydroponics/beekeeping
 	name = "beekeeping crate"

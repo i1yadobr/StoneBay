@@ -55,7 +55,7 @@ em						{font-style: normal;font-weight: bold;}
 .newscaster				{color: #750000;}
 
 /* Radio Channels */
-.comradio				{color: #193a7a;}
+.comradio				{color: #0099FF;}
 .syndradio				{color: #6d3f40;}
 .centradio				{color: #5c5c8a;}
 .airadio				{color: #ff00ff;}
@@ -102,7 +102,6 @@ h1.alert, h2.alert		{color: #000080;}
 .tajaran_signlang		{color: #941c1c;}
 .skrell					{color: #00ced1;}
 .soghun					{color: #228b22;}
-.nabber_lang			{color: #525252;}
 .solcom					{color: #22228b;}
 .changeling				{color: #800080;}
 .vox					{color: #aa00aa;}

@@ -1,3 +1,8 @@
+/// How many variations of bullethole patterns there are
+#define BULLETHOLE_STATES 10
+/// Maximum possible bullet holes in a closed turf
+#define BULLETHOLE_MAX 24
+
 /turf/simulated/wall/proc/update_material()
 	if(!material)
 		return
@@ -22,7 +27,6 @@
 
 	set_opacity(material.opacity >= 0.5)
 
-	SSradiation.resistance_cache.Remove(src)
 	update_connections(1)
 	update_icon()
 
@@ -35,44 +39,46 @@
 	reinf_material = newrmaterial
 	update_material()
 
-/turf/simulated/wall/update_icon()
+/turf/simulated/wall/on_update_icon()
 	if(!material)
 		return
 
 	if(!damage_overlays[1]) //list hasn't been populated
 		generate_overlays()
 
-	overlays.Cut()
+	ClearOverlays()
 	var/image/I
 
 	if(!density)
-		I = image(masks_icon, "[material.icon_base]fwall_open")
-		I.color = material.icon_colour
-		overlays += I
+		icon = masks_icon
+		icon_state = "[material.icon_base]fwall_open"
+		color = material.icon_colour
 		return
 
-	for(var/i = 1 to 4)
-		I = image(masks_icon, "[material.icon_base][wall_connections[i]]", dir = 1<<(i-1))
-		I.color = material.icon_colour
-		overlays += I
+	icon = GLOB.bitmask_icon_sheets["wall_[material.icon_base]"]
+	icon_state = "[wall_connections]"
+	color = material.icon_colour
 
 	if(reinf_material)
 		if(construction_stage != null && construction_stage < 6)
-			I = image(masks_icon, "reinf_construct-[construction_stage]")
+			I = OVERLAY(masks_icon, "reinf_construct-[construction_stage]", appearance_flags = RESET_COLOR)
 			I.color = reinf_material.icon_colour
-			overlays += I
+			AddOverlays(I)
 		else
-			if("[reinf_material.icon_reinf]0" in icon_states(masks_icon))
-				// Directional icon
-				for(var/i = 1 to 4)
-					I = image(masks_icon, "[reinf_material.icon_reinf][wall_connections[i]]", dir = 1<<(i-1))
-					I.color = reinf_material.icon_colour
-					overlays += I
-			else
-				I = image(masks_icon, reinf_material.icon_reinf)
+			if(!mask_overlay_states[masks_icon]) // Lets just cache them instead of calling icon_states() every damn time.
+				mask_overlay_states[masks_icon] = icon_states(masks_icon)
+			if("[reinf_material.icon_reinf]0" in mask_overlay_states[masks_icon])
+				I = image(GLOB.bitmask_icon_sheets["wall_[reinf_material.icon_reinf]"], "[wall_connections]")
 				I.color = reinf_material.icon_colour
-				overlays += I
+				I.appearance_flags = DEFAULT_APPEARANCE_FLAGS | RESET_COLOR
+				AddOverlays(I)
+			else
+				I = OVERLAY(masks_icon, reinf_material.icon_reinf)
+				I.color = reinf_material.icon_colour
+				I.appearance_flags = DEFAULT_APPEARANCE_FLAGS | RESET_COLOR
+				AddOverlays(I)
 
+	CutOverlays(bullethole_overlay)
 	if(damage != 0)
 		var/integrity = material.integrity
 		if(reinf_material)
@@ -82,14 +88,22 @@
 		if(overlay > damage_overlays.len)
 			overlay = damage_overlays.len
 
-		overlays += damage_overlays[overlay]
+		AddOverlays(damage_overlays[overlay])
+		if(current_bulletholes && current_bulletholes <= BULLETHOLE_MAX)
+			if(!bullethole_variation)
+				bullethole_variation = rand(1, BULLETHOLE_STATES)
+			bullethole_overlay = image('icons/effects/bulletholes.dmi', src, "bhole_[bullethole_variation]_[current_bulletholes]")
+			AddOverlays(bullethole_overlay)
+	else
+		QDEL_NULL(bullethole_overlay)
+
 	return
 
 /turf/simulated/wall/proc/generate_overlays()
 	var/alpha_inc = 256 / damage_overlays.len
 
 	for(var/i = 1; i <= damage_overlays.len; i++)
-		var/image/img = image(icon = 'icons/turf/walls.dmi', icon_state = "overlay_damage")
+		var/image/img = image('icons/turf/walls.dmi', "overlay_damage") // Don't use OVERLAY here, we don't need all this garbage in the global cache
 		img.blend_mode = BLEND_MULTIPLY
 		img.alpha = (i * alpha_inc) - 1
 		damage_overlays[i] = img
@@ -98,19 +112,24 @@
 /turf/simulated/wall/proc/update_connections(propagate = 0)
 	if(!material)
 		return
-	var/list/dirs = list()
-	for(var/turf/simulated/wall/W in orange(src, 1))
+	wall_connections = 0
+
+	for(var/I in GLOB.cardinal)
+		var/turf/simulated/wall/W = get_step(src, I)
+		if(!istype(W))
+			continue
 		if(!W.material)
 			continue
 		if(propagate)
 			W.update_connections()
 			W.update_icon()
 		if(can_join_with(W))
-			dirs += get_dir(src, W)
-
-	wall_connections = dirs_to_corner_states(dirs)
+			wall_connections += get_dir(src, W)
 
 /turf/simulated/wall/proc/can_join_with(turf/simulated/wall/W)
 	if(material && W.material && material.icon_base == W.material.icon_base)
 		return 1
 	return 0
+
+#undef BULLETHOLE_STATES
+#undef BULLETHOLE_MAX

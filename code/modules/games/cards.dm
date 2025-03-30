@@ -87,7 +87,7 @@
 		H = user.r_hand
 	else
 		H = new(get_turf(src))
-		user.put_in_hands(H)
+		user.pick_or_drop(H)
 
 	if(!H || !user) return
 
@@ -136,12 +136,11 @@
 	H.throw_at(get_step(target, target.dir), 10, 1, H)
 
 /obj/item/hand/attackby(obj/O as obj, mob/user as mob)
-	if(istype(O,/obj/item/hand))
+	if(istype(O, /obj/item/hand))
 		var/obj/item/hand/H = O
 		for(var/datum/playingcard/P in cards)
 			H.cards += P
 		H.concealed = src.concealed
-		user.drop_from_inventory(src)
 		qdel(src)
 		H.update_icon()
 		return
@@ -174,17 +173,19 @@
 	var/list/cards = list()
 
 
-/obj/item/pack/attack_self(mob/user as mob)
+/obj/item/pack/attack_self(mob/user)
+	if(!length(cards))
+		user.visible_message("[user] whines as they reveal \the [src] to be empty!")
+		qdel(src)
+		return
 	user.visible_message("[user] rips open \the [src]!")
 	var/obj/item/hand/H = new()
 
 	H.cards += cards
-	cards.Cut();
-	user.drop_item()
-	qdel(src)
+	cards.Cut()
 
 	H.update_icon()
-	user.put_in_active_hand(H)
+	user.replace_item(src, H, TRUE)
 
 /obj/item/hand
 	name = "hand of cards"
@@ -218,7 +219,7 @@
 	H.update_icon()
 	src.update_icon()
 	usr.visible_message("\The [usr] plays \the [discarding].")
-	H.loc = get_step(usr,usr.dir)
+	H.forceMove(get_step(usr,usr.dir))
 
 	if(!cards.len)
 		qdel(src)
@@ -228,14 +229,15 @@
 	update_icon()
 	user.visible_message("\The [user] [concealed ? "conceals" : "reveals"] their hand.")
 
-/obj/item/hand/_examine_text(mob/user)
+/obj/item/hand/examine(mob/user, infix)
 	. = ..()
-	if((!concealed || src.loc == user) && cards.len)
-		. += "\nIt contains: "
-		for(var/datum/playingcard/P in cards)
-			. += "\nThe [P.name]."
 
-/obj/item/hand/update_icon(direction = 0)
+	if((!concealed || src.loc == user) && cards.len)
+		. += "It contains: "
+		for(var/datum/playingcard/P in cards)
+			. += "The [P.name]."
+
+/obj/item/hand/on_update_icon(direction = 0)
 
 	if(!cards.len)
 		qdel(src)
@@ -251,7 +253,7 @@
 		name = "[P.name]"
 		desc = "[P.desc]"
 
-	overlays.Cut()
+	ClearOverlays()
 
 
 	if(cards.len == 1)
@@ -259,7 +261,7 @@
 		var/image/I = new(src.icon, (concealed ? "[P.back_icon]" : "[P.card_icon]") )
 		I.pixel_x += (-5+rand(10))
 		I.pixel_y += (-5+rand(10))
-		overlays += I
+		AddOverlays(I)
 		return
 
 	var/offset = Floor(20/cards.len)
@@ -284,7 +286,7 @@
 			else
 				I.pixel_x = -7+(offset*i)
 		I.SetTransform(others = M)
-		overlays += I
+		AddOverlays(I)
 		i++
 
 /obj/item/hand/dropped(mob/user as mob)

@@ -24,15 +24,44 @@
 /datum/disease2/effect/sneeze/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
+	if(mob.stat)
+		return
 	if(prob(30))
 		to_chat(mob, SNEEZE_EFFECT_WARNING)
 	spawn(5)
 		mob.emote("sneeze")
-		for(var/mob/living/carbon/human/M in get_step(mob, mob.dir))
+		if(!mob.check_mouth_coverage())
+			var/turf/x1y1
+			var/turf/x2y2
+			switch(mob.dir)
+				if(NORTH)
+					x1y1 = locate(mob.x - 1, mob.y, mob.z)
+					x2y2 = locate(mob.x + 1, mob.y + 3, mob.z)
+				if(SOUTH)
+					x1y1 = locate(mob.x + 1, mob.y, mob.z)
+					x2y2 = locate(mob.x - 1, mob.y - 3, mob.z)
+				if(EAST)
+					x1y1 = locate(mob.x, mob.y + 1, mob.z)
+					x2y2 = locate(mob.x + 3, mob.y - 1, mob.z)
+				if(WEST)
+					x1y1 = locate(mob.x, mob.y - 1, mob.z)
+					x2y2 = locate(mob.x - 3, mob.y + 1, mob.z)
+			for(var/turf/T in block(x1y1, x2y2))
+				for(var/mob/living/carbon/human/M in T)
+					mob.spread_disease_to(M)
+			if(prob(50))
+				return
+			var/obj/effect/decal/cleanable/mucus/M = locate(/obj/effect/decal/cleanable/mucus, get_turf(mob))
+			if(M && !M.dried)
+				M = locate(/obj/effect/decal/cleanable/mucus, get_turf(mob))
+				M.update_stats(virus_copylist(mob.virus2))
+			else
+				M = new(get_turf(mob))
+			return
+		if(!mob.can_spread_disease())
+			return
+		for(var/mob/living/carbon/human/M in oview(1, mob))
 			mob.spread_disease_to(M)
-		if(prob(50) && !mob.wear_mask)
-			var/obj/effect/decal/cleanable/mucus/M = new(get_turf(mob))
-			M.virus2 = virus_copylist(mob.virus2)
 
 
 /datum/disease2/effect/gunck
@@ -166,11 +195,11 @@
 /datum/disease2/effect/hungry
 	name = "Appetiser Effect"
 	stage = 2
+
 /datum/disease2/effect/hungry/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
-	mob.nutrition = max(0, mob.nutrition - 200)
-
+	mob.set_nutrition(max(0, mob.nutrition - 200))
 
 /datum/disease2/effect/cough
 	name = "Anima Syndrome"
@@ -180,10 +209,16 @@
 /datum/disease2/effect/cough/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
-	mob.emote("cough")
-	if(mob.wear_mask)
+	if(mob.stat)
 		return
-	for(var/mob/living/carbon/human/M in oview(2, mob))
+	mob.emote("cough")
+	if(!mob.check_mouth_coverage())
+		for(var/mob/living/carbon/human/M in oview(2, mob))
+			mob.spread_disease_to(M)
+		return
+	if(!mob.can_spread_disease())
+		return
+	for(var/mob/living/carbon/human/M in oview(1, mob))
 		mob.spread_disease_to(M)
 
 
@@ -296,9 +331,8 @@
 /datum/disease2/effect/telepathic/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
-	mob.dna.SetSEState(GLOB.REMOTETALKBLOCK, 1)
-	domutcheck(mob, null, MUTCHK_FORCED)
 
+	mob.add_mutation(mRemotetalk)
 
 /datum/disease2/effect/shakey
 	name = "World Shaking Syndrome"

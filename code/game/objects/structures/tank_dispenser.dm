@@ -11,8 +11,8 @@
 	var/list/oxytanks = list()	//sorry for the similar var names
 	var/list/platanks = list()
 
-	var/static/radial_oxygen = image(icon = 'icons/mob/radial.dmi', icon_state = "oxygen")
-	var/static/radial_plasma = image(icon = 'icons/mob/radial.dmi', icon_state = "plasma")
+	var/static/radial_oxygen = image(icon = 'icons/hud/radial.dmi', icon_state = "oxygen")
+	var/static/radial_plasma = image(icon = 'icons/hud/radial.dmi', icon_state = "plasma")
 
 	// we show the button even if the proc will not work
 	var/static/list/radial_options = list("dispence oxygen" = radial_oxygen, "dispence plasma" = radial_plasma)
@@ -28,26 +28,26 @@
 	. = ..()
 	update_icon()
 
-/obj/structure/dispenser/update_icon()
-	overlays.Cut()
+/obj/structure/dispenser/on_update_icon()
+	ClearOverlays()
 	switch(oxygentanks)
-		if(1 to 3)	overlays += "oxygen-[oxygentanks]"
-		if(4 to INFINITY) overlays += "oxygen-4"
+		if(1 to 3)	AddOverlays("oxygen-[oxygentanks]")
+		if(4 to INFINITY) AddOverlays("oxygen-4")
 	switch(plasmatanks)
-		if(1 to 4)	overlays += "plasma-[plasmatanks]"
-		if(5 to INFINITY) overlays += "plasma-5"
+		if(1 to 4)	AddOverlays("plasma-[plasmatanks]")
+		if(5 to INFINITY) AddOverlays("plasma-5")
 
-/obj/structure/dispenser/attack_ai(mob/user as mob)
+/obj/structure/dispenser/attack_ai(mob/user)
 	if(user.Adjacent(src))
 		return attack_hand(user)
 	..()
 
-/obj/structure/dispenser/attack_hand(mob/user as mob)
+/obj/structure/dispenser/attack_hand(mob/user)
 	user.set_machine(src)
 	add_fingerprint(user)
 	interact(user)
 
-/obj/structure/dispenser/interact(mob/user as mob)
+/obj/structure/dispenser/interact(mob/user)
 	if(user.stat || user.restrained())
 		return
 
@@ -70,11 +70,11 @@
 		if("dispence plasma")
 			dispence_plasma(user)
 
-/obj/structure/dispenser/attackby(obj/item/I as obj, mob/user as mob)
+/obj/structure/dispenser/attackby(obj/item/I, mob/user)
 	if(istype(I, /obj/item/tank/oxygen) || istype(I, /obj/item/tank/air) || istype(I, /obj/item/tank/anesthetic))
 		if(oxygentanks < 10)
-			user.drop_item()
-			I.loc = src
+			if(!user.drop(I, src))
+				return
 			oxytanks.Add(I)
 			oxygentanks++
 			to_chat(user, "<span class='notice'>You put [I] in [src].</span>")
@@ -85,8 +85,8 @@
 		return
 	if(istype(I, /obj/item/tank/plasma))
 		if(plasmatanks < 10)
-			user.drop_item()
-			I.loc = src
+			if(!user.drop(I, src))
+				return
 			platanks.Add(I)
 			plasmatanks++
 			to_chat(user, "<span class='notice'>You put [I] in [src].</span>")
@@ -104,7 +104,7 @@
 			anchored = 1
 		return
 
-/obj/structure/dispenser/proc/dispence_oxygen(mob/user as mob)
+/obj/structure/dispenser/proc/dispence_oxygen(mob/user)
 	if(oxygentanks)
 		var/obj/item/tank/oxygen/O
 		if(oxytanks.len == oxygentanks)
@@ -112,12 +112,12 @@
 			oxytanks.Remove(O)
 		else
 			O = new /obj/item/tank/oxygen(loc)
-		O.loc = loc
+		O.dropInto(loc)
 		to_chat(user, "<span class='notice'>You take [O] out of [src].</span>")
 		oxygentanks--
 		update_icon()
 
-/obj/structure/dispenser/proc/dispence_plasma(mob/user as mob)
+/obj/structure/dispenser/proc/dispence_plasma(mob/user)
 	if(plasmatanks)
 		var/obj/item/tank/plasma/P
 		if(platanks.len == plasmatanks)
@@ -125,7 +125,7 @@
 			platanks.Remove(P)
 		else
 			P = new /obj/item/tank/plasma(loc)
-		P.loc = loc
+		P.dropInto(loc)
 		to_chat(user, "<span class='notice'>You take [P] out of [src].</span>")
 		plasmatanks--
 		update_icon()

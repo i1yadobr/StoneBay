@@ -12,8 +12,12 @@ var/global/list/stool_cache = list() //haha stool
 	mod_reach = 0.85
 	mod_weight = 1.5
 	mod_handy = 0.85
+	armor_penetration = 20
 	throwforce = 10
 	w_class = ITEM_SIZE_HUGE
+
+	rad_resist_type = /datum/rad_resist/none
+
 	var/base_icon = "stool"
 	var/material/material
 	var/material/padding_material
@@ -40,7 +44,7 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/stool/bar_new
 	name = "wooden bar stool"
 	icon_state = "barstool_new_preview" //set for the map
-	item_state = "barstool_new"
+	item_state = "bar_stool"
 	base_icon = "barstool_new"
 
 /obj/item/stool/bar_new/padded
@@ -61,7 +65,7 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/stool/bar/padded/New(newloc, new_material)
 	..(newloc, MATERIAL_STEEL, MATERIAL_CARPET)
 
-/obj/item/stool/update_icon()
+/obj/item/stool/on_update_icon()
 	// Base icon.
 	var/list/noverlays = list()
 	var/cache_key = "[base_icon]-[material.name]"
@@ -78,7 +82,7 @@ var/global/list/stool_cache = list() //haha stool
 			I.color = padding_material.icon_colour
 			stool_cache[padding_cache_key] = I
 		noverlays |= stool_cache[padding_cache_key]
-	overlays = noverlays
+	SetOverlays(noverlays)
 	// Strings.
 	if(padding_material)
 		SetName("[padding_material.display_name] [initial(name)]") //this is not perfect but it will do for now.
@@ -102,14 +106,14 @@ var/global/list/stool_cache = list() //haha stool
 		user.visible_message("<span class='danger'>[user] breaks [src] over [target]'s back!</span>")
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.do_attack_animation(target)
-		user.remove_from_mob(src)
-		dismantle()
-		qdel(src)
 
 		var/blocked = target.run_armor_check(hit_zone, "melee")
 		target.Weaken(10 * blocked_mult(blocked))
 		target.Stun(8 * blocked_mult(blocked))
 		target.apply_damage(20, BRUTE, hit_zone, blocked, src)
+
+		dismantle()
+		qdel(src)
 		return
 
 	..()
@@ -146,7 +150,6 @@ var/global/list/stool_cache = list() //haha stool
 			return
 		var/obj/item/stack/C = W
 		if(C.get_amount() < 1) // How??
-			user.drop_from_inventory(C)
 			qdel(C)
 			return
 		var/padding_type //This is awful but it needs to be like this until tiles are given a material var.
@@ -154,15 +157,14 @@ var/global/list/stool_cache = list() //haha stool
 			padding_type = MATERIAL_CARPET
 		else if(istype(W,/obj/item/stack/material))
 			var/obj/item/stack/material/M = W
-			if(M.material && (M.material.flags & MATERIAL_PADDING))
+			if(M.material && (M.material.material_flags & MATERIAL_PADDING))
 				padding_type = "[M.material.name]"
 		if(!padding_type)
 			to_chat(user, "You cannot pad \the [src] with that.")
 			return
 		C.use(1)
 		if(!istype(src.loc, /turf))
-			user.drop_from_inventory(src)
-			src.dropInto(loc)
+			user.drop(src, loc)
 		to_chat(user, "You add padding to \the [src].")
 		add_padding(padding_type)
 		return

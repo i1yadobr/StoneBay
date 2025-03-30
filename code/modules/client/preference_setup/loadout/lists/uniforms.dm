@@ -7,6 +7,11 @@
 	path = /obj/item/clothing/under/color
 	flags = GEAR_HAS_COLOR_SELECTION
 
+/datum/gear/uniform/jumpskirt
+	display_name = "jumpskirt, colour select"
+	path = /obj/item/clothing/under/jumpskirt
+	flags = GEAR_HAS_COLOR_SELECTION
+
 /datum/gear/uniform/roboticist_skirt
 	display_name = "skirt, roboticist"
 	path = /obj/item/clothing/under/rank/roboticist/skirt
@@ -31,9 +36,7 @@
 	suits += /obj/item/clothing/under/lawyer/black
 	suits += /obj/item/clothing/under/scratch
 	suits += /obj/item/clothing/under/lawyer/bluesuit
-	suits += /obj/item/clothing/under/rank/internalaffairs/plain
 	suits += /obj/item/clothing/under/blazer
-	suits += /obj/item/clothing/under/blackjumpskirt
 	suits += /obj/item/clothing/under/kilt
 	suits += /obj/item/clothing/under/dress/dress_hr
 	suits += /obj/item/clothing/under/det
@@ -71,19 +74,38 @@
 	path = /obj/item/clothing/under/skirt
 	flags = GEAR_HAS_TYPE_SELECTION
 
-/datum/gear/uniform/skirt_c
-	display_name = "short skirt, colour select"
-	path = /obj/item/clothing/under/skirt_c
-	flags = GEAR_HAS_COLOR_SELECTION
-
 /datum/gear/uniform/skirt_c/dress
 	display_name = "simple dress, colour select"
 	path = /obj/item/clothing/under/skirt_c/dress
 	flags = GEAR_HAS_COLOR_SELECTION
 
+/datum/gear/uniform/skirts_color
+	display_name = "skirt selection, colour select"
+	path = /obj/item/clothing/under/skirt_c
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/uniform/skirts_color/New()
+	..()
+	var/skirts_colorable = list()
+	skirts_colorable += /obj/item/clothing/under/skirt_c
+	skirts_colorable += /obj/item/clothing/under/skirt_c/pencil
+	skirts_colorable += /obj/item/clothing/under/skirt_c/casual
+	skirts_colorable += /obj/item/clothing/under/skirt_c/high
+	skirts_colorable += /obj/item/clothing/under/skirt_c/long
+	skirts_colorable += /obj/item/clothing/under/skirt_c/swept
+	skirts_colorable += /obj/item/clothing/under/skirt_c/plaid
+	skirts_colorable += /obj/item/clothing/under/skirt_c/skater
+	skirts_colorable += /obj/item/clothing/under/skirt_c/tube
+	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(skirts_colorable)
+
 /datum/gear/uniform/casual_pants
 	display_name = "casual pants selection"
 	path = /obj/item/clothing/under/casual_pants
+	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/uniform/track_pants
+	display_name = "track pants selection"
+	path = /obj/item/clothing/under/track_pants
 	flags = GEAR_HAS_TYPE_SELECTION
 
 /datum/gear/uniform/formal_pants
@@ -106,35 +128,20 @@
 	path = /obj/item/clothing/under/shorts/
 	flags = GEAR_HAS_COLOR_SELECTION
 
+/datum/gear/uniform/veles_jumpsuit
+	display_name = "veles jumpsuit"
+	path = /obj/item/clothing/under
+
+/datum/gear/uniform/veles_jumpsuit/New()
+	..()
+	var/veles = list()
+	veles += /obj/item/clothing/under/veles
+	veles += /obj/item/clothing/under/veles/veles_blue
+	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(veles)
+
 /datum/gear/uniform/tacticool_turtleneck
 	display_name = "tacticool turtleneck"
 	path = /obj/item/clothing/under/syndicate/tacticool
-
-// /datum/gear/uniform/turtleneck
-// 	display_name = "sweater, colour select"
-// 	path = /obj/item/clothing/under/rank/psych/turtleneck/sweater
-// 	flags = GEAR_HAS_COLOR_SELECTION
-
-/* MissingNo. uniform. Causes logs wreckage. *shrug
-/datum/gear/uniform/corporate
-	display_name = "corporate uniform selection"
-	path = /obj/item/clothing/under
-
-/datum/gear/uniform/corporate/New()
-	..()
-	var/corps = list()
-	// corps += /obj/item/clothing/under/saare
-	// corps += /obj/item/clothing/under/aether
-	// corps += /obj/item/clothing/under/hephaestus
-	// corps += /obj/item/clothing/under/grayson
-	// corps += /obj/item/clothing/under/focal
-	// corps += /obj/item/clothing/under/rank/ntwork
-	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(corps)
-*/
-
-/datum/gear/uniform/sterile
-	display_name = "sterile jumpsuit"
-	path = /obj/item/clothing/under/sterile
 
 /datum/gear/uniform/hazard
 	display_name = "hazard jumpsuit"
@@ -328,7 +335,7 @@
 
 /datum/gear/uniform/shortjumpskirt
 	display_name = "short jumpskirt"
-	path = /obj/item/clothing/under/shortjumpskirt
+	path = /obj/item/clothing/under/jumpskirt/grey
 	price = 10
 
 /datum/gear/uniform/charcoal
@@ -449,3 +456,21 @@
 	display_name = "fig leaf"
 	path = /obj/item/clothing/under/fig_leaf
 	price = 5
+
+/datum/gear/uniform/captain_alt
+	display_name = "old captain's uniform"
+	path = /obj/item/clothing/under/rank/captain/alt
+	price = 10
+	allowed_roles = list(/datum/job/captain)
+
+/datum/gear/uniform/camouflage
+	display_name = "camouflage jumpsuits"
+	price = 15
+
+/datum/gear/uniform/camouflage/New()
+	..()
+	var/camo = list()
+	camo += /obj/item/clothing/under/camo
+	camo += /obj/item/clothing/under/camo/firestarter
+	camo += /obj/item/clothing/under/camo/urban
+	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(camo)

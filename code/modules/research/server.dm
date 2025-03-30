@@ -10,7 +10,7 @@
 	var/id_with_download_string = ""
 	var/server_id = 0
 	var/produces_heat = 1
-	idle_power_usage = 800
+	idle_power_usage = 800 WATTS
 	var/delay = 10
 	req_access = list(access_rd) //Only the R&D can change server settings.
 
@@ -53,11 +53,11 @@
 /obj/machinery/r_n_d/server/Process()
 	var/datum/gas_mixture/environment = loc.return_air()
 	switch(environment.temperature)
-		if(0 to T0C)
+		if((0 KELVIN) to (0 CELSIUS))
 			health = min(100, health + 1)
-		if(T0C to (T20C + 20))
+		if((0 CELSIUS) to (40 CELSIUS))
 			health = between(0, health, 100)
-		if((T20C + 20) to (T0C + 70))
+		if((40 CELSIUS) to (70 CELSIUS))
 			health = max(0, health - 1)
 	if(health <= 0)
 		griefProtection() //I dont like putting this in process() but it's the best I can do without re-writing a chunk of rd servers.
@@ -82,7 +82,7 @@
 
 //Backup files to centcomm to help admins recover data after greifer attacks
 /obj/machinery/r_n_d/server/proc/griefProtection()
-	for(var/obj/machinery/r_n_d/server/centcom/C in GLOB.machines)
+	for(var/obj/machinery/r_n_d/server/centcom/C in SSmachines.machinery)
 		for(var/datum/tech/T in files.known_tech)
 			C.files.AddTech2Known(T)
 		for(var/datum/design/D in files.known_designs)
@@ -127,7 +127,7 @@
 /obj/machinery/r_n_d/server/centcom/proc/update_connections()
 	var/list/no_id_servers = list()
 	var/list/server_ids = list()
-	for(var/obj/machinery/r_n_d/server/S in GLOB.machines)
+	for(var/obj/machinery/r_n_d/server/S in SSmachines.machinery)
 		switch(S.server_id)
 			if(-1)
 				continue
@@ -153,7 +153,7 @@
 	name = "R&D Server Controller"
 	icon_keyboard = "rd_key"
 	icon_screen = "rdcomp"
-	light_color = "#a97faa"
+	light_color = "#CC99CC"
 	circuit = /obj/item/circuitboard/rdservercontrol
 	var/screen = 0
 	var/obj/machinery/r_n_d/server/temp_server
@@ -176,7 +176,7 @@
 		temp_server = null
 		consoles = list()
 		servers = list()
-		for(var/obj/machinery/r_n_d/server/S in GLOB.machines)
+		for(var/obj/machinery/r_n_d/server/S in SSmachines.machinery)
 			if(S.server_id == text2num(href_list["access"]) || S.server_id == text2num(href_list["data"]) || S.server_id == text2num(href_list["transfer"]))
 				temp_server = S
 				break
@@ -189,7 +189,7 @@
 			screen = 2
 		else if(href_list["transfer"])
 			screen = 3
-			for(var/obj/machinery/r_n_d/server/S in GLOB.machines)
+			for(var/obj/machinery/r_n_d/server/S in SSmachines.machinery)
 				if(S == src)
 					continue
 				servers += S
@@ -244,7 +244,7 @@
 		if(0) //Main Menu
 			dat += "Connected Servers:<BR><BR>"
 
-			for(var/obj/machinery/r_n_d/server/S in GLOB.machines)
+			for(var/obj/machinery/r_n_d/server/S in SSmachines.machinery)
 				if(istype(S, /obj/machinery/r_n_d/server/centcom) && !badmin)
 					continue
 				dat += "[S.name] || "

@@ -100,6 +100,34 @@
 		"Who Was I"                               = 'sound/music/valhalla/who_was_i.ogg',
 		"You`ve Got Me"                           = 'sound/music/valhalla/youve_got_me.ogg',
 	)
+
+/obj/item/music_tape/random/halloween
+	name = "Halloween Tape"
+	// This literally suggested githubCopilot, so let that be
+	tracklist = list(
+		"Ghostbusters"                          = 'sound/music/halloween/ghostbusters.ogg',
+		"Monster Mash"                          = 'sound/music/halloween/monster_mash.ogg',
+		"Thriller"                              = 'sound/music/halloween/thriller.ogg',
+		"Spooky Scary Skeletons"                = 'sound/music/halloween/spooky_scary_skeletons.ogg',
+		"Zombie"                                = 'sound/music/halloween/zombie.ogg',
+		"This Is Halloween"                     = 'sound/music/halloween/this_is_halloween.ogg',
+		"Somebody`s Watching Me"                = 'sound/music/halloween/somebodys_watching_me.ogg',
+		"Ghost Fight"                           = 'sound/music/halloween/ghost_fight.ogg'
+	)
+
+/obj/item/music_tape/random/retrojazz
+	name = "Retro Jazz Tape"
+	tracklist = list(
+		"All For You"                         = 'sound/music/retrojazz/all_for_you.ogg',
+		"Cold, Cold Heart"                    = 'sound/music/retrojazz/cold_cold_heart.ogg',
+		"Hair of Gold, Eyes of Blue"          = 'sound/music/retrojazz/hair_of_gold_eyes_of_blue.ogg',
+		"Hello! My Baby"                      = 'sound/music/retrojazz/hello_ma_baby.ogg',
+		"I Can't Begin To Tell You"           = 'sound/music/retrojazz/i_cant_begin_to_tell_you.ogg',
+		"I Don't Care If It Rains All Night"  = 'sound/music/retrojazz/i_dont_care_if_it_rains_all_night.ogg',
+		"I Wanna Be Loved By You"             = 'sound/music/retrojazz/i_wanna_be_loved_by_you.ogg',
+		"We'll Meet Again"                    = 'sound/music/retrojazz/well_meet_again.ogg'
+	)
+
 /obj/item/music_tape/custom
 	name = "dusty tape"
 	desc = "A dusty tape, which can hold anything. Only what you need is blow the dust away and you will be able to play it again."

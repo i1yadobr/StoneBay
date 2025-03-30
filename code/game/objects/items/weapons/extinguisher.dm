@@ -25,6 +25,9 @@
 	var/ff_reagent = /datum/reagent/water/firefoam
 	var/external_source = FALSE
 
+	drop_sound = SFX_DROP_GASCAN
+	pickup_sound = SFX_PICKUP_GASCAN
+
 /obj/item/extinguisher/mini
 	name = "fire extinguisher"
 	desc = "A light and compact fibreglass-framed model fire extinguisher."
@@ -36,6 +39,7 @@
 	mod_handy = 0.7
 	mod_weight = 0.65
 	mod_reach = 0.6
+	armor_penetration = 5
 	w_class = ITEM_SIZE_SMALL
 	spray_amount = 80
 	max_volume = 1000
@@ -47,11 +51,11 @@
 	reagents.add_reagent(ff_reagent, max_volume)
 	..()
 
-/obj/item/extinguisher/_examine_text(mob/user)
+/obj/item/extinguisher/examine(mob/user, infix)
 	. = ..()
+
 	if((get_dist(src, user) <= 0) && !external_source)
-		. += "\n[text("\icon[] [] contains [] units of reagents left!", src, src.name, src.reagents.total_volume)]"
-	return
+		. += "[text("\icon[] [] contains [] units of reagents left!", src, src.name, src.reagents.total_volume)]"
 
 /obj/item/extinguisher/attack_self(mob/user)
 	if(external_source)

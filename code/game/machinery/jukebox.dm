@@ -17,14 +17,15 @@
 
 /obj/machinery/media/jukebox
 	name = "space jukebox"
+	desc = "Touch the goddamn thing, and even a space marine's powersuit won't save you from the captain's rage."
 	icon = 'icons/obj/jukebox.dmi'
 	icon_state = "jukebox-nopower"
-	var/state_base = "jukebox"
+	var/state_base = "jukebox3"
 	anchored = 1
 	density = 1
 	power_channel = STATIC_EQUIP
-	idle_power_usage = 10
-	active_power_usage = 100
+	idle_power_usage = 10 WATTS
+	active_power_usage = 100 WATTS
 	clicksound = 'sound/machines/buttonbeep.ogg'
 	req_access = list(access_bar)
 	var/locked = 0
@@ -65,20 +66,23 @@
 	if(stat & (NOPOWER|BROKEN) && playing)
 		StopPlaying()
 
-/obj/machinery/media/jukebox/update_icon()
-	overlays.Cut()
+/obj/machinery/media/jukebox/on_update_icon()
+	ClearOverlays()
 	if(stat & (NOPOWER|BROKEN) || !anchored)
 		if(stat & BROKEN)
 			icon_state = "[state_base]-broken"
 		else
 			icon_state = "[state_base]-nopower"
+		set_light(0)
 		return
 	icon_state = state_base
+	set_light(0.95, 0.5, 1, 2, "#FCED7E")
+	AddOverlays(emissive_appearance(icon, "[state_base]-ea"))
 	if(playing)
 		if(emagged)
-			overlays += "[state_base]-emagged"
+			AddOverlays("[state_base]-emagged")
 		else
-			overlays += "[state_base]-running"
+			AddOverlays("[state_base]-running")
 
 /obj/machinery/media/jukebox/interact(mob/user)
 	if(!anchored)
@@ -213,15 +217,15 @@
 			to_chat(user, SPAN_WARNING("\The [D] is ruined, you can't use it."))
 			return
 
-		if(user.drop_item())
-			visible_message(SPAN_NOTICE("[usr] inserts \a [D] into \the [src]."))
-			D.forceMove(src)
-			tape = D
-			if(istype(tape, /obj/item/music_tape/random))
-				tracks += tape.tracks
-			else
-				tracks += tape.track
-			verbs += /obj/machinery/media/jukebox/verb/eject
+		if(!user.drop(D, src))
+			return
+		visible_message(SPAN_NOTICE("[usr] inserts \a [D] into \the [src]."))
+		tape = D
+		if(istype(tape, /obj/item/music_tape/random))
+			tracks += tape.tracks
+		else
+			tracks += tape.track
+		verbs += /obj/machinery/media/jukebox/verb/eject
 		return
 	return ..()
 
@@ -275,7 +279,7 @@
 
 	if(!CanPhysicallyInteract(usr))
 		return
-		
+
 	if(locked)
 		to_chat(usr, SPAN_WARNING("Tape holder is locked, you can't use it."))
 		return
@@ -285,8 +289,7 @@
 		current_track = null
 		tracks = list()
 
-		if(!usr.put_in_hands(tape))
-			tape.dropInto(loc)
+		usr.pick_or_drop(tape, loc)
 
 		tape = null
 		visible_message(SPAN_NOTICE("[usr] eject \a [tape] from \the [src]."))

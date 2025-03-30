@@ -30,6 +30,8 @@
 	mod_weight = 0.25
 	mod_reach = 0.25
 	mod_handy = 0.25
+	drop_sound = SFX_DROP_GLOVES
+	pickup_sound = SFX_PICKUP_GLOVES
 
 /obj/item/toy/proc/speak(message)
 	if (!message)
@@ -47,7 +49,7 @@
 	desc = "A translucent balloon. There's nothing in it."
 	icon = 'icons/obj/toy.dmi'
 	icon_state = "waterballoon-e"
-	item_state = "balloon-empty"
+	item_state = "water_balloon-empty"
 	w_class = ITEM_SIZE_TINY
 
 /obj/item/toy/water_balloon/New()
@@ -97,13 +99,13 @@
 				qdel(src)
 	return
 
-/obj/item/toy/water_balloon/update_icon()
+/obj/item/toy/water_balloon/on_update_icon()
 	if(src.reagents.total_volume >= 1)
 		icon_state = "waterballoon"
-		item_state = "balloon"
+		item_state = "water_balloon"
 	else
 		icon_state = "waterballoon-e"
-		item_state = "balloon-empty"
+		item_state = "water_balloon-empty"
 
 /obj/item/toy/balloon
 	name = "\improper 'criminal' balloon"
@@ -116,6 +118,9 @@
 	icon_state = "syndballoon"
 	item_state = "syndballoon"
 	w_class = ITEM_SIZE_HUGE
+
+	drop_sound = SFX_DROP_RUBBER
+	pickup_sound = SFX_PICKUP_RUBBER
 
 /obj/item/toy/balloon/New()
 	..()
@@ -139,9 +144,9 @@
 /obj/item/toy/blink
 	name = "electronic blink toy game"
 	desc = "Blink.  Blink.  Blink. Ages 8 and up."
-	icon = 'icons/obj/radio.dmi'
+	icon = 'icons/obj/device.dmi'
 	icon_state = "beacon"
-	item_state = "signaler"
+	item_state = "beacon"
 
 /*
  * Fake singularity
@@ -159,7 +164,7 @@
 /obj/item/toy/crossbow
 	name = "foam dart crossbow"
 	desc = "A weapon favored by many overactive children. Ages 8 and up."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "crossbow"
 	item_state = "crossbow"
 	item_icons = list(
@@ -170,14 +175,15 @@
 	attack_verb = list("attacked", "struck", "hit")
 	var/bullets = 5
 
-	_examine_text(mob/user)
-		if(..(user, 2) && bullets)
-			to_chat(user, "<span class='notice'>It is loaded with [bullets] foam darts!</span>")
+	examine(mob/user)
+		. = ..()
+
+		if(bullets)
+			. += SPAN_NOTICE("It is loaded with [bullets] foam darts!")
 
 	attackby(obj/item/I, mob/user)
 		if(istype(I, /obj/item/toy/ammo/crossbow))
 			if(bullets <= 4)
-				user.drop_item()
 				qdel(I)
 				bullets++
 				to_chat(user, "<span class='notice'>You load the foam dart into the crossbow.</span>")
@@ -263,8 +269,8 @@
 	slot_flags = SLOT_EARS
 
 /obj/effect/foam_dart_dummy
-	name = ""
-	desc = ""
+	name = "foam dart dummy"
+	desc = "foam dart dummy: A simple target to practice your dart shooting skills."
 	icon = 'icons/obj/toy.dmi'
 	icon_state = "null"
 	anchored = 1
@@ -496,7 +502,7 @@
 /obj/item/toy/figure/gardener
 	name = "Gardener action figure"
 	desc = "A \"Space Life\" brand Gardener action figure."
-	icon_state = "botanist"
+	icon_state = "gardener"
 
 /obj/item/toy/figure/captain
 	name = "Captain action figure"
@@ -800,6 +806,7 @@
 	name = "snail plush"
 	desc = "A plushie of a snail. Still can't figure out where I've seen this before."
 	icon_state = "snailplushie"
+	slot_flags = SLOT_HEAD
 
 //Toy cult sword
 /obj/item/toy/cultsword
@@ -900,8 +907,9 @@
 	pixel_x = 0
 	pixel_y = 0
 
-/obj/item/toy/chubbyskeleton/_examine_text(mob/user)
-	return "<span class='notice'>*---------*<BR>This is [src], a Skeleton!<BR>He is wearing some black shorts.<BR>He is wearing a blue hoodie.<BR>He is wearing some slippers on his feet.<BR>*---------*</span>"
+/obj/item/toy/chubbyskeleton/examine(mob/user, infix)
+	. = ..()
+	. += SPAN_NOTICE("*---------*<BR>This is [src], a Skeleton!<BR>He is wearing some black shorts.<BR>He is wearing a blue hoodie.<BR>He is wearing some slippers on his feet.<BR>*---------*")
 
 /obj/item/toy/chubbyskeleton/attack_hand(mob/user)
 	if(spam_flag == 0)
@@ -966,7 +974,7 @@
 			if(very_dangerous)
 				H.ChangeToSkeleton()
 			for(var/obj/item/I in H)
-				H.drop_from_inventory(I)
+				H.drop(I)
 		playsound(user.loc, pick('sound/effects/xylophone1.ogg','sound/effects/xylophone2.ogg','sound/effects/xylophone3.ogg'), 60)
 
 /obj/item/toy/banbanana
@@ -984,7 +992,6 @@
 				var/mob/living/carbon/human/H = M
 				H.eye_blind += 1
 	playsound(user.loc, 'sound/effects/adminhelp.ogg', 100)
-	user.drop_from_inventory(src)
 	qdel(src)
 
 /obj/item/toy/pig
@@ -1040,6 +1047,6 @@
 			if(temp && !temp.is_usable())
 				to_chat(user, SPAN("warning", "You try to pick up \the [src] with your [temp.name], but cannot!"))
 				return
-			to_chat(user, SPAN("notice", "You pick up \the [src]."))
-			user.put_in_hands(src)
+			if(user.pick_or_drop(src, loc))
+				to_chat(user, SPAN("notice", "You pick up \the [src]."))
 	return

@@ -77,12 +77,12 @@ var/global/floorIsLava = 0
 		<A href='?_src_=holder;warn=[M.ckey]'>Warn</A> |
 		<A href='?src=\ref[src];newban=\ref[M]'>Ban</A> |
 		<A href='?src=\ref[src];jobban2=\ref[M]'>Jobban</A> |
+		<A href='?src=\ref[src];hellban=\ref[M]'>Hellban</A> |
 		<A href='?src=\ref[src];notes=show;mob=\ref[M]'>Notes</A>
 	"}
 
 	if(M.client)
 		body += "| <A HREF='?src=\ref[src];sendtoprison=\ref[M]'>Prison</A> | "
-		body += "| <A HREF='?src=\ref[src];blind=\ref[M]'>Blind</A> | "
 		var/muted = M.client.prefs.muted
 		body += {"<br><b>Mute: </b>
 			\[<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_IC]'><font color='[(muted & MUTE_IC)?"red":"blue"]'>IC</font></a> |
@@ -151,25 +151,6 @@ var/global/floorIsLava = 0
 			else
 				body += "<A href='?src=\ref[src];makeanimal=\ref[M]'>Animalize</A> | "
 
-			// DNA2 - Admin Hax
-			if(M.dna && iscarbon(M))
-				body += "<br><br>"
-				body += "<b>DNA Blocks:</b><br><table border='0'><tr><th>&nbsp;</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>"
-				var/bname
-				for(var/block=1;block<=DNA_SE_LENGTH;block++)
-					if(((block-1)%5)==0)
-						body += "</tr><tr><th>[block-1]</th>"
-					bname = assigned_blocks[block]
-					body += "<td>"
-					if(bname)
-						var/bstate=M.dna.GetSEState(block)
-						var/bcolor="[(bstate)?"#006600":"#ff0000"]"
-						body += "<A href='?src=\ref[src];togmutate=\ref[M];block=[block]' style='color:[bcolor];'>[bname]</A><sub>[block]</sub>"
-					else
-						body += "[block]"
-					body+="</td>"
-				body += "</tr></table>"
-
 			body += {"<br><br>
 				<b>Rudimentary transformation:</b><font size=2><br>These transformations only create a new mob type and copy stuff over. They do not take into account MMIs and similar mob-specific things. The buttons in 'Transformations' are preferred, when possible.</font><br>
 				<A href='?src=\ref[src];simplemake=observer;mob=\ref[M]'>Observer</A> |
@@ -182,6 +163,7 @@ var/global/floorIsLava = 0
 				<A href='?src=\ref[src];simplemake=human;species=Unathi;mob=\ref[M]'>Unathi</A>
 				<A href='?src=\ref[src];simplemake=human;species=Tajaran;mob=\ref[M]'>Tajaran</A>
 				<A href='?src=\ref[src];simplemake=human;species=Skrell;mob=\ref[M]'>Skrell</A>
+				<A href='?src=\ref[src];simplemake=human;species=Trottine;mob=\ref[M]'>Trottine</A>
 				<A href='?src=\ref[src];simplemake=human;species=Vox;mob=\ref[M]'>Vox</A> \] | \[
 				<A href='?src=\ref[src];simplemake=nymph;mob=\ref[M]'>Nymph</A>
 				<A href='?src=\ref[src];simplemake=human;species='Diona';mob=\ref[M]'>Diona</A> \] |
@@ -218,7 +200,7 @@ var/global/floorIsLava = 0
 	var/f = 1
 	for(var/k in all_languages)
 		var/datum/language/L = all_languages[k]
-		if(!(L.flags & INNATE))
+		if(!(L.language_flags & INNATE))
 			if(!f) body += " | "
 			else f = 0
 			if(L in M.languages)
@@ -690,24 +672,30 @@ var/global/floorIsLava = 0
 
 	var/list/options = list("Regular Restart", "Hard Restart (Skip MC Shutdown)", "Hardest Restart (Direct world.Reboot) \[Dangerous\]")
 
-	var/result = input(usr, "Select reboot method", "World Reboot", options[1]) as null|anything in options
-	if(result)
-		feedback_set_details("end_error","admin reboot - by [key_name(usr)]")
-		feedback_add_details("admin_verb","R") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-		var/init_by = "<span class='notice'>Initiated by [key_name(usr)].</span>"
-		switch(result)
-			if("Regular Restart")
-				to_world("<span class='danger'>Restarting world!</span> [init_by]")
-				log_admin("[key_name(usr)] initiated a reboot.")
-				world.Reboot()
-			if("Hard Restart (Skip MC Shutdown)")
-				to_world("<span class='boldannounce'>Hard world restart.</span> [init_by]")
-				log_admin("[key_name(usr)] initiated a hard reboot.")
-				world.Reboot(reboot_hardness = REBOOT_HARD)
-			if("Hardest Restart (Direct world.Reboot) \[Dangerous\]")
-				to_world("<span class='boldannounce'>Hardest world restart.</span> [init_by]")
-				log_admin("[key_name(usr)] initiated a hardest reboot.")
-				world.Reboot(reboot_hardness = REBOOT_REALLY_HARD)
+	var/result = tgui_input_list(usr, "Select reboot method", "World Reboot", options)
+	if(!result)
+		return
+
+	var/failsafe = tgui_input_text(usr, "To confirm, type \"Server Restart\" in the box below", "WORLD REBOOT. THINK TWICE!!!")
+	if(failsafe != "Server Restart")
+		return
+
+	feedback_set_details("end_error","admin reboot - by [key_name(usr)]")
+	feedback_add_details("admin_verb","R") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+	var/init_by = "<span class='notice'>Initiated by [key_name(usr)].</span>"
+	switch(result)
+		if("Regular Restart")
+			to_world("<span class='danger'>Restarting world!</span> [init_by]")
+			log_admin("[key_name(usr)] initiated a reboot.")
+			world.Reboot()
+		if("Hard Restart (Skip MC Shutdown)")
+			to_world("<span class='boldannounce'>Hard world restart.</span> [init_by]")
+			log_admin("[key_name(usr)] initiated a hard reboot.")
+			world.Reboot(reboot_hardness = REBOOT_HARD)
+		if("Hardest Restart (Direct world.Reboot) \[Dangerous\]")
+			to_world("<span class='boldannounce'>Hardest world restart.</span> [init_by]")
+			log_admin("[key_name(usr)] initiated a hardest reboot.")
+			world.Reboot(reboot_hardness = REBOOT_REALLY_HARD)
 
 /datum/admins/proc/end_round()
 	set category = "Server"
@@ -1038,13 +1026,13 @@ var/global/floorIsLava = 0
 
 	if(!check_rights(R_SPAWN))	return
 
-	var/owner = input("Select a ckey.", "Spawn Custom Item") as null|anything in custom_items
-	if(!owner|| !custom_items[owner])
+	var/owner = input("Select a ckey.", "Spawn Custom Item") as null|anything in config.custom.items
+	if(!owner|| !config.custom.items[owner])
 		return
 
-	var/list/possible_items = custom_items[owner]
+	var/list/possible_items = config.custom.items[owner]
 	var/datum/custom_item/item_to_spawn = input("Select an item to spawn.", "Spawn Custom Item") as null|anything in possible_items
-	if(!item_to_spawn || !item_to_spawn.is_valid(usr))
+	if(!item_to_spawn)
 		return
 
 	item_to_spawn.spawn_item(get_turf(usr))
@@ -1055,21 +1043,18 @@ var/global/floorIsLava = 0
 	set desc = "Check the custom item list."
 	set name = "Check Custom Items"
 
-	if(!check_rights(R_SPAWN))	return
-
-	if(!custom_items)
-		to_chat(usr, "Custom item list is null.")
+	if(!check_rights(R_SPAWN))
 		return
 
-	if(!custom_items.len)
+	if(!length(config.custom.items))
 		to_chat(usr, "Custom item list not populated.")
 		return
 
-	for(var/assoc_key in custom_items)
+	for(var/assoc_key in config.custom.items)
 		to_chat(usr, "[assoc_key] has:")
-		var/list/current_items = custom_items[assoc_key]
+		var/list/current_items = config.custom.items[assoc_key]
 		for(var/datum/custom_item/item in current_items)
-			to_chat(usr, "- name: [item.name] icon: [item.item_icon] path: [item.item_path] desc: [item.item_desc]")
+			to_chat(usr, "- path: [item.item_path] patreon_type: [item.patreon_type] req_job: [json_encode(item.req_job)] flags: [json_encode(item.flags)]")
 
 /datum/admins/proc/spawn_plant(seedtype in SSplants.seeds)
 	set category = "Debug"
@@ -1164,16 +1149,6 @@ var/global/floorIsLava = 0
 	else
 		out += "<b>Shuttle auto-recall:</b> <a href='?src=\ref[SSticker.mode];toggle=shuttle_recall'>disabled</a>"
 	out += "<br/><br/>"
-
-	if(SSticker.mode.event_delay_mod_moderate)
-		out += "<b>Moderate event time modifier:</b> <a href='?src=\ref[SSticker.mode];set=event_modifier_moderate'>[SSticker.mode.event_delay_mod_moderate]</a><br/>"
-	else
-		out += "<b>Moderate event time modifier:</b> <a href='?src=\ref[SSticker.mode];set=event_modifier_moderate'>unset</a><br/>"
-
-	if(SSticker.mode.event_delay_mod_major)
-		out += "<b>Major event time modifier:</b> <a href='?src=\ref[SSticker.mode];set=event_modifier_severe'>[SSticker.mode.event_delay_mod_major]</a><br/>"
-	else
-		out += "<b>Major event time modifier:</b> <a href='?src=\ref[SSticker.mode];set=event_modifier_severe'>unset</a><br/>"
 
 	out += "<hr>"
 
@@ -1505,7 +1480,7 @@ datum/admins/var/obj/item/paper/admin/faxreply // var to hold fax replies in
 		if(!P.stamped)
 			P.stamped = new
 		P.stamped += /obj/item/stamp/centcomm
-		P.overlays += stampoverlay
+		P.AddOverlays(stampoverlay)
 
 	var/obj/item/rcvdcopy
 	rcvdcopy = destination.copy(P)
@@ -1544,3 +1519,16 @@ datum/admins/var/obj/item/paper/admin/faxreply // var to hold fax replies in
 		src = usr.client.holder
 
 	follow_panel.tgui_interact(usr, null)
+
+/datum/admins/proc/change_lobby_art()
+	set name = "Change Lobby Art"
+	set category = "Server"
+
+	if(!check_rights(R_SERVER))
+		return
+
+	var/datum/lobby_art/chosen_one = tgui_input_list(src, "Choose a new lobby art to set.", "Lobby Art", SSlobby.loaded_lobby_arts)
+	if(isnull(chosen_one))
+		return
+
+	SSlobby.change_lobby_art(chosen_one)

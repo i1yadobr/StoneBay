@@ -36,6 +36,11 @@
 	icon_state = "R38"
 	ammo_type = /obj/item/ammo_casing/c38/rubber
 
+/obj/item/ammo_magazine/c38/emp
+	name = "speed loader (.38 haywire)"
+	icon_state = "E38"
+	ammo_type = /obj/item/ammo_casing/c38/emp
+
 /obj/item/ammo_magazine/c38/spec
 	name = "speed loader (.38 SPEC)"
 	desc = "A five-round speed loader for M2019."
@@ -66,6 +71,11 @@
 	name = "speed loader (.44 magnum, rubber)"
 	icon_state = "R38"
 	ammo_type = /obj/item/ammo_casing/c44/rubber
+
+/obj/item/ammo_magazine/c44/emp
+	name = "speed loader (.44 magnum, haywire)"
+	icon_state = "E38"
+	ammo_type = /obj/item/ammo_casing/c44/emp
 
 /obj/item/ammo_magazine/c45m
 	name = "magazine (.45)"
@@ -286,3 +296,61 @@
 	matter = list(MATERIAL_STEEL = 600)
 	max_ammo = 7
 	multiple_sprites = 1
+
+/obj/item/ammo_magazine/lawgiver
+	name = "lawgiver magazine"
+	desc = "State-of-the-art bluespace technology allows this magazine to generate new rounds from energy, requiring only a power source to refill the full suite of ammunition types."
+	icon_state = "lawgiver"
+	mag_type = MAGAZINE
+	ammo_type = null
+	caliber = "lawgiver"
+	max_ammo = 0
+	display_default_ammo_left = FALSE
+	var/list/ammo_counters
+
+/obj/item/ammo_magazine/lawgiver/Initialize()
+	. = ..()
+	var/list/new_ammo_counters = list()
+	for(var/list/mode in GLOB.lawgiver_modes)
+		new_ammo_counters[mode["mode_name"]] = LAWGIVER_MAX_AMMO
+	ammo_counters = new_ammo_counters
+	update_icon()
+
+/obj/item/ammo_magazine/lawgiver/attack_self()
+	return
+
+/obj/item/ammo_magazine/lawgiver/emp_act(severity)
+	if(prob(25))
+		discharge_magazine()
+
+/obj/item/ammo_magazine/lawgiver/proc/discharge_magazine()
+	for(var/mode_name in ammo_counters)
+		if(prob(15))
+			ammo_counters[mode_name] = max(1, ammo_counters[mode_name] - rand(1, LAWGIVER_MAX_AMMO % 3))
+
+/obj/item/ammo_magazine/lawgiver/proc/generate_description()
+    var/dat = "\n"
+    for(var/list/mode in GLOB.lawgiver_modes)
+        var/ammo_left = round(ammo_counters[mode["mode_name"]], 0.1)
+        dat += "It has [ammo_left] [mode["mode_name"]] charge[ammo_left != 1 ? "s" : ""] left.\n"
+    return SPAN("info", dat)
+
+/obj/item/ammo_magazine/lawgiver/examine(mob/user, infix)
+	. = ..()
+	. += generate_description()
+
+/obj/item/ammo_magazine/lawgiver/proc/isFull()
+	for(var/mode in ammo_counters)
+		if(ammo_counters[mode] != LAWGIVER_MAX_AMMO)
+			return FALSE
+	return TRUE
+
+/obj/item/ammo_magazine/c792
+	name = "clip (7.92mm)"
+	icon_state = "c792"
+	mag_type = SPEEDLOADER
+	caliber = "7.92"
+	matter = list(MATERIAL_STEEL = 2000)
+	ammo_type = /obj/item/ammo_casing/a792
+	max_ammo = 5
+	multiple_sprites = TRUE

@@ -56,7 +56,7 @@
 		glide_size = move_glide_size
 	//spawn the cell you want in each vehicle
 
-/obj/vehicle/Move()
+/obj/vehicle/Move(newloc, direct)
 	if(world.time > l_move_time + move_delay)
 		if(on && powered && cell.charge < (charge_use * CELLRATE))
 			turn_off()
@@ -64,9 +64,11 @@
 		var/old_loc = get_turf(src)
 		var/init_anc = anchored
 		// Hack to let the vehicle fall() in open spaces.
-		anchored = 0
+		anchored = FALSE
 
 		. = ..()
+		if(!.)
+			return
 
 		set_dir(get_dir(old_loc, loc))
 		anchored = init_anc
@@ -77,15 +79,15 @@
 			set_glide_size(move_glide_size)
 			if(ismob(load))
 				var/mob/M = load
-				M.forceMove(loc, unbuckle_mob=FALSE)
+				M.forceMove(loc, unbuckle_mob = FALSE)
 			else
 				load.set_glide_size(move_glide_size)
 				load.forceMove(loc)
 			load.set_dir(dir)
 
-		return 1
-	else
-		return 0
+		return TRUE
+
+	return FALSE
 
 /obj/vehicle/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/hand_labeler))
@@ -256,9 +258,8 @@
 		return
 	if(!istype(C))
 		return
-
-	H.drop_from_inventory(C)
-	C.forceMove(src)
+	if(!H.drop(C, src))
+		return
 	cell = C
 	powercheck()
 	to_chat(usr, "<span class='notice'>You install [C] in [src].</span>")
@@ -268,8 +269,7 @@
 		return
 
 	to_chat(usr, "<span class='notice'>You remove [cell] from [src].</span>")
-	cell.forceMove(get_turf(H))
-	H.put_in_hands(cell)
+	usr.pick_or_drop(cell, loc)
 	cell = null
 	powercheck()
 
@@ -346,6 +346,8 @@
 		return 0
 
 	load.forceMove(dest)
+	if(!load) // Strange stuff's happened before.
+		return 0
 	load.set_dir(get_dir(loc, dest))
 	load.anchored = 0		//we can only load non-anchored items, so it makes sense to set this to false
 	if(ismob(load)) //atoms should probably have their own procs to define how their pixel shifts and layer can be manipulated, someday

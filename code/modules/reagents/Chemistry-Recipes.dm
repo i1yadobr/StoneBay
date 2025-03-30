@@ -77,7 +77,10 @@
 //called after processing reactions, if they occurred
 /datum/chemical_reaction/proc/post_reaction(datum/reagents/holder)
 	var/atom/container = holder.my_atom
-	if(mix_message && container && !ismob(container))
+	if(container && (container.atom_flags & ATOM_FLAG_SILENTCONTAINER))
+		return
+
+	if(mix_message && !ismob(container))
 		var/turf/T = get_turf(container)
 		var/list/seen = viewers(4, T)
 		for(var/mob/M in seen)
@@ -380,6 +383,12 @@
 	required_reagents = list(/datum/reagent/ammonia = 1, /datum/reagent/water = 1)
 	result_amount = 2
 
+/datum/chemical_reaction/reconstituted_space_cleaner
+	name = "Reconstituted space cleaner"
+	result = /datum/reagent/space_cleaner
+	required_reagents = list(/datum/reagent/space_cleaner/dry = 1, /datum/reagent/water = 10)
+	result_amount = 10
+
 /datum/chemical_reaction/plantbgone
 	name = "Plant-B-Gone"
 	result = /datum/reagent/toxin/plantbgone
@@ -454,6 +463,12 @@
 	required_reagents = list(/datum/reagent/radium = 1, /datum/reagent/potassium = 1, /datum/reagent/acid/hydrochloric = 1)
 	result_amount = 3
 
+/datum/chemical_reaction/hair_grower
+	name = "Hair Grower"
+	result = /datum/reagent/toxin/hair_grower
+	required_reagents = list(/datum/reagent/arithrazine = 1, /datum/reagent/potassium = 1, /datum/reagent/acid/polyacid = 1)
+	result_amount = 1
+
 /datum/chemical_reaction/noexcutite
 	name = "Noexcutite"
 	result = /datum/reagent/noexcutite
@@ -505,6 +520,10 @@
 
 /datum/chemical_reaction/explosion/potassium
 	required_reagents = list(/datum/reagent/water = 1, /datum/reagent/potassium = 1)
+
+/datum/chemical_reaction/explosion/hair_solution
+	required_reagents = list(/datum/reagent/toxin/hair_grower = 1, /datum/reagent/toxin/hair_remover = 1)
+	result_amount = 1
 
 /datum/chemical_reaction/explosion/nitroglycerin
 	name = "Nitroglycerin"
@@ -567,7 +586,7 @@
 /datum/chemical_reaction/napalm/on_reaction(datum/reagents/holder, created_volume)
 	var/turf/location = get_turf(holder.my_atom.loc)
 	for(var/turf/simulated/floor/target_tile in range(0,location))
-		target_tile.assume_gas("plasma", created_volume, 400+T0C)
+		target_tile.assume_gas("plasma", created_volume, 400 CELSIUS)
 		spawn (0) target_tile.hotspot_expose(700, 400)
 	holder.del_reagent("napalm")
 
@@ -880,7 +899,7 @@
 /datum/chemical_reaction/metroid/create/on_reaction(datum/reagents/holder)
 	holder.my_atom.visible_message("<span class='warning'>Infused with plasma, the core begins to quiver and grow, and soon a new baby metroid emerges from it!</span>")
 	var/mob/living/carbon/metroid/S = new /mob/living/carbon/metroid
-	S.loc = get_turf(holder.my_atom)
+	S.forceMove(get_turf(holder.my_atom))
 	..()
 
 /datum/chemical_reaction/metroid/monkey
@@ -893,7 +912,7 @@
 /datum/chemical_reaction/metroid/monkey/on_reaction(datum/reagents/holder)
 	for(var/i = 1, i <= 3, i++)
 		var /obj/item/reagent_containers/food/monkeycube/M = new /obj/item/reagent_containers/food/monkeycube
-		M.loc = get_turf(holder.my_atom)
+		M.forceMove(get_turf(holder.my_atom))
 	..()
 
 /datum/chemical_reaction/metroid/heal
@@ -922,10 +941,10 @@
 /datum/chemical_reaction/metroid/metal/on_reaction(datum/reagents/holder)
 	var/obj/item/stack/material/steel/M = new /obj/item/stack/material/steel
 	M.amount = 15
-	M.loc = get_turf(holder.my_atom)
+	M.forceMove(get_turf(holder.my_atom))
 	var/obj/item/stack/material/plasteel/P = new /obj/item/stack/material/plasteel
 	P.amount = 5
-	P.loc = get_turf(holder.my_atom)
+	P.forceMove(get_turf(holder.my_atom))
 	..()
 
 /datum/chemical_reaction/metroid/glass
@@ -938,10 +957,10 @@
 /datum/chemical_reaction/metroid/glass/on_reaction(datum/reagents/holder)
 	var/obj/item/stack/material/glass/M = new /obj/item/stack/material/glass
 	M.amount = 15
-	M.loc = get_turf(holder.my_atom)
+	M.forceMove(get_turf(holder.my_atom))
 	var/obj/item/stack/material/glass/reinforced/P = new /obj/item/stack/material/glass/reinforced
 	P.amount = 5
-	P.loc = get_turf(holder.my_atom)
+	P.forceMove(get_turf(holder.my_atom))
 	..()
 
 /datum/chemical_reaction/metroid/marble
@@ -954,7 +973,7 @@
 /datum/chemical_reaction/metroid/marble/on_reaction(datum/reagents/holder)
 	var/obj/item/stack/material/marble/M = new /obj/item/stack/material/marble
 	M.amount = 30
-	M.loc = get_turf(holder.my_atom)
+	M.forceMove(get_turf(holder.my_atom))
 	..()
 
 //Gold
@@ -993,11 +1012,11 @@
 							)
 
 /datum/chemical_reaction/metroid/n_crit/on_reaction(datum/reagents/holder)
+	..()
 	for(var/i = 1, i <= 3, i++)
 		var/mob/living/simple_animal/hostile/asteroid/type = pick(possible_mobs)
 		new type(get_turf(holder.my_atom))
 		type.faction = "neutral"
-	..()
 
 /datum/chemical_reaction/metroid/d_crit
 	name = "Metroid Dangerous Crit"
@@ -1042,7 +1061,7 @@
 		var/chosen = pick(borks)
 		var/obj/B = new chosen
 		if(B)
-			B.loc = get_turf(holder.my_atom)
+			B.forceMove(get_turf(holder.my_atom))
 			if(prob(50))
 				for(var/j = 1, j <= rand(1, 3), j++)
 					step(B, pick(NORTH, SOUTH, EAST, WEST))
@@ -1174,7 +1193,7 @@
 /datum/chemical_reaction/metroid/psteroid/on_reaction(datum/reagents/holder, created_volume)
 	..()
 	var/obj/item/metroidsteroid/P = new /obj/item/metroidsteroid
-	P.loc = get_turf(holder.my_atom)
+	P.forceMove(get_turf(holder.my_atom))
 
 /datum/chemical_reaction/metroid/jam
 	name = "Metroid Jam"
@@ -1195,7 +1214,7 @@
 	..()
 	var/obj/item/stack/material/plasma/P = new /obj/item/stack/material/plasma
 	P.amount = 3
-	P.loc = get_turf(holder.my_atom)
+	P.forceMove(get_turf(holder.my_atom))
 
 //Red
 /datum/chemical_reaction/metroid/mutation
@@ -1229,10 +1248,9 @@
 	result_amount = 1
 	required = /obj/item/metroid_extract/pink
 
-/datum/chemical_reaction/metroid/ppotion/on_reaction(datum/reagents/holder)
+/datum/chemical_reaction/metroid/docility/on_reaction(datum/reagents/holder)
 	..()
-	var/obj/item/metroidpotion/P = new /obj/item/metroidpotion
-	P.loc = get_turf(holder.my_atom)
+	new /obj/item/metroidpotion(get_turf(holder.my_atom))
 
 //Black
 /datum/chemical_reaction/metroid/mutate2
@@ -1279,8 +1297,18 @@
 
 /datum/chemical_reaction/metroid/golem/on_reaction(datum/reagents/holder)
 	..()
-	var/obj/effect/golemrune/Z = new /obj/effect/golemrune(get_turf(holder.my_atom))
-	Z.announce_to_ghosts()
+	new /obj/item/golem_shell(get_turf(holder.my_atom))
+
+/datum/chemical_reaction/metroid/adamantine
+	name = "Adamantine"
+	result = null
+	required_reagents = list(/datum/reagent/blood = 5)
+	result_amount = 1
+	required = /obj/item/metroid_extract/adamantine
+
+/datum/chemical_reaction/metroid/adamantine/on_reaction(datum/reagents/holder)
+	..()
+	new /obj/item/stack/material/adamantine(get_turf(holder.my_atom))
 
 //Sepia
 /datum/chemical_reaction/metroid/film
@@ -1315,13 +1343,7 @@
 	reaction_sound = 'sound/effects/teleport.ogg'
 
 /datum/chemical_reaction/metroid/teleport/on_reaction(datum/reagents/holder)
-	var/list/turfs = list()
-	for(var/turf/T in orange(holder.my_atom,6))
-		turfs += T
-	for(var/atom/movable/a in viewers(holder.my_atom,2))
-		if(!a.simulated)
-			continue
-		a.forceMove(pick(turfs))
+	new /obj/item/stack/telecrystal/bluespace_crystal(get_turf(holder.my_atom))
 	..()
 
 //pyrite
@@ -1372,6 +1394,67 @@
 	if(S.key_data)
 		var/obj/item/key/soap/key = new(get_turf(holder.my_atom), S.key_data)
 		key.uses = strength
+	..()
+
+//rainbow
+/datum/chemical_reaction/metroid/random_metroid
+	name = "Random Metroid"
+	result = null
+	required_reagents = list(/datum/reagent/toxin/plasma = 5)
+	required = /obj/item/metroid_extract/rainbow
+
+/datum/chemical_reaction/metroid/random_metroid/on_reaction(datum/reagents/holder)
+	var/colour = pick(list(
+		"green",
+		"purple",
+		"metal",
+		"orange",
+		"blue",
+		"dark blue",
+		"dark purple",
+		"yellow",
+		"silver",
+		"pink",
+		"red",
+		"gold",
+		"grey",
+		"sepia",
+		"bluespace",
+		"cerulean",
+		"pyrite",
+		"light pink",
+		"oil",
+		"adamantine",
+		"black"))
+	new /mob/living/carbon/metroid(get_turf(holder.my_atom), colour)
+	..()
+
+/datum/chemical_reaction/metroid/mind_tansfer
+	name = "Mind Transfer"
+	result = null
+	required_reagents = list(/datum/reagent/blood = 5)
+	required = /obj/item/metroid_extract/rainbow
+
+/datum/chemical_reaction/metroid/mind_tansfer/on_reaction(datum/reagents/holder)
+	new /obj/item/metroid_transference/(get_turf(holder.my_atom))
+	..()
+
+/datum/chemical_reaction/metroid/metroidbomb
+	name = "Metroid Bomb"
+	result = null
+	required_reagents = list(/datum/reagent/metroidjelly = 5)
+	required = /obj/item/metroid_extract/rainbow
+
+/datum/chemical_reaction/metroid/metroidbomb/on_reaction(datum/reagents/holder)
+	var/turf/T = get_turf(holder.my_atom)
+	var/obj/item/grenade/clusterbang/metroid/S = new (T)
+	S.visible_message(SPAN_DANGER("Infused with slime jelly, the core begins to expand uncontrollably!"))
+	S.icon_state = "metroidbang_active"
+	S.active = TRUE
+	S.set_next_think_ctx("think_detonate", world.time + rand(1.5 SECONDS, 6 SECONDS))
+	var/lastkey = holder.my_atom.fingerprintslast
+	message_admins("[key_name_admin(lastkey)] primed an explosive Brorble Brorble for detonation.")
+	log_game("[key_name(lastkey)] primed an explosive Brorble Brorble for detonation.")
 	..()
 
 /* Food */
@@ -1531,8 +1614,8 @@
 
 /datum/chemical_reaction/icecoffee
 	name = "Iced Coffee"
-	result = /datum/reagent/drink/coffee/icecoffee
-	required_reagents = list(/datum/reagent/drink/ice = 1, /datum/reagent/drink/coffee = 2)
+	result = /datum/reagent/caffeine/coffee/icecoffee
+	required_reagents = list(/datum/reagent/drink/ice = 1, /datum/reagent/caffeine/coffee = 2)
 	result_amount = 3
 
 /datum/chemical_reaction/nuka_cola
@@ -1606,8 +1689,8 @@
 
 /datum/chemical_reaction/kahlua
 	name = "Kahlua"
-	result = /datum/reagent/ethanol/coffee/kahlua
-	required_reagents = list(/datum/reagent/drink/coffee = 5, /datum/reagent/sugar = 5)
+	result = /datum/reagent/ethanol/kahlua
+	required_reagents = list(/datum/reagent/caffeine/coffee = 5, /datum/reagent/sugar = 5)
 	catalysts = list(/datum/reagent/enzyme = 5)
 	result_amount = 5
 
@@ -1663,7 +1746,7 @@
 /datum/chemical_reaction/magellan
 	name = "Magellan"
 	result = /datum/reagent/ethanol/magellan
-	required_reagents = list(/datum/reagent/ethanol/wine = 1, /datum/reagent/ethanol/specialwhiskey = 1)
+	required_reagents = list(/datum/reagent/ethanol/wine = 1,  /datum/reagent/ethanol/whiskey/specialwhiskey = 1)
 	catalysts = list(/datum/reagent/sugar)
 	result_amount = 2
 
@@ -1694,7 +1777,7 @@
 /datum/chemical_reaction/brave_bull
 	name = "Brave Bull"
 	result = /datum/reagent/ethanol/coffee/brave_bull
-	required_reagents = list(/datum/reagent/ethanol/tequilla = 2, /datum/reagent/ethanol/coffee/kahlua = 1)
+	required_reagents = list(/datum/reagent/ethanol/tequilla = 2, /datum/reagent/ethanol/kahlua = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/tequilla_sunrise
@@ -1742,13 +1825,13 @@
 /datum/chemical_reaction/irish_coffee
 	name = "Irish Coffee"
 	result = /datum/reagent/ethanol/coffee/irishcoffee
-	required_reagents = list(/datum/reagent/ethanol/irish_cream = 1, /datum/reagent/drink/coffee = 1)
+	required_reagents = list(/datum/reagent/ethanol/irish_cream = 1, /datum/reagent/caffeine/coffee = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/b52
 	name = "B-52"
 	result = /datum/reagent/ethanol/coffee/b52
-	required_reagents = list(/datum/reagent/ethanol/irish_cream = 1, /datum/reagent/ethanol/coffee/kahlua = 1, /datum/reagent/ethanol/cognac = 1)
+	required_reagents = list(/datum/reagent/ethanol/irish_cream = 1, /datum/reagent/ethanol/kahlua = 1, /datum/reagent/ethanol/cognac = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/atomicbomb
@@ -1784,7 +1867,7 @@
 /datum/chemical_reaction/black_russian
 	name = "Black Russian"
 	result = /datum/reagent/ethanol/black_russian
-	required_reagents = list(/datum/reagent/ethanol/vodka = 2, /datum/reagent/ethanol/coffee/kahlua = 1)
+	required_reagents = list(/datum/reagent/ethanol/vodka = 2, /datum/reagent/ethanol/kahlua = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/manhattan
@@ -1898,20 +1981,20 @@
 
 /datum/chemical_reaction/soy_latte
 	name = "Soy Latte"
-	result = /datum/reagent/drink/coffee/soy_latte
-	required_reagents = list(/datum/reagent/drink/coffee = 1, /datum/reagent/drink/milk/soymilk = 1)
+	result = /datum/reagent/caffeine/coffee/soy_latte
+	required_reagents = list(/datum/reagent/caffeine/coffee = 1, /datum/reagent/drink/milk/soymilk = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/cafe_latte
 	name = "Cafe Latte"
-	result = /datum/reagent/drink/coffee/cafe_latte
-	required_reagents = list(/datum/reagent/drink/coffee = 1, /datum/reagent/drink/milk = 1)
+	result = /datum/reagent/caffeine/coffee/cafe_latte
+	required_reagents = list(/datum/reagent/caffeine/coffee = 1, /datum/reagent/drink/milk = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/cappuccino
 	name = "Cappuccino"
-	result = /datum/reagent/drink/coffee/cappuccino
-	required_reagents = list(/datum/reagent/drink/coffee = 2, /datum/reagent/drink/milk/cream = 1)
+	result = /datum/reagent/caffeine/coffee/cappuccino
+	required_reagents = list(/datum/reagent/caffeine/coffee = 2, /datum/reagent/drink/milk/cream = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/acidspit
@@ -1977,7 +2060,7 @@
 /datum/chemical_reaction/devilskiss
 	name = "Devils Kiss"
 	result = /datum/reagent/ethanol/devilskiss
-	required_reagents = list(/datum/reagent/blood = 1, /datum/reagent/ethanol/coffee/kahlua = 1, /datum/reagent/ethanol/rum = 1)
+	required_reagents = list(/datum/reagent/blood = 1, /datum/reagent/ethanol/kahlua = 1, /datum/reagent/ethanol/rum = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/hippiesdelight
@@ -2031,7 +2114,7 @@
 /datum/chemical_reaction/rewriter
 	name = "Rewriter"
 	result = /datum/reagent/drink/rewriter
-	required_reagents = list(/datum/reagent/drink/spacemountainwind = 1, /datum/reagent/drink/coffee = 1)
+	required_reagents = list(/datum/reagent/drink/spacemountainwind = 1, /datum/reagent/caffeine/coffee = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/suidream
@@ -2170,7 +2253,7 @@
 /datum/chemical_reaction/espressomartini
 	name = "Espresso Martini"
 	result = /datum/reagent/ethanol/coffee/espressomartini
-	required_reagents = list(/datum/reagent/ethanol/black_russian = 3, /datum/reagent/drink/coffee = 1, /datum/reagent/sugar = 1)
+	required_reagents = list(/datum/reagent/ethanol/black_russian = 3, /datum/reagent/caffeine/coffee = 1, /datum/reagent/sugar = 1)
 	result_amount = 5
 
 /datum/chemical_reaction/shroombeer

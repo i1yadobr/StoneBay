@@ -17,6 +17,7 @@
 	attack_verb = list("attacked", "slapped", "whacked")
 	relative_size = 10
 	foreign = TRUE
+	hidden = TRUE
 	max_damage = 600
 
 	var/mob/living/carbon/brain/brainchan = null 	//notice me, biostructure-kun~ (✿˵•́ ‸ •̀˵)
@@ -51,7 +52,7 @@
 
 
 // Biostructure processing
-/obj/item/organ/internal/biostructure/Process()
+/obj/item/organ/internal/biostructure/think()
 	. = ..()
 	if((damage > (max_damage / 2)) && healing_threshold)
 		if(owner)
@@ -109,10 +110,11 @@
 
 		spawn()
 			if(brainchan)
-				if(istype(loc, /obj/item/organ/external))
+				if(istype(loc, /obj/item/organ/external) || brainchan.loc == src)
 					brainchan.verbs += /mob/living/carbon/brain/proc/transform_into_little_changeling
 				else
 					brainchan.verbs += /mob/living/carbon/brain/proc/headcrab_runaway
+
 	..()
 
 
@@ -155,7 +157,7 @@
 				affected.internal_organs.Remove(src)
 				status |= ORGAN_CUT_AWAY
 		else
-			H.drop_from_inventory(src)
+			H.drop(src, force = TRUE)
 
 	else if(istype(source, /obj/item/organ/external))
 		var/obj/item/organ/external/E = source
@@ -177,7 +179,7 @@
 			if(status & ORGAN_CUT_AWAY)
 				status &= ~ORGAN_CUT_AWAY
 
-		var/obj/item/organ/internal/brain/B = H.internal_organs_by_name[BP_BRAIN]
+		var/obj/item/organ/internal/cerebrum/brain/B = H.internal_organs_by_name[BP_BRAIN]
 		B?.vital = FALSE
 	else
 		owner = null

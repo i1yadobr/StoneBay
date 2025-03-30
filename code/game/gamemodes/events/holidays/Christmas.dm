@@ -51,7 +51,7 @@
 		var/obj/item/toy/xmas_cracker/other_half = new /obj/item/toy/xmas_cracker(target)
 		other_half.cracked = 1
 		other_half.icon_state = "cracker2"
-		target.put_in_active_hand(other_half)
+		target.pick_or_drop(other_half)
 		playsound(user, 'sound/effects/snap.ogg', 50, 1)
 		return 1
 	return ..()
@@ -61,5 +61,5 @@
 	icon_state = "xmashat"
 	desc = "A crappy paper hat that you are REQUIRED to wear."
 	flags_inv = 0
-	body_parts_covered = 0
-	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 0, rad = 0)
+	body_parts_covered = NO_BODYPARTS
+	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 0)

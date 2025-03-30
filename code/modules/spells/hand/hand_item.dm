@@ -4,7 +4,7 @@ Basically: I can use it to target things where I click. I can then pass these ta
 
 /obj/item/magic_hand
 	name = "Magic Hand"
-	icon = 'icons/mob/screen1.dmi'
+	icon = 'icons/hud/actions.dmi'
 	atom_flags = 0
 	item_flags = 0
 	obj_flags = 0
@@ -14,8 +14,9 @@ Basically: I can use it to target things where I click. I can then pass these ta
 	var/datum/spell/hand/hand_spell
 
 /obj/item/magic_hand/New(datum/spell/hand/S)
+	..(null)
 	hand_spell = S
-	name = "[name] ([S.name])"
+	name = S.hand_name_override ? S.hand_name_override : "[name] ([S.name])"
 	icon_state = S.hand_state
 
 /obj/item/magic_hand/get_storage_cost()
@@ -36,7 +37,7 @@ Basically: I can use it to target things where I click. I can then pass these ta
 
 /obj/item/magic_hand/proc/fire_spell(atom/A, mob/living/user)
 	if(!hand_spell) //no spell? Die.
-		user.drop_from_inventory(src)
+		user.drop(src)
 
 	if(!hand_spell.valid_target(A,user))
 		return
@@ -47,24 +48,25 @@ Basically: I can use it to target things where I click. I can then pass these ta
 	if(hand_spell.show_message)
 		user.visible_message("\The [user][hand_spell.show_message]")
 	if(hand_spell.cast_hand(A,user))
+		if(QDELETED(hand_spell))
+			return
 		next_spell_time = world.time + hand_spell.spell_delay
 		if(hand_spell.move_delay)
 			user.addMoveCooldown(hand_spell.move_delay)
 		if(hand_spell.click_delay)
 			user.setClickCooldown(hand_spell.click_delay)
 	else
-		user.drop_from_inventory(src)
+		user.drop(src)
 
 /obj/item/magic_hand/afterattack(atom/A, mob/user, proximity)
 	if(hand_spell)
 		fire_spell(A,user)
 
 /obj/item/magic_hand/throw_at() //no throwing pls
-	usr.drop_from_inventory(src)
+	usr.drop(src)
 
 /obj/item/magic_hand/dropped() //gets deleted on drop
 	..()
-	loc = null
 	qdel(src)
 
 /obj/item/magic_hand/Destroy() //better save than sorry.
@@ -82,6 +84,7 @@ Basically: I can use it to target things where I click. I can then pass these ta
 	mind_spell.interact(user)
 
 /obj/item/magic_hand/control_hand/New(datum/spell/hand/S)
+	..(null)
 	hand_spell = S
 	mind_spell = S
 	name = "[name] ([S.name])"

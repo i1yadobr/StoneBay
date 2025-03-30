@@ -12,7 +12,7 @@
 	mod_handy = 1.0
 	obj_flags =  OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BACK
-	caliber = "shotgun"
+	caliber = "12g"
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 2)
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/shotgun/beanbag
@@ -23,7 +23,7 @@
 
 /obj/item/gun/projectile/shotgun/pump/consume_next_projectile()
 	if(chambered)
-		return chambered.BB
+		return chambered.expend()
 	return null
 
 /obj/item/gun/projectile/shotgun/pump/attack_self(mob/living/user as mob)
@@ -31,15 +31,15 @@
 		recentpump = world.time
 		pump(user)
 
-/obj/item/gun/projectile/shotgun/pump/proc/pump(mob/M as mob)
-	playsound(M, SFX_SHOTGUN_PUMP_IN, rand(45, 60), FALSE)
+/obj/item/gun/projectile/shotgun/pump/proc/pump(atom/movable/user)
+	playsound(user, SFX_SHOTGUN_PUMP_IN, rand(45, 60), FALSE)
 
 	if(chambered)//We have a shell in the chamber
 		ejectCasing()
 		chambered = null
 
 	sleep(5)
-	playsound(M, SFX_SHOTGUN_PUMP_OUT, rand(45, 60), FALSE)
+	playsound(user, SFX_SHOTGUN_PUMP_OUT, rand(45, 60), FALSE)
 
 	if(loaded.len)
 		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
@@ -64,6 +64,23 @@
 	desc = "Built for close quarters combat, the Hephaestus Industries KS-40 is widely regarded as a weapon of choice for repelling boarders. This one emmits LAW."
 	ammo_type = /obj/item/ammo_casing/shotgun
 
+/obj/item/gun/projectile/shotgun/pump/compact
+	name = "compact shotgun"
+	desc = "The GA Protector: Compact, gripping, and decisively powerful weapon for face-to-face combat."
+	icon_state = "compact-shotgun"
+	item_state = "compact-shotgun"
+	wielded_item_state = "compact-shotgun-wielded"
+	slot_flags = SLOT_BELT|SLOT_BACK
+	w_class = ITEM_SIZE_NORMAL
+	origin_tech = list(TECH_COMBAT = 6, TECH_MATERIAL = 2) //more stylish than a combat shotgun
+	max_shells = 3
+	force = 9.5
+	mod_weight = 0.85
+	mod_reach = 0.8
+	mod_handy = 0.9
+	ammo_type = /obj/item/ammo_casing/shotgun
+	one_hand_penalty = 1
+
 /obj/item/gun/projectile/shotgun/pump/boomstick
 	name = "makeshift shotgun"
 	icon_state = "boomstick"
@@ -76,12 +93,13 @@
 	mod_weight = 1.0
 	mod_reach = 0.75
 	mod_handy = 0.75
+	has_safety = FALSE
 
 // Zip gun construction.
 /obj/item/boomstickframe
 	name = "modified welding tool"
 	desc = "A half-finished... gun?"
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "boomstick0"
 	item_state = "welder"
 	force = 5.0
@@ -93,26 +111,29 @@
 	mod_handy = 0.75
 	var/buildstate = 0
 
-/obj/item/boomstickframe/update_icon()
+/obj/item/boomstickframe/on_update_icon()
 	icon_state = "boomstick[buildstate]"
 
-/obj/item/boomstickframe/_examine_text(mob/user)
+/obj/item/boomstickframe/examine(mob/user, infix)
 	. = ..()
+
 	switch(buildstate)
-		if(0) . += "\nIt has a pipe loosely fitted to the welding tool."
-		if(1) . += "\nIt has a pipe welded to the welding tool."
-		if(2) . += "\nIt has a bent metal rod attached to it."
-		if(3) . += "\nIt has a spring inside."
-		if(4) . += "\nIt is all covered with duct tape."
+		if(0) . += "It has a pipe loosely fitted to the welding tool."
+		if(1) . += "It has a pipe welded to the welding tool."
+		if(2) . += "It has a bent metal rod attached to it."
+		if(3) . += "It has a spring inside."
+		if(4) . += "It is all covered with duct tape."
 
 /obj/item/boomstickframe/attackby(obj/item/W, mob/user)
 	if(isWelder(W) && buildstate == 0)
 		var/obj/item/weldingtool/WT = W
-		if(WT.remove_fuel(0, user))
-			user.visible_message("<span class='notice'>\The [user] secures \the [src]'s barrel.</span>")
-			add_fingerprint(user)
-			buildstate++
-			update_icon()
+		if(!WT.use_tool(src, user, amount = 1))
+			return
+
+		user.visible_message("<span class='notice'>\The [user] secures \the [src]'s barrel.</span>")
+		add_fingerprint(user)
+		buildstate++
+		update_icon()
 		return
 	else if(istype(W,/obj/item/stack/rods) && buildstate == 1)
 		var/obj/item/stack/rods/R = W
@@ -123,7 +144,6 @@
 		update_icon()
 		return
 	else if(istype(W,/obj/item/device/assembly/mousetrap) && buildstate == 2)
-		user.drop_from_inventory(W)
 		qdel(W)
 		user.visible_message("<span class='notice'>\The [user] takes apart \the [W] and uses the parts to construct a crude chamber loader inside \the [src].</span>")
 		add_fingerprint(user)
@@ -141,12 +161,12 @@
 		playsound(loc, 'sound/items/Screwdriver.ogg', 50, 1)
 		var/obj/item/gun/projectile/shotgun/pump/boomstick/herewego
 		herewego = new /obj/item/gun/projectile/shotgun/pump/boomstick { starts_loaded = 0 } (loc)
+		transfer_fingerprints_to(herewego)
 		if(ismob(loc))
 			var/mob/M = loc
-			M.drop_from_inventory(src)
-			M.put_in_hands(herewego)
-		transfer_fingerprints_to(herewego)
-		qdel(src)
+			M.replace_item(src, herewego, TRUE)
+		else
+			qdel(src)
 		return
 	else
 		..()
@@ -170,7 +190,7 @@
 	mod_handy = 1.0
 	obj_flags =  OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BACK
-	caliber = "shotgun"
+	caliber = "12g"
 	origin_tech = list(TECH_COMBAT = 3, TECH_MATERIAL = 1)
 	ammo_type = /obj/item/ammo_casing/shotgun/beanbag
 	one_hand_penalty = 2
@@ -203,7 +223,7 @@
 				Fire(user, user)	//will this work? //it will. we call it twice, for twice the FUN
 			user.visible_message("<span class='danger'>The shotgun goes off!</span>", "<span class='danger'>The shotgun goes off in your face!</span>")
 			return
-		if(do_after(user, 30, src))	//SHIT IS STEALTHY EYYYYY
+		if(do_after(user, 30, src, luck_check_type = LUCK_CHECK_COMBAT))	//SHIT IS STEALTHY EYYYYY
 			icon_state = "sawnshotgun"
 			item_state = "sawnshotgun"
 			wielded_item_state = null

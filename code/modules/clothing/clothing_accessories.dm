@@ -1,27 +1,26 @@
 /obj/item/clothing/proc/can_attach_accessory(obj/item/clothing/accessory/A)
-	if(valid_accessory_slots && istype(A) && (A.slot in valid_accessory_slots))
+	if(istype(A) && LAZYISIN(valid_accessory_slots, A.slot))
 		.=1
 	else
 		return 0
-	if(accessories.len && restricted_accessory_slots && (A.slot in restricted_accessory_slots))
+	if(LAZYLEN(accessories) && LAZYISIN(restricted_accessory_slots, A.slot))
 		for(var/obj/item/clothing/accessory/AC in accessories)
-			if (AC.slot == A.slot)
+			if (AC.slot == A.slot && AC.slot != ACCESSORY_SLOT_COVER)
 				return 0
 
 /obj/item/clothing/attackby(obj/item/I, mob/user)
 	if(istype(I, /obj/item/clothing/accessory))
-
-		if(!valid_accessory_slots || !valid_accessory_slots.len)
-			to_chat(usr, "<span class='warning'>You cannot attach accessories of any kind to \the [src].</span>")
+		if(!LAZYLEN(valid_accessory_slots))
+			to_chat(usr, SPAN("warning", "You cannot attach accessories of any kind to \the [src]."))
 			return
 
 		var/obj/item/clothing/accessory/A = I
 		if(can_attach_accessory(A))
-			user.drop_item()
+			user.drop(A, force = TRUE)
 			attach_accessory(user, A)
 			return
 		else
-			to_chat(user, "<span class='warning'>You cannot attach more accessories of this type to [src].</span>")
+			to_chat(user, SPAN("warning", "You cannot attach more accessories of this type to [src]."))
 		return
 
 	for(var/obj/item/clothing/accessory/A in accessories)
@@ -30,42 +29,50 @@
 
 /obj/item/clothing/attack_hand(mob/user)
 	//only forward to the attached accessory if the clothing is equipped (not in a storage)
-	if(accessories.len && src.loc == user)
+	if(LAZYLEN(accessories) && src.loc == user)
 		var/obj/item/clothing/accessory/A = accessories[accessories.len] // only upper accessory can be fast accessed
 		A.attack_hand(user)
 		return
 	return ..()
 
 /obj/item/clothing/MouseDrop(obj/over_object)
-	if (!over_object || !(ishuman(usr) || issmall(usr)))
+	if(!over_object || !(ishuman(usr) || issmall(usr)))
 		return
 
 	//makes sure that the clothing is equipped so that we can't drag it into our hand from miles away.
-	if (!(src.loc == usr))
+	if(loc != usr)
 		return
 
-	if (usr.incapacitated())
+	if(usr.incapacitated())
 		return
 
-	if (!usr.unEquip(src))
+	if(!usr.drop(src, changing_slots = TRUE))
 		return
 
-	switch(over_object.name)
-		if("r_hand")
+	var/atom/movable/screen/inventory/inv_box = over_object
+	if(!istype(inv_box))
+		return
+
+	switch(inv_box.slot_id)
+		if(slot_r_hand)
 			usr.put_in_r_hand(src)
-		if("l_hand")
+		if(slot_l_hand)
 			usr.put_in_l_hand(src)
-	src.add_fingerprint(usr)
 
-/obj/item/clothing/_examine_text(mob/user)
+	add_fingerprint(usr)
+
+/obj/item/clothing/examine(mob/user, infix)
 	. = ..()
 	for(var/obj/item/clothing/accessory/A in accessories)
-		. += "\n\icon[A] \A [A] is attached to it."
+		. += "\icon[A] \A [A] is attached to it."
 
 /obj/item/clothing/proc/update_accessory_slowdown()
 	slowdown_accessory = 0
 	for(var/obj/item/clothing/accessory/A in accessories)
 		slowdown_accessory += A.slowdown
+	if(ismob(loc))
+		var/mob/M = loc
+		M.update_equipment_slowdown()
 
 /**
  *  Attach accessory A to src
@@ -74,18 +81,20 @@
  *  items on spawn
  */
 /obj/item/clothing/proc/attach_accessory(mob/user, obj/item/clothing/accessory/A)
-	accessories += A
-	A.on_attached(src, user)
-	src.verbs |= /obj/item/clothing/proc/removetie_verb
-	update_accessory_slowdown()
-	update_clothing_icon()
+	LAZYADD(accessories, A)
+	if(A.on_attached(src, user))
+		src.verbs |= /obj/item/clothing/proc/removetie_verb
+		update_accessory_slowdown()
+		update_clothing_icon()
+	else
+		LAZYREMOVE(accessories, A)
 
 /obj/item/clothing/proc/remove_accessory(mob/user, obj/item/clothing/accessory/A)
-	if(!A || !(A in accessories))
+	if(!A || !LAZYISIN(accessories, A))
 		return
 
 	A.on_removed(user)
-	accessories -= A
+	LAZYREMOVE(accessories, A)
 	update_accessory_slowdown()
 	update_clothing_icon()
 
@@ -95,18 +104,20 @@
 	set src in usr
 	if(!istype(usr, /mob/living)) return
 	if(usr.stat) return
-	if(!accessories.len) return
+	if(!LAZYLEN(accessories))
+		return
+
 	var/obj/item/clothing/accessory/A
 	if(accessories.len > 1)
-		A = input("Select an accessory to remove from [src]") as null|anything in accessories
+		A = show_radial_menu(usr, usr, make_item_radial_menu_choices(accessories), radius = 42)
 	else
 		A = accessories[1]
 	src.remove_accessory(usr,A)
-	if(!accessories.len)
+	if(!LAZYLEN(accessories))
 		src.verbs -= /obj/item/clothing/proc/removetie_verb
 
 /obj/item/clothing/emp_act(severity)
-	if(accessories.len)
+	if(LAZYLEN(accessories))
 		for(var/obj/item/clothing/accessory/A in accessories)
 			A.emp_act(severity)
 	..()

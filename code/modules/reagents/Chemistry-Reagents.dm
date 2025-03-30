@@ -7,7 +7,8 @@
 	var/reagent_state = SOLID
 	var/list/data = null
 	var/volume = 0
-	var/radiation = 0
+
+	var/datum/radiation/radiation
 	var/metabolism = REM // This would be 0.2 normally
 	var/ingest_met = 0 // Speeds up/slows down actual metabolism speed, not to be confused with absorbability. When set to default (0), uses metabolism instead.
 	var/touch_met = 0 // When set to default (0), uses metabolism instead.
@@ -48,7 +49,7 @@
 /datum/reagent/proc/on_mob_life(mob/living/carbon/M, alien, location) // Currently, on_mob_life is called on carbons. Any interaction with non-carbon mobs (lube) will need to be done in touch_mob.
 	if(!istype(M))
 		return
-	if(!(flags & AFFECTS_DEAD) && M.stat == DEAD && (world.time - M.timeofdeath > 150))
+	if(!(flags & AFFECTS_DEAD) && M.is_ic_dead() && (world.time - M.timeofdeath > 150))
 		return
 	if(overdose && (location != CHEM_TOUCH))
 		var/overdose_threshold = overdose * (flags & IGNORE_MOB_SIZE? 1 : MOB_MEDIUM/M.mob_size)
@@ -117,9 +118,6 @@
 	else if(data)
 		return data
 	return null
-
-/datum/reagent/proc/get_radiation()
-	return volume * radiation
 
 /datum/reagent/Destroy() // This should only be called by the holder, so it's already handled clearing its references
 	holder = null

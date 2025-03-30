@@ -8,7 +8,7 @@
 	if(istype(H) && H.species.get_virus_immune(H))
 		return 0
 
-	var/protection = M.getarmor(null, "bio")	//gets the full body bio armour value, weighted by body part coverage.
+	var/protection = M.get_flat_armor(null, "bio")	//gets the full body bio armour value, weighted by body part coverage.
 	var/score = round(0.06*protection) 			//scales 100% protection to 6.
 
 	switch(vector)
@@ -48,12 +48,12 @@
 /proc/infection_spreading_check(mob/living/carbon/M, vector = "Airborne")
 	ASSERT(istype(M))
 
-	var/protection = M.getarmor(null, "bio")	//gets the full body bio armour value, weighted by body part coverage.
+	var/protection = M.get_flat_armor(null, "bio")	//gets the full body bio armour value, weighted by body part coverage.
 
 	if(vector == "Airborne")	//for airborne infections face-covering items give non-weighted protection value.
 		if(M.internal)
 			return 1
-		protection = max(protection, M.getarmor(FACE, "bio"))
+		protection = max(protection, M.get_flat_armor(FACE, "bio"))
 
 	return prob(protection + 15*M.chem_effects[CE_ANTIVIRAL])
 
@@ -73,7 +73,7 @@
 		return
 	if(!istype(M))
 		return
-	if(M.status_flags & GODMODE)
+	if((M.status_flags & GODMODE) || (isundead(M)))
 		return
 	if("[disease.uniqueID]" in M.virus2)
 		return
@@ -121,6 +121,14 @@
 //Fancy prob() function.
 /proc/dprob(p)
 	return(prob(sqrt(p)) && prob(sqrt(p)))
+
+//Checks if the equipment that covers the mouth has bioprotection
+/mob/living/carbon/human/proc/can_spread_disease()
+	for(var/obj/item/clothing/gear in list(head, wear_mask))
+		if(istype(gear) && (gear.body_parts_covered & FACE))
+			if(gear.armor["bio"] > 0)
+				return FALSE
+	return TRUE
 
 /mob/living/carbon/proc/spread_disease_to(mob/living/carbon/victim, vector = "Airborne")
 	if (src == victim)

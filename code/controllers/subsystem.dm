@@ -173,18 +173,19 @@
 		statclick = new /obj/effect/statclick/debug(null, "Initializing...", src)
 
 	var/pre_msg
-	if (flags & SS_NO_FIRE)
+	if(flags & SS_NO_FIRE)
 		pre_msg = "NOT FIRED"
-	else if (can_fire && !suspended)
+	else if(can_fire && !suspended)
 		pre_msg = "[round(cost,1)]ms|[round(tick_usage,1)]%([round(tick_overrun,1)]%)|[round(ticks,0.1)]"
-	else if (!can_fire)
+	else if(!can_fire)
 		pre_msg = "OFFLINE"
 	else
 		pre_msg = "SUSPEND"
+
 	msg = "[pre_msg]\t[msg]"
 
 	var/title = name
-	if (can_fire)
+	if(can_fire)
 		title = "\[[state_letter()]][title]"
 
 	stat(title, statclick.update(msg))

@@ -3,7 +3,7 @@
 	name = "hydraulic clamp"
 	icon_state = "mecha_clamp"
 	equip_cooldown = 15
-	energy_drain = 1 KILOWATTS
+	energy_drain = 1 KILO WATT
 	var/dam_force = 35
 	var/obj/mecha/working/ripley/cargo_holder
 	required_type = /obj/mecha/working
@@ -46,7 +46,7 @@
 		if(do_after_cooldown(target))
 			if(T == chassis.loc && src == chassis.selected)
 				cargo_holder.cargo += O
-				O.loc = chassis
+				O.forceMove(chassis)
 				O.anchored = 0
 				occupant_message(SPAN("notice", "[target] succesfully loaded."))
 				log_message("Loaded [O]. Cargo compartment capacity: [cargo_holder.cargo_capacity - cargo_holder.cargo.len]")
@@ -82,7 +82,7 @@
 	desc = "This is the drill that'll pierce the heavens! (Can be attached to: Combat and Engineering Exosuits)"
 	icon_state = "mecha_drill"
 	equip_cooldown = 30
-	energy_drain = 3 KILOWATTS
+	energy_drain = 3 KILO WATTS
 	force = 15
 	required_type = list(/obj/mecha/working/ripley, /obj/mecha/combat)
 	var/drillpower = 1
@@ -155,7 +155,7 @@
 	icon_state = "mecha_resonant_drill"
 	origin_tech = list(TECH_MATERIAL = 6, TECH_POWER = 4, TECH_ENGINEERING = 4, TECH_BLUESPACE = 4)
 	equip_cooldown = 10
-	energy_drain = 10 KILOWATTS
+	energy_drain = 10 KILO WATTS
 	drillpower = 3
 
 
@@ -250,7 +250,7 @@
 	icon_state = "mecha_rcd"
 	origin_tech = list(TECH_MATERIAL = 4, TECH_BLUESPACE = 3, TECH_MAGNET = 4, TECH_POWER = 4)
 	equip_cooldown = 10
-	energy_drain = 25 KILOWATTS
+	energy_drain = 25 KILO WATTS
 	range = MELEE|RANGED
 	var/mode = 0 //0 - deconstruct, 1 - wall or floor, 2 - airlock.
 	var/disabled = 0 //malf
@@ -358,7 +358,7 @@
 	icon_state = "mecha_teleport"
 	origin_tech = list(TECH_BLUESPACE = 10)
 	equip_cooldown = 150
-	energy_drain = 200 KILOWATTS
+	energy_drain = 200 KILO WATTS
 	range = RANGED
 	equip_slot = BACK
 
@@ -382,7 +382,7 @@
 	icon_state = "mecha_wholegen"
 	origin_tech = list(TECH_BLUESPACE = 3)
 	equip_cooldown = 50
-	energy_drain = 50 KILOWATTS
+	energy_drain = 50 KILO WATTS
 	range = RANGED
 
 /obj/item/mecha_parts/mecha_equipment/wormhole_generator/action(atom/target)
@@ -435,7 +435,7 @@
 	icon_state = "mecha_teleport"
 	origin_tech = list(TECH_BLUESPACE = 2, TECH_MAGNET = 3)
 	equip_cooldown = 10
-	energy_drain = 10 KILOWATTS
+	energy_drain = 10 KILO WATTS
 	range = MELEE|RANGED
 	equip_slot = BACK
 	var/atom/movable/locked
@@ -514,7 +514,7 @@
 	desc = "Powered armor-enhancing mech equipment."
 	icon_state = "mecha_abooster_proj"
 	equip_cooldown = 10
-	energy_drain = 5 KILOWATTS
+	energy_drain = 5 KILO WATTS
 	range = 0
 	has_equip_overlay = FALSE
 	var/deflect_coeff = 1
@@ -606,7 +606,7 @@
 	icon_state = "repair_droid"
 	origin_tech = list(TECH_MAGNET = 3, TECH_DATA = 3)
 	equip_cooldown = 20
-	energy_drain = 10 KILOWATTS
+	energy_drain = 10 KILO WATTS
 	range = 0
 	has_equip_overlay = FALSE
 	var/health_boost = 2
@@ -629,16 +629,16 @@
 /obj/item/mecha_parts/mecha_equipment/repair_droid/attach(obj/mecha/M as obj)
 	..()
 	droid_overlay = new(src.icon, icon_state = "repair_droid")
-	M.overlays += droid_overlay
+	M.AddOverlays(droid_overlay)
 	return
 
 /obj/item/mecha_parts/mecha_equipment/repair_droid/destroy()
-	chassis.overlays -= droid_overlay
+	chassis.CutOverlays(droid_overlay)
 	..()
 	return
 
 /obj/item/mecha_parts/mecha_equipment/repair_droid/detach()
-	chassis.overlays -= droid_overlay
+	chassis.CutOverlays(droid_overlay)
 	pr_repair_droid.stop()
 	..()
 	return
@@ -650,7 +650,7 @@
 /obj/item/mecha_parts/mecha_equipment/repair_droid/Topic(href, href_list)
 	..()
 	if(href_list["toggle_repairs"])
-		chassis.overlays -= droid_overlay
+		chassis.CutOverlays(droid_overlay)
 		if(pr_repair_droid.toggle())
 			droid_overlay = new(src.icon, icon_state = "repair_droid_a")
 			log_message("Activated.")
@@ -658,7 +658,7 @@
 			droid_overlay = new(src.icon, icon_state = "repair_droid")
 			log_message("Deactivated.")
 			set_ready_state(1)
-		chassis.overlays += droid_overlay
+		chassis.AddOverlays(droid_overlay)
 		send_byjax(chassis.occupant, "exosuit.browser", "\ref[src]", src.get_equip_info())
 	return
 
@@ -750,6 +750,7 @@
 /obj/item/mecha_parts/mecha_equipment/tesla_energy_relay/get_equip_info()
 	if(!chassis)
 		return
+
 	return "<span style=\"color:[equip_ready?"#0f0":"#f00"];\">*</span>&nbsp;[src.name] - <a href='?src=\ref[src];toggle_relay=1'>[pr_energy_relay.active()?"Dea":"A"]ctivate</a>"
 
 /datum/global_iterator/mecha_energy_relay/process(obj/item/mecha_parts/mecha_equipment/tesla_energy_relay/ER)
@@ -757,13 +758,15 @@
 		stop()
 		ER.set_ready_state(1)
 		return
+
 	var/cur_charge = ER.chassis.get_charge()
 	if(isnull(cur_charge) || !ER.chassis.cell)
 		stop()
 		ER.set_ready_state(1)
 		ER.occupant_message("No powercell detected.")
 		return
-	if(cur_charge<ER.chassis.cell.maxcharge)
+
+	if(cur_charge < (ER.chassis.cell.maxcharge / CELLRATE))
 		var/area/A = get_area(ER.chassis)
 		if(A)
 			var/pow_chan
@@ -771,8 +774,9 @@
 				if(A.powered(c))
 					pow_chan = c
 					break
+
 			if(pow_chan)
-				var/delta = min(12, ER.chassis.cell.maxcharge-cur_charge)
+				var/delta = min(1200, (ER.chassis.cell.maxcharge / CELLRATE) - cur_charge)
 				ER.chassis.give_power(delta)
 				A.use_power_oneoff(delta*ER.coeff, pow_chan)
 	return
@@ -794,7 +798,7 @@
 	var/max_fuel = 150000
 	var/fuel_per_cycle_idle = 100
 	var/fuel_per_cycle_active = 500
-	var/power_per_cycle = 1 KILOWATTS
+	var/power_per_cycle = 1 KILO WATTS
 
 /obj/item/mecha_parts/mecha_equipment/generator/New()
 	..()
@@ -834,6 +838,7 @@
 	var/output = ..()
 	if(output)
 		return "[output] \[[fuel]: [round(fuel.amount*fuel.perunit,0.1)] cm<sup>3</sup>\] - <a href='?src=\ref[src];toggle=1'>[pr_mech_generator.active()?"Dea":"A"]ctivate</a>"
+
 	return
 
 /obj/item/mecha_parts/mecha_equipment/generator/action(target)
@@ -851,7 +856,7 @@
 	return
 
 /obj/item/mecha_parts/mecha_equipment/generator/proc/load_fuel(obj/item/stack/material/P)
-	if(P.type == fuel.type && P.amount)
+	if(istype(P, fuel) && P.amount)
 		var/to_load = max(max_fuel - fuel.amount * fuel.perunit,0)
 		if(to_load)
 			var/units = min(max(round(to_load / P.perunit), 1), P.amount)
@@ -860,7 +865,8 @@
 				P.use(units)
 				return units
 		else
-			return 0
+			return FALSE
+
 	return
 
 /obj/item/mecha_parts/mecha_equipment/generator/attackby(weapon,mob/user)
@@ -878,13 +884,14 @@
 	var/turf/simulated/T = get_turf(src)
 	if(!T)
 		return
+
 	var/datum/gas_mixture/GM = new
 	if(prob(10))
-		T.assume_gas("plasma", 100, 1500+T0C)
+		T.assume_gas("plasma", 100, 1500 CELSIUS)
 		T.visible_message("The [src] suddenly disgorges a cloud of heated plasma.")
 		destroy()
 	else
-		T.assume_gas("plasma", 5, istype(T) ? T.air.temperature : T20C)
+		T.assume_gas("plasma", 5, istype(T) ? T.air.temperature : (20 CELSIUS))
 		T.visible_message("The [src] suddenly disgorges a cloud of plasma.")
 	T.assume_air(GM)
 	return
@@ -893,26 +900,29 @@
 	if(!EG.chassis)
 		stop()
 		EG.set_ready_state(1)
-		return 0
+		return FALSE
+
 	if(EG.fuel.amount<=0)
 		stop()
 		EG.log_message("Deactivated - no fuel.")
 		EG.set_ready_state(1)
-		return 0
+		return FALSE
+
 	var/cur_charge = EG.chassis.get_charge()
 	if(isnull(cur_charge))
 		EG.set_ready_state(1)
 		EG.occupant_message("No powercell detected.")
 		EG.log_message("Deactivated.")
 		stop()
-		return 0
+		return FALSE
+
 	var/use_fuel = EG.fuel_per_cycle_idle
-	if(cur_charge < EG.chassis.cell.maxcharge)
+	if(cur_charge < (EG.chassis.cell.maxcharge / CELLRATE))
 		use_fuel = EG.fuel_per_cycle_active
 		EG.chassis.give_power(EG.power_per_cycle)
 	EG.fuel.amount -= min(use_fuel/EG.fuel.perunit, EG.fuel.amount)
 	EG.update_equip_info()
-	return 1
+	return TRUE
 
 
 //Nuclear Generator
@@ -924,9 +934,14 @@
 	max_fuel = 50000
 	fuel_per_cycle_idle = 10
 	fuel_per_cycle_active = 30
-	power_per_cycle = 5 KILOWATTS
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
-	var/rad_per_cycle = 0.3
+	power_per_cycle = 5 KILO WATTS
+
+	var/datum/radiation_source/rad_source = null
+
+/obj/item/mecha_parts/mecha_equipment/generator/nuclear/Destroy()
+	qdel(rad_source)
+
+	. = ..()
 
 /obj/item/mecha_parts/mecha_equipment/generator/nuclear/init()
 	fuel = new /obj/item/stack/material/uranium(src)
@@ -940,8 +955,11 @@
 
 /datum/global_iterator/mecha_generator/nuclear/process(obj/item/mecha_parts/mecha_equipment/generator/nuclear/EG)
 	if(..())
-		SSradiation.radiate(EG, (EG.rad_per_cycle * 3))
-	return 1
+		if(EG.rad_source == null)
+			EG.rad_source = SSradiation.radiate(EG, new /datum/radiation/preset/uranium_238(EG.fuel.amount))
+		else
+			EG.rad_source.info.activity = EG.rad_source.info.specific_activity * EG.fuel.amount
+	return TRUE
 
 
 //This is pretty much just for the death-ripley so that it is harmless
@@ -978,7 +996,7 @@
 				if(do_after_cooldown(target))
 					if(T == chassis.loc && src == chassis.selected)
 						cargo_holder.cargo += O
-						O.loc = chassis
+						O.forceMove(chassis)
 						O.anchored = 0
 						chassis.occupant_message(SPAN("notice", "[target] succesfully loaded."))
 						chassis.log_message("Loaded [O]. Cargo compartment capacity: [cargo_holder.cargo_capacity - cargo_holder.cargo.len]")
@@ -1015,7 +1033,7 @@
 	desc = "A mountable passenger compartment for exo-suits. Rather cramped."
 	icon_state = "mecha_passenger"
 	origin_tech = list(TECH_ENGINEERING = 1, TECH_BIO = 1)
-	energy_drain = 1 KILOWATTS
+	energy_drain = 1 KILO WATTS
 	range = MELEE
 	equip_cooldown = 20
 	has_equip_overlay = FALSE
@@ -1036,7 +1054,7 @@
 	if (chassis)
 		chassis.visible_message(SPAN("notice", "[user] starts to climb into [chassis]."))
 
-	if(do_after(user, 40, src, needhand=0))
+	if(do_after(user, 40, src, needhand = FALSE, luck_check_type = LUCK_CHECK_ENG))
 		if(!src.occupant)
 			user.forceMove(src)
 			occupant = user
@@ -1163,7 +1181,7 @@
 /obj/item/mecha_parts/mecha_equipment/tool/cable_layer
 	name = "Cable Layer"
 	icon_state = "mecha_wire"
-	var/datum/event/event
+	var/datum/legacy_event/event
 	var/turf/old_turf
 	var/obj/structure/cable/last_piece
 	var/obj/item/stack/cable_coil/cable
@@ -1305,7 +1323,7 @@
 	icon_state = "servo"
 	equip_cooldown = 10
 	equip_ready = FALSE
-	energy_drain = 2 KILOWATTS
+	energy_drain = 2 KILO WATTS
 	range = 0
 	required_type = /obj/mecha/working
 	has_equip_overlay = FALSE

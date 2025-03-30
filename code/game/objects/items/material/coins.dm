@@ -16,15 +16,20 @@
 	force_divisor = 0
 	thrown_force_divisor = 0
 
-	var/string_attached
+	var/string_attached = FALSE
+	var/string_color = COLOR_RED
 	var/sides = 2
+
+	drop_sound = SFX_DROP_RING
+	pickup_sound = SFX_PICKUP_RING
 
 /obj/item/material/coin/set_material(new_material)
 	. = ..()
-	if(material.name in icon_states(icon))
-		icon_state = material.name
+	var/temp_state = "[material.name]_coin"
+	if(temp_state in icon_states(icon))
+		icon_state = temp_state
 	else
-		icon_state = "generic"
+		icon_state = "generic_coin"
 		color = material.icon_colour
 
 /obj/item/material/coin/attackby(obj/item/W, mob/user)
@@ -33,9 +38,13 @@
 		if(string_attached)
 			to_chat(user, SPAN("notice", "There already is a string attached to this coin."))
 			return
-		if (CC.use(1))
-			overlays += image('icons/obj/items.dmi',"coin_string_overlay")
-			string_attached = 1
+		var/new_string_color = CC.color
+		if(CC.use(1))
+			var/image/string_overlay = image(icon, "coin_string_overlay")
+			string_overlay.color = new_string_color
+			AddOverlays(string_overlay)
+			string_attached = TRUE
+			string_color = new_string_color
 			to_chat(user, SPAN("notice", "You attach a string to the coin."))
 		else
 			to_chat(user, SPAN("notice", "This cable coil appears to be empty."))
@@ -47,8 +56,9 @@
 
 		var/obj/item/stack/cable_coil/CC = new /obj/item/stack/cable_coil(user.loc)
 		CC.amount = 1
+		CC.color = string_color
 		CC.update_icon()
-		overlays.Cut()
+		ClearOverlays()
 		string_attached = null
 		to_chat(user, SPAN("notice", "You detach the string from the coin."))
 	else ..()
@@ -62,32 +72,33 @@
 		comment = "heads"
 	user.visible_message(SPAN("notice", "[user] has thrown \the [src]. It lands on [comment]!"), \
 						 SPAN("notice", "You throw \the [src]. It lands on [comment]!"))
+	playsound(src, 'sound/items/coinflip.ogg', 50, TRUE)
 
 
 /obj/item/material/coin/gold
-	icon_state = "gold"
+	icon_state = "gold_coin"
 	default_material = MATERIAL_GOLD
 
 /obj/item/material/coin/silver
-	icon_state = "silver"
+	icon_state = "silver_coin"
 	default_material = MATERIAL_SILVER
 
 /obj/item/material/coin/diamond
-	icon_state = "diamond"
+	icon_state = "diamond_coin"
 	default_material = MATERIAL_DIAMOND
 
 /obj/item/material/coin/iron
-	icon_state = "iron"
+	icon_state = "iron_coin"
 	default_material = MATERIAL_IRON
 
 /obj/item/material/coin/plasma
-	icon_state = "plasma"
+	icon_state = "plasma_coin"
 	default_material = MATERIAL_PLASMA
 
 /obj/item/material/coin/uranium
-	icon_state = "uranium"
+	icon_state = "uranium_coin"
 	default_material = MATERIAL_URANIUM
 
 /obj/item/material/coin/platinum
-	icon_state = "platinum"
+	icon_state = "platinum_coin"
 	default_material = MATERIAL_PLATINUM

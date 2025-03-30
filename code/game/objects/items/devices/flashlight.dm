@@ -14,6 +14,7 @@
 	var/on = 0
 	var/activation_sound = 'sound/effects/flashlight.ogg'
 	var/spam_flag = FALSE // spamming can possibly overload lighting SS
+	var/item_state_on = "flashlight-on"
 
 	var/flashlight_max_bright    = 0.5 // brightness of light when on, must be no greater than 1.
 	var/flashlight_inner_range   = 1   // inner range of light when on, can be negative
@@ -22,23 +23,36 @@
 	var/brightness_color = "#fff3b2" // color of light when on
 	var/light_overlay = TRUE
 
+	drop_sound = SFX_DROP_ACCESSORY
+	pickup_sound = SFX_PICKUP_ACCESSORY
+
 /obj/item/device/flashlight/Initialize()
 	. = ..()
 	if(on)
 		switch_light(TRUE)
 
-/obj/item/device/flashlight/update_icon()
-	overlays.Cut()
+/obj/item/device/flashlight/Destroy()
+	activation_sound = null
+	switch_light(FALSE)
+	ClearOverlays()
+	return ..()
+
+/obj/item/device/flashlight/on_update_icon()
+	ClearOverlays()
 	if(on)
 		icon_state = "[initial(icon_state)]-on"
+		if(item_state_on)
+			item_state = item_state_on
 		if(light_overlay)
-			var/image/LO = overlay_image(icon, "[initial(icon_state)]-overlay", flags=RESET_COLOR)
-			LO.color = brightness_color
-			LO.layer = ABOVE_LIGHTING_LAYER
-			LO.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-			overlays += LO
+			var/image/I = image(icon, "[initial(icon_state)]-overlay")
+			I.color = brightness_color
+			AddOverlays(I)
+			AddOverlays(emissive_appearance(icon, "[initial(icon_state)]-ea"))
+			em_block_state = "[initial(icon_state)]-eb"
 	else
 		icon_state = "[initial(icon_state)]"
+		item_state = initial(item_state)
+		em_block_state = null
 
 /obj/item/device/flashlight/proc/switch_light(state = FALSE)
 	on = state
@@ -49,7 +63,9 @@
 
 	if(activation_sound)
 		playsound(src.loc, activation_sound, 50, 1)
+
 	update_icon()
+	update_held_icon()
 
 /obj/item/device/flashlight/attack_self(mob/user)
 	if(!isturf(user.loc))
@@ -73,6 +89,10 @@
 /obj/item/device/flashlight/attack(mob/living/M, mob/living/user)
 	add_fingerprint(user)
 	if(on && user.zone_sel.selecting == BP_EYES)
+
+		if(is_pacifist(user))
+			to_chat(user, SPAN("warning", "You can't you're pacifist!"))
+			return
 
 		if((MUTATION_CLUMSY in user.mutations) && prob(50))	//too dumb to use flashlight properly
 			return ..()	//just hit them in the head
@@ -113,7 +133,7 @@
 
 	if(!BP_IS_ROBOTIC(vision))
 
-		if(vision.owner.stat == DEAD || H.blinded)	//mob is dead or fully blind
+		if(vision.owner.is_ic_dead() || H.blinded)	//mob is dead or fully blind
 			to_chat(user, SPAN("warning", "\The [H]'s pupils do not react to the light!"))
 			return
 		if(MUTATION_XRAY in H.mutations)
@@ -124,6 +144,14 @@
 			to_chat(user, SPAN("notice", "\The [H]'s pupils react slower than normally."))
 		if(H.getBrainLoss() > 15)
 			to_chat(user, SPAN("notice", "There's visible lag between left and right pupils' reactions."))
+		if(H.get_blood_volume() <= 60)
+			to_chat(user, SPAN("notice", "\The [H]'s eyelids look pale."))
+		if(length(H.virus2))
+			to_chat(user, SPAN("notice", "\The [H]'s eyes look red."))
+		else if(H.should_have_organ(BP_LIVER)) // Yea we probably do not want yellow and red eyes at the same time.
+			var/obj/item/organ/internal/liver/L = H.internal_organs_by_name[BP_LIVER]
+			if(istype(L) && L.is_bruised())
+				to_chat(user, SPAN("notice", "\The [H]'s eyes look yellowish."))
 
 		var/list/pinpoint = list(/datum/reagent/painkiller/tramadol/oxycodone = 1, /datum/reagent/painkiller/tramadol = 5, /datum/reagent/painkiller = 2, /datum/reagent/painkiller/opium = 3, /datum/reagent/painkiller/opium/tarine = 1)
 		var/list/dilating = list(/datum/reagent/space_drugs = 5, /datum/reagent/mindbreaker = 1, /datum/reagent/adrenaline = 1)
@@ -142,6 +170,7 @@
 	desc = "An energy efficient flashlight."
 	icon_state = "biglight"
 	item_state = "biglight"
+	item_state_on = "biglight-on"
 
 	flashlight_max_bright = 0.75
 	flashlight_outer_range = 5
@@ -153,6 +182,7 @@
 	desc = "A strange device manufactured with mysterious elements that somehow emits darkness. Or maybe it just sucks in light? Nobody knows for sure."
 	icon_state = "flashdark"
 	item_state = "flashdark"
+	item_state_on = null
 	w_class = ITEM_SIZE_NORMAL
 
 	flashlight_max_bright = -3
@@ -165,7 +195,8 @@
 	name = "penlight"
 	desc = "A pen-sized light, used by medical staff."
 	icon_state = "penlight"
-	item_state = ""
+	item_state = "pen"
+	item_state_on = null
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_EARS
 	w_class = ITEM_SIZE_TINY
@@ -179,6 +210,7 @@
 	desc = "A very, very heavy duty flashlight."
 	icon_state = "maglight"
 	item_state = "maglight"
+	item_state_on = "maglight-on"
 	force = 10
 	attack_verb = list ("smacked", "thwacked", "thunked")
 	matter = list(MATERIAL_STEEL = 200, MATERIAL_GLASS = 50)
@@ -190,7 +222,8 @@
 	name = "low-power flashlight"
 	desc = "A miniature lamp, that might be used by small robots."
 	icon_state = "penlight"
-	item_state = ""
+	item_state = "pen"
+	item_state_on = null
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	w_class = ITEM_SIZE_TINY
 
@@ -202,6 +235,7 @@
 	name = "lantern"
 	icon_state = "lantern"
 	item_state = "lantern"
+	item_state_on = "lantern-on"
 	desc = "A mining lantern."
 
 	flashlight_max_bright = 0.75
@@ -225,13 +259,16 @@
 	desc = "A desk lamp with an adjustable mount."
 	icon_state = "lamp"
 	item_state = "lamp"
+	item_state_on = null
 	w_class = ITEM_SIZE_LARGE
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
+	force = 5.0
+	attack_verb = list ("smacked", "bashed", "enlightened")
 
-	flashlight_max_bright = 0.3
+	flashlight_max_bright = 0.55
 	flashlight_inner_range = 2
 	flashlight_outer_range = 4
-	flashlight_falloff_curve = 4.0
+	flashlight_falloff_curve = 4.5
 	on = 1
 
 // green-shaded desk lamp
@@ -239,7 +276,6 @@
 	desc = "A classic green-shaded desk lamp."
 	icon_state = "lampgreen"
 	item_state = "lampgreen"
-
 	flashlight_inner_range = 1.5
 	flashlight_outer_range = 3
 	brightness_color = "#efac75"
@@ -247,7 +283,7 @@
 /obj/item/device/flashlight/lamp/brown
 	desc = "A classic brown-shaded desk lamp."
 	icon_state = "lampbrown"
-	item_state = "lampbrown"
+	item_state = "lampgreen"
 
 	flashlight_inner_range = 1.5
 	flashlight_outer_range = 3
@@ -270,6 +306,7 @@
 	w_class = ITEM_SIZE_TINY
 	icon_state = "flare"
 	item_state = "flare"
+	item_state_on = "flare-on"
 
 	flashlight_max_bright = 0.8
 	flashlight_inner_range = 2
@@ -287,25 +324,30 @@
 	fuel = rand(800, 1000) // Sorry for changing this so much but I keep under-estimating how long X number of ticks last in seconds.
 	..()
 
-/obj/item/device/flashlight/flare/update_icon()
-	overlays.Cut()
+/obj/item/device/flashlight/flare/on_update_icon()
+	ClearOverlays()
 	if(on)
+		if(item_state_on)
+			item_state = item_state_on
 		icon_state = "[initial(icon_state)]-on"
-		var/image/LO = overlay_image(icon, "[initial(icon_state)]-overlay", flags=RESET_COLOR)
-		LO.layer = ABOVE_LIGHTING_LAYER
-		LO.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-		overlays += LO
+		AddOverlays(image(icon, "[initial(icon_state)]-overlay"))
+		AddOverlays(emissive_appearance(icon, "[initial(icon_state)]-ea"))
+		em_block_state = "[initial(icon_state)]-eb"
 	else
 		icon_state = "[initial(icon_state)][fuel ? "" : "-empty"]"
+		item_state = initial(item_state)
+		em_block_state = null
 
-/obj/item/device/flashlight/flare/Process()
+/obj/item/device/flashlight/flare/think()
 	var/turf/pos = get_turf(src)
 	if(pos)
 		pos.hotspot_expose(produce_heat, 5)
 	fuel = max(fuel - 1, 0)
 	if(!fuel || !on)
 		turn_off()
-		STOP_PROCESSING(SSobj, src)
+		return
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/device/flashlight/flare/proc/turn_off()
 	force = initial(src.force)
@@ -325,7 +367,7 @@
 		return FALSE
 	force = on_damage
 	damtype = "fire"
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
 	switch_light(TRUE)
 	return 1
 
@@ -336,6 +378,7 @@
 	w_class = 2.0
 	icon_state = "glowstick"
 	item_state = "glowstick"
+	item_state_on = null
 	randpixel = 12
 	var/fuel = 0
 	activation_sound = null
@@ -352,35 +395,38 @@
 	brightness_color = color
 	..()
 
-/obj/item/device/flashlight/glowstick/Destroy()
-	. = ..()
-	STOP_PROCESSING(SSobj, src)
-
-/obj/item/device/flashlight/glowstick/Process()
+/obj/item/device/flashlight/glowstick/think()
 	fuel = max(fuel - 1, 0)
 	if(!fuel)
 		turn_off()
-		STOP_PROCESSING(SSobj, src)
 		update_icon()
+		return
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/device/flashlight/glowstick/proc/turn_off()
 	on = 0
 	update_icon()
 
-/obj/item/device/flashlight/glowstick/update_icon()
+/obj/item/device/flashlight/glowstick/on_update_icon()
 	item_state = "glowstick"
-	overlays.Cut()
+	ClearOverlays()
 	if(!fuel)
 		icon_state = "glowstick-empty"
 		set_light(0)
-	else if (on)
-		var/image/I = overlay_image(icon, "glowstick-on", brightness_color)
-		I.blend_mode = BLEND_ADD
-		overlays += I
+	else if(on)
+		icon_state = "[initial(icon_state)]-on"
+		em_block_state = "[initial(icon_state)]-eb"
+		var/image/I = image(icon, "[initial(icon_state)]-overlay")
+		I.color = brightness_color
+		AddOverlays(I)
+		AddOverlays(emissive_appearance(icon, "[initial(icon_state)]-ea"))
 		item_state = "glowstick-on"
 		set_light(flashlight_max_bright, flashlight_inner_range, flashlight_outer_range, 2, brightness_color)
 	else
 		icon_state = "glowstick"
+		em_block_state = null
+
 	var/mob/M = loc
 	if(istype(M))
 		if(M.l_hand == src)
@@ -400,7 +446,7 @@
 	. = ..()
 	if(.)
 		user.visible_message("<span class='notice'>[user] cracks and shakes the glowstick.</span>", "<span class='notice'>You crack and shake the glowstick, turning it on!</span>")
-		START_PROCESSING(SSobj, src)
+		set_next_think(world.time)
 
 /obj/item/device/flashlight/glowstick/red
 	name = "red glowstick"
@@ -433,7 +479,8 @@
 	desc = "A glowing ball of what appears to be amber."
 	icon = 'icons/obj/lighting.dmi'
 	icon_state = "slime-on"
-	item_state = "slime"
+	item_state = "egg5"
+	item_state_on = null
 	w_class = ITEM_SIZE_TINY
 
 	flashlight_max_bright = 1
@@ -441,13 +488,15 @@
 	flashlight_outer_range = 4
 	brightness_color = "#ffff00"
 	light_overlay = FALSE
-	on = 1 //Bio-luminesence has one setting, on.
+	on = TRUE //Bio-luminesence has one setting, on.
+	blocks_emissive = EMISSIVE_BLOCK_NONE
 
-/obj/item/device/flashlight/metroid/New()
-	..()
+/obj/item/device/flashlight/metroid/Initialize()
+	. = ..()
 	set_light(flashlight_max_bright, flashlight_inner_range, flashlight_outer_range, 2, brightness_color)
+	AddOverlays(emissive_appearance(icon, "slime-ea"))
 
-/obj/item/device/flashlight/metroid/update_icon()
+/obj/item/device/flashlight/metroid/on_update_icon()
 	return
 
 /obj/item/device/flashlight/metroid/attack_self(mob/user)

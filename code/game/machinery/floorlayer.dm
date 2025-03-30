@@ -13,10 +13,16 @@
 	T = new /obj/item/stack/tile/floor(src)
 	..()
 
-/obj/machinery/floorlayer/Move(new_turf,M_Dir)
-	..()
+/obj/machinery/floorlayer/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
 
-	if(on)
+	var/turf/new_turf
+	if(isturf(loc))
+		new_turf = loc
+
+	if(on && istype(old_turf))
 		if(mode["dismantle"])
 			dismantleFloor(old_turf)
 
@@ -26,8 +32,8 @@
 		if(mode["collect"])
 			CollectTiles(old_turf)
 
-
-	old_turf = new_turf
+	if(istype(new_turf))
+		old_turf = newloc
 
 /obj/machinery/floorlayer/attack_hand(mob/user as mob)
 	on=!on
@@ -43,9 +49,8 @@
 		user.visible_message("<span class='notice'>[usr] has set \the [src] [m] mode [!O?"off":"on"].</span>", "<span class='notice'>You set \the [src] [m] mode [!O?"off":"on"].</span>")
 		return
 
-	if(istype(W, /obj/item/stack/tile))
+	if(istype(W, /obj/item/stack/tile) && user.drop(T))
 		to_chat(user, "<span class='notice'>\The [W] successfully loaded.</span>")
-		user.drop_item(T)
 		TakeTile(T)
 		return
 
@@ -56,7 +61,7 @@
 			var/obj/item/stack/tile/E = input("Choose remove tile type.", "Tiles") as null|anything in contents
 			if(E)
 				to_chat(user, "<span class='notice'>You remove the [E] from \the [src].</span>")
-				E.loc = src.loc
+				E.dropInto(loc)
 				T = null
 		return
 
@@ -65,13 +70,14 @@
 		return
 	..()
 
-/obj/machinery/floorlayer/_examine_text(mob/user)
+/obj/machinery/floorlayer/examine(mob/user, infix)
 	. = ..()
+
 	var/dismantle = mode["dismantle"]
 	var/laying = mode["laying"]
 	var/collect = mode["collect"]
-	var/message = "<span class='notice'>\The [src] [!T?"don't ":""]has [!T?"":"[T.get_amount()] [T] "]tile\s, dismantle is [dismantle?"on":"off"], laying is [laying?"on":"off"], collect is [collect?"on":"off"].</span>"
-	. += "\n[message]"
+
+	. += SPAN_NOTICE("\The [src] [!T ? "don't " : ""]has [!T ? "" : "[T.get_amount()] [T] "]tile\s, dismantle is [dismantle ? "on" : "off"], laying is [laying ? "on" : "off"], collect is [collect?"on" : "off"].")
 
 /obj/machinery/floorlayer/proc/reset()
 	on=0
@@ -104,7 +110,7 @@
 
 /obj/machinery/floorlayer/proc/TakeTile(obj/item/stack/tile/tile)
 	if(!T)	T = tile
-	tile.loc = src
+	tile.forceMove(src)
 
 	SortStacks()
 

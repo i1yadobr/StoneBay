@@ -45,7 +45,6 @@
 			for(var/mob/M in viewers(user, null))
 				if ((M.client && !( M.blinded )))
 					M.show_message("<span class='notice'>[user] feeds the [name] with some [O].</span>")
-			user.drop_from_inventory(O)
 			qdel(O)
 			angry = 1
 			friends += weakref(user)
@@ -58,7 +57,7 @@
 	. = ..()
 	if(.)
 		playsound(src, 'sound/voice/MEraaargh.ogg', 70, 1)
-		custom_emote(1, "roars at [.]")
+		visible_emote("roars at [.].")
 
 /mob/living/simple_animal/hostile/maneater/AttackingTarget()
 	. =..()

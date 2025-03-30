@@ -6,6 +6,8 @@
 /// Similar to clamp but the bottom rolls around to the top and vice versa. min is inclusive, max is exclusive
 #define WRAP(val, min, max) ( min == max ? min : (val) - (round(((val) - (min))/((max) - (min))) * ((max) - (min))) )
 
+#define get_area(A) (isarea(A) ? A : get_step(A,0)?.loc)
+
 #define get_turf(A) get_step(A,0)
 
 #define isAI(A) istype(A, /mob/living/silicon/ai)
@@ -34,13 +36,15 @@
 
 #define ishuman(A) istype(A, /mob/living/carbon/human)
 
-#define isabductor(A) (is_species(A, /datum/species/abductor))
-
+#define ispromethean(A) (is_species(A, /datum/species/promethean))
+#define isgolem(A) (is_species(A, /datum/species/golem))
 #define isitem(A) istype(A, /obj/item)
 
 #define islist(A) istype(A, /list)
 
 #define isliving(A) istype(A, /mob/living)
+
+#define isstructure(A) istype(A, /obj/structure)
 
 #define isbot(A) istype(A, /mob/living/bot)
 
@@ -53,8 +57,6 @@
 #define isobj(A) istype(A, /obj)
 
 #define isghost(A) istype(A, /mob/observer/ghost)
-
-#define isvrhuman(A) (istype(A, /mob/living/carbon/human/vrhuman))
 
 #define isobserver(A) istype(A, /mob/observer)
 
@@ -74,6 +76,8 @@
 
 #define ismetroid(A) istype(A, /mob/living/carbon/metroid)
 
+#define islarva(A) istype(A, /mob/living/carbon/alien/larva)
+
 #define isunderwear(A) istype(A, /obj/item/underwear)
 
 #define isvirtualmob(A) istype(A, /mob/observer/virtual)
@@ -84,19 +88,21 @@
 
 #define isopenspace(A) istype(A, /turf/simulated/open)
 
-#define isWrench(A) (istype(A, /obj/item/wrench) || (istype(A, /obj/item/rpd) && A:interaction_mode == "wrench"))
+#define isWrench(A) ((istype(A, /obj/item) && A.tool_behaviour == TOOL_WRENCH) || (istype(A, /obj/item/rpd) && A:interaction_mode == "wrench"))
 
-#define isWelder(A) istype(A, /obj/item/weldingtool)
+#define isWelder(A) (istype(A, /obj/item) && A.tool_behaviour == TOOL_WELDER)
 
-#define isCoil(A) istype(A, /obj/item/stack/cable_coil)
+#define isCoil(A) (istype(A, /obj/item) && A.tool_behaviour == TOOL_COIL)
 
-#define isWirecutter(A) istype(A, /obj/item/wirecutters)
+#define isWirecutter(A) (istype(A, /obj/item) && A.tool_behaviour == TOOL_WIRECUTTER)
 
-#define isScrewdriver(A) istype(A, /obj/item/screwdriver)
+#define isScrewdriver(A) (istype(A, /obj/item) && A.tool_behaviour == TOOL_SCREWDRIVER)
 
-#define isMultitool(A) istype(A, /obj/item/device/multitool)
+#define isMultitool(A) (istype(A, /obj/item) && A.tool_behaviour == TOOL_MULTITOOL)
 
-#define isCrowbar(A) istype(A, /obj/item/crowbar)
+#define isCrowbar(A) (istype(A, /obj/item) && A.tool_behaviour == TOOL_CROWBAR)
+
+#define isEmag(A) (istype(A, /obj/item/card/emag) || (istype(A, /obj/item/device/emag) && A:revealed))
 
 #define iscapacitor(A) istype(A, /obj/item/stock_parts/capacitor)
 
@@ -111,6 +117,8 @@
 #define ismech(A) istype(A, /obj/mecha)
 
 #define iseffect(A) istype(A, /obj/effect)
+
+#define ishostile(A) istype(A, /mob/living/simple_animal/hostile)
 
 #define sequential_id(key) uniqueness_repository.Generate(/datum/uniqueness_generator/id_sequential, key)
 
@@ -164,6 +172,8 @@
 #define LAZYADD(L, I) if(!L) { L = list(); } L += I;
 // Insert I into L at position X, initalizing L if necessary
 #define LAZYINSERT(L, I, X) if(!L) { L = list(); } L.Insert(X, I);
+/// Use LAZYLISTDUPLICATE instead if you want it to null with no entries
+#define LAZYCOPY(L) (L ? L.Copy() : list() )
 // Adds I to L, initalizing L if necessary, if I is not already in L
 #define LAZYDISTINCTADD(L, I) if(!L) { L = list(); } L |= I;
 // Sets L[A] to I, initalizing L if necessary
@@ -200,6 +210,8 @@
 
 #define SPAN(class, X) "<span class='" + ##class + "'>" + ##X + "</span>"
 
+#define SPAN_INFO(X)     SPAN("info", X)
+
 #define SPAN_NOTICE(X)   SPAN("notice", X)
 
 #define SPAN_WARNING(X)  SPAN("warning", X)
@@ -210,6 +222,10 @@
 
 #define SPAN_DEADSAY(X)  SPAN("deadsay", X)
 
+#define SPAN_SPIDER(X)   SPAN("spider", X)
+
+#define SPAN_BOLD(X)	 SPAN("bold", X)
+
 #define FONT_SMALL(X)    SPAN("small", X)
 
 #define FONT_NORMAL(X)   SPAN("normal", X)
@@ -219,3 +235,5 @@
 #define FONT_HUGE(X)     SPAN("huge", X)
 
 #define FONT_GIANT(X)    SPAN("giant", X)
+
+#define EMPTY_BITFIELD 0

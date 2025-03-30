@@ -18,7 +18,7 @@
 	center_of_mass = null
 
 	// These values are passed on to all component pieces.
-	armor = list(melee = 40, bullet = 5, laser = 20,energy = 5, bomb = 35, bio = 100, rad = 20)
+	armor = list(melee = 40, bullet = 5, laser = 20,energy = 5, bomb = 35, bio = 100)
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0.2
@@ -86,24 +86,28 @@
 	var/datum/wires/rig/wires
 	var/datum/effect/effect/system/spark_spread/spark_system
 
-/obj/item/rig/_examine_text(mob/user)
+/obj/item/rig/examine(mob/user, infix)
 	. = ..()
+
 	if(wearer)
 		for(var/obj/item/piece in list(helmet,gloves,chest,boots))
 			if(!piece || piece.loc != wearer)
 				continue
-			. += "\n\icon[piece] \The [piece] [piece.gender == PLURAL ? "are" : "is"] deployed."
+
+			. += "\icon[piece] \The [piece] [piece.gender == PLURAL ? "are" : "is"] deployed."
 
 	if(src.loc == usr)
-		. += "\nThe access panel is [locked? "locked" : "unlocked"]."
-		. += "\nThe maintenance panel is [open ? "open" : "closed"]."
-		. += "\nPowersuit systems are [offline ? "<font color='red'>offline</font>" : "<font color='green'>online</font>"]."
+		. += "The access panel is [locked? "locked" : "unlocked"]."
+		. += "The maintenance panel is [open ? "open" : "closed"]."
+		. += "Powersuit systems are [offline ? "<font color='red'>offline</font>" : "<font color='green'>online</font>"]."
 
 		if(open)
-			. += "\nIt's equipped with [english_list(installed_modules)]."
+			. += "It's equipped with [english_list(installed_modules)]."
 
 /obj/item/rig/Initialize()
 	. = ..()
+
+	add_think_ctx("booting_context", CALLBACK(src, nameof(.proc/r_booting_done)), 0)
 
 	item_state = icon_state
 	wires = new(src)
@@ -115,7 +119,7 @@
 	spark_system.set_up(5, 0, src)
 	spark_system.attach(src)
 
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
 
 	if(initial_modules && initial_modules.len)
 		for(var/path in initial_modules)
@@ -165,7 +169,7 @@
 	for(var/obj/item/piece in list(gloves, boots, helmet, chest))
 		var/mob/living/M = piece.loc
 		if(istype(M))
-			M.drop_from_inventory(piece)
+			M.drop(piece, force = TRUE)
 
 
 	QDEL_NULL(wires)
@@ -192,7 +196,13 @@
 	return ..()
 
 /obj/item/rig/get_mob_overlay(mob/user_mob, slot)
-	var/image/ret = ..()
+	. = ..()
+
+	if(slot == slot_l_hand_str || slot == slot_r_hand_str)
+		return
+
+	var/image/ret = .
+
 	if(icon_override)
 		ret.icon = icon_override
 	else if(slot == slot_back_str)
@@ -247,8 +257,8 @@
 	var/seal_target = !canremove
 	var/failed_to_seal
 
-	var/obj/screen/rig_booting/booting_L = new
-	var/obj/screen/rig_booting/booting_R = new
+	var/atom/movable/screen/rig_booting/booting_L = new
+	var/atom/movable/screen/rig_booting/booting_R = new
 
 	if(!seal_target)
 		booting_L.icon_state = "boot_left"
@@ -349,7 +359,7 @@
 	to_chat(wearer, "<span class='info'><b>Your entire suit [canremove ? "loosens as the components relax" : "tightens around you as the components lock into place"].</b></span>")
 	if(wearer.client)
 		wearer.client.screen -= booting_L
-		addtimer(CALLBACK(src, .proc/r_booting_done, wearer.client, booting_R), 80)
+		set_next_think_ctx("booting_context", world.time + 8 SECONDS, wearer.client, booting_R)
 	qdel(booting_L)
 	booting_R.icon_state = "boot_done"
 
@@ -368,7 +378,7 @@
 		wearer.wearing_rig = src
 	wearer.update_equipment_slowdown()
 
-/obj/item/rig/proc/r_booting_done(mob/initiator, obj/screen/rig_booting/booting_R)
+/obj/item/rig/proc/r_booting_done(mob/initiator, atom/movable/screen/rig_booting/booting_R)
 	wearer?.client?.screen -= booting_R
 	qdel(booting_R)
 
@@ -390,16 +400,17 @@
 			helmet.flags_inv |= HIDEMASK
 	update_icon(1)
 
-/obj/item/rig/Process()
+/obj/item/rig/think()
 
 	// If we've lost any parts, grab them back.
 	var/mob/living/M
 	for(var/obj/item/piece in list(gloves,boots,helmet,chest))
 		if(piece.loc != src && !(wearer && piece.loc == wearer))
-			if(istype(piece.loc, /mob/living))
-				M = piece.loc
-				M.drop_from_inventory(piece)
-			piece.forceMove(src)
+			M = piece.loc
+			if(istype(M))
+				M.drop(piece, src, TRUE)
+			else
+				piece.forceMove(src)
 
 	var/changed = update_offline()
 	if(changed)
@@ -439,6 +450,8 @@
 
 		for(var/obj/item/rig_module/module in installed_modules)
 			cell.use(module.Process() * CELLRATE)
+
+	set_next_think(world.time + 1 SECOND)
 
 //offline should not change outside this proc
 /obj/item/rig/proc/update_offline()
@@ -502,7 +515,7 @@
 
 	data["charge"] =       cell ? round(cell.charge,1) : 0
 	data["maxcharge"] =    cell ? cell.maxcharge : 0
-	data["chargestatus"] = cell ? Floor(cell.percent()/2) : 0
+	data["chargestatus"] = cell ? Floor(CELL_PERCENT(cell)/2) : 0
 
 	data["emagged"] =       subverted
 	data["coverlock"] =     locked
@@ -556,10 +569,10 @@
 		ui.open()
 		ui.set_auto_update(1)
 
-/obj/item/rig/update_icon(update_mob_icon)
+/obj/item/rig/on_update_icon(update_mob_icon)
 
 	//TODO: Maybe consider a cache for this (use mob_icon as blank canvas, use suit icon overlay).
-	overlays.Cut()
+	ClearOverlays()
 	if(!mob_icon || update_mob_icon)
 		var/species_icon = 'icons/mob/onmob/rig_back.dmi'
 		// Since setting mob_icon will override the species checks in
@@ -569,7 +582,7 @@
 	if(installed_modules.len)
 		for(var/obj/item/rig_module/module in installed_modules)
 			if(module.suit_overlay)
-				chest.overlays += image("icon" = 'icons/mob/onmob/rig_modules.dmi', "icon_state" = "[module.suit_overlay]", "dir" = SOUTH)
+				chest.AddOverlays(image("icon" = 'icons/mob/onmob/rig_modules.dmi', "icon_state" = "[module.suit_overlay]", "dir" = SOUTH))
 
 	if(wearer)
 		wearer.update_inv_shoes()
@@ -582,13 +595,19 @@
 	return
 
 /obj/item/rig/get_mob_overlay(mob/user_mob, slot)
-	var/image/ret = ..()
+	. = ..()
+
+	if(slot == slot_l_hand_str || slot == slot_r_hand_str)
+		return
+
+	var/image/ret = .
+
 	if(slot != slot_back_str || offline)
 		return ret
 
 	for(var/obj/item/rig_module/module in installed_modules)
 		if(module.suit_overlay)
-			ret.overlays += image("icon" = 'icons/mob/onmob/rig_modules.dmi', "icon_state" = "[module.suit_overlay]")
+			ret.AddOverlays(image('icons/mob/onmob/rig_modules.dmi', module.suit_overlay))
 	return ret
 
 /obj/item/rig/proc/check_suit_access(mob/living/carbon/human/user)
@@ -641,6 +660,8 @@
 					selected_module = module
 				if("select_charge_type")
 					module.charge_selected = href_list["charge_type"]
+				if("select_timing")
+					module.timing_selected = href_list["timing"]
 		return 1
 	if(href_list["toggle_ai_control"])
 		ai_override_enabled = !ai_override_enabled
@@ -663,9 +684,9 @@
 		M.visible_message("<span class='info'>[M] starts putting on \the [src]...</span>", "<span class='info'>You start putting on \the [src]...</span>")
 		if(!do_after(M,seal_delay,src))
 			if(M && M.back == src)
-				if(!M.unEquip(src))
+				if(!M.drop(src))
 					return
-			src.forceMove(get_turf(src))
+			forceMove(get_turf(src))
 			return
 
 	if(istype(M) && M.back == src)
@@ -720,9 +741,7 @@
 				if(istype(holder))
 					if(use_obj && check_slot == use_obj)
 						to_chat(wearer, "<span class='info'><b>Your [use_obj.name] [use_obj.gender == PLURAL ? "retract" : "retracts"] swiftly.</b></span>")
-						use_obj.canremove = 1
-						holder.drop_from_inventory(use_obj, src)
-						use_obj.canremove = 0
+						holder.drop(use_obj, src, TRUE)
 
 		else if (deploy_mode != ONLY_RETRACT)
 			if(check_slot && check_slot == use_obj)
@@ -753,25 +772,21 @@
 	if(sealed)
 		if(H.head)
 			var/obj/item/garbage = H.head
-			H.drop_from_inventory(garbage)
 			H.head = null
 			qdel(garbage)
 
 		if(H.gloves)
 			var/obj/item/garbage = H.gloves
-			H.drop_from_inventory(garbage)
 			H.gloves = null
 			qdel(garbage)
 
 		if(H.shoes)
 			var/obj/item/garbage = H.shoes
-			H.drop_from_inventory(garbage)
 			H.shoes = null
 			qdel(garbage)
 
 		if(H.wear_suit)
 			var/obj/item/garbage = H.wear_suit
-			H.drop_from_inventory(garbage)
 			H.wear_suit = null
 			qdel(garbage)
 
@@ -937,7 +952,7 @@
 	return src
 
 //Boot animation screen objects
-/obj/screen/rig_booting
+/atom/movable/screen/rig_booting
 	screen_loc = "1,1"
 	icon = 'icons/obj/rig_boot.dmi'
 	icon_state = ""

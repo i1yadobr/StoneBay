@@ -12,6 +12,7 @@
 	icon_state = "light1"
 	blend_mode = BLEND_OVERLAY
 	appearance_flags = DEFAULT_APPEARANCE_FLAGS
+	vis_flags = VIS_HIDE
 
 	var/lum_r = 0
 	var/lum_g = 0
@@ -96,8 +97,8 @@
 	var/set_luminosity = max > 1e-6
 	#endif
 
-	if((rr & gr & br & ar) && (rg + gg + bg + ag + rb + gb + bb + ab == 8))
-	//anything that passes the first case is very likely to pass the second, and addition is a little faster in this case
+	// If all channels are full lum, there's no point showing the overlay.
+	if(rr + rg + rb + gr + gg + gb + br + bg + bb + ar + ag + ab >= 12)
 		icon_state = "transparent"
 		color = null
 	else if(!set_luminosity)

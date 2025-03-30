@@ -4,6 +4,14 @@
  * A large number of misc global procs.
  */
 
+/proc/subtypesof(datum/thing)
+	RETURN_TYPE(/list)
+	if(ispath(thing))
+		return typesof(thing) - thing
+	if(istype(thing))
+		return typesof(thing) - thing.type
+	return list()
+
 //Checks if all high bits in req_mask are set in bitfield
 #define BIT_TEST_ALL(bitfield, req_mask) ((~(bitfield) & (req_mask)) == 0)
 
@@ -55,6 +63,22 @@
 	if(A > upper) return 0
 	return 1
 
+
+/proc/get_projectile_angle(atom/source, atom/target)
+	var/sx = source.x * world.icon_size
+	var/sy = source.y * world.icon_size
+	var/tx = target.x * world.icon_size
+	var/ty = target.y * world.icon_size
+	var/atom/movable/AM
+	if(ismovable(source))
+		AM = source
+		sx += AM.step_x
+		sy += AM.step_y
+	if(ismovable(target))
+		AM = target
+		tx += AM.step_x
+		ty += AM.step_y
+	return SIMPLIFY_DEGREES(arctan(ty - sy, tx - sx))
 
 /proc/Get_Angle(atom/movable/start,atom/movable/end)//For beams.
 	if(!start || !end) return 0
@@ -320,6 +344,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		if(!newname)	//we'll stick with the oldname then
 			return
 
+		log_and_message_admins("has renamed the [role] '[oldname]' to '[newname]'")
 		fully_replace_character_name(newname)
 
 
@@ -329,10 +354,10 @@ Turf and target are seperate in case you want to teleport some distance from a t
 	return "[pick("1","2","3","4","5","6","7","8","9","0")][pick("!","@","#","$","%","^","&","*")][pick("!","@","#","$","%","^","&","*")][pick("!","@","#","$","%","^","&","*")]"
 
 /atom/proc/add_verb(the_verb, datum/callback/callback)
-	if (callback && !callback.Invoke())
+	if(callback && !callback.Invoke())
 		return
-
 	verbs += the_verb
+
 //When an AI is activated, it can choose from a list of non-slaved borgs to have as a slave.
 /proc/freeborg()
 	var/select = null
@@ -351,7 +376,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 /proc/active_ais()
 	. = list()
 	for(var/mob/living/silicon/ai/A in GLOB.living_mob_list_)
-		if(A.stat == DEAD)
+		if(A.is_ooc_dead())
 			continue
 		if(A.control_disabled == 1)
 			continue
@@ -386,7 +411,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		var/mob/M = old_list[named]
 		if(issilicon(M))
 			AI_list |= M
-		else if(isghost(M) || M.stat == DEAD)
+		else if(isghost(M) || M.is_ooc_dead())
 			Dead_list |= M
 		else if(M.key && M.client)
 			keyclient_list |= M
@@ -420,7 +445,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 			namecounts[name] = 1
 		if (M.real_name && M.real_name != M.name)
 			name += " \[[M.real_name]\]"
-		if (M.stat == DEAD)
+		if (M.is_ooc_dead())
 			if(isobserver(M))
 				name += " \[observer\]"
 			else
@@ -428,14 +453,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		creatures[name] = M
 
 	return creatures
-
-/proc/get_follow_targets(mobs_only = FALSE)
-	. = follow_repository.get_follow_targets()
-	if(mobs_only)
-		for(var/datum/follow_holder/fh in .)
-			if(!ismob(fh.followed_instance))
-				. -= fh
-	return .
 
 //Orders mobs by type then by name
 /proc/sortmobs()
@@ -575,13 +592,24 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 	return 1
 
-/proc/is_blocked_turf(turf/T)
-	var/cant_pass = 0
-	if(T.density) cant_pass = 1
-	for(var/atom/A in T)
-		if(A.density)//&&A.anchored
-			cant_pass = 1
-	return cant_pass
+/proc/is_blocked_turf(turf/T, caller = null, exclude_mobs = FALSE, list/ignore_atoms = FALSE)
+	if(T.density)
+		return TRUE
+
+	for(var/atom/atom in T)
+		if(T == caller) // Ignoring ourselves
+			continue
+
+		if(length(ignore_atoms) && is_type_in_list(atom, ignore_atoms))
+			continue
+
+		if(atom.density)
+			if(exclude_mobs && isliving(atom))
+				continue
+			else
+				return FALSE
+
+	return FALSE
 
 /proc/get_step_towards2(atom/ref , atom/trg)
 	var/base_dir = get_dir(ref, get_step_towards(ref,trg))
@@ -619,7 +647,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 //Takes: Area type as text string or as typepath OR an instance of the area.
 //Returns: A list of all areas of that type in the world.
-/proc/get_areas(areatype)
+/proc/get_areas(areatype, subtypes = TRUE)
 	if(!areatype) return null
 	if(istext(areatype)) areatype = text2path(areatype)
 	if(isarea(areatype))
@@ -627,8 +655,16 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		areatype = areatemp.type
 
 	var/list/areas = new /list()
-	for(var/area/N in world)
-		if(istype(N, areatype)) areas += N
+	if(subtypes)
+		var/list/cache = typecacheof(areatype)
+		for(var/area/V in world)
+			if(cache[V.type])
+				areas += V
+	else
+		for(var/area/V in world)
+			if(V.type == areatype)
+				areas += V
+
 	return areas
 
 //Takes: Area type as text string or as typepath OR an instance of the area.
@@ -750,7 +786,6 @@ Turf and target are seperate in case you want to teleport some distance from a t
 					var/old_dir1 = T.dir
 					var/old_icon_state1 = T.icon_state
 					var/old_icon1 = T.icon
-					var/old_overlays = T.overlays.Copy()
 					var/old_underlays = T.underlays.Copy()
 
 					if(platingRequired)
@@ -762,7 +797,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 					X.set_dir(old_dir1)
 					X.icon_state = old_icon_state1
 					X.icon = old_icon1 //Shuttle floors are in shuttle.dmi while the defaults are floors.dmi
-					X.overlays = old_overlays
+					X.CopyOverlays(T)
 					X.underlays = old_underlays
 
 					var/list/objs = new /list()
@@ -945,30 +980,6 @@ var/global/list/common_tools = list(
 /obj/item/clothing/mask/smokable/cigarette/can_puncture()
 	return lit
 
-//check if mob is lying down on something we can operate him on.
-/proc/can_operate(mob/living/carbon/M, mob/living/carbon/user)
-	var/turf/T = get_turf(M)
-	if(locate(/obj/machinery/optable, T))
-		. = TRUE
-	if(locate(/obj/structure/bed, T))
-		. = TRUE
-	if(locate(/obj/structure/table, T))
-		. = TRUE
-	if(locate(/obj/effect/rune/, T))
-		. = TRUE
-
-	if(M == user)
-		var/hitzone = check_zone(user.zone_sel.selecting)
-		var/list/badzones = list(BP_HEAD)
-		if(user.hand)
-			badzones += BP_L_ARM
-			badzones += BP_L_HAND
-		else
-			badzones += BP_R_ARM
-			badzones += BP_R_HAND
-		if(hitzone in badzones)
-			return FALSE
-
 /proc/reverse_direction(dir)
 	switch(dir)
 		if(NORTH)
@@ -1075,7 +1086,7 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	virtual_mob = null
 
 /mob/dview/Destroy()
-	crash_with("Prevented attempt to delete dview mob: [log_info_line(src)]")
+	util_crash_with("Prevented attempt to delete dview mob: [log_info_line(src)]")
 	..()
 	return QDEL_HINT_LETMELIVE // Prevents destruction
 
@@ -1089,31 +1100,8 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	// We don't want to be in any mob lists; we're a dummy not a mob.
 	STOP_PROCESSING(SSmobs, src)
 
-// call to generate a stack trace and print to runtime logs
-/proc/crash_with(msg)
-	CRASH(msg)
-
 /proc/pass()
 	return
 
-/proc/animate_speech_bubble(image/I, list/show_to, duration)
-	I.SetTransform(scale = 0)
-	I.alpha = 0
-	for(var/client/C in show_to)
-		C.images += I
-	animate(
-		I,
-		transform = matrix(),
-		alpha = 255,
-		time = 0.5 SECONDS,
-		easing = ELASTIC_EASING
-	)
-	addtimer(CALLBACK(GLOBAL_PROC, /.proc/fade_out, I), duration - 0.5 SECONDS)
-
-/proc/fade_out(image/I, list/show_to)
-	animate(I, alpha = 0, time = 0.5 SECONDS, easing = EASE_IN)
-	addtimer(CALLBACK(GLOBAL_PROC, /.proc/remove_images_from_clients, I, show_to), 0.5 SECONDS)
-
-/proc/remove_images_from_clients(image/I, list/show_to)
-	for(var/client/C in show_to)
-		C.images -= I
+// Checking /obj/item/cell's charge percentage
+#define CELL_PERCENT(a) (PERCENT(a.charge, a.maxcharge))

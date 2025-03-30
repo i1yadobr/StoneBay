@@ -47,7 +47,7 @@
 				var/message = pick(messagevoice)
 				say(message)
 				playsound(src, messagevoice[message], 75, FALSE)
-				custom_emote(1, "points at [H.name].")
+				visible_emote("points at [H.name].")
 			break
 
 /mob/living/bot/medbot/UnarmedAttack(mob/living/carbon/human/H, proximity)
@@ -64,7 +64,7 @@
 		return
 
 	// TODO: Fix bot ai so this check can actually be done somewhen
-	if(H.stat == DEAD)
+	if(H.is_ic_dead())
 		var/list/death_messagevoice = list("No! NO!" = 'sound/voice/medbot/no.ogg', "Live, damnit! LIVE!" = 'sound/voice/medbot/live.ogg', "I... I've never lost a patient before. Not today, I mean." = 'sound/voice/medbot/lost.ogg')
 		var/death_message = pick(death_messagevoice)
 		say(death_message)
@@ -99,9 +99,9 @@
 	playsound(src, messagevoice[message], 75, FALSE)
 
 /mob/living/bot/medbot/update_icons()
-	overlays.Cut()
+	ClearOverlays()
 	if(skin)
-		overlays += image('icons/obj/aibots.dmi', "medskin_[skin]")
+		AddOverlays(image('icons/obj/aibots.dmi', "medskin_[skin]"))
 	if(busy)
 		icon_state = "medibots"
 	else
@@ -115,9 +115,8 @@
 		if(!isnull(reagent_glass))
 			to_chat(user, "<span class='notice'>There is already a container loaded.</span>")
 			return
-
-		user.drop_item()
-		O.loc = src
+		if(!user.drop(O, src))
+			return
 		reagent_glass = O
 		to_chat(user, "<span class='notice'>You insert [O].</span>")
 		return
@@ -243,7 +242,7 @@
 		new /obj/item/robot_parts/l_arm(Tsec)
 
 	if(reagent_glass)
-		reagent_glass.loc = Tsec
+		reagent_glass.dropInto(Tsec)
 		reagent_glass = null
 
 	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
@@ -256,7 +255,7 @@
 	if(!..())
 		return 0
 
-	if(H.stat == DEAD) // He's dead, Jim
+	if(H.is_ic_dead()) // He's dead, Jim
 		return 0
 
 	if(emagged)
@@ -283,7 +282,7 @@
 
 /* Construction */
 
-/obj/item/storage/firstaid/attackby(obj/item/robot_parts/S, mob/user as mob)
+/obj/item/storage/firstaid/attackby(obj/item/robot_parts/S, mob/user)
 	if ((!istype(S, /obj/item/robot_parts/l_arm)) && (!istype(S, /obj/item/robot_parts/r_arm)))
 		..()
 		return
@@ -305,9 +304,9 @@
 		A.skin = "bezerk"
 
 	qdel(S)
-	user.put_in_hands(A)
+	user.pick_or_drop(A)
 	to_chat(user, "<span class='notice'>You add the robot arm to the first aid kit.</span>")
-	user.drop_from_inventory(src)
+	user.drop(src)
 	qdel(src)
 
 /obj/item/firstaid_arm_assembly
@@ -324,7 +323,7 @@
 	..()
 	spawn(5) // Terrible. TODO: fix
 		if(skin)
-			overlays += image('icons/obj/aibots.dmi', "kit_skin_[src.skin]")
+			AddOverlays(image('icons/obj/aibots.dmi', "kit_skin_[src.skin]"))
 
 /obj/item/firstaid_arm_assembly/attackby(obj/item/W as obj, mob/user as mob)
 	..()
@@ -339,16 +338,18 @@
 		switch(build_step)
 			if(0)
 				if(istype(W, /obj/item/device/healthanalyzer))
-					user.drop_item()
+					if(!user.drop(W))
+						return
 					qdel(W)
 					build_step++
 					to_chat(user, "<span class='notice'>You add the health sensor to [src].</span>")
 					SetName("First aid/robot arm/health analyzer assembly")
-					overlays += image('icons/obj/aibots.dmi', "na_scanner")
+					AddOverlays(image('icons/obj/aibots.dmi', "na_scanner"))
 
 			if(1)
 				if(isprox(W))
-					user.drop_item()
+					if(!user.drop(W))
+						return
 					qdel(W)
 					to_chat(user, "<span class='notice'>You complete the Medibot! Beep boop.</span>")
 					var/turf/T = get_turf(src)
@@ -356,5 +357,5 @@
 					S.skin = skin
 					S.SetName(created_name)
 					S.update_icons() // apply the skin
-					user.drop_from_inventory(src)
+					user.drop(src)
 					qdel(src)

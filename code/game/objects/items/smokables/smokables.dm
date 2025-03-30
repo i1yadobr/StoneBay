@@ -4,7 +4,7 @@
 /obj/item/clothing/mask/smokable
 	name = "smokable item"
 	desc = "You're not sure what this is. You should probably ahelp it."
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	icon = 'icons/obj/cigarettes.dmi'
 	var/lit = 0
 	var/ever_lit = FALSE // Has it ever been lit
@@ -28,7 +28,7 @@
 /obj/item/clothing/mask/smokable/Destroy()
 	. = ..()
 	if(lit)
-		STOP_PROCESSING(SSobj, src)
+		set_next_think(0)
 
 /obj/item/clothing/mask/smokable/proc/smoke(amount, manual = FALSE)
 	smoketime -= amount
@@ -51,7 +51,7 @@
 
 #define MIN_OXIDIZER_PRESSURE_TO_SMOKE 8
 
-/obj/item/clothing/mask/smokable/Process()
+/obj/item/clothing/mask/smokable/think()
 	var/turf/location = get_turf(src)
 	smoke(1)
 	if(smoketime < 1)
@@ -61,8 +61,10 @@
 	var/datum/gas_mixture/air = location.return_air()
 	if(!air)
 		die(nomessage = TRUE, nodestroy = TRUE)
+		return
 	else if(air.gas["oxygen"] < MIN_OXIDIZER_PRESSURE_TO_SMOKE)
 		die(nomessage = TRUE, nodestroy = TRUE)
+		return
 
 	if(location)
 		location.hotspot_expose(700, 5)
@@ -75,7 +77,9 @@
 			H.adjust_fire_stacks(1)
 			H.IgniteMob()
 
-/obj/item/clothing/mask/smokable/update_icon()
+	set_next_think(world.time + 1 SECOND)
+
+/obj/item/clothing/mask/smokable/on_update_icon()
 	if(lit && icon_on)
 		icon_state = icon_on
 		item_state = icon_on
@@ -94,10 +98,17 @@
 	if(src.lit)
 		return
 
-	src.lit = TRUE
+	if(reagents.has_reagent_or_subtypes(/datum/reagent/water))
+		if(holder)
+			to_chat(holder, SPAN_WARNING("\the [src] is wet and it won't light!"))
+		return
+
+	lit = TRUE
 	ever_lit = TRUE
-	if(src.atom_flags & ATOM_FLAG_NO_REACT)
-		src.atom_flags &= ~ATOM_FLAG_NO_REACT
+	if(atom_flags & ATOM_FLAG_NO_REACT)
+		atom_flags &= ~ATOM_FLAG_NO_REACT
+
+	atom_flags &= ~ATOM_FLAG_OPEN_CONTAINER
 
 	damtype = BURN
 	force = initial(force) + 2
@@ -121,12 +132,16 @@
 	T.visible_message(generate_lighting_message(used_tool, holder))
 	set_light(0.3, 0.2, 1, 1, "#e38f46")
 	smokeamount = reagents.total_volume / smoketime
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
+
+/obj/item/clothing/mask/smokable/clean_blood()
+	die(FALSE, TRUE)
+	return ..()
 
 /obj/item/clothing/mask/smokable/proc/die(nomessage = FALSE, nodestroy = FALSE)
 	set_light(0)
 	lit = 0
-	STOP_PROCESSING(SSobj, src)
+	set_next_think(0)
 	update_icon()
 	damtype = initial(damtype)
 	force = initial(force)

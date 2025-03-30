@@ -16,7 +16,11 @@ var/list/admin_datums = list()
 	var/datum/feed_message/admincaster_feed_message = new /datum/feed_message   //These two will act as holders.
 	var/datum/feed_channel/admincaster_feed_channel = new /datum/feed_channel
 	var/admincaster_signature	//What you'll sign the newsfeeds as
+
+	// UI stuff
 	var/datum/follow_panel/follow_panel = new()
+	var/datum/events_panel/events_panel = new()
+	var/list/events_windows = list()
 
 /datum/admins/proc/marked_datum()
 	if(marked_datum_weak)
@@ -38,11 +42,11 @@ var/list/admin_datums = list()
 		owner.holder = src
 		owner.add_admin_verbs()	//TODO
 		GLOB.admins |= C
-		
+
 /datum/admins/proc/disassociate()
 	if(owner)
 		GLOB.admins -= owner
-		GLOB.deadmined_list |= src 
+		GLOB.deadmined_list |= src
 		owner.remove_admin_verbs()
 		owner.deadmin_holder = owner.holder
 		owner.holder = null
@@ -50,7 +54,7 @@ var/list/admin_datums = list()
 /datum/admins/proc/reassociate()
 	if(owner)
 		GLOB.admins += owner
-		GLOB.deadmined_list -= src 
+		GLOB.deadmined_list -= src
 		owner.holder = src
 		owner.deadmin_holder = null
 		owner.add_admin_verbs()
@@ -109,6 +113,7 @@ NOTE: It checks usr by default. Supply the "user" argument if you wish to check 
 
 /mob/Stat()
 	. = ..()
+
 	if(!client)
 		return
 

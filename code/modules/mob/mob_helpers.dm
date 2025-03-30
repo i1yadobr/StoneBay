@@ -24,15 +24,12 @@
 	return 0
 
 /mob/living/carbon/human/isSynthetic()
-	if(istype(species, /datum/species/machine))
-		return 1
 	if(isnull(full_prosthetic))
 		robolimb_count = 0
 		for(var/obj/item/organ/external/E in organs)
 			if(BP_IS_ROBOTIC(E))
 				robolimb_count++
 		full_prosthetic = (robolimb_count == organs.len)
-		update_emotes()
 	return full_prosthetic
 
 /mob/living/silicon/isSynthetic()
@@ -86,7 +83,7 @@
 
 //The base miss chance for the different defence zones
 var/list/global/base_miss_chance = list(
-	BP_HEAD = 25,
+	BP_HEAD = 40,
 	BP_CHEST = 10,
 	BP_GROIN = 20,
 	BP_L_LEG = 30,
@@ -180,32 +177,35 @@ var/list/global/organ_rel_size = list(
 	return zone
 
 
-/proc/stars(n, pr)
-	if (pr == null)
-		pr = 25
-	if (pr < 0)
+/proc/stars(message, not_changing_char_chance = 25)
+	if (not_changing_char_chance < 0)
 		return null
-	else
-		if (pr >= 100)
-			return n
-	var/te = n
-	var/t = ""
-	n = length_char(n)
-	var/p = null
-	p = 1
-	var/intag = 0
-	while(p <= n)
-		var/char = copytext_char(te, p, p + 1)
+	if (not_changing_char_chance >= 100)
+		return message
+
+	var/message_length = length_char(message)
+	var/output_message = ""
+	var/intag = FALSE
+
+	var/first_char = copytext_char(message, 1, 2) //for not to processing message as emote if first char would made into "*"
+	if (first_char == "<")
+		intag = TRUE
+	output_message = text("[][]", output_message, first_char)
+
+	var/pointer = 2
+
+	while(pointer <= message_length)
+		var/char = copytext_char(message, pointer, pointer + 1)
 		if (char == "<") //let's try to not break tags
-			intag = !intag
-		if (intag || char == " " || prob(pr))
-			t = text("[][]", t, char)
+			intag = TRUE
+		if (intag || char == " " || prob(not_changing_char_chance))
+			output_message = text("[][]", output_message, char)
 		else
-			t = text("[]*", t)
+			output_message = text("[]*", output_message)
 		if (char == ">")
-			intag = !intag
-		p++
-	return t
+			intag = FALSE
+		pointer++
+	return output_message
 
 // This is temporary effect, often caused by alcohol
 /proc/slur(phrase)
@@ -299,7 +299,9 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 	if(!islist(logging[message_type]))
 		logging[message_type] = list()
 
-	var/list/timestamped_message = list("[LAZYLEN(logging[message_type]) + 1]\[[time_stamp()]\] [message_tag] [key_name(src)]" = message)
+	var/list/message_data = list("message" = message, "tag" = message_tag)
+
+	var/list/timestamped_message = list("[LAZYLEN(logging[message_type]) + 1]\[[time_stamp()]\] [message_tag] [key_name(src)]" = message_data)
 
 	logging[message_type] += timestamped_message
 
@@ -375,6 +377,10 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 				a_intent = intent_numeric((intent_numeric(a_intent)+1) % 4)
 			if("left")
 				a_intent = intent_numeric((intent_numeric(a_intent)+3) % 4)
+
+		if(is_pacifist(src))
+			a_intent = I_HELP
+
 		if(hud_used && hud_used.action_intent)
 			hud_used.action_intent.icon_state = "intent_[a_intent]"
 
@@ -386,6 +392,10 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 				a_intent = I_HURT
 			if("right","left")
 				a_intent = intent_numeric(intent_numeric(a_intent) - 3)
+
+		if(is_pacifist(src))
+			a_intent = I_HELP
+
 		if(hud_used && hud_used.action_intent)
 			if(a_intent == I_HURT)
 				hud_used.action_intent.icon_state = I_HURT
@@ -397,6 +407,12 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 		var/mob/living/carbon/C = A
 		if(C.sdisabilities & BLIND || C.blinded)
 			return 1
+	return 0
+
+/proc/is_pacifist(A)
+	if(istype(A, /mob/living))
+		var/mob/living/C = A
+		return HAS_TRAIT(C, TRAIT_PACIFISM)
 	return 0
 
 /proc/broadcast_security_hud_message(message, broadcast_source)
@@ -473,7 +489,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 
 #define SAFE_PERP -50
 /mob/living/proc/assess_perp(obj/access_obj, check_access, auth_weapons, check_records, check_arrest)
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		return SAFE_PERP
 
 	return 0
@@ -490,7 +506,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 		return SAFE_PERP
 
 	//Agent cards lower threatlevel.
-	var/obj/item/card/id/id = GetIdCard()
+	var/obj/item/card/id/id = get_id_card()
 	if(id && istype(id, /obj/item/card/id/syndicate))
 		threatcount -= 2
 	// A proper	CentCom id is hard currency.
@@ -519,7 +535,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 			perpname = id.registered_name
 
 		var/datum/computer_file/crew_record/CR = get_crewmember_record(perpname)
-		if(check_records && !CR && !isMonkey())
+		if(check_records && !CR && !isMonkey(src))
 			threatcount += 4
 
 		if(check_arrest && CR && (CR.get_criminalStatus() == GLOB.arrest_security_status))
@@ -580,7 +596,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 	if(client)
 		client.images -= image
 
-/mob/proc/flash_eyes(intensity = FLASH_PROTECTION_MODERATE, override_blindness_check = FALSE, affect_silicon = FALSE, visual = FALSE, type = /obj/screen/fullscreen/flash)
+/mob/proc/flash_eyes(intensity = FLASH_PROTECTION_MODERATE, override_blindness_check = FALSE, affect_silicon = FALSE, visual = FALSE, type = /atom/movable/screen/fullscreen/flash)
 	return
 
 /mob/proc/fully_replace_character_name(new_name, in_depth = TRUE)
@@ -664,7 +680,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 	for(var/mob/observer/ghost/O in GLOB.player_list)
 
 		var/follow_link = ""
-		if (source && action == NOTIFY_FOLLOW)
+		if (source && (action == NOTIFY_FOLLOW || action == NOTIFY_POSSES))
 			follow_link = create_ghost_link(O, source, "(F)")
 
 		var/posses_link = posses_mob ? possess_link(O, source) : ""
@@ -678,7 +694,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 			winset(O.client, "mainwindow", "flash=5")
 
 		if(source)
-			var/obj/screen/movable/alert/notify_action/A = O.throw_alert("\ref[source]_notify_action", /obj/screen/movable/alert/notify_action)
+			var/atom/movable/screen/movable/alert/notify_action/A = O.throw_alert("\ref[source]_notify_action", /atom/movable/screen/movable/alert/notify_action)
 			if(A)
 
 				var/ui_style = O.client?.prefs?.UI_style
@@ -711,4 +727,33 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 
 				alert_overlay.layer = FLOAT_LAYER
 				alert_overlay.plane = FLOAT_PLANE
-				A.overlays += alert_overlay
+				A.AddOverlays(alert_overlay)
+
+/mob/proc/shift_view(new_pixel_x = 0, new_pixel_y = 0, animate = 0)
+	if(!client)
+		is_view_shifted = FALSE
+		return
+
+	var/old_shifted = is_view_shifted
+	if(animate)
+		animate(client, pixel_x = new_pixel_x, pixel_y = new_pixel_y, time = 2, easing = SINE_EASING)
+	else
+		client.pixel_x = new_pixel_x
+		client.pixel_y = new_pixel_y
+
+	if(new_pixel_x == 0 && new_pixel_y == 0)
+		is_view_shifted = FALSE
+	else
+		is_view_shifted = TRUE
+
+	SEND_SIGNAL(src, SIGNAL_VIEW_SHIFTED_SET, src, old_shifted, is_view_shifted)
+
+/proc/directional_recoil(mob/M, strength=1, angle = 0)
+	if(!M || !M.client)
+		return
+	var/client/C = M.client
+	var/recoil_x = -sin(angle) * 4 * strength + rand(-strength, strength)
+	var/recoil_y = -cos(angle) * 4 * strength + rand(-strength, strength)
+	animate(C, pixel_x=recoil_x, pixel_y=recoil_y, time=1, easing=SINE_EASING|EASE_OUT, flags=ANIMATION_PARALLEL|ANIMATION_RELATIVE)
+	sleep(2)
+	animate(C, pixel_x=0, pixel_y=0, time=3, easing=SINE_EASING|EASE_IN)

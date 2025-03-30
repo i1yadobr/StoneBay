@@ -9,7 +9,7 @@
 	icon_state = "apron"
 	item_state = "apron"
 	blood_overlay_type = "armorblood"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	allowed = list (/obj/item/reagent_containers/spray/plantbgone,/obj/item/device/analyzer/plant_analyzer,/obj/item/seeds,/obj/item/reagent_containers/vessel/bottle/chemical,/obj/item/material/minihoe)
 
 //Captain
@@ -72,7 +72,7 @@
 	icon_state = "apronchef"
 	item_state = "apronchef"
 	blood_overlay_type = "armorblood"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 
 //Security
 /obj/item/clothing/suit/security/navyofficer
@@ -104,11 +104,13 @@
 	item_state = "detective_open"
 	icon_open = "detective_open"
 	icon_closed = "detective"
+	hidesuitstorage = FALSE //So that the weapon on your back, or other things, don't go missing after button up.
 	valid_accessory_slots = list(ACCESSORY_SLOT_INSIGNIA)
 	blood_overlay_type = "coatblood"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	allowed = list(/obj/item/tank/emergency,/obj/item/device/flashlight,/obj/item/gun/energy,/obj/item/gun/projectile,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/melee/baton,/obj/item/handcuffs,/obj/item/storage/fancy/cigarettes,/obj/item/flame/lighter,/obj/item/device/taperecorder)
-	armor = list(melee = 35, bullet = 35, laser = 35, energy = 20, bomb = 25, bio = 0, rad = 0)
+	armor = list(melee = 50, bullet = 60, laser = 40, energy = 20, bomb = 25, bio = 0)
+	coverage = 0.8
 
 /obj/item/clothing/suit/storage/toggle/det_trench/grey
 	icon_state = "detective2_open"
@@ -118,7 +120,7 @@
 
 /obj/item/clothing/suit/storage/toggle/det_trench/ft
 	desc = "A rugged canvas trenchcoat, designed and created by TX Fabrication Corp. This one wouldn't block much of anything."
-	armor = list(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0, rad = 0)
+	armor = list(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0)
 
 /obj/item/clothing/suit/storage/civ_trench
 	name = "brown trenchcoat"
@@ -129,7 +131,8 @@
 	blood_overlay_type = "coatblood"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	allowed = list(/obj/item/tank/emergency,/obj/item/device/flashlight,/obj/item/storage/fancy/cigarettes,/obj/item/flame/lighter,/obj/item/device/taperecorder)
-	armor = list(melee = 10, bullet = 10, laser = 10, energy = 0, bomb = 0, bio = 0, rad = 0)
+	armor = list(melee = 20, bullet = 10, laser = 10, energy = 0, bomb = 0, bio = 0)
+	coverage = 0.8
 
 /obj/item/clothing/suit/storage/civ_trench/grey
 	name = "grey trenchcoat"
@@ -141,50 +144,37 @@
 /obj/item/clothing/suit/storage/toggle/forensics
 	name = "jacket"
 	desc = "A forensics technician jacket."
-	item_state = "det_suit"
+	icon_state = "forensics"
+	item_state = "forensics"
+	icon_open = "forensics_open"
+	icon_closed = "forensics"
 	body_parts_covered = UPPER_TORSO|ARMS
 	blood_overlay_type = "armorblood"
 	allowed = list(/obj/item/tank/emergency,/obj/item/device/flashlight,/obj/item/gun/energy,/obj/item/gun/projectile,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/melee/baton,/obj/item/handcuffs,/obj/item/device/taperecorder)
-	armor = list(melee = 10, bullet = 10, laser = 15, energy = 10, bomb = 0, bio = 0, rad = 0)
-
-/obj/item/clothing/suit/storage/toggle/forensics/toggle()
-	if(!CanPhysicallyInteract(usr))
-		return 0
-
-	if(icon_state == icon_open) //Will check whether icon state is currently set to the "open" or "closed" state and switch it around with a message to the user
-		icon_state = icon_closed
-		item_state = icon_closed
-		to_chat(usr, "You button up the jacket.")
-	else if(icon_state == icon_closed)
-		icon_state = icon_open
-		item_state = icon_open
-		to_chat(usr, "You unbutton the jacket.")
-	else
-		to_chat(usr, "You attempt to button-up the velcro on your [src], before promptly realising how silly you are.")
-		return
-	update_clothing_icon()
+	armor = list(melee = 10, bullet = 10, laser = 15, energy = 10, bomb = 0, bio = 0)
+	coverage = 0.8
 
 /obj/item/clothing/suit/storage/toggle/forensics/red
 	name = "red jacket"
 	desc = "A red forensics technician jacket."
-	item_state = "forensics_red_open"
 	icon_state = "forensics_red_open"
+	item_state = "forensics_red_open"
 	icon_open = "forensics_red_open"
 	icon_closed = "forensics_red"
 
 /obj/item/clothing/suit/storage/toggle/forensics/blue
 	name = "blue jacket"
 	desc = "A blue forensics technician jacket."
-	item_state = "forensics_blue_open"
 	icon_state = "forensics_blue_open"
+	item_state = "forensics_blue_open"
 	icon_open = "forensics_blue_open"
 	icon_closed = "forensics_blue"
 
 /obj/item/clothing/suit/storage/toggle/forensics/labcoat
 	name = "forensic labcoat"
 	desc = "A white forensics technician labcoat."
-	item_state = "forensictech_open"
 	icon_state = "forensictech_open"
+	item_state = "forensictech_open"
 	icon_open = "forensictech_open"
 	icon_closed = "forensictech"
 
@@ -199,21 +189,26 @@
 	/obj/item/crowbar, /obj/item/screwdriver, /obj/item/weldingtool, /obj/item/wirecutters, /obj/item/wrench, /obj/item/tank/emergency, \
 	/obj/item/clothing/mask/gas, /obj/item/taperoll/engineering)
 	body_parts_covered = UPPER_TORSO
+	coverage = 0.5
+	armor = list(melee = 10, bullet = 10, laser = 50, energy = 10, bomb = 0, bio = 0) // Reflective stripes go brrr
 
 /obj/item/clothing/suit/storage/hazardvest/blue
 	name = "blue hazard vest"
 	desc = "A high-visibility vest used in work zones. This one is blue!"
 	icon_state = "hazard_b"
+	item_state = "hazard_b"
 
 /obj/item/clothing/suit/storage/hazardvest/white
 	name = "white hazard vest"
-	desc = "A high-visibility vest used in work zones. This one has a red cross!"
+	desc = "A high-visibility vest used in work zones. This one has a blue cross!"
 	icon_state = "hazard_w"
+	item_state = "hazard_w"
 
 /obj/item/clothing/suit/storage/hazardvest/green
 	name = "green hazard vest"
 	desc = "A high-visibility vest used in work zones. This one is green!"
 	icon_state = "hazard_g"
+	item_state = "hazard_g"
 
 //Lawyer
 /obj/item/clothing/suit/storage/toggle/suit
@@ -225,6 +220,7 @@
 	icon_closed = "suitjacket"
 	blood_overlay_type = "coatblood"
 	body_parts_covered = UPPER_TORSO|ARMS
+	coverage = 0.8
 
 /obj/item/clothing/suit/storage/toggle/suit/blue
 	name = "blue suit jacket"
@@ -250,6 +246,7 @@
 	allowed = list(/obj/item/stack/medical, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/hypospray, /obj/item/reagent_containers/syringe, \
 	/obj/item/device/healthanalyzer, /obj/item/device/flashlight, /obj/item/device/radio, /obj/item/tank/emergency)
 	body_parts_covered = UPPER_TORSO|ARMS
+	coverage = 0.8
 
 /obj/item/clothing/suit/storage/toggle/fr_jacket/ems
 	name = "\improper EMS jacket"
@@ -258,6 +255,7 @@
 	item_state = "ems_jacket_closed"
 	icon_open = "ems_jacket_open"
 	icon_closed = "ems_jacket_closed"
+	coverage = 1.0
 
 /obj/item/clothing/suit/surgicalapron
 	name = "surgical apron"
@@ -269,3 +267,4 @@
 	allowed = list(/obj/item/stack/medical, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/hypospray, /obj/item/reagent_containers/syringe, \
 	/obj/item/device/healthanalyzer, /obj/item/device/flashlight, /obj/item/device/radio, /obj/item/tank/emergency,/obj/item/scalpel,/obj/item/retractor,/obj/item/hemostat, \
 	/obj/item/cautery,/obj/item/bonegel,/obj/item/FixOVein)
+	armor = list(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 50)

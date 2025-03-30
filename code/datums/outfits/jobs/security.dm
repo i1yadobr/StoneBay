@@ -2,7 +2,7 @@
 	hierarchy_type = /decl/hierarchy/outfit/job/security
 	glasses = /obj/item/clothing/glasses/hud/aviators/security
 	l_ear = /obj/item/device/radio/headset/headset_sec
-	gloves = /obj/item/clothing/gloves/thick/security
+	gloves = /obj/item/clothing/gloves/security
 	shoes = /obj/item/clothing/shoes/jackboots
 	backpack_contents = list(/obj/item/handcuffs = 1)
 	flags = OUTFIT_HAS_BACKPACK|OUTFIT_COMBAT_SURVIVAL

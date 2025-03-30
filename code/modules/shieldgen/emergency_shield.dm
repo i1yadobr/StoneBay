@@ -130,7 +130,7 @@
 	var/locked = 0
 	var/check_delay = 60	//periodically recheck if we need to rebuild a shield
 	use_power = POWER_USE_OFF
-	idle_power_usage = 0
+	idle_power_usage = 0 WATTS
 
 /obj/machinery/shieldgen/Destroy()
 	collapse_shields()
@@ -290,7 +290,7 @@
 				to_chat(user, "<span class='notice'>You repair the [src]!</span>")
 				update_icon()
 
-	else if(istype(W, /obj/item/wrench))
+	else if(isWrench(W))
 		if(locked)
 			to_chat(user, "The bolts are covered, unlocking this would retract the covers.")
 			return
@@ -318,7 +318,7 @@
 		..()
 
 
-/obj/machinery/shieldgen/update_icon()
+/obj/machinery/shieldgen/on_update_icon()
 	if(active && !(stat & NOPOWER))
 		src.icon_state = malfunction ? "shieldonbr":"shieldon"
 	else

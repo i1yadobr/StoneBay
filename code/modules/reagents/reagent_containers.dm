@@ -16,7 +16,7 @@
 	set category = "Object"
 	set src in usr
 
-	var/N = input("Amount per transfer from this:","[src]") as null|anything in cached_number_list_decode(possible_transfer_amounts)
+	var/N = tgui_input_list(usr, "Amount per transfer from this:", "[src]", cached_number_list_decode(possible_transfer_amounts))
 	if(N)
 		amount_per_transfer_from_this = N
 
@@ -209,7 +209,8 @@
 	else
 		return ..()
 
-/obj/item/reagent_containers/_examine_text(mob/user)
+/obj/item/reagent_containers/examine(mob/user, infix)
 	. = ..()
+
 	if(hasHUD(user, HUD_SCIENCE))
-		. += "\n<span class='notice'>The [src] contains: [reagents.get_reagents()].</span>"
+		. += SPAN_NOTICE("The [src] contains: [reagents.get_reagents()].")

@@ -9,8 +9,9 @@
 	layer = SIDE_WINDOW_LAYER
 	anchored = 1.0
 	atom_flags = ATOM_FLAG_CHECKS_BORDER
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 	var/maxhealth = 14.0
-	var/maximal_heat = T0C + 100 		// Maximal heat before this window begins taking damage from fire
+	var/maximal_heat = 100 CELSIUS 		// Maximal heat before this window begins taking damage from fire
 	var/damage_per_fire_tick = 2.0 		// Amount of damage per fire tick. Regular windows are not fireproof so they might as well break quickly.
 	var/health
 	var/ini_dir = null
@@ -22,36 +23,48 @@
 	var/glasstype = null // Set this in subtypes. Null is assumed strange or otherwise impossible to dismantle, such as for shuttle glass.
 	var/silicate = 0 // number of units of silicate
 	var/real_explosion_block // ignore this, just use explosion_block
+	var/is_full_window = FALSE //TODO: Make full windows a separate type of window.
 
 	hitby_sound = SFX_GLASS_HIT
 	hitby_loudness_multiplier = 2.0
 	pull_sound = SFX_PULL_STONE
 
-/obj/structure/window/_examine_text(mob/user)
+/obj/structure/window/examine(mob/user, infix)
 	. = ..()
 
 	if(health == maxhealth)
-		. += "\n<span class='notice'>It looks fully intact.</span>"
+		. += SPAN_NOTICE("It looks fully intact.")
 	else
 		var/perc = health / maxhealth
 		if(perc > 0.75)
-			. += "\n<span class='notice'>It has a few cracks.</span>"
+			. += SPAN_NOTICE("It has a few cracks.")
 		else if(perc > 0.5)
-			. += "\n<span class='warning'>It looks slightly damaged.</span>"
+			. += SPAN_NOTICE("It looks slightly damaged.")
 		else if(perc > 0.25)
-			. += "\n<span class='warning'>It looks moderately damaged.</span>"
+			. += SPAN_NOTICE("It looks moderately damaged.")
 		else
-			. += "\n<span class='danger'>It looks heavily damaged.</span>"
+			. += SPAN_DANGER("It looks heavily damaged.")
+
 	if(silicate)
 		if (silicate < 30)
-			. += "\n<span class='notice'>It has a thin layer of silicate.</span>"
+			. += SPAN_NOTICE("It has a thin layer of silicate.")
 		else if (silicate < 70)
-			. += "\n<span class='notice'>It is covered in silicate.</span>"
+			. += SPAN_NOTICE("It is covered in silicate.")
 		else
-			. += "\n<span class='notice'>There is a thick layer of silicate covering it.</span>"
+			. += SPAN_NOTICE("There is a thick layer of silicate covering it.")
+
+	rad_resist_type = /datum/rad_resist/window
+
+/datum/rad_resist/window
+	alpha_particle_resist = 664 MEGA ELECTRONVOLT
+	beta_particle_resist = 4.8 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/structure/window/GetExplosionBlock()
 	return reinf && (state == 5) ? real_explosion_block : 0
+
+/obj/structure/window/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_GLASS, -40, 5)
 
 /obj/structure/window/proc/take_damage(damage = 0,  sound_effect = 1)
 	var/initialhealth = health
@@ -85,20 +98,23 @@
 
 /obj/structure/window/proc/updateSilicate()
 	if (overlays)
-		overlays.Cut()
+		ClearOverlays()
 
 	var/image/img = image(src.icon, src.icon_state)
 	img.color = "#ffffff"
 	img.alpha = silicate * 255 / 100
-	overlays += img
+	AddOverlays(img)
 
 /obj/structure/window/proc/shatter(display_message = 1)
 	playsound(src, SFX_BREAK_WINDOW, 70, 1)
 	if(display_message)
 		visible_message("[src] shatters!")
 
-	cast_new(shardtype, is_fulltile() ? 4 : 1, loc)
-	if(reinf) cast_new(/obj/item/stack/rods, is_fulltile() ? 4 : 1, loc)
+	if(!(atom_flags & ATOM_FLAG_HOLOGRAM))
+		cast_new(shardtype, is_full_window ? 4 : 1, loc)
+		if(reinf)
+			cast_new(/obj/item/stack/rods, is_full_window ? 4 : 1, loc)
+
 	qdel(src)
 	return
 
@@ -128,23 +144,17 @@
 				shatter(0)
 				return
 
-//TODO: Make full windows a separate type of window.
-//Once a full window, it will always be a full window, so there's no point
-//having the same type for both.
-/obj/structure/window/proc/is_full_window()
-	return (dir == SOUTHWEST || dir == SOUTHEAST || dir == NORTHWEST || dir == NORTHEAST)
-
 /obj/structure/window/CanPass(atom/movable/mover, turf/target)
 	if(istype(mover) && mover.pass_flags & PASS_FLAG_GLASS)
 		return TRUE
-	if(is_full_window())
+	if(is_full_window)
 		return FALSE	//full tile window, you can't move into it!
 	if(get_dir(loc, target) & dir)
 		return !density
 	return TRUE
 
 /obj/structure/window/CanZASPass(turf/T, is_zone)
-	if(is_fulltile() || get_dir(T, loc) == turn(dir, 180)) // Make sure we're handling the border correctly.
+	if(is_full_window || get_dir(T, loc) == turn(dir, 180)) // Make sure we're handling the border correctly.
 		return !anchored // If it's anchored, it'll block air.
 	return TRUE // Don't stop airflow from the other sides.
 
@@ -156,7 +166,7 @@
 /obj/structure/window/proc/CanDiagonalPass(atom/movable/mover, turf/target)
 	if(istype(mover) && mover.pass_flags & PASS_FLAG_GLASS)
 		return TRUE
-	if(is_full_window())
+	if(is_full_window)
 		return FALSE
 	var/mover_dir = get_dir(loc, target)
 	if((mover_dir & dir) || (mover_dir & turn(dir, -45)) || (mover_dir & turn(dir, 45)))
@@ -203,6 +213,11 @@
 	if(MUTATION_HULK in user.mutations)
 		user.say(pick(";RAAAAAAAARGH!", ";HNNNNNNNNNGGGGGGH!", ";GWAAAAAAAARRRHHH!", "NNNNNNNNGGGGGGGGHH!", ";AAAAAAARRRGH!"))
 		user.visible_message("<span class='danger'>[user] smashes through [src]!</span>")
+		user.do_attack_animation(src)
+		shatter()
+
+	else if(MUTATION_STRONG in user.mutations)
+		user.visible_message(SPAN("danger", "[user] smashes through [src]!"))
 		user.do_attack_animation(src)
 		shatter()
 
@@ -270,7 +285,7 @@
 			visible_message("<span class='notice'>[user] dismantles \the [src].</span>")
 			if(dir == SOUTHWEST)
 				var/obj/item/stack/material/mats = new glasstype(loc)
-				mats.amount = is_fulltile() ? 4 : 2
+				mats.amount = is_full_window ? 4 : 2
 			else
 				new glasstype(loc)
 			qdel(src)
@@ -292,7 +307,6 @@
 			if(health <= 7)
 				set_anchored(FALSE)
 				step(src, get_dir(user, src))
-				update_verbs()
 		else
 			visible_message(SPAN("danger", "[user] hits [src] with [W], but it bounces off!"))
 			playsound(loc, GET_SFX(SFX_GLASS_HIT), 75, 1)
@@ -304,48 +318,23 @@
 	return
 
 
-/obj/structure/window/proc/rotate()
-	set name = "Rotate Window Counter-Clockwise"
-	set category = "Object"
-	set src in oview(1)
+/obj/structure/window/rotate(mob/user)
+	if(is_full_window) // No point in rotating a window if it is full
+		return
 
-	if(usr.incapacitated())
-		return 0
-
-	if(is_full_window()) // No point in rotating a window if it is full
-		return 0
-
-	if(anchored)
-		to_chat(usr, "It is fastened to the floor therefore you can't rotate it!")
-		return 0
-
+	..()
 	update_nearby_tiles(need_rebuild=1) //Compel updates before
-	set_dir(turn(dir, 90))
 	updateSilicate()
 	update_nearby_tiles(need_rebuild=1)
-	return
 
+/obj/structure/window/rotate_counter(mob/user)
+	if(is_full_window) // No point in rotating a window if it is full
+		return
 
-/obj/structure/window/proc/revrotate()
-	set name = "Rotate Window Clockwise"
-	set category = "Object"
-	set src in oview(1)
-
-	if(usr.incapacitated())
-		return 0
-
-	if(is_full_window()) // No point in rotating a window if it is full
-		return 0
-
-	if(anchored)
-		to_chat(usr, "It is fastened to the floor therefore you can't rotate it!")
-		return 0
-
+	..()
 	update_nearby_tiles(need_rebuild=1) //Compel updates before
-	set_dir(turn(dir, 270))
 	updateSilicate()
 	update_nearby_tiles(need_rebuild=1)
-	return
 
 /obj/structure/window/New(Loc, start_dir=null, constructed=0)
 	..()
@@ -357,7 +346,7 @@
 	if (start_dir)
 		set_dir(start_dir)
 
-	if(is_fulltile())
+	if(is_full_window)
 		maxhealth *= 4
 
 	health = maxhealth
@@ -377,24 +366,17 @@
 		W.update_icon()
 
 
-/obj/structure/window/Move()
+/obj/structure/window/Move(newloc, direct)
 	var/ini_dir = dir
 	update_nearby_tiles(need_rebuild=1)
-	..()
+	. = ..()
 	set_dir(ini_dir)
 	update_nearby_tiles(need_rebuild=1)
-
-//checks if this window is full-tile one
-/obj/structure/window/proc/is_fulltile()
-	if(dir & (dir - 1))
-		return 1
-	return 0
 
 /obj/structure/window/proc/set_anchored(new_anchored)
 	if(anchored == new_anchored)
 		return
 	anchored = new_anchored
-	update_verbs()
 	update_nearby_icons()
 
 //This proc is used to update the icons of nearby windows. It should not be confused with update_nearby_tiles(), which is an atmos proc!
@@ -403,29 +385,20 @@
 	for(var/obj/structure/window/W in orange(src, 1))
 		W.update_icon()
 
-//Updates the availabiliy of the rotation verbs
-/obj/structure/window/proc/update_verbs()
-	if(anchored)
-		verbs -= /obj/structure/window/proc/rotate
-		verbs -= /obj/structure/window/proc/revrotate
-	else
-		verbs += /obj/structure/window/proc/rotate
-		verbs += /obj/structure/window/proc/revrotate
-
 //merges adjacent full-tile windows into one (blatant ripoff from game/smoothwall.dm)
-/obj/structure/window/update_icon()
+/obj/structure/window/on_update_icon()
 	//A little cludge here, since I don't know how it will work with slim windows. Most likely VERY wrong.
 	//this way it will only update full-tile ones
-	overlays.Cut()
+	ClearOverlays()
 	layer = FULL_WINDOW_LAYER
-	if(!is_fulltile())
+	if(!is_full_window)
 		layer = SIDE_WINDOW_LAYER
 		icon_state = "[basestate]"
 		return
 	var/list/dirs = list()
 	if(anchored)
 		for(var/obj/structure/window/W in orange(src,1))
-			if(W.anchored && W.density && W.glasstype == src.glasstype && W.is_fulltile()) //Only counts anchored, not-destroyed fill-tile windows.
+			if(W.anchored && W.density && W.glasstype == src.glasstype && W.is_full_window) //Only counts anchored, not-destroyed fill-tile windows.
 				dirs += get_dir(src, W)
 
 	var/list/connections = dirs_to_corner_states(dirs)
@@ -433,7 +406,7 @@
 	icon_state = ""
 	for(var/i = 1 to 4)
 		var/image/I = image(icon, "[basestate][connections[i]]", dir = 1<<(i-1))
-		overlays += I
+		AddOverlays(I)
 
 	return
 
@@ -442,7 +415,18 @@
 		hit(damage_per_fire_tick, 0)
 	..()
 
+/obj/structure/window/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
+	if(the_rcd.mode == RCD_DECONSTRUCT)
+		return list("delay" = 2 SECONDS, "cost" = 5)
 
+	return FALSE
+
+/obj/structure/window/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	if(rcd_data["[RCD_DESIGN_MODE]"] == RCD_DECONSTRUCT)
+		qdel_self()
+		return TRUE
+
+	return FALSE
 
 /obj/structure/window/basic
 	name = "glass panel"
@@ -450,7 +434,7 @@
 	icon_state = "window"
 	basestate = "window"
 	glasstype = /obj/item/stack/material/glass
-	maximal_heat = T0C + 100
+	maximal_heat = 100 CELSIUS
 	damage_per_fire_tick = 2.0
 	maxhealth = 12.0
 
@@ -462,7 +446,7 @@
 	icon_state = "plasmawindow"
 	shardtype = /obj/item/material/shard/plasma
 	glasstype = /obj/item/stack/material/glass/plass
-	maximal_heat = T0C + 2000
+	maximal_heat = 2000 CELSIUS
 	damage_per_fire_tick = 1.0
 	maxhealth = 40.0
 
@@ -475,13 +459,14 @@
 	glasstype = /obj/item/stack/material/glass/rplass
 	reinf = 1
 	explosion_block = 2
-	maximal_heat = T0C + 4000
+	maximal_heat = 4000 CELSIUS
 	damage_per_fire_tick = 1.0 // This should last for 80 fire ticks if the window is not damaged at all. The idea is that plass windows have something like ablative layer that protects them for a while.
 	maxhealth = 80.0
 
 /obj/structure/window/plasmareinforced/full
 	dir = 5
 	icon_state = "plasmawindow0"
+	is_full_window = TRUE
 
 /obj/structure/window/reinforced
 	name = "reinforced glass panel"
@@ -490,7 +475,7 @@
 	basestate = "rwindow"
 	maxhealth = 40.0
 	reinf = 1
-	maximal_heat = T0C + 750
+	maximal_heat = 750 CELSIUS
 	explosion_block = 1
 	damage_per_fire_tick = 2.0
 	glasstype = /obj/item/stack/material/glass/reinforced
@@ -505,21 +490,29 @@
 
 /obj/structure/window/Initialize()
 	. = ..()
-	layer = is_full_window() ? FULL_WINDOW_LAYER : SIDE_WINDOW_LAYER
+	layer = is_full_window ? FULL_WINDOW_LAYER : SIDE_WINDOW_LAYER
 	// windows only block while reinforced and fulltile, so we'll use the proc
 	real_explosion_block = explosion_block
 	explosion_block = EXPLOSION_BLOCK_PROC
 
+	AddElement(/datum/element/simple_rotation)
+
 /obj/structure/window/reinforced/full
 	dir = 5
 	icon_state = "fwindow"
+	is_full_window = TRUE
 
 /obj/structure/window/reinforced/tinted
 	name = "tinted window"
 	desc = "It looks rather strong and opaque. Might take a few good hits to shatter it."
 	icon_state = "twindow"
 	basestate = "twindow"
-	opacity = 1
+	opacity = TRUE
+
+/obj/structure/window/reinforced/tinted/full
+	icon_state = "rblackwindow_preview"
+	basestate = "rblackwindow"
+	is_full_window = TRUE
 
 /obj/structure/window/reinforced/tinted/frosted
 	name = "frosted window"
@@ -527,6 +520,17 @@
 	icon_state = "fwindow"
 	basestate = "fwindow"
 	maxhealth = 30
+
+/obj/structure/window/reinforced/trading
+	name = "trading window"
+	desc = "Perfect for those who are willing to leave their belongings behind. Not for long, though."
+	icon_state = "pwindow"
+	basestate = "pwindow"
+	maxhealth = 30
+
+/obj/structure/window/reinforced/trading/light
+	icon_state = "pwindow_light"
+	basestate = "pwindow_light"
 
 /obj/structure/window/shuttle
 	name = "shuttle window"
@@ -537,8 +541,10 @@
 	explosion_block = 3
 	maxhealth = 40
 	reinf = 1
-	basestate = "w"
-	dir = 5
+	is_full_window = TRUE
+
+/obj/structure/window/shuttle/on_update_icon()
+	return
 
 /obj/structure/window/miningpod
 	name = "shuttle window"
@@ -550,6 +556,7 @@
 	maxhealth = 40
 	explosion_block = 3
 	dir = 5
+	is_full_window = TRUE
 
 /obj/structure/window/research
 	name = "shuttle window"
@@ -561,6 +568,7 @@
 	maxhealth = 40
 	explosion_block = 3
 	dir = 5
+	is_full_window = TRUE
 
 /obj/structure/window/syndi
 	name = "shuttle window"
@@ -572,6 +580,7 @@
 	maxhealth = 40
 	explosion_block = 3
 	dir = 5
+	is_full_window = TRUE
 
 /obj/structure/window/reinforced/polarized
 	name = "electrochromic window"
@@ -582,6 +591,7 @@
 /obj/structure/window/reinforced/polarized/full
 	dir = 5
 	icon_state = "fwindow"
+	is_full_window = TRUE
 
 /obj/structure/window/reinforced/polarized/attackby(obj/item/W as obj, mob/user as mob)
 	if(isMultitool(W))
@@ -658,5 +668,5 @@
 	if(active && !powered(power_channel))
 		toggle_tint()
 
-/obj/machinery/button/windowtint/update_icon()
+/obj/machinery/button/windowtint/on_update_icon()
 	icon_state = "light[active]"

@@ -1,9 +1,8 @@
 /mob/living/carbon/human/proc/isAggresiveStrip(mob/living/user)
-	if (user.a_intent == "help")
-		return FALSE
-	for (var/obj/item/grab/G in grabbed_by)
-		if (G.force_danger())
+	for(var/obj/item/grab/G in grabbed_by)
+		if(G.force_danger())
 			return TRUE
+
 	return FALSE
 
 /mob/living/carbon/human/proc/handle_strip(slot_to_strip_text, mob/living/user, obj/item/clothing/holder)
@@ -35,27 +34,27 @@
 		if("pockets")
 			if(stripping)
 				visible_message("<span class='danger'>\The [user] is trying to empty [src]'s pockets!</span>")
-				if(do_after(user, HUMAN_STRIP_DELAY, src, progress = 0))
+				if(do_mob(user, src, HUMAN_STRIP_DELAY, can_multitask = TRUE))
 					empty_pockets(user)
 			else
 				//should it be possible to discreetly slip something into someone's pockets?
 				visible_message("<span class='danger'>\The [user] is trying to stuff \a [held] into [src]'s pocket!</span>")
-				if(do_after(user, HUMAN_STRIP_DELAY, src, progress = 0))
+				if(do_mob(user, src, HUMAN_STRIP_DELAY, can_multitask = TRUE))
 					place_in_pockets(held, user)
 			return
 		if("splints")
 			visible_message("<span class='danger'>\The [user] is trying to remove \the [src]'s splints!</span>")
-			if(do_after(user, HUMAN_STRIP_DELAY, src, progress = 0))
+			if(do_mob(user, src, HUMAN_STRIP_DELAY, can_multitask = TRUE))
 				remove_splints(user)
 			return
 		if("sensors")
 			visible_message("<span class='danger'>\The [user] is trying to set \the [src]'s sensors!</span>")
-			if(do_after(user, HUMAN_STRIP_DELAY, src, progress = 0))
+			if(do_mob(user, src, HUMAN_STRIP_DELAY, can_multitask = TRUE))
 				toggle_sensors(user)
 			return
 		if("rolldown")
 			visible_message(SPAN_DANGER("\The [user] is trying to roll down \the [src]'s uniform!"))
-			if(do_after(user, HUMAN_STRIP_DELAY, src, progress = 0))
+			if(do_mob(user, src, HUMAN_STRIP_DELAY, can_multitask = TRUE))
 				var/obj/item/clothing/under/U = w_uniform
 				if(U)
 					U.rollsuit()
@@ -63,23 +62,27 @@
 			return
 		if("internals")
 			visible_message("<span class='danger'>\The [usr] is trying to set \the [src]'s internals!</span>")
-			if(do_after(user, HUMAN_STRIP_DELAY, src, progress = 0))
+			if(do_mob(user, src, HUMAN_STRIP_DELAY, can_multitask = TRUE))
 				toggle_internals(user)
 			return
 		if("tie")
-			if(!istype(holder) || !holder.accessories.len)
+			if(!istype(holder) || !LAZYLEN(holder.accessories))
 				return
 			var/obj/item/clothing/accessory/A = holder.accessories[1]
 			if(holder.accessories.len > 1)
-				A = input("Select an accessory to remove from [holder]") as null|anything in holder.accessories
+				A = show_radial_menu(usr, usr, make_item_radial_menu_choices(holder.accessories), radius = 42)
 			if(!istype(A))
 				return
-			visible_message("<span class='danger'>\The [user] is trying to remove \the [src]'s [A.name]!</span>")
 
-			if(!do_after(user, HUMAN_STRIP_DELAY, src, progress = 0))
+			if(user.incapacitated()  || !user.Adjacent(src))
 				return
 
-			if(!A || holder.loc != src || !(A in holder.accessories))
+			visible_message("<span class='danger'>\The [user] is trying to remove \the [src]'s [A.name]!</span>")
+
+			if(!do_mob(user, src, HUMAN_STRIP_DELAY, can_multitask = TRUE))
+				return
+
+			if(!A || holder.loc != src || !LAZYISIN(holder.accessories, A))
 				return
 
 			admin_attack_log(user, src, "Stripped \an [A] from \the [holder].", "Was stripped of \an [A] from \the [holder].", "stripped \an [A] from \the [holder] of")
@@ -100,7 +103,7 @@
 	if(stripping)
 		if(!istype(target_slot))  // They aren't holding anything valid and there's nothing to remove, why are we even here?
 			return
-		if(!target_slot.mob_can_unequip(src, text2num(slot_to_strip_text), disable_warning=1))
+		if(!target_slot.can_be_unequipped_by(src, text2num(slot_to_strip_text), disable_warning=1))
 			to_chat(user, "<span class='warning'>You cannot remove \the [src]'s [target_slot.name].</span>")
 			return
 
@@ -117,17 +120,17 @@
 		else
 			visible_message("<span class='danger'>\The [user] is trying to put \a [held] on \the [src]!</span>")
 
-	if(!do_after(user, HUMAN_STRIP_DELAY, src))
+	if(!do_mob(user, src, HUMAN_STRIP_DELAY, can_multitask = TRUE))
 		return
 
 	if(stripping)
-		if(unEquip(target_slot))
+		if(drop(target_slot))
 			admin_attack_log(user, src, "Stripped \a [target_slot]", "Was stripped of \a [target_slot].", "stripped \a [target_slot] from")
 			if(!isAggresiveStrip(user) && user.IsAdvancedToolUser(TRUE))
 				user.put_in_active_hand(target_slot)
 		else
 			admin_attack_log(user, src, "Attempted to strip \a [target_slot]", "Target of a failed strip of \a [target_slot].", "attempted to strip \a [target_slot] from")
-	else if(user.unEquip(held))
+	else if(user.drop(held))
 		var/obj/item/clothing/C = get_equipped_item(text2num(slot_to_strip_text))
 		if(istype(C) && C.can_attach_accessory(held))
 			C.attach_accessory(user, held)
@@ -142,13 +145,13 @@
 		to_chat(user, "<span class='warning'>\The [src] has nothing in their pockets.</span>")
 		return
 	if(r_store)
-		unEquip(r_store)
+		drop(r_store)
 	if(l_store)
-		unEquip(l_store)
+		drop(l_store)
 	visible_message("<span class='danger'>\The [user] empties [src]'s pockets!</span>")
 
 /mob/living/carbon/human/proc/place_in_pockets(obj/item/I, mob/living/user)
-	if(!user.unEquip(I))
+	if(I.loc == user && !user.drop(I))
 		return
 	if(!r_store)
 		if(equip_to_slot_if_possible(I, slot_r_store, del_on_fail=0, disable_warning=1, redraw_mob=1))

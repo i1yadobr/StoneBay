@@ -43,31 +43,35 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 	else
 		power_supply = new /obj/item/cell/device/variable(src, max_shots*charge_cost)
 	if(self_recharge)
-		START_PROCESSING(SSobj, src)
+		set_next_think(world.time)
 	update_icon()
 
 /obj/item/gun/energy/Destroy()
-	if(self_recharge)
-		STOP_PROCESSING(SSobj, src)
+	QDEL_NULL(power_supply)
 	return ..()
 
-/obj/item/gun/energy/Process()
+/obj/item/gun/energy/think()
 	if(self_recharge) //Every [recharge_time] ticks, recharge a shot for the cyborg
 		charge_tick++
-		if(charge_tick < recharge_time) return 0
+		if(charge_tick < recharge_time)
+			set_next_think(world.time + 1 SECOND)
+			return
 		charge_tick = 0
 
 		if(!power_supply || power_supply.charge >= power_supply.maxcharge)
-			return 0 // check if we actually need to recharge
+			set_next_think(world.time + 1 SECOND)
+			return // check if we actually need to recharge
 
 		if(use_external_power)
 			var/obj/item/cell/external = get_external_power_supply()
 			if(!external || !external.use(charge_cost)) //Take power from the borg...
-				return 0
+				set_next_think(world.time + 1 SECOND)
+				return
 
 		power_supply.give(charge_cost) //... to recharge the shot
 		update_icon()
-	return 1
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/gun/energy/consume_next_projectile()
 	if(!power_supply)
@@ -97,18 +101,18 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 					return suit.cell
 	return null
 
-/obj/item/gun/energy/_examine_text(mob/user)
+/obj/item/gun/energy/examine(mob/user, infix)
 	. = ..()
-	. += "\nHas [power_supply ? round(power_supply.charge / charge_cost) : "0"] shot\s remaining."
+	. += "Has <b>[power_supply ? round(power_supply.charge / charge_cost) : "0"]</b> shot\s remaining."
 
-/obj/item/gun/energy/update_icon()
+/obj/item/gun/energy/on_update_icon()
 	if(charge_meter)
 		var/ratio
 		if(power_supply)
 			if(power_supply.charge < charge_cost)
 				ratio = 0
 			else
-				ratio = max(round(power_supply.percent(), icon_rounder), icon_rounder)
+				ratio = max(round(CELL_PERCENT(power_supply), icon_rounder), icon_rounder)
 		else
 			ratio = 0
 
@@ -187,7 +191,7 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 
 /obj/item/gun/energy/secure/special_check()
 	if(!emagged && (!authorized_modes[sel_mode] || !registered_owner))
-		audible_message("<span class='warning'>\The [src] buzzes, refusing to fire.</span>")
+		audible_message("<span class='warning'>\The [src] buzzes, refusing to fire.</span>", splash_override = "*buzz*")
 		playsound(loc, 'sound/signals/error1.ogg', 50, 0)
 		return 0
 
@@ -206,11 +210,11 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 
 	return new_mode
 
-/obj/item/gun/energy/secure/_examine_text(mob/user)
+/obj/item/gun/energy/secure/examine(mob/user, infix)
 	. = ..()
 
 	if(registered_owner)
-		. += "\nA small screen on the side of the weapon indicates that it is registered to [registered_owner]."
+		. += "A small screen on the side of the weapon indicates that it is registered to [registered_owner]."
 
 /obj/item/gun/energy/secure/proc/get_next_authorized_mode()
 	. = sel_mode

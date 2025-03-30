@@ -5,8 +5,8 @@
 
 	anchored = 1
 	density = 1
-	idle_power_usage = 4
-	active_power_usage = 4000 // 4 Kw. A CT scan machine uses 1-15 kW depending on the model and equipment involved.
+	idle_power_usage = 4 WATTS
+	active_power_usage = 4 KILO WATTS // A CT scan machine uses 1-15 kW depending on the model and equipment involved.
 	req_access = list(access_medical)
 
 	icon_state = "body_scanner_0"
@@ -55,7 +55,7 @@
 			remaining += 1
 
 			if(remaining == 90) // 30 seconds left
-				to_chat(occupant, "<span class='notice'>You feel a wash of sensation as your senses begin to flood your mind. You will come to soon.</span>")
+				to_chat(occupant, SPAN_NOTICE("You feel a wash of sensation as your senses begin to flood your mind. You will come to life soon."))
 		else
 			remaining = 0
 			resleeving = 0
@@ -171,18 +171,18 @@
 			to_chat(user, "<span class='warning'>You need to remove the occupant first!</span>")
 			return
 	if(istype(W, /obj/item/organ/internal/stack))
-		if(isnull(lace))
+		if(QDELETED(lace))
+			if(!user.drop(W, src))
+				return
 			to_chat(user, "<span class='notice'>You insert \the [W] into [src].</span>")
-			user.drop_from_inventory(W)
 			lace = W
-			W.forceMove(src)
 			if(lace.backup)
 				lace_name = lace.backup.name
 		else
 			to_chat(user, "<span class='warning'>\The [src] already has a neural lace inside it!</span>")
 			return
 	else if(isWrench(W))
-		if(isnull(occupant))
+		if(QDELETED(occupant))
 			if(anchored)
 				anchored = 0
 				user.visible_message("[user] unsecures [src] from the floor.", "You unsecure [src] from the floor.")
@@ -293,10 +293,9 @@
 					ex_act(severity)
 				qdel(src)
 				return
-		else
 	return
 
-/obj/machinery/resleever/update_icon()
+/obj/machinery/resleever/on_update_icon()
 	..()
 	icon_state = empty_state
 	if(occupant)

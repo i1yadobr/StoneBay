@@ -5,17 +5,22 @@
 	var/insert_anim = "bigscanner1"
 	anchored = 1
 	density = 1
-	idle_power_usage = 30
-	active_power_usage = 200
+	idle_power_usage = 30 WATTS
+	active_power_usage = 200 WATTS
 	power_channel = STATIC_EQUIP
 	atom_flags = ATOM_FLAG_CLIMBABLE
 	obj_flags = OBJ_FLAG_ANCHORABLE
+	turf_height_offset = 15
 	var/obj/item/copyitem = null	//what's in the copier!
 	var/copies = 1	//how many copies to print!
 	var/toner = 30 //how much toner is left! woooooo~
 	var/maxcopies = 10	//how many copies can be copied at once- idea shamelessly stolen from bs12's copier!
 	var/grayscale = TRUE //if FALSE it'll preserve colors at least on paper
 	var/busy = FALSE
+
+/obj/machinery/photocopier/Destroy()
+	QDEL_NULL(copyitem)
+	return ..()
 
 /obj/machinery/photocopier/attack_ai(mob/user)
 	return attack_hand(user)
@@ -92,9 +97,10 @@
 		busy = FALSE
 	else if(href_list["remove"])
 		if(copyitem)
-			copyitem.loc = usr.loc
-			usr.put_in_hands(copyitem)
-			to_chat(usr, SPAN("notice", "You take \the [copyitem] out of \the [src]."))
+			if(usr.pick_or_drop(copyitem, loc))
+				to_chat(usr, SPAN("notice", "You take \the [copyitem] out of \the [src]."))
+			else
+				to_chat(usr, SPAN("notice", "You remove \the [copyitem] from \the [src]."))
 			copyitem = null
 			updateUsrDialog()
 	else if(href_list["min"])
@@ -131,9 +137,9 @@
 /obj/machinery/photocopier/attackby(obj/item/O as obj, mob/user as mob)
 	if(istype(O, /obj/item/paper) || istype(O, /obj/item/photo) || istype(O, /obj/item/paper_bundle) || istype(O, /obj/item/complaint_folder) || istype(O, /obj/item/canvas))
 		if(!copyitem)
-			user.drop_item()
+			if(!user.drop(O, src))
+				return
 			copyitem = O
-			O.loc = src
 			to_chat(user, SPAN("notice", "You insert \the [O] into \the [src]."))
 			flick(insert_anim, src)
 			updateUsrDialog()
@@ -141,7 +147,8 @@
 			to_chat(user, SPAN("notice", "There is already something in \the [src]."))
 	else if(istype(O, /obj/item/device/toner))
 		if(toner <= 10) //allow replacing when low toner is affecting the print darkness
-			user.drop_item()
+			if(!user.drop(O))
+				return
 			to_chat(user, SPAN("notice", "You insert the toner cartridge into \the [src]."))
 			var/obj/item/device/toner/T = O
 			toner += T.toner_amount
@@ -181,6 +188,7 @@
 	if(toner == 0)
 		visible_message(SPAN("notice", "A red light on \the [src] flashes, indicating that it is out of toner."))
 	c.update_icon()
+	c.photocopied = TRUE
 	return c
 
 /obj/machinery/photocopier/proc/complaintcopy(obj/item/complaint_folder/copy, need_toner=1)
@@ -239,10 +247,10 @@
 			I = copy(I)
 		else if(istype(I, /obj/item/photo))
 			I = photocopy(I)
-		I.loc = p
+		I.forceMove(p)
 		p.pages += I
 
-	p.loc = src.loc
+	p.dropInto(loc)
 	p.update_icon()
 	p.icon_state = "paper_words"
 	p.SetName(bundle.name)

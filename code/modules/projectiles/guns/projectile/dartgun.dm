@@ -28,9 +28,6 @@
 	projectile_type = /obj/item/projectile/bullet/chemdart
 	leaves_residue = 0
 
-/obj/item/ammo_casing/chemdart/expend()
-	qdel(src)
-
 /obj/item/ammo_magazine/chemdart
 	name = "dart cartridge"
 	desc = "A rack of hollow darts."
@@ -60,6 +57,7 @@
 	auto_eject = 0
 	handle_casings = CLEAR_CASINGS //delete casings instead of dropping them
 	combustion = FALSE
+	has_safety = FALSE
 
 	var/list/beakers = list() //All containers inside the gun.
 	var/list/mixing = list() //Containers being used for mixing.
@@ -77,17 +75,17 @@
 	. = ..()
 	update_icon()
 
-/obj/item/gun/projectile/dartgun/update_icon()
+/obj/item/gun/projectile/dartgun/on_update_icon()
 	if(!ammo_magazine)
 		icon_state = "dartgun-empty"
 		return 1
 
-	if(!ammo_magazine.stored_ammo || ammo_magazine.stored_ammo.len)
+	if(!length(ammo_magazine.stored_ammo))
 		icon_state = "dartgun-0"
-	else if(ammo_magazine.stored_ammo.len > 5)
+	else if(length(ammo_magazine.stored_ammo) > 5)
 		icon_state = "dartgun-5"
 	else
-		icon_state = "dartgun-[ammo_magazine.stored_ammo.len]"
+		icon_state = "dartgun-[length(ammo_magazine.stored_ammo)]"
 	return 1
 
 /obj/item/gun/projectile/dartgun/consume_next_projectile()
@@ -96,14 +94,17 @@
 	if(istype(dart))
 		fill_dart(dart)
 
-/obj/item/gun/projectile/dartgun/_examine_text(mob/user)
+/obj/item/gun/projectile/dartgun/examine(mob/user, infix)
 	. = ..()
-	if (beakers.len)
-		. += "\n<span class='notice'>\The [src] contains:</span>"
-		for(var/obj/item/reagent_containers/vessel/beaker/B in beakers)
-			if(B.reagents && B.reagents.reagent_list.len)
-				for(var/datum/reagent/R in B.reagents.reagent_list)
-					. += "\n<span class='notice'>[R.volume] units of [R.name]</span>"
+
+	if(!length(beakers))
+		return
+
+	. += "<span class='notice'>\The [src] contains:</span>"
+	for(var/obj/item/reagent_containers/vessel/beaker/B in beakers)
+		if(B.reagents && B.reagents.reagent_list.len)
+			for(var/datum/reagent/R in B.reagents.reagent_list)
+				. += SPAN_NOTICE("[R.volume] units of [R.name]")
 
 /obj/item/gun/projectile/dartgun/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/reagent_containers/vessel))
@@ -118,14 +119,15 @@
 	if(beakers.len >= max_beakers)
 		to_chat(user, "<span class='warning'>[src] already has [max_beakers] beakers in it - another one isn't going to fit!</span>")
 		return
-	user.drop_from_inventory(B, src)
+	if(!user.drop(B, src))
+		return
 	beakers |= B
 	user.visible_message("\The [user] inserts \a [B] into [src].", "<span class='notice'>You slot [B] into [src].</span>")
 
 /obj/item/gun/projectile/dartgun/proc/remove_beaker(obj/item/reagent_containers/vessel/B, mob/user)
 	mixing -= B
 	beakers -= B
-	user.put_in_hands(B)
+	user.pick_or_drop(B, loc)
 	user.visible_message("\The [user] removes \a [B] from [src].", "<span class='notice'>You remove [B] from [src].</span>")
 
 //fills the given dart with reagents

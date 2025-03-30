@@ -38,28 +38,9 @@
 	path = /obj/item/clothing/accessory/corset
 	flags = GEAR_HAS_COLOR_SELECTION
 
-/datum/gear/accessory/choker_color
-	display_name = "colored choker"
-	path = /obj/item/clothing/accessory/choker
-	flags = GEAR_HAS_COLOR_SELECTION
-
 /datum/gear/accessory/vynilcorset
 	display_name = "vinyl corset"
 	path = /obj/item/clothing/accessory/vynilcorset
-
-/datum/gear/accessory/locket
-	display_name = "locket"
-	path = /obj/item/clothing/accessory/locket
-
-/datum/gear/accessory/aquila
-	display_name = "aquila"
-	path = /obj/item/clothing/accessory/necklace/aquila
-	slot = slot_tie
-
-/datum/gear/accessory/necklace
-	display_name = "necklace, colour select"
-	path = /obj/item/clothing/accessory/necklace
-	flags = GEAR_HAS_COLOR_SELECTION
 
 /datum/gear/accessory/bowtie
 	display_name = "bowtie, horrible"
@@ -117,3 +98,18 @@
 /datum/gear/accessory/armband_nt
 	display_name = "NanoTrasen armband"
 	path = /obj/item/clothing/accessory/armband/whitered
+
+/datum/gear/accessory/pin
+	display_name = "pin selection"
+	description = "A Nanotrasen holographic pin to show off your loyalty to the company, reminding the crew of your unwavering commitment to whatever NanoTrasen's up to!"
+	path = /obj/item/clothing/accessory/pin
+
+/datum/gear/accessory/pin/New()
+	..()
+	var/pinies = list()
+	pinies["NanoTrasen pin"] = /obj/item/clothing/accessory/pin
+	pinies["pig pin"]        = /obj/item/clothing/accessory/pin/pig
+	pinies["skull pin"]      = /obj/item/clothing/accessory/pin/skull
+	pinies["rainbow pin"]    = /obj/item/clothing/accessory/pin/pride
+
+	gear_tweaks += new /datum/gear_tweak/path(pinies)

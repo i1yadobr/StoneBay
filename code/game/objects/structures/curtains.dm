@@ -2,14 +2,14 @@
 	name = "curtain"
 	icon = 'icons/obj/curtain.dmi'
 	icon_state = "closed"
-	layer = BASE_ABOVE_OBJ_LAYER
+	layer = ABOVE_HUMAN_LAYER
 	opacity = 1
 	density = 0
+	breakable = TRUE
 
 /obj/structure/curtain/open
 	icon_state = "open"
 
-	layer = ABOVE_HUMAN_LAYER
 	opacity = 0
 
 /obj/structure/curtain/bullet_act(obj/item/projectile/P, def_zone)
@@ -24,6 +24,18 @@
 	toggle()
 	..()
 
+/obj/structure/curtain/attackby(obj/item/W, mob/user)
+	if(isWrench(W))
+		user.visible_message("[user] dissassembles [src].", "You start to dissassemble [src].")
+		playsound(src.loc, 'sound/items/Ratchet.ogg', 100, 1)
+		if(do_after(user, 40, src))
+			if(!src)
+				return
+			to_chat(user,  SPAN_NOTICE("You dissasembled [src]!"))
+			new /obj/item/stack/material/plastic(src.loc, 4)
+			qdel(src)
+	return ..()
+
 /obj/structure/curtain/proc/toggle()
 	set_opacity(!opacity)
 	if(opacity)
@@ -31,7 +43,6 @@
 
 	else
 		icon_state = "open"
-		layer = ABOVE_OBJ_LAYER
 
 /obj/structure/curtain/black
 	name = "black curtain"

@@ -13,6 +13,11 @@
 	var/propelled = 0 // Check for fire-extinguisher-driven chairs
 	var/foldable = TRUE
 
+/obj/structure/bed/chair/Initialize()
+	. = ..()
+
+	AddElement(/datum/element/simple_rotation)
+
 /obj/structure/bed/chair/attackby(obj/item/W as obj, mob/user as mob)
 	..()
 	if(!padding_material && istype(W, /obj/item/assembly/shock_kit))
@@ -20,8 +25,9 @@
 		if(!SK.status)
 			to_chat(user, "<span class='notice'>\The [SK] is not ready to be attached!</span>")
 			return
-		user.drop_item()
-		var/obj/structure/bed/chair/e_chair/E = new (src.loc, material.name)
+		if(!user.drop(SK, loc))
+			return
+		var/obj/structure/bed/chair/e_chair/E = new (loc, material.name)
 		playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, 1)
 		E.set_dir(dir)
 		E.part = SK
@@ -40,7 +46,7 @@
 	update_icon()
 	return ..()
 
-/obj/structure/bed/chair/update_icon()
+/obj/structure/bed/chair/on_update_icon()
 	..()
 
 	var/cache_key = "[base_icon]-[material.name]-over"
@@ -50,7 +56,7 @@
 			I.color = material.icon_colour
 		I.layer = ABOVE_HUMAN_LAYER
 		stool_cache[cache_key] = I
-	overlays |= stool_cache[cache_key]
+	AddOverlays(stool_cache[cache_key])
 	// Padding overlay.
 	if(padding_material)
 		var/padding_cache_key = "[base_icon]-padding-[padding_material.name]-over"
@@ -60,7 +66,7 @@
 				I.color = padding_material.icon_colour
 			I.layer = ABOVE_HUMAN_LAYER
 			stool_cache[padding_cache_key] = I
-		overlays |= stool_cache[padding_cache_key]
+		AddOverlays(stool_cache[padding_cache_key])
 
 	if(buckled_mob && padding_material)
 		cache_key = "[base_icon]-armrest-[padding_material.name]"
@@ -70,36 +76,23 @@
 			if(material_alteration & MATERIAL_ALTERATION_COLOR)
 				I.color = padding_material.icon_colour
 			stool_cache[cache_key] = I
-		overlays |= stool_cache[cache_key]
+		AddOverlays(stool_cache[cache_key])
+
+/obj/structure/bed/chair/can_rotate(mob/user)
+	if(isobserver(user) && config.ghost.ghost_interaction && Adjacent(user))
+		var/area/A = get_area(src)
+		if(A?.holy)
+			show_splash_text(user, "you cannot turn it there!", "\The [src] is on sacred ground, you cannot turn in.")
+			return FALSE
+
+		return TRUE
+
+	return ..(user)
 
 /obj/structure/bed/chair/set_dir()
 	..()
 	if(buckled_mob)
 		buckled_mob.set_dir(dir)
-
-/obj/structure/bed/chair/AltClick(mob/living/L)
-	if(L.is_ventcrawling)
-		return
-	rotate()
-
-/obj/structure/bed/chair/verb/rotate()
-	set name = "Rotate Chair"
-	set category = "Object"
-	set src in oview(1)
-
-	if(!usr || !Adjacent(usr))
-		return
-
-	if(usr.stat == DEAD && config.ghost.ghost_interaction)
-		var/area/A = get_area(src)
-		if(A?.holy)
-			to_chat(usr, SPAN("warning", "\The [src] is on sacred ground, you cannot turn it."))
-			return
-	else if(usr.incapacitated())
-		return
-
-	src.set_dir(turn(src.dir, 90))
-	return
 
 /* ======================================================= */
 /* -------------------- Folded Chairs -------------------- */
@@ -119,6 +112,7 @@
 	mod_weight = 1.25
 	mod_reach = 1.15
 	mod_handy = 0.3
+	armor_penetration = 20
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	matter = list(MATERIAL_STEEL = 2000)
 	var/material/padding_material
@@ -163,6 +157,10 @@
 /obj/structure/bed/chair/proc/fold(mob/user)
 	if(!foldable)
 		return
+
+	if(atom_flags & ATOM_FLAG_NO_DECONSTRUCTION) // No folding, bozo
+		return
+
 	if(!user.Adjacent(src))
 		return
 
@@ -256,8 +254,11 @@
 		return
 	..()
 
-/obj/structure/bed/chair/office/Move()
+/obj/structure/bed/chair/office/Move(newloc, direct)
 	. = ..()
+	if(!.)
+		return
+
 	if(buckled_mob)
 		var/mob/living/occupant = buckled_mob
 		if (occupant && (src.loc != occupant.loc))
@@ -314,7 +315,7 @@
 	foldable = FALSE
 
 /obj/structure/bed/chair/wood/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/stack) || istype(W, /obj/item/wirecutters))
+	if(istype(W,/obj/item/stack) || isWirecutter(W))
 		return
 	..()
 
@@ -335,7 +336,7 @@
 	anchored = TRUE
 
 /obj/structure/bed/chair/shuttle/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/stack) || istype(W, /obj/item/wirecutters))
+	if(istype(W,/obj/item/stack) || isWirecutter(W))
 		return
 	..()
 

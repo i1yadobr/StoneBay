@@ -17,7 +17,7 @@
 
 	var/image/I = get_image_from_backpack(H)
 	AddAltAppearance(H, I, GLOB.silicon_mob_list+H) //you look like a robot to robots! (including yourself because you're totally a robot)
-	register_global_signal(SIGNAL_LOGGED_IN, /decl/appearance_handler/cardborg/proc/mob_joined) // Duplicate registration request are handled for us
+	register_global_signal(SIGNAL_LOGGED_IN, nameof(/decl/appearance_handler/cardborg.proc/mob_joined)) // Duplicate registration request are handled for us
 
 /decl/appearance_handler/cardborg/proc/item_removed(obj/item/item, mob/user)
 	if((istype(item, /obj/item/clothing/suit/cardborg) || istype(item, /obj/item/clothing/head/cardborg)) || istype(item, /obj/item/storage/backpack))
@@ -36,7 +36,7 @@
 
 	var/image/I = image(icon = 'icons/mob/robots.dmi', icon_state = ca.icon_state, loc = H)
 	I.override = 1
-	I.overlays += image(icon = 'icons/mob/robots.dmi', icon_state = "eyes-[ca.icon_state]") //gotta look realistic
+	I.AddOverlays(image(icon = 'icons/mob/robots.dmi', icon_state = "eyes-[ca.icon_state]")) //gotta look realistic
 	return I
 
 /decl/appearance_handler/cardborg/proc/init_appearances()

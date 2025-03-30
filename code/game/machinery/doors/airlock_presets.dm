@@ -1,4 +1,4 @@
-#define GLASS_AIRLOCK_HIT_SOUND pick('sound/effects/materials/glass/knock1.ogg', 'sound/effects/materials/glass/knock2.ogg', 'sound/effects/materials/glass/knock3.ogg')
+#define GLASS_AIRLOCK_HIT_SOUND pick(SFX_GLASS_HIT)
 
 //regular airlock presets
 
@@ -33,6 +33,12 @@
 	assembly_type = /obj/structure/door_assembly/door_assembly_viro
 
 //////////////////////////////////////////
+/obj/machinery/door/airlock/medblack
+	name = "Airlock"
+	icon = 'icons/obj/doors/doormedblack.dmi'
+	assembly_type = /obj/structure/door_assembly/door_assembly_med
+
+//////////////////////////////////////////
 /obj/machinery/door/airlock/maintenance
 	name = "Maintenance Access"
 	icon = 'icons/obj/doors/doormaint.dmi'
@@ -59,9 +65,6 @@
 	density = 0
 	locked = 1
 	opacity = 0
-
-/obj/machinery/door/airlock/external/snow
-	icon = 'icons/obj/doors/doorextsnow.dmi'
 
 //////////////////////////////////////////
 /obj/machinery/door/airlock/glass
@@ -144,6 +147,8 @@
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_com
 	glass = 1
+	open_sound_powered = 'sound/machines/airlock/glass_open1.ogg'
+	close_sound_powered = 'sound/machines/airlock/glass_close1.ogg'
 
 /obj/machinery/door/airlock/glass_command/Initialize()
 	. = ..()
@@ -187,6 +192,8 @@
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_eng
 	glass = 1
+	open_sound_powered = 'sound/machines/airlock/glass_open1.ogg'
+	close_sound_powered = 'sound/machines/airlock/glass_close1.ogg'
 
 /obj/machinery/door/airlock/glass_engineering/Initialize()
 	. = ..()
@@ -202,6 +209,8 @@
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_sec
 	glass = 1
+	open_sound_powered = 'sound/machines/airlock/glass_open1.ogg'
+	close_sound_powered = 'sound/machines/airlock/glass_close1.ogg'
 
 /obj/machinery/door/airlock/glass_security/Initialize()
 	. = ..()
@@ -217,6 +226,8 @@
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_med
 	glass = 1
+	open_sound_powered = 'sound/machines/airlock/glass_open1.ogg'
+	close_sound_powered = 'sound/machines/airlock/glass_close1.ogg'
 
 /obj/machinery/door/airlock/glass_medical/Initialize()
 	. = ..()
@@ -232,6 +243,8 @@
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_viro
 	glass = 1
+	open_sound_powered = 'sound/machines/airlock/glass_open1.ogg'
+	close_sound_powered = 'sound/machines/airlock/glass_close1.ogg'
 
 /obj/machinery/door/airlock/glass_virology/Initialize()
 	. = ..()
@@ -296,6 +309,8 @@
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_atmo
 	glass = 1
+	open_sound_powered = 'sound/machines/airlock/glass_open1.ogg'
+	close_sound_powered = 'sound/machines/airlock/glass_close1.ogg'
 
 /obj/machinery/door/airlock/glass_atmos/Initialize()
 	. = ..()
@@ -355,7 +370,7 @@
 
 /obj/machinery/door/airlock/plasma/proc/PlasmaBurn(temperature)
 	for(var/turf/simulated/floor/target_tile in range(2,loc))
-		target_tile.assume_gas("plasma", 35, 400+T0C)
+		target_tile.assume_gas("plasma", 35, 400 CELSIUS)
 		spawn (0) target_tile.hotspot_expose(temperature, 400)
 	for(var/turf/simulated/wall/W in range(3,src))
 		W.burn((temperature/4))//Added so that you can't set off a massive chain reaction with a small flame

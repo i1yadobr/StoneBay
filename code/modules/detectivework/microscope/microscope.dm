@@ -18,8 +18,7 @@
 
 	if(istype(W, /obj/item/forensics/swab)|| istype(W, /obj/item/sample/fibers) || istype(W, /obj/item/sample/print))
 		to_chat(user, "<span class='notice'>You insert \the [W] into the microscope.</span>")
-		user.unEquip(W)
-		W.forceMove(src)
+		user.drop(W, src)
 		sample = W
 		update_icon()
 		return
@@ -39,7 +38,7 @@
 	to_chat(user, "<span class='notice'>Printing findings now...</span>")
 	var/obj/item/paper/report = new(get_turf(src))
 	report.stamped = list(/obj/item/stamp)
-	report.overlays = list("paper_stamped")
+	report.AddOverlays("paper_stamped")
 	report_num++
 
 	if(istype(sample, /obj/item/forensics/swab))
@@ -92,8 +91,7 @@
 		to_chat(remover, "<span class='warning'>\The [src] does not have a sample in it.</span>")
 		return
 	to_chat(remover, "<span class='notice'>You remove \the [sample] from \the [src].</span>")
-	sample.forceMove(get_turf(src))
-	remover.put_in_hands(sample)
+	remover.pick_or_drop(sample, loc)
 	sample = null
 	update_icon()
 
@@ -106,7 +104,7 @@
 	else
 		return ..()
 
-/obj/machinery/microscope/update_icon()
+/obj/machinery/microscope/on_update_icon()
 	icon_state = "microscope"
 	if(sample)
 		icon_state += "slide"

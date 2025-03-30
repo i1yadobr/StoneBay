@@ -32,24 +32,25 @@
 	QDEL_NULL(base_gloves)
 	return ..()
 
-/obj/item/clothing/gloves/stun/update_icon(needs_updating = FALSE)
+/obj/item/clothing/gloves/stun/on_update_icon(needs_updating = FALSE)
 	..()
 	if(bcell)
-		overlays += image(icon, "gloves_cell")
+		AddOverlays(image(icon, "gloves_cell"))
 
-/obj/item/clothing/gloves/stun/_examine_text()
+/obj/item/clothing/gloves/stun/examine(mob/user, infix)
 	. = ..()
+
 	if(!bcell)
 		. += "<br>\The [src] have no power cell installed."
 	else
-		. += "<br>\The [src] are [round(bcell.percent())]% charged."
+		. += "<br>\The [src] are [round(CELL_PERCENT(bcell))]% charged."
 
 /obj/item/clothing/gloves/stun/attackby(obj/item/W, mob/user)
 	if(isWirecutter(W))
 		playsound(src.loc, 'sound/items/Wirecutter.ogg', 100, 1)
 		if(bcell)
 			to_chat(user, SPAN("notice", "You carefully disconnect \the [bcell] from the wires on \the [src]."))
-			user.put_in_hands(bcell)
+			user.pick_or_drop(bcell)
 			bcell = null
 			update_icon(TRUE)
 			return
@@ -59,8 +60,8 @@
 			qdel(src)
 		base_gloves.wired = FALSE
 		base_gloves.update_icon(TRUE)
-		new /obj/item/stack/cable_coil(user.loc, 15, wire_color)
-		user.drop_from_inventory(base_gloves)
+		new /obj/item/stack/cable_coil(get_turf(src), 15, wire_color)
+		base_gloves.forceMove(get_turf(src))
 		base_gloves = null
 		qdel(src)
 		return
@@ -69,9 +70,8 @@
 		if(bcell)
 			to_chat(user, SPAN("notice", "The [src] already have \the [bcell] installed."))
 			return
-		if(user.unEquip(W))
+		if(user.drop(W, src))
 			bcell = W
-			bcell.forceMove(src)
 			update_icon(TRUE)
 			to_chat(user, SPAN("notice", "You connect \the [bcell] to the wires on \the [src]."))
 			return
@@ -106,6 +106,10 @@
 
 /obj/item/clothing/gloves/stun/proc/stun_attack(mob/living/carbon/human/user, mob/living/carbon/human/victim)
 	if(!istype(user) || !istype(victim))
+		return
+
+	if(is_pacifist(user))
+		to_chat(user, SPAN("warning", "You can't you're pacifist!"))
 		return
 
 	var/aim = check_aim(user.zone_sel.selecting)

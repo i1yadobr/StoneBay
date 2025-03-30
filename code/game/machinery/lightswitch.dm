@@ -7,14 +7,13 @@
 	icon = 'icons/obj/power.dmi'
 	icon_state = "light0"
 	anchored = 1.0
-	idle_power_usage = 20
+	idle_power_usage = 20 WATTS
 	power_channel = STATIC_LIGHT
 	var/on = 0
 	var/area/connected_area = null
 	var/other_area = null
-	var/image/overlay
 
-/obj/machinery/light_switch/Initialize()
+/obj/machinery/light_switch/Initialize(mapload)
 	. = ..()
 	if(other_area)
 		src.connected_area = locate(other_area)
@@ -27,26 +26,27 @@
 	connected_area.set_lightswitch(on)
 	update_icon()
 
-/obj/machinery/light_switch/update_icon()
-	if(!overlay)
-		overlay = image(icon, "light1-overlay")
-		overlay.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-		overlay.layer = ABOVE_LIGHTING_LAYER
+/obj/machinery/light_switch/Destroy()
+	connected_area = null
+	other_area = null
+	ClearOverlays()
+	return ..()
 
-	overlays.Cut()
+/obj/machinery/light_switch/on_update_icon()
+	ClearOverlays()
 	if(stat & (NOPOWER|BROKEN))
 		icon_state = "light-p"
 		set_light(0)
 	else
 		icon_state = "light[on]"
-		overlay.icon_state = "light[on]-overlay"
-		overlays += overlay
+		AddOverlays(emissive_appearance(icon, "light-ea"))
 		set_light(0.15, 0.1, 1, 2, (on ? "#82ff4c" : "#f86060"))
 
-/obj/machinery/light_switch/_examine_text(mob/user)
+/obj/machinery/light_switch/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 1)
-		. += "\nA light switch. It is [on? "on" : "off"]."
+		. += "A light switch. It is [on? "on" : "off"]."
 
 /obj/machinery/light_switch/proc/set_state(newstate)
 	if(on != newstate)
@@ -61,7 +61,7 @@
 		return 1
 
 /obj/machinery/light_switch/attack_hand(mob/user)
-	playsound(src, SFX_USE_SMALL_SWITCH, 75)
+	playsound(src, 'sound/effects/using/switch/lightswitch.ogg', 75)
 	set_state(!on)
 
 /obj/machinery/light_switch/powered()

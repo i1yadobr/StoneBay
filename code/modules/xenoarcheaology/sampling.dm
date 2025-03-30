@@ -90,10 +90,11 @@
 	var/num_stored_bags = 10
 	var/obj/item/evidencebag/filled_bag
 
-/obj/item/device/core_sampler/_examine_text(mob/user)
+/obj/item/device/core_sampler/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 2)
-		. += "\n<span class='notice'>Used to extract geological core samples - this one is [sampled_turf ? "full" : "empty"], and has [num_stored_bags] bag[num_stored_bags != 1 ? "s" : ""] remaining.</span>"
+		. += SPAN_NOTICE("Used to extract geological core samples - this one is [sampled_turf ? "full" : "empty"], and has [num_stored_bags] bag[num_stored_bags != 1 ? "s" : ""] remaining.")
 
 /obj/item/device/core_sampler/attackby(obj/item/I, mob/living/user)
 	if(istype(I, /obj/item/evidencebag))
@@ -127,10 +128,7 @@
 			to_chat(user, "<span class='warning'>The core sampler is out of sample bags.</span>")
 		else
 			//create a new sample bag which we'll fill with rock samples
-			filled_bag = new /obj/item/evidencebag(src)
-			filled_bag.SetName("sample bag")
-			filled_bag.desc = "a bag for holding research samples."
-
+			filled_bag = new /obj/item/evidencebag/research(src)
 			icon_state = "sampler1"
 			--num_stored_bags
 
@@ -139,11 +137,7 @@
 			R.geological_data = geo_data
 
 			//update the sample bag
-			filled_bag.icon_state = "evidence"
-			var/image/I = image("icon"=R, "layer"=FLOAT_LAYER)
-			filled_bag.overlays += I
-			filled_bag.overlays += "evidence"
-			filled_bag.w_class = ITEM_SIZE_TINY
+			filled_bag.store_item(R)
 
 			to_chat(user, "<span class='notice'>You take a core sample of the [item_to_sample].</span>")
 	else

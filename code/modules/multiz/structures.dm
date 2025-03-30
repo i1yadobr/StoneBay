@@ -17,10 +17,10 @@
 
 	var/const/climb_time = 2 SECONDS
 	var/const/drag_time = 15 SECONDS
-	var/static/list/climbsounds = list('sound/effects/ladder.ogg','sound/effects/ladder2.ogg','sound/effects/ladder3.ogg','sound/effects/ladder4.ogg')
+	var/static/list/climbsounds = list('sound/effects/ladder1.ogg','sound/effects/ladder2.ogg','sound/effects/ladder3.ogg','sound/effects/ladder4.ogg')
 
-	var/static/radial_ladder_down = image(icon = 'icons/mob/radial.dmi', icon_state = "radial_ladder_down")
-	var/static/radial_ladder_up = image(icon = 'icons/mob/radial.dmi', icon_state = "radial_ladder_up")
+	var/static/radial_ladder_down = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_ladder_down")
+	var/static/radial_ladder_up = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_ladder_up")
 
 	var/static/list/radial_options = list("up" = radial_ladder_up, "down" = radial_ladder_down)
 
@@ -44,7 +44,7 @@
 		target_up = null
 	return ..()
 
-/obj/structure/ladder/attackby(obj/item/C as obj, mob/user as mob)
+/obj/structure/ladder/attackby(obj/item/C, mob/user)
 	climb(user)
 
 /obj/structure/ladder/attack_hand(mob/user)
@@ -91,7 +91,7 @@
 	"You begin climbing [direction] \the [src]!",
 	"You hear the grunting and clanging of a metal ladder being used.")
 
-	target_ladder.audible_message("<span class='notice'>You hear something coming [direction] \the [src]</span>")
+	target_ladder.audible_message("<span class='notice'>You hear something coming [direction] \the [src]</span>", splash_override = "*crank crank*")
 
 	var/time = dragging ? drag_time : climb_time
 
@@ -158,7 +158,7 @@
 /obj/structure/ladder/CanPass(obj/mover, turf/source, height, airflow)
 	return airflow || !density
 
-/obj/structure/ladder/update_icon()
+/obj/structure/ladder/on_update_icon()
 	icon_state = "ladder[!!(allowed_directions & UP)][!!(allowed_directions & DOWN)]"
 
 /obj/structure/ladder/up
@@ -189,13 +189,17 @@
 			above.ChangeTurf(/turf/simulated/open)
 	. = ..()
 
+/obj/structure/stairs/Destroy()
+	loc = null // Since it's easier than allowing it to get forceMoved and facing even more trouble
+	return ..()
+
 /obj/structure/stairs/CheckExit(atom/movable/mover as mob|obj, turf/target as turf)
 	if(get_dir(loc, target) == dir && upperStep(mover.loc))
 		return FALSE
 	return ..()
 
 /obj/structure/stairs/forceMove()
-	return 0
+	return FALSE
 
 /obj/structure/stairs/Bumped(atom/movable/A)
 	var/turf/above = GetAbove(A)
@@ -209,14 +213,12 @@
 				if(L.pulling)
 					L.pulling.forceMove(target)
 			if(ishuman(A))
-				var/mob/living/carbon/human/H = A
-				if(!H.species.silent_steps)
-					playsound(source, 'sound/effects/stairs_step.ogg', 50)
-					playsound(target, 'sound/effects/stairs_step.ogg', 50)
+				playsound(source, SFX_FOOTSTEP_STAIRS, 50)
+				playsound(target, SFX_FOOTSTEP_STAIRS, 50)
 		else
-			to_chat(A, SPAN("warning", "Something blocks the path."))
+			show_splash_text(A, "something blocks the path", "There's something blocking the path.")
 	else
-		to_chat(A, SPAN("notice", "There is nothing of interest in this direction."))
+		show_splash_text(A, "nothing of interest in this direction", "There's nothing of interest in this direction.")
 
 /obj/structure/stairs/proc/upperStep(turf/T)
 	return (T == loc)
@@ -243,7 +245,6 @@
 	bound_width = 64
 
 /obj/structure/stairs/short
-	icon = 'icons/obj/stairs.dmi'
 	icon_state = "stairs_short"
 
 /obj/structure/stairs/short/north

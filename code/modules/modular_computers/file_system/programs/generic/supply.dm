@@ -5,6 +5,7 @@
 	program_icon_state = "supply"
 	program_key_state = "rd_key"
 	program_menu_icon = "cart"
+	program_light_color = "#B88B2E"
 	extended_desc = "A management tool that allows for ordering of various supplies through the facility's cargo system. Some features may require additional access."
 	size = 21
 	category = PROG_SUPPLY
@@ -159,14 +160,11 @@
 				shuttle.launch(user)
 		else
 			shuttle.launch(user)
-			var/datum/radio_frequency/frequency = radio_controller.return_frequency(1435)
+			var/datum/frequency/frequency = SSradio.return_frequency(1435)
 			if(!frequency)
 				return
 
-			var/datum/signal/status_signal = new
-			status_signal.source = src
-			status_signal.transmission_method = 1
-			status_signal.data["command"] = "supply"
+			var/datum/signal/status_signal = new(list("command" = "supply"))
 			frequency.post_signal(src, status_signal)
 		return 1
 
@@ -258,21 +256,20 @@
 		return
 
 	var/t = ""
-	t += "<h3>[GLOB.using_map.station_name] Supply Requisition Reciept</h3><hr>"
-	t += "INDEX: #[O.ordernum]<br>"
-	t += "REQUESTED BY: [O.orderedby]<br>"
-	t += "RANK: [O.orderedrank]<br>"
-	t += "REASON: [O.reason]<br>"
-	t += "SUPPLY CRATE TYPE: [O.object.name]<br>"
-	t += "ACCESS RESTRICTION: [get_access_desc(O.object.access)]<br>"
-	t += "CONTENTS:<br>"
+	t += "\[large\][GLOB.using_map.station_name] Supply Requisition Reciept\[/large\]\[hr\]"
+	t += "INDEX: #[O.ordernum]\[br\]"
+	t += "REQUESTED BY: [O.orderedby]\[br\]"
+	t += "RANK: [O.orderedrank]\[br\]"
+	t += "REASON: [O.reason]\[br\]"
+	t += "SUPPLY CRATE TYPE: [O.object.name]\[br\]"
+	t += "ACCESS RESTRICTION: [get_access_desc(O.object.access)]\[br\]"
+	t += "CONTENTS:\[br\]"
 	t += O.object.manifest
-	t += "<hr>"
-	print_text(t, user, rawhtml = TRUE)
+	t += "\[hr\]"
+	print_text(t, user)
 
 /datum/nano_module/supply/proc/print_summary(mob/user)
-	var/t = ""
-	t += "<center><BR><b><large>[GLOB.using_map.station_name]</large></b><BR><i>[station_date]</i><BR><i>Export overview<field></i></center><hr>"
+	var/t = "\[center\]\[br\]\[b\]\[large\][GLOB.using_map.station_name]\[/large]\[/b\]\[br\]\[i\][station_date]\[/i\]\[br\]\[i\]Export overview\[field\]\[/i\]\[/center\]\[hr\]"
 	for(var/source in SSsupply.point_source_descriptions)
-		t += "[SSsupply.point_source_descriptions[source]]: [SSsupply.point_sources[source] || 0]<br>"
+		t += "[SSsupply.point_source_descriptions[source]]: [SSsupply.point_sources[source] || 0]\[br\]"
 	print_text(t, user)

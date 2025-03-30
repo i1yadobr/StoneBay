@@ -25,7 +25,7 @@
 /obj/item/device/soulstone/New()
 	..()
 	shade = new /mob/living/simple_animal/shade(src)
-	register_signal(shade, SIGNAL_QDELETING, /obj/item/device/soulstone/proc/onShadeDeath)
+	register_signal(shade, SIGNAL_QDELETING, nameof(.proc/onShadeDeath))
 
 /obj/item/device/soulstone/Destroy()
 	unregister_signal(shade, SIGNAL_QDELETING)
@@ -47,19 +47,20 @@
 	set_full(SOULSTONE_EMPTY)
 
 	shade = new /mob/living/simple_animal/shade(src)
-	register_signal(shade, SIGNAL_QDELETING, /obj/item/device/soulstone/proc/onShadeDeath)
+	register_signal(shade, SIGNAL_QDELETING, nameof(.proc/onShadeDeath))
 
 
-/obj/item/device/soulstone/_examine_text(mob/user)
+/obj/item/device/soulstone/examine(mob/user, infix)
 	. = ..()
-	if(full == SOULSTONE_EMPTY)
-		. += "\nThe shard still flickers with a fraction of the full artifact's power, but it needs to be filled with the essence of someone's life before it can be used."
-	if(full == SOULSTONE_ESSENCE)
-		. += "\nThe shard has gone transparent, a seeming window into a dimension of unspeakable horror."
-	if(full == SOULSTONE_CRACKED)
-		. += "\nThis one is cracked and useless."
 
-/obj/item/device/soulstone/update_icon()
+	if(full == SOULSTONE_EMPTY)
+		. += "The shard still flickers with a fraction of the full artifact's power, but it needs to be filled with the essence of someone's life before it can be used."
+	if(full == SOULSTONE_ESSENCE)
+		. += "The shard has gone transparent, a seeming window into a dimension of unspeakable horror."
+	if(full == SOULSTONE_CRACKED)
+		. += "This one is cracked and useless."
+
+/obj/item/device/soulstone/on_update_icon()
 	if(full == SOULSTONE_EMPTY)
 		icon_state = "soulstone"
 	if(full == SOULSTONE_ESSENCE)
@@ -96,11 +97,11 @@
 	if(full == SOULSTONE_ESSENCE)
 		to_chat(user, SPAN("notice", "\The [src] is already full."))
 		return
-	if(M.stat != DEAD && !M.is_asystole())
+	if(!M.is_ic_dead() && !M.is_asystole())
 		to_chat(user, SPAN("notice", "Kill or maim the victim first."))
 		return
 	for(var/obj/item/I in M)
-		M.drop_from_inventory(I)
+		M.drop(I, force = TRUE)
 	M.dust()
 	set_full(SOULSTONE_ESSENCE)
 

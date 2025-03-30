@@ -27,7 +27,9 @@
 
 /mob/forceMove(atom/destination, unbuckle_mob = TRUE)
 	. = ..()
-	if(. && unbuckle_mob)
+	if(!.)
+		return
+	if(unbuckle_mob)
 		buckled?.unbuckle_mob()
 
 /client/Northeast()
@@ -61,15 +63,17 @@
 	to_chat(usr, "<span class='warning'>This mob type cannot drop items.</span>")
 
 /mob/living/carbon/hotkey_drop()
+	if(!can_use_hands)
+		return
 	var/obj/item/I = get_active_hand()
 	if(!I)
 		to_chat(usr, SPAN("warning", "You have nothing to drop in your hand."))
 		return
-	if(!(I.force_drop || canUnEquip(I)))
+	if(!(I.force_drop || can_unequip(I)))
 		to_chat(usr, SPAN("warning", "\The [I] cannot be dropped."))
 		return
 	else
-		drop_item()
+		drop_active_hand(force = TRUE)
 
 //This gets called when you press the delete button.
 /client/verb/delete_key_pressed()
@@ -113,8 +117,8 @@
 	set hidden = 1
 	if(!isrobot(mob) && mob.stat == CONSCIOUS && isturf(mob.loc))
 		var/obj/item/I = mob.get_active_hand()
-		if(I?.can_be_dropped_by_client(mob))
-			mob.drop_item()
+		if(I && mob.can_unequip(I))
+			mob.drop_active_hand()
 
 /atom/movable/proc/set_glide_size(glide_size_override = 0, min = 0.9, max = world.icon_size / 2)
 	if (!glide_size_override || glide_size_override > max)
@@ -122,16 +126,22 @@
 	else
 		glide_size = max(min, glide_size_override)
 
-	for (var/atom/movable/AM in contents)
-		AM.set_glide_size(glide_size, min, max)
 	if(istype(src, /obj))
 		var/obj/O = src
 		if(O.buckled_mob)
 			O.buckled_mob.set_glide_size(glide_size, min, max)
 
+	SEND_SIGNAL(src, SIGNAL_UPDATE_GLIDE_SIZE, glide_size)
+
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
 	var/old_loc = loc
+
+	var/turf/old_turf = get_turf(old_loc)
+	var/turf/new_turf = get_turf(newloc)
+
+	if(old_turf?.z != new_turf?.z)
+		SEND_SIGNAL(src, SIGNAL_Z_CHANGED, src, old_turf, new_turf)
 
 	if (direct & (direct - 1))
 		if (direct & 1)
@@ -179,8 +189,6 @@
 			src.last_move = get_dir(A, src.loc)
 
 	SEND_SIGNAL(src, SIGNAL_MOVED, src, old_loc, loc)
-	
-	return
 
 /proc/step_glide(atom/movable/am, dir, glide_size_override)
 	am.set_glide_size(glide_size_override)
@@ -286,3 +294,6 @@
 	DO_MOVE(WEST)
 
 #undef DO_MOVE
+
+/mob/proc/update_move_intent_slowdown()
+	add_movespeed_modifier((m_intent == M_WALK) ? /datum/movespeed_modifier/walk : /datum/movespeed_modifier/run)

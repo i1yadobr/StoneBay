@@ -14,18 +14,10 @@
 	. = ..()
 	update_icon()
 
-/obj/structure/closet/secure_closet/guncabinet/toggle()
-	..()
-	update_icon()
-
-/obj/structure/closet/secure_closet/guncabinet/open() //There are plenty of things that can open it that don't use toggle
-	..()
-	update_icon()
-
-/obj/structure/closet/secure_closet/guncabinet/update_icon()
-	overlays.Cut()
+/obj/structure/closet/secure_closet/guncabinet/on_update_icon()
+	ClearOverlays()
 	if(opened)
-		overlays += icon(icon,"door_open")
+		AddOverlays(image(icon, "door_open"))
 	else
 		var/lazors = 0
 		var/shottas = 0
@@ -44,18 +36,17 @@
 					shottas--
 					gun.icon_state = "projectile"
 				gun.pixel_x = i * 4
-				overlays += gun
+				AddOverlays(gun)
 
-		overlays += icon(src.icon, "door")
+		AddOverlays(image(icon, "door"))
 
 		if(welded)
-			overlays += icon(src.icon, "welded")
+			AddOverlays(image(icon, "welded"))
 
 		if(broken)
-			overlays += icon(src.icon, "broken")
-			overlays += icon(src.icon, icon_broken)
+			AddOverlays(image(icon, "broken"))
+			AddOverlays(image(icon, icon_broken))
 		else if(locked)
-			overlays += icon(src.icon, "locked")
+			AddOverlays(image(icon, "locked"))
 		else
-			overlays += icon(src.icon, "open")
-
+			AddOverlays(image(icon, "open"))

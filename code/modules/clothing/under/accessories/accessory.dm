@@ -1,11 +1,13 @@
 /obj/item/clothing/accessory
 	name = "tie"
 	desc = "A neosilk clip-on tie."
-	icon = 'icons/obj/clothing/ties.dmi'
+	icon = 'icons/obj/clothing/accessories.dmi'
 	icon_state = "tie"
 	item_state = ""	//no inhands
 	slot_flags = SLOT_TIE
 	w_class = ITEM_SIZE_SMALL
+	coverage = 0.0
+
 	var/slot = ACCESSORY_SLOT_DECOR
 	var/obj/item/clothing/has_suit = null		//the suit the tie may be attached to
 	var/image/inv_overlay = null	//overlay used when attached to clothing.
@@ -15,8 +17,13 @@
 	var/high_visibility	//if it should appear on examine without detailed view
 	var/slowdown //used when an accessory is meant to slow the wearer down when attached to clothing
 
+	drop_sound = SFX_DROP_ACCESSORY
+	pickup_sound = SFX_PICKUP_ACCESSORY
+
 /obj/item/clothing/accessory/Destroy()
-	on_removed()
+	if(has_suit)
+		has_suit.remove_accessory(null, src)
+	has_suit = null
 	return ..()
 
 /obj/item/clothing/accessory/proc/get_inv_overlay()
@@ -32,7 +39,7 @@
 	return inv_overlay
 
 /obj/item/clothing/accessory/get_mob_overlay(mob/user_mob, slot)
-	if(!istype(loc,/obj/item/clothing/))	//don't need special handling if it's worn as normal item.
+	if(!istype(loc, /obj/item/clothing/))	//don't need special handling if it's worn as normal item.
 		return ..()
 
 	if(ishuman(user_mob))
@@ -57,22 +64,23 @@
 //when user attached an accessory to S
 /obj/item/clothing/accessory/proc/on_attached(obj/item/clothing/S, mob/user)
 	if(!istype(S))
-		return
+		return FALSE
 	has_suit = S
 	forceMove(has_suit)
-	has_suit.overlays += get_inv_overlay()
+	has_suit.AddOverlays(get_inv_overlay())
 
 	if(user)
 		to_chat(user, "<span class='notice'>You attach \the [src] to \the [has_suit].</span>")
 		src.add_fingerprint(user)
+	return TRUE
 
 /obj/item/clothing/accessory/proc/on_removed(mob/user)
 	if(!has_suit)
 		return
-	has_suit.overlays -= get_inv_overlay()
+	has_suit.CutOverlays(get_inv_overlay())
 	has_suit = null
 	if(user)
-		usr.put_in_hands(src)
+		usr.pick_or_drop(src)
 		add_fingerprint(user)
 	else
 		forceMove(get_turf(src))
@@ -86,18 +94,6 @@
 	if(has_suit)
 		return	//we aren't an object on the ground so don't call parent
 	..()
-
-//Necklaces
-/obj/item/clothing/accessory/necklace
-	name = "necklace"
-	desc = "A simple necklace."
-	icon_state = "necklace"
-	slot_flags = SLOT_MASK | SLOT_TIE
-
-/obj/item/clothing/accessory/necklace/aquila
-	name = "aquila"
-	desc = "You can see the Emperor smiling in the reflection."
-	icon_state = "aquila"
 
 //Misc
 /obj/item/clothing/accessory/kneepads

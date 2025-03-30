@@ -5,7 +5,13 @@
 	icon_state = "tiny"
 	icon_keyboard = "tiny_keyboard"
 	icon_screen = "lift"
+	light_color = "#B88B2E"
+	light_max_bright_on = 1.0
+	light_inner_range_on = 0.5
+	light_outer_range_on = 1.5
+
 	density = 0
+	turf_height_offset = 0
 	var/datum/lift_master/elevator_master
 	var/ui_template = "elevator_control_console.tmpl"
 
@@ -20,7 +26,7 @@
 
 /obj/machinery/computer/elevator_control/proc/get_ui_data()
 	var/elevator_state = "unknown"
-	if(isnull(elevator_master))
+	if(QDELETED(elevator_master))
 		for(var/obj/structure/industrial_lift/L in GLOB.lifts)
 			if(L.id == elevator_tag)
 				elevator_master = L.lift_master_datum

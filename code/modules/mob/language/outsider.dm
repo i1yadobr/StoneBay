@@ -6,7 +6,7 @@
 	ask_verb = "hisses"
 	exclaim_verb = "hisses"
 	key = "4"
-	flags = RESTRICTED
+	language_flags = RESTRICTED
 	syllables = list("sss","sSs","SSS")
 	machine_understands = 0
 	shorthand = "Xeno"
@@ -19,7 +19,7 @@
 	exclaim_verb = "hisses"
 	colour = "alien"
 	key = "a"
-	flags = RESTRICTED | HIVEMIND
+	language_flags = RESTRICTED | HIVEMIND
 	shorthand = "N/A"
 
 /datum/language/xenos/check_special_condition(mob/other)
@@ -38,7 +38,7 @@
 	speech_verb = "says"
 	colour = "changeling"
 	key = "g"
-	flags = RESTRICTED | HIVEMIND
+	language_flags = RESTRICTED | HIVEMIND
 	shorthand = "N/A"
 
 /datum/language/ling/broadcast(mob/living/speaker,message,speaker_mask)
@@ -56,7 +56,7 @@
 	exclaim_verb = "sings"
 	colour = "alien"
 	key = "x"
-	flags = RESTRICTED | HIVEMIND
+	language_flags = RESTRICTED | HIVEMIND
 	shorthand = "N/A"
 
 /datum/language/corticalborer/broadcast(mob/living/speaker,message,speaker_mask)
@@ -81,7 +81,7 @@
 	exclaim_verb = "SHRIEKS"
 	colour = "vox"
 	key = "5"
-	flags = WHITELISTED
+	language_flags = WHITELISTED
 	syllables = list("ti","ti","ti","hi","hi","ki","ki","ki","ki","ya","ta","ha","ka","ya","chi","cha","kah", \
 	"SKRE","AHK","EHK","RAWK","KRA","AAA","EEE","KI","II","KRI","KA")
 	machine_understands = 0
@@ -98,7 +98,7 @@
 	exclaim_verb = "chants"
 	colour = "cult"
 	key = "f"
-	flags = RESTRICTED
+	language_flags = RESTRICTED
 	space_chance = 100
 	syllables = list("ire","ego","nahlizet","certum","veri","jatkaa","mgar","balaq", "karazet", "geeri", \
 		"orkan", "allaq", "sas'so", "c'arta", "forbici", "tarem", "n'ath", "reth", "sh'yro", "eth", "d'raggathnor", \
@@ -118,32 +118,5 @@
 	exclaim_verb = "chants"
 	colour = "cult"
 	key = "y"
-	flags = RESTRICTED | HIVEMIND
+	language_flags = RESTRICTED | HIVEMIND
 	shorthand = "N/A"
-
-/datum/language/abductor
-	name = LANGUAGE_ABDUCTOR
-	desc = "Can share their thoughts by means defying all reason."
-	speech_verb = "says"
-	colour = "alien"
-	key = "a"
-	syllables = list("Anukh", "dam", "ul", "dam", "dglinkarz", "dukhal",\
-		"gareke", "Garug-Mal", "malwun", "kazaht", "nothok", "Ney", "Ragh", "ala.",\
-		"terruk-ukl", "tekor", "ri", "ik", "ii", "zuwar", "ugrukh", "duluk", "arumwon", \
-		"Mub", "Tharb", "Ti", "Dajal", "Larg", "Dyr")
-	shorthand = "N/A"
-	flags = RESTRICTED | HIVEMIND | NO_STUTTER
-
-/datum/language/abductor/broadcast(mob/living/speaker,message,speaker_mask)
-	if(speaker.mind.abductor)
-		speaker_mask=speaker.real_name
-
-	log_say("[key_name(speaker)]: ([name]) [message]")
-
-	if(!speaker_mask) speaker_mask = speaker.name
-	message = format_message(message, get_spoken_verb(message))
-
-	for(var/mob/player in GLOB.player_list)
-		if(isabductor(player))
-			if(player.mind.abductor.team.team_number == speaker.mind.abductor.team.team_number)
-				player.hear_broadcast(src, speaker, speaker_mask, message)

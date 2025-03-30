@@ -3,7 +3,7 @@
 /mob/new_player
 	var/ready = 0
 	var/spawning = 0//Referenced when you want to delete the new_player later on in the code.
-	var/totalPlayers = 0		 //Player counts for the Lobby tab
+	var/totalPlayers = 0 //Player counts for the Lobby tab
 	var/totalPlayersReady = 0
 	var/datum/browser/panel
 	var/show_invalid_jobs = 0
@@ -23,12 +23,18 @@
 	SHOULD_CALL_PARENT(FALSE)
 
 	if(atom_flags & ATOM_FLAG_INITIALIZED)
-		crash_with("Warning: [src]([type]) initialized multiple times!")
+		util_crash_with("Warning: [src]([type]) initialized multiple times!")
 	atom_flags |= ATOM_FLAG_INITIALIZED
 
 	verbs += /mob/proc/toggle_antag_pool
 	verbs += /mob/proc/join_as_actor
 	verbs += /mob/proc/join_response_team
+
+	return INITIALIZE_HINT_NORMAL
+
+/mob/new_player/Destroy()
+	QDEL_NULL(panel)
+	return ..()
 
 /mob/new_player/proc/new_player_panel(forced = FALSE)
 	if(!SScharacter_setup.initialized && !forced)
@@ -42,6 +48,7 @@
 	output += "<p><a href='byond://?src=\ref[src];show_settings=1'>Settings</a></p>"
 
 	if(GAME_STATE <= RUNLEVEL_LOBBY)
+		output += "<a href='byond://?src=\ref[src];predict_manifest=1'>View Crew Manifest Prediction</A><br><br>"
 		if(ready)
 			output += "<p>\[ <span class='linkOn'><b>Ready</b></span> | <a href='byond://?src=\ref[src];ready=0'>Not Ready</a> \]</p>"
 		else
@@ -152,24 +159,25 @@
 				to_chat(src, "<span class='danger'>Could not locate an observer spawn point. Use the Teleport verb to jump to the map.</span>")
 			observer.timeofdeath = world.time // Set the time of death so that the respawn timer works correctly.
 
-			if(isnull(client.holder))
+			if(QDELETED(client.holder))
 				announce_ghost_joinleave(src)
 
 			var/mob/living/carbon/human/dummy/mannequin = get_mannequin(client.ckey)
 			if(mannequin)
 				client.prefs.dress_preview_mob(mannequin)
 				observer.set_appearance(mannequin)
-				qdel(mannequin)
 
 			if(client.prefs.be_random_name)
 				client.prefs.real_name = random_name(client.prefs.gender)
 			observer.real_name = client.prefs.real_name
 			observer.SetName(observer.real_name)
-			if(!client.holder && !config.ghost.allow_antag_hud)           // For new ghosts we remove the verb from even showing up if it's not allowed.
-				observer.verbs -= /mob/observer/ghost/verb/toggle_antagHUD        // Poor guys, don't know what they are missing!
+			if(!client.holder && !config.ghost.allow_antag_hud) // For new ghosts we remove the verb from even showing up if it's not allowed.
+				observer.verbs -= /mob/observer/ghost/verb/toggle_antagHUD // Poor guys, don't know what they are missing!
+
 			observer.key = key
-			var/obj/screen/splash/S = new(observer.client, TRUE)
-			S.Fade(TRUE, TRUE)
+
+			new /atom/movable/screen/splash/fake(null, TRUE, observer.client, SSlobby.current_lobby_art)
+
 			QDEL_NULL(mind)
 			qdel(src)
 
@@ -200,6 +208,9 @@
 
 	if(href_list["manifest"])
 		ViewManifest()
+
+	if(href_list["predict_manifest"])
+		ViewManifestPrediction()
 
 	if(href_list["SelectedJob"])
 		var/datum/job/job = job_master.GetJob(href_list["SelectedJob"])
@@ -367,12 +378,13 @@
 	if(job.latejoin_at_spawnpoints)
 		var/obj/S = job_master.get_roundstart_spawnpoint(job.title)
 		spawn_turf = get_turf(S)
-	var/radlevel = SSradiation.get_rads_at_turf(spawn_turf)
+
+	var/dose = SSradiation.get_total_absorbed_dose_at_turf(spawn_turf, AVERAGE_HUMAN_WEIGHT)
 	var/airstatus = IsTurfAtmosUnsafe(spawn_turf)
-	if(airstatus || radlevel > 0 )
+	if(airstatus || dose > SAFE_RADIATION_DOSE )
 		var/reply = alert(usr, "Warning. Your selected spawn location seems to have unfavorable conditions. \
 		You may die shortly after spawning. \
-		Spawn anyway? More information: [airstatus] Radiation: [radlevel] Bq", "Atmosphere warning", "Abort", "Spawn anyway")
+		Spawn anyway? More information: [airstatus] Radiation: [fmt_siunit(dose, "Gy/s", 3)]", "Atmosphere warning", "Abort", "Spawn anyway")
 		if(reply == "Abort")
 			return 0
 		else
@@ -406,7 +418,7 @@
 		var/mob/living/silicon/ai/A = character
 		A.on_mob_init()
 
-		AnnounceArrival(character.real_name, job)
+		SSannounce.announce_arrival(character.real_name, job)
 		SSticker.mode.handle_latejoin(character)
 
 		qdel(C)
@@ -420,7 +432,7 @@
 			CreateModularRecord(character)
 			SSticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
 
-		AnnounceArrival(character.real_name, job, spawnpoint)
+		SSannounce.announce_arrival(character.real_name, job, spawnpoint)
 
 		matchmaker.do_matchmaking()
 	log_and_message_admins("has joined the round as [character.mind.assigned_role].", character)
@@ -431,7 +443,7 @@
 		if(character.mind.role_alt_title)
 			rank = character.mind.role_alt_title
 		// can't use their name here, since cyborg namepicking is done post-spawn, so we'll just say "A new Cyborg has arrived"/"A new Android has arrived"/etc.
-		GLOB.global_announcer.autosay("A new[rank ? " [rank]" : " visitor" ] [join_message ? join_message : "has arrived"].", get_announcement_computer())
+		GLOB.global_announcer.autosay("A new[rank ? " [rank]" : " visitor" ] [join_message ? join_message : "has arrived"].", "Arrivals Announcement Computer")
 		log_and_message_admins("has joined the round as [character.mind.assigned_role].", character)
 
 /mob/new_player/proc/LateChoices()
@@ -456,7 +468,7 @@
 		if(job && IsJobAvailable(job))
 			if(job.minimum_character_age && (client.prefs.age < job.minimum_character_age))
 				continue
-			if(job.faction_restricted && (client.prefs.faction != GLOB.using_map.company_name || (client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
+			if(job.faction_restricted && (client.prefs.background != GLOB.using_map.company_name || (client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
 				continue
 			if(job.no_latejoin)
 				continue
@@ -501,7 +513,7 @@
 			return null
 		new_character = new(spawn_turf, chosen_species.name)
 		/*if(chosen_species.has_organ[BP_POSIBRAIN] && client && client.prefs.is_shackled)
-			var/obj/item/organ/internal/posibrain/B = new_character.internal_organs_by_name[BP_POSIBRAIN]
+			var/obj/item/organ/internal/cerebrum/posibrain/B = new_character.internal_organs_by_name[BP_POSIBRAIN]
 			if(B)
 				B.shackle(client.prefs.get_lawset())*/ // Removed until we get those cyberdummies working
 
@@ -514,7 +526,7 @@
 		var/datum/language/chosen_language = all_languages[lang]
 		if(chosen_language)
 			var/is_species_lang = (chosen_language.name in new_character.species.secondary_langs)
-			if(is_species_lang || ((!(chosen_language.flags & RESTRICTED) || has_admin_rights()) && is_alien_whitelisted(src, chosen_language)))
+			if(is_species_lang || ((!(chosen_language.language_flags & RESTRICTED) || has_admin_rights()) && is_alien_whitelisted(src, chosen_language)))
 				new_character.add_language(lang)
 
 	if(GLOB.random_players)
@@ -546,6 +558,7 @@
 			mind.gen_relations_info = client.prefs.relations_info["general"]
 		mind.traits = client.prefs.traits.Copy()
 		mind.transfer_to(new_character)					//won't transfer key since the mind is not active
+		mind = null
 
 	new_character.apply_traits()
 	new_character.SetName(real_name)
@@ -554,7 +567,6 @@
 	new_character.sync_organ_dna()
 	if(client.prefs.disabilities)
 		// Set defer to 1 if you add more crap here so it only recalculates struc_enzymes once. - N3X
-		new_character.dna.SetSEState(GLOB.GLASSESBLOCK,1,0)
 		new_character.disabilities |= NEARSIGHTED
 
 	// Do the initial caching of the player's body icons.
@@ -562,13 +574,16 @@
 	new_character.update_eyes()
 	new_character.regenerate_icons()
 
-	new_character.key = key		//Manually transfer the key to log them in
-	var/obj/screen/splash/S = new(new_character.client, TRUE)
-	S.Fade(TRUE, TRUE)
+	new_character.key = key //Manually transfer the key to log them in
+
+	new /atom/movable/screen/splash/fake(null, TRUE, new_character.client, SSlobby.current_lobby_art)
 
 	// Give them their cortical stack if we're using them.
 	if(config && config.revival.use_cortical_stacks && new_character.client && new_character.client.prefs.has_cortical_stack /*&& new_character.should_have_organ(BP_BRAIN)*/)
 		new_character.create_stack()
+
+	if(new_character.isSynthetic())
+		new_character.add_synth_emotes()
 
 	return new_character
 
@@ -577,6 +592,16 @@
 	dat += html_crew_manifest(OOC = 1)
 	//show_browser(src, dat, "window=manifest;size=370x420;can_close=1")
 	var/datum/browser/popup = new(src, "Crew Manifest", "Crew Manifest", 370, 420, src)
+	popup.set_content(dat)
+	popup.open()
+
+/mob/new_player/proc/ViewManifestPrediction()
+	if(SSatoms.init_state < INITIALIZATION_INNEW_REGULAR)
+		to_chat(src, SPAN("notice", "Please, wait for the game to initialize!"))
+		return
+	var/dat = "<div align='center'>"
+	dat += manifest_prediction()
+	var/datum/browser/popup = new(src, "Crew Manifest Prediction", "Crew Manifest Prediction", 370, 420, src)
 	popup.set_content(dat)
 	popup.open()
 
@@ -622,7 +647,7 @@
 /mob/new_player/is_ready()
 	return ready && ..()
 
-/mob/new_player/hear_say(message, verb = "says", datum/language/language = null, alt_name = "",italics = 0, mob/speaker = null)
+/mob/new_player/hear_say(message, verb = "says", datum/language/language = null, alt_name = "",italics = 0, mob/speaker = null, sound/speech_sound, sound_vol)
 	return
 
 /mob/new_player/hear_radio(message, verb="says", datum/language/language=null, part_a, part_b, part_c, mob/speaker = null, hard_to_hear = 0)
@@ -642,3 +667,21 @@
 
 /mob/new_player/is_eligible_for_antag_spawn(antag_id)
 	return TRUE
+
+/mob/new_player/proc/show_game_tip()
+	if(!config.game_tips.enable)
+		return
+	
+	var/atom/movable/screen/text = new()
+
+	text.screen_loc = "CENTER,SOUTH+1%"
+	text.maptext_width = 256
+	text.maptext_height = 100
+	text.maptext_y = -50
+	text.maptext_x = -112
+	text.maptext = MAPTEXT("<center><font size=5>Подсказка раунда</font><br><br>[config.game_tips.get_tip()]</center>")
+	text.plane = FULLSCREEN_PLANE
+
+	client.screen += text
+
+	animate(text, 3 SECONDS, maptext_y = 0)

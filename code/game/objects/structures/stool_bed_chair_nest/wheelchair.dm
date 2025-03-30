@@ -18,15 +18,20 @@
 	var/mob/living/pulling = null
 	var/bloodiness
 
-/obj/structure/bed/chair/wheelchair/update_icon()
+/obj/structure/bed/chair/wheelchair/Destroy()
+	pulling?.pulledby = null
+	pulling = null
+	return ..()
+
+/obj/structure/bed/chair/wheelchair/on_update_icon()
 	return
 
 /obj/structure/bed/chair/wheelchair/set_dir()
 	..()
-	overlays = null
+	ClearOverlays()
 	var/image/O = image(icon = 'icons/obj/furniture.dmi', icon_state = "w_overlay", dir = src.dir)
 	O.layer = ABOVE_HUMAN_LAYER
-	overlays += O
+	AddOverlays(O)
 	if(buckled_mob)
 		buckled_mob.set_dir(dir)
 
@@ -53,7 +58,7 @@
 		return
 	if(propelled)
 		return
-	if(pulling && (get_dist(src, pulling) > 1))
+	if(pulling && (get_dist_zlevel_aware(src, pulling) > 1))
 		pulling = null
 		user.pulledby = null
 		if(user==pulling)
@@ -76,7 +81,7 @@
 	//--2----Move driver----2--//
 	if(pulling)
 		T = pulling.loc
-		if(get_dist(src, pulling) >= 1)
+		if(get_dist_zlevel_aware(src, pulling) >= 1)
 			step(pulling, get_dir(pulling.loc, src.loc))
 	//--3--Move wheelchair--3--//
 	step(src, direction)
@@ -88,7 +93,7 @@
 			pulling.forceMove(T)
 		else
 			spawn(0)
-			if(get_dist(src, pulling) > 1) // We are too far away? Losing control.
+			if(get_dist_zlevel_aware(src, pulling) > 1) // We are too far away? Losing control.
 				pulling = null
 				user.pulledby = null
 			pulling.set_dir(get_dir(pulling, src)) // When everything is right, face the wheelchair
@@ -96,8 +101,11 @@
 		create_track()
 	driving = 0
 
-/obj/structure/bed/chair/wheelchair/Move()
+/obj/structure/bed/chair/wheelchair/Move(newloc, direct)
 	. = ..()
+	if(!.)
+		return
+
 	if(buckled_mob)
 		var/mob/living/occupant = buckled_mob
 		if(!driving)
@@ -108,7 +116,7 @@
 							Bump(O)
 				else
 					unbuckle_mob()
-			if (pulling && (get_dist(src, pulling) > 1))
+			if (pulling && (get_dist_zlevel_aware(src, pulling) > 1))
 				pulling.pulledby = null
 				to_chat(pulling, "<span class='warning'>You lost your grip!</span>")
 				pulling = null
@@ -142,6 +150,22 @@
 			pulling.pulledby = null
 			pulling = null
 		return
+
+/obj/structure/bed/chair/wheelchair/MouseDrop_T(atom/movable/dropping, mob/living/user)
+	if(istype(dropping, /obj/structure/disposalconstruct) && !buckled_mob)
+		show_splash_text(user, "attaching...", "You start attaching \the [dropping] to \the [src]...")
+		if(!do_after(user, 10 SECONDS, src, TRUE, luck_check_type = LUCK_CHECK_COMBAT))
+			return
+
+		if(QDELETED(src) || QDELETED(dropping) || QDELETED(user) || buckled_mob)
+			return
+
+		new /obj/structure/bed/chair/wheelchair/wheelcannon(get_turf(src))
+		qdel_self()
+		qdel(dropping)
+		return
+
+	return ..()
 
 /obj/structure/bed/chair/wheelchair/Bump(atom/A)
 	..()
@@ -201,3 +225,13 @@
 		pulling = null
 		usr.pulledby = null
 	..()
+	if(ishuman(M))
+		var/mob/living/carbon/human/H = M
+		H.update_organ_movespeed()
+
+/obj/structure/bed/chair/wheelchair/unbuckle_mob()
+	if(ishuman(buckled_mob))
+		var/mob/living/carbon/human/H = buckled_mob
+		H.update_organ_movespeed()
+
+	return ..()

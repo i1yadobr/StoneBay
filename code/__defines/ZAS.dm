@@ -12,12 +12,7 @@
 #define ATMOS_PASS_YES      1 // Always blocks air and zones.
 #define ATMOS_PASS_NO       2 // Never blocks air or zones.
 #define ATMOS_PASS_DENSITY  3 // Blocks air and zones if density = 1, allows both if density = 0
-#define ATMOS_PASS_PROC     4 // Call CanZASPass() using c_airblock
-
-#define CANPASS_ALWAYS 1
-#define CANPASS_DENSITY 2
-#define CANPASS_PROC 3
-#define CANPASS_NEVER 4
+#define ATMOS_PASS_PROC     4 // Call CanZASPass()
 
 #define NORTHUP (NORTH|UP)
 #define EASTUP (EAST|UP)
@@ -29,11 +24,28 @@
 #define WESTDOWN (WEST|DOWN)
 
 #define TURF_HAS_VALID_ZONE(T) (istype(T, /turf/simulated) && T:zone && !T:zone:invalid)
+#define SHOULD_PARTICIPATE_IN_ZONES(T) (isturf(T) && T:zone_membership_candidate && (!T:external_atmosphere_participation || !T:is_outside()))
+
+#define ATMOS_CANPASS_MOVABLE(ret, AM, TARG_TURF) \
+	switch (AM.can_atmos_pass) { \
+		if (ATMOS_PASS_YES) { pass() } \
+		if (ATMOS_PASS_DENSITY) { \
+			if (AM.density) { \
+				ret |= AIR_BLOCKED; \
+			} \
+		} \
+		if (ATMOS_PASS_PROC) { \
+			ret |= (AIR_BLOCKED * !AM.CanZASPass(TARG_TURF, FALSE))|(ZONE_BLOCKED * !AM.CanZASPass(TARG_TURF, TRUE)); \
+		} \
+		if (ATMOS_PASS_NO) { \
+			ret = BLOCKED; \
+		} \
+	}
 
 #ifdef MULTIZAS
 
-var/list/csrfz_check = list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST, NORTHUP, EASTUP, WESTUP, SOUTHUP, NORTHDOWN, EASTDOWN, WESTDOWN, SOUTHDOWN)
-var/list/gzn_check = list(NORTH, SOUTH, EAST, WEST, UP, DOWN)
+GLOBAL_LIST_INIT(gzn_check, list(NORTH, SOUTH, EAST, WEST, UP, DOWN))
+GLOBAL_LIST_INIT(csrfz_check, list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST, NORTHUP, EASTUP, WESTUP, SOUTHUP, NORTHDOWN, EASTDOWN, WESTDOWN, SOUTHDOWN))
 
 #define ATMOS_CANPASS_TURF(ret,A,B) \
 	if (A.blocks_air & AIR_BLOCKED || B.blocks_air & AIR_BLOCKED) { \
@@ -62,22 +74,7 @@ var/list/gzn_check = list(NORTH, SOUTH, EAST, WEST, UP, DOWN)
 		ret = 0;\
 		for (var/thing in A) { \
 			var/atom/movable/AM = thing; \
-			switch (AM.atmos_canpass) { \
-				if (CANPASS_ALWAYS) { \
-					continue; \
-				} \
-				if (CANPASS_DENSITY) { \
-					if (AM.density) { \
-						ret |= AIR_BLOCKED; \
-					} \
-				} \
-				if (CANPASS_PROC) { \
-					ret |= AM.c_airblock(B); \
-				} \
-				if (CANPASS_NEVER) { \
-					ret = BLOCKED; \
-				} \
-			} \
+			ATMOS_CANPASS_MOVABLE(ret, AM, B); \
 			if (ret == BLOCKED) { \
 				break;\
 			}\
@@ -85,8 +82,8 @@ var/list/gzn_check = list(NORTH, SOUTH, EAST, WEST, UP, DOWN)
 	}
 #else
 
-var/list/csrfz_check = list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
-var/list/gzn_check = list(NORTH, SOUTH, EAST, WEST)
+GLOBAL_LIST_INIT(gzn_check, list(NORTH, SOUTH, EAST, WEST))
+GLOBAL_LIST_INIT(csrfz_check, list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST))
 
 #define ATMOS_CANPASS_TURF(ret,A,B) \
 	if (A.blocks_air & AIR_BLOCKED || B.blocks_air & AIR_BLOCKED) { \
@@ -99,19 +96,19 @@ var/list/gzn_check = list(NORTH, SOUTH, EAST, WEST)
 		ret = 0;\
 		for (var/thing in A) { \
 			var/atom/movable/AM = thing; \
-			switch (AM.atmos_canpass) { \
-				if (CANPASS_ALWAYS) { \
+			switch (AM.can_atmos_pass) { \
+				if (ATMOS_PASS_YES) { \
 					continue; \
 				} \
-				if (CANPASS_DENSITY) { \
+				if (ATMOS_PASS_DENSITY) { \
 					if (AM.density) { \
 						ret |= AIR_BLOCKED; \
 					} \
 				} \
-				if (CANPASS_PROC) { \
+				if (ATMOS_PASS_PROC) { \
 					ret |= AM.c_airblock(B); \
 				} \
-				if (CANPASS_NEVER) { \
+				if (ATMOS_PASS_NO) { \
 					ret = BLOCKED; \
 				} \
 			} \

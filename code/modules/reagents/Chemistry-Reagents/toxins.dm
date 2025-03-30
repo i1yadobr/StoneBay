@@ -79,11 +79,6 @@
 	if(istype(L))
 		L.adjust_fire_stacks(amount / fire_mult)
 
-/datum/reagent/toxin/plasma/affect_blood(mob/living/carbon/M, alien, removed)
-	if(alien == IS_NABBER)
-		return
-	..()
-
 /datum/reagent/toxin/plasma/affect_touch(mob/living/carbon/M, alien, removed)
 	M.take_organ_damage(0, removed * 0.1) //being splashed directly with plasma causes minor chemical burns
 	if(prob(10 * fire_mult))
@@ -92,7 +87,7 @@
 /datum/reagent/toxin/plasma/touch_turf(turf/simulated/T)
 	if(!istype(T))
 		return
-	T.assume_gas("plasma", volume, T20C)
+	T.assume_gas("plasma", volume, 20 CELSIUS)
 	remove_self(volume)
 
 // Produced during deuterium synthesis. Super poisonous, SUPER flammable (doesn't need oxygen to burn).
@@ -105,8 +100,8 @@
 /datum/reagent/toxin/plasma/oxygen/touch_turf(turf/simulated/T)
 	if(!istype(T))
 		return
-	T.assume_gas("oxygen", ceil(volume/2), T20C)
-	T.assume_gas("plasma", ceil(volume/2), T20C)
+	T.assume_gas("oxygen", ceil(volume/2), 20 CELSIUS)
+	T.assume_gas("plasma", ceil(volume/2), 20 CELSIUS)
 	remove_self(volume)
 
 /datum/reagent/toxin/cyanide //Fast and Lethal
@@ -295,7 +290,7 @@
 /datum/reagent/mutagen
 	name = "Unstable mutagen"
 	description = "Might cause unpredictable mutations. Keep away from children."
-	taste_description = "metroid"
+	taste_description = "slime"
 	taste_mult = 0.9
 	reagent_state = LIQUID
 	color = "#13bc5e"
@@ -321,13 +316,8 @@
 	if(M.dna)
 		if(prob(removed * mutation_potency)) // Approx. one mutation per 10 injected/20 ingested/30 touching units
 			randmuti(M)
-			if(prob(98))
-				randmutb(M)
-			else
-				randmutg(M)
-			domutcheck(M, null)
 			M.UpdateAppearance()
-	M.apply_effect(10 * removed, IRRADIATE, blocked = 0)
+	M.radiation += (0.05 SIEVERT) * removed
 
 /datum/reagent/mutagen/industrial
 	name = "Industrial mutagen"
@@ -631,13 +621,13 @@
 	to_chat(M, "<span class='danger'>Your flesh rapidly mutates!</span>")
 	ADD_TRANSFORMATION_MOVEMENT_HANDLER(M)
 	M.icon = null
-	M.overlays.Cut()
+	M.ClearOverlays()
 	M.set_invisibility(101)
 	for(var/obj/item/I in M)
 		if(istype(I, /obj/item/implant)) //TODO: Carn. give implants a dropped() or something
 			qdel(I)
 			continue
-		M.drop_from_inventory(I)
+		M.drop(I, force = TRUE)
 	var/mob/living/carbon/metroid/new_mob = new /mob/living/carbon/metroid(M.loc)
 	new_mob.a_intent = "hurt"
 	new_mob.universal_speak = 1
@@ -671,6 +661,12 @@
 	else
 		if(istype(M, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = M
+			if(job_master)
+				var/datum/job/cyborg/cj = job_master.occupations_by_type[/datum/job/cyborg]
+				if(jobban_isbanned(H, cj.title))
+					to_chat(H, SPAN_WARNING("You feel that something is broken inside."))
+					H.gib()
+					return
 			H.Robotize()
 
 /datum/reagent/xenomicrobes
@@ -679,6 +675,41 @@
 	taste_description = "sludge"
 	reagent_state = LIQUID
 	color = "#535e66"
+
+	metabolism = REM * 4 // This would be 0.8 normally
+
+	data = list()
+
+/datum/reagent/xenomicrobes/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
+	..()
+	if(!ishuman(M))
+		return
+
+	if(!data["ticks"])
+		data["ticks"] = 0
+	data["ticks"]++
+	switch(data["ticks"])
+		if(1 to 15)
+			if(prob(10))
+				to_chat(M, SPAN_NOTICE("Something is itching inside your chest!"))
+
+		if(15 to 35)
+			if(prob(5))
+				to_chat(M, SPAN_DANGER("You can feel something moving inside your chest!"))
+
+		if(35 to INFINITY)
+			if(prob(5))
+				var/continue_impregnation = FALSE
+				var/obj/item/organ/internal/alien_embryo/AE = M.internal_organs_by_name[BP_EMBRYO]
+				if(!AE)
+					continue_impregnation = TRUE
+				else if(AE.status & ORGAN_DEAD)
+					qdel(AE)
+					continue_impregnation = TRUE
+
+				if(continue_impregnation)
+					to_chat(M, SPAN_DANGER("You start to feel dull pain inside your chest."))
+					M.internal_organs_by_name[BP_EMBRYO] = new /obj/item/organ/internal/alien_embryo(M)
 
 /datum/reagent/toxin/hair_remover
 	name = "Hair Remover"
@@ -695,6 +726,25 @@
 	M.species.set_default_hair(M)
 	to_chat(M, "<span class='warning'>Your feel a chill, your skin feels lighter..</span>")
 	remove_self(volume)
+
+/datum/reagent/toxin/hair_grower
+	name = "Hair Grower"
+	description = "An extremely effective chemical hair growth stimulator. Do not ingest."
+	taste_description = "acid"
+	reagent_state = LIQUID
+	color = "#e9d5a0"
+	strength = 1
+	overdose = REAGENTS_OVERDOSE
+
+/datum/reagent/toxin/hair_grower/affect_touch(mob/living/carbon/human/M, alien, removed)
+	remove_self(volume)
+	if(alien)
+		return
+	M.h_style = "Sick"
+	M.f_style = "Great Beard"
+	M.update_hair()
+	M.update_facial_hair()
+	to_chat(M, SPAN_WARNING("You feel a chill, your skin feels heavier..."))
 
 /datum/reagent/toxin/zombie
 	name = "Liquid Corruption"

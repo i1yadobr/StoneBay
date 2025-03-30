@@ -44,17 +44,10 @@
 		reagent_volumes[T] = volume
 		var/datum/reagent/R = T
 		reagent_names += initial(R.name)
-	START_PROCESSING(SSobj, src)
 
-/obj/item/reagent_containers/borghypo/Destroy()
-	STOP_PROCESSING(SSobj, src)
-	. = ..()
+	set_next_think(world.time)
 
-/obj/item/reagent_containers/borghypo/Process() //Every [recharge_time] seconds, recharge some reagents for the cyborg+
-	if(++charge_tick < recharge_time)
-		return 0
-	charge_tick = 0
-
+/obj/item/reagent_containers/borghypo/think() //Every [recharge_time] seconds, recharge some reagents for the cyborg+
 	if(isrobot(loc))
 		var/mob/living/silicon/robot/R = loc
 		if(R && R.cell)
@@ -62,7 +55,8 @@
 				if(reagent_volumes[T] < volume)
 					R.cell.use(charge_cost)
 					reagent_volumes[T] = min(reagent_volumes[T] + 5, volume)
-	return 1
+
+	set_next_think(world.time + recharge_time)
 
 /obj/item/reagent_containers/borghypo/attack(mob/living/M, mob/user, target_zone)
 	if(!istype(M))
@@ -118,14 +112,14 @@
 			to_chat(usr, "<span class='notice'>Synthesizer is now producing '[initial(R.name)]'.</span>")
 		return TOPIC_REFRESH
 
-/obj/item/reagent_containers/borghypo/_examine_text(mob/user)
+/obj/item/reagent_containers/borghypo/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 2)
 		return
 
 	var/datum/reagent/R = reagent_ids[mode]
-
-	. += "\n<span class='notice'>It is currently producing [initial(R.name)] and has [reagent_volumes[reagent_ids[mode]]] out of [volume] units left.</span>"
+	. += SPAN_NOTICE("It is currently producing [initial(R.name)] and has [reagent_volumes[reagent_ids[mode]]] out of [volume] units left.")
 
 /obj/item/reagent_containers/borghypo/service
 	name = "cyborg drink synthesizer"
@@ -136,7 +130,7 @@
 	recharge_time = 3
 	volume = 60
 	possible_transfer_amounts = "5;10;20;30"
-	reagent_ids = list(/datum/reagent/ethanol/beer, /datum/reagent/ethanol/coffee/kahlua, /datum/reagent/ethanol/whiskey, /datum/reagent/ethanol/wine, /datum/reagent/ethanol/vodka, /datum/reagent/ethanol/gin, /datum/reagent/ethanol/rum, /datum/reagent/ethanol/tequilla, /datum/reagent/ethanol/vermouth, /datum/reagent/ethanol/cognac, /datum/reagent/ethanol/ale, /datum/reagent/ethanol/mead, /datum/reagent/water, /datum/reagent/sugar, /datum/reagent/drink/ice, /datum/reagent/drink/tea, /datum/reagent/drink/tea/icetea, /datum/reagent/drink/space_cola, /datum/reagent/drink/spacemountainwind, /datum/reagent/drink/dr_gibb, /datum/reagent/drink/space_up, /datum/reagent/drink/tonic, /datum/reagent/drink/sodawater, /datum/reagent/drink/lemon_lime, /datum/reagent/drink/juice/orange, /datum/reagent/drink/juice/lime, /datum/reagent/drink/juice/watermelon)
+	reagent_ids = list(/datum/reagent/ethanol/beer, /datum/reagent/ethanol/kahlua, /datum/reagent/ethanol/whiskey, /datum/reagent/ethanol/wine, /datum/reagent/ethanol/vodka, /datum/reagent/ethanol/gin, /datum/reagent/ethanol/rum, /datum/reagent/ethanol/tequilla, /datum/reagent/ethanol/vermouth, /datum/reagent/ethanol/cognac, /datum/reagent/ethanol/ale, /datum/reagent/ethanol/mead, /datum/reagent/water, /datum/reagent/sugar, /datum/reagent/drink/ice, /datum/reagent/drink/tea, /datum/reagent/drink/tea/icetea, /datum/reagent/drink/space_cola, /datum/reagent/drink/spacemountainwind, /datum/reagent/drink/dr_gibb, /datum/reagent/drink/space_up, /datum/reagent/drink/tonic, /datum/reagent/drink/sodawater, /datum/reagent/drink/lemon_lime, /datum/reagent/drink/juice/orange, /datum/reagent/drink/juice/lime, /datum/reagent/drink/juice/watermelon)
 
 /obj/item/reagent_containers/borghypo/service/attack(mob/M, mob/user)
 	return

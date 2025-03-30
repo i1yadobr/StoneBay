@@ -8,23 +8,21 @@
 	var/obj/item/cell/device/cell
 	var/enabled = 0
 
-/obj/item/shield_diffuser/update_icon()
+/obj/item/shield_diffuser/on_update_icon()
 	if(enabled)
 		icon_state = "hdiffuser_on"
 	else
 		icon_state = "hdiffuser_off"
 
-/obj/item/shield_diffuser/New()
+/obj/item/shield_diffuser/Initialize()
+	. = ..()
 	cell = new(src)
-	..()
 
 /obj/item/shield_diffuser/Destroy()
 	QDEL_NULL(cell)
-	if(enabled)
-		STOP_PROCESSING(SSobj, src)
 	. = ..()
 
-/obj/item/shield_diffuser/Process()
+/obj/item/shield_diffuser/think()
 	if(!enabled)
 		return
 
@@ -32,19 +30,22 @@
 		var/turf/simulated/shielded_tile = get_step(get_turf(src), direction)
 		for(var/obj/effect/shield/S in shielded_tile)
 			// 10kJ per pulse, but gap in the shield lasts for longer than regular diffusers.
-			if(istype(S) && cell.checked_use(10 KILOWATTS * CELLRATE))
+			if(istype(S) && cell.checked_use(10 KILO WATTS * CELLRATE))
 				qdel(S)
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/shield_diffuser/attack_self()
 	enabled = !enabled
 	update_icon()
 	if(enabled)
-		START_PROCESSING(SSobj, src)
+		set_next_think(world.time)
 	else
-		STOP_PROCESSING(SSobj, src)
+		set_next_think(0)
 	to_chat(usr, "You turn \the [src] [enabled ? "on" : "off"].")
 
-/obj/item/shield_diffuser/_examine_text(mob/user)
+/obj/item/shield_diffuser/examine(mob/user, infix)
 	. = ..()
-	. += "\nThe charge meter reads [cell ? cell.percent() : 0]%"
-	. += "\nIt is [enabled ? "enabled" : "disabled"]."
+
+	. += "The charge meter reads [cell ? CELL_PERCENT(cell) : 0]%"
+	. += "It is [enabled ? "enabled" : "disabled"]."

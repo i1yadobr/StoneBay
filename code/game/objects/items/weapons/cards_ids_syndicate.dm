@@ -1,6 +1,7 @@
 /obj/item/card/id/syndicate
 	name = "agent card"
-	icon_state = "syndicate"
+	icon_state = "card_agent"
+	item_state = "card_agent"
 	assignment = "Agent"
 	origin_tech = list(TECH_ILLEGAL = 3)
 	var/electronic_warfare = TRUE
@@ -70,7 +71,7 @@
 	unset_registered_user()
 	registered_user = user
 	user.set_id_info(src)
-	register_signal(user, SIGNAL_QDELETING, /obj/item/card/id/syndicate/proc/unset_registered_user)
+	register_signal(user, SIGNAL_QDELETING, nameof(.proc/unset_registered_user))
 	return TRUE
 
 /obj/item/card/id/syndicate/proc/unset_registered_user(mob/user)

@@ -77,14 +77,14 @@
 	set name = "Radio report"
 
 	var/output = "<meta charset=\"utf-8\"><b>Radio Report</b><hr>"
-	for (var/fq in radio_controller.frequencies)
+	for (var/fq in SSradio.frequencies)
 		output += "<b>Freq: [fq]</b><br>"
-		var/datum/radio_frequency/fqs = radio_controller.frequencies[fq]
+		var/datum/frequency/fqs = SSradio.frequencies[fq]
 		if (!fqs)
 			output += "&nbsp;&nbsp;<b>ERROR</b><br>"
 			continue
-		for (var/filter in fqs.devices)
-			var/list/f = fqs.devices[filter]
+		for (var/filter in fqs.filters)
+			var/list/f = fqs.filters[filter]
 			if (!f)
 				output += "&nbsp;&nbsp;[filter]: ERROR<br>"
 				continue
@@ -107,15 +107,6 @@
 	message_admins("[usr] manually reloaded admins")
 	load_admins()
 	feedback_add_details("admin_verb","RLDA") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
-/client/proc/reload_mentors()
-	set name = "Reload Mentors"
-	set category = "Debug"
-
-	if(!check_rights(R_SERVER)) return
-
-	message_admins("[usr] manually reloaded Mentors")
-	world.load_mods()
 
 /client/proc/print_jobban_old()
 	set name = "Print Jobban Log"

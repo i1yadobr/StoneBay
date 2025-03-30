@@ -3,6 +3,7 @@
 	name = "cigarette"
 	desc = "A small paper cylinder filled with processed tobacco and various fillers."
 	icon_state = "cigoff"
+	base_icon_state = null
 	throw_speed = 2
 	item_state = "cigoff"
 	w_class = ITEM_SIZE_TINY
@@ -19,39 +20,41 @@
 
 /obj/item/clothing/mask/smokable/cigarette/Initialize()
 	. = ..()
+	if(!base_icon_state)
+		base_icon_state = icon_state
 	for(var/R in filling)
 		reagents.add_reagent(R, filling[R])
 
-/obj/item/clothing/mask/smokable/cigarette/update_icon()
+/obj/item/clothing/mask/smokable/cigarette/on_update_icon()
 	..()
-	overlays.Cut()
+	ClearOverlays()
 	if(dynamic_icon)
 		var/ratio = round(smoketime / initial(smoketime), 0.25) * 100
-		icon_state = ever_lit ? "[initial(icon_state)][ratio]" : initial(icon_state)
+		icon_state = ever_lit ? "[base_icon_state][ratio]" : initial(icon_state)
 		if(lit)
-			overlays += overlay_image(icon, "[ember_state][ratio]", flags=RESET_COLOR)
+			AddOverlays(OVERLAY(icon, "[ember_state][ratio]", alpha, RESET_COLOR))
 	else if(lit)
-		overlays += overlay_image(icon, ember_state, flags=RESET_COLOR)
+		AddOverlays(OVERLAY(icon, ember_state, alpha, RESET_COLOR))
 
 /obj/item/clothing/mask/smokable/cigarette/die(nomessage = FALSE, nodestroy = FALSE)
 	..()
-	if (type_butt && !nodestroy)
+	if(type_butt && !nodestroy)
 		var/obj/item/butt = new type_butt(get_turf(src))
 		transfer_fingerprints_to(butt)
 		butt.color = color
 		if(brand)
 			butt.desc += " This one is \a [brand]."
 		if(iscarbon(loc))
-			var/mob/living/carbon/M = loc
-			if (!nomessage)
-				to_chat(M, SPAN("notice", "Your [name] goes out."))
-			if(!M.stat && (src == M.wear_mask || M.is_item_in_hands(src)) && !M.handcuffed && isturf(M.loc))
-				for(var/obj/item/material/ashtray/A in view(1, M))
-					if(length(A.contents) < A.max_butts)
-						A.attackby(butt, M)
-						break
-			M.remove_from_mob(src) //un-equip it so the overlays can update
+			var/mob/living/carbon/C = loc
+			if(!nomessage)
+				to_chat(C, SPAN_NOTICE("Your [name] goes out."))
+			if(!C.stat && (src == C.wear_mask || C.is_item_in_hands(src)) && !C.handcuffed && isturf(C.loc))
+				for(var/obj/item/material/ashtray/A in view(1, C))
+					A.store(butt, C)
+					break
+			C.drop(src)
 		qdel(src)
+		. = butt
 
 /obj/item/clothing/mask/smokable/cigarette/get_temperature_as_from_ignitor()
 	if(lit)
@@ -83,8 +86,10 @@
 		return SPAN("notice", "[holder] manages to light \his [name] with \a [tool].")
 	if(istype(tool, /obj/item/flame/candle))
 		return SPAN("notice", "[holder] carefully lights \his [name] with \a [tool].")
-	if(istype(tool, /obj/item/weldingtool))
-		return SPAN("notice", "[holder] casually lights \his [name] with \a [tool].")
+	if(isitem(tool))
+		var/obj/item/I = tool
+		if(isWelder(I))
+			return SPAN("notice", "[holder] casually lights \his [name] with \a [tool].")
 	if(istype(tool, /obj/item/device/assembly/igniter))
 		return SPAN("notice", "[holder] fiddles with \his [tool.name], and manages to light \a [name].")
 	if(istype(tool, /obj/item/reagent_containers/rag))
@@ -110,7 +115,7 @@
 	return ..()
 
 /obj/item/clothing/mask/smokable/cigarette/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/wirecutters))
+	if(isWirecutter(W))
 		user.visible_message(SPAN("notice", "[user] cut the tip of \his [name] with [W]."), "You cut the tip of your [name]")
 		smoketime -= 10
 		if(smoketime <= 0)
@@ -176,7 +181,7 @@
 		return 1
 	return ..()
 
-/obj/item/clothing/mask/smokable/cigarette/afterattack(obj/item/W, mob/user as mob, proximity)
+/obj/item/clothing/mask/smokable/cigarette/afterattack(obj/item/W, mob/user, proximity)
 	if(istype(W, /obj/item/gun) && !istype(W, /obj/item/gun/energy/plasmacutter) && !istype(W, /obj/item/gun/flamer))
 		return
 
@@ -207,7 +212,7 @@
 				SetTransform(rotation = round(rand(0, 360), 45))
 				pixel_x = rand(-10, 10)
 				pixel_y = rand(-10, 10)
-				user.remove_from_mob(src) // un-equip it so the overlays can update
+				user.drop(src) // un-equip it so the overlays can update
 		else
 			die(nomessage = TRUE, nodestroy = FALSE)
 	return ..()
@@ -232,13 +237,20 @@
 	return item_state
 
 /obj/item/clothing/mask/smokable/cigarette/get_mob_overlay(mob/user_mob, slot)
-	var/image/res = ..()
+	. = ..()
+	var/image/ret
+
+	if(slot == slot_l_hand_str || slot == slot_r_hand_str)
+		ret = .[1]
+	else
+		ret = .
+
 	if(lit == 1)
-		var/image/ember = overlay_image(res.icon, "cigember", flags=RESET_COLOR)
+		var/image/ember = overlay_image(ret.icon, "cigember", flags = RESET_COLOR)
 		ember.layer = ABOVE_LIGHTING_LAYER
 		ember.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-		res.overlays += ember
-	return res
+		ret.AddOverlays(ember)
+	return ret
 
 
 /obj/item/cigbutt
@@ -310,47 +322,61 @@
 // CIGARILLOS //
 ////////////////
 /obj/item/clothing/mask/smokable/cigarette/trident
-	name = "wood tip cigar"
-	brand = "\improper Trident cigar"
-	desc = "A narrow cigar with a wooden tip."
-	icon_state = "cigarello"
+	name = "wood tip cigarillo"
+	brand = "\improper Trident cigarillo"
+	desc = "A narrow cigarillo with a wooden tip."
+	icon_state = "cigarillo"
+	base_icon_state = "cigarillo"
 	item_state = "cigaroff"
-	ember_state = "cigarello-on"
+	ember_state = "cigarilloember"
 	smoketime = 480
 	chem_volume = 10
 	filter_trans = 0.25
 	type_butt = /obj/item/cigbutt/woodbutt
 	filling = list(/datum/reagent/tobacco/fine = 6)
-	dynamic_icon = FALSE
+	var/brand_overlay = ""
+
+/obj/item/clothing/mask/smokable/cigarette/trident/Initialize()
+	. = ..()
+	if(brand_overlay)
+		icon_state = "cigarillo"
+		base_icon_state = "cigarillo"
+		AddOverlays("[base_icon_state]_[brand_overlay]", ATOM_ICON_CACHE_PROTECTED)
 
 /obj/item/cigbutt/woodbutt
 	name = "wooden tip"
-	desc = "A wooden mouthpiece from a cigar. Smells rather bad."
-	icon_state = "woodbutt"
+	desc = "A wooden mouthpiece from a cigarillo. Smells rather bad."
+	icon_state = "cigarillobutt"
 	matter = list(MATERIAL_WOOD = 1)
 
 /obj/item/clothing/mask/smokable/cigarette/trident/mint
-	icon_state = "cigarelloMi"
+	icon_state = "cigarilloMi"
+	brand_overlay = "Mi"
 	filling = list(/datum/reagent/tobacco/fine = 6, /datum/reagent/menthol = 2)
 
 /obj/item/clothing/mask/smokable/cigarette/trident/berry
-	icon_state = "cigarelloBe"
+	icon_state = "cigarilloBe"
+	brand_overlay = "Be"
 	filling = list(/datum/reagent/tobacco/fine = 6, /datum/reagent/drink/juice/berry = 2)
 
 /obj/item/clothing/mask/smokable/cigarette/trident/cherry
-	icon_state = "cigarelloCh"
+	icon_state = "cigarilloCh"
+	brand_overlay = "Ch"
 	filling = list(/datum/reagent/tobacco/fine = 6, /datum/reagent/nutriment/cherryjelly = 2)
 
 /obj/item/clothing/mask/smokable/cigarette/trident/grape
-	icon_state = "cigarelloGr"
+	icon_state = "cigarilloGr"
+	brand_overlay = "Gr"
 	filling = list(/datum/reagent/tobacco/fine = 6, /datum/reagent/drink/juice/grape = 2)
 
 /obj/item/clothing/mask/smokable/cigarette/trident/watermelon
-	icon_state = "cigarelloWm"
+	icon_state = "cigarilloWm"
+	brand_overlay = "Wm"
 	filling = list(/datum/reagent/tobacco/fine = 6, /datum/reagent/drink/juice/watermelon = 2)
 
 /obj/item/clothing/mask/smokable/cigarette/trident/orange
-	icon_state = "cigarelloOr"
+	icon_state = "cigarilloOr"
+	brand_overlay = "Or"
 	filling = list(/datum/reagent/tobacco/fine = 6, /datum/reagent/drink/juice/orange = 2)
 
 ////////////////////
@@ -401,8 +427,10 @@
 		return SPAN("notice", "[holder] manages to offend \his [name] by lighting it with \a [tool].")
 	if(istype(tool, /obj/item/flame/candle))
 		return SPAN("notice", "[holder] carefully lights \his [name] with \a classic [tool].")
-	if(istype(tool, /obj/item/weldingtool))
-		return SPAN("notice", "[holder] insults \his [name] by lighting it with \a [tool].")
+	if(isitem(tool))
+		var/obj/item/I = tool
+		if(isWelder(I))
+			return SPAN("notice", "[holder] insults \his [name] by lighting it with \a [tool].")
 	if(istype(tool, /obj/item/device/assembly/igniter))
 		return SPAN("notice", "[holder] fiddles with \his [tool.name], and manages to light \a [name] with the power of science.")
 	if(istype(tool, /obj/item/reagent_containers/rag))

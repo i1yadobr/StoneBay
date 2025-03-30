@@ -6,13 +6,13 @@
 	var/signed_ckey
 	var/signed_name
 
-/obj/item/paper/complaint_form/_examine_text(mob/user)
+/obj/item/paper/complaint_form/examine(mob/user, infix)
 	. = ..()
-	if (signed)
-		. += "\n[SPAN_NOTICE("It appears to be signed. It can't be modified.")]"
-	else
-		. += "\n[SPAN_NOTICE("It appears to be unsigned and ready for modifications.")]"
 
+	if (signed)
+		. += SPAN_NOTICE("It appears to be signed. It can't be modified.")
+	else
+		. += SPAN_NOTICE("It appears to be unsigned and ready for modifications.")
 
 /obj/item/paper/complaint_form/get_signature(obj/item/pen/P, mob/user, signfield)
 	. = ..()
@@ -20,7 +20,7 @@
 		signed = TRUE
 		signed_ckey = user?.client?.ckey
 		if (isnull(signed_ckey))
-			crash_with("THIS IS NOT AN ERROR. obj/item/paper/complaint_form got signed by mob/user with no client/ckey, if it is intended remove that `crash_with`")
+			util_crash_with("THIS IS NOT AN ERROR. obj/item/paper/complaint_form got signed by mob/user with no client/ckey, if it is intended remove that `util_crash_with`")
 		signed_name = strip_html_properly(.)
 		name += ", signed by [signed_name]"
 		make_readonly() //nanomachines, son
@@ -111,15 +111,16 @@
 	name = "Complaint #[id]"
 	main_form = new(src, id)
 
-/obj/item/complaint_folder/_examine_text(mob/user)
+/obj/item/complaint_folder/examine(mob/user, infix)
 	. = ..()
+
 	if (main_form.signed)
-		. += "\n[SPAN_NOTICE("It is signed by [main_form.signed_name]")]"
+		. += SPAN_NOTICE("It is signed by [main_form.signed_name]")
 		if (length(contents) > 1)
 			var/counter = 0
 			for (var/obj/item/paper/complaint_form/F in contents)
 				counter++
-			. += "\n[SPAN_NOTICE("It has [counter - 1] complaint forms attached")]"
+			. += SPAN_NOTICE("It has [counter - 1] complaint forms attached")
 
 /obj/item/complaint_folder/proc/check_signed()
 	if (signed)
@@ -147,10 +148,9 @@
 		if (!check_signed())
 			to_chat(user, SPAN_WARNING("Sign [src] first!"))
 			return
-		if (id == CF.id)
-			to_chat(user, SPAN_NOTICE("You add \the [CF] to \the [src]."))
-			user.drop_item()
-			CF.forceMove(src)
+		if(id == CF.id)
+			if(user.drop(CF, src))
+				to_chat(user, SPAN_NOTICE("You add \the [CF] to \the [src]."))
 			return
 		to_chat(user, SPAN_WARNING("IDs don't match!"))
 		return
@@ -181,12 +181,12 @@
 	if (!action)
 		return
 	if (istype(action,/obj/item/paper/complaint_form))
-		user.put_in_hands(action)
+		user.pick_or_drop(action)
 		to_chat(user, SPAN_NOTICE("You take [action] out of [src]."))
 		return
 	if (action == new_form_choice)
 		var/new_form = new /obj/item/paper/complaint_form(src.loc, id, target_name, target_occupation)
-		user.put_in_hands(new_form)
+		user.pick_or_drop(new_form)
 		to_chat(user, SPAN_NOTICE("You take [new_form] out of [src]."))
 		return
 

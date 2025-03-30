@@ -2,6 +2,8 @@
 	name = SPECIES_XENO
 	name_plural = "Xenomorphs"
 
+	has_eyes_icon = FALSE
+
 	default_language = "Xenomorph"
 	language = "Hivemind"
 	genders = list(NEUTER)
@@ -47,12 +49,11 @@
 	poison_type = null
 
 	vision_flags = SEE_SELF|SEE_MOBS
-	eye_icon = "blank_eyes"
 	darksight_range = 8
 	darksight_tint = DARKTINT_GOOD
 
 	has_organ = list(
-		O_BRAIN =    /obj/item/organ/internal/brain/xeno,
+		O_BRAIN =    /obj/item/organ/internal/cerebrum/brain/xeno,
 		O_PLASMA =   /obj/item/organ/internal/xenos/plasmavessel,
 		O_HIVE =     /obj/item/organ/internal/xenos/hivenode,
 		O_NUTRIENT = /obj/item/organ/internal/diona/nutrients,
@@ -101,6 +102,7 @@
 	alien_number++ //Keep track of how many aliens we've had so far.
 	H.real_name = get_random_name()
 	H.SetName(H.real_name)
+	H.add_modifier(/datum/modifier/trait/vent_breaker)
 	..()
 	if(H.mind && !GLOB.xenomorphs.is_antagonist(H.mind))
 		GLOB.xenomorphs.add_antagonist(H.mind, 1)
@@ -119,17 +121,17 @@
 			var/obj/item/organ/internal/xenos/plasmavessel/P = H.internal_organs_by_name[BP_PLASMA]
 			P.stored_plasma += weeds_plasma_rate
 			P.stored_plasma = min(max(P.stored_plasma, 0), P.max_plasma)
-			H.nutrition = min(H.nutrition+5, STOMACH_FULLNESS_HIGH) // TODO: Come up with something better like eating humans or who tf knows what; for now it's still better than a horde of slowed-down hungry aliens
+			H.set_nutrition(min(H.nutrition + 5, STOMACH_FULLNESS_HIGH))
 	..()
 
 /datum/species/xenos/proc/regenerate(mob/living/carbon/human/H)
-	if(H.stat == DEAD)
+	if(H.is_ooc_dead())
 		return TRUE // So we neither regenerate nor gain plasma once dead
 	var/heal_rate = weeds_heal_rate
-	var/mend_prob = 10
-	if(!H.resting)
+	var/mend_prob = 20
+	if(!(H.resting || H.lying))
 		heal_rate = weeds_heal_rate / 3
-		mend_prob = 1
+		mend_prob = 2
 
 	//first heal damages
 	if(H.getBruteLoss() || H.getFireLoss() || H.getOxyLoss() || H.getToxLoss())
@@ -146,14 +148,14 @@
 	for(var/obj/item/organ/I in H.internal_organs)
 		if(I.damage > 0)
 			I.damage = max(I.damage - heal_rate, 0)
-			if(mend_prob)
+			if(mend_prob / 2)
 				to_chat(H, "<span class='alium'>I feel a soothing sensation within my [I.parent_organ]...</span>")
 			if(!I.damage && (I.status & ORGAN_DEAD))
 				to_chat(H, "<span class='alium'>I feel invigorated as my [I] appears to be functioning again!</span>")
 				I.status &= ~ORGAN_DEAD
 			return TRUE
 
-	//next regrow lost limbs, approx 10 ticks each
+	//next regrow lost limbs, approx 5 ticks each
 	if(prob(mend_prob))
 		for(var/limb_type in has_limbs)
 			var/obj/item/organ/external/E = H.organs_by_name[limb_type]
@@ -203,7 +205,7 @@
 	name = SPECIES_XENO_DRONE
 	caste_name = "drone"
 	weeds_plasma_rate = 15
-	slowdown = 0
+	movespeed_modifier = /datum/movespeed_modifier/xenos
 	total_health = 100
 	tail = "xenos_drone_tail"
 	rarity_value = 5
@@ -213,10 +215,9 @@
 	generic_attack_mod = 3.5
 
 	icobase = 'icons/mob/human_races/xenos/r_xenos_drone.dmi'
-	deform =  'icons/mob/human_races/xenos/r_xenos_drone.dmi'
 
 	has_organ = list(
-		BP_BRAIN =		/obj/item/organ/internal/brain/xeno,
+		BP_BRAIN =		/obj/item/organ/internal/cerebrum/brain/xeno,
 		BP_PLASMA =		/obj/item/organ/internal/xenos/plasmavessel/queen,
 		BP_ACID =		/obj/item/organ/internal/xenos/acidgland,
 		BP_HIVE =		/obj/item/organ/internal/xenos/hivenode,
@@ -241,7 +242,6 @@
 	caste_name = "vile drone"
 	weeds_plasma_rate = 20
 	icobase = 'icons/mob/human_races/xenos/r_xenos_drone_vile.dmi'
-	deform =  'icons/mob/human_races/xenos/r_xenos_drone_vile.dmi'
 
 	inherent_verbs = list(
 		/mob/living/proc/ventcrawl,
@@ -261,7 +261,7 @@
 	name = SPECIES_XENO_HUNTER
 	weeds_plasma_rate = 5
 	caste_name = "hunter"
-	slowdown = -0.5
+	movespeed_modifier = /datum/movespeed_modifier/xenos_hunter
 	total_health = 125
 	tail = "xenos_hunter_tail"
 	strength = STR_HIGH
@@ -270,10 +270,9 @@
 	generic_attack_mod = 4.5
 
 	icobase = 'icons/mob/human_races/xenos/r_xenos_hunter.dmi'
-	deform =  'icons/mob/human_races/xenos/r_xenos_hunter.dmi'
 
 	has_organ = list(
-		BP_BRAIN =    /obj/item/organ/internal/brain/xeno,
+		BP_BRAIN =    /obj/item/organ/internal/cerebrum/brain/xeno,
 		BP_PLASMA =   /obj/item/organ/internal/xenos/plasmavessel/hunter,
 		BP_HIVE =     /obj/item/organ/internal/xenos/hivenode,
 		BP_NUTRIENT = /obj/item/organ/internal/diona/nutrients,
@@ -298,15 +297,14 @@
 	caste_name = "feral hunter"
 	unarmed_types = list(/datum/unarmed_attack/claws/strong/xeno/feral, /datum/unarmed_attack/bite/strong/xeno)
 	icobase = 'icons/mob/human_races/xenos/r_xenos_hunter_feral.dmi'
-	deform =  'icons/mob/human_races/xenos/r_xenos_hunter_feral.dmi'
 	tail = "xenos_hunter_feral_tail"
-	slowdown = -1
+	movespeed_modifier = /datum/movespeed_modifier/xenos_feral
 
 /datum/species/xenos/sentinel
 	name = SPECIES_XENO_SENTINEL
 	weeds_plasma_rate = 10
 	caste_name = "sentinel"
-	slowdown = 0
+	movespeed_modifier = /datum/movespeed_modifier/xenos
 	total_health = 150
 	weeds_heal_rate = 15
 	tail = "xenos_sentinel_tail"
@@ -314,11 +312,12 @@
 	brute_mod = 0.65
 	burn_mod  = 1.4
 
+	push_flags = ~HEAVY
+
 	icobase = 'icons/mob/human_races/xenos/r_xenos_sentinel.dmi'
-	deform =  'icons/mob/human_races/xenos/r_xenos_sentinel.dmi'
 
 	has_organ = list(
-		BP_BRAIN =    /obj/item/organ/internal/brain/xeno,
+		BP_BRAIN =    /obj/item/organ/internal/cerebrum/brain/xeno,
 		BP_PLASMA =   /obj/item/organ/internal/xenos/plasmavessel/sentinel,
 		BP_ACID =     /obj/item/organ/internal/xenos/acidgland,
 		BP_HIVE =     /obj/item/organ/internal/xenos/hivenode,
@@ -346,7 +345,6 @@
 	weeds_heal_rate = 20
 	burn_mod  = 1.3
 	icobase = 'icons/mob/human_races/xenos/r_xenos_sentinel_primal.dmi'
-	deform =  'icons/mob/human_races/xenos/r_xenos_sentinel_primal.dmi'
 	tail = "xenos_sentinel_primal_tail"
 
 /datum/species/xenos/queen
@@ -356,7 +354,7 @@
 	weeds_heal_rate = 20
 	weeds_plasma_rate = 20
 	caste_name = "queen"
-	slowdown = 3.5
+	movespeed_modifier = /datum/movespeed_modifier/xenos_queen
 	tail = "xenos_queen_tail"
 	rarity_value = 10
 	strength = STR_VHIGH
@@ -365,13 +363,16 @@
 	icon_scale = 1.3
 	generic_attack_mod = 4.5
 
+	bump_flag = HEAVY
+	swap_flags = ALLMOBS
+	push_flags = ALLMOBS
+
 	icobase = 'icons/mob/human_races/xenos/r_xenos_queen.dmi'
-	deform =  'icons/mob/human_races/xenos/r_xenos_queen.dmi'
 
 	unarmed_types = list(/datum/unarmed_attack/claws/strong/xeno/queen, /datum/unarmed_attack/bite/strong/xeno)
 
 	has_organ = list(
-		BP_BRAIN =    /obj/item/organ/internal/brain/xeno,
+		BP_BRAIN =    /obj/item/organ/internal/cerebrum/brain/xeno,
 		BP_EGG =      /obj/item/organ/internal/xenos/eggsac,
 		BP_PLASMA =   /obj/item/organ/internal/xenos/plasmavessel/queen,
 		BP_ACID =     /obj/item/organ/internal/xenos/acidgland,
@@ -412,7 +413,7 @@
 
 /datum/hud_data/alien
 
-	icon = 'icons/mob/screen1_alien.dmi'
+	icon = 'icons/hud/mob/screen_alien.dmi'
 	has_a_intent =  1
 	has_m_intent =  1
 	has_warnings =  0

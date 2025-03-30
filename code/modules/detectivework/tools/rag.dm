@@ -1,17 +1,3 @@
-/mob
-	var/bloody_hands = null
-	var/mob/living/carbon/human/bloody_hands_mob
-	var/track_blood = 0
-	var/list/feet_blood_DNA
-	var/track_blood_type
-	var/feet_blood_color
-
-/obj/item/clothing/gloves
-	var/transfer_blood = 0
-	var/mob/living/carbon/human/bloody_hands_mob
-
-/obj/item/clothing/shoes/
-	var/track_blood = 0
 
 /obj/item/reagent_containers/rag
 	name = "rag"
@@ -25,6 +11,7 @@
 	item_flags = ITEM_FLAG_NO_BLUDGEON
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
 	unacidable = FALSE
+	var/obj/item/stack/medical/bruise_pack/BP
 
 	var/on_fire = 0
 	var/burn_time = 20 //if the rag burns for too long it turns to ashes
@@ -32,15 +19,16 @@
 /obj/item/reagent_containers/rag/Initialize()
 	. = ..()
 	update_name()
+	BP = new()
 
 /obj/item/reagent_containers/rag/Destroy()
-	STOP_PROCESSING(SSobj, src) //so we don't continue turning to ash while gc'd
-	. = ..()
+	QDEL_NULL(BP)
+	return ..()
 
 /obj/item/reagent_containers/rag/attack_self(mob/user as mob)
 	if(on_fire)
 		user.visible_message("<span class='warning'>\The [user] stamps out [src].</span>", "<span class='warning'>You stamp out [src].</span>")
-		user.unEquip(src)
+		user.drop(src)
 		extinguish()
 	else
 		remove_contents(user)
@@ -64,7 +52,7 @@
 	else
 		SetName("dry [initial(name)]")
 
-/obj/item/reagent_containers/rag/update_icon()
+/obj/item/reagent_containers/rag/on_update_icon()
 	if(on_fire)
 		icon_state = "raglit"
 	else
@@ -101,25 +89,36 @@
 			user.visible_message("\The [user] finishes wiping off the [A]!")
 			A.clean_blood()
 
-/obj/item/reagent_containers/rag/attack(atom/target as obj|turf|area, mob/user as mob , flag)
+/obj/item/reagent_containers/rag/proc/default_attack(atom/target, mob/user)
+	if(!on_fire && reagents.total_volume)
+		if(user.zone_sel.selecting == BP_MOUTH)
+			if (standard_feed_mob(user, target))
+				user.do_attack_animation(src)
+				user.visible_message(
+					SPAN("danger", "\The [user] smothers [target] with [src]!"),
+					SPAN("warning", "You smother [target] with [src]!"),
+					"You hear some struggling and muffled cries of surprise"
+					)
+				update_name()
+		else
+			wipe_down(target, user)
+
+/obj/item/reagent_containers/rag/attack(atom/target, mob/user)
 	if(isliving(target))
 		var/mob/living/M = target
 		if(on_fire)
 			user.visible_message("<span class='danger'>\The [user] hits [target] with [src]!</span>",)
 			user.do_attack_animation(src)
 			M.IgniteMob()
-		else if(reagents.total_volume)
-			if(user.zone_sel.selecting == BP_MOUTH)
-				if (standard_feed_mob(user, target))
-					user.do_attack_animation(src)
-					user.visible_message(
-						"<span class='danger'>\The [user] smothers [target] with [src]!</span>",
-						"<span class='warning'>You smother [target] with [src]!</span>",
-						"You hear some struggling and muffled cries of surprise"
-						)
-					update_name()
-			else
-				wipe_down(target, user)
+		else if(ishuman(target) && istype(user))
+			BP.attack(target, user)
+			reagents.trans_to(target, min(reagents.total_volume, amount_per_transfer_from_this))
+			if(!BP.amount)
+				qdel(src)
+			return
+
+		default_attack(target, user)
+
 		return
 
 	return ..()
@@ -146,9 +145,9 @@
 		return
 
 /obj/item/reagent_containers/rag/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
-	if(exposed_temperature >= 50 + T0C)
+	if(exposed_temperature >= (50 CELSIUS))
 		ignite()
-	if(exposed_temperature >= 900 + T0C)
+	if(exposed_temperature >= (900 CELSIUS))
 		new /obj/effect/decal/cleanable/ash(get_turf(src))
 		qdel(src)
 
@@ -173,14 +172,14 @@
 		qdel(src)
 		return
 
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
 	set_light(0.5, 0.1, 2, 2, "#e38f46")
 	on_fire = 1
 	update_name()
 	update_icon()
 
 /obj/item/reagent_containers/rag/proc/extinguish()
-	STOP_PROCESSING(SSobj, src)
+	set_next_think(0)
 	set_light(0)
 	on_fire = 0
 
@@ -193,7 +192,7 @@
 	update_name()
 	update_icon()
 
-/obj/item/reagent_containers/rag/Process()
+/obj/item/reagent_containers/rag/think()
 	if(!can_ignite())
 		visible_message("<span class='warning'>\The [src] burns out.</span>")
 		extinguish()
@@ -207,7 +206,6 @@
 		location.hotspot_expose(700, 5)
 
 	if(burn_time <= 0)
-		STOP_PROCESSING(SSobj, src)
 		new /obj/effect/decal/cleanable/ash(location)
 		qdel(src)
 		return
@@ -215,6 +213,8 @@
 	reagents.remove_reagent(/datum/reagent/fuel, reagents.maximum_volume/25)
 	update_name()
 	burn_time--
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/reagent_containers/rag/get_temperature_as_from_ignitor()
 	if(on_fire)

@@ -54,7 +54,9 @@
 			delete_area(usr)
 
 /obj/item/blueprints/interact(mob/user)
-	var/area/A = get_area()
+	var/area/A = get_area(src)
+	if(!A)
+		return
 	var/text = {"<HTML><meta charset=\"utf-8\"><head><title>[src]</title></head><BODY>
 <h2>[station_name()] blueprints</h2>
 <small>Property of [GLOB.using_map.company_name]. For heads of staff only. Store in high-secure storage.</small><hr>
@@ -90,12 +92,7 @@ move an amendment</a> to the drawing, or <a href='?src=\ref[src];action=delete_a
 	onclose(user, "blueprints")
 
 
-/obj/item/blueprints/proc/get_area()
-	var/turf/T = get_turf(usr)
-	var/area/A = T.loc
-	return A
-
-/obj/item/blueprints/proc/get_area_type(area/A = get_area())
+/obj/item/blueprints/proc/get_area_type(area/A = get_area(src))
 	if(istype(A, /area/space))
 		return AREA_SPACE
 
@@ -141,17 +138,29 @@ move an amendment</a> to the drawing, or <a href='?src=\ref[src];action=delete_a
 
 	A.always_unpowered = 0
 
-	addtimer(CALLBACK(src, .proc/interact), 10)
+	var/zone/Z = new
+	move_turfs_to_zone(turfs, Z)
+
+	set_next_think(world.time + 1 SECOND)
+
+/obj/item/blueprints/think()
+	interact()
 
 /obj/item/blueprints/proc/move_turfs_to_area(list/turf/turfs, area/A)
 	A.contents.Add(turfs)
 		//oldarea.contents.Remove(usr.loc) // not needed
 		//T.loc = A //error: cannot change constant value
 
+/obj/item/blueprints/proc/move_turfs_to_zone(list/turf/turfs, zone/Z)
+	for(var/turf/T in turfs)
+		Z.add(T)
+
 /obj/item/blueprints/proc/edit_area(mob/user)
 	if(!user)
 		return
-	var/area/A = get_area()
+	var/area/A = get_area(src)
+	if(!A)
+		return
 //	log_debug(edit_area")
 
 	var/prevname = "[A.name]"
@@ -170,7 +179,9 @@ move an amendment</a> to the drawing, or <a href='?src=\ref[src];action=delete_a
 /obj/item/blueprints/proc/delete_area(mob/user)
 	if(!user)
 		return
-	var/area/A = get_area()
+	var/area/A = get_area(src)
+	if(!A)
+		return
 	if(get_area_type(A) != AREA_STATION || A.apc) //let's just check this one last time, just in case
 		interact()
 		return
@@ -249,7 +260,7 @@ move an amendment</a> to the drawing, or <a href='?src=\ref[src];action=delete_a
 				if(BORDER_NONE)
 					pending+=NT
 				if(BORDER_BETWEEN)
-					//do nothing, may be later i'll add 'rejected' list as optimization
+					pass() //do nothing, may be later i'll add 'rejected' list as optimization
 				if(BORDER_2NDTILE)
 					found+=NT //tile included to new area, but we dont seek more
 				if(BORDER_SPACE)

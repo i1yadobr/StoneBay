@@ -95,12 +95,9 @@
 	var/overlay_state = "box-donut1"
 	center_of_mass = "x=13;y=16"
 	nutriment_desc = list("sweetness", "donut")
+	nutriment_amt = 3
 
 /obj/item/reagent_containers/food/donut/normal
-	name = "donut"
-	desc = "Goes great with Robust Coffee."
-	icon_state = "donut1"
-	nutriment_amt = 3
 	startswith = list(/datum/reagent/nutriment/sprinkles = 1)
 	bitesize = 3
 
@@ -159,7 +156,6 @@
 	icon_state = "jdonut1"
 	filling_color = "#ed1169"
 	center_of_mass = "x=16;y=11"
-	nutriment_amt = 3
 	startswith = list(
 		/datum/reagent/nutriment/sprinkles = 1,
 		/datum/reagent/drink/juice/berry = 5)
@@ -180,7 +176,6 @@
 	icon_state = "jdonut1"
 	filling_color = "#ed1169"
 	center_of_mass = "x=16;y=11"
-	nutriment_amt = 3
 	startswith = list(
 		/datum/reagent/nutriment/sprinkles = 1,
 		/datum/reagent/metroidjelly = 5)
@@ -200,7 +195,6 @@
 	icon_state = "jdonut1"
 	filling_color = "#ed1169"
 	center_of_mass = "x=16;y=11"
-	nutriment_amt = 3
 	startswith = list(
 		/datum/reagent/nutriment/sprinkles = 1,
 		/datum/reagent/nutriment/cherryjelly = 5)
@@ -239,7 +233,6 @@
 		return
 	to_chat(user, "You crack \the [src] into \the [O].")
 	reagents.trans_to(O, reagents.total_volume)
-	user.drop_from_inventory(src)
 	qdel(src)
 
 /obj/item/reagent_containers/food/egg/throw_impact(atom/hit_atom)
@@ -448,6 +441,10 @@
 	var/warm = FALSE
 	var/list/heated_reagents = list(/datum/reagent/tricordrazine = 5)
 
+/obj/item/reagent_containers/food/donkpocket/Initialize()
+	. = ..()
+	add_think_ctx("think_cool", CALLBACK(src, nameof(.proc/cooling)), 0)
+
 /obj/item/reagent_containers/food/donkpocket/proc/heat()
 	if(warm)
 		return
@@ -460,12 +457,13 @@
 
 /obj/item/reagent_containers/food/donkpocket/proc/cooltime()
 	if(warm)
-		addtimer(CALLBACK(src, .proc/cooling, warm), 4200)
+		set_next_think_ctx("think_cool", world.time + 7 MINUTES)
 	return
 
 /obj/item/reagent_containers/food/donkpocket/proc/cooling(warm)
 	if(!warm)
 		return
+
 	warm = FALSE
 	for(var/reagent in heated_reagents)
 		reagents.del_reagent(reagent)
@@ -478,13 +476,17 @@
 	heated_reagents = list(/datum/reagent/tricordrazine = 5, /datum/reagent/drink/doctor_delight = 5, /datum/reagent/hyperzine = 0.75, /datum/reagent/synaptizine = 0.25)
 	var/has_been_heated = 0
 
+/obj/item/reagent_containers/food/donkpocket/sinpocket/Initialize()
+	. = ..()
+	add_think_ctx("think_heat", CALLBACK(src, nameof(.proc/heat)), 0)
+
 /obj/item/reagent_containers/food/donkpocket/sinpocket/attack_self(mob/user)
 	if(has_been_heated)
 		to_chat(user, "<span class='notice'>The heating chemicals have already been spent.</span>")
 		return
 	has_been_heated = 1
 	user.visible_message("<span class='notice'>[user] crushes \the [src] package.</span>", "You crush \the [src] package and feel a comfortable heat build up.")
-	addtimer(CALLBACK(src, .proc/heat, user), 200)
+	set_next_think_ctx("think_heat", world.time + 20 SECONDS)
 
 /obj/item/reagent_containers/food/donkpocket/sinpocket/heat(user)
 	if(user)
@@ -595,7 +597,7 @@
 	icon_state = "xburger"
 	filling_color = "#43de18"
 	center_of_mass = "x=16;y=11"
-	startswith = list(/datum/reagent/nutriment/protein = 8)
+	startswith = list(/datum/reagent/nutriment/protein = 8, /datum/reagent/xenomicrobes = 5)
 	bitesize = 2
 
 /obj/item/reagent_containers/food/clownburger
@@ -971,6 +973,19 @@
 		/datum/reagent/nutriment/garlicsauce = 2)
 	bitesize = 3
 
+/obj/item/reagent_containers/food/porkchop
+	name = "Pork chop"
+	desc = "This steak tastes like haram."
+	icon_state = "porkchop"
+	trash = /obj/item/trash/dish/plate
+	filling_color = "#7a3d11"
+	center_of_mass = "x=16;y=13"
+	startswith = list(
+		/datum/reagent/nutriment/protein = 4,
+		/datum/reagent/sodiumchloride = 1,
+		/datum/reagent/blackpepper = 1)
+	bitesize = 3
+
 /obj/item/reagent_containers/food/spacylibertyduff
 	name = "Spacy Liberty Duff"
 	desc = "Jello gelatin, from Alfred Hubbard's cookbook."
@@ -1209,13 +1224,16 @@
 	if(wrapped)
 		Unwrap(user)
 
-/obj/item/reagent_containers/food/monkeycube/proc/Expand()
+/obj/item/reagent_containers/food/monkeycube/proc/Expand(atom/location)
 	if(!growing)
 		growing = 1
 		src.visible_message("<span class='notice'>\The [src] expands!</span>")
 		var/mob/monkey = new monkey_type
-		monkey.dropInto(src.loc)
-		qdel(src)
+		if(location)
+			monkey.dropInto(location)
+		else
+			monkey.dropInto(get_turf(src))
+		qdel_self()
 
 /obj/item/reagent_containers/food/monkeycube/proc/Unwrap(mob/user)
 	icon_state = "monkeycube"
@@ -1226,12 +1244,17 @@
 	atom_flags |= ATOM_FLAG_OPEN_CONTAINER
 
 /obj/item/reagent_containers/food/monkeycube/On_Consume(mob/M)
+	Expand(get_turf(M))
 	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
-		H.visible_message("<span class='warning'>A screeching creature bursts out of [M]'s chest!</span>")
+		H.visible_message(SPAN("warning", "A screeching creature bursts out of [H]'s chest!"))
 		var/obj/item/organ/external/organ = H.get_organ(BP_CHEST)
 		organ.take_external_damage(50, 0, 0, "Animal escaping the ribcage")
-	Expand()
+	else
+		M.visible_message(\
+			SPAN("warning", "A screeching creature bursts out of [M]!"),\
+			SPAN("warning", "You feel like your body is being torn apart from the inside!"))
+		M.gib()
 
 /obj/item/reagent_containers/food/monkeycube/on_reagent_change()
 	if(reagents.has_reagent(/datum/reagent/water))
@@ -1902,6 +1925,15 @@
 	startswith = list(/datum/reagent/nutriment/protein = 2)
 	bitesize = 2
 
+/obj/item/reagent_containers/food/bacon
+	name = "bacon"
+	desc = "A thin slice of pork."
+	icon = 'icons/obj/food.dmi'
+	icon_state = "bacon"
+	center_of_mass = "x=17;y=20"
+	startswith = list(/datum/reagent/nutriment/protein = 2)
+	bitesize = 1
+
 /obj/item/reagent_containers/food/rawfaggot
 	name = "raw faggot"
 	desc = "A raw faggot."
@@ -2236,3 +2268,12 @@
 		/datum/reagent/nutriment/protein = 4,
 		/datum/reagent/drink/juice/tomato = 5)
 	bitesize = 4
+
+/obj/item/reagent_containers/food/cream_puff
+	name = "Cream Puff"
+	desc = "Goes well before a workout. Goes even better after a workout. And most importantly, it's highkey perfect DURING a workout."
+	icon_state = "cream_puff"
+	filling_color = "#FFE6A3"
+	center_of_mass = "x=17;y=14"
+	startswith = list(/datum/reagent/nutriment/magical_custard = 6)
+	bitesize = 2

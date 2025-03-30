@@ -33,22 +33,11 @@
 	var/turf/loc = get_turf(O)
 	return loc ? loc.z : 0
 
-/proc/get_area(O)
-	if(isarea(O))
-		return O
-	var/turf/loc = get_turf(O)
-	return loc ? loc.loc : null
-
-/proc/get_area_name(N) // get area by its name
+/proc/get_area_by_name(N) // get area by its name
 	for(var/area/A in world)
 		if(A.name == N)
 			return A
 	return 0
-
-/proc/get_area_master(const/O)
-	var/area/A = get_area(O)
-	if (isarea(A))
-		return A
 
 /proc/in_range(source, user)
 	if(get_dist(source, user) <= 1)
@@ -115,6 +104,16 @@
 	var/dy = Loc1.y - Loc2.y
 
 	var/dist = sqrt(dx ** 2 + dy ** 2)
+
+	return dist
+
+/// Unlike 'get_dist()' takes Z level into account.
+/proc/get_dist_zlevel_aware(atom/atom1, atom/atom2)
+	var/dx = atom1.x - atom2.x
+	var/dy = atom1.y - atom2.y
+	var/dz = atom1.z - atom2.z
+
+	var/dist = sqrt(dx ** 2 + dy ** 2 + dz ** 2)
 
 	return dist
 
@@ -211,8 +210,7 @@
 				speaker_coverage[T] = R
 
 	// Try to find all the players who can hear the message
-	for(var/i = 1; i <= GLOB.player_list.len; i++)
-		var/mob/M = GLOB.player_list[i]
+	for(var/mob/M in GLOB.player_list)
 		if(M.can_hear_radio(speaker_coverage))
 			. += M
 
@@ -261,7 +259,7 @@
 			continue
 
 		var/mob/M = mob
-		if(checkghosts && M && M.stat == DEAD && M.get_preference_value(checkghosts) != GLOB.PREF_NEARBY)
+		if(checkghosts && M && M.is_ooc_dead() && M.get_preference_value(checkghosts) != GLOB.PREF_NEARBY)
 			mobs |= M
 
 	// For objects below the top level who still want to hear
@@ -276,7 +274,7 @@
 		if(Y1 == Y2)
 			return 1 // Light cannot be blocked on same tile
 		else
-			var/s = SIMPLE_SIGN(Y2 - Y1)
+			var/s = MATH_SIGN(Y2 - Y1)
 			Y1 += s
 			while(Y1 != Y2)
 				T = locate(X1, Y1, Z)
@@ -286,8 +284,8 @@
 	else
 		var/m = (32 * (Y2 - Y1) + (PY2 - PY1)) / (32 * (X2 - X1) + (PX2 - PX1))
 		var/b = (Y1 + PY1 / 32 - 0.015625) - m * (X1 + PX1 / 32 - 0.015625) // In tiles
-		var/signX = SIMPLE_SIGN(X2 - X1)
-		var/signY = SIMPLE_SIGN(Y2 - Y1)
+		var/signX = MATH_SIGN(X2 - X1)
+		var/signY = MATH_SIGN(Y2 - Y1)
 		if(X1 < X2)
 			b += m
 		while(X1!=X2 || Y1!=Y2)
@@ -346,7 +344,7 @@
 		for(var/mob/observer/ghost/G in GLOB.player_list)
 			// The most active players are more likely to become an alien
 			if(((G.client.inactivity/10)/60) <= buffer + i)
-				if(!(G.mind && G.mind.current && G.mind.current.stat != DEAD))
+				if(!(G.mind && G.mind.current && !G.mind.current.is_ooc_dead()))
 					candidates += G.key
 		i++
 	return candidates
@@ -361,13 +359,13 @@
 			if(MODE_XENOMORPH in G.client.prefs.be_special_role)
 				// The most active players are more likely to become an alien
 				if(((G.client.inactivity/10)/60) <= ALIEN_SELECT_AFK_BUFFER + i)
-					if(!(G.mind && G.mind.current && G.mind.current.stat != DEAD))
+					if(!(G.mind && G.mind.current && !G.mind.current.is_ooc_dead()))
 						candidates += G.key
 		i++
 	return candidates
 
 /proc/ScreenText(obj/O, maptext = "", screen_loc = "CENTER-7,CENTER-7", maptext_height = 480, maptext_width = 480)
-	if(!isobj(O))	O = new /obj/screen/text()
+	if(!isobj(O))	O = new /atom/movable/screen/text()
 	O.maptext = maptext
 	O.maptext_height = maptext_height
 	O.maptext_width = maptext_width
@@ -383,13 +381,6 @@
 		spawn(delay)
 			for(var/client/C in group)
 				C.screen -= O
-
-/proc/flick_overlay(image/I, list/show_to, duration)
-	for(var/client/C in show_to)
-		C.images += I
-	spawn(duration)
-		for(var/client/C in show_to)
-			C.images -= I
 
 /datum/projectile_data
 	var/src_x
@@ -604,12 +595,6 @@
 		if(cp > maxp)maxp = cp
 	return abs(minp - maxp)
 
-/proc/convert_k2c(temp)
-	return ((temp - T0C))
-
-/proc/convert_c2k(temp)
-	return ((temp + T0C))
-
 /proc/getCardinalAirInfo(turf/loc, list/stats = list("temperature"))
 	var/list/temps = new /list(4)
 	for(var/dir in GLOB.cardinal)
@@ -653,16 +638,3 @@
 
 /proc/round_is_spooky(spookiness_threshold = config.ghost.req_cult_ghostwriter)
 	return (GLOB.cult.current_antagonists.len > spookiness_threshold)
-
-/proc/getviewsize(view)
-	var/viewX
-	var/viewY
-	if(isnum(view))
-		var/totalviewrange = 1 + 2 * view
-		viewX = totalviewrange
-		viewY = totalviewrange
-	else
-		var/list/viewrangelist = splittext(view,"x")
-		viewX = text2num(viewrangelist[1])
-		viewY = text2num(viewrangelist[2])
-	return list(viewX, viewY)

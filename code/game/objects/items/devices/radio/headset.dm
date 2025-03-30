@@ -17,6 +17,9 @@
 	var/ks1type = /obj/item/device/encryptionkey
 	var/ks2type = null
 
+	drop_sound = SFX_DROP_COMPONENT
+	pickup_sound = SFX_PICKUP_COMPONENT
+
 /obj/item/device/radio/headset/Initialize()
 	. = ..()
 	internal_channels.Cut()
@@ -27,22 +30,21 @@
 	recalculateChannels(1)
 
 /obj/item/device/radio/headset/Destroy()
-	qdel(keyslot1)
-	qdel(keyslot2)
-	keyslot1 = null
-	keyslot2 = null
+	QDEL_NULL(keyslot1)
+	QDEL_NULL(keyslot2)
 	return ..()
 
 /obj/item/device/radio/headset/list_channels(mob/user)
 	return list_secure_channels()
 
-/obj/item/device/radio/headset/_examine_text(mob/user)
+/obj/item/device/radio/headset/examine(mob/user, infix)
 	. = ..()
+
 	if(!(get_dist(src, user) <= 1 && radio_desc))
 		return
 
-	. += "\nThe following channels are available:"
-	. += "\n[radio_desc]"
+	. += "The following channels are available:"
+	. += "[radio_desc]"
 
 /obj/item/device/radio/headset/handle_message_mode(mob/living/M as mob, message, channel)
 	if (channel == "special")
@@ -78,16 +80,6 @@
 	origin_tech = list(TECH_ILLEGAL = 2)
 	syndie = 1
 	ks1type = /obj/item/device/encryptionkey/raider
-
-/obj/item/device/radio/headset/abductor
-	name = "alien headset"
-	desc = "An advanced alien headset designed to monitor communications of human space stations. Why does it have a microphone? No one knows."
-	origin_tech = list(TECH_ILLEGAL = 2)
-	icon = 'icons/obj/abductor.dmi'
-	icon_state = "abductor_headset"
-	item_state = "headset"
-	syndie = 1
-	var/team_number
 
 /obj/item/device/radio/headset/raider/Initialize()
 	. = ..()
@@ -305,14 +297,14 @@
 
 
 			for(var/ch_name in channels)
-				radio_controller.remove_object(src, radiochannels[ch_name])
+				SSradio.remove_object(src, GLOB.radio_channels[ch_name])
 				secure_radio_connections[ch_name] = null
 
 
 			if(keyslot1)
 				var/turf/T = get_turf(user)
 				if(T)
-					keyslot1.loc = T
+					keyslot1.dropInto(T)
 					keyslot1 = null
 
 
@@ -320,7 +312,7 @@
 			if(keyslot2)
 				var/turf/T = get_turf(user)
 				if(T)
-					keyslot2.loc = T
+					keyslot2.dropInto(T)
 					keyslot2 = null
 
 			recalculateChannels()
@@ -333,25 +325,18 @@
 		if(keyslot1 && keyslot2)
 			to_chat(user, "The headset can't hold another key!")
 			return
-
+		if(!user.drop(W, src))
+			return
 		if(!keyslot1)
-			user.drop_item()
-			W.loc = src
 			keyslot1 = W
-
 		else
-			user.drop_item()
-			W.loc = src
 			keyslot2 = W
-
-
 		recalculateChannels()
-
 	return
 
 /obj/item/device/radio/headset/MouseDrop(obj/over_object)
 	var/mob/M = usr
-	if((!istype(over_object, /obj/screen)) && (src in M) && CanUseTopic(M))
+	if((!istype(over_object, /atom/movable/screen)) && (src in M) && CanUseTopic(M))
 		return attack_self(M)
 	return
 
@@ -395,13 +380,13 @@
 
 
 	for (var/ch_name in channels)
-		if(!radio_controller)
-			sleep(30) // Waiting for the radio_controller to be created.
-		if(!radio_controller)
+		if(!SSradio)
+			sleep(30) // Waiting for the SSradio to be created.
+		if(!SSradio)
 			src.SetName("broken radio headset")
 			return
 
-		secure_radio_connections[ch_name] = radio_controller.add_object(src, radiochannels[ch_name],  RADIO_CHAT)
+		secure_radio_connections[ch_name] = SSradio.add_object(src, GLOB.radio_channels[ch_name],  RADIO_CHAT)
 
 	if(setDescription)
 		setupRadioDescription()

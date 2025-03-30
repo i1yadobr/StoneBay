@@ -12,7 +12,7 @@
 	. = ..()
 	for(var/obj/structure/snow/C in get_turf(src))
 		if(C != src)
-			crash_with("Multiple snow objects on one turf! ([loc.x], [loc.y], [loc.z])")
+			util_crash_with("Multiple snow objects on one turf! ([loc.x], [loc.y], [loc.z])")
 			qdel(C)
 	update_icon()
 	redraw_nearby_snows()
@@ -29,7 +29,7 @@
 			L.update_icon() //so siding get updated properly
 
 
-/obj/structure/snow/update_icon()
+/obj/structure/snow/on_update_icon()
 	var/connectdir = 0
 	for(var/direction in GLOB.cardinal)
 		if(locate(/obj/structure/snow, get_step(src, direction)))

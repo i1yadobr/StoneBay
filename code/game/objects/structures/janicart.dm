@@ -17,21 +17,20 @@
 
 
 /obj/structure/janitorialcart/New()
+	..()
 	create_reagents(180)
 
 
-/obj/structure/janitorialcart/_examine_text(mob/user)
+/obj/structure/janitorialcart/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 1)
-		. += "\n[src] \icon[src] contains [reagents.total_volume] unit\s of liquid!"
-	//everything else is visible, so doesn't need to be mentioned
+		. += "[src] \icon[src] contains [reagents.total_volume] unit\s of liquid!"
 
 
 /obj/structure/janitorialcart/attackby(obj/item/I, mob/user)
-	if(istype(I, /obj/item/storage/bag/trash) && !mybag)
-		user.drop_item()
+	if(istype(I, /obj/item/storage/bag/trash) && !mybag && user.drop(I, src))
 		mybag = I
-		I.loc = src
 		update_icon()
 		updateUsrDialog()
 		to_chat(user, "<span class='notice'>You put [I] into [src].</span>")
@@ -45,34 +44,28 @@
 				to_chat(user, "<span class='notice'>You wet [I] in [src].</span>")
 				playsound(loc, 'sound/effects/slosh.ogg', 25, 1)
 				return
-		if(!mymop)
-			user.drop_item()
+		if(!mymop && user.drop(I, src))
 			mymop = I
-			I.loc = src
 			update_icon()
 			updateUsrDialog()
 			to_chat(user, "<span class='notice'>You put [I] into [src].</span>")
 
-	else if(istype(I, /obj/item/reagent_containers/spray) && !myspray)
-		user.drop_item()
+	else if(istype(I, /obj/item/reagent_containers/spray) && !myspray && user.drop(I, src))
 		myspray = I
-		I.loc = src
 		update_icon()
 		updateUsrDialog()
 		to_chat(user, "<span class='notice'>You put [I] into [src].</span>")
 
-	else if(istype(I, /obj/item/device/lightreplacer) && !myreplacer)
-		user.drop_item()
+	else if(istype(I, /obj/item/device/lightreplacer) && !myreplacer && user.drop(I, src))
 		myreplacer = I
-		I.loc = src
 		update_icon()
 		updateUsrDialog()
 		to_chat(user, "<span class='notice'>You put [I] into [src].</span>")
 
 	else if(istype(I, /obj/item/caution))
 		if(signs < 4)
-			user.drop_item()
-			I.loc = src
+			if(!user.drop(I, src))
+				return
 			signs++
 			update_icon()
 			updateUsrDialog()
@@ -119,30 +112,40 @@
 		switch(href_list["take"])
 			if("garbage")
 				if(mybag)
-					user.put_in_hands(mybag)
-					to_chat(user, "<span class='notice'>You take [mybag] from [src].</span>")
+					if(user.pick_or_drop(mybag))
+						to_chat(user, SPAN("notice", "You take [mybag] from [src]."))
+					else
+						to_chat(user, SPAN("notice", "You drop [mybag] from [src]."))
 					mybag = null
 			if("mop")
 				if(mymop)
-					user.put_in_hands(mymop)
-					to_chat(user, "<span class='notice'>You take [mymop] from [src].</span>")
+					if(user.pick_or_drop(mymop))
+						to_chat(user, SPAN("notice", "You take [mymop] from [src]."))
+					else
+						to_chat(user, SPAN("notice", "You drop [mymop] from [src]."))
 					mymop = null
 			if("spray")
 				if(myspray)
-					user.put_in_hands(myspray)
-					to_chat(user, "<span class='notice'>You take [myspray] from [src].</span>")
+					if(user.pick_or_drop(myspray))
+						to_chat(user, SPAN("notice", "You take [myspray] from [src]."))
+					else
+						to_chat(user, SPAN("notice", "You drop [myspray] from [src]."))
 					myspray = null
 			if("replacer")
 				if(myreplacer)
-					user.put_in_hands(myreplacer)
-					to_chat(user, "<span class='notice'>You take [myreplacer] from [src].</span>")
+					if(user.pick_or_drop(myreplacer))
+						to_chat(user, SPAN("notice", "You take [myreplacer] from [src]."))
+					else
+						to_chat(user, SPAN("notice", "You drop [myreplacer] from [src]."))
 					myreplacer = null
 			if("sign")
 				if(signs)
 					var/obj/item/caution/Sign = locate() in src
 					if(Sign)
-						user.put_in_hands(Sign)
-						to_chat(user, "<span class='notice'>You take \a [Sign] from [src].</span>")
+						if(user.pick_or_drop(Sign))
+							to_chat(user, SPAN("notice", "You take \a [Sign] from [src]."))
+						else
+							to_chat(user, SPAN("notice", "You drop \a [Sign] from [src]."))
 						signs--
 					else
 						warning("[src] signs ([signs]) didn't match contents")
@@ -152,18 +155,18 @@
 	updateUsrDialog()
 
 
-/obj/structure/janitorialcart/update_icon()
-	overlays = null
+/obj/structure/janitorialcart/on_update_icon()
+	ClearOverlays()
 	if(mybag)
-		overlays += "cart_garbage"
+		AddOverlays("cart_garbage")
 	if(mymop)
-		overlays += "cart_mop"
+		AddOverlays("cart_mop")
 	if(myspray)
-		overlays += "cart_spray"
+		AddOverlays("cart_spray")
 	if(myreplacer)
-		overlays += "cart_replacer"
+		AddOverlays("cart_replacer")
 	if(signs)
-		overlays += "cart_sign[signs]"
+		AddOverlays("cart_sign[signs]")
 
 
 //old style retardo-cart
@@ -182,17 +185,19 @@
 
 
 /obj/structure/bed/chair/janicart/New()
+	..()
 	create_reagents(100)
 
 
-/obj/structure/bed/chair/janicart/_examine_text(mob/user)
+/obj/structure/bed/chair/janicart/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 1)
 		return
 
-	. += "\n\icon[src] This [callme] contains [reagents.total_volume] unit\s of water!"
+	. += "\icon[src] This [callme] contains [reagents.total_volume] unit\s of water!"
 	if(mybag)
-		. += "\n\A [mybag] is hanging on the [callme]."
+		. += "\A [mybag] is hanging on the [callme]."
 
 
 /obj/structure/bed/chair/janicart/attackby(obj/item/I, mob/user)
@@ -205,17 +210,14 @@
 			to_chat(user, "<span class='notice'>This [callme] is out of water!</span>")
 	else if(istype(I, /obj/item/key))
 		to_chat(user, "Hold [I] in one of your hands while you drive this [callme].")
-	else if(istype(I, /obj/item/storage/bag/trash))
+	else if(istype(I, /obj/item/storage/bag/trash) && !mybag && user.drop(I, src))
 		to_chat(user, "<span class='notice'>You hook the trashbag onto the [callme].</span>")
-		user.drop_item()
-		I.loc = src
 		mybag = I
 
 
 /obj/structure/bed/chair/janicart/attack_hand(mob/user)
 	if(mybag)
-		mybag.loc = get_turf(user)
-		user.put_in_hands(mybag)
+		user.pick_or_drop(mybag, loc)
 		mybag = null
 	else
 		..()
@@ -231,11 +233,13 @@
 		to_chat(user, "<span class='notice'>You'll need the keys in one of your hands to drive this [callme].</span>")
 
 
-/obj/structure/bed/chair/janicart/Move()
-	..()
-	if(buckled_mob)
-		if(buckled_mob.buckled == src)
-			buckled_mob.loc = loc
+/obj/structure/bed/chair/janicart/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
+
+	if(buckled_mob?.buckled == src)
+		buckled_mob.forceMove(loc)
 
 
 /obj/structure/bed/chair/janicart/post_buckle_mob(mob/living/M)

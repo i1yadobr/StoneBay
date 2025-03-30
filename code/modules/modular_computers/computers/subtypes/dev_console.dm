@@ -9,8 +9,8 @@
 	hardware_flag = PROGRAM_CONSOLE
 	anchored = TRUE
 	density = 1
-	base_idle_power_usage = 100
-	base_active_power_usage = 500
+	base_idle_power_usage = 100 WATTS
+	base_active_power_usage = 500 WATTS
 	max_hardware_size = 3
 	steel_sheet_cost = 20
 	light_strength = 4
@@ -18,8 +18,9 @@
 	broken_damage = 150
 	atom_flags = ATOM_FLAG_CLIMBABLE
 	beepsounds = SFX_TRR
+	turf_height_offset = 12
 
 /obj/item/modular_computer/console/CouldUseTopic(mob/user)
 	..()
 	if(istype(user, /mob/living/carbon))
-		playsound(src, 'sound/effects/using/console/press7.ogg', 50, 1)
+		playsound(src, SFX_KEYBOARD, 50, 1)

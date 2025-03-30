@@ -33,7 +33,7 @@
 	current_data.apply_to_item(I)
 
 /datum/gear_tweak/custom/tweak_description(description, metadata)
-	return current_data.item_desc ? current_data.item_desc : description
+	return description
 
 /*
 * Color adjustment
@@ -58,7 +58,7 @@
 /datum/gear_tweak/color/get_metadata(user, metadata, title = CHARACTER_PREFERENCE_INPUT_TITLE)
 	if(valid_colors)
 		return input(user, "Choose a color.", title, metadata) as null|anything in valid_colors
-	return input(user, "Choose a color.", title, metadata) as color|null
+	return tgui_color_picker(user, "Choose a color.", title, metadata)
 
 /datum/gear_tweak/color/tweak_item(obj/item/I, metadata)
 	if(valid_colors && !(metadata in valid_colors))

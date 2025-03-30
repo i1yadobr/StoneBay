@@ -108,7 +108,7 @@
 		user.hacking = 0
 
 
-/datum/game_mode/malfunction/verb/machine_overload(obj/machinery/M in GLOB.machines)
+/datum/game_mode/malfunction/verb/machine_overload(obj/machinery/M in SSmachines.machinery)
 	set name = "Machine Overload"
 	set desc = "400 CPU - Causes cyclic short-circuit in machine, resulting in weak explosion after some time."
 	set category = "Software"
@@ -161,7 +161,7 @@
 	if(!ability_pay(user,price))
 		return
 
-	M.use_power_oneoff(250 KILOWATTS)
+	M.use_power_oneoff(250 KILO WATTS)
 
 	// Trigger a powernet alarm. Careful engineers will probably notice something is going on.
 	var/area/temp_area = get_area(M)
@@ -181,7 +181,7 @@
 		if(M)
 			qdel(M)
 
-/datum/game_mode/malfunction/verb/machine_upgrade(obj/machinery/M in GLOB.machines)
+/datum/game_mode/malfunction/verb/machine_upgrade(obj/machinery/M in SSmachines.machinery)
 	set name = "Machine Upgrade"
 	set desc = "800 CPU - Pushes existing hardware to it's technological limits by rapidly upgrading it's software."
 	set category = "Software"

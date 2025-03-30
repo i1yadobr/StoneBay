@@ -89,7 +89,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/toggle_antagHUD_use,
 	/client/proc/toggle_antagHUD_restrictions,
 	/client/proc/allow_character_respawn,    // Allows a ghost to respawn ,
-	/client/proc/event_manager_panel,
 	/client/proc/empty_ai_core_toggle_latejoin,
 	/client/proc/empty_ai_core_toggle_latejoin,
 	/client/proc/aooc,
@@ -107,7 +106,9 @@ var/list/admin_verbs_admin = list(
 	/client/proc/check_fax_history,
 	/client/proc/change_regular_announcement,
 	/client/proc/delbook,
-	/datum/admins/proc/follow_panel
+	/datum/admins/proc/follow_panel,
+	/datum/admins/proc/events_panel,
+	/datum/admins/proc/change_lobby_art
 	)
 
 var/list/admin_verbs_ban = list(
@@ -136,7 +137,6 @@ var/list/admin_verbs_fun = list(
 	/datum/admins/proc/toggle_space_ninja,
 	/client/proc/cmd_admin_add_freeform_ai_law,
 	/client/proc/cmd_admin_add_random_ai_law,
-	/client/proc/toggle_random_events,
 	/client/proc/editappear,
 	/client/proc/roll_dices,
 	/datum/admins/proc/call_supply_drop,
@@ -178,9 +178,9 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/toggle_aliens,
 	/datum/admins/proc/toggle_alien_eggs,
 	/datum/admins/proc/toggle_space_ninja,
-	/client/proc/toggle_random_events,
 	/client/proc/check_customitem_activity,
-	/client/proc/nanomapgen_DumpImage
+	/client/proc/nanomapgen_DumpImage,
+	/client/proc/cmd_set_station_date
 	)
 
 var/list/admin_verbs_debug = list(
@@ -196,7 +196,6 @@ var/list/admin_verbs_debug = list(
 	/client/proc/cmd_debug_tog_aliens,
 	/client/proc/air_report,
 	/client/proc/reload_admins,
-	/client/proc/reload_mentors,
 	/client/proc/restart_controller,
 	/client/proc/print_random_map,
 	/client/proc/create_random_map,
@@ -221,11 +220,17 @@ var/list/admin_verbs_debug = list(
 	/datum/admins/proc/view_runtimes,
 	/client/proc/cmd_analyse_health_context,
 	/client/proc/cmd_analyse_health_panel,
+	/client/proc/cmd_view_language_context,
+	/client/proc/cmd_view_language_panel,
 	/client/proc/visualpower,
 	/client/proc/visualpower_remove,
 	/client/proc/hard_del,
 	/client/proc/enable_profiler,
-	/client/proc/bluespace_tech
+	/client/proc/bluespace_tech,
+	/client/proc/test_pt_mark_start,
+	/client/proc/test_pt_mark_goal,
+	/client/proc/test_pt_clear,
+	/client/proc/test_pt_vis,
 	)
 
 var/list/admin_verbs_paranoid_debug = list(
@@ -283,7 +288,6 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/cmd_admin_add_freeform_ai_law,
 	/client/proc/cmd_admin_add_random_ai_law,
 	/client/proc/cmd_admin_create_centcom_report,
-	/client/proc/toggle_random_events,
 	/client/proc/cmd_admin_add_random_ai_law,
 	/client/proc/Set_Holiday,
 	/datum/admins/proc/startnow,
@@ -318,6 +322,10 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/toggle_possess_mode,
 	/client/proc/enable_profiler,
 	/client/proc/bluespace_tech,
+	/client/proc/test_pt_mark_start,
+	/client/proc/test_pt_mark_goal,
+	/client/proc/test_pt_clear,
+	/client/proc/test_pt_vis,
 	/client/proc/delbook,
 	/client/proc/debug_glob_variables
 	)
@@ -340,7 +348,8 @@ var/list/admin_verbs_mod = list(
 	/datum/admins/proc/sendFax,
 	/client/proc/check_fax_history,
 	/client/proc/delbook,
-	/datum/admins/proc/follow_panel
+	/datum/admins/proc/follow_panel,
+	/datum/admins/proc/events_panel
 	)
 
 var/list/admin_verbs_mentor = list(
@@ -390,8 +399,7 @@ var/list/admin_verbs_mentor = list(
 		admin_verbs_rejuv,
 		admin_verbs_sounds,
 		admin_verbs_spawn,
-		debug_verbs
-		)
+		debug_verbs)
 
 /client/proc/hide_most_verbs()//Allows you to keep some functionality while hiding some verbs
 	set name = "Adminverbs - Hide Most"
@@ -425,10 +433,6 @@ var/list/admin_verbs_mentor = list(
 	to_chat(src, "<span class='interface'>All of your adminverbs are now visible.</span>")
 	feedback_add_details("admin_verb","TAVVS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-
-
-
-
 /client/proc/admin_ghost()
 	set category = "Admin"
 	set name = "Aghost"
@@ -452,7 +456,8 @@ var/list/admin_verbs_mentor = list(
 		//ghostize
 		var/mob/body = mob
 		var/mob/observer/ghost/ghost = body.ghostize(1)
-		ghost.admin_ghosted = 1
+		if(istype(ghost))
+			ghost.admin_ghosted = 1
 		if(body)
 			body.teleop = ghost
 			if(!body.key)
@@ -466,7 +471,10 @@ var/list/admin_verbs_mentor = list(
 	set desc = "Toggles ghost-like invisibility (Don't abuse this)"
 	if(holder && mob)
 		if(mob.invisibility == INVISIBILITY_OBSERVER)
-			mob.set_invisibility(initial(mob.invisibility))
+			if(isghost(mob))
+				mob.set_invisibility(0)
+			else
+				mob.set_invisibility(initial(mob.invisibility))
 			to_chat(mob, SPAN_DANGER("Invisimin off. Invisibility reset."))
 			mob.alpha = max(mob.alpha + 100, 255)
 		else
@@ -560,7 +568,7 @@ var/list/admin_verbs_mentor = list(
 	if(!holder)	return
 	var/response = alert(src, "Please choose a distinct color that is easy to read and doesn't mix with all the other chat and radio frequency colors.", "Change own OOC color", "Pick new color", "Reset to default", "Cancel")
 	if(response == "Pick new color")
-		prefs.ooccolor = input(src, "Please select your OOC colour.", "OOC colour") as color
+		prefs.ooccolor = tgui_color_picker(src, "Please select your OOC colour.", "OOC colour")
 	else if(response == "Reset to default")
 		prefs.ooccolor = initial(prefs.ooccolor)
 	SScharacter_setup.queue_preferences_save(prefs)
@@ -699,7 +707,7 @@ var/list/admin_verbs_mentor = list(
 		log_admin("[src] re-admined themself.")
 		message_admins("[src] re-admined themself.", 1)
 		to_chat(src, "<span class='interface'>You now have the keys to control the planet, or atleast a small space station</span>")
-		verbs -= /client/proc/readmin_self
+		src.verbs -= /client/proc/readmin_self
 
 /client/proc/deadmin_self()
 	set name = "De-admin self"
@@ -711,7 +719,7 @@ var/list/admin_verbs_mentor = list(
 			message_admins("[src] deadmined themself.", 1)
 			deadmin()
 			to_chat(src, "<span class='interface'>You are now a normal player.</span>")
-			verbs |= /client/proc/readmin_self
+			src.verbs |= /client/proc/readmin_self
 	feedback_add_details("admin_verb","DAS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/check_ai_laws()
@@ -819,56 +827,64 @@ var/list/admin_verbs_mentor = list(
 
 	if(!check_rights(R_FUN))	return
 
-	var/mob/living/carbon/human/M = input("Select mob.", "Edit Appearance") as null|anything in GLOB.human_mob_list
+	var/mob/living/carbon/human/M = tgui_input_list(usr, "Select a mob.", "Edit Appearance", GLOB.human_mob_list)
 
 	if(!istype(M, /mob/living/carbon/human))
-		to_chat(usr, "<span class='warning'>You can only do this to humans!</span>")
+		to_chat(usr, SPAN_WARNING("You can only do this to humans!"))
 		return
-	switch(alert("Are you sure you wish to edit this mob's appearance? Skrell, Unathi, Vox and Tajaran can result in unintended consequences.",,"Yes","No"))
-		if("No")
-			return
-	var/new_facial = input("Please select facial hair color.", "Character Generation") as color
+
+	var/alert_resukt = tgui_alert(usr, "Are you sure you wish to edit this mob's appearance? Skrell, Unathi, Vox and Tajaran can result in unintended consequences.", "Edit Appearance", list("Yes", "No"))
+	if(alert_resukt == "No")
+		return
+
+	var/new_facial = tgui_color_picker(usr, "Please select facial hair color.", "Character Generation")
 	if(new_facial)
 		M.r_facial = hex2num(copytext(new_facial, 2, 4))
 		M.g_facial = hex2num(copytext(new_facial, 4, 6))
 		M.b_facial = hex2num(copytext(new_facial, 6, 8))
 
-	var/new_hair = input("Please select hair color.", "Character Generation") as color
-	if(new_facial)
+	var/new_hair = tgui_color_picker(usr, "Please select hair color.", "Character Generation")
+	if(new_hair)
 		M.r_hair = hex2num(copytext(new_hair, 2, 4))
 		M.g_hair = hex2num(copytext(new_hair, 4, 6))
 		M.b_hair = hex2num(copytext(new_hair, 6, 8))
 
-	var/new_eyes = input("Please select eye color.", "Character Generation") as color
+	var/new_s_hair = tgui_color_picker(usr, "Please select secondary hair color.", "Character Generation")
+	if(new_s_hair)
+		M.r_s_hair = hex2num(copytext(new_s_hair, 2, 4))
+		M.g_s_hair = hex2num(copytext(new_s_hair, 4, 6))
+		M.b_s_hair = hex2num(copytext(new_s_hair, 6, 8))
+
+	var/new_eyes = tgui_color_picker(usr, "Please select eye color.", "Character Generation")
 	if(new_eyes)
 		M.r_eyes = hex2num(copytext(new_eyes, 2, 4))
 		M.g_eyes = hex2num(copytext(new_eyes, 4, 6))
 		M.b_eyes = hex2num(copytext(new_eyes, 6, 8))
 		M.update_eyes()
 
-	var/new_skin = input("Please select body color. This is for Tajaran, Unathi, and Skrell only!", "Character Generation") as color
+	var/new_skin = tgui_color_picker(usr, "Please select body color. This is for Tajaran, Unathi, and Skrell only!", "Character Generation")
 	if(new_skin)
 		M.r_skin = hex2num(copytext(new_skin, 2, 4))
 		M.g_skin = hex2num(copytext(new_skin, 4, 6))
 		M.b_skin = hex2num(copytext(new_skin, 6, 8))
 
-	var/new_tone = input("Please select skin tone level: 1-220 (1=albino, 35=caucasian, 150=black, 220='very' black)", "Character Generation")  as text
+	var/new_tone = tgui_input_number(usr, "Please select skin tone level: 1-220 (1=albino, 35=caucasian, 150=black, 220='very' black)", "Character Generation", 35, 220, 1, round_value = TRUE)
 
-	if (new_tone)
+	if(new_tone)
 		M.s_tone = max(min(round(text2num(new_tone)), 220), 1)
 		M.s_tone =  -M.s_tone + 35
 
 	// hair
-	var/new_hstyle = input(usr, "Select a hair style", "Grooming")  as null|anything in GLOB.hair_styles_list
+	var/new_hstyle = tgui_input_list(usr, "Select a hairstyle", "Grooming", GLOB.hair_styles_list)
 	if(new_hstyle)
 		M.h_style = new_hstyle
 
 	// facial hair
-	var/new_fstyle = input(usr, "Select a facial hair style", "Grooming")  as null|anything in GLOB.facial_hair_styles_list
+	var/new_fstyle = tgui_input_list(usr, "Select a facial hair style", "Grooming", GLOB.facial_hair_styles_list)
 	if(new_fstyle)
 		M.f_style = new_fstyle
 
-	var/new_gender = alert(usr, "Please select gender.", "Character Generation", "Male", "Female", "Neuter")
+	var/new_gender = tgui_alert(usr, "Please select gender.", "Character Generation", list("Male", "Female", "Neuter"))
 	if (new_gender)
 		if(new_gender == "Male")
 			M.gender = MALE
@@ -878,6 +894,7 @@ var/list/admin_verbs_mentor = list(
 			M.gender = NEUTER
 
 	M.update_hair()
+	M.update_facial_hair()
 	M.update_body()
 	M.check_dna(M)
 
@@ -933,16 +950,20 @@ var/list/admin_verbs_mentor = list(
 			to_chat(src, "<b>Enabled maint drones.</b>")
 			message_admins("Admin [key_name_admin(usr)] has enabled maint drones.", 1)
 
-/client/proc/man_up(datum/follow_holder/fh in get_follow_targets(mobs_only = TRUE))
+/client/proc/man_up()
 	set category = "Fun"
 	set name = "Man Up"
 	set desc = "Tells mob to man up and deal with it."
 
-	var/mob/T = fh.followed_instance
-	to_chat(T, "<span class='notice'><b><font size=3>Man up and deal with it.</font></b></span>")
-	to_chat(T, "<span class='notice'>Move on.</span>")
+	var/mob/mob = tgui_input_list(usr, "Select a client", "Man up", GLOB.player_list)
 
-	log_and_message_admins("told [key_name(T)] to man up and deal with it.")
+	if(!istype(mob))
+		return
+
+	to_chat(mob, "<span class='notice'><b><font size=3>Man up and deal with it.</font></b></span>")
+	to_chat(mob, "<span class='notice'>Move on.</span>")
+
+	log_and_message_admins("told [key_name(mob)] to man up and deal with it.")
 
 /client/proc/global_man_up()
 	set category = "Fun"

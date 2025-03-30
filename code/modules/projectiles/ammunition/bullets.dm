@@ -78,7 +78,6 @@
 	icon_state = "r-casing"
 	spent_icon = "r-casing-spent"
 
-
 /obj/item/ammo_casing/c45
 	desc = "A .45 bullet casing."
 	caliber = ".45"
@@ -112,9 +111,10 @@
 	desc = "A 12 gauge slug."
 	icon_state = "slshell"
 	spent_icon = "slshell-spent"
-	caliber = "shotgun"
+	caliber = "12g"
 	projectile_type = /obj/item/projectile/bullet/shotgun
 	matter = list(MATERIAL_STEEL = 360)
+	fall_sounds = list('sound/effects/weapons/gun/shell_fall.ogg')
 
 /obj/item/ammo_casing/shotgun/pellet
 	name = "shotgun shell"
@@ -160,7 +160,8 @@
 	matter = list(MATERIAL_STEEL = 360, MATERIAL_GLASS = 720)
 
 /obj/item/ammo_casing/shotgun/stunshell/emp_act(severity)
-	if(prob(100/severity)) BB = null
+	if(prob(100/severity))
+		is_spent = TRUE
 	update_icon()
 
 //Does not stun, only blinds, but has area of effect.
@@ -204,6 +205,13 @@
 	desc = "A 7.62mm practice bullet casing."
 	projectile_type = /obj/item/projectile/bullet/rifle/a762/practice
 
+/obj/item/ammo_casing/a792
+	desc = "A 7.92mm bullet casing."
+	caliber = "7.92"
+	projectile_type = /obj/item/projectile/bullet/rifle/a792
+	icon_state = "rifle-casing"
+	spent_icon = "rifle-casing-spent"
+
 /obj/item/ammo_casing/rocket
 	name = "rocket shell"
 	desc = "A high explosive designed to be fired from a launcher."
@@ -223,6 +231,13 @@
 /obj/item/ammo_casing/c38/emp
 	name = ".38 haywire round"
 	desc = "A .38 bullet casing fitted with a single-use ion pulse generator."
+	icon_state = "empcasing"
+	projectile_type = /obj/item/projectile/ion/small
+	matter = list(MATERIAL_STEEL = 130, MATERIAL_URANIUM = 100)
+
+/obj/item/ammo_casing/c44/emp
+	name = ".44 haywire round"
+	desc = "A .44 bullet casing fitted with a single-use ion pulse generator."
 	icon_state = "empcasing"
 	projectile_type = /obj/item/projectile/ion/small
 	matter = list(MATERIAL_STEEL = 130, MATERIAL_URANIUM = 100)
@@ -248,3 +263,14 @@
 	spent_icon = "empshell-spent"
 	projectile_type  = /obj/item/projectile/ion
 	matter = list(MATERIAL_STEEL = 260, MATERIAL_URANIUM = 200)
+
+/obj/item/ammo_casing/shotgun/Initialize()
+	. = ..()
+	register_signal(src, SIGNAL_MOVED, nameof(/atom.proc/update_icon))
+
+/obj/item/ammo_casing/shotgun/on_update_icon()
+	if(spent_icon && is_spent)
+		icon_state = spent_icon
+	else
+		icon_state = initial(icon_state)
+	icon_state = "[icon_state][isturf(loc)? "-world" : ""]"

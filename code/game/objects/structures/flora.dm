@@ -1,5 +1,6 @@
 #define PLANT_NO_CUT 1
 #define PLANT_CUT 2
+#define TIME_CUT 5
 
 //trees
 /obj/structure/flora/tree
@@ -11,13 +12,27 @@
 	var/cut_level = PLANT_CUT
 	var/cut_hits = 20
 
+/obj/structure/flora/tree/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
+
 /obj/structure/flora/tree/attackby(obj/item/W, mob/living/user)
+	if(istype(W, /obj/item/material/twohanded/chainsaw))
+		if(do_after(usr, TIME_CUT))
+			playsound(user, 'sound/weapons/chainsaw_attack1.ogg', 25, 1)
+			to_chat(user, SPAN_WARNING("You cut down \the [src] with \the [W]."))
+			if(!(atom_flags & ATOM_FLAG_HOLOGRAM))
+				new /obj/item/stack/material/wood/ten(loc)
+			qdel(src)
+			return
+
 	if(cut_level !=PLANT_NO_CUT && (istype(W, /obj/item/material/hatchet) || istype(W, /obj/item/material/twohanded/fireaxe)))
 		cut_hits--
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		to_chat(user, SPAN_WARNING("You chop \the [src] with \the [W]."))
 		playsound(src, 'sound/effects/fighting/chop3.ogg', 25, 1)
 		if(cut_hits <= 0)
+			if(!(atom_flags & ATOM_FLAG_HOLOGRAM))
+				new /obj/item/stack/material/wood/ten(loc)
 			qdel(src)
 		return
 
@@ -44,13 +59,10 @@
 	..()
 	icon_state = "pine_c"
 
-/obj/structure/flora/tree/pine/xmas/update_icon()
-	overlays.Cut()
+/obj/structure/flora/tree/pine/xmas/on_update_icon()
+	ClearOverlays()
 	if(light_overlay)
-		var/image/LO = overlay_image(icon, "[initial(icon_state)]-overlay")
-		LO.layer = ABOVE_LIGHTING_LAYER
-		LO.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-		overlays.Add(LO)
+		AddOverlays(OVERLAY(icon, "[initial(icon_state)]-overlay", alpha, RESET_COLOR, color, SOUTH, EFFECTS_ABOVE_LIGHTING_PLANE, ABOVE_LIGHTING_LAYER))
 		set_light(l_max_bright, l_inner_range, l_outer_range, l_falloff_curve, l_color)
 	..()
 
@@ -156,13 +168,10 @@
 	var/l_falloff_curve = 1
 	var/l_color = COLOR_BLUE_LIGHT
 
-/obj/structure/flora/tree/green/pink/update_icon()
-	overlays.Cut()
+/obj/structure/flora/tree/green/pink/on_update_icon()
+	ClearOverlays()
 	if(light_overlay)
-		var/image/LO = overlay_image(icon, "[initial(icon_state)]-overlay")
-		LO.layer = ABOVE_LIGHTING_LAYER
-		LO.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-		overlays.Add(LO)
+		AddOverlays(OVERLAY(icon, "[initial(icon_state)]-overlay", alpha, RESET_COLOR, color, SOUTH, EFFECTS_ABOVE_LIGHTING_PLANE, ABOVE_LIGHTING_LAYER))
 		set_light(l_max_bright, l_inner_range, l_outer_range, l_falloff_curve, l_color)
 	..()
 
@@ -297,16 +306,16 @@
 	if(do_after(user, 20, src))
 		if(!stored_item)
 			if(W.w_class <= ITEM_SIZE_NORMAL)
-				user.drop_from_inventory(W, src)
-				stored_item = W
-				to_chat(user, SPAN("notice", "You hide \the [W] in \the [src]."))
+				if(user.drop(W, src))
+					stored_item = W
+					to_chat(user, SPAN("notice", "You hide \the [W] in \the [src]."))
 			else
 				to_chat(user, SPAN("notice", "\The [W] can't be hidden in \the [src], it's too big."))
 		else
 			to_chat(user, SPAN("notice", "Something is already hidden in \the [src]."))
 	return 0
 
-/obj/structure/flora/pottedplant/attack_hand(mob/user as mob)
+/obj/structure/flora/pottedplant/attack_hand(mob/user)
 	user.visible_message("[user] begins digging around inside of \the [src].", "You begin digging around in \the [src], searching it.")
 	playsound(loc, 'sound/effects/plantshake.ogg', rand(50, 75), TRUE)
 	user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
@@ -314,7 +323,7 @@
 		if(!stored_item)
 			to_chat(user, SPAN("notice", "There is nothing hidden in \the [src]."))
 		else
-			user.put_in_hands(stored_item)
+			user.pick_or_drop(stored_item, loc)
 			to_chat(user, SPAN("notice", "You take \the [stored_item] from \the [src]."))
 			stored_item = null
 		src.add_fingerprint(usr)
@@ -349,6 +358,16 @@
 /obj/structure/flora/ausbushes/New()
 	..()
 	icon_state = "firstbush_[rand(1, 4)]"
+
+/obj/structure/flora/ausbushes/glowshroom
+	name = "glowshroom"
+	icon = 'icons/obj/flora/misc.dmi'
+	icon_state = "glowshroom_1"
+
+/obj/structure/flora/ausbushes/glowshroom/New()
+	..()
+	icon_state = "glowshroom_[rand(1, 4)]"
+	set_light(1, 0.6, 1, 2, "#99FF66")
 
 /obj/structure/flora/ausbushes/reedbush
 	icon_state = "reedbush_1"
@@ -425,7 +444,7 @@
 
 /obj/structure/flora/ausbushes/ywflowers/New()
 	..()
-	icon_state = "ywflowers_[rand(1, 3)]"
+	icon_state = "ywflowers_[rand(1, 4)]"
 
 /obj/structure/flora/ausbushes/brflowers
 	icon_state = "brflowers_1"
@@ -439,7 +458,7 @@
 
 /obj/structure/flora/ausbushes/ppflowers/New()
 	..()
-	icon_state = "ppflowers_[rand(1, 4)]"
+	icon_state = "ppflowers_[rand(1, 3)]"
 
 /obj/structure/flora/ausbushes/sparsegrass
 	icon_state = "sparsegrass_1"
@@ -621,13 +640,12 @@
 			qdel(src)
 		return
 
-/obj/structure/flora/jungleplants/update_icon()
-	overlays.Cut()
+/obj/structure/flora/jungleplants/on_update_icon()
+	ClearOverlays()
 	if(light_overlay)
-		var/image/LO = overlay_image(icon, "[icon_state]-overlay")
-		LO.layer = ABOVE_LIGHTING_LAYER
-		LO.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-		overlays.Add(LO)
+		var/image/emissive_overlay = OVERLAY(icon, "[initial(icon_state)]-overlay", alpha, RESET_COLOR, color, SOUTH)
+		AddOverlays(emissive_overlay)
+		AddOverlays(emissive_appearance(emissive_overlay.icon, emissive_overlay.icon_state))
 		set_light(l_max_bright, l_inner_range, l_outer_range, l_falloff_curve, l_color)
 	..()
 
@@ -873,6 +891,10 @@
 /obj/structure/flora/pottedplant/unusual/Initialize()
 	. = ..()
 	set_light(0.4, 0.1, 2, 2, "#007fff")
+	var/image/I = image(icon, "[icon_state]_over")
+	I.plane = EFFECTS_ABOVE_LIGHTING_PLANE
+	I.layer = ABOVE_LIGHTING_LAYER
+	AddOverlays(I)
 
 /obj/structure/flora/pottedplant/orientaltree
 	name = "potted oriental tree"
@@ -932,6 +954,10 @@
 /obj/structure/flora/pottedplant/subterranean/Initialize()
 	. = ..()
 	set_light(0.4, 0.1, 2, 2, "#ff6633")
+	var/image/I = image(icon, "[icon_state]_over")
+	I.plane = EFFECTS_ABOVE_LIGHTING_PLANE
+	I.layer = ABOVE_LIGHTING_LAYER
+	AddOverlays(I)
 
 /obj/structure/flora/pottedplant/minitree
 	name = "potted tree"
@@ -1022,3 +1048,28 @@
 	name = "potted monkey plant"
 	desc = "Perhaps, this is why we no longer have a genetics lab?"
 	icon_state = "monkeyplant"
+
+// Misc Stuff
+/obj/structure/flora/log
+	name = "log"
+	desc = "It's a log. It's not very interesting."
+	icon = 'icons/obj/flora/misc.dmi'
+	icon_state = "log"
+	layer = BELOW_DOOR_LAYER
+	anchored = 1
+
+/obj/effect/firefly
+	name = "firefly"
+	desc = "A small, bioluminescent insect."
+	icon = 'icons/obj/flora/misc.dmi'
+	icon_state = "firefly"
+	layer = ABOVE_HUMAN_LAYER
+
+/obj/effect/firefly/Initialize()
+	. = ..()
+	set_light(0.4, 0.1, 2, 2, "#ffc233")
+	var/image/I = image(icon, icon_state)
+	I.plane = EFFECTS_ABOVE_LIGHTING_PLANE
+	I.layer = ABOVE_LIGHTING_LAYER
+	AddOverlays(I)
+	icon_state = null

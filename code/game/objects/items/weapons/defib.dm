@@ -40,7 +40,7 @@
 /obj/item/defibrillator/loaded //starts with regular power cell for R&D to replace later in the round.
 	bcell = /obj/item/cell/apc
 
-/obj/item/defibrillator/update_icon()
+/obj/item/defibrillator/on_update_icon()
 	var/list/new_overlays = list()
 
 	if(paddles) //in case paddles got destroyed somehow.
@@ -53,12 +53,12 @@
 				new_overlays += "[initial(icon_state)]-powered"
 
 	if(bcell)
-		var/ratio = Ceiling(bcell.percent()/25) * 25
+		var/ratio = Ceiling(CELL_PERCENT(bcell)/25) * 25
 		new_overlays += "[initial(icon_state)]-charge[ratio]"
 	else
 		new_overlays += "[initial(icon_state)]-nocell"
 
-	overlays = new_overlays
+	SetOverlays(new_overlays)
 
 /obj/item/defibrillator/ui_action_click()
 	toggle_paddles()
@@ -74,10 +74,10 @@
 		if(!CanMouseDrop(src))
 			return
 		var/mob/M = src.loc
-		if(!M.unEquip(src))
+		if(!M.drop(src))
 			return
-		src.add_fingerprint(usr)
-		M.put_in_hands(src)
+		add_fingerprint(usr)
+		M.pick_or_drop(src)
 
 
 /obj/item/defibrillator/attackby(obj/item/W, mob/user, params)
@@ -87,9 +87,8 @@
 		if(bcell)
 			to_chat(user, "<span class='notice'>\the [src] already has a cell.</span>")
 		else
-			if(!user.unEquip(W))
+			if(!user.drop(W, src))
 				return
-			W.forceMove(src)
 			bcell = W
 			to_chat(user, "<span class='notice'>You install a cell in \the [src].</span>")
 			update_icon()
@@ -149,11 +148,12 @@
 	reattach_paddles(user) //paddles attached to a base unit should never exist outside of their base unit or the mob equipping the base unit
 
 /obj/item/defibrillator/proc/reattach_paddles(mob/user)
-	if(!paddles) return
+	if(!paddles)
+		return
 
 	if(ismob(paddles.loc))
 		var/mob/M = paddles.loc
-		if(M.drop_from_inventory(paddles, src))
+		if(M.drop(paddles, src))
 			to_chat(user, "<span class='notice'>\The [paddles] snap back into the main unit.</span>")
 	else
 		paddles.forceMove(src)
@@ -202,6 +202,7 @@
 	icon = 'icons/obj/defibrillator.dmi'
 	icon_state = "defibpaddles"
 	item_state = "defibpaddles"
+	improper_held_icon = TRUE
 	gender = PLURAL
 	force = 2
 	throwforce = 6
@@ -244,7 +245,7 @@
 	update_icon()
 	..()
 
-/obj/item/shockpaddles/update_icon()
+/obj/item/shockpaddles/on_update_icon()
 	icon_state = "defibpaddles[wielded]"
 	item_state = "defibpaddles[wielded]"
 	if(cooldown)
@@ -273,7 +274,7 @@
 		return "buzzes, \"Patient's chest is obstructed. Operation aborted.\""
 
 /obj/item/shockpaddles/proc/can_revive(mob/living/carbon/human/H) //This is checked right before attempting to revive
-	if(H.stat == DEAD)
+	if(H.is_ic_dead())
 		return "buzzes, \"Resuscitation failed - Severe neurological decay makes recovery of patient impossible. Further attempts futile.\""
 
 /obj/item/shockpaddles/proc/check_contact(mob/living/carbon/human/H)
@@ -335,7 +336,7 @@
 
 	//beginning to place the paddles on patient's chest to allow some time for people to move away to stop the process
 	user.visible_message("<span class='warning'>\The [user] begins to place [src] on [H]'s chest.</span>", "<span class='warning'>You begin to place [src] on [H]'s chest...</span>")
-	if(!do_after(user, 30, H))
+	if(!do_after(user, 30, H, luck_check_type = LUCK_CHECK_MED))
 		return
 	user.visible_message("<span class='notice'>\The [user] places [src] on [H]'s chest.</span>", "<span class='warning'>You place [src] on [H]'s chest.</span>")
 	playsound(src, 'sound/machines/defib_charge.ogg', 50, 0)
@@ -350,7 +351,7 @@
 		make_announcement("buzzes, \"Warning - Patient is in hypovolemic shock and may require a blood transfusion.\"", "warning") //also includes heart damage
 
 	//placed on chest and short delay to shock for dramatic effect, revive time is 5sec total
-	if(!do_after(user, chargetime, H))
+	if(!do_after(user, chargetime, H, , luck_check_type = LUCK_CHECK_MED))
 		return
 
 	//deduct charge here, in case the base unit was EMPed or something during the delay time
@@ -397,9 +398,9 @@
 		return
 
 	playsound(src, 'sound/machines/defib_charge.ogg', 50, 0)
-	audible_message("<span class='warning'>\The [src] lets out a steadily rising hum...</span>")
+	audible_message("<span class='warning'>\The [src] lets out a steadily rising hum...</span>", splash_override = "*hummm*")
 
-	if(!do_after(user, chargetime, H))
+	if(!do_after(user, chargetime, H, , luck_check_type = LUCK_CHECK_MED))
 		return
 
 	//deduct charge here, in case the base unit was EMPed or something during the delay time
@@ -441,14 +442,14 @@
 
 	if(!H.should_have_organ(BP_BRAIN)) return //no brain
 
-	var/obj/item/organ/internal/brain/brain = H.internal_organs_by_name[BP_BRAIN]
+	var/obj/item/organ/internal/cerebrum/brain/brain = H.internal_organs_by_name[BP_BRAIN]
 	if(!brain) return //no brain
 
 	var/brain_damage = Clamp((deadtime - DEFIB_TIME_LOSS)/(DEFIB_TIME_LIMIT - DEFIB_TIME_LOSS)*brain.max_damage, H.getBrainLoss(), brain.max_damage)
 	H.setBrainLoss(brain_damage)
 
 /obj/item/shockpaddles/proc/make_announcement(message, msg_class)
-	audible_message("<b>\The [src]</b> [message]", "\The [src] vibrates slightly.")
+	audible_message("<b>\The [src]</b> [message]", "\The [src] vibrates slightly.", splash_override = "[message]")
 
 /obj/item/shockpaddles/emag_act(uses, mob/user, obj/item/defibrillator/base)
 	if(istype(src, /obj/item/shockpaddles/linked))
@@ -534,7 +535,7 @@
 	return (base_unit.bcell && base_unit.bcell.checked_use(charge_amt))
 
 /obj/item/shockpaddles/linked/make_announcement(message, msg_class)
-	base_unit.audible_message("<b>\The [base_unit]</b> [message]", "\The [base_unit] vibrates slightly.")
+	base_unit.audible_message("<b>\The [base_unit]</b> [message]", "\The [base_unit] vibrates slightly.", splash_override = "[message]")
 
 /*
 	Standalone Shockpaddles
@@ -546,21 +547,24 @@
 
 /obj/item/shockpaddles/standalone/Destroy()
 	. = ..()
-	if(fail_counter)
-		STOP_PROCESSING(SSobj, src)
 
 /obj/item/shockpaddles/standalone/check_charge(charge_amt)
 	return 1
 
 /obj/item/shockpaddles/standalone/checked_use(charge_amt)
-	SSradiation.radiate(src, charge_amt/12) //just a little bit of radiation. It's the price you pay for being powered by magic I guess
+	var/datum/radiation_source/rad_source = SSradiation.radiate(src, new /datum/radiation/preset/uranium_238(50)) //just a little bit of radiation. It's the price you pay for being powered by magic I guess
+	rad_source.schedule_decay(5 SECONDS)
+
 	return 1
 
-/obj/item/shockpaddles/standalone/Process()
+/obj/item/shockpaddles/standalone/think()
 	if(fail_counter > 0)
-		SSradiation.radiate(src, fail_counter--)
+		var/datum/radiation_source/rad_source = SSradiation.radiate(src, new /datum/radiation/preset/uranium_238(20))
+		rad_source.schedule_decay(5 SECONDS)
 	else
-		STOP_PROCESSING(SSobj, src)
+		return
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/shockpaddles/standalone/emp_act(severity)
 	..()
@@ -575,13 +579,12 @@
 				to_chat(loc, "<span class='warning'>\The [src] feel pleasantly warm.</span>")
 
 	if(new_fail && !fail_counter)
-		START_PROCESSING(SSobj, src)
+		set_next_think(world.time)
 	fail_counter = new_fail
 
 /obj/item/shockpaddles/standalone/traitor
 	name = "defibrillator paddles"
 	desc = "A pair of unusual looking paddles powered by an experimental miniaturized reactor. It possesses both the ability to penetrate armor and to deliver powerful shocks."
-	icon = 'icons/obj/weapons.dmi'
 	icon_state = "defibpaddles0"
 	item_state = "defibpaddles0"
 	combat = 1

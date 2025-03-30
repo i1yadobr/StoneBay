@@ -26,7 +26,8 @@ GLOBAL_LIST_EMPTY(wayfindingbeacons)
 			if(A)
 				location = A.name
 			else
-				location = get_area(src)?.name || "Unknown"
+				var/area/AR = get_area(src)
+				location = AR?.name || "Unknown"
 		codes += list("wayfinding" = "[location]")
 		GLOB.wayfindingbeacons += src
 
@@ -39,7 +40,7 @@ GLOBAL_LIST_EMPTY(wayfindingbeacons)
 	set_invisibility(intact ? 101 : 0)
 	update_icon()
 
-/obj/machinery/navbeacon/update_icon()
+/obj/machinery/navbeacon/on_update_icon()
 	var/state="navbeacon[open]"
 
 	if(invisibility)
@@ -60,7 +61,7 @@ GLOBAL_LIST_EMPTY(wayfindingbeacons)
 
 		update_icon()
 
-	else if(I.GetIdCard())
+	else if(I.get_id_card())
 		if(open)
 			if (src.allowed(user))
 				src.locked = !src.locked
@@ -184,7 +185,7 @@ Transponder Codes:<UL>"}
 
 // Box station patrol beacons.
 
-/obj/machinery/navbeacon/box/ROBOTICS
+/obj/machinery/navbeacon/box/robotics
 	location = "ROBOTICS"
 	codes = list("patrol" = 1, "next_patrol" = "CH_EAST2")
 
@@ -250,6 +251,10 @@ Transponder Codes:<UL>"}
 	location = "SEC"
 	codes = list("patrol" = 1, "next_patrol" = "SE1")
 
+/obj/machinery/navbeacon/frontier/SEC/Initialize()
+	. = ..()
+	AddComponent(/datum/component/holomarker, "Security")
+
 /obj/machinery/navbeacon/frontier/SE1
 	location = "SE1"
 	codes = list("patrol" = 1, "next_patrol" = "DOME_E1")
@@ -294,6 +299,9 @@ Transponder Codes:<UL>"}
 	location = "ENG"
 	codes = list("patrol" = 1, "next_patrol" = "DOME_W2")
 
+/obj/machinery/navbeacon/frontier/ENG/Initialize()
+	. = ..()
+	AddComponent(/datum/component/holomarker, "Engineering")
 /obj/machinery/navbeacon/frontier/DOME_W2
 	location = "DOME_W2"
 	codes = list("patrol" = 1, "next_patrol" = "DOME_NW")
@@ -317,6 +325,10 @@ Transponder Codes:<UL>"}
 /obj/machinery/navbeacon/frontier/BAR
 	location = "BAR"
 	codes = list("patrol" = 1, "next_patrol" = "CRYO")
+
+/obj/machinery/navbeacon/frontier/BAR/Initialize()
+	. = ..()
+	AddComponent(/datum/component/holomarker, "Bar")
 
 /obj/machinery/navbeacon/frontier/CRYO
 	location = "CRYO"

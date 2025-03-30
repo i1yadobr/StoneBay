@@ -2,7 +2,7 @@
 	name = "small rock"
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore2"
-	randpixel = 8
+	randpixel = 10
 	w_class = ITEM_SIZE_SMALL
 	var/datum/geosample/geologic_data
 	var/ore/ore = null // set to a type to find the right instance on init
@@ -10,8 +10,7 @@
 /obj/item/ore/Initialize()
 	. = ..()
 	if(ispath(ore))
-		ensure_ore_data_initialised()
-		ore = ores_by_type[ore]
+		ore = GLOB.ores_by_type[ore]
 		if(ore.ore != type)
 			log_error("[src] ([src.type]) had ore type [ore.type] but that type does not have [src.type] set as its ore item!")
 		update_ore()
@@ -44,7 +43,7 @@
 
 /obj/item/ore/uranium/Initialize()
 	. = ..()
-	
+
 	create_reagents()
 	reagents.add_reagent(/datum/reagent/uranium, ore.result_amount, null, FALSE)
 

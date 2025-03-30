@@ -21,24 +21,25 @@
 	if(initial)  // We don't want this to be picked by random
 		. -= "Off"
 
-/obj/structure/sign/double/barsign/_examine_text(mob/user)
+/obj/structure/sign/double/barsign/examine(mob/user, infix)
 	. = ..()
+
 	switch(icon_state)
 		if("Off")
-			. += "\nIt appears to be switched off."
+			. += "It appears to be switched off."
 		if("Nar-sie Bistro")
-			. += "\nIt shows a picture of a large black and red being. Spooky!"
+			. += "It shows a picture of a large black and red being. Spooky!"
 		if("on", "empty")
-			. += "\nThe lights are on, but there's no picture."
+			. += "The lights are on, but there's no picture."
 		else
-			. += "\nIt says '[icon_state]'"
+			. += "It says '[icon_state]'"
 
 /obj/structure/sign/double/barsign/Initialize()
 	. = ..()
 	icon_state = pick(get_valid_states(initial = TRUE))
 
 /obj/structure/sign/double/barsign/attackby(obj/item/I, mob/living/user)
-	var/obj/item/card/id/card = I.GetIdCard()
+	var/obj/item/card/id/card = I.get_id_card()
 	if(istype(card) || emagged)
 		if(access_bar in card.GetAccess() || emagged)
 			var/sign_type = input(user, "What would you like to change the barsign to?") as null|anything in get_valid_states(FALSE, user)

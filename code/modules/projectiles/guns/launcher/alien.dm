@@ -8,22 +8,20 @@
 
 /obj/item/gun/launcher/alien/Initialize()
 	. = ..()
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
 	last_regen = world.time
 
-/obj/item/gun/launcher/alien/Destroy()
-	STOP_PROCESSING(SSobj, src)
-	return ..()
-
-/obj/item/gun/launcher/alien/Process()
+/obj/item/gun/launcher/alien/think()
 	if((ammo < max_ammo) && (world.time > (last_regen + ammo_gen_time)))
 		ammo++
 		last_regen = world.time
 		update_icon()
 
-/obj/item/gun/launcher/alien/_examine_text(mob/user)
+	set_next_think(world.time + 1 SECOND)
+
+/obj/item/gun/launcher/alien/examine(mob/user, infix)
 	. = ..()
-	. += "\nIt has [ammo] [ammo_name]\s remaining."
+	. += "It has [ammo] [ammo_name]\s remaining."
 
 /obj/item/gun/launcher/alien/consume_next_projectile()
 	if(ammo < 1) return null
@@ -51,11 +49,11 @@
 	max_ammo = 3
 	ammo = 3
 	release_force = 1
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "spikethrower3"
 	item_state = "spikethrower"
 	fire_sound_text = "a strange noise"
 	fire_sound = 'sound/weapons/bladeslice.ogg'
 
-/obj/item/gun/launcher/alien/spikethrower/update_icon()
+/obj/item/gun/launcher/alien/spikethrower/on_update_icon()
 	icon_state = "spikethrower[ammo]"

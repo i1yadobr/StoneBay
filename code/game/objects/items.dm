@@ -3,6 +3,7 @@
 	icon = 'icons/obj/items.dmi'
 	w_class = ITEM_SIZE_NORMAL
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
+	blocks_emissive = EMISSIVE_BLOCK_GENERIC
 
 	var/image/blood_overlay = null //this saves our blood splatter overlay, which will be processed not to go over the edges of the sprite
 	var/randpixel = 6
@@ -44,7 +45,9 @@
 	//This flag is used to determine when items in someone's inventory cover others. IE helmets making it so you can't see glasses, etc.
 	//It should be used purely for appearance. For gameplay effects caused by items covering body parts, use body_parts_covered.
 	var/flags_inv = 0
-	var/body_parts_covered = 0 //see code/__defines/items_clothing.dm for appropriate bit flags
+	var/body_parts_covered = NO_BODYPARTS //see code/__defines/items_clothing.dm for appropriate bit flags
+	/// If TRUE, the held icon will appear in front of the wielder regardless of their dir.
+	var/improper_held_icon = FALSE
 
 	var/item_flags = 0 //Miscellaneous flags pertaining to equippable objects.
 
@@ -57,9 +60,8 @@
 	var/slowdown_accessory // How much an accessory will slow you down when attached to a worn article of clothing.
 	var/canremove = 1 //Mostly for Ninja code at this point but basically will not allow the item to be removed if set to 0. /N
 	var/force_drop = FALSE // Allows the item to be manually dropped by the wielder even if canremove is set to FALSE.
-	var/list/armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 0, rad = 0)
+	var/list/armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 0)
 	var/list/allowed = null //suit storage stuff.
-	var/obj/item/device/uplink/hidden_uplink = null // All items can have an uplink hidden inside, just remember to add the triggers.
 	var/zoomdevicename = null //name used for message when binoculars/scope is used
 	var/zoom = 0 //1 if item is actively being used to zoom. For scoped guns and binoculars.
 	var/surgery_speed = 1 //When this item is used as a surgery tool, multiply the delay of the surgery step by this much.
@@ -83,9 +85,28 @@
 	// Species-specific sprite sheets for inventory sprites. Used in clothing/refit_for_species() proc.
 	var/list/sprite_sheets_obj = list()
 
-	var/pickup_sound = null
+	/// Played when the item is picked up
+	var/pickup_sound = SFX_PICKUP_GENERIC
+
+	/// Played when the item is dropped or thrown
+	var/drop_sound = SFX_DROP_GENERIC
 
 	var/ear_protection = 0
+
+	var/tool_behaviour = 0
+
+	/// Multipler of this tool's speed
+	var/toolspeed = 1
+
+	/// Sound played when this tool is used. Can be a list too.
+	var/tool_sound
+
+	rad_resist_type = /datum/rad_resist/item
+
+/datum/rad_resist/item
+	alpha_particle_resist = 35 MEGA ELECTRONVOLT
+	beta_particle_resist = 6 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/item/New()
 	..()
@@ -94,10 +115,9 @@
 		pixel_y = rand(-randpixel, randpixel)
 
 /obj/item/Destroy()
-	QDEL_NULL(hidden_uplink)
 	if(ismob(loc))
 		var/mob/m = loc
-		m.drop_from_inventory(src)
+		m.drop(src, force = TRUE)
 	if(maptext)
 		maptext = ""
 
@@ -114,6 +134,9 @@
 
 /obj/item/device
 	icon = 'icons/obj/device.dmi'
+
+	pickup_sound = SFX_PICKUP_DEVICE
+	drop_sound = SFX_DROP_DEVICE
 
 //Checks if the item is being held by a mob, and if so, updates the held icons
 /obj/item/proc/update_twohanding()
@@ -170,7 +193,9 @@
 
 	src.loc = T
 
-/obj/item/_examine_text(mob/user)
+/obj/item/examine(mob/user, infix)
+	. = ..()
+
 	var/size
 	switch(src.w_class)
 		if(ITEM_SIZE_TINY)
@@ -185,8 +210,8 @@
 			size = "bulky"
 		if(ITEM_SIZE_HUGE + 1 to INFINITY)
 			size = "huge"
-	var/desc_comp = "" //For "description composite"
-	desc_comp += "It is a [size] item."
+
+	. += "It is a [size] item."
 
 	if(force)
 		var/desc_weight
@@ -210,31 +235,28 @@
 		else if(src.mod_handy < 1.25) desc_handy = "handy"
 		else if(src.mod_handy < 1.65) desc_handy = "really handy"
 		else desc_handy = "outstandingly handy"
-		desc_comp += "<BR>It makes [desc_weight], [desc_reach], and [desc_handy] weapon."
+
+		. += "<BR>It makes [desc_weight], [desc_reach], and [desc_handy] weapon."
 
 	if(hasHUD(user, HUD_SCIENCE)) //Mob has a research scanner active.
-		desc_comp += "<BR>*--------* <BR>"
+		. += "<BR>*--------* <BR>"
 
 		if(origin_tech)
-			desc_comp += SPAN("notice", "Testing potentials:<BR>")
+			. += SPAN("notice", "Testing potentials:<BR>")
 			//var/list/techlvls = params2list(origin_tech)
 			for(var/T in origin_tech)
-				desc_comp += "Tech: Level [origin_tech[T]] [CallTechName(T)] <BR>"
+				. += "Tech: Level [origin_tech[T]] [CallTechName(T)] <BR>"
 		else
-			desc_comp += "No tech origins detected.<BR>"
+			. += "No tech origins detected.<BR>"
 
 		if(LAZYLEN(matter))
-			desc_comp += SPAN("notice", "Extractable materials:<BR>")
+			. += SPAN("notice", "Extractable materials:<BR>")
 			for(var/mat in matter)
-				desc_comp += "[get_material_by_name(mat)]<BR>"
+				. += "[get_material_by_name(mat)]<BR>"
 		else
-			desc_comp += SPAN("danger", "No extractable materials detected.<BR>")
-		desc_comp += "*--------*"
+			. += SPAN("danger", "No extractable materials detected.<BR>")
 
-	//if(weapon_desc)
-	//	desc_comp += handle_weapon_desc()
-
-	return ..(user, "", desc_comp)
+		. += "*--------*"
 
 /obj/item/attack_hand(mob/user)
 	if(!user)
@@ -258,17 +280,21 @@
 
 	var/old_loc = loc
 
+	var/changing_slots = FALSE
 	// Removing from a storage
 	if(istype(loc, /obj/item/storage))
 		var/obj/item/storage/S = loc
 		S.remove_from_storage(src)
 	// Unequipping from self
-	else if(loc == user && !user.unEquip(src))
-		return
+	else if(loc == user)
+		changing_slots = TRUE
+		if(!user.drop(src, changing_slots = changing_slots))
+			return
+
 	// Doing some unintended shit that may cause catastrophical events, aborting
 	// If you'll ever want to implement something that intentionally allows direct clicking on an item while it's inside
 	// an atom's contents - just go and smack yourself with a brick, it shall not work like this.
-	else if(!isturf(loc))
+	else if(!isturf(loc) && loc != user.loc)
 		return
 
 	throwing = 0
@@ -276,7 +302,7 @@
 	if(QDELETED(src)) // Unequipping may change src gc_destroyed, so must check here
 		return
 
-	pickup(user)
+	pickup(user, changing_slots)
 
 	if(user.put_in_active_hand(src))
 		if(isturf(old_loc))
@@ -317,7 +343,7 @@
 	return
 
 // apparently called whenever an item is removed from a slot, container, or anything else.
-/obj/item/proc/dropped(mob/user)
+/obj/item/proc/dropped(mob/user, changing_slots = FALSE)
 	if(randpixel)
 		pixel_z = randpixel //an idea borrowed from some of the older pixel_y randomizations. Intended to make items appear to drop at a character
 
@@ -327,6 +353,9 @@
 			user.l_hand.update_twohanding()
 		if(user.r_hand)
 			user.r_hand.update_twohanding()
+
+	if(!changing_slots && !istype(loc, /obj/item/clothing/accessory))
+		play_drop_sound()
 
 	SEND_SIGNAL(src, SIGNAL_ITEM_UNEQUIPPED, src, user)
 
@@ -364,6 +393,8 @@
 		M.l_hand.update_twohanding()
 	if(M.r_hand)
 		M.r_hand.update_twohanding()
+
+	play_handling_sound(slot)
 
 	SEND_SIGNAL(src, SIGNAL_ITEM_EQUIPPED, src, user, slot)
 
@@ -490,18 +521,20 @@ var/list/global/slot_flags_enumeration = list(
 /obj/item/proc/return_item()
 	return src
 
-/obj/item/proc/mob_can_unequip(mob/M, slot, disable_warning = 0)
-	if(!slot) return 0
-	if(!M) return 0
+/obj/item/proc/can_be_unequipped_by(mob/M, slot, disable_warning = 0)
+	if(!slot)
+		return FALSE
+	if(!M)
+		return FALSE
 
 	if(!canremove)
-		return 0
+		return FALSE
 	if(!M.slot_is_accessible(slot, src, disable_warning? null : M))
-		return 0
-	return 1
+		return FALSE
+	return TRUE
 
 /obj/item/proc/can_be_dropped_by_client(mob/M)
-	return M.canUnEquip(src)
+	return M.can_unequip(src)
 
 /obj/item/verb/verb_pickup()
 	set src in oview(1)
@@ -593,21 +626,19 @@ var/list/global/slot_flags_enumeration = list(
 		visible_message(SPAN("warning", "[H] blocks [P] with \the [src]!"))
 		return
 	visible_message(SPAN("danger", "\The [src] gets [msg] out of [H]'s hands by \a [P]!"))
-	H.drop_from_inventory(src)
-	if(src && isturf(loc))
+	if(H.drop(src))
 		throw_at(get_edge_target_turf(src, pick(GLOB.alldirs)), rand(1, dist), 1)
 
 /obj/item/proc/knocked_out(mob/living/carbon/human/H, strong_knock = FALSE, dist = 2) // item gets knocked out of one's hands
 	H.useblock_off()
 	if(canremove)
-		H.drop_from_inventory(src)
-		if(src && istype(loc,/turf))
+		if(H.drop(src))
 			throw_at(get_edge_target_turf(src,pick(GLOB.alldirs)), rand(1, dist), 1)
 		if(!strong_knock)
 			H.visible_message(SPAN("warning", "[H]'s [src] flies off!"))
 			return TRUE
 	H.visible_message(SPAN("warning", "[H] falls down, unable to keep balance!"))
-	H.apply_effect(3, WEAKEN, 0)
+	H.apply_effect(5, WEAKEN, 0)
 	return canremove ? TRUE : FALSE
 
 /obj/item/proc/get_loc_turf()
@@ -617,6 +648,9 @@ var/list/global/slot_flags_enumeration = list(
 	return loc
 
 /obj/item/proc/eyestab(mob/living/carbon/M, mob/living/carbon/user)
+	if(is_pacifist(user))
+		to_chat(user, SPAN("warning", "You can't you're pacifist!"))
+		return
 
 	var/mob/living/carbon/human/H = M
 	if(istype(H))
@@ -668,7 +702,7 @@ var/list/global/slot_flags_enumeration = list(
 			if(prob(50))
 				if(M.stat != 2)
 					to_chat(M, SPAN("warning", "You drop what you're holding and clutch at your eyes!"))
-					M.drop_item()
+					M.drop_active_hand()
 				M.eye_blurry += 10
 				M.Paralyse(1)
 				M.Weaken(4)
@@ -685,11 +719,10 @@ var/list/global/slot_flags_enumeration = list(
 
 /obj/item/clean_blood()
 	. = ..()
+	if(!.)
+		return
 	if(blood_overlay)
-		overlays.Remove(blood_overlay)
-	if(istype(src, /obj/item/clothing/gloves))
-		var/obj/item/clothing/gloves/G = src
-		G.transfer_blood = 0
+		CutOverlays(blood_overlay, ATOM_ICON_CACHE_PROTECTED)
 
 /obj/item/reveal_blood()
 	if(was_bloodied && !fluorescent)
@@ -698,41 +731,52 @@ var/list/global/slot_flags_enumeration = list(
 		blood_overlay.color = COLOR_LUMINOL
 		update_icon()
 
-/obj/item/add_blood(mob/living/carbon/human/M)
-	if (!..())
-		return 0
-
-	if(istype(src, /obj/item/melee/energy))
+/obj/item/add_blood(source)
+	var/bloodied_check = is_bloodied
+	var/old_blood_color = blood_color
+	. = ..()
+	if(!.)
 		return
 
-	//if we haven't made our blood_overlay already
-	if( !blood_overlay )
+	// if we haven't made our blood_overlay already
+	if(!blood_overlay)
 		generate_blood_overlay()
 
-	//apply the blood-splatter overlay if it isn't already in there
-	if(!blood_DNA.len)
-		blood_overlay.color = blood_color
-		overlays += blood_overlay
+	// apply the blood-splatter overlay if it wasn't there
+	if(!bloodied_check)
+		AddOverlays(blood_overlay, ATOM_ICON_CACHE_PROTECTED)
+	else if(blood_color != old_blood_color)
+		update_blood_overlay()
 
-	//if this blood isn't already in the list, add it
-	if(istype(M))
-		if(blood_DNA[M.dna.unique_enzymes])
-			return 0 //already bloodied with this blood. Cannot add more.
-		blood_DNA[M.dna.unique_enzymes] = M.dna.b_type
-	return 1 //we applied blood to the item
+	// if this blood isn't already in the list, add it
+	if(ishuman(source))
+		var/mob/living/carbon/human/M = source
+		if(!blood_DNA[M.dna.unique_enzymes])
+			blood_DNA[M.dna.unique_enzymes] = M.dna.b_type
 
 GLOBAL_LIST_EMPTY(blood_overlay_cache)
 
 /obj/item/proc/generate_blood_overlay(force = FALSE)
 	if(blood_overlay && !force)
 		return
-	if(GLOB.blood_overlay_cache["[icon]" + icon_state])
-		blood_overlay = GLOB.blood_overlay_cache["[icon]" + icon_state]
+	if(GLOB.blood_overlay_cache["[icon]/[icon_state]/[blood_color]"])
+		blood_overlay = GLOB.blood_overlay_cache["[icon]/[icon_state]/[blood_color]"]
 		return
-	var/image/blood = image(icon = 'icons/effects/blood.dmi', icon_state = "itemblood")
+	var/image/blood = overlay_image('icons/effects/blood.dmi', "itemblood", color = blood_color, flags = DEFAULT_APPEARANCE_FLAGS|RESET_COLOR)
 	blood.filters += filter(type = "alpha", icon = icon(icon, icon_state))
-	GLOB.blood_overlay_cache["[icon]" + icon_state] = blood
+	GLOB.blood_overlay_cache["[icon]/[icon_state]/[blood_color]"] = blood
 	blood_overlay = blood
+
+// Regenerates the bloodiness, to be used when the item's icon_state get changed to something of another shape.
+/obj/item/proc/update_blood_overlay()
+	if(!blood_overlay)
+		return // nah
+	if(is_bloodied)
+		CutOverlays(blood_overlay, ATOM_ICON_CACHE_PROTECTED)
+		generate_blood_overlay(TRUE) // Force recheck.
+		AddOverlays(blood_overlay, ATOM_ICON_CACHE_PROTECTED)
+	else
+		generate_blood_overlay(TRUE) // Just updating it, no need in actual overlaying.
 
 /obj/item/proc/showoff(mob/user)
 	for (var/mob/M in view(user))
@@ -752,10 +796,12 @@ modules/mob/mob_movement.dm if you move you will be zoomed out
 modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 */
 //Looking through a scope or binoculars should /not/ improve your periphereal vision. Still, increase viewsize a tiny bit so that sniping isn't as restricted to NSEW
-/obj/item/proc/zoom(mob/user, tileoffset = 14, viewsize = 9) //tileoffset is client view offset in the direction the user is facing. viewsize is how far out this thing zooms. 7 is normal view
+/obj/item/proc/zoom(mob/user, tileoffset = 14, viewsize = 2) //tileoffset is client view offset in the direction the user is facing. viewsize is how far out this thing zooms. 7 is normal view
 	if(!user.client)
 		return
 	if(zoom)
+		return
+	if(user.is_view_shifted)
 		return
 
 	var/devicename = zoomdevicename || name
@@ -772,32 +818,30 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 		return
 
 	if(user.hud_used.hud_shown)
-		user.toggle_zoom_hud()	// If the user has already limited their HUD this avoids them having a HUD when they zoom in
-	user.client.view = viewsize
+		user.hud_used.show_hud(HUD_STYLE_REDUCED)
+
+	user.client.view_size.set_both(viewsize, viewsize)
 	zoom = 1
 
 	var/viewoffset = WORLD_ICON_SIZE * tileoffset
 	switch(user.dir)
 		if (NORTH)
-			user.client.pixel_x = 0
-			user.client.pixel_y = viewoffset
+			user.shift_view(0, viewoffset)
 		if (SOUTH)
-			user.client.pixel_x = 0
-			user.client.pixel_y = -viewoffset
+			user.shift_view(0, -viewoffset)
 		if (EAST)
-			user.client.pixel_x = viewoffset
-			user.client.pixel_y = 0
+			user.shift_view(viewoffset, 0)
 		if (WEST)
-			user.client.pixel_x = -viewoffset
-			user.client.pixel_y = 0
+			user.shift_view(-viewoffset, 0)
 
 	user.visible_message("\The [user] peers through [zoomdevicename ? "the [zoomdevicename] of [src]" : "[src]"].")
 
-	register_signal(src, SIGNAL_QDELETING, /obj/item/proc/unzoom)
-	register_signal(src, SIGNAL_MOVED, /obj/item/proc/zoom_move)
-	register_signal(src, SIGNAL_DIR_SET, /obj/item/proc/unzoom)
-	register_signal(src, SIGNAL_ITEM_UNEQUIPPED, /obj/item/proc/zoom_drop)
-	register_signal(user, SIGNAL_STAT_SET, /obj/item/proc/unzoom)
+	register_signal(src, SIGNAL_QDELETING, nameof(.proc/unzoom))
+	register_signal(src, SIGNAL_MOVED, nameof(.proc/zoom_move))
+	register_signal(src, SIGNAL_DIR_SET, nameof(.proc/unzoom))
+	register_signal(src, SIGNAL_ITEM_UNEQUIPPED, nameof(.proc/zoom_drop))
+	register_signal(user, SIGNAL_STAT_SET, nameof(.proc.unzoom))
+	register_signal(user, SIGNAL_VIEW_SHIFTED_SET, nameof(.proc/unzoom))
 
 /obj/item/proc/zoom_drop(obj/item/I, mob/user)
 	unzoom(user)
@@ -813,26 +857,28 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	zoom = 0
 
 	unregister_signal(src, SIGNAL_QDELETING)
-	unregister_signal(src, SIGNAL_MOVED, /obj/item/proc/zoom_move)
+	unregister_signal(src, SIGNAL_MOVED, nameof(.proc/zoom_move))
 	unregister_signal(src, SIGNAL_DIR_SET)
 	unregister_signal(src, SIGNAL_ITEM_UNEQUIPPED)
+	unregister_signal(user, SIGNAL_VIEW_SHIFTED_SET, nameof(.proc/unzoom))
 
 	user = user == src ? loc : (user || loc)
 	if(!istype(user))
-		crash_with("[log_info_line(src)]: Zoom user lost]")
+		util_crash_with("[log_info_line(src)]: Zoom user lost]")
 		return
 
 	unregister_signal(user, SIGNAL_STAT_SET)
+	unregister_signal(user, SIGNAL_VIEW_SHIFTED_SET)
 
 	if(!user.client)
 		return
 
-	user.client.view = world.view
-	if(!user.hud_used.hud_shown)
-		user.toggle_zoom_hud()
+	user.client.view_size.reset_to_default()
 
-	user.client.pixel_x = 0
-	user.client.pixel_y = 0
+	if(!user.hud_used.hud_shown)
+		user.hud_used.show_hud(HUD_STYLE_STANDART)
+
+	user.shift_view(0, 0)
 	user.visible_message("[zoomdevicename ? "\The [user] looks up from [src]" : "\The [user] lowers [src]"].")
 
 /obj/item/proc/pwr_drain()
@@ -869,43 +915,114 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 		user_human = user_mob
 
 	var/mob_state = get_icon_state(slot)
+	if(isnull(mob_state))
+		// No way to get a mob_state whatsoever, most likely the item has no base icon and is entirely made of overlays (i.e. bodyparts).
+		return
 
 	var/mob_icon
 
 	if(icon_override)
 		mob_icon = icon_override
-		if(slot == 	slot_l_hand_str || slot == slot_l_ear_str)
+
+		if(slot == slot_l_hand_str || slot == slot_l_ear_str)
 			mob_state = "[mob_state]_l"
-		if(slot == 	slot_r_hand_str || slot == slot_r_ear_str)
+
+		if(slot == slot_r_hand_str || slot == slot_r_ear_str)
 			mob_state = "[mob_state]_r"
+
 	else
 		if(item_icons && item_icons[slot])
 			mob_icon = item_icons[slot]
-		else if (user_human && user_human.body_build)
+
+		else if(user_human?.body_build)
 			mob_icon = user_human.body_build.get_mob_icon(slot, mob_state)
 
-	var/image/ret_overlay = overlay_image(mob_icon,mob_state,color,RESET_COLOR)
-	if(user_human && user_human.species && user_human.species.equip_adjust.len)
-		var/list/equip_adjusts = user_human.species.equip_adjust
+		else
+			// Couldn't find no icon to use, aborting.
+			return
+
+	var/image/ret_overlay
+
+	var/list/ret_list
+	var/icon/main_icon
+	var/icon/back_icon
+	var/use_list = FALSE
+
+	if(!improper_held_icon && (slot == slot_l_hand_str || slot == slot_r_hand_str))
+		ret_list = list()
+		use_list = TRUE
+
+		main_icon = new(mob_icon, mob_state)
+		back_icon = new('icons/effects/blank.dmi')
+
+		if(slot == slot_l_hand_str)
+			main_icon.Insert('icons/effects/blank.dmi', dir = EAST)
+			back_icon.Insert(icon(mob_icon, mob_state, EAST), dir = EAST)
+		if(slot == slot_r_hand_str)
+			main_icon.Insert('icons/effects/blank.dmi', dir = WEST)
+			back_icon.Insert(icon(mob_icon, mob_state, WEST), dir = WEST)
+
+	else
+		ret_overlay = overlay_image(mob_icon, mob_state, color, RESET_COLOR)
+
+	if(!improper_held_icon && length(user_human?.body_build?.equip_adjust))
+		var/list/equip_adjusts = user_human.body_build.equip_adjust
 		if(equip_adjusts[slot])
-			var/image_key = "[user_human.species] [user_human.body_build.name] [mob_icon] [mob_state] [color]"
-			ret_overlay = user_human.species.equip_overlays[image_key]
-			if(!ret_overlay)
-				var/icon/final_I = new(mob_icon, icon_state = mob_state)
-				var/list/shifts = equip_adjusts[slot]
-				if(shifts && shifts.len)
-					var/shift_facing
-					for(shift_facing in shifts)
-						var/list/facing_list = shifts[shift_facing]
-						final_I = dir_shift(final_I, text2dir(shift_facing), facing_list["x"], facing_list["y"])
-				ret_overlay = overlay_image(final_I, color, flags = RESET_COLOR)
+			if(!use_list)
+				var/image_key = "[user_human.body_build.name]-[mob_icon]-[mob_state]-[color]"
+				ret_overlay = user_human.body_build.equip_overlays[image_key]
 
-				user_human.species.equip_overlays[image_key] = ret_overlay
+				if(!ret_overlay)
+					var/icon/final_I = new(mob_icon, icon_state = mob_state)
+					var/list/shifts = equip_adjusts[slot]
+					if(length(shifts))
+						for(var/shift_facing in shifts)
+							var/list/facing_list = shifts[shift_facing]
+							final_I = dir_shift(final_I, text2dir(shift_facing), facing_list["x"], facing_list["y"])
 
-	return ret_overlay
+					ret_overlay = overlay_image(final_I, null, color, flags = RESET_COLOR)
+					user_human.body_build.equip_overlays[image_key] = ret_overlay
+
+			else
+				var/image_key
+
+				image_key = "[user_human.body_build.name]-[mob_icon]-[mob_state]-[color]-main"
+				ret_overlay = user_human.body_build.equip_overlays[image_key]
+
+				if(!ret_overlay)
+					var/list/shifts = equip_adjusts[slot]
+					if(length(shifts))
+						for(var/shift_facing in shifts)
+							var/list/facing_list = shifts[shift_facing]
+							main_icon = dir_shift(main_icon, text2dir(shift_facing), facing_list["x"], facing_list["y"])
+
+					ret_overlay = overlay_image(main_icon, null, color, flags = RESET_COLOR)
+					user_human.body_build.equip_overlays[image_key] = ret_overlay
+
+				ret_list += ret_overlay
+
+				image_key = "[user_human.body_build.name]-[mob_icon]-[mob_state]-[color]-back"
+				ret_overlay = user_human.body_build.equip_overlays[image_key]
+
+				if(!ret_overlay)
+					var/list/shifts = equip_adjusts[slot]
+					if(length(shifts))
+						for(var/shift_facing in shifts)
+							var/list/facing_list = shifts[shift_facing]
+							back_icon = dir_shift(back_icon, text2dir(shift_facing), facing_list["x"], facing_list["y"])
+
+					ret_overlay = overlay_image(back_icon, null, color, flags = RESET_COLOR)
+					user_human.body_build.equip_overlays[image_key] = ret_overlay
+
+				ret_list += ret_overlay
+
+	if(use_list && !length(ret_list))
+		ret_list = list(overlay_image(main_icon, null, color, flags = RESET_COLOR), overlay_image(back_icon, null, color, flags = RESET_COLOR))
+
+	return use_list ? ret_list : ret_overlay
 
 /obj/item/proc/get_examine_line()
-	if(blood_DNA)
+	if(is_bloodied)
 		. = SPAN("warning", "\icon[src] [gender==PLURAL?"some":"a"] [(blood_color != SYNTH_BLOOD_COLOUR) ? "blood" : "oil"]-stained [SPAN("info", "<em>[src]</em>")]")
 	else
 		. = "\icon[src] \a [SPAN("info", "<em>[src]</em>")]"
@@ -930,3 +1047,19 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	spawn()
 		..()
 	return
+
+/obj/item/proc/play_drop_sound()
+	if(!drop_sound)
+		return
+
+	var/volume = clamp(rand(12, 16) * w_class, DROP_SOUND_VOLUME_MIN, DROP_SOUND_VOLUME_MAX)
+
+	playsound(src, drop_sound, volume, TRUE, extrarange = -5)
+
+/obj/item/proc/play_handling_sound(slot)
+	if(!pickup_sound)
+		return
+
+	if(slot == slot_l_hand || slot == slot_r_hand)
+		var/volume = clamp(rand(5, 15) * w_class, PICKUP_SOUND_VOLUME_MIN, PICKUP_SOUND_VOLUME_MAX)
+		playsound(src, pickup_sound, volume, TRUE, extrarange = -5)

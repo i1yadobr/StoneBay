@@ -11,13 +11,13 @@ Pipelines + Other Objects -> Pipe network
 */
 /obj/machinery/atmospherics
 	anchored = 1
-	idle_power_usage = 0
-	active_power_usage = 0
+	idle_power_usage = 0 WATTS
+	active_power_usage = 0 WATTS
 	power_channel = STATIC_ENVIRON
 	var/nodealert = 0
 	var/power_rating //the maximum amount of power the machine can use to do work, affects how powerful the machine is, in Watts
 
-	plane = FLOOR_PLANE
+	plane = TURF_PLANE
 	layer = EXPOSED_PIPE_LAYER
 
 	var/connect_types = CONNECT_TYPE_REGULAR
@@ -32,7 +32,7 @@ Pipelines + Other Objects -> Pipe network
 
 	var/atmos_initalized = FALSE
 
-/obj/machinery/atmospherics/New()
+/obj/machinery/atmospherics/Initialize()
 	if(!icon_manager)
 		icon_manager = new()
 
@@ -42,11 +42,13 @@ Pipelines + Other Objects -> Pipe network
 
 	if(!pipe_color_check(pipe_color))
 		pipe_color = null
-	GLOB.atmos_machinery += src
-	..()
+	GLOB.atmos_machinery |= src
+	. = ..()
 
 /obj/machinery/atmospherics/Destroy()
-	GLOB.atmos_machinery -= src
+	GLOB.atmos_machinery.Remove(src)
+	node1 = null
+	node2 = null
 	return ..()
 
 /obj/machinery/atmospherics/proc/atmos_init()
@@ -139,5 +141,5 @@ Pipelines + Other Objects -> Pipe network
 
 /obj/machinery/atmospherics/proc/disconnect(obj/machinery/atmospherics/reference)
 
-/obj/machinery/atmospherics/update_icon()
+/obj/machinery/atmospherics/on_update_icon()
 	return null

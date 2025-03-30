@@ -11,6 +11,7 @@
 	name = "tile"
 	singular_name = "tile"
 	desc = "A non-descript floor tile."
+	item_state = "tile"
 	randpixel = 7
 	w_class = ITEM_SIZE_NORMAL
 	max_amount = 100
@@ -23,6 +24,9 @@
 	obj_flags = 0
 	var/image/stored_decals = null
 
+	drop_sound = SFX_DROP_AXE
+	pickup_sound = SFX_PICKUP_AXE
+
 /*
  * Grass
  */
@@ -31,7 +35,11 @@
 	singular_name = "grass floor tile"
 	desc = "A patch of grass like they often use on golf courses."
 	icon_state = "tile_grass"
+	item_state = "tile_grass"
 	origin_tech = list(TECH_BIO = 1)
+
+	drop_sound = SFX_DROP_HERB
+	pickup_sound = SFX_PICKUP_HERB
 
 /*
  * Wood
@@ -41,6 +49,10 @@
 	singular_name = "wood floor tile"
 	desc = "An easy to fit wooden floor tile."
 	icon_state = "tile-wood"
+	item_state = "tile_wood"
+
+	drop_sound = SFX_DROP_WOODEN
+	pickup_sound = SFX_PICKUP_WOODEN
 
 /obj/item/stack/tile/wood/cyborg
 	name = "wood floor tile synthesizer"
@@ -55,6 +67,7 @@
 	singular_name = "darkwood floor tile"
 	desc = "An easy to fit darkwood floor tile."
 	icon_state = "tile-darkwood"
+	item_state = "tile_wood"
 	stacktype = /obj/item/stack/tile/darkwood
 	build_type = /obj/item/stack/tile/darkwood
 
@@ -103,7 +116,7 @@
 	name = "dark floor tile"
 	singular_name = "dark floor tile"
 	icon_state = "fr_tile"
-	matter = list(MATERIAL_PLASTEEL = 937.5)
+	matter = list(MATERIAL_STEEL = 937.5)
 
 /obj/item/stack/tile/floor_dark/fifty
 	amount = 50
@@ -123,6 +136,33 @@
 	matter = list(MATERIAL_PLASTIC = 937.5)
 
 /obj/item/stack/tile/floor_brown/fifty
+	amount = 50
+
+/obj/item/stack/tile/floor_mono
+	name = "steel mono tile"
+	singular_name = "steel mono tile"
+	icon_state = "tile_rough"
+	matter = list(MATERIAL_STEEL = 937.5)
+
+/obj/item/stack/tile/floor_mono/fifty
+	amount = 50
+
+/obj/item/stack/tile/floor_mono_dark
+	name = "dark mono tile"
+	singular_name = "dark mono tile"
+	icon_state = "fr_tile_rough"
+	matter = list(MATERIAL_STEEL = 937.5)
+
+/obj/item/stack/tile/floor_mono_dark/fifty
+	amount = 50
+
+/obj/item/stack/tile/floor_mono_white
+	name = "white mono tile"
+	singular_name = "white mono tile"
+	icon_state = "tile_white_rough"
+	matter = list(MATERIAL_PLASTIC = 937.5)
+
+/obj/item/stack/tile/floor_mono_white/fifty
 	amount = 50
 
 /obj/item/stack/tile/techfloor

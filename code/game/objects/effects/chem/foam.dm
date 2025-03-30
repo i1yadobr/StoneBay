@@ -15,18 +15,20 @@
 	var/expand = 1
 	var/metal = 0
 
-/obj/effect/effect/foam/New(loc, ismetal = 0)
-	..(loc)
+/obj/effect/effect/foam/Initialize(mapload, ismetal = FALSE)
+	. = ..()
 	icon_state = "[ismetal? "m" : ""]foam"
 	metal = ismetal
 	playsound(src, 'sound/effects/bubbles2.ogg', 80, 1, -3)
-	spawn(3 + metal * 3)
-		Process()
-		checkReagents()
-	addtimer(CALLBACK(src, .proc/remove_foam), 12 SECONDS)
+	add_think_ctx("check_reagents", CALLBACK(src, nameof(.proc/check_reagents)), 0)
+	add_think_ctx("remove_foam", CALLBACK(src, nameof(.proc/remove_foam)), 0)
+
+	set_next_think_ctx("check_reagents", world.time + (3 + metal * 3))
+	set_next_think_ctx("remove_foam", world.time + 12 SECONDS)
+	set_next_think(world.time + (3 + metal * 3))
 
 /obj/effect/effect/foam/proc/remove_foam()
-	STOP_PROCESSING(SSobj, src)
+	set_next_think(0)
 	if(metal)
 		var/obj/structure/foamedmetal/M = new(src.loc)
 		M.metal = metal
@@ -34,14 +36,14 @@
 	flick("[icon_state]-disolve", src)
 	QDEL_IN(src, 5)
 
-/obj/effect/effect/foam/proc/checkReagents() // transfer any reagents to the floor
+/obj/effect/effect/foam/proc/check_reagents() // transfer any reagents to the floor
 	if(!metal && reagents)
 		var/turf/T = get_turf(src)
 		reagents.touch_turf(T)
 		for(var/obj/O in T)
 			reagents.touch_obj(O)
 
-/obj/effect/effect/foam/Process()
+/obj/effect/effect/foam/think()
 	if(--amount < 0)
 		return
 
@@ -64,6 +66,8 @@
 			if(reagents)
 				for(var/datum/reagent/R in reagents.reagent_list)
 					F.reagents.add_reagent(R.type, 1, safety = 1) //added safety check since reagents in the foam have already had a chance to react
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/effect/effect/foam/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume) // foam disolves when heated, except metal foams
 	if(!metal && prob(max(0, exposed_temperature - 475)))
@@ -142,7 +146,7 @@
 
 	return ..()
 
-/obj/structure/foamedmetal/update_icon()
+/obj/structure/foamedmetal/on_update_icon()
 	if(metal == 1)
 		icon_state = "metalfoam"
 	else
@@ -156,7 +160,7 @@
 		qdel(src)
 
 /obj/structure/foamedmetal/attack_hand(mob/user)
-	if ((MUTATION_HULK in user.mutations) || (prob(75 - metal * 25)))
+	if((MUTATION_HULK in user.mutations) || (MUTATION_STRONG in user.mutations) || (prob(75 - metal * 25)))
 		user.visible_message("<span class='warning'>[user] smashes through the foamed metal.</span>", "<span class='notice'>You smash through the metal foam wall.</span>")
 		qdel(src)
 	else
@@ -166,7 +170,7 @@
 /obj/structure/foamedmetal/attackby(obj/item/I, mob/user)
 	if(istype(I, /obj/item/grab))
 		var/obj/item/grab/G = I
-		G.affecting.loc = src.loc
+		G.affecting.forceMove(loc)
 		visible_message("<span class='warning'>[G.assailant] smashes [G.affecting] through the foamed metal wall.</span>")
 		qdel(I)
 		qdel(src)

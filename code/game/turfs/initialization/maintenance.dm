@@ -20,7 +20,7 @@
 	if(T.density)
 		return
 	// Quick and dirty check to avoid placing things inside windows
-	if(locate(/obj/structure/grille, T))
+	if(locate(/obj/structure/window_frame, T) || locate(/obj/structure/grille, T))
 		return
 
 	var/cardinal_turfs = T.CardinalTurfs()
@@ -40,10 +40,14 @@
 		new new_junk(T)
 
 	if(prob(vermin_probability))
-		if(prob(80))
-			new /mob/living/simple_animal/mouse(T)
-		else
-			new /mob/living/simple_animal/lizard(T)
+		var/verminprob = rand(1, 100)
+		switch(verminprob)
+			if(1 to 70)
+				new /mob/living/simple_animal/mouse(T)
+			if(71 to 90)
+				new /mob/living/simple_animal/lizard(T)
+			if(91 to 100)
+				new /mob/living/simple_animal/hamster(T)
 
 	if(prob(web_probability))	// Keep in mind that only "corners" get any sort of web
 		attempt_web(T, cardinal_turfs)
@@ -69,7 +73,7 @@
 			if(dir == EAST)
 				new /obj/effect/decal/cleanable/cobweb2(T)
 			if(prob(web_probability))
-				var/obj/effect/spider/spiderling/spiderling = new /obj/effect/spider/spiderling/mundane/dormant(T)
+				var/obj/structure/spider/spiderling/spiderling = new /obj/structure/spider/spiderling/mundane/dormant(T)
 				spiderling.pixel_y = spiderling.shift_range
 				spiderling.pixel_x = dir == WEST ? -spiderling.shift_range : spiderling.shift_range
 

@@ -3,7 +3,7 @@
 	if(istype(D, /atom/movable)) {\
 		var/atom/movable/AM = D; \
 		if(AM.loc != null) {\
-			crash_with("QDEL("+hint+"): "+AM.name+" was supposed to be in nullspace but isn't \
+			util_crash_with("QDEL("+hint+"): "+AM.name+" was supposed to be in nullspace but isn't \
 						(LOCATION= "+AM.loc.name+" ("+AM.loc.x+","+AM.loc.y+","+AM.loc.z+") )! Destroy didn't do its job!"); \
 			AM.forceMove(null); \
 		} \
@@ -153,6 +153,8 @@ SUBSYSTEM_DEF(garbage)
 		if(!D || D.gc_destroyed != GCd_at_time) // So if something else coincidently gets the same ref, it's not deleted by mistake
 			++gcedlasttick
 			++totalgcs
+			rustg_prom_counter_inc(PROM_GC_COLLECTED, null)
+
 			pass_counts[level]++
 			#ifdef TESTING
 			reference_find_on_fail -= refID		//It's deleted we don't care anymore.
@@ -178,8 +180,9 @@ SUBSYSTEM_DEF(garbage)
 				var/datum/qdel_item/I = items[type]
 
 				if(!I.failures)
-					crash_with("GC: -- \ref[D] | [type] was unable to be GC'd --")
+					to_world_log("GC: -- \ref[D] | [type] was unable to be GC'd --")
 				I.failures++
+				rustg_prom_counter_inc(PROM_GC_ITEM_FAILURES, list("name" = I.name))
 			if(GC_QUEUE_HARDDELETE)
 				if(avoid_harddel)
 					continue
@@ -217,6 +220,8 @@ SUBSYSTEM_DEF(garbage)
 	var/ticktime = world.time
 	++delslasttick
 	++totaldels
+	rustg_prom_counter_inc(PROM_GC_HARD_DELS, null)
+
 	var/type = D.type
 	var/refID = "\ref[D]"
 
@@ -228,6 +233,7 @@ SUBSYSTEM_DEF(garbage)
 
 	I.hard_deletes++
 	I.hard_delete_time += TICK_DELTA_TO_MS(tick)
+	rustg_prom_counter_inc(PROM_GC_ITEM_HARD_DELETES, list("name" = I.name))
 
 
 	if(tick > highest_del_tickusage)
@@ -288,6 +294,7 @@ SUBSYSTEM_DEF(garbage)
 	if(!I)
 		I = SSgarbage.items[D.type] = new /datum/qdel_item(D.type)
 	I.qdels++
+	rustg_prom_counter_inc(PROM_GC_ITEM_QDELS, list("name" = I.name))
 
 	if(isnull(D.gc_destroyed))
 		// Give the components a chance to prevent their parent from being deleted.
@@ -320,7 +327,7 @@ SUBSYSTEM_DEF(garbage)
 				// indicates the objects Destroy() does not respect force
 				#ifdef TESTING
 				if(!I.no_respect_force)
-					crash_with("WARNING: [D.type] has been force deleted, but is \
+					util_crash_with("WARNING: [D.type] has been force deleted, but is \
 						returning an immortal QDEL_HINT, indicating it does \
 						not respect the force flag for qdel(). It has been \
 						placed in the queue, further instances of this type \

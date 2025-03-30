@@ -47,7 +47,6 @@
 	wreckage = /obj/effect/decal/mecha_wreckage/mauler
 
 /obj/mecha/combat/marauder/Initialize()
-	. = ..()
 	var/obj/item/mecha_parts/mecha_equipment/ME = new /obj/item/mecha_parts/mecha_equipment/weapon/energy/pulse
 	ME.attach(src)
 	ME = new /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/explosive
@@ -58,10 +57,9 @@
 	ME.attach(src)
 	src.smoke_system.set_up(3, 0, src)
 	src.smoke_system.attach(src)
-	return
+	. = ..()
 
 /obj/mecha/combat/marauder/seraph/Initialize()
-	. = ..()//Let it equip whatever is needed.
 	var/obj/item/mecha_parts/mecha_equipment/ME
 	if(equipment.len)//Now to remove it and equip anew.
 		for(ME in equipment)
@@ -77,56 +75,58 @@
 	ME.attach(src)
 	ME = new /obj/item/mecha_parts/mecha_equipment/armor_booster/antiproj_armor_booster(src)
 	ME.attach(src)
-	return
+	. = ..()
 
 /obj/mecha/combat/marauder/Destroy()
 	qdel(smoke_system)
 
 	return ..()
 
-/obj/mecha/combat/marauder/relaymove(mob/user,direction)
-	if(user != src.occupant) //While not "realistic", this piece is player friendly.
-		user.loc = get_turf(src)
-		to_chat(user, "You climb out from [src]")
-		return 0
-	if(!can_move)
-		return 0
+/obj/mecha/combat/marauder/relaymove(mob/user, direction)
 	if(zoom)
 		if(world.time - last_message > 20)
 			src.occupant_message("Unable to move while in zoom mode.")
 			last_message = world.time
-		return 0
-	if(connected_port)
-		if(world.time - last_message > 20)
-			src.occupant_message("Unable to move while connected to the air system port")
-			last_message = world.time
-		return 0
+		return FALSE
+	. = ..()
+
+/obj/mecha/combat/marauder/do_move(direction)
+	if(!can_move)
+		return FALSE
+
 	if(!thrusters && src.pr_inertial_movement.active())
-		return 0
+		return FALSE
+
 	if(state || !has_charge(step_energy_drain))
-		return 0
-	var/tmp_step_in = step_in
+		return FALSE
+
 	var/tmp_step_energy_drain = step_energy_drain
 	var/move_result = 0
-	if(internal_damage&MECHA_INT_CONTROL_LOST)
+	var/old_dir = dir
+	if(internal_damage & MECHA_INT_CONTROL_LOST)
 		move_result = mechsteprand()
-	else if(src.dir!=direction)
+	else if(dir != direction && !strafe)
 		move_result = mechturn(direction)
 	else
-		move_result	= mechstep(direction)
+		move_result	= mechstep(direction, old_dir)
 	if(move_result)
+		can_move = 0
 		if(istype(src.loc, /turf/space))
 			if(!src.check_for_support())
 				src.pr_inertial_movement.start(list(src,direction))
 				if(thrusters)
 					src.pr_inertial_movement.set_process_args(list(src,direction))
 					tmp_step_energy_drain = step_energy_drain*2
-
-		can_move = 0
-		spawn(tmp_step_in) can_move = 1
+				else
+					src.log_message("Movement control lost. Inertial movement started.")
+		spawn(step_in)
+			can_move = 1
 		use_power(tmp_step_energy_drain)
-		return 1
-	return 0
+		return TRUE
+
+	return FALSE
+
+
 
 
 /obj/mecha/combat/marauder/verb/toggle_thrusters()
@@ -172,19 +172,18 @@
 		src.log_message("Toggled zoom mode.")
 		src.occupant_message("<font color='[src.zoom?"blue":"red"]'>Zoom mode [zoom?"en":"dis"]abled.</font>")
 		if(zoom)
-			src.occupant.client.view = 12
+			occupant.client.view_size.set_both(5, 5)
 			sound_to(src.occupant, sound('sound/mecha/imag_enh.ogg', volume=50))
 		else
-			src.occupant.client.view = world.view//world.view - default mob view size
-	return
+			occupant.client.view_size.reset_to_default()
 
 
 /obj/mecha/combat/marauder/go_out()
 	if(src.occupant && src.occupant.client)
-		src.occupant.client.view = world.view
-		src.zoom = 0
-	..()
-	return
+		occupant.client.view_size.reset_to_default()
+		zoom = 0
+
+	return ..()
 
 
 /obj/mecha/combat/marauder/get_stats_part()

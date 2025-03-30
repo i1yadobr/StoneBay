@@ -9,7 +9,7 @@
 	var/update = 1
 
 /datum/pipe_network/Destroy()
-	STOP_PROCESSING(SSmachines, src)
+	STOP_PROCESSING_PIPENET(src)
 	for(var/datum/pipeline/line_member in line_members)
 		line_member.network = null
 	for(var/obj/machinery/atmospherics/normal_member in normal_members)
@@ -24,7 +24,7 @@
 	//Equalize gases amongst pipe if called for
 	if(update)
 		update = 0
-		reconcile_air() //equalize_gases(gases)
+		equalize_gases(gases)
 
 	//Give pipelines their process call for pressure checking and what not. Have to remove pressure checks for the time being as pipes dont radiate heat - Mport
 	//for(var/datum/pipeline/line_member in line_members)
@@ -41,8 +41,8 @@
 
 	update_network_gases()
 
-	if((normal_members.len>0)||(line_members.len>0))
-		START_PROCESSING(SSmachines, src)
+	if((normal_members.len > 0)||(line_members.len > 0))
+		START_PROCESSING_PIPENET(src)
 		return 1
 	qdel(src)
 
@@ -79,6 +79,3 @@
 
 	for(var/datum/gas_mixture/air in gases)
 		volume += air.volume
-
-/datum/pipe_network/proc/reconcile_air()
-	equalize_gases(gases)

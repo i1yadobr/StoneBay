@@ -9,8 +9,8 @@
 	hardware_flag = PROGRAM_TELESCREEN
 	anchored = TRUE
 	density = 0
-	base_idle_power_usage = 75
-	base_active_power_usage = 300
+	base_idle_power_usage = 75 WATTS
+	base_active_power_usage = 300 WATTS
 	max_hardware_size = 2
 	steel_sheet_cost = 10
 	light_strength = 4
@@ -18,8 +18,8 @@
 	broken_damage = 150
 	w_class = ITEM_SIZE_HUGE
 
-/obj/item/modular_computer/telescreen/New()
-	..()
+/obj/item/modular_computer/telescreen/Initialize()
+	. = ..()
 	// Allows us to create "north bump" "south bump" etc. named objects, for more comfortable mapping.
 	name = "telescreen"
 

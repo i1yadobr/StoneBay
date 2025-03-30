@@ -1,3 +1,12 @@
+
+#define CHECK_PREY_TYPE(ret, M) \
+	for(var/mob_type in prey_types) { \
+		if(istype(M, mob_type)) { \
+			ret = TRUE; \
+			break; \
+		} \
+	}
+
 //Cat
 /mob/living/simple_animal/cat
 	name = "cat"
@@ -18,37 +27,60 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	turns_since_scan = 0
-	var/mob/living/simple_animal/mouse/movement_target
+	var/mob/living/simple_animal/movement_target
 	var/mob/flee_target
-	minbodytemp = 223		//Below -50 Degrees Celcius
-	maxbodytemp = 323	//Above 50 Degrees Celcius
+	minbodytemp = -50 CELSIUS
+	maxbodytemp = 50 CELSIUS
 	holder_type = /obj/item/holder/cat
 	mob_size = MOB_SMALL
 	possession_candidate = 1
 	bodyparts = /decl/simple_animal_bodyparts/quadruped
 
+	var/list/prey_types = list(
+		/mob/living/simple_animal/mouse,
+		/mob/living/simple_animal/lizard,
+		/mob/living/simple_animal/hamster
+		)
+
 /mob/living/simple_animal/cat/Life()
 	if(!..() || incapacitated() || client)
 		return
 	//MICE!
-	if((src.loc) && isturf(src.loc))
-		if(!resting && !buckled)
-			for(var/mob/living/simple_animal/mouse/M in loc)
-				if(!M.stat)
-					M.splat()
-					visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
-					movement_target = null
-					stop_automated_movement = 0
-					break
+	if(isturf(loc) && !resting && !buckled)
+		for(var/mob/living/simple_animal/M in loc)
+			if(M.stat)
+				continue
 
+			var/prey_check
+			CHECK_PREY_TYPE(prey_check, M)
+			if(!prey_check)
+				continue
 
+			if(prob(67))
+				visible_emote("toys with \the [M].")
+			else
+				if(ismouse(M))
+					var/mob/living/simple_animal/mouse/mouse = M
+					mouse.splat()
+				else
+					M.adjustBruteLoss(M.maxHealth)  // Enough damage to kill
+					M.death()
+				visible_emote(pick("bites \the [M]!","claws at \the [M].","chomps on \the [M]!"))
+				movement_target = null
+				stop_automated_movement = 0
+			break
 
-	for(var/mob/living/simple_animal/mouse/snack in oview(src,5))
-		if(snack.stat < DEAD && prob(15))
-			audible_emote(pick("hisses and spits!","mrowls fiercely!","eyes [snack] hungrily."))
+	for(var/mob/living/simple_animal/snack in oview(src, 5))
+		if(snack.stat || prob(85))
+			continue
+
+		var/prey_check
+		CHECK_PREY_TYPE(prey_check, snack)
+		if(!prey_check)
+			continue
+
+		audible_emote(pick("hisses and spits!", "mrowls fiercely!", "eyes [snack] hungrily."))
 		break
-
-
 
 	turns_since_scan++
 	if (turns_since_scan > 5)
@@ -81,10 +113,17 @@
 	if( !movement_target || !(movement_target.loc in oview(src, 4)) )
 		movement_target = null
 		stop_automated_movement = 0
-		for(var/mob/living/simple_animal/mouse/snack in oview(src)) //search for a new target
-			if(isturf(snack.loc) && !snack.stat)
-				movement_target = snack
-				break
+		for(var/mob/living/simple_animal/snack in oview(src)) //search for a new target
+			if(!isturf(snack.loc) || snack.stat)
+				continue
+
+			var/prey_check
+			CHECK_PREY_TYPE(prey_check, snack)
+			if(!prey_check)
+				continue
+
+			movement_target = snack
+			break
 
 	if(movement_target)
 		stop_automated_movement = 1
@@ -144,7 +183,7 @@
 		var/current_dist = get_dist(src, friend)
 
 		if (movement_target != friend)
-			if (current_dist > follow_dist && !istype(movement_target, /mob/living/simple_animal/mouse) && (friend in oview(src)))
+			if (current_dist > follow_dist && !istype(movement_target, /mob/living/simple_animal) && (friend in oview(src)))
 				//stop existing movement
 				walk_to(src,0)
 				turns_since_scan = 0
@@ -248,3 +287,5 @@
 /mob/living/simple_animal/cat/kitten/New()
 	gender = pick(MALE, FEMALE)
 	..()
+
+#undef CHECK_PREY_TYPE

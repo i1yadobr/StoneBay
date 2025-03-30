@@ -91,7 +91,7 @@
 		if(75 to 76)
 			new /obj/item/pickaxe/diamond(src)
 		if(77 to 78)
-			new /obj/item/pickaxe/diamonddrill(src)
+			new /obj/item/pickaxe/drill/diamonddrill(src)
 		if(79 to 80)
 			new /obj/item/pickaxe/gold(src)
 		if(81 to 82)
@@ -146,7 +146,7 @@
 		if(100)
 			new /obj/item/clothing/head/bearpelt(src)
 
-/obj/structure/closet/crate/secure/loot/togglelock(mob/user as mob)
+/obj/structure/closet/crate/secure/loot/togglelock(mob/user)
 	if(!locked)
 		return
 
@@ -187,9 +187,9 @@
 		if(guesschar != code[i])
 			. = 0
 
-/obj/structure/closet/crate/secure/loot/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/closet/crate/secure/loot/attackby(obj/item/W, mob/user)
 	if(locked)
-		if (istype(W, /obj/item/device/multitool)) // Greetings Urist McProfessor, how about a nice game of cows and bulls?
+		if (isMultitool(W)) // Greetings Urist McProfessor, how about a nice game of cows and bulls?
 			to_chat(user, "<span class='notice'>DECA-CODE LOCK ANALYSIS:</span>")
 			if (attempts == 1)
 				to_chat(user, "<span class='warning'>* Anti-Tamper system will activate on the next failed access attempt.</span>")

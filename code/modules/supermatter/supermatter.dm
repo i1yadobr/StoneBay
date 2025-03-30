@@ -24,7 +24,7 @@
 
 // Base variants are applied to everyone on the same Z level
 // Range variants are applied on per-range basis: numbers here are on point blank, it scales with the map size (assumes square shaped Z levels)
-#define DETONATION_RADS 20
+#define DETONATION_RADS (100 KILO CURIE)
 #define DETONATION_MOB_CONCUSSION 4			// Value that will be used for Weaken() for mobs.
 
 // Base amount of ticks for which a specific type of machine will be offline for. +- 20% added by RNG.
@@ -41,8 +41,11 @@
 /obj/machinery/power/supermatter
 	name = "Supermatter"
 	desc = "A strangely translucent and iridescent crystal. <span class='danger'>You get headaches just from looking at it.</span>"
+
 	icon = 'icons/obj/engine.dmi'
 	icon_state = "darkmatter"
+	base_icon_state = "darkmatter"
+
 	density = 1
 	anchored = 0
 	light_outer_range = 4
@@ -50,9 +53,6 @@
 	layer = ABOVE_OBJ_LAYER
 
 	var/gasefficency = 0.25
-
-	var/base_icon_state = "darkmatter"
-
 	var/damage = 0
 	var/damage_archived = 0
 	var/safe_alert = "Crystaline hyperstructure returning to safe operating levels."
@@ -104,6 +104,10 @@
 	var/aw_delam = FALSE
 	var/aw_EPR = FALSE
 
+	var/datum/radiation_source/rad_source = null
+
+	is_poi = TRUE
+
 /obj/machinery/power/supermatter/Initialize()
 	. = ..()
 	uid = gl_uid++
@@ -134,8 +138,6 @@
 	if(status >= min_status)
 		if(!current_state)
 			log_and_message_admins(message)
-			if(send_to_irc)
-				send2adminirc(message)
 		return TRUE
 	else
 		return FALSE
@@ -196,7 +198,8 @@
 
 	// Effect 1: Radiation, weakening to all mobs on Z level
 	for(var/z in affected_z)
-		SSradiation.z_radiate(locate(1, 1, z), DETONATION_RADS, 1)
+		var/datum/radiation_source/rad_explode = SSradiation.z_radiate(locate(1, 1, z), new /datum/radiation(DETONATION_RADS, RADIATION_BETA_PARTICLE, BETA_PARTICLE_ENERGY * 5), 1)
+		rad_explode.schedule_decay(6 MINUTES)
 
 	for(var/mob/living/mob in GLOB.living_mob_list_)
 		var/turf/TM = get_turf(mob)
@@ -242,7 +245,7 @@
 			S.grounding = 0
 	// Effect 3: Break solar arrays
 
-	for(var/obj/machinery/power/solar/S in GLOB.machines)
+	for(var/obj/machinery/power/solar/S in SSmachines.machinery)
 		if(!(S.z in affected_z))
 			continue
 		if(prob(DETONATION_SOLAR_BREAK_CHANCE))
@@ -285,19 +288,19 @@
 	else
 		alert_msg = null
 	if(alert_msg)
-		GLOB.global_announcer.autosay(alert_msg, get_announcement_computer("Supermatter Monitor"), "Engineering")
+		GLOB.global_announcer.autosay(alert_msg, "Supermatter Monitor", "Engineering")
 		//Public alerts
 		if((damage > emergency_point) && !public_alert)
-			GLOB.global_announcer.autosay("WARNING: SUPERMATTER CRYSTAL DELAMINATION IMMINENT!", get_announcement_computer("Supermatter Monitor"))
+			GLOB.global_announcer.autosay("WARNING: SUPERMATTER CRYSTAL DELAMINATION IMMINENT!", "Supermatter Monitor")
 			if(power >= 1400)
-				GLOB.global_announcer.autosay("WARNING: AN EXTREMELY POWERFUL EXPLOSION EXPECTED!", get_announcement_computer("Supermatter Monitor"))
+				GLOB.global_announcer.autosay("WARNING: AN EXTREMELY POWERFUL EXPLOSION EXPECTED!", "Supermatter Monitor")
 			public_alert = 1
 			for(var/mob/M in GLOB.player_list)
 				var/turf/T = get_turf(M)
 				if(T && (T.z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION)) && !istype(M,/mob/new_player) && !isdeaf(M))
 					sound_to(M, sound('sound/signals/alarm1.ogg'))
 		else if(safe_warned && public_alert)
-			GLOB.global_announcer.autosay(alert_msg, get_announcement_computer("Supermatter Monitor"))
+			GLOB.global_announcer.autosay(alert_msg, "Supermatter Monitor")
 			public_alert = 0
 
 
@@ -305,7 +308,7 @@
 
 	var/turf/L = loc
 
-	if(isnull(L))		// We have a null turf...something is wrong, stop processing this entity.
+	if(QDELETED(L))		// We have a null turf...something is wrong, stop processing this entity.
 		return PROCESS_KILL
 
 	if(!istype(L)) 	//We are in a crate or somewhere that isn't turf, if we return to turf resume processing but for now.
@@ -372,7 +375,7 @@
 		//Release reaction gasses
 		var/heat_capacity = removed.heat_capacity()
 		removed.adjust_multi("plasma", max(device_energy / PLASMA_RELEASE_MODIFIER, 0), \
-		                     "oxygen", max((device_energy + removed.temperature - T0C) / OXYGEN_RELEASE_MODIFIER, 0))
+		                     "oxygen", max(CONV_KELVIN_CELSIUS(device_energy + removed.temperature) / OXYGEN_RELEASE_MODIFIER, 0))
 
 		var/thermal_power = THERMAL_RELEASE_MODIFIER * device_energy
 		if (debug)
@@ -392,17 +395,29 @@
 			if(istype(G) && istype(G.matrix, /obj/item/device/hudmatrix/meson))
 				continue
 			var/obj/item/rig/R = H.back
+
 			if(istype(R) && istype(R.visor, /obj/item/rig_module/vision/meson) && R.visor.active)
 				continue
 			var/effect = max(0, min(200, power * config_hallucination_power * sqrt(1 / max(1, get_dist(H, src)))))
 			H.adjust_hallucination(effect, 0.25 * effect)
 
-	SSradiation.radiate(src, power * 1.5) //Better close those shutters!
+	if(power > 0)
+		if(rad_source == null)
+			rad_source = SSradiation.radiate(src, new /datum/radiation/preset/supermatter)
+
+		rad_source.info.energy = power * (100 KILO ELECTRONVOLT)
+	else
+		qdel(rad_source)
+
 	power -= (power/DECAY_FACTOR)**3		//energy losses due to radiation
 	handle_admin_warnings()
 
 	return 1
 
+/obj/machinery/power/supermatter/Destroy()
+	qdel(rad_source)
+
+	. = ..()
 
 /obj/machinery/power/supermatter/bullet_act(obj/item/projectile/Proj)
 	var/turf/L = loc
@@ -472,10 +487,10 @@
 		"<span class=\"danger\">You touch \the [W] to \the [src] when everything suddenly goes silent.\"</span>\n<span class=\"notice\">\The [W] flashes into dust as you flinch away from \the [src].</span>",\
 		"<span class=\"warning\">Everything suddenly goes silent.</span>")
 
-	user.drop_from_inventory(W)
+	user.drop(W, force = TRUE)
 	Consume(W)
 
-	user.apply_effect(150, IRRADIATE, blocked = user.getarmor(null, "rad"))
+	user.rad_act(new /datum/radiation_source(new /datum/radiation/preset/supermatter(4), src))
 
 /obj/machinery/power/supermatter/Bumped(atom/AM)
 	if(istype(AM, /obj/effect))
@@ -506,9 +521,9 @@
 				"<span class=\"warning\">The unearthly ringing subsides and you notice you have new radiation burns.</span>", 2)
 		else
 			l.show_message("<span class=\"warning\">You hear an uneartly ringing and notice your skin is covered in fresh radiation burns.</span>", 2)
-	var/rads = 500
-	SSradiation.radiate(src, rads)
 
+	var/datum/radiation_source/temp_src = SSradiation.radiate(src, new /datum/radiation/preset/supermatter(10))
+	temp_src.schedule_decay(20 SECONDS)
 
 /proc/supermatter_pull(atom/target, pull_range = 255, pull_power = STAGE_FIVE)
 	var/list/movable_atoms = list()

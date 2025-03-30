@@ -97,8 +97,8 @@
 		if(target_mob)
 			unregister_signal(target_mob, SIGNAL_QDELETING)
 		target_mob = L
-		if(!isnull(target_mob) && !client)
-			register_signal(target_mob, SIGNAL_QDELETING, .proc/_target_deleted)
+		if(!QDELETED(target_mob) && !client)
+			register_signal(target_mob, SIGNAL_QDELETING, nameof(.proc/_target_deleted))
 	if(target_mob)
 		Aggro()
 		stance = HOSTILE_STANCE_ATTACK
@@ -165,13 +165,13 @@
 		return M
 
 /mob/living/simple_animal/hostile/proc/Aggro()
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		return 0
 	vision_range = aggro_vision_range
 	return 1
 
 /mob/living/simple_animal/hostile/proc/LoseAggro()
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		return 0
 	stop_automated_movement = 0
 	vision_range = idle_vision_range

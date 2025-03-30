@@ -1,10 +1,10 @@
-/datum/admins/proc/DB_ban_record(bantype, mob/banned_mob, duration = -1, reason, job = "", rounds = 0, banckey = null, banip = null, bancid = null)
+/datum/admins/proc/DB_ban_record(bantype, mob/banned_mob, duration = -1, reason, job = "", rounds = 0, banckey = null, banip = null, bancid = null, luck_level = null, luck_type = null)
 	if(!src || !src.owner)
 		return
-	_DB_ban_record(src.owner.ckey, src.owner.computer_id, src.owner.address, bantype, banned_mob, duration, reason, job, rounds, banckey, banip, bancid)
+	_DB_ban_record(src.owner.ckey, src.owner.computer_id, src.owner.address, bantype, banned_mob, duration, reason, job, rounds, banckey, banip, bancid, luck_level, luck_type)
 
 // Either pass the mob you wish to ban in the 'banned_mob' attribute, or the banckey, banip and bancid variables. If both are passed, the mob takes priority! If a mob is not passed, banckey is the minimum that needs to be passed! banip and bancid are optional.
-/proc/_DB_ban_record(a_ckey, a_computerid, a_ip, bantype, mob/banned_mob, duration = -1, reason, job = "", rounds = 0, banckey = null, banip = null, bancid = null)
+/proc/_DB_ban_record(a_ckey, a_computerid, a_ip, bantype, mob/banned_mob, duration = -1, reason, job = "", rounds = 0, banckey = null, banip = null, bancid = null, luck_level = 0, luck_type = "")
 	if(usr)
 		if(!check_rights(R_MOD,0) && !check_rights(R_BAN))	return
 
@@ -29,6 +29,14 @@
 		if(BANTYPE_JOB_TEMP)
 			bantype_str = "JOB_TEMPBAN"
 			bantype_pass = 1
+		if(BANTYPE_PERMA_LUCKBAN)
+			bantype_str = "LUCK_PERMABAN"
+			duration = -1
+			bantype_pass = 1
+		if(BANTYPE_TEMP_LUCKBAN)
+			bantype_str = "LUCK_TEMPBAN"
+			bantype_pass = 1
+
 	if( !bantype_pass ) return 0
 	if( !istext(reason) ) return 0
 	if( !isnum(duration) ) return 0
@@ -83,7 +91,9 @@
 				who,
 				adminwho,
 				edits,
-				server_id
+				server_id,
+				luck_level,
+				luck_type
 			)
 		VALUES (
 			Now(),
@@ -103,22 +113,50 @@
 			$who,
 			$adminwho,
 			'',
-			$server_id
-		)"}, dbcon, list(serverip = serverip, bantype_str = bantype_str, reason = reason, job = job,
-		duration = duration ? duration : 0,
-		rounds = rounds ? "[rounds]" : "0", ckey = ckey,
-		computerid = computerid ? computerid : "",
-		ip = ip ? ip : "", a_ckey = a_ckey,
-		a_computer_id = a_computerid ? a_computerid : "",
-		a_ip = a_ip ? a_ip : "", who = who, adminwho = adminwho, server_id = config.general.server_id))
+			$server_id,
+			$luck_level,
+			$luck_type
+		)"}, dbcon, list(
+			serverip = serverip,
+			bantype_str = bantype_str,
+			reason = reason,
+			job = job,
+			duration = duration ? duration : 0,
+			rounds = rounds ? "[rounds]" : "0",
+			ckey = ckey,
+			computerid = computerid ? computerid : "",
+			ip = ip ? ip : "", a_ckey = a_ckey,
+			a_computer_id = a_computerid ? a_computerid : "",
+			a_ip = a_ip ? a_ip : "",
+			who = who,
+			adminwho = adminwho,
+			server_id = config.general.server_id,
+			luck_level = luck_level,
+			luck_type = luck_type
+			))
 
 	var/setter = a_ckey
 	if(usr)
 		to_chat(usr, "<span class='notice'>Ban saved to database.</span>")
 		setter = key_name_admin(usr)
 	message_admins("[setter] has added a [bantype_str] for [ckey] [(job)?"([job])":""] [(duration > 0)?"([duration] minutes)":""] with the reason: \"[reason]\" to the ban database.",1)
+
+	if(config.indigo_bot.ban_webhook)
+		var/webhook_str = "BAN ADDED\n"
+		webhook_str += "**Type:** [bantype_str]\n"
+
+		if(job)
+			webhook_str += "**Job:** [job]\n"
+
+		webhook_str += "**Admin:** [a_ckey]\n"
+		webhook_str += "**Player:** [ckey]\n"
+		webhook_str += "**Reason:** [reason]\n"
+		webhook_str += "**Duration:** [(duration > 0) ? rounds?"[duration] ROUNDS":"[duration] minutes" : "PERMANENT"]"
+
+		GLOB.indigo_bot.chat_webhook(config.indigo_bot.ban_webhook, webhook_str)
+
 	if(ismob(banned_mob) && banned_mob.client)
-		var/rendered_text = uppertext("You have been [(duration > 0) ? "temporarily ([duration] minutes)" : "permanently"] banned with the reason: ")
+		var/rendered_text = uppertext("You have been [(duration > 0) ? "temporarily ([rounds?"[duration] ROUNDS":"[duration] minutes"])" : "permanently"] [luck_level?"luck":""] banned with the reason: ")
 		rendered_text = rendered_text + "\n\"[reason]\"."
 		rendered_text = "<font size='12' color='red'><b>[rendered_text]</b></font>"
 		to_chat(banned_mob, rendered_text, MESSAGE_TYPE_SYSTEM)
@@ -195,6 +233,18 @@
 	if(!isnum(ban_id))
 		to_chat(usr, "<span class='warning'>Database update failed due to a ban ID mismatch. Contact the database admin.</span>")
 		return
+
+
+	if(config.indigo_bot.ban_webhook)
+		var/webhook_str = "BAN LIFTED\n"
+		webhook_str += "**Type:** [bantype_str]\n"
+
+		if(job)
+			webhook_str += "**Job:** [job]\n"
+
+		webhook_str += "**Player:** [ckey]"
+
+		GLOB.indigo_bot.chat_webhook(config.indigo_bot.ban_webhook, webhook_str)
 
 	DB_ban_unban_by_id(ban_id)
 
@@ -371,7 +421,7 @@
 
 	output += "<table width='100%'><tr><td width='50%'><div class=\"form-group\"><label for=\"dbbanaddtype\">Ban type</label><select name='dbbanaddtype' class=\"form-control form-control-sm\" id=\"dbbanaddtype\"><option value=''>--</option><option value='1'>PERMABAN</option><option value='2'>TEMPBAN</option><option value='3'>JOB PERMABAN</option><option value='4'>JOB TEMPBAN</option></select></div></td><td width='50%'><div class=\"form-group\"><label for=\"dbbanaddckey\">Ckey</label><input type='text' name='dbbanaddckey'class=\"form-control form-control-sm\" id=\"dbbanaddckey\"></div></td></tr><tr><td width='50%'><div class=\"form-group\"><label for=\"dbbanaddip\">IP</label><input type='text' name='dbbanaddip'class=\"form-control form-control-sm\" id=\"dbbanaddip\"></div></td><td width='50%'><div class=\"form-group\"><label for=\"dbbanaddcid\">CID</label><input type='text' name='dbbanaddcid'class=\"form-control form-control-sm\" id=\"dbbanaddcid\"></div></td></tr><tr><td width='50%'><div class=\"form-group\"><label for=\"dbbaddduration\">Duration</label><input type='text'name='dbbaddduration' class=\"form-control form-control-sm\" id=\"dbbaddduration\"></div></td><td width='50%'><div class=\"form-group\"><label for=\"dbbanaddjob\">Ban job</label><select name='dbbanaddjob'class=\"form-control form-control-sm\" id=\"dbbanaddjob\"><option value=''>--</option>"
 
-	for(var/j in list("OOC", "LOOC", "AHelp", "Species", "Male", "Female", "Appearance", "Name")) // new bans
+	for(var/j in list("OOC", "LOOC", "AHelp", "Species", "Male", "Female", "Appearance", "Name", "Bug reporting")) // new bans
 		output += "<option value='[j]'>[j]</option>"
 	for(var/j in get_all_jobs())
 		output += "<option value='[j]'>[j]</option>"

@@ -12,8 +12,8 @@
 
 	density = 1
 	anchored = 1
-	idle_power_usage = 20
-	active_power_usage = 5000
+	idle_power_usage = 20 WATTS
+	active_power_usage = 5 KILO WATTS
 
 	var/fabricator_tag = "Exodus"
 	var/drone_progress = 0
@@ -54,10 +54,11 @@
 	if(drone_progress >= 100)
 		visible_message("\The [src] voices a strident beep, indicating a drone chassis is prepared.")
 
-/obj/machinery/drone_fabricator/_examine_text(mob/user)
+/obj/machinery/drone_fabricator/examine(mob/user, infix)
 	. = ..()
+
 	if(produce_drones && drone_progress >= 100 && isghost(user) && config.misc.allow_drone_spawn && count_drones() < config.misc.max_maint_drones)
-		. += "\n<BR><B>A drone is prepared. Select 'Join As Drone' from the Ghost tab to spawn as a maintenance drone.</B>"
+		. += "<BR><B>A drone is prepared. Select 'Join As Drone' from the Ghost tab to spawn as a maintenance drone.</B>"
 
 /obj/machinery/drone_fabricator/proc/handle_customs(/mob/living/silicon/robot/drone/D, client/player)
 	/*
@@ -128,7 +129,7 @@
 	if(!fabricator)
 
 		var/list/all_fabricators = list()
-		for(var/obj/machinery/drone_fabricator/DF in GLOB.machines)
+		for(var/obj/machinery/drone_fabricator/DF in SSmachines.machinery)
 			if((DF.stat & NOPOWER) || !DF.produce_drones || DF.drone_progress < 100)
 				continue
 			all_fabricators[DF.fabricator_tag] = DF

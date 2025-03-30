@@ -3,8 +3,8 @@
 	name = "NTNet Quantum Relay"
 	desc = "A very complex router and transmitter capable of connecting electronic devices together. Looks fragile."
 	use_power = POWER_USE_ACTIVE
-	active_power_usage = 20000 //20kW, apropriate for machine that keeps massive cross-Zlevel wireless network operational.
-	idle_power_usage = 100
+	active_power_usage = 20 KILO WATTS // Apropriate for machine that keeps massive cross-Zlevel wireless network operational.
+	idle_power_usage = 100 WATTS
 	icon_state = "bus"
 	anchored = 1
 	density = 1
@@ -29,7 +29,7 @@
 		return 0
 	return 1
 
-/obj/machinery/ntnet_relay/update_icon()
+/obj/machinery/ntnet_relay/on_update_icon()
 	if(operable())
 		icon_state = "bus"
 	else
@@ -92,18 +92,19 @@
 		ntnet_global.add_log("Manual override: Network blacklist cleared.")
 		return 1
 
-/obj/machinery/ntnet_relay/New()
+/obj/machinery/ntnet_relay/Initialize()
+	. = ..()
+
 	uid = gl_uid
 	gl_uid++
 	component_parts = list()
-	component_parts += new /obj/item/stack/cable_coil(src,15)
+	component_parts += new /obj/item/stack/cable_coil(src, 15)
 	component_parts += new /obj/item/circuitboard/ntnet_relay(src)
 
 	if(ntnet_global)
 		ntnet_global.relays.Add(src)
 		NTNet = ntnet_global
 		ntnet_global.add_log("New quantum relay activated. Current amount of linked relays: [NTNet.relays.len]")
-	..()
 
 /obj/machinery/ntnet_relay/Destroy()
 	if(ntnet_global)
@@ -116,22 +117,9 @@
 
 	return ..()
 
-/obj/machinery/ntnet_relay/attackby(obj/item/W as obj, mob/user as mob)
-	if(isScrewdriver(W))
-		playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
-		panel_open = !panel_open
-		to_chat(user, "You [panel_open ? "open" : "close"] the maintenance hatch")
+/obj/machinery/ntnet_relay/attackby(obj/item/W, mob/user)
+	if(default_deconstruction_screwdriver(user, W))
 		return
-	if(isCrowbar(W))
-		if(!panel_open)
-			to_chat(user, "Open the maintenance panel first.")
-			return
-		playsound(src.loc, 'sound/items/Crowbar.ogg', 50, 1)
-		to_chat(user, "You disassemble \the [src]!")
-
-		for(var/atom/movable/A in component_parts)
-			A.forceMove(src.loc)
-		new /obj/machinery/constructable_frame/machine_frame(src.loc)
-		qdel(src)
+	if(default_deconstruction_crowbar(user, W))
 		return
 	..()

@@ -1,7 +1,7 @@
 /obj/item/contract
 	name = "contract"
 	desc = "written in the blood of some unfortunate fellow."
-	icon = 'icons/mob/screen_spells.dmi'
+	icon = 'icons/hud/screen_spells.dmi'
 	icon_state = "master_open"
 
 	var/contract_master = null
@@ -30,7 +30,6 @@
 			for(var/spell_type in contract_spells)
 				M.add_spell(new spell_type(user), "const_spell_ready")
 		log_and_message_admins("signed their soul over to \the [contract_master] using \the [src].", user)
-		user.drop_from_inventory(src)
 		qdel(src)
 
 /obj/item/contract/proc/contract_effect(mob/user)
@@ -63,7 +62,7 @@
 /obj/item/contract/wizard/xray/contract_effect(mob/user)
 	..()
 	if (!(MUTATION_XRAY in user.mutations))
-		user.mutations.Add(MUTATION_XRAY)
+		user.add_mutation(MUTATION_XRAY)
 		user.set_sight(user.sight | SEE_MOBS | SEE_OBJS | SEE_TURFS)
 		user.set_see_in_dark(8)
 		user.set_see_invisible(SEE_INVISIBLE_LEVEL_TWO)
@@ -79,9 +78,7 @@
 /obj/item/contract/wizard/telepathy/contract_effect(mob/user)
 	..()
 	if(!(mRemotetalk in user.mutations))
-		user.mutations.Add(mRemotetalk)
-		user.dna.SetSEState(GLOB.REMOTETALKBLOCK,1)
-		domutcheck(user, null, MUTCHK_FORCED)
+		user.add_mutation(mRemotetalk)
 		to_chat(user, SPAN_NOTICE("You expand your mind outwards."))
 		return 1
 	return 0
@@ -94,7 +91,7 @@
 /obj/item/contract/wizard/tk/contract_effect(mob/user)
 	..()
 	if(!(MUTATION_TK in user.mutations))
-		user.mutations.Add(MUTATION_TK)
+		user.add_mutation(MUTATION_TK)
 		to_chat(user, SPAN_NOTICE("You feel your mind expanding!"))
 		return 1
 	return 0
@@ -158,4 +155,3 @@
 /obj/item/contract/boon/wizard/charge
 	path = /datum/spell/aoe_turf/charge
 	desc = "This contract is made of 100% post-consumer wizard."
-

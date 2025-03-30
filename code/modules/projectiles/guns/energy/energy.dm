@@ -46,8 +46,8 @@
 	modifystate = "smallgunstun"
 
 	firemodes = list(
-		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,   modifystate = "smallgunstun"),
-		list(mode_name = "lethal", projectile_type = /obj/item/projectile/energy/laser/small, modifystate = "smallgunkill")
+		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode, modifystate = "smallgunstun"),
+		list(mode_name = "lethal", projectile_type = /obj/item/projectile/beam/laser/small, modifystate = "smallgunkill")
 		)
 
 /obj/item/gun/energy/secure/gun/small
@@ -70,6 +70,7 @@
 	name = "mounted energy gun"
 	self_recharge = 1
 	use_external_power = 1
+	has_safety = FALSE
 
 /obj/item/gun/energy/gun/nuclear
 	name = "advanced energy gun"
@@ -95,13 +96,19 @@
 
 	var/fail_counter = 0
 
+/obj/item/gun/energy/gun/nuclear/Initialize(mapload)
+	. = ..()
+	add_think_ctx("fail_thinker", CALLBACK(src, nameof(.proc/fail_thinker)), world.time + 5 SECONDS)
+
 //override for failcheck behaviour
-/obj/item/gun/energy/gun/nuclear/Process()
+/obj/item/gun/energy/gun/nuclear/proc/fail_thinker()
 	if(fail_counter > 0)
 		fail_counter--
 		if(fail_counter > 20)
-			SSradiation.radiate(src, fail_counter)
-	return ..()
+			var/datum/radiation_source/rad_source = SSradiation.radiate(src, new /datum/radiation/preset/uranium_238(fail_counter))
+			rad_source.schedule_decay(10 SECONDS)
+
+	set_next_think_ctx("fail_thinker", world.time + 5 SECONDS)
 
 /obj/item/gun/energy/gun/nuclear/emp_act(severity)
 	..()
@@ -114,7 +121,7 @@
 			if(ismob(loc))
 				to_chat(loc, SPAN("warning", "\The [src] feels pleasantly warm."))
 
-/obj/item/gun/energy/gun/nuclear/Fire(atom/target, mob/living/user, clickparams, pointblank = 0, reflex = 0)
+/obj/item/gun/energy/gun/nuclear/Fire(atom/target, mob/living/user, clickparams, pointblank = 0, reflex = 0, target_zone = BP_CHEST)
 	..()
 	if(fail_counter > 35)
 		var/datum/effect/effect/system/spark_spread/spark_system = new /datum/effect/effect/system/spark_spread()
@@ -123,8 +130,7 @@
 		if(prob(50))
 			visible_message("\The [src]'s reactor heats up uncontrollably!")
 			explosion(src.loc, -1, 1, 2)
-			if(src)
-				user.drop_from_inventory(src)
+			if(!QDELETED(src))
 				qdel(src)
 			return
 		else
@@ -142,16 +148,17 @@
 	else if(fail_counter > 15)
 		to_chat(loc, SPAN("warning", "\The [src] feels pleasantly warm."))
 
-/obj/item/gun/energy/gun/nuclear/_examine_text(mob/user)
+/obj/item/gun/energy/gun/nuclear/examine(mob/user, infix)
 	. = ..()
+
 	if(. && user.Adjacent(src))
 		if(fail_counter > 30)
-			. += "\n[SPAN("danger", "It feels burning hot!")]"
+			. += SPAN("danger", "It feels burning hot!")
 		else if(fail_counter > 15)
-			. += "\n[SPAN("warning", "It feels pleasantly warm.")]"
+			. += SPAN("warning", "It feels pleasantly warm.")
 
 /obj/item/gun/energy/gun/nuclear/proc/get_charge_overlay()
-	var/ratio = power_supply.percent()
+	var/ratio = CELL_PERCENT(power_supply)
 	ratio = round(ratio, 25)
 	return "nucgun-[ratio]"
 
@@ -160,7 +167,7 @@
 		return "nucgun-crit"
 	if(fail_counter > 15)
 		return "nucgun-medium"
-	if(power_supply.percent() <= 50)
+	if(CELL_PERCENT(power_supply) <= 50)
 		return "nucgun-light"
 	return "nucgun-clean"
 
@@ -172,20 +179,20 @@
 		if("lethal")
 			return "nucgun-kill"
 
-/obj/item/gun/energy/gun/nuclear/update_icon()
+/obj/item/gun/energy/gun/nuclear/on_update_icon()
 	var/list/new_overlays = list()
 
 	new_overlays += get_charge_overlay()
 	new_overlays += get_reactor_overlay()
 	new_overlays += get_mode_overlay()
 
-	overlays = new_overlays
+	SetOverlays(new_overlays)
 
 /obj/item/gun/energy/egun
 	name = "energy gun"
 	desc = "A basic energy-based gun with two settings: Stun and kill."
 	icon_state = "egunstun100"
-	modifystate = "egun"
+	modifystate = "egunstun"
 	item_state = null	//so the human update icon uses the icon_state instead.
 	max_shots = 10
 	fire_delay = 10 // To balance for the fact that it is a pistol and can be used one-handed without penalty
@@ -196,12 +203,28 @@
 
 	projectile_type = /obj/item/projectile/energy/electrode/stunsphere
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 4, TECH_POWER = 3)
-	modifystate = "egunstun"
 	combustion = FALSE
 
 	firemodes = list(
-		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,    modifystate="egunstun"),
-		list(mode_name = "lethal", projectile_type = /obj/item/projectile/energy/laser/lesser, modifystate="egunkill")
+		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,  modifystate="egunstun"),
+		list(mode_name = "lethal", projectile_type = /obj/item/projectile/beam/laser/small, modifystate="egunkill")
+		)
+
+/obj/item/gun/energy/egun/elite
+	name = "energy pistol"
+	desc = "A high-quality energy-based gun with two settings: Stun and kill."
+	icon_state = "egunestun100"
+	modifystate = "egunestun"
+	fire_delay = 8 // Slightly better than a regular egun
+	force = 8.5 // It's taser pistol sized after all
+	mod_weight = 0.7
+	mod_reach = 0.5
+	mod_handy = 1.0
+	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 5, TECH_POWER = 3)
+
+	firemodes = list(
+		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,  modifystate="egunestun"),
+		list(mode_name = "lethal", projectile_type = /obj/item/projectile/beam/laser/lesser, modifystate="egunekill")
 		)
 
 /obj/item/gun/energy/rifle
@@ -210,6 +233,7 @@
 	icon_state = "eriflestun"
 	item_state = "erifle"
 	modifystate = "eriflestun"
+	improper_held_icon = TRUE
 	slot_flags = SLOT_BELT|SLOT_BACK
 	w_class = ITEM_SIZE_LARGE
 	force = 12.5
@@ -230,14 +254,13 @@
 
 	firemodes = list(
 		list(mode_name = "stun", modifystate = "eriflestun", projectile_type = /obj/item/projectile/energy/electrode, fire_delay = null, charge_cost = 10, burst = 2),
-		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/mid,   fire_delay = 8,    charge_cost = 20, burst = 1),
-		list(mode_name = "bolt", modifystate = "eriflekill", projectile_type = /obj/item/projectile/energy/laser/mid, fire_delay = 8,    charge_cost = 20, burst = 1)
+		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/mid,   fire_delay = 8,    charge_cost = 20, burst = 1)
 	)
 
-/obj/item/gun/energy/rifle/update_icon()
+/obj/item/gun/energy/rifle/on_update_icon()
 	var/ratio = 0
 	if(power_supply && power_supply.charge >= charge_cost)
-		ratio = max(round(power_supply.percent(), icon_rounder), icon_rounder)
+		ratio = max(round(CELL_PERCENT(power_supply), icon_rounder), icon_rounder)
 
 	icon_state = "[modifystate][ratio]"
 
@@ -246,9 +269,11 @@
 		if(M.can_wield_item(src) && is_held_twohanded(M))
 			item_state_slots[slot_l_hand_str] = "[modifystate][ratio]-wielded"
 			item_state_slots[slot_r_hand_str] = "[modifystate][ratio]-wielded"
+			improper_held_icon = TRUE
 		else
 			item_state_slots[slot_l_hand_str] = "[modifystate][ratio]"
 			item_state_slots[slot_r_hand_str] = "[modifystate][ratio]"
+			improper_held_icon = FALSE
 	update_held_icon()
 
 /obj/item/gun/energy/rifle/cheap
@@ -266,7 +291,6 @@
 	projectile_type = /obj/item/projectile/energy/electrode/stunsphere
 
 	firemodes = list(
-		list(mode_name = "stun", modifystate = "eriflestun", projectile_type = /obj/item/projectile/energy/electrode,    fire_delay = null, charge_cost = 10, burst = 2),
-		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/lesser,   fire_delay = 10,   charge_cost = 20, burst = 1),
-		list(mode_name = "bolt", modifystate = "eriflekill", projectile_type = /obj/item/projectile/energy/laser/lesser, fire_delay = 10,   charge_cost = 20, burst = 1)
+		list(mode_name = "stun", modifystate = "eriflestun", projectile_type = /obj/item/projectile/energy/electrode,  fire_delay = null, charge_cost = 10, burst = 2),
+		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/lesser, fire_delay = 10,   charge_cost = 20, burst = 1)
 	)

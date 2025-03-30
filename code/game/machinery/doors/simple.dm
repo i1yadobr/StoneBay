@@ -58,7 +58,7 @@
 		//cap projectile damage so that there's still a minimum number of hits required to break the door
 		take_damage(min(damage, 100))
 
-/obj/machinery/door/unpowered/simple/update_icon()
+/obj/machinery/door/unpowered/simple/on_update_icon()
 	if(density)
 		icon_state = "[icon_base]"
 	else
@@ -188,10 +188,11 @@
 
 	return
 
-/obj/machinery/door/unpowered/simple/_examine_text(mob/user)
+/obj/machinery/door/unpowered/simple/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 1 && lock)
-		. += "\n<span class='notice'>It appears to have a lock.</span>"
+		. += SPAN_NOTICE("It appears to have a lock.")
 
 /obj/machinery/door/unpowered/simple/can_open()
 	if(!..() || (lock && lock.isLocked()))
@@ -255,7 +256,7 @@
 	add_fingerprint(user, 0, I)
 	if(user.a_intent == I_HURT)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		if(I.damtype == BRUTE || I.damtype == BURN)
+		if(istype(I) && (I.damtype == BRUTE || I.damtype == BURN))
 			user.do_attack_animation(src)
 			if(I.force < min_force)
 				user.visible_message(SPAN("danger", "\The [user] hits \the [src] with \the [I] with no visible effect."))

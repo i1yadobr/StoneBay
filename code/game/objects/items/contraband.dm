@@ -5,29 +5,29 @@
 	name = "bottle of Happy pills"
 	desc = "Highly illegal drug. When you want to see the rainbow."
 
-/obj/item/storage/pill_bottle/happy/New()
+/obj/item/storage/pill_bottle/happy/Initialize()
 	..()
-	new /obj/item/reagent_containers/pill/happy( src )
-	new /obj/item/reagent_containers/pill/happy( src )
-	new /obj/item/reagent_containers/pill/happy( src )
-	new /obj/item/reagent_containers/pill/happy( src )
-	new /obj/item/reagent_containers/pill/happy( src )
-	new /obj/item/reagent_containers/pill/happy( src )
-	new /obj/item/reagent_containers/pill/happy( src )
+	new /obj/item/reagent_containers/pill/happy(src)
+	new /obj/item/reagent_containers/pill/happy(src)
+	new /obj/item/reagent_containers/pill/happy(src)
+	new /obj/item/reagent_containers/pill/happy(src)
+	new /obj/item/reagent_containers/pill/happy(src)
+	new /obj/item/reagent_containers/pill/happy(src)
+	new /obj/item/reagent_containers/pill/happy(src)
 
 /obj/item/storage/pill_bottle/zoom
 	name = "bottle of Zoom pills"
 	desc = "Highly illegal drug. Trade brain for speed."
 
-/obj/item/storage/pill_bottle/zoom/New()
+/obj/item/storage/pill_bottle/zoom/Initialize()
 	..()
-	new /obj/item/reagent_containers/pill/zoom( src )
-	new /obj/item/reagent_containers/pill/zoom( src )
-	new /obj/item/reagent_containers/pill/zoom( src )
-	new /obj/item/reagent_containers/pill/zoom( src )
-	new /obj/item/reagent_containers/pill/zoom( src )
-	new /obj/item/reagent_containers/pill/zoom( src )
-	new /obj/item/reagent_containers/pill/zoom( src )
+	new /obj/item/reagent_containers/pill/zoom(src)
+	new /obj/item/reagent_containers/pill/zoom(src)
+	new /obj/item/reagent_containers/pill/zoom(src)
+	new /obj/item/reagent_containers/pill/zoom(src)
+	new /obj/item/reagent_containers/pill/zoom(src)
+	new /obj/item/reagent_containers/pill/zoom(src)
+	new /obj/item/reagent_containers/pill/zoom(src)
 
 /obj/item/reagent_containers/vessel/beaker/vial/random
 	atom_flags = 0
@@ -45,7 +45,7 @@
 	if(is_open_container())
 		atom_flags ^= ATOM_FLAG_OPEN_CONTAINER
 
-	var/list/picked_reagents = pickweight(random_reagent_list)
+	var/list/picked_reagents = util_pick_weight(random_reagent_list)
 	for(var/reagent in picked_reagents)
 		reagents.add_reagent(reagent, picked_reagents[reagent])
 
@@ -73,7 +73,7 @@
 			to_chat(user, SPAN("notice", "The pages of [title] have been cut out!"))
 			return
 		to_chat(user, SPAN("notice", "[store] falls out of [title]!"))
-		store.loc = get_turf(loc)
+		store.dropInto(get_turf(loc))
 		store = null
 		return
 
@@ -82,7 +82,7 @@
 		return
 
 	for(var/i in 1 to 5)
-		if(!do_after(user, 6 SECOND, src))
+		if(!do_after(user, 6 SECOND, src, luck_check_type = LUCK_CHECK_COMBAT))
 			to_chat(user, SPAN("warning", "Your reading has been interrupted."))
 			return
 		subjects.Cut()
@@ -102,7 +102,7 @@
 			"a high-ranking NT employee stealing money from a charitable foundation",
 			"NT using [pick("troops without insignia", "mercenaries")] to take over a [pick("neutral", "ally", "peaceful")] [pick("planet", "company", "system")]" = 2
 		)
-		to_chat(user, "You read about [pickweight(subjects)] [pick("in", "in the year")] [rand(2125, 2564)].")
+		to_chat(user, "You read about [util_pick_weight(subjects)] [pick("in", "in the year")] [rand(2125, 2564)].")
 
 	if((user.real_name in readers) || player_is_antag(user.mind))
 		to_chat(user, SPAN("notice", "You didn't learn anything new after the reading."))

@@ -25,7 +25,7 @@
 	sort_string = "FAGAI"
 
 /datum/design/circuit/teleconsole
-	name = "teleporter control console"
+	name = "Teleporter Control Console"
 	id = "teleconsole"
 	req_tech = list(TECH_DATA = 3, TECH_BLUESPACE = 2)
 	build_path = /obj/item/circuitboard/teleporter
@@ -138,3 +138,9 @@
 	id = "solarcontrol"
 	build_path = /obj/item/circuitboard/solar_control
 	sort_string = "JAAAF"
+
+/datum/design/circuit/turret_control_panel
+	name = "turret control panel"
+	id = "turretcontrolpanel"
+	build_path = /obj/item/circuitboard/turret_control_panel
+	sort_string = "JAAAG"

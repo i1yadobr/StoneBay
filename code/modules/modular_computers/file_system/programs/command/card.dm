@@ -5,6 +5,7 @@
 	program_icon_state = "id"
 	program_key_state = "id_key"
 	program_menu_icon = "key"
+	program_light_color = "#0099FF"
 	extended_desc = "Program for programming crew ID cards."
 	required_access = access_change_ids
 	requires_ntnet = 0
@@ -142,7 +143,7 @@
 		return 1
 
 	var/mob/user = usr
-	var/obj/item/card/id/user_id_card = user.GetIdCard()
+	var/obj/item/card/id/user_id_card = user.get_id_card()
 	var/obj/item/card/id/id_card
 	if (computer.card_slot)
 		id_card = computer.card_slot.stored_card

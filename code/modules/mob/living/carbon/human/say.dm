@@ -19,9 +19,16 @@
 
 	message = sanitize(message)
 	var/obj/item/organ/internal/voicebox/vox = locate() in internal_organs
-	var/snowflake_speak = (language?.flags & (NONVERBAL|SIGNLANG)) || (vox?.is_usable() && (language in vox.assists_languages))
-	if(!full_prosthetic && need_breathe() && failed_last_breath && !snowflake_speak)
+	var/snowflake_speak = (language?.language_flags & (NONVERBAL|SIGNLANG)) || (vox?.is_usable() && (language in vox.assists_languages))
+
+	if(stat == CONSCIOUS && !full_prosthetic && need_breathe() && failed_last_breath && !snowflake_speak)
 		var/obj/item/organ/internal/lungs/L = internal_organs_by_name[species.breathing_organ]
+
+		var/first_char = copytext_char(message, 1, 2)
+		if (first_char == "*" && (QDELETED(L) || L.is_broken() || L.breath_fail_ratio > 0.4))
+			emote(copytext_char(message, 2), intentional = TRUE)
+			return
+
 		if(QDELETED(L) || L.is_broken())
 			visible_message(SPAN("warning", "[src] moves his lips as if trying to say something"), SPAN("danger", "You try to make sounds but you can't exhale."))
 			return
@@ -32,14 +39,14 @@
 				L.last_successful_breath = world.time - 2 MINUTES
 				return ..(message, alt_name = alt_name, language = language)
 
-			to_chat(src, "<span class='warning'>You don't have enough air in [L] to make a sound!</span>")
+			visible_message(SPAN("warning", "[src] moves his lips as if trying to say something"), SPAN("danger", "You don't have enough air in [L] to make a sound!"))
 			return FALSE
 		else if(L.breath_fail_ratio > 0.7)
-			return whisper_say(length(message) > 5 ? stars(message) : message, language, alt_name)
+			return ..(length(message) > 5 ? stars(message, 50) : message, alt_name = alt_name, language = language, whispering = whispering)
 		else if(L.breath_fail_ratio > 0.4)
-			return whisper_say(length(message) > 10 ? stars(message) : message, language, alt_name)
-	else
-		return ..(message, alt_name = alt_name, language = language, whispering = whispering)
+			return ..(length(message) > 10 ? stars(message, 75) : message, alt_name = alt_name, language = language, whispering = whispering)
+
+	return ..(message, alt_name = alt_name, language = language, whispering = whispering)
 
 
 /mob/living/carbon/human/proc/forcesay(list/append)
@@ -49,7 +56,7 @@
 	var/temp = client.close_saywindow(return_content = TRUE)
 
 	if(!temp)
-		temp = winget(client, "input", "text")
+		temp = winget(client, ":input", "text")
 		if(length(temp) > 4 && findtextEx(temp, "Say ", 1, 5))
 			temp = copytext(temp, 5)
 			if (text2ascii(temp, 1) == text2ascii("\""))
@@ -59,7 +66,7 @@
 				return
 		else
 			return
-		winset(client, "input", "text=\"Say \\\"\"")
+		winset(client, ":input", "text=\"Say \\\"\"")
 	temp = trim_left(temp)
 
 	if(length(temp))
@@ -141,14 +148,24 @@
 
 /mob/living/carbon/human/handle_speech_problems(list/message_data)
 	if(silent || (sdisabilities & MUTE))
-		message_data[1] = ""
+		message_data["message"] = ""
 		. = TRUE
-
-	else if(istype(wear_mask, /obj/item/clothing/mask))
+	else if(wear_mask)
 		var/obj/item/clothing/mask/M = wear_mask
-		if(M.voicechange)
-			message_data[1] = pick(M.say_messages)
-			message_data[2] = pick(M.say_verbs)
+		if(is_muzzled() && !(message_data["language"]?.language_flags & (NONVERBAL|SIGNLANG)))
+			if(istype(M, /obj/item/clothing/mask))
+				if(M.say_messages)
+					message_data["message"] = pick(M.say_messages)
+				if(M.say_verbs)
+					message_data["verb"] = pick(M.say_verbs)
+				. = TRUE
+			else
+				message_data["message"] = pick("Mmfph!", "Mmmf mrrfff!", "Mmmf mnnf!")
+				message_data["verb"] = pick("mumbles", "says")
+				. = TRUE
+		else if(istype(M, /obj/item/clothing/mask) && M.voicechange)
+			message_data["message"] = pick(M.say_messages)
+			message_data["verb"] = pick(M.say_verbs)
 			. = TRUE
 		else
 			. = ..(message_data)

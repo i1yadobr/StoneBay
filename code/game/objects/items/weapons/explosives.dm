@@ -48,8 +48,8 @@
 	to_chat(user, "Planting explosives...")
 	user.do_attack_animation(target)
 
-	if(do_after(user, 50, target) && in_range(user, target))
-		user.drop_item()
+	if(do_after(user, 50, target, luck_check_type = LUCK_CHECK_COMBAT) && in_range(user, target))
+		user.drop(src)
 		src.target = target
 		forceMove(null)
 
@@ -61,7 +61,7 @@
 		else
 			log_and_message_admins("planted \a [src] with a [timer] second fuse on \the [target].")
 
-		target.overlays += image_overlay
+		target.AddOverlays(image_overlay)
 		to_chat(user, "Bomb has been planted. Timer counting down from [timer].")
 		spawn(timer*10)
 			explode(get_turf(target))
@@ -81,7 +81,7 @@
 		else
 			target.ex_act(1)
 	if(target)
-		target.overlays -= image_overlay
+		target.CutOverlays(image_overlay)
 	qdel(src)
 
 /obj/item/plastique/attack(mob/M as mob, mob/user as mob, def_zone)

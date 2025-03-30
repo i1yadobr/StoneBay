@@ -20,7 +20,7 @@
 			var/mob/living/carbon/human/H = L
 			if(H.should_have_organ(BP_HEART))
 				multiplier++
-		if(L.stat == DEAD)
+		if(L.is_ic_dead())
 			to_chat(user, "<span class='warning'>\The [a] is already dead! There is nothing to take!</span>")
 			return
 
@@ -42,11 +42,13 @@
 	base_icon = "bone_axe"
 	var/stored_power = 0
 
-/obj/item/material/twohanded/fireaxe/cult/_examine_text(mob/user)
+/obj/item/material/twohanded/fireaxe/cult/examine(mob/user, infix)
 	. = ..()
-	if(!. || !stored_power)
+
+	if(!stored_power)
 		return
-	. += "\n<span class='notice'>It exudes a death-like smell.</span>"
+
+	. += SPAN_NOTICE("It exudes a death-like smell.")
 
 /obj/item/material/twohanded/fireaxe/cult/resolve_attackby(atom/a, mob/user, click_params)
 	if(istype(a, /obj/structure/deity/altar))
@@ -57,8 +59,8 @@
 			return
 	if(ismob(a))
 		var/mob/M = a
-		if(M.stat != DEAD)
-			register_signal(M, SIGNAL_MOB_DEATH, /obj/item/material/twohanded/fireaxe/cult/proc/gain_power)
+		if(!M.is_ooc_dead())
+			register_signal(M, SIGNAL_MOB_DEATH, nameof(/obj/item/material/twohanded/fireaxe/cult.proc/gain_power))
 		spawn(30)
 			unregister_signal(M, SIGNAL_MOB_DEATH)
 	return ..()

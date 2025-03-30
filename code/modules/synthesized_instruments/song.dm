@@ -35,9 +35,8 @@
 	available_channels = GLOB.musical_config.channels_per_instrument
 
 /datum/synthesized_song/Destroy()
-	..()
-
 	player.event_manager.deactivate()
+	return ..()
 
 /datum/synthesized_song/proc/sanitize_tempo(new_tempo) // Identical to datum/song
 	new_tempo = abs(new_tempo)
@@ -196,7 +195,7 @@
 	var/list/allowed_suff = list("b", "n", "#", "s")
 	var/list/note_off_delta = list("a"=91, "b"=91, "c"=98, "d"=98, "e"=98, "f"=98, "g"=98)
 	var/list/lines_copy = src.lines.Copy()
-	addtimer(CALLBACK(src, .proc/play_lines, user, allowed_suff, note_off_delta, lines_copy), 0)
+	INVOKE_ASYNC(src, nameof(.proc/play_lines), user, allowed_suff, note_off_delta, lines_copy)
 
 #undef CP
 #undef IS_DIGIT

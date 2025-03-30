@@ -14,10 +14,10 @@
 //Adding canvases
 /obj/structure/easel/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/canvas))
+		if(!user.drop(I, get_turf(src)))
+			return
 		var/obj/item/canvas/canvas = I
-		user.drop_item(canvas)
 		painting = canvas
-		canvas.forceMove(get_turf(src))
 		canvas.layer = layer+0.1
 		user.visible_message(SPAN("notice", "[user] puts \the [canvas] on \the [src]."), SPAN("notice", "You place \the [canvas] on \the [src]."))
 	else
@@ -128,18 +128,20 @@
 	.["name"] = painting_name
 	.["finalized"] = finalized
 
-/obj/item/canvas/_examine_text(mob/user)
+/obj/item/canvas/examine(mob/user, infix)
 	. = ..()
+
 	tgui_interact(user)
 	if(!user.mind || !is_propaganda)
 		return
+
 	var/datum/antagonist/antag = GLOB.all_antag_types_[MODE_LOYALIST]
 	var/is_loyalist_user = antag.is_antagonist(user.mind) || (user.mind.assigned_role in GLOB.command_positions) || (user.mind.assigned_role in GLOB.security_positions)
 	antag = GLOB.all_antag_types_[MODE_REVOLUTIONARY]
 	var/is_revolutionary_user = antag.is_antagonist(user.mind)
 	var/message = SPAN_DANGER("You hate \the [src]. You want to burn it down!")
 	if((is_revolutionary && is_loyalist_user) || (is_revolutionary_user && !is_revolutionary))
-		. += "\n" + message
+		. += message
 
 /obj/item/canvas/tgui_act(action, params)
 	. = ..()
@@ -207,7 +209,7 @@
 		SPAN_NOTICE("You hear clicking."))
 	is_mount = TRUE
 	area_manipulation()
-	if(user.unEquip(src,T))
+	if(user.drop(src, T))
 		switch(ndir)
 			if(NORTH)
 				pixel_y = -32
@@ -223,15 +225,15 @@
 				pixel_y = 0
 		update_icon()
 
-/obj/item/canvas/update_icon()
+/obj/item/canvas/on_update_icon()
 	. = ..()
 	if(icon_generated)
-		overlays = canvas_overlay
+		SetOverlays(canvas_overlay)
 		if(blood_overlay)
-			overlays += blood_overlay
+			AddOverlays(blood_overlay)
 	if(is_propaganda)
 		var/image/detail_overlay = image(icon, src, "[icon_state]frame_[is_revolutionary]")
-		overlays.Add(detail_overlay)
+		AddOverlays(detail_overlay)
 	if(icon_generated)
 		return
 	if(!wip_detail_added && used)
@@ -239,7 +241,7 @@
 		detail.pixel_x = framed_offset_x
 		detail.pixel_y = framed_offset_y
 		wip_detail_added = TRUE
-		overlays += detail
+		AddOverlays(detail)
 
 /obj/item/canvas/proc/paint_image(x_offset = framed_offset_x, y_offset = framed_offset_y) // y_offset = 1
 	if(icon_generated)

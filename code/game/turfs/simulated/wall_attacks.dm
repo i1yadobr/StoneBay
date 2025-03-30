@@ -4,8 +4,6 @@
 	if(can_open == WALL_OPENING)
 		return
 
-	SSradiation.resistance_cache.Remove(src)
-
 	if(density)
 		can_open = WALL_OPENING
 		//flick("[material.icon_base]fwall_opening", src)
@@ -96,7 +94,7 @@
 	add_fingerprint(user)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	var/rotting = (locate(/obj/effect/overlay/wallrot) in src)
-	if (MUTATION_HULK in user.mutations)
+	if((MUTATION_HULK in user.mutations) || (MUTATION_STRONG in user.mutations))
 		if (rotting || !prob(material.hardness))
 			success_smash(user)
 		else
@@ -128,7 +126,7 @@
 /turf/simulated/wall/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if (!user.IsAdvancedToolUser())
-		to_chat(user, SPAN("warning","You don't have the dexterity to do this!"))
+		to_chat(user, SPAN("warning", FEEDBACK_YOU_LACK_DEXTERITY))
 		return
 
 	//get the user's location
@@ -141,12 +139,14 @@
 	if(locate(/obj/effect/overlay/wallrot) in src)
 		if(isWelder(W))
 			var/obj/item/weldingtool/WT = W
-			if( WT.remove_fuel(0,user) )
-				to_chat(user, SPAN("notice","You burn away the fungi with \the [WT]."))
-				playsound(src, 'sound/items/Welder.ogg', 10, 1)
-				for(var/obj/effect/overlay/wallrot/WR in src)
-					qdel(WR)
+			if(!WT.use_tool(src, user, amount = 1))
 				return
+
+			to_chat(user, SPAN("notice","You burn away the fungi with \the [WT]."))
+			playsound(src, 'sound/items/Welder.ogg', 10, 1)
+			for(var/obj/effect/overlay/wallrot/WR in src)
+				qdel(WR)
+			return
 		else if(!is_sharp(W) && W.force >= 10 || W.force >= 20)
 			to_chat(user, SPAN("notice","\The [src] crumbles away under the force of your [W.name]."))
 			src.dismantle_wall(1)
@@ -156,9 +156,11 @@
 	if(thermite)
 		if(isWelder(W))
 			var/obj/item/weldingtool/WT = W
-			if( WT.remove_fuel(0,user) )
-				thermitemelt(user)
+			if(!WT.use_tool(src, user, amount = 1))
 				return
+
+			thermitemelt(user)
+			return
 
 		else if(istype(W, /obj/item/gun/energy/plasmacutter))
 			thermitemelt(user)
@@ -177,22 +179,17 @@
 
 	var/turf/T = user.loc	//get user's location for delay checks
 
-	if(damage && istype(W, /obj/item/weldingtool))
-
+	if(damage && isWelder(W))
 		var/obj/item/weldingtool/WT = W
-
-		if(!WT.isOn())
+		to_chat(user, SPAN("notice","You start repairing the damage to [src]."))
+		if(!WT.use_tool(src, user, delay = max(5, damage / 5), amount = 5))
 			return
 
-		if(WT.remove_fuel(0,user))
-			to_chat(user, SPAN("notice","You start repairing the damage to [src]."))
-			playsound(src, 'sound/items/Welder.ogg', 100, 1)
-			if(do_after(user, max(5, damage / 5), src) && WT && WT.isOn())
-				to_chat(user, SPAN("notice","You finish repairing the damage to [src]."))
-				take_damage(-damage)
-		else
-			to_chat(user, SPAN("notice","You need more welding fuel to complete this task."))
+		if(QDELETED(src) || !user)
 			return
+
+		to_chat(user, SPAN("notice","You finish repairing the damage to [src]."))
+		take_damage(-damage)
 		return
 
 	// Basic dismantling.
@@ -202,25 +199,30 @@
 		var/dismantle_verb
 		var/dismantle_sound
 
-		if(istype(W,/obj/item/weldingtool))
+		if(isWelder(W))
 			var/obj/item/weldingtool/WT = W
-			if(!WT.isOn())
+			to_chat(user, SPAN("notice", "You begin cutting through the outer plating."))
+
+			if(!WT.use_tool(src, user, cut_delay * 0.7, 5))
 				return
-			if(!WT.remove_fuel(0,user))
-				to_chat(user, SPAN("notice","You need more welding fuel to complete this task."))
+
+			if(QDELETED(src) || !user)
 				return
-			dismantle_verb = "cutting"
-			dismantle_sound = 'sound/items/Welder.ogg'
-			cut_delay *= 0.7
+
+			to_chat(user, SPAN("notice","You remove the outer plating."))
+			dismantle_wall()
+			user.visible_message(SPAN("warning","\The [src] was torn open by [user]!"))
+			return
+
 		else if(istype(W,/obj/item/melee/energy/blade))
 			dismantle_sound = "spark"
 			dismantle_verb = "slicing"
 			cut_delay *= 0.5
-		else if(istype(W, /obj/item/pickaxe) && !istype(W, /obj/item/pickaxe/archaeologist))
-			var/obj/item/pickaxe/P = W
-			dismantle_verb = P.drill_verb
-			dismantle_sound = P.drill_sound
-			cut_delay -= P.digspeed
+		else if(istype(W, /obj/item/pickaxe/drill))
+			var/obj/item/pickaxe/drill/D = W
+			dismantle_verb = D.drill_verb
+			dismantle_sound = D.drill_sound
+			cut_delay -= D.digspeed
 
 		if(dismantle_verb)
 
@@ -231,7 +233,7 @@
 			if(cut_delay<0)
 				cut_delay = 0
 
-			if(!do_after(user,cut_delay,src))
+			if(!do_after(user, cut_delay, src, luck_check_type = LUCK_CHECK_ENG))
 				return
 
 			to_chat(user, SPAN("notice","You remove the outer plating."))
@@ -254,7 +256,7 @@
 				if(isScrewdriver(W))
 					to_chat(user, SPAN("notice","You begin removing the support lines."))
 					playsound(src, 'sound/items/Screwdriver.ogg', 100, 1)
-					if(!do_after(user,40,src) || !istype(src, /turf/simulated/wall) || construction_stage != 5)
+					if(!do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG) || !istype(src, /turf/simulated/wall) || construction_stage != 5)
 						return
 					construction_stage = 4
 					update_icon()
@@ -269,32 +271,42 @@
 						to_chat(user, SPAN("notice", "You replace the outer grille."))
 						return
 			if(4)
-				var/cut_cover
-				if(istype(W,/obj/item/weldingtool))
+				if(isWelder(W))
 					var/obj/item/weldingtool/WT = W
-					if(!WT.isOn())
+					if(!WT.use_tool(src, user, amount = 1))
 						return
-					if(WT.remove_fuel(0,user))
-						cut_cover=1
-					else
-						to_chat(user, SPAN("notice", "You need more welding fuel to complete this task."))
-						return
-				else if (istype(W, /obj/item/gun/energy/plasmacutter))
-					cut_cover = 1
-				if(cut_cover)
+
 					to_chat(user, SPAN("notice","You begin slicing through the metal cover."))
-					playsound(src, 'sound/items/Welder.ogg', 100, 1)
-					if(!do_after(user, 60, src) || !istype(src, /turf/simulated/wall) || construction_stage != 4)
+					if(!WT.use_tool(src, user, delay = 6 SECONDS, amount = 5) || !istype(src, /turf/simulated/wall) || construction_stage != 4)
 						return
+
+					if(QDELETED(src))
+						return
+
 					construction_stage = 3
 					update_icon()
 					to_chat(user, SPAN("notice","You press firmly on the cover, dislodging it."))
 					return
+
+				else if (istype(W, /obj/item/gun/energy/plasmacutter))
+					to_chat(user, SPAN("notice","You begin slicing through the metal cover."))
+					playsound(src, 'sound/items/Welder.ogg', 100, 1)
+					if(!do_after(user, 60, src, luck_check_type = LUCK_CHECK_ENG) || !istype(src, /turf/simulated/wall) || construction_stage != 4)
+						return
+
+					if(QDELETED(src))
+						return
+
+					to_chat(user, SPAN("notice","You press firmly on the cover, dislodging it."))
+					construction_stage = 3
+					update_icon()
+					return
+
 			if(3)
 				if(isCrowbar(W))
 					to_chat(user, SPAN("notice","You struggle to pry off the cover."))
 					playsound(src, 'sound/items/Crowbar.ogg', 100, 1)
-					if(!do_after(user,100,src) || !istype(src, /turf/simulated/wall) || construction_stage != 3)
+					if(!do_after(user, 100, src, luck_check_type = LUCK_CHECK_ENG) || !istype(src, /turf/simulated/wall) || construction_stage != 3)
 						return
 					construction_stage = 2
 					update_icon()
@@ -304,38 +316,48 @@
 				if(isWrench(W))
 					to_chat(user, SPAN("notice","You start loosening the anchoring bolts which secure the support rods to their frame."))
 					playsound(src, 'sound/items/Ratchet.ogg', 100, 1)
-					if(!do_after(user,40,src) || !istype(src, /turf/simulated/wall) || construction_stage != 2)
+					if(!do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG) || !istype(src, /turf/simulated/wall) || construction_stage != 2)
 						return
 					construction_stage = 1
 					update_icon()
 					to_chat(user, SPAN("notice","You remove the bolts anchoring the support rods."))
 					return
 			if(1)
-				var/cut_cover
-				if(istype(W, /obj/item/weldingtool))
+				if(isWelder(W))
 					var/obj/item/weldingtool/WT = W
-					if( WT.remove_fuel(0,user) )
-						cut_cover=1
-					else
-						to_chat(user, SPAN("notice","You need more welding fuel to complete this task."))
-						return
-				else if(istype(W, /obj/item/gun/energy/plasmacutter))
-					cut_cover = 1
-				if(cut_cover)
 					to_chat(user, SPAN("notice","You begin slicing through the support rods."))
-					playsound(src, 'sound/items/Welder.ogg', 100, 1)
-					if(!do_after(user,70,src) || !istype(src, /turf/simulated/wall) || construction_stage != 1)
+					if(!WT.use_tool(src, user, delay = 7 SECONDS, amount = 5) || !istype(src, /turf/simulated/wall) || construction_stage != 1)
 						return
+
+					if(QDELETED(src))
+						return
+
 					construction_stage = 0
 					update_icon()
 					new /obj/item/stack/rods(src)
 					to_chat(user, SPAN("notice","The support rods drop out as you cut them loose from the frame."))
 					return
+
+				else if(istype(W, /obj/item/gun/energy/plasmacutter))
+					to_chat(user, SPAN("notice","You begin slicing through the support rods."))
+					playsound(src, 'sound/items/Welder.ogg', 100, 1)
+					if(!do_after(user, 70, src, luck_check_type = LUCK_CHECK_ENG) || !istype(src, /turf/simulated/wall) || construction_stage != 1)
+						return
+
+					if(QDELETED(src))
+						return
+
+					construction_stage = 0
+					update_icon()
+					new /obj/item/stack/rods(src)
+					to_chat(user, SPAN("notice","The support rods drop out as you cut them loose from the frame."))
+					return
+
 			if(0)
 				if(isCrowbar(W))
 					to_chat(user, SPAN("notice","You struggle to pry off the outer sheath."))
 					playsound(src, 'sound/items/Crowbar.ogg', 100, 1)
-					if(!do_after(user,100,src) || !istype(src, /turf/simulated/wall) || !user || !W || !T )	return
+					if(!do_after(user, 100, src, luck_check_type = LUCK_CHECK_ENG) || !istype(src, /turf/simulated/wall) || !user || !W || !T )	return
 					if(user.loc == T && user.get_active_hand() == W )
 						to_chat(user, SPAN("notice","You pry off the outer sheath."))
 						dismantle_wall(TRUE)
@@ -346,7 +368,7 @@
 		F.try_build(src)
 		return
 
-	else if(!istype(W,/obj/item/rcd) && !istype(W, /obj/item/reagent_containers))
+	else if(!istype(W,/obj/item/construction/rcd) && !istype(W, /obj/item/reagent_containers))
 		if(!W.force)
 			return attack_hand(user)
 		var/dam_threshhold = material.integrity

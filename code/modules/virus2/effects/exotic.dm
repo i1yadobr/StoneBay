@@ -47,10 +47,10 @@
 /datum/disease2/effect/musclerace/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
-	mob.nutrition = max(0, mob.nutrition - 25)
+	mob.set_nutrition(max(0, mob.nutrition - 25))
 	mob.add_modifier(/datum/modifier/musclerace)
 	if(prob(25))
-		mob.custom_emote(pick("growls", "roars", "snarls", "squeals", "yelps", "barks", "screeches"))
+		mob.custom_emote(AUDIBLE_MESSAGE, pick("growls", "roars", "snarls", "squeals", "yelps", "barks", "screeches"), "AUTO_EMOTE")
 		mob.jitteriness += 10
 	if(prob(45) && mob.reagents.get_reagent_amount(/datum/reagent/mutagen) < 5)
 		mob.custom_pain(pick("Your muscle tissue hurts unbearably!", "Your muscle tissue is burning!", "Your muscle tissue is torn!", "Your muscles are torn!", "Your muscles hurt unbearably!", "Your muscles are burning!", "Your muscles are shrinking!"), 45)
@@ -72,7 +72,7 @@
 	incoming_fire_damage_percent = 1.4
 	bleeding_rate_percent = 2
 	incoming_healing_percent = 0.2
-	haste = 1
+	//haste = 1
 
 /datum/modifier/musclerace/New(new_holder, new_origin)
 	. = ..()
@@ -164,8 +164,8 @@
 /datum/disease2/effect/hisstarvation/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
-	mob.nutrition = max(0, mob.nutrition - 1000)
-	mob.custom_emote(message = "hisses")
+	mob.set_nutrition(max(0, mob.nutrition - 1000))
+	mob.custom_emote(AUDIBLE_MESSAGE, "hisses", "AUTO_EMOTE")
 	if(prob(25))
 		to_chat(mob, SPAN_DANGER("[pick("You want to eat more than anything in this life!", "You feel your stomach begin to devour itself!", "You are ready to kill for food!", "You urgently need to find food!")]"))
 
@@ -263,10 +263,12 @@
 		return
 	if(prob(10))
 		to_chat(mob, SPAN_DANGER("The atom was mistaken in you, you received a great gift and could not live up to expectations, good luck."))
-		var/obj/item/organ/internal/brain/B = mob.internal_organs_by_name[BP_BRAIN]
+		var/obj/item/organ/internal/cerebrum/brain/B = mob.internal_organs_by_name[BP_BRAIN]
 		if(B && B.damage < B.min_broken_damage)
 			B.take_internal_damage(150)
-		mob.apply_effect(30*multiplier, IRRADIATE, blocked = 0)
+
+		var/datum/radiation/rad_info = new(5 TERA BECQUEREL, RADIATION_ALPHA_PARTICLE, energy = (15 MEGA ELECTRONVOLT))
+		mob.radiation += rad_info.calc_equivalent_dose(AVERAGE_HUMAN_WEIGHT)
 
 ////////////////////////STAGE 4/////////////////////////////////
 

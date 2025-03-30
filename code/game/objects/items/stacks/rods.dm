@@ -17,6 +17,9 @@
 	attack_verb = list("hit", "bludgeoned", "whacked")
 	lock_picking_level = 3
 
+	drop_sound = SFX_DROP_METALWEAPON
+	pickup_sound = SFX_PICKUP_METALWEAPON
+
 /obj/item/stack/rods/ten
 	amount = 10
 
@@ -41,20 +44,24 @@
 		var/obj/item/weldingtool/WT = W
 
 		if(get_amount() < 2)
-			to_chat(user, "<span class='warning'>You need at least two rods to do this.</span>")
+			to_chat(user, SPAN_NOTICE("You need at least two rods to do this."))
 			return
 
-		if(WT.remove_fuel(0,user))
-			var/obj/item/stack/material/steel/new_item = new(usr.loc)
-			new_item.add_to_stacks(usr)
-			for (var/mob/M in viewers(src))
-				M.show_message("<span class='notice'>[src] is shaped into metal by [user.name] with the weldingtool.</span>", 3, "<span class='notice'>You hear welding.</span>", 2)
-			var/obj/item/stack/rods/R = src
-			src = null
-			var/replace = (user.get_inactive_hand()==R)
-			R.use(2)
-			if (!R && replace)
-				user.put_in_hands(new_item)
+
+		if(!WT.use_tool(src, user, amount = 1))
+			return
+
+		var/obj/item/stack/material/steel/new_item = new(usr.loc)
+		new_item.add_to_stacks(usr)
+		for(var/mob/M in viewers(src))
+			M.show_message(SPAN_NOTICE("[src] is shaped into metal by [user.name] with the weldingtool."), 3, SPAN_NOTICE("You hear welding."), 2)
+
+		var/obj/item/stack/rods/R = src
+		src = null
+		var/replace = (user.get_inactive_hand() == R)
+		R.use(2)
+		if(!R && replace)
+			user.pick_or_drop(new_item)
 		return
 
 	if (istype(W, /obj/item/tape_roll))
@@ -101,7 +108,7 @@
 			return
 		to_chat(usr, SPAN("notice", "Assembling a window frame..."))
 		in_use = TRUE
-		if(!do_after(usr, 1 SECOND))
+		if(!do_after(usr, 1 SECOND, luck_check_type = LUCK_CHECK_ENG))
 			in_use = FALSE
 			return
 		in_use = FALSE
@@ -133,7 +140,7 @@
 			return
 		to_chat(usr, SPAN("notice", "Assembling grille..."))
 		in_use = 1
-		if(!do_after(usr, 1 SECOND))
+		if(!do_after(usr, 1 SECOND, luck_check_type = LUCK_CHECK_ENG))
 			in_use = 0
 			return
 		var/obj/structure/grille/F = new /obj/structure/grille(user.loc)
@@ -143,7 +150,7 @@
 		use(2)
 	return
 
-/obj/item/stack/rods/update_icon()
+/obj/item/stack/rods/on_update_icon()
 	icon_state = "rods[(amount < 5) ? amount : ""]"
 
 /obj/item/stack/rods/use()

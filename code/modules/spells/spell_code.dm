@@ -4,7 +4,7 @@
 	var/feedback = "" //what gets sent if this spell gets chosen by the spellbook.
 	var/panel = "Spells"//What panel the proc holder needs to go on.
 
-	var/icon = 'icons/mob/screen_spells.dmi'
+	var/icon = 'icons/hud/screen_spells.dmi'
 	// Name of the icon used in generating the spell hud object
 	var/icon_state = "fullblock"
 
@@ -64,7 +64,7 @@
 
 
 	var/mob/living/deity/connected_god //Do we have this spell based off a boon from a god?
-	var/obj/screen/connected_button
+	var/atom/movable/screen/connected_button
 
 ///////////////////////
 ///SETUP AND PROCESS///
@@ -76,6 +76,9 @@
 	//still_recharging_msg = "<span class='notice'>[name] is still recharging.</span>"
 	charge_counter = charge_max
 
+/datum/spell/proc/spell_learned(mob/user)
+	return
+
 /datum/spell/proc/process()
 	if(processing)
 		return
@@ -86,7 +89,7 @@
 			silenced = max(0,silenced-1)
 			sleep(1)
 		if(connected_button)
-			var/obj/screen/ability/spell/S = connected_button
+			var/atom/movable/screen/ability/spell/S = connected_button
 			if(!istype(S))
 				return
 			S.update_charge(1)
@@ -257,9 +260,8 @@
 			return FALSE
 
 	if(istype(user.loc, /obj/effect/dummy/spell_jaunt))
-		if(!istype(src, /datum/spell/targeted/ethereal_jaunt))
-			to_chat(user, SPAN_WARNING("You cannot cast spells in this form"))
-			return FALSE
+		to_chat(user, SPAN_WARNING("You cannot cast spells in this form"))
+		return FALSE
 
 	return TRUE
 
@@ -383,7 +385,7 @@
 	return temp
 
 /datum/spell/proc/spell_do_after(mob/user as mob, delay as num, numticks = 5)
-	if(!user || isnull(user))
+	if(QDELETED(user))
 		return FALSE
 
 	var/incap_flags = INCAPACITATION_STUNNED

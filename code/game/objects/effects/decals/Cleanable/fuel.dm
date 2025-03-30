@@ -1,7 +1,7 @@
 /obj/effect/decal/cleanable/liquid_fuel
 	//Liquid fuel is used for things that used to rely on volatile fuels or plasma being contained to a couple tiles.
 	icon = 'icons/effects/effects.dmi'
-	icon_state = "fuel"
+	icon_state = "liquid" //By design it should have a unique sprite "fuel", however in this implementation it has a ‘liquid’ sprite. You can draw something else in the future.
 	layer = BLOOD_LAYER
 	var/amount = 1
 
@@ -47,7 +47,7 @@
 			continue
 		if(O.CanPass(src, S) && S.CanPass(src, O))
 			new /obj/effect/decal/cleanable/liquid_fuel/flamethrower_fuel(O, amount * 0.25, d)
-			O.hotspot_expose((T20C * 2) + 380, 500) //Light flamethrower fuel on fire immediately.
+			O.hotspot_expose((40 CELSIUS) + 380, 500) //Light flamethrower fuel on fire immediately.
 
 	amount *= 0.25
 

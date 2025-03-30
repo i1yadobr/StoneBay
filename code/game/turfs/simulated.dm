@@ -13,8 +13,6 @@
 	var/max_fire_temperature_sustained = 0 //The max temperature of the fire which it was subjected to
 	var/dirt = 0
 
-	var/timer_id
-
 /turf/simulated/post_change()
 	..()
 	var/turf/T = GetAbove(src)
@@ -30,25 +28,27 @@
 	if(!wet)
 		wet = wet_val
 		wet_overlay = image('icons/effects/water.dmi',src,"wet_floor")
-		overlays += wet_overlay
+		AddOverlays(wet_overlay)
 
-	timer_id = addtimer(CALLBACK(src,/turf/simulated/proc/unwet_floor), 20 SECONDS, TIMER_STOPPABLE|TIMER_UNIQUE|TIMER_NO_HASH_WAIT|TIMER_OVERRIDE)
+	try_add_think_ctx("unwet_context", CALLBACK(src, nameof(.proc/unwet_floor)), world.time + 20 SECONDS)
 
 /turf/simulated/proc/unwet_floor(check_very_wet = TRUE)
 	if(check_very_wet && wet >= 2)
 		wet--
-		timer_id = addtimer(CALLBACK(src,/turf/simulated/proc/unwet_floor), 20 SECONDS, TIMER_STOPPABLE|TIMER_UNIQUE|TIMER_NO_HASH_WAIT|TIMER_OVERRIDE)
+		set_next_think_ctx("unwet_context", world.time + 20 SECONDS)
 		return
 
 	wet = 0
 	if(wet_overlay)
-		overlays -= wet_overlay
+		CutOverlays(wet_overlay)
 		wet_overlay = null
+
+	remove_think_ctx("unwet_context")
 
 /turf/simulated/clean_blood()
 	for(var/obj/effect/decal/cleanable/blood/B in contents)
 		B.clean_blood()
-	..()
+	return ..()
 
 /turf/simulated/New()
 	..()
@@ -75,44 +75,63 @@
 	. = ..()
 
 /turf/simulated/Entered(atom/A, atom/OL)
-	if (istype(A,/mob/living))
+	if(isliving(A))
 		var/mob/living/M = A
-		if(M.lying)
+
+		var/need_update_dirt = TRUE
+
+		if(M.buckled && !istype(M.buckled, /obj/structure/bed/chair/wheelchair)) // No bloody trails for rollerbedded dudes pls
 			return ..()
 
-		// Dirt overlays.
-		update_dirt()
-
-		if(istype(M, /mob/living/carbon/human))
+		if(ishuman(M))
 			var/mob/living/carbon/human/H = M
 			// Tracking blood
 			var/list/bloodDNA = null
 			var/bloodcolor = ""
-			if(H.shoes)
-				var/obj/item/clothing/shoes/S = H.shoes
-				if(istype(S))
-					S.handle_movement(src,(H.m_intent == M_RUN ? 1 : 0))
-					if(S.track_blood && S.blood_DNA)
-						bloodDNA = S.blood_DNA
-						bloodcolor=S.blood_color
-						S.track_blood--
-			else
-				if(H.track_blood && H.feet_blood_DNA)
-					bloodDNA = H.feet_blood_DNA
-					bloodcolor = H.feet_blood_color
-					H.track_blood--
 
-			if (bloodDNA)
-				src.AddTracks(H.species.get_move_trail(H),bloodDNA,H.dir,0,bloodcolor) // Coming
-				var/turf/simulated/from = get_step(H,reverse_direction(H.dir))
+			if(H.shoes)
+				var/obj/item/clothing/accessory/shoe_covers/SC = H.shoes
+				if(istype(SC))
+					SC.handle_movement(src, (H.m_intent == M_RUN ? 1 : 0), TRUE)
+					need_update_dirt = FALSE
+				else
+					var/obj/item/clothing/shoes/S = H.shoes
+					if(istype(S))
+						S.handle_movement(src, (H.m_intent == M_RUN ? 1 : 0))
+						if(S.get_accessory_cover())
+							need_update_dirt = FALSE
+						if(S.track_blood)
+							if(S.blood_DNA)
+								bloodDNA = S.blood_DNA
+							bloodcolor = S.blood_color
+							S.track_blood--
+
+			else if(H.track_blood)
+				if(H.feet_blood_DNA)
+					bloodDNA = H.feet_blood_DNA
+				bloodcolor = H.feet_blood_color
+				H.track_blood--
+
+			if(bloodDNA)
+				AddTracks(H.species.get_move_trail(H), bloodDNA, H.dir, 0, bloodcolor) // Coming
+				var/turf/simulated/from = get_step(H, reverse_direction(H.dir))
 				if(istype(from) && from)
-					from.AddTracks(H.species.get_move_trail(H),bloodDNA,0,H.dir,bloodcolor) // Going
+					from.AddTracks(H.species.get_move_trail(H), bloodDNA, 0, H.dir, bloodcolor) // Going
 
 				bloodDNA = null
 
-		if(wet)
+		// Dirt overlays.
+		if(need_update_dirt)
+			update_dirt()
 
-			if(M.buckled || (M.m_intent == M_WALK && prob(min(100, 100/(wet/10))) ) )
+		if(M.lying)
+			return ..()
+
+		if(wet)
+			if(M.buckled)
+				return // TODO: Lube-drifting wheelchairs aka dejavu
+
+			if(M.m_intent == M_WALK && prob(min(100, 100 / (wet / 10))))
 				return
 
 			var/slip_dist = 1
@@ -136,21 +155,22 @@
 	..()
 
 //returns 1 if made bloody, returns 0 otherwise
-/turf/simulated/add_blood(mob/living/carbon/human/M as mob)
-	if (!..())
-		return 0
+/turf/simulated/add_blood(source)
+	if(!ishuman(source))
+		return FALSE // Meh, fuck it, if you'll ever need the add_blood("#abcdef") behavior - just go ahead code it yourself. ~ToTh
+	. = ..()
+	if(!.)
+		return
 
-	if(istype(M))
-		for(var/obj/effect/decal/cleanable/blood/B in contents)
-			if(!B.blood_DNA)
-				B.blood_DNA = list()
-			if(!B.blood_DNA[M.dna.unique_enzymes])
-				B.blood_DNA[M.dna.unique_enzymes] = M.dna.b_type
-				B.virus2 = virus_copylist(M.virus2)
-			return 1 //we bloodied the floor
-		blood_splatter(src,M.get_blood(M.vessel),1)
-		return 1 //we bloodied the floor
-	return 0
+	var/mob/living/carbon/human/M = source
+	for(var/obj/effect/decal/cleanable/blood/B in contents)
+		if(!B.blood_DNA)
+			B.blood_DNA = list()
+		if(!B.blood_DNA[M.dna.unique_enzymes])
+			B.blood_DNA[M.dna.unique_enzymes] = M.dna.b_type
+			B.virus2 = virus_copylist(M.virus2)
+		return
+	blood_splatter(src, M.get_blood(M.vessel), 1)
 
 // Only adds blood on the floor -- Skie
 /turf/simulated/proc/add_blood_floor(mob/living/carbon/M as mob)

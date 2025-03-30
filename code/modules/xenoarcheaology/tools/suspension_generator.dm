@@ -4,33 +4,38 @@
 	icon = 'icons/obj/xenoarchaeology.dmi'
 	icon_state = "suspension2"
 	density = 1
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 	req_access = list(access_research)
+	use_power = 0
+	active_power_usage = 5 KILO WATTS
+	interact_offline = TRUE
 	var/obj/item/cell/cell
 	var/obj/item/card/id/auth_card
-	var/locked = 1
-	var/power_use = 5 KILOWATTS
+	var/locked = TRUE
 	var/obj/effect/suspension_field/suspension_field
 
 /obj/machinery/suspension_gen/New()
 	..()
 	src.cell = new /obj/item/cell/high(src)
 
+	AddElement(/datum/element/simple_rotation)
+
 /obj/machinery/suspension_gen/Process()
 	set background = 1
 	if(suspension_field)
-		cell.use(power_use * CELLRATE)
+		cell.use(active_power_usage * CELLRATE)
 
 		var/turf/T = get_turf(suspension_field)
 		for(var/mob/living/M in T)
 			M.weakened = max(M.weakened, 3)
-			cell.use(power_use * CELLRATE)
+			cell.use(active_power_usage * CELLRATE)
 			if(prob(5))
 				to_chat(M, SPAN("warning", "[pick("You feel tingly","You feel like floating","It is hard to speak","You can barely move")]."))
 
 		for(var/obj/item/I in T)
 			if(!suspension_field.contents.len)
 				suspension_field.icon_state = "energynet"
-				suspension_field.overlays += "shield2"
+				suspension_field.AddOverlays("shield2")
 			I.forceMove(suspension_field)
 
 		if(cell.charge <= 0)
@@ -40,7 +45,7 @@
 	var/dat = "<meta charset=\"utf-8\"><b>Multi-phase mobile suspension field generator MK II \"Steadfast\"</b><br>"
 	if(cell)
 		var/colour = "red"
-		var/percent = cell.percent()
+		var/percent = CELL_PERCENT(cell)
 		if(percent > 66)
 			colour = "green"
 		else if(percent > 33)
@@ -91,8 +96,8 @@
 				attackby(I, user)
 				interact(user)
 				return TOPIC_REFRESH
-			user.drop_item()
-			I.forceMove(src)
+			if(!user.drop(I, src))
+				return
 			auth_card = I
 			if(attempt_unlock(I, user))
 				to_chat(user, SPAN("info", "You insert [I], the console flashes \'<i>Access granted.</i>\'"))
@@ -102,7 +107,7 @@
 	else if(href_list["ejectcard"])
 		if(auth_card)
 			if(ishuman(user))
-				auth_card.loc = user.loc
+				auth_card.dropInto(user.loc)
 				if(!user.get_active_hand())
 					user.put_in_hands(auth_card)
 				auth_card = null
@@ -111,11 +116,13 @@
 				auth_card = null
 		. = TOPIC_REFRESH
 	else if(href_list["lock"])
-		locked = 1
+		locked = TRUE
 		. = TOPIC_REFRESH
 	else if(href_list["close"])
 		close_browser(user, "window=suspension")
 		return TOPIC_HANDLED
+	else if(href_list["refresh"])
+		. = TOPIC_REFRESH
 
 	if(. == TOPIC_REFRESH)
 		interact(user)
@@ -140,6 +147,9 @@
 			if(anchored)
 				anchored = 0
 			else
+				if(istype(loc, /turf) && !isfloor(loc))
+					to_chat(user, SPAN_WARNING("\The [name] must be constructed on the floor!"))
+					return
 				anchored = 1
 			to_chat(user, SPAN("info", "You wrench the stabilising legs [anchored ? "into place" : "up against the body"]."))
 			if(anchored)
@@ -152,9 +162,7 @@
 		if(panel_open)
 			if(cell)
 				to_chat(user, SPAN("warning", "There is a power cell already installed."))
-			else
-				user.drop_item()
-				W.forceMove(src)
+			else if(user.drop(W, src))
 				cell = W
 				to_chat(user, SPAN("info", "You insert the power cell."))
 				icon_state = "suspension1"
@@ -163,23 +171,25 @@
 		if(!auth_card)
 			if(attempt_unlock(I, user))
 				to_chat(user, SPAN("info", "You swipe [I], the console flashes \'<i>Access granted.</i>\'"))
+				interact(user)
 			else
 				to_chat(user, SPAN("warning", "You swipe [I], the console flashes \'<i>Access denied.</i>\'"))
 		else
 			to_chat(user, SPAN("warning", "Remove [auth_card] first."))
 
 /obj/machinery/suspension_gen/proc/attempt_unlock(obj/item/card/C, mob/user)
-	if(!panel_open)
-		if(istype(C, /obj/item/card/emag))
-			C.resolve_attackby(src, user)
-		else if(istype(C, /obj/item/card/id) && check_access(C) || istype(C, /obj/item/card/robot))
-			locked = 0
-		if(!locked)
-			return 1
+	if(panel_open)
+		return
+
+	if(istype(C, /obj/item/card/emag))
+		C.resolve_attackby(src, user)
+	else if(istype(C, /obj/item/card/id) && check_access(C) || istype(C, /obj/item/card/robot))
+		locked = FALSE
+	return !locked
 
 /obj/machinery/suspension_gen/emag_act(remaining_charges, mob/user)
 	if(cell.charge > 0 && locked)
-		locked = 0
+		locked = FALSE
 		return 1
 
 //checks for whether the machine can be activated or not should already have occurred by this point
@@ -204,7 +214,7 @@
 
 	if(collected)
 		suspension_field.icon_state = "energynet"
-		suspension_field.overlays += "shield2"
+		suspension_field.AddOverlays("shield2")
 		src.visible_message(SPAN("notice", "\icon[suspension_field] [suspension_field] gently absconds [collected > 1 ? "something" : "several things"]."))
 	else
 		if(istype(T,/turf/simulated/mineral) || istype(T,/turf/simulated/wall))
@@ -229,30 +239,10 @@
 	deactivate()
 	return ..()
 
-/obj/machinery/suspension_gen/verb/rotate_ccw()
-	set src in view(1)
-	set name = "Rotate suspension gen (counter-clockwise)"
-	set category = "Object"
-
-	if(anchored)
-		to_chat(usr, SPAN("warning", "You cannot rotate [src], it has been firmly fixed to the floor."))
-	else
-		set_dir(turn(dir, 90))
-
-/obj/machinery/suspension_gen/verb/rotate_cw()
-	set src in view(1)
-	set name = "Rotate suspension gen (clockwise)"
-	set category = "Object"
-
-	if(anchored)
-		to_chat(usr, SPAN("warning", "You cannot rotate [src], it has been firmly fixed to the floor."))
-	else
-		set_dir(turn(dir, -90))
-
 /obj/effect/suspension_field
 	name = "energy field"
 	icon = 'icons/effects/effects.dmi'
-	anchored = 1
+	anchored = TRUE
 	density = 1
 
 /obj/effect/suspension_field/Destroy()

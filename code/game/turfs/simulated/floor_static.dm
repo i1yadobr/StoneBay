@@ -6,13 +6,14 @@
 	icon = 'icons/turf/flooring/tiles.dmi'
 	icon_state = "steel"
 	initial_flooring = null
+	footstep_sound = SFX_FOOTSTEP_PLATING
 
 /turf/simulated/floor/misc/fixed/attackby(obj/item/C, mob/user)
 	if(istype(C, /obj/item/stack) && !isCoil(C))
 		return
 	return ..()
 
-/turf/simulated/floor/misc/fixed/update_icon()
+/turf/simulated/floor/misc/fixed/on_update_icon()
 	return
 
 /turf/simulated/floor/misc/fixed/is_plating()

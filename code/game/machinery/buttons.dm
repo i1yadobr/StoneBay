@@ -8,8 +8,8 @@
 	var/active = 0
 	var/operating = 0
 	anchored = 1.0
-	idle_power_usage = 2
-	active_power_usage = 4
+	idle_power_usage = 2 WATTS
+	active_power_usage = 4 WATTS
 	var/_wifi_id
 	var/datum/wifi/sender/wifi_sender
 
@@ -40,6 +40,8 @@
 	if(operating || !istype(wifi_sender))
 		return
 
+	SEND_SIGNAL(src, SIGNAL_BUTTON_ACTIVATED, src, user)
+
 	operating = 1
 	active = 1
 	use_power_oneoff(5)
@@ -50,7 +52,7 @@
 	update_icon()
 	operating = 0
 
-/obj/machinery/button/update_icon()
+/obj/machinery/button/on_update_icon()
 	if(active)
 		icon_state = "launcheract"
 	else
@@ -61,17 +63,17 @@
 	icon = 'icons/obj/power.dmi'
 	icon_state = "light0"
 
-/obj/machinery/button/switch/update_icon()
+/obj/machinery/button/switch/on_update_icon()
 	icon_state = "light[active]"
 
 //alternate button with the same functionality, except has a door control sprite instead
 /obj/machinery/button/alternate
 	icon = 'icons/obj/stationobjs.dmi'
-	icon_state = "doorctrl0"
+	icon_state = "doorctrl"
 
-/obj/machinery/button/alternate/update_icon()
+/obj/machinery/button/alternate/on_update_icon()
 	if(active)
-		icon_state = "doorctrl0"
+		icon_state = "doorctrl"
 	else
 		icon_state = "doorctrl2"
 
@@ -95,7 +97,7 @@
 	icon = 'icons/obj/power.dmi'
 	icon_state = "light0"
 
-/obj/machinery/button/toggle/switch/update_icon()
+/obj/machinery/button/toggle/switch/on_update_icon()
 	icon_state = "light[active]"
 
 
@@ -103,11 +105,11 @@
 //alternate button with the same toggle functionality, except has a door control sprite instead
 /obj/machinery/button/toggle/alternate
 	icon = 'icons/obj/stationobjs.dmi'
-	icon_state = "doorctrl0"
+	icon_state = "doorctrl"
 
-/obj/machinery/button/toggle/alternate/update_icon()
+/obj/machinery/button/toggle/alternate/on_update_icon()
 	if(active)
-		icon_state = "doorctrl0"
+		icon_state = "doorctrl"
 	else
 		icon_state = "doorctrl2"
 
@@ -157,7 +159,7 @@
 				8 = shock
 				16 = door safties  */
 
-/obj/machinery/button/toggle/door/update_icon()
+/obj/machinery/button/toggle/door/on_update_icon()
 	if(active)
 		icon_state = "[initial(icon_state)]"
 	else
@@ -209,13 +211,13 @@
 /obj/machinery/button/toggle/valve
 	name = "remote valve control"
 	var/frequency = 0
-	var/datum/radio_frequency/radio_connection
+	var/datum/frequency/radio_connection
 
 /obj/machinery/button/toggle/valve/Initialize()
 	. = ..()
-	radio_connection = radio_controller.add_object(src, frequency, RADIO_ATMOSIA)
+	radio_connection = SSradio.add_object(src, frequency, RADIO_ATMOSIA)
 
-/obj/machinery/button/toggle/valve/update_icon()
+/obj/machinery/button/toggle/valve/on_update_icon()
 	if(!active)
 		icon_state = "launcherbtt"
 	else
@@ -223,8 +225,7 @@
 
 
 /obj/machinery/button/toggle/valve/activate(mob/living/user)
-	var/datum/signal/signal = new
-	signal.transmission_method = 1 // radio transmission
+	var/datum/signal/signal = new()
 	signal.source = src
 	signal.frequency = frequency
 	signal.data["tag"] = id

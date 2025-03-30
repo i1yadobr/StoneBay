@@ -3,6 +3,7 @@
 	desc = "The NT Mk60 EW Halicon is a man portable anti-armor weapon designed to disable mechanical threats, produced by NT. Not the best of its type."
 	icon_state = "ionrifle"
 	item_state = "ionrifle"
+	improper_held_icon = TRUE
 	origin_tech = list(TECH_COMBAT = 2, TECH_MAGNET = 4)
 	w_class = ITEM_SIZE_HUGE
 	force = 12.5
@@ -25,8 +26,9 @@
 /obj/item/gun/energy/ionrifle/small
 	name = "ion pistol"
 	desc = "The NT Mk72 EW Preston is a personal defense weapon designed to disable mechanical threats."
-	icon_state = "ionpistolonyx"
-	item_state = "ionpistolonyx"
+	icon_state = "ionpistol"
+	item_state = "ionpistol"
+	improper_held_icon = FALSE
 	origin_tech = list(TECH_COMBAT = 2, TECH_MAGNET = 4)
 	w_class = ITEM_SIZE_NORMAL
 	force = 8.5
@@ -35,6 +37,7 @@
 	charge_cost = 20
 	max_shots = 6
 	projectile_type = /obj/item/projectile/ion/small
+	wielded_item_state = null
 	fire_sound = 'sound/effects/weapons/energy/fire1.ogg'
 
 /obj/item/gun/energy/decloner
@@ -80,17 +83,16 @@
 	set category = "Object"
 	set src in view(1)
 
-	var/genemask = input("Choose a gene to modify.") as null|anything in SSplants.plant_gene_datums
-
-	if(!genemask)
+	var/gene_name = tgui_input_list(usr, "Choose a gene to modify.", "Gene Selection", ALL_GENES)
+	if (isnull(gene_name))
 		return
 
-	gene = SSplants.plant_gene_datums[genemask]
+	var/decl/plantgene/gene = SSplants.plant_gene_datums[gene_name]
+	if (!isnull(gene))
+		return
 
-	to_chat(usr, "<span class='info'>You set the [src]'s targeted genetic area to [genemask].</span>")
-
-	return
-
+	src.gene = gene
+	show_splash_text(usr, "target gene set", SPAN_INFO("You set the [src]'s targeted genetic area to [gene_name]."))
 
 /obj/item/gun/energy/floragun/consume_next_projectile()
 	. = ..()
@@ -143,7 +145,7 @@
 /obj/item/gun/energy/staff
 	name = "staff of change"
 	desc = "An artefact that spits bolts of coruscating energy which cause the target's very form to reshape itself."
-	icon = 'icons/obj/gun.dmi'
+	icon = 'icons/obj/guns/gun.dmi'
 	item_icons = null
 	icon_state = "staffofchange"
 	item_state = "staffofchange"
@@ -158,6 +160,7 @@
 	charge_meter = 0
 	clumsy_unaffected = 1
 	combustion = FALSE
+	has_safety = FALSE
 
 /obj/item/gun/energy/staff/special_check(mob/user)
 	if((user.mind && !GLOB.wizards.is_antagonist(user.mind)))
@@ -215,8 +218,8 @@
 	origin_tech = list(TECH_MATERIAL = 6, TECH_PLASMA = 5, TECH_ENGINEERING = 6, TECH_COMBAT = 3)
 	matter = list(MATERIAL_STEEL = 4000)
 	projectile_type = /obj/item/projectile/beam/plasmacutter
-	charge_cost = 0
-	fire_delay = 10
+	charge_cost = 20
+	fire_delay = 6
 	max_shots = 10
 	var/danger_attack = FALSE
 
@@ -224,10 +227,15 @@
 		list(mode_name="mining mode", projectile_type = /obj/item/projectile/beam/plasmacutter, charge_cost = 0, fire_delay = 10, danger_attack = FALSE),
 		list(mode_name="battle mode", projectile_type = /obj/item/projectile/beam/plasmacutter/danger, charge_cost = 20, fire_delay = 6, danger_attack = TRUE),
 	)
+	has_safety = FALSE
 
-/obj/item/gun/energy/plasmacutter/_examine_text(mob/user)
+/obj/item/gun/energy/plasmacutter/Initialize()
 	. = ..()
-	to_chat(user, "It has a recharge port with a capital letter P.")
+	switch_firemodes()
+
+/obj/item/gun/energy/plasmacutter/examine(mob/user, infix)
+	. = ..()
+	. += "It has a recharge port with a capital letter P."
 
 /obj/item/gun/energy/plasmacutter/attackby(obj/item/stack/material/plasma/W, mob/user)
 	if(user.stat || user.restrained() || user.lying)

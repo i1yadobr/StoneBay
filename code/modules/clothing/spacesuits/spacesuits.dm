@@ -5,25 +5,23 @@
 /obj/item/clothing/head/helmet/space
 	name = "Space helmet"
 	icon_state = "space"
+	item_state = "space"
 	desc = "A special helmet designed for work in a hazardous, low-pressure environment."
 	item_flags = ITEM_FLAG_STOPPRESSUREDAMAGE | ITEM_FLAG_THICKMATERIAL | ITEM_FLAG_AIRTIGHT
 	flags_inv = BLOCKHAIR
-	item_state_slots = list(
-		slot_l_hand_str = "s_helmet",
-		slot_r_hand_str = "s_helmet",
-		)
 	permeability_coefficient = 0
-	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 100, rad = 50)
+	armor = list(melee = 40, bullet = 10, laser = 35,energy = 15, bomb = 0, bio = 100)
+	coverage = 1.0
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|BLOCKHAIR
 	body_parts_covered = HEAD|FACE|EYES
+	visor_body_parts_covered = NO_BODYPARTS
 	cold_protection = HEAD
 	min_cold_protection_temperature = SPACE_HELMET_MIN_COLD_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0.9
 	center_of_mass = null
 	randpixel = 0
-	species_restricted = list("exclude", SPECIES_NABBER, SPECIES_DIONA, "Xenomorph")
+	species_restricted = list("exclude", SPECIES_DIONA, "Xenomorph")
 	flash_protection = FLASH_PROTECTION_MAJOR
-	has_visor = 0
 
 	var/obj/machinery/camera/camera
 
@@ -31,6 +29,8 @@
 	light_overlay = "helmet_light"
 	brightness_on = 4
 	on = 0
+	rad_resist_type = /datum/rad_resist/space_gear
+
 
 /obj/item/clothing/head/helmet/space/Destroy()
 	if(camera && !ispath(camera))
@@ -59,35 +59,30 @@
 		else
 			to_chat(usr, "<span class='notice'>Camera deactivated.</span>")
 
-/obj/item/clothing/head/helmet/space/_examine_text(mob/user)
+/obj/item/clothing/head/helmet/space/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 1 && camera)
-		. += "\nThis helmet has a built-in camera. Its [!ispath(camera) && camera.status ? "" : "in"]active."
+		. += "This helmet has a built-in camera. Its [!ispath(camera) && camera.status ? "" : "in"]active."
 
 /obj/item/clothing/suit/space
 	name = "Space suit"
 	desc = "A suit that protects against low pressure environments."
 	icon_state = "space"
-	item_icons = list(
-		slot_l_hand_str = 'icons/mob/onmob/items/lefthand_spacesuits.dmi',
-		slot_r_hand_str = 'icons/mob/onmob/items/righthand_spacesuits.dmi',
-		)
-	item_state_slots = list(
-		slot_l_hand_str = "s_suit",
-		slot_r_hand_str = "s_suit",
-	)
+	item_state = "space"
 	w_class = ITEM_SIZE_LARGE//large item
 	gas_transfer_coefficient = 0
 	permeability_coefficient = 0
 	item_flags = ITEM_FLAG_STOPPRESSUREDAMAGE | ITEM_FLAG_THICKMATERIAL
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
 	allowed = list(/obj/item/device/flashlight,/obj/item/tank/emergency,/obj/item/device/suit_cooling_unit)
-	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 100, rad = 50)
+	armor = list(melee = 20, bullet = 10, laser = 30,energy = 15, bomb = 0, bio = 100)
+	coverage = 1.0
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT|HIDETAIL
 	cold_protection = UPPER_TORSO | LOWER_TORSO | LEGS | FEET | ARMS | HANDS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0.9
 	center_of_mass = null
 	randpixel = 0
-	species_restricted = list("exclude", SPECIES_NABBER, SPECIES_DIONA, "Xenomorph")
+	species_restricted = list("exclude", SPECIES_DIONA, "Xenomorph")
 	valid_accessory_slots = list(ACCESSORY_SLOT_INSIGNIA)

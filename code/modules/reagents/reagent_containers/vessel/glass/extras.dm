@@ -5,8 +5,7 @@
 		var/obj/item/glass_extra/GE = I
 		if(can_add_extra(GE))
 			extras += GE
-			user.remove_from_mob(GE)
-			GE.loc = src
+			user.drop(GE, src)
 			to_chat(user, "<span class=notice>You add \the [GE] to \the [src].</span>")
 			update_icon()
 		else
@@ -17,10 +16,9 @@
 			return
 		var/obj/item/reagent_containers/food/fruit_slice/FS = I
 		extras += FS
-		user.remove_from_mob(FS)
+		user.drop(FS, src)
 		FS.pixel_x = 0 // Reset its pixel offsets so the icons work!
 		FS.pixel_y = 0
-		FS.loc = src
 		to_chat(user, "<span class=notice>You add \the [FS] to \the [src].</span>")
 		update_icon()
 	else
@@ -38,12 +36,12 @@
 	if(!choice || !(choice in extras))
 		return
 
-	if(user.put_in_active_hand(choice))
-		to_chat(user, "<span class=notice>You remove \the [choice] from \the [src].</span>")
-		extras -= choice
+	if(user.pick_or_drop(choice, loc))
+		to_chat(user, SPAN("notice", "You take \the [choice] from \the [src]."))
 	else
-		to_chat(user, "<span class=warning>Something went wrong, please try again.</span>")
+		to_chat(user, SPAN("notice", "You remove \the [choice] from \the [src]."))
 
+	extras -= choice
 	update_icon()
 
 /obj/item/glass_extra
@@ -56,12 +54,12 @@
 	w_class = ITEM_SIZE_TINY
 	icon = DRINK_ICON_FILE
 
-/obj/item/glass_extra/stick
+/obj/item/glass_extra/cocktail_stick
 	name = "stick"
 	desc = "This goes in a glass."
 	glass_addition = "stick"
 	glass_desc = "There is a stick in the glass."
-	icon_state = "stick"
+	icon_state = "cocktail_stick"
 
 /obj/item/glass_extra/straw
 	name = "straw"

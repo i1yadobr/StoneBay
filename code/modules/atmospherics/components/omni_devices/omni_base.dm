@@ -21,10 +21,10 @@
 	var/overlays_error[2]
 	var/underlays_current[4]
 
-	var/list/ports = new()
+	var/list/ports = list()
 
-/obj/machinery/atmospherics/omni/New()
-	..()
+/obj/machinery/atmospherics/omni/Initialize()
+	. = ..()
 	icon_state = "base"
 
 	ports = new()
@@ -45,13 +45,13 @@
 
 	build_icons()
 
-/obj/machinery/atmospherics/omni/update_icon()
+/obj/machinery/atmospherics/omni/on_update_icon()
 	if(stat & NOPOWER)
-		overlays = overlays_off
+		SetOverlays(overlays_off)
 	else if(error_check())
-		overlays = overlays_error
+		SetOverlays(overlays_error)
 	else
-		overlays = use_power ? (overlays_on) : (overlays_off)
+		SetOverlays(use_power ? (overlays_on) : (overlays_off))
 
 	underlays = underlays_current
 
@@ -81,12 +81,12 @@
 	var/datum/gas_mixture/env_air = loc.return_air()
 	to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
-	if(do_after(user, 40, src))
+	if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		user.visible_message( \
 			"<span class='notice'>\The [user] unfastens \the [src].</span>", \
 			"<span class='notice'>You have unfastened \the [src].</span>", \
 			"You hear a ratchet.")
-		var/obj/item/pipe/P = new(loc, make_from=src)
+		var/obj/item/pipe/P = new(loc, null, null, src)
 		if ((int_pressure - env_air.return_pressure()) > 2*ONE_ATMOSPHERE)
 			to_chat(user, "<span class='warning'>\the [src] flies off because of the overpressure in it!</span>")
 			P.throw_at_random(0, round((int_pressure - env_air.return_pressure()) / 100), 30)
@@ -224,13 +224,12 @@
 	return null
 
 /obj/machinery/atmospherics/omni/Destroy()
-	loc = null
-
 	for(var/datum/omni_port/P in ports)
 		if(P.node)
 			P.node.disconnect(src)
 			qdel(P.network)
 			P.node = null
+	ports.Cut()
 
 	return ..()
 

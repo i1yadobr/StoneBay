@@ -124,11 +124,9 @@
 				return
 
 	// Upgrades!
-	if(is_type_in_list(W, possible_upgrades) && !is_type_in_list(W, upgrades)) // Is a possible upgrade and isn't in the camera already.
+	if(is_type_in_list(W, possible_upgrades) && !is_type_in_list(W, upgrades) && user.drop(W, src)) // Is a possible upgrade and isn't in the camera already.
 		to_chat(user, "You attach \the [W] into the assembly inner circuits.")
 		upgrades += W
-		user.remove_from_mob(W)
-		W.forceMove(src)
 		return
 
 	// Taking out upgrades
@@ -143,7 +141,7 @@
 
 	..()
 
-/obj/item/camera_assembly/update_icon()
+/obj/item/camera_assembly/on_update_icon()
 	if(anchored)
 		icon_state = "camera1"
 	else
@@ -154,20 +152,12 @@
 		..()
 
 /obj/item/camera_assembly/proc/weld(obj/item/weldingtool/WT, mob/user)
+	to_chat(user, SPAN_NOTICE("You start to weld \the [src]."))
 
-	if(busy)
-		return 0
-	if(!WT.isOn())
-		return 0
+	if(!WT.use_tool(src, user, delay = 2 SECONDS, amount = 1))
+		return FALSE
 
-	to_chat(user, "<span class='notice'>You start to weld \the [src]..</span>")
-	playsound(src.loc, 'sound/items/Welder.ogg', 50, 1)
-	WT.eyecheck(user)
-	busy = 1
-	if(do_after(user, 20, src))
-		busy = 0
-		if(!WT.isOn())
-			return 0
-		return 1
-	busy = 0
-	return 0
+	if(QDELETED(src) || !user)
+		return FALSE
+
+	return TRUE

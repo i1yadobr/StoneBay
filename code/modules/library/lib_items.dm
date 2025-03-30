@@ -19,6 +19,9 @@
 	opacity = 1
 	obj_flags = OBJ_FLAG_ANCHORABLE
 
+/obj/structure/bookcase/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_PAPER, -40, 5)
+
 /obj/structure/bookcase/Initialize()
 	for(var/obj/item/I in loc)
 		if(istype(I, /obj/item/book))
@@ -26,11 +29,10 @@
 	update_icon()
 	. = ..()
 
-/obj/structure/bookcase/attackby(obj/O as obj, mob/user as mob)
+/obj/structure/bookcase/attackby(obj/item/O, mob/user)
 	if(istype(O, /obj/item/book))
-		user.drop_item()
-		O.loc = src
-		update_icon()
+		if(user.drop(O, src))
+			update_icon()
 	else if(istype(O, /obj/item/pen))
 		var/newname = sanitizeSafe(input("What would you like to title this bookshelf?"), MAX_NAME_LEN)
 		if(!newname)
@@ -44,7 +46,7 @@
 			to_chat(user, SPAN("notice", "You dismantle \the [src]."))
 			new /obj/item/stack/material/wood(get_turf(src), 5)
 			for(var/obj/item/book/b in contents)
-				b.loc = (get_turf(src))
+				b.dropInto(get_turf(src))
 			qdel(src)
 
 	else
@@ -67,10 +69,9 @@
 			var/obj/choice = titles[title]
 			ASSERT(choice)
 			if(ishuman(user))
-				if(!user.get_active_hand())
-					user.put_in_hands(choice)
+				user.pick_or_drop(choice)
 			else
-				choice.loc = get_turf(src)
+				choice.forceMove(loc)
 			update_icon()
 
 /obj/structure/bookcase/ex_act(severity)
@@ -82,20 +83,21 @@
 			return
 		if(2.0)
 			for(var/obj/item/book/b in contents)
-				if (prob(50)) b.loc = (get_turf(src))
-				else qdel(b)
+				if(prob(50))
+					b.dropInto(get_turf(src))
+				else
+					qdel(b)
 			qdel(src)
 			return
 		if(3.0)
-			if (prob(50))
+			if(prob(50))
 				for(var/obj/item/book/b in contents)
-					b.loc = (get_turf(src))
+					b.dropInto(get_turf(src))
 				qdel(src)
 			return
-		else
 	return
 
-/obj/structure/bookcase/update_icon()
+/obj/structure/bookcase/on_update_icon()
 	if(contents.len < 5)
 		icon_state = "book-[contents.len]"
 	else
@@ -208,11 +210,14 @@
 	var/window_width = 650
 	var/window_height = 650
 
-/obj/item/book/attack_self(mob/user as mob)
+	drop_sound = SFX_DROP_BOOK
+	pickup_sound = SFX_PICKUP_BOOK
+
+/obj/item/book/attack_self(mob/user)
 	if(carved)
 		if(store)
 			to_chat(user, SPAN("notice", "[store] falls out of [title]!"))
-			store.loc = get_turf(src.loc)
+			store.dropInto(user.loc)
 			store = null
 			return
 		else
@@ -228,9 +233,7 @@
 /obj/item/book/attackby(obj/item/W as obj, mob/user as mob)
 	if(carved == 1)
 		if(!store)
-			if(W.w_class < ITEM_SIZE_NORMAL)
-				user.drop_item()
-				W.loc = src
+			if(W.w_class < ITEM_SIZE_NORMAL && user.drop(W, src))
 				store = W
 				to_chat(user, SPAN("notice", "You put [W] in [title]."))
 				return

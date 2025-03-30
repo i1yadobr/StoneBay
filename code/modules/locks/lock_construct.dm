@@ -1,7 +1,7 @@
 /obj/item/material/lock_construct
 	name = "lock"
 	desc = "a crude but useful lock and bolt."
-	icon = 'icons/obj/storage.dmi'
+	icon = 'icons/obj/crates.dmi'
 	icon_state = "largebinemag"
 	w_class = ITEM_SIZE_TINY
 	var/lock_data
@@ -29,7 +29,6 @@
 	..()
 
 /obj/item/material/lock_construct/proc/create_lock(atom/target, mob/user)
-	. = new /datum/lock(target,lock_data)
-	user.drop_item(src)
+	. = new /datum/lock(target, lock_data)
 	user.visible_message("\The [user] attaches \the [src] to \the [target]")
 	qdel(src)

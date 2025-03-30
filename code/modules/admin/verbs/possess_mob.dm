@@ -15,7 +15,7 @@ GLOBAL_LIST_EMPTY(available_mobs_for_possess)
 	if(M.ckey && copytext(M.ckey, 1, 2) == "@")
 		to_chat(src, SPAN_WARNING("[M] is occupied with aghosted admin."))
 		return
-	if(M.stat == DEAD)
+	if(M.is_ooc_dead())
 		to_chat(src, SPAN_WARNING("[M] is dead. There's no point to toggle possess mode!"))
 		return
 
@@ -23,10 +23,10 @@ GLOBAL_LIST_EMPTY(available_mobs_for_possess)
 	log_and_message_admins("switched [M] possess mode for ghosts to [M.controllable ? "ON" : "OFF"]!", target = M)
 
 	if(M.controllable)
-		notify_ghosts("[capitalize(M.name)] is now available to possess!", source = M, action = NOTIFY_FOLLOW, posses_mob = TRUE)
-		GLOB.available_mobs_for_possess += M
+		notify_ghosts("[capitalize(M.name)] is now available to possess!", source = M, action = NOTIFY_POSSES, posses_mob = TRUE)
+		GLOB.available_mobs_for_possess["\ref[M]"] += M
 	else
-		GLOB.available_mobs_for_possess -= M
+		GLOB.available_mobs_for_possess -= "\ref[M]"
 
 /proc/possess_link(mob/observer/ghost/G, mob/living/M)
 	return "<a href='byond://?src=\ref[G];possess=\ref[M]'>(Occupy)</a>"

@@ -127,16 +127,17 @@
 		SSplants.product_descs["[seed.uid]"] = desc
 	desc += ". Delicious! Probably."
 
-/obj/item/reagent_containers/food/grown/update_icon()
+/obj/item/reagent_containers/food/grown/on_update_icon()
 	if(!seed)
 		return
-	overlays.Cut()
+	ClearOverlays()
 	icon_state = "[seed.get_trait(TRAIT_PRODUCT_ICON)]-product"
 	color = seed.get_trait(TRAIT_PRODUCT_COLOUR)
 	if("[seed.get_trait(TRAIT_PRODUCT_ICON)]-leaf" in icon_states('icons/obj/hydroponics_products.dmi'))
 		var/image/fruit_leaves = image('icons/obj/hydroponics_products.dmi',"[seed.get_trait(TRAIT_PRODUCT_ICON)]-leaf")
+		fruit_leaves.appearance_flags |= RESET_COLOR
 		fruit_leaves.color = seed.get_trait(TRAIT_PLANT_COLOUR)
-		overlays |= fruit_leaves
+		AddOverlays(fruit_leaves)
 
 /obj/item/reagent_containers/food/grown/Crossed(mob/living/M)
 	if(seed && seed.get_trait(TRAIT_JUICY) == 2)
@@ -160,6 +161,11 @@
 			if(src) qdel(src)
 			return
 
+/obj/item/reagent_containers/food/grown/attack(mob/M, mob/user, def_zone)
+	if(seed && seed.get_trait(TRAIT_STINGS) && user.a_intent == I_HURT)
+		apply_hit_effect(M, user, def_zone)
+	else return ..()
+
 /obj/item/reagent_containers/food/grown/throw_impact(atom/hit_atom)
 	seed?.thrown_at(src, hit_atom)
 	..()
@@ -173,8 +179,8 @@
 				//TODO: generalize this.
 				to_chat(user, "<span class='notice'>You add some cable to the [src.name] and slide it inside the battery casing.</span>")
 				var/obj/item/cell/potato/pocell = new /obj/item/cell/potato(get_turf(user))
-				if(src.loc == user && !(user.l_hand && user.r_hand) && istype(user,/mob/living/carbon/human))
-					user.put_in_hands(pocell)
+				if(loc == user && !(user.l_hand && user.r_hand) && istype(user,/mob/living/carbon/human))
+					user.pick_or_drop(pocell)
 				pocell.maxcharge = src.potency * 10
 				pocell.charge = pocell.maxcharge
 				qdel(src)
@@ -242,7 +248,6 @@
 		if(prob(35))
 			if(user)
 				to_chat(user, "<span class='danger'>\The [src] has fallen to bits.</span>")
-				user.drop_from_inventory(src)
 			qdel(src)
 
 /obj/item/reagent_containers/food/grown/attack_self(mob/user as mob)
@@ -331,9 +336,9 @@ var/list/fruit_icon_cache = list()
 		var/image/I = image(icon,"fruit_rind")
 		I.color = rind_colour
 		fruit_icon_cache["rind-[rind_colour]"] = I
-	overlays |= fruit_icon_cache["rind-[rind_colour]"]
+	AddOverlays(fruit_icon_cache["rind-[rind_colour]"])
 	if(!fruit_icon_cache["slice-[rind_colour]"])
 		var/image/I = image(icon,"fruit_slice")
 		I.color = flesh_colour
 		fruit_icon_cache["slice-[rind_colour]"] = I
-	overlays |= fruit_icon_cache["slice-[rind_colour]"]
+	AddOverlays(fruit_icon_cache["slice-[rind_colour]"])

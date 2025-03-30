@@ -99,7 +99,7 @@
 
 	card_slot.stored_card.forceMove(get_turf(src))
 	if(!issilicon(user))
-		user.put_in_hands(card_slot.stored_card)
+		user.pick_or_drop(card_slot.stored_card)
 	card_slot.stored_card = null
 	update_uis()
 	to_chat(user, "You remove the card from \the [src]")
@@ -166,9 +166,8 @@
 		if(card_slot.stored_card)
 			to_chat(user, "You try to insert \the [I] into \the [src], but it's ID card slot is occupied.")
 			return
-		user.drop_from_inventory(I)
+		user.drop(I, src)
 		card_slot.stored_card = I
-		I.forceMove(src)
 		update_uis()
 		to_chat(user, "You insert \the [I] into \the [src].")
 		return
@@ -197,18 +196,15 @@
 		return
 	if(isWelder(W))
 		var/obj/item/weldingtool/WT = W
-		if(!WT.isOn())
-			to_chat(user, "\The [W] is off.")
-			return
-
 		if(!damage)
 			to_chat(user, "\The [src] does not require repairs.")
 			return
 
-		to_chat(user, "You begin repairing damage to \the [src]...")
-		if(WT.remove_fuel(round(damage/75)) && do_after(usr, damage/10))
-			damage = 0
-			to_chat(user, "You repair \the [src].")
+		if(!WT.use_tool(src, user, delay = round(damage /10), amount = round(damage/75)))
+			return
+
+		damage = 0
+		to_chat(user, "You repair \the [src].")
 		return
 
 	if(isScrewdriver(W))

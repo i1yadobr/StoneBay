@@ -121,14 +121,14 @@
 	attackby(obj/item/D as obj, mob/user as mob)
 		if(isScrewdriver(D))
 			playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
-			if(do_after(user, 20, src))
+			if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 				if (src.stat & BROKEN)
 					to_chat(user, "<span class='notice'>The broken glass falls out.</span>")
 					var/obj/structure/computerframe/A = new /obj/structure/computerframe( src.loc )
 					new /obj/item/material/shard( src.loc )
 					var/obj/item/circuitboard/comm_traffic/M = new /obj/item/circuitboard/comm_traffic( A )
 					for (var/obj/C in src)
-						C.loc = src.loc
+						C.dropInto(loc)
 					A.circuit = M
 					A.state = 3
 					A.icon_state = "3"
@@ -139,7 +139,7 @@
 					var/obj/structure/computerframe/A = new /obj/structure/computerframe( src.loc )
 					var/obj/item/circuitboard/comm_traffic/M = new /obj/item/circuitboard/comm_traffic( A )
 					for (var/obj/C in src)
-						C.loc = src.loc
+						C.dropInto(loc)
 					A.circuit = M
 					A.state = 4
 					A.icon_state = "4"

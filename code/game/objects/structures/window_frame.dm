@@ -17,6 +17,7 @@
 
 	var/max_health = 20 // 40% of the material's integrity
 	var/health = 20
+	var/stored_silicate = 0 // Leftover silicate absorbs a bit of damage done to a windowpane.
 	var/is_inner = FALSE
 	var/state = 2
 	var/tinted = FALSE // Electrochromic tint, not to be confused with the "opacity" variable
@@ -24,7 +25,7 @@
 	var/opacity = FALSE
 
 	var/explosion_block = 0
-	var/max_heat = T0C + 100
+	var/max_heat = 100 CELSIUS
 
 	var/preset_material
 
@@ -76,11 +77,23 @@
 		explosion_block += 1
 		reinforced = TRUE
 
-	if(max_heat >= (T0C + 2000))
+	if(max_heat >= (2000 CELSIUS))
 		explosion_block += 1
+
+/datum/windowpane/proc/apply_silicate(volume)
+	if(health < max_health)
+		health = min(health + volume * 3, max_health)
+		my_frame.visible_message(health == max_health ? "Silicate mended some cracks on \the [my_frame]'s [name]." :
+														"\The [my_frame]'s [name] looks fully repaired.")
+	else
+		stored_silicate = min(stored_silicate + volume, 100)
 
 /datum/windowpane/proc/take_damage(damage = 0, sound_effect = TRUE)
 	var/initialhealth = health
+
+	if(stored_silicate)
+		damage *= (1 - stored_silicate / 200)
+
 	health = max(0, health - damage)
 
 	if(health <= 0)
@@ -113,7 +126,6 @@
 	if(display_message)
 		my_frame.visible_message("[my_frame][is_inner ? "\'s inner windowpane" : ""] shatters!")
 
-	var/obj/item/material/shard/S = window_material.place_shard(get_turf(my_frame))
 	var/shard_material = window_material.name
 	switch(window_material.name)
 		if(MATERIAL_REINFORCED_GLASS)
@@ -122,7 +134,7 @@
 			shard_material = MATERIAL_PLASS
 		if(MATERIAL_REINFORCED_BLACK_GLASS)
 			shard_material = MATERIAL_BLACK_GLASS
-	S.set_material(shard_material)
+	new /obj/item/material/shard(get_turf(my_frame), shard_material)
 
 	if(reinforced)
 		new /obj/item/stack/rods(get_turf(my_frame))
@@ -161,6 +173,9 @@
 	can_atmos_pass = ATMOS_PASS_PROC
 	layer = WINDOW_FRAME_LAYER
 	explosion_resistance = 1
+
+	rad_resist_type = /datum/rad_resist/window
+
 	var/max_health = 8
 	var/health = 8
 	var/pane_melee_mult = 1.0 // Stronger frames protect their windowpanes from some damage.
@@ -184,8 +199,15 @@
 		/mob/living/bot,
 		/mob/living/carbon/metroid,
 		/mob/living/simple_animal/mouse,
+		/mob/living/simple_animal/lizard,
+		/mob/living/simple_animal/hamster,
 		/mob/living/silicon/robot/drone
 		)
+
+/datum/rad_resist/window
+	alpha_particle_resist = 100 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.1 MEGA ELECTRONVOLT
+	hawking_resist = 0.1 ELECTRONVOLT
 
 /obj/structure/window_frame/Initialize()
 	. = ..()
@@ -199,6 +221,9 @@
 	explosion_block = EXPLOSION_BLOCK_PROC
 	update_nearby_tiles(need_rebuild = TRUE)
 	update_nearby_icons()
+
+/obj/structure/window_frame/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_GLASS, -40, 5)
 
 /obj/structure/window_frame/GetExplosionBlock()
 	. += outer_pane?.explosion_block
@@ -215,14 +240,14 @@
 
 /obj/structure/window_frame/ex_act(severity)
 	switch(severity)
-		if(1)
+		if(EXPLODE_DEVASTATE)
 			// 25% chance for each pane to drop shards, 75% to just evaporate.
 			if(outer_pane && prob(25))
 				outer_pane.shatter(FALSE)
 			if(inner_pane && prob(25))
 				inner_pane.shatter(FALSE)
 			qdel(src)
-		if(2)
+		if(EXPLODE_HEAVY)
 			if(outer_pane)
 				if(inner_pane && prob(90 - (20 * outer_pane.explosion_block)))
 					inner_pane.shatter(FALSE) // Outer pane can protect the inner one, depending on its explosion resistance.
@@ -232,7 +257,7 @@
 			else
 				signaler?.forceMove(get_turf(src))
 				qdel(src) // Poor frame gets murdered here if not protected by windowpanes.
-		if(1)
+		if(EXPLODE_LIGHT)
 			if(prob(50))
 				if(outer_pane)
 					outer_pane.shatter(FALSE)
@@ -318,8 +343,8 @@
 		atom_flags &= ~ATOM_FLAG_FULLTILE_OBJECT
 
 // The scariest thing present. Let's just -=HoPe=- it's not -=ThAt=- performance-heavy.
-/obj/structure/window_frame/update_icon()
-	overlays.Cut()
+/obj/structure/window_frame/on_update_icon()
+	ClearOverlays()
 	underlays.Cut()
 	icon_state = icon_base
 	var/new_opacity = FALSE
@@ -330,84 +355,73 @@
 	layer = WINDOW_FRAME_LAYER
 
 	if(frame_state == FRAME_ELECTRIC || frame_state == FRAME_RELECTRIC)
-		var/image/I = image(icon, "[icon_base]_cable")
-		I.color = cable_color
-		overlays += I
+		var/image/I = OVERLAY(icon, "[icon_base]_cable", color = cable_color)
+		AddOverlays(I)
 
 	if(signaler)
-		overlays += image(icon, "winframe_signaler")
+		AddOverlays(OVERLAY(icon, "winframe_signaler"))
 
 	if(inner_pane)
-		var/list/dirs = list()
-		if(inner_pane.state >= 2)
-			for(var/obj/structure/window_frame/W in orange(src, 1))
-				if(W.inner_pane?.state >= 2)
-					dirs += get_dir(src, W)
+		var/connections = 0
+		for(var/I in GLOB.cardinal)
+			var/obj/structure/window_frame/W = locate() in get_step(src, I)
+			if(!istype(W))
+				continue
+			if(W.inner_pane?.state >= 2)
+				connections += get_dir(src, W)
 
-		var/list/connections = dirs_to_corner_states(dirs)
-
-		for(var/i = 1 to 4)
-			var/image/I = image(icon, "[inner_pane.icon_base][connections[i]]", dir = 1<<(i-1))
-			I.layer = WINDOW_INNER_LAYER
-			overlays += I
+		var/image/I = image(GLOB.bitmask_icon_sheets["[inner_pane.icon_base]"], "[connections]")
+		I.layer = WINDOW_INNER_LAYER
+		AddOverlays(I)
 
 		if(inner_pane.tinted)
 			new_opacity = TRUE
-			var/image/I = image(icon, "winframe_tint")
-			I.layer = WINDOW_INNER_LAYER
-			overlays += I
+			AddOverlays(OVERLAY(icon, "winframe_tint", layer = WINDOW_INNER_LAYER))
 
 		if(inner_pane.damage_state)
-			var/image/I = image(icon, "winframe_damage[inner_pane.damage_state]")
-			I.layer = WINDOW_INNER_LAYER
-			overlays += I
+			AddOverlays(OVERLAY(icon, "winframe_damage[inner_pane.damage_state]", layer = WINDOW_INNER_LAYER))
 
 		if(inner_pane.opacity)
 			new_opacity = TRUE
 
 	if(outer_pane)
 		if(outer_pane.reinforced)
-			underlays += image(icon, "winframe_shadow")
+			underlays += OVERLAY(icon, "winframe_shadow")
 
-		var/list/dirs = list()
-		if(outer_pane.state >= 2)
-			for(var/obj/structure/window_frame/W in orange(src, 1))
-				if(W.outer_pane?.state >= 2)
-					dirs += get_dir(src, W)
+		var/connections = 0
+		for(var/I in GLOB.cardinal)
+			var/obj/structure/window_frame/W = locate() in get_step(src, I)
+			if(!istype(W))
+				continue
+			if(W.outer_pane?.state >= 2)
+				connections += get_dir(src, W)
 
-		var/list/connections = dirs_to_corner_states(dirs)
-
-		for(var/i = 1 to 4)
-			var/image/I = image(icon, "[outer_pane.icon_base][connections[i]]", dir = 1<<(i-1))
-			I.layer = WINDOW_OUTER_LAYER
-			overlays += I
+		var/image/I = image(GLOB.bitmask_icon_sheets["[outer_pane.icon_base]"], "[connections]")
+		I.layer = WINDOW_OUTER_LAYER
+		AddOverlays(I)
 
 		if(outer_pane.tinted)
 			new_opacity = TRUE
-			var/image/I = image(icon, "winframe_tint")
-			I.layer = WINDOW_OUTER_LAYER
-			overlays += I
+			AddOverlays(OVERLAY(icon, "winframe_tint", layer = WINDOW_OUTER_LAYER))
 
 		if(outer_pane.damage_state)
-			var/image/I = image(icon, "winframe_damage[outer_pane.damage_state]")
-			I.layer = WINDOW_OUTER_LAYER
-			overlays += I
+			AddOverlays(OVERLAY(icon, "winframe_damage[outer_pane.damage_state]", layer = WINDOW_OUTER_LAYER))
 
 		if(outer_pane.opacity)
 			new_opacity = TRUE
 
 	if(outer_pane?.state >= 1)
-		var/list/dirs = list()
-		for(var/obj/structure/window_frame/W in orange(src, 1))
+		var/connections = 0
+		for(var/I in GLOB.cardinal)
+			var/obj/structure/window_frame/W = locate() in get_step(src, I)
+			if(!istype(W))
+				continue
 			if(W.outer_pane?.state >= 1)
-				dirs += get_dir(src, W)
+				connections += get_dir(src, W)
 
-		var/list/connections = dirs_to_corner_states(dirs)
-
-		for(var/i = 1 to 4)
-			var/image/I = image(icon, "[icon_border][connections[i]]", dir = 1<<(i-1))
-			I.layer = WINDOW_BORDER_LAYER
-			overlays += I
+		var/image/I = image(GLOB.bitmask_icon_sheets["[icon_border]"], "[connections]")
+		I.layer = WINDOW_BORDER_LAYER
+		AddOverlays(I)
 
 	if(opacity != new_opacity)
 		set_opacity(new_opacity)
@@ -418,18 +432,20 @@
 	for(var/obj/structure/window_frame/W in orange(src, 1))
 		W.update_icon()
 
-/obj/structure/window_frame/_examine_text(mob/user)
+/obj/structure/window_frame/examine(mob/user, infix)
 	. = ..()
+
 	if(outer_pane)
 		if(frame_state == FRAME_REINFORCED)
-			. += "\nIt has an outer [outer_pane.name] installed. [outer_pane.get_damage_desc()]"
+			. += "It has an outer [outer_pane.name] installed. [outer_pane.get_damage_desc()]"
 		else
-			. += "\nIt has a [outer_pane.name] installed. [outer_pane.get_damage_desc()]"
+			. += "It has a [outer_pane.name] installed. [outer_pane.get_damage_desc()]"
+
 	if(inner_pane)
-		. += "\nIt has an inner [inner_pane.name] installed. [inner_pane.get_damage_desc()]"
+		. += "It has an inner [inner_pane.name] installed. [inner_pane.get_damage_desc()]"
 
 	if(signaler)
-		. += "\n There is a signaler attached to the wiring."
+		. += "There is a signaler attached to the wiring."
 
 /obj/structure/window_frame/Bumped(atom/user)
 	if(ismob(user))
@@ -485,6 +501,11 @@
 			user.do_attack_animation(src)
 			affected.shatter()
 
+		else if(MUTATION_STRONG in user.mutations)
+			user.visible_message(SPAN("danger", "[user] smashes through \the [src]!"))
+			user.do_attack_animation(src)
+			affected.shatter()
+
 		else if(user.a_intent == I_HURT)
 			if(ishuman(user))
 				var/mob/living/carbon/human/H = user
@@ -507,7 +528,7 @@
 	playsound(loc, 'sound/effects/grillehit.ogg', 80, 1)
 	user.do_attack_animation(src)
 
-	var/damage_dealt = 1
+	var/damage_dealt = 2
 	var/attack_message = "kicks"
 	if(istype(user,/mob/living/carbon/human))
 		var/mob/living/carbon/human/H = user
@@ -520,8 +541,9 @@
 
 	if(MUTATION_HULK in user.mutations)
 		damage_dealt += 5
-	else
-		damage_dealt += 1
+
+	if(MUTATION_STRONG in user.mutations)
+		damage_dealt += 5
 
 	attack_generic(user, damage_dealt, attack_message)
 
@@ -596,7 +618,7 @@
 				to_chat(user, SPAN("warning", "\The [WINDOW] interferes with your attempts to place a windowpane."))
 				return
 			to_chat(user, SPAN("notice", "You start placing the [is_inner ? "inner " : ""]windowpane into \the [src]."))
-			if(do_after(user, 20, src))
+			if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 				for(var/obj/structure/window/WINDOW in loc) // checking this for a 2nd time to check if a window was made while we were waiting.
 					to_chat(user, SPAN("warning", "\The [WINDOW] interferes with your attempts to place a windowpane."))
 					return
@@ -629,7 +651,7 @@
 		var/old_state = affected.state
 		if(isScrewdriver(W) && affected.state >= 1)
 			to_chat(user, (affected.state == 1 ? SPAN("notice", "You begin fastening \the [affected.name] to the frame.") : SPAN("notice", "You begin unfastening \the [affected.name] from the frame.")))
-			if(!do_after(user, 10, src))
+			if(!do_after(user, 10, src, luck_check_type = LUCK_CHECK_ENG))
 				return
 			if(QDELETED(affected) || affected.state != old_state)
 				return
@@ -641,7 +663,7 @@
 
 		if(isCrowbar(W) && affected.state <= 1)
 			to_chat(user, (affected.state == 0 ? SPAN("notice", "You begin prying \the [affected.name] into the frame.") : SPAN("notice", "You begin prying \the [affected.name] out of the frame.")))
-			if(!do_after(user, 10, src))
+			if(!do_after(user, 10, src, luck_check_type = LUCK_CHECK_ENG))
 				return
 			if(QDELETED(affected) || affected.state != old_state)
 				return
@@ -653,7 +675,7 @@
 
 		if(isWrench(W) && affected.state == 0)
 			to_chat(user, SPAN("notice", "You begin dismantling \the [affected.name] from \the [src]."))
-			if(!do_after(user, 15, src))
+			if(!do_after(user, 15, src, luck_check_type = LUCK_CHECK_ENG))
 				return
 			if(QDELETED(affected) || affected.state != old_state)
 				return
@@ -703,7 +725,7 @@
 			if(FRAME_NORMAL)
 				to_chat(user, SPAN("notice", "You begin reinforcing the frame."))
 				add_fingerprint(user)
-				if(!do_after(user, 10, src))
+				if(!do_after(user, 10, src, luck_check_type = LUCK_CHECK_ENG))
 					return
 				if(frame_state != FRAME_NORMAL)
 					return
@@ -715,7 +737,7 @@
 			if(FRAME_REINFORCED)
 				to_chat(user, SPAN("notice", "You begin constructing a grille."))
 				add_fingerprint(user)
-				if(!do_after(user, 10, src))
+				if(!do_after(user, 10, src, luck_check_type = LUCK_CHECK_ENG))
 					return
 				if(frame_state != FRAME_REINFORCED)
 					return
@@ -726,13 +748,13 @@
 					shove_everything(shove_items = FALSE)
 				return
 
-	if(istype(W, /obj/item/stack/cable_coil))
+	if(isCoil(W))
 		var/obj/item/stack/cable_coil/CC = W
 		if(frame_state == FRAME_NORMAL || frame_state == FRAME_REINFORCED)
 			var/old_state = frame_state
 			to_chat(user, SPAN("notice", "You begin wiring \the [src]."))
 			add_fingerprint(user)
-			if(!do_after(user, 20, src))
+			if(!do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 				return
 			if(frame_state != old_state)
 				return
@@ -745,7 +767,7 @@
 				update_nearby_icons()
 			return
 
-	if(istype(W, /obj/item/device/multitool))
+	if(isMultitool(W))
 		if(frame_state == FRAME_ELECTRIC || frame_state == FRAME_RELECTRIC)
 			electrochromic = !electrochromic
 			to_chat(user, SPAN("notice", "\The [src] will[electrochromic ? " " : " no longer "]toggle its tint when signalled now."))
@@ -756,7 +778,7 @@
 			to_chat(user, SPAN("notice", "\The [src] already has another [signaler] attached."))
 			return
 		to_chat(user, SPAN("notice", "You've attached \the [W] to \the [src]."))
-		user.unEquip(W, target = src)
+		user.drop(W, src)
 		signaler = W
 		update_icon()
 		return
@@ -919,7 +941,7 @@
 	else if(inner_pane)
 		if(exposed_temperature > inner_pane.max_heat)
 			inner_pane.take_damage(1, FALSE)
-	else if(exposed_temperature > T0C + 1500)
+	else if(exposed_temperature > (1500 CELSIUS))
 		health -= 1
 		healthcheck()
 	..()
@@ -984,7 +1006,7 @@
 			spawn()
 				WF.toggle_tint()
 
-/obj/machinery/button/window_frame_tint/update_icon()
+/obj/machinery/button/window_frame_tint/on_update_icon()
 	icon_state = "light0"
 
 
@@ -1001,6 +1023,8 @@
 	max_health = 10
 	pane_melee_mult = 0.9
 
+	rad_resist_type = /datum/rad_resist/none
+
 // Pretty much the same as the old grille, but smarter.
 /obj/structure/window_frame/grille
 	frame_state = FRAME_GRILLE
@@ -1014,6 +1038,13 @@
 	max_health = 12
 	pane_melee_mult = 0.7
 
+	rad_resist_type = /datum/rad_resist/window_frame_grille
+
+/datum/rad_resist/window_frame_grille
+	alpha_particle_resist = 100 MEGA ELECTRONVOLT
+	beta_particle_resist = 0 MEGA ELECTRONVOLT
+	hawking_resist = 0 ELECTRONVOLT
+
 /obj/structure/window_frame/broken
 	frame_state = FRAME_DESTROYED
 	name = "broken grille"
@@ -1024,6 +1055,8 @@
 	hitby_loudness_multiplier = 0.5
 	density = FALSE
 	max_health = 6
+
+	rad_resist_type = /datum/rad_resist/none
 
 /obj/structure/window_frame/broken/Initialize()
 	. = ..()
@@ -1039,6 +1072,8 @@
 	icon_border = "winborder"
 	density = FALSE
 
+	rad_resist_type = /datum/rad_resist/none
+
 /obj/structure/window_frame/relectric
 	frame_state = FRAME_RELECTRIC
 	name = "wired reinforced window frame"
@@ -1051,6 +1086,8 @@
 	max_health = 10
 	pane_melee_mult = 0.9
 
+	rad_resist_type = /datum/rad_resist/none
+
 // The simpliest window to exist. To be used in totally-no-safety-required areas.
 /obj/structure/window_frame/glass
 	name = "window"
@@ -1058,6 +1095,13 @@
 	density = TRUE
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/glass
+
+	rad_resist_type = /datum/rad_resist/window_frame_glass
+
+/datum/rad_resist/window_frame_glass
+	alpha_particle_resist = 100 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.2 MEGA ELECTRONVOLT
+	hawking_resist = 0 ELECTRONVOLT
 
 // Regular window with reinforced glass. Default window for most occasions.
 /obj/structure/window_frame/rglass
@@ -1067,6 +1111,13 @@
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/rglass
 
+	rad_resist_type = /datum/rad_resist/window_frame_rglass
+
+/datum/rad_resist/window_frame_rglass
+	alpha_particle_resist = 120 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.4 MEGA ELECTRONVOLT
+	hawking_resist = 0.2 ELECTRONVOLT
+
 /obj/structure/window_frame/black
 	name = "window"
 	icon_state = "winframe-black"
@@ -1074,6 +1125,13 @@
 	density = TRUE
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/black
+
+	rad_resist_type = /datum/rad_resist/window_frame_black
+
+/datum/rad_resist/window_frame_black
+	alpha_particle_resist = 100 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.2 MEGA ELECTRONVOLT
+	hawking_resist = 0.2 ELECTRONVOLT
 
 /obj/structure/window_frame/rblack
 	name = "window"
@@ -1083,6 +1141,13 @@
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/rblack
 
+	rad_resist_type = /datum/rad_resist/window_frame_rblack
+
+/datum/rad_resist/window_frame_rblack
+	alpha_particle_resist = 100 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.4 MEGA ELECTRONVOLT
+	hawking_resist = 0.2 ELECTRONVOLT
+
 // Reinforced window with two reinforced glass panes. Mostly used for hulls.
 /obj/structure/window_frame/reinforced/hull
 	name = "reinforced window"
@@ -1091,6 +1156,13 @@
 	preset_outer_pane = /datum/windowpane/rglass
 	preset_inner_pane = /datum/windowpane/rglass
 
+	rad_resist_type = /datum/rad_resist/window_frame_rhull
+
+/datum/rad_resist/window_frame_rhull
+	alpha_particle_resist = 200 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.8 MEGA ELECTRONVOLT
+	hawking_resist = 0.4 ELECTRONVOLT
+
 // Reinforced window with two reinforced plass panes. Totally the best choice to constrain extremely high temperatures (combustion chamber/engine/etc.)
 /obj/structure/window_frame/reinforced/thermal
 	name = "reinforced window"
@@ -1098,6 +1170,13 @@
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/rplass
 	preset_inner_pane = /datum/windowpane/rplass
+
+	rad_resist_type = /datum/rad_resist/window_frame_rthermal
+
+/datum/rad_resist/window_frame_rthermal
+	alpha_particle_resist = 250 MEGA ELECTRONVOLT
+	beta_particle_resist = 1 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/structure/window_frame/reinforced/unfinished
 	name = "unfinished reinforced window"
@@ -1112,12 +1191,26 @@
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/glass
 
+	rad_resist_type = /datum/rad_resist/window_frame_gglass
+
+/datum/rad_resist/window_frame_gglass
+	alpha_particle_resist = 100 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.2 MEGA ELECTRONVOLT
+	hawking_resist = 0.1 ELECTRONVOLT
+
 // Can't hold the second windowpane, but can be used to shock people.
 /obj/structure/window_frame/grille/rglass
 	name = "windowed grille"
 	icon_state = "grille-rglass"
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/rglass
+
+	rad_resist_type = /datum/rad_resist/window_frame_grglass
+
+/datum/rad_resist/window_frame_grglass
+	alpha_particle_resist = 120 MEGA ELECTRONVOLT
+	beta_particle_resist = 0.4 MEGA ELECTRONVOLT
+	hawking_resist = 0.2 ELECTRONVOLT
 
 /obj/structure/window_frame/electric/glass
 	name = "electrochromic window"
@@ -1126,6 +1219,8 @@
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/glass
 
+	rad_resist_type = /datum/rad_resist/window_frame_gglass
+
 /obj/structure/window_frame/electric/rglass
 	name = "electrochromic window"
 	icon_state = "winframe_e-rglass"
@@ -1133,11 +1228,15 @@
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/rglass
 
+	rad_resist_type = /datum/rad_resist/window_frame_grglass
+
 /obj/structure/window_frame/relectric/glass
 	name = "reinforced electrochromic window"
 	icon_state = "winframe_re-glass"
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/glass
+
+	rad_resist_type = /datum/rad_resist/window_frame_gglass
 
 /obj/structure/window_frame/relectric/rglass
 	name = "reinforced electrochromic window"
@@ -1145,6 +1244,7 @@
 	atom_flags = ATOM_FLAG_FULLTILE_OBJECT
 	preset_outer_pane = /datum/windowpane/rglass
 
+	rad_resist_type = /datum/rad_resist/window_frame_grglass
 
 /obj/structure/window_frame/indestructible
 	name = "window"

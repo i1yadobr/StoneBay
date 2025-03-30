@@ -1,10 +1,9 @@
 /obj/lighting_plane
 	screen_loc = "1,1"
 	plane = LIGHTING_PLANE
-	layer = LIGHTING_LAYER
 
 	blend_mode = BLEND_MULTIPLY
-	appearance_flags = DEFAULT_APPEARANCE_FLAGS | PLANE_MASTER | NO_CLIENT_COLOR
+	appearance_flags = PLANE_MASTER | NO_CLIENT_COLOR
 	// use 20% ambient lighting; be sure to add full alpha
 
 	color = list(
@@ -15,11 +14,10 @@
 			01, 01, 01, 01
 		)
 
-	mouse_opacity = 0 // nothing on this plane is mouse-visible
+	mouse_opacity = 0    // nothing on this plane is mouse-visible
 
 /obj/lighting_general
 	plane = LIGHTING_PLANE
-	layer = LIGHTING_LAYER
 	screen_loc = "8,8"
 
 	icon = LIGHTING_ICON
@@ -31,12 +29,18 @@
 
 /obj/lighting_general/Initialize()
 	. = ..()
-	SetTransform(scale = world.view * 2.2)
+	var/matrix/M = matrix()
+	M.Scale(world.view*2.2)
+
+	transform = M
+
+/obj/lighting_general/proc/sync(new_colour)
+	color = new_colour
 
 /mob
-	var/obj/lighting_plane/l_plane
 	var/obj/lighting_general/l_general
 
-/mob/proc/change_light_color(new_color)
+
+/mob/proc/change_light_colour(new_colour)
 	if(l_general)
-		l_general.color = new_color
+		l_general.sync(new_colour)

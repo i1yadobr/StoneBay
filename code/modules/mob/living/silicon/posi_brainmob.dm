@@ -1,5 +1,5 @@
 /mob/living/silicon/sil_brainmob
-	var/obj/item/organ/internal/posibrain/container = null
+	var/obj/item/organ/internal/cerebrum/posibrain/container = null
 	var/emp_damage = 0//Handles a type of MMI damage
 	var/alert = null
 	var/list/owner_channels = list()
@@ -8,14 +8,16 @@
 	use_me = 0 //Can't use the me verb, it's a freaking immobile brain
 	icon = 'icons/mob/human_races/organs/cyber.dmi'
 	icon_state = "brain-prosthetic"
-	silicon_subsystems = list(
+	silicon_subsystems  = list(
 		/datum/nano_module/law_manager
 	)
 
 /mob/living/silicon/sil_brainmob/New()
 	reagents = new /datum/reagents(1000, src)
-	if(istype(loc, /obj/item/organ/internal/posibrain))
+	if(istype(loc, /obj/item/organ/internal/cerebrum/posibrain))
 		container = loc
+	add_language("Robot Talk", 1)
+
 	..()
 
 /mob/living/silicon/sil_brainmob/Destroy()
@@ -23,13 +25,13 @@
 		if(stat!=DEAD)	//If not dead.
 			death(1)	//Brains can die again. AND THEY SHOULD AHA HA HA HA HA HA
 		ghostize()		//Ghostize checks for key so nothing else is necessary.
-
+	GLOB.available_mobs_for_possess -= "\ref[src]"
 	return ..()
 
 /mob/living/silicon/sil_brainmob/update_canmove()
 	if(in_contents_of(/obj/mecha))
 		use_me = 1
-	else if(container && istype(container, /obj/item/organ/internal/posibrain) && istype(container.loc, /turf))
+	else if(container && istype(container, /obj/item/organ/internal/cerebrum/posibrain) && istype(container.loc, /turf))
 		use_me = 1
 
 /mob/living/silicon/sil_brainmob/isSynthetic()
@@ -96,3 +98,13 @@
 		return 0
 
 	dostatelaws(lawchannel, law_channels[lawchannel], laws)
+
+/mob/living/silicon/sil_brainmob/attack_ghost(mob/observer/ghost/user)
+	if(jobban_isbanned(user, "Cyborg"))
+		to_chat("You are banned from playing as \a [src].")
+
+	var/response = tgui_alert(user, "Are you sure you wish to possess \the [src]?", "Possess \the [src]", list("Yes", "No"))
+	if(response == "Yes")
+		user.try_to_occupy(src)
+
+	return ..()

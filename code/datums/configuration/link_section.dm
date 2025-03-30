@@ -1,14 +1,14 @@
 /datum/configuration_section/link
 	name = "link"
 
-	var/wiki = null
-	var/rules = null
-	var/backstory = null
-	var/discord = null
-	var/github = null
-	var/forum = null
-	var/banappeals = null
-	var/patreon = null
+	var/wiki
+	var/rules
+	var/backstory
+	var/discord
+	var/github
+	var/forum
+	var/banappeals
+	var/boosty
 
 /datum/configuration_section/link/load_data(list/data)
 	CONFIG_LOAD_STR(wiki, data["wiki"])
@@ -18,4 +18,4 @@
 	CONFIG_LOAD_STR(github, data["github"])
 	CONFIG_LOAD_STR(forum, data["forum"])
 	CONFIG_LOAD_STR(banappeals, data["banappeals"])
-	CONFIG_LOAD_STR(patreon, data["patreon"])
+	CONFIG_LOAD_STR(boosty, data["boosty"])

@@ -47,7 +47,7 @@
 	else operating = 0
 	update_icon()
 
-/obj/machinery/conveyor/update_icon()
+/obj/machinery/conveyor/on_update_icon()
 	if(stat & BROKEN)
 		icon_state = "conveyor-broken"
 		operating = 0
@@ -88,10 +88,14 @@
 		to_chat(user, "<span class='notice'>You remove the conveyor belt.</span>")
 		qdel(src)
 		return
-	if(isrobot(user))	return //Carn: fix for borgs dropping their modules on conveyor belts
-	if(I.loc != user)	return // This should stop mounted modules ending up outside the module.
-
-	user.drop_item(get_turf(src))
+	if(istype(I, /obj/item/gripper))
+		var/obj/item/gripper/G = I
+		var/obj/item/wrapped = G.wrapped
+		if(wrapped)
+			G.drop_item()
+			wrapped.forceMove(get_turf(src))
+		return
+	user.drop(I, get_turf(src))
 	return
 
 // attack with hand, move pulled object onto conveyor
@@ -153,26 +157,30 @@
 
 	var/id = "" 				// must match conveyor IDs to control them
 
-	var/list/conveyors		// the list of converyors that are controlled by this switch
+	var/list/conveyors = list() // the list of converyors that are controlled by this switch
 	anchored = 1
 
+/obj/machinery/conveyor_switch/Initialize(loc, newid)
+	. = ..(loc)
 
-
-/obj/machinery/conveyor_switch/New(loc, newid)
-	..(loc)
 	if(!id)
 		id = newid
 	update_icon()
 
-	spawn(5)		// allow map load
-		conveyors = list()
-		for(var/obj/machinery/conveyor/C in world)
-			if(C.id == id)
-				conveyors += C
+	// Allow map load.
+	return INITIALIZE_HINT_LATELOAD
+
+/obj/machinery/conveyor_switch/LateInitialize()
+	. = ..()
+
+	conveyors = list()
+	for(var/obj/machinery/conveyor/C in world)
+		if(C.id == id)
+			conveyors += C
 
 // update the icon depending on the position
 
-/obj/machinery/conveyor_switch/update_icon()
+/obj/machinery/conveyor_switch/on_update_icon()
 	if(position<0)
 		icon_state = "switch-rev"
 	else if(position>0)
@@ -196,6 +204,7 @@
 // attack with hand, switch position
 /obj/machinery/conveyor_switch/attack_hand(mob/user)
 	if(!allowed(user))
+		playsound(src.loc, 'sound/signals/error32.ogg', 50)
 		to_chat(user, "<span class='warning'>Access denied.</span>")
 		return
 
@@ -210,6 +219,7 @@
 		last_pos = position
 		position = 0
 
+	playsound(src.loc, 'sound/effects/using/switch/lever4.ogg', 50)
 	operated = 1
 	update_icon()
 
@@ -239,6 +249,7 @@
 	else
 		position = 0
 
+	playsound(src.loc, 'sound/effects/using/switch/lever4.ogg', 50)
 	operated = 1
 	update_icon()
 

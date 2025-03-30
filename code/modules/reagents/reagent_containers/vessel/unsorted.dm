@@ -14,6 +14,8 @@
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	lid_type = null
 
+#define OXYLOS_PER_HEAD_DIP 10
+
 /obj/item/reagent_containers/vessel/bucket
 	desc = "It's a bucket."
 	name = "bucket"
@@ -34,36 +36,130 @@
 	unacidable = FALSE
 	lid_type = null
 
+	drop_sound = SFX_DROP_METALPOT
+	pickup_sound = SFX_PICKUP_METALPOT
+
 /obj/item/reagent_containers/vessel/bucket/full
 	startswith = list(/datum/reagent/water)
+
+/obj/item/reagent_containers/vessel/bucket/watercan
+	name = "watercan"
+	desc = "Medium-sized vessel made specifically for watering plants the most efficent way possible. Or not..."
+
+	icon = 'icons/obj/reagent_containers/vessels.dmi'
+	icon_state = "watercan"
+
+	filling_states = "100"
+	base_icon = "watercan"
 
 /obj/item/reagent_containers/vessel/bucket/attackby(obj/D, mob/user)
 	if(isprox(D))
 		to_chat(user, "You add [D] to [src].")
 		qdel(D)
-		user.put_in_hands(new /obj/item/bucket_sensor)
-		user.drop_from_inventory(src)
+		user.pick_or_drop(new /obj/item/bucket_sensor)
 		qdel(src)
 		return
-	else if(istype(D, /obj/item/mop) || (atom_flags & ATOM_FLAG_OPEN_CONTAINER))
+
+	else if(istype(D, /obj/item/pipe))
+		to_chat(user, "You put \the [D] into \the [src].")
+		new /obj/item/hookah_construction(get_turf(src))
+		qdel(D)
+		qdel_self()
+		return
+
+	else if(istype(D, /obj/item/mop) && (atom_flags & ATOM_FLAG_OPEN_CONTAINER))
 		if(reagents.total_volume < 1)
-			to_chat(user, SPAN("warning", "\The [src] is empty!"))
+			show_splash_text(user, "no water!", SPAN("warning", "\The [src] is empty!"))
 		else
 			reagents.trans_to_obj(D, 5)
-			to_chat(user, SPAN("notice", "You wet \the [D] in \the [src]."))
+			show_splash_text(user, "you wet the mop!", SPAN("notice", "You wet \the [D] in \the [src]."))
 			playsound(loc, 'sound/effects/slosh.ogg', 25, 1)
 		return
+
+	else if(istype(D, /obj/item/grab))
+		var/obj/item/grab/G = D
+
+		if(!isliving(G.affecting))
+			return
+
+		if(G.current_grab.state_name == NORM_PASSIVE)
+			to_chat(user, SPAN_NOTICE("You need a tighter grip!"))
+			return
+
+		if(reagents.total_volume < 1)
+			show_splash_text(user, "no water!", SPAN("warning", "\The [src] is empty!"))
+			return
+
+		user.visible_message(SPAN_DANGER("[user] starts to put [G.affecting.name]'s head into \the [src]!"), \
+						SPAN_DANGER("You start to put [G.affecting.name]'s head into \the [src]!"))
+		playsound(get_turf(src), GET_SFX(SFX_FOOTSTEP_WATER), 100, TRUE)
+		reagents.trans_to(G.affecting, min(reagents.total_volume, 10))
+
+		if(!do_after(user, 3 SECONDS, src, TRUE))
+			return
+
+		if(QDELETED(src) || !G?.affecting)
+			return
+
+
+		user.visible_message(SPAN_DANGER("[user] finally raises [G.affecting.name]'s head out of \the [src]!"), \
+								SPAN_DANGER("You raise [G.affecting.name]'s head out of \the [src]!"))
+		reagents.trans_to(G.affecting, min(reagents.total_volume, 5))
+		playsound(get_turf(src), GET_SFX(SFX_FOOTSTEP_WATER), 100, TRUE)
+		if(!G?.affecting?.internal && !G.affecting.isSynthetic())
+			G.affecting.adjustOxyLoss(OXYLOS_PER_HEAD_DIP)
+			G.affecting.emote("gasp")
+		return
+
 	else
 		return ..()
+
+#undef OXYLOS_PER_HEAD_DIP
 
 /obj/item/reagent_containers/vessel/coffee
 	name = "\improper Robust Coffee"
 	desc = "Careful, the beverage you're about to enjoy is extremely hot."
 	icon_state = "coffee"
+	item_state = "coffee"
 	center_of_mass = "x=15;y=10"
-	startswith = list(/datum/reagent/drink/coffee = 30)
+	startswith = list(/datum/reagent/caffeine/coffee = 30)
 	lid_type = null
 	unacidable = FALSE
+
+/obj/item/reagent_containers/vessel/takeaway
+	name = "takeaway cup"
+	desc = "A regular takeaway cup with handy lid."
+	icon_state = "takeaway_cup"
+	item_state = "takeaway_cup"
+	volume = 30
+	filling_states = "50;65;80;100"
+	possible_transfer_amounts = "5;10;15;30"
+	center_of_mass = "x=17;y=12"
+	pickup_sound = 'sound/effects/using/bottles/papercup.ogg'
+	lid_type = /datum/vessel_lid/takeaway
+	unacidable = FALSE
+	var/writing = null
+
+/obj/item/reagent_containers/vessel/takeaway/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/pen))
+		if(writing)
+			return
+		var/t = tgui_input_text(user, "Write something on the cup...", name, writing, MAX_NAME_LEN)
+		if(!t)
+			return
+		if(!in_range(src, usr) && loc != usr)
+			return
+		writing = t
+		desc += " The writing on the sleeve reads, '[writing]'."
+		user.visible_message(SPAN("notice", "\The [user] writes something on \the [src]."))
+		update_icon()
+		return
+	..()
+
+/obj/item/reagent_containers/vessel/takeaway/on_update_icon()
+	..()
+	if(writing)
+		AddOverlays(OVERLAY(icon, "[icon_state]_named", alpha))
 
 /obj/item/reagent_containers/vessel/tea
 	name = "cup of Duke Purple Tea"
@@ -82,6 +178,7 @@
 	name = "cup of ice"
 	desc = "Careful, cold ice, do not chew."
 	icon_state = "coffee"
+	item_state = "coffee"
 	center_of_mass = "x=15;y=10"
 	startswith = list(/datum/reagent/drink/ice = 30)
 	lid_type = null
@@ -102,6 +199,7 @@
 	gender = PLURAL
 	desc = "Just add 10u water, self heats! A taste that reminds you of your school years."
 	icon_state = "ramen"
+	item_state = "ramen"
 	center_of_mass = "x=16;y=11"
 	startswith = list(/datum/reagent/drink/dry_ramen = 30)
 	lid_type = /datum/vessel_lid/paper
@@ -121,6 +219,7 @@
 	name = "paper cup"
 	desc = "A paper water cup."
 	icon_state = "water_cup"
+	item_state = "water_cup"
 	possible_transfer_amounts = null
 	volume = 10
 	matter = list(MATERIAL_CARDBOARD = 100)
@@ -129,10 +228,15 @@
 	lid_type = null
 	unacidable = FALSE
 
+	drop_sound = SFX_DROP_PAPERCUP
+	pickup_sound = SFX_PICKUP_PAPERCUP
+
 /obj/item/reagent_containers/vessel/shaker
 	name = "shaker"
 	desc = "A metal shaker to mix drinks in."
 	icon_state = "shaker"
+	item_state = "shaker"
+	base_icon_state = "shaker"
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = "5;10;15;25;30;60" //Professional bartender should be able to transfer as much as needed
 	volume = 120
@@ -140,6 +244,94 @@
 	lid_type = /datum/vessel_lid/cap
 	override_lid_state = LID_CLOSED
 	precise_measurement = TRUE
+	can_flip = TRUE
+	atom_flags = ATOM_FLAG_NO_REACT
+	var/shaking = FALSE
+
+/obj/item/reagent_containers/vessel/shaker/attack_hand(mob/user)
+	if(!iscarbon(user))
+		return ..()
+
+	var/mob/living/carbon/C = user
+	if(C.a_intent == I_GRAB)
+		return ..()
+
+	if(C.l_hand == src && !C.get_active_hand())
+		shake(user)
+		return
+
+	else if(C.r_hand == src && !C.get_active_hand())
+		shake(user)
+		return
+
+	else
+		return ..()
+
+/obj/item/reagent_containers/vessel/shaker/proc/shake(mob/user)
+	if(!reagents?.total_volume)
+		to_chat(user, SPAN_WARNING("You won't shake an empty shaker now, will you?"))
+		return
+
+	if(lid?.state != LID_CLOSED)
+		to_chat(user, SPAN_WARNING("On second thought shaking it with an open lid is not a good idea..."))
+		return
+
+	if(!shaking)
+		shaking = TRUE
+		var/adjective = pick(
+			"furiously",
+			"passionately",
+			"with vigor",
+			"with determination",
+			"like a devil",
+			"with care and love",
+			"like there is no tomorrow")
+		user.visible_message(SPAN_NOTICE("\The [user] shakes \the [src] [adjective]!"), SPAN_NOTICE("You shake \the [src] [adjective]!"))
+		ClearOverlays()
+		icon_state = "[base_icon_state]_shaking"
+		if(iscarbon(loc))
+			var/mob/living/carbon/M = loc
+			M.update_inv_l_hand()
+			M.update_inv_r_hand()
+		playsound(loc, 'sound/effects/shaker.ogg', 50, 1)
+		if(do_after(user, 30, src))
+			atom_flags ^= ATOM_FLAG_NO_REACT
+			reagents?.process_reactions()
+			atom_flags |= ATOM_FLAG_NO_REACT
+			shaking = FALSE
+		icon_state = base_icon
+		update_icon()
+		if(iscarbon(loc))
+			var/mob/living/carbon/M = loc
+			M.update_inv_l_hand()
+			M.update_inv_r_hand()
+
+/obj/item/reagent_containers/vessel/shaker/bluespace
+	name = "bluespace shaker"
+	desc = "A bluespace metal shaker to mix drinks in. If you shake it too hard, a singularity will appear."
+	icon_state = "bluespaceshaker"
+	base_icon_state = "bluespaceshaker"
+	volume = 360
+
+/obj/item/reagent_containers/vessel/shaker/MouseDrop(obj/over_object, mob/user = usr) // Braindead copypasta from obj/item/storage
+	if(!canremove)
+		return
+
+	if(iscarbon(user) || isrobot(user))
+		if(!(istype(over_object, /atom/movable/screen)))
+			return ..()
+
+		if(loc != user)
+			return
+
+		add_fingerprint(user)
+		switch(over_object.name)
+			if(BP_R_HAND)
+				if(user.drop(src))
+					user.put_in_r_hand(src)
+			if(BP_L_HAND)
+				if(user.drop(src))
+					user.put_in_l_hand(src)
 
 /obj/item/reagent_containers/vessel/teapot
 	name = "teapot"
@@ -161,6 +353,23 @@
 	filling_states = "15;30;50;70;85;100"
 	lid_type = null
 	precise_measurement = TRUE
+
+/obj/item/reagent_containers/vessel/coffeepot
+	name = "coffeepot"
+	desc = "A large pot for dispensing that ambrosia of corporate life known to mortals only as coffee. Contains 4 standard cups."
+	icon_state = "coffeepot"
+	volume = 120
+	amount_per_transfer_from_this = 10
+	center_of_mass = "x=16;y=9"
+	filling_states = "1;30;60;100"
+	lid_type = null
+	precise_measurement = TRUE
+
+/obj/item/reagent_containers/vessel/coffeepot/bluespace
+	name = "bluespace coffeepot"
+	desc = "The most advanced coffeepot the eggheads could cook up: sleek design; graduated lines; connection to a pocket dimension for coffee containment; yep, it's got it all. Contains 8 standard cups."
+	volume = 240
+	icon_state = "coffeepot_bluespace"
 
 /obj/item/reagent_containers/vessel/skullgoblet
 	name = "skull goblet"
@@ -199,7 +408,7 @@
 	lid_color = pick("black", "red", "blue")
 	update_icon()
 
-/obj/item/reagent_containers/vessel/fitnessflask/update_icon()
+/obj/item/reagent_containers/vessel/fitnessflask/on_update_icon()
 	..()
 	icon_state = "[base_icon]_[lid_color]"
 

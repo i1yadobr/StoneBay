@@ -68,7 +68,7 @@
 
 			if(C.mob.mind?.special_role)
 				entry += " - <b><font color='red'>[C.mob.mind.special_role]</font></b>"
-				if(!C.mob.mind.current || C.mob.mind.current?.stat == DEAD)
+				if(!C.mob.mind.current || C.mob.mind.current?.is_ooc_dead())
 					dead_antags++
 				else
 					living_antags++
@@ -77,6 +77,9 @@
 				entry += " - <b>AFK: [C.inactivity2text()]</b>"
 
 			entry += " (<A HREF='?_src_=holder;adminmoreinfo=\ref[C.mob]'>?</A>)"
+
+			if(config.external.sql_enabled && watchlist.Check(C.ckey))
+				entry += " (<A HREF='?_src_=holder;adminmoreinfo=\ref[C.mob]'>IN WATCHLIST!</A>)"
 
 			lines += entry
 	else if(rights)
@@ -137,7 +140,5 @@
 		else
 			msg += line
 
-	if(config.external.admin_irc)
-		to_chat(src, "<span class='info'>Adminhelps are also sent to IRC. If no admins are available in game try anyway and an admin on IRC may see it and respond.</span>")
 	to_chat(src, "<b>Current Staff ([active_staff]/[total_staff]):</b>")
 	to_chat(src, jointext(msg,"\n"))

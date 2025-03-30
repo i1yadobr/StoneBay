@@ -1,4 +1,4 @@
-/mob/living/carbon/human/gib()
+/mob/living/carbon/human/gib(anim, do_gibs)
 	if(status_flags & GODMODE)
 		return
 
@@ -19,11 +19,13 @@
 	sleep(1)
 
 	for(var/obj/item/I in src)
-		drop_from_inventory(I)
-		I.throw_at(get_edge_target_turf(src, pick(GLOB.alldirs)), rand(1, 3), 1)
+		if(I.loc == src) // Belts are dropped after uni removal etc.
+			drop(I, force = TRUE)
+		if(!QDELETED(I) && isturf(I.loc))
+			I.throw_at(get_edge_target_turf(src, pick(GLOB.alldirs)), rand(1, 3), 1)
 
-	..(species.gibbed_anim)
-	gibs(loc, dna, null, species.get_flesh_colour(src), species.get_blood_colour(src))
+	gibs(loc, MobDNA = dna, fleshcolor = species.get_flesh_colour(src), bloodcolor = species.get_blood_colour(src))
+	..(species.gibbed_anim, FALSE)
 
 /mob/living/carbon/human/dust()
 	if(status_flags & GODMODE)
@@ -35,8 +37,11 @@
 
 /mob/living/carbon/human/death(gibbed, deathmessage = "seizes up and falls limp...", show_dead_message = "You have died.")
 
-	if(stat == DEAD)
+	if(is_ic_dead())
 		return
+
+	if(mind?.wizard?.lich)
+		mind.wizard.escape_to_lich(mind)
 
 	BITSET(hud_updateflag, HEALTH_HUD)
 	BITSET(hud_updateflag, STATUS_HUD)
@@ -55,13 +60,12 @@
 	callHook("death", list(src, gibbed))
 
 	if(SSticker.mode)
-		sql_report_death(src)
 		SSticker.mode.check_win()
 
 	if(wearing_rig)
 		wearing_rig.notify_ai("<span class='danger'>Warning: user death event. Mobility control passed to integrated intelligence system.</span>")
 
-	. = ..(gibbed, "no message")
+	. = ..(gibbed, "no message", show_dead_message) // I don't know why second argument exists, it's not me.
 	if(!gibbed)
 		handle_organs()
 		if(species.death_sound)
@@ -72,13 +76,9 @@
 	if(MUTATION_HUSK in mutations)
 		return
 
-	if(f_style)
-		f_style = "Shaved"		//we only change the icon_state of the hair datum, so it doesn't mess up their UI/UE
-	if(h_style)
-		h_style = "Bald"
-	update_hair(0)
+	RemoveHairAndFacials()
 
-	mutations.Add(MUTATION_HUSK)
+	add_mutation(MUTATION_HUSK)
 	for(var/obj/item/organ/external/head/h in organs)
 		h.status |= ORGAN_DISFIGURED
 	update_body(1)
@@ -93,14 +93,18 @@
 	if(MUTATION_SKELETON in src.mutations)
 		return
 
-	if(f_style)
-		f_style = "Shaved"
-	if(h_style)
-		h_style = "Bald"
-	update_hair(0)
+	RemoveHairAndFacials()
 
-	mutations.Add(MUTATION_SKELETON)
+	add_mutation(MUTATION_SKELETON)
 	for(var/obj/item/organ/external/head/h in organs)
 		h.status |= ORGAN_DISFIGURED
 	update_body(1)
 	return
+
+/mob/living/carbon/human/proc/RemoveHairAndFacials()
+	if(f_style)
+		f_style = "Shaved"
+	if(h_style)
+		h_style = "Bald"
+	update_hair(FALSE)
+	update_facial_hair(FALSE)

@@ -15,6 +15,9 @@
 		if(!do_not_equip)
 			equip(player.current)
 
+	if(player.current)
+		BITSET(player.current.hud_updateflag, SPECIALROLE_HUD)
+
 	player.current.faction = faction
 	return TRUE
 
@@ -56,6 +59,8 @@
 		if(nonstandard_role_msg)
 			to_chat(player.current, SPAN("notice", "[nonstandard_role_msg]"))
 		update_icons_added(player)
+		BITSET(player.current.hud_updateflag, SPECIALROLE_HUD)
+
 	return TRUE
 
 /datum/antagonist/proc/remove_antagonist(datum/mind/player, show_message, implanted)

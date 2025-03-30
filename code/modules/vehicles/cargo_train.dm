@@ -12,7 +12,7 @@
 	buckle_pixel_shift = "x=0;y=7"
 
 	var/car_limit = 3		//how many cars an engine can pull before performance degrades
-	charge_use = 1 KILOWATTS
+	charge_use = 1 KILO WATTS
 	active_engines = 1
 	var/obj/item/key/cargo_train/key
 
@@ -50,9 +50,9 @@
 	cell = new /obj/item/cell/high(src)
 	key = new(src)
 	var/image/I = new(icon = 'icons/obj/vehicles.dmi', icon_state = "cargo_engine_overlay")
-	I.plane = plane
+	I.plane = FLOAT_PLANE
 	I.layer = layer
-	overlays += I
+	AddOverlays(I)
 	turn_off()	//so engine verbs are correctly set
 
 /obj/vehicle/train/cargo/engine/asteroid/New()
@@ -60,12 +60,12 @@
 	cell = new /obj/item/cell/super(src)
 	key = new(src)
 	var/image/I = new(icon = 'icons/obj/vehicles.dmi', icon_state = "asteroid_engine_overlay")
-	I.plane = plane
+	I.plane = FLOAT_PLANE
 	I.layer = layer
-	overlays += I
+	AddOverlays(I)
 	turn_off()	//so engine verbs are correctly set
 
-/obj/vehicle/train/cargo/engine/Move(turf/destination)
+/obj/vehicle/train/cargo/engine/Move(newloc, direct)
 	if(on && cell.charge < (charge_use * CELLRATE))
 		turn_off()
 		update_stats()
@@ -73,11 +73,11 @@
 			to_chat(load, "The drive motor briefly whines, then drones to a stop.")
 
 	if(is_train_head() && !on)
-		return 0
+		return FALSE
 
 	//space check ~no flying space trains sorry
-	if(on && istype(destination, /turf/space))
-		return 0
+	if(on && istype(newloc, /turf/space))
+		return FALSE
 
 	return ..()
 
@@ -90,9 +90,7 @@
 
 /obj/vehicle/train/cargo/engine/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/key/cargo_train))
-		if(!key)
-			user.drop_item()
-			W.forceMove(src)
+		if(!key && user.drop(W, src))
 			key = W
 			verbs += /obj/vehicle/train/cargo/engine/verb/remove_key
 		return
@@ -105,7 +103,7 @@
 		return
 	..()
 
-/obj/vehicle/train/cargo/update_icon()
+/obj/vehicle/train/cargo/on_update_icon()
 	if(open)
 		icon_state = initial(icon_state) + "_open"
 	else
@@ -205,16 +203,17 @@
 	else
 		return ..()
 
-/obj/vehicle/train/cargo/engine/_examine_text(mob/user)
+/obj/vehicle/train/cargo/engine/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 1)
 		return
 
-	if(!istype(usr, /mob/living/carbon/human))
+	if(!ishuman(user))
 		return
 
-	. += "\nThe power light is [on ? "on" : "off"].\nThere are[key ? "" : " no"] keys in the ignition."
-	. += "\nThe charge meter reads [cell? round(cell.percent(), 0.01) : 0]%"
+	. += "The power light is [on ? "on" : "off"].\nThere are[key ? "" : " no"] keys in the ignition."
+	. += "The charge meter reads [cell? round(CELL_PERCENT(cell), 0.01) : 0]%"
 
 /obj/vehicle/train/cargo/engine/verb/start_engine()
 	set name = "Start engine"
@@ -267,9 +266,7 @@
 	if(on)
 		turn_off()
 
-	key.loc = usr.loc
-	if(!usr.get_active_hand())
-		usr.put_in_hands(key)
+	usr.pick_or_drop(key, loc)
 	key = null
 
 	verbs -= /obj/vehicle/train/cargo/engine/verb/remove_key
@@ -323,7 +320,7 @@
 		C.plane = plane
 		C.layer = VEHICLE_LOAD_LAYER
 
-		overlays += C
+		AddOverlays(C)
 
 		//we can set these back now since we have already cloned the icon into the overlay
 		C.pixel_x = initial(C.pixel_x)
@@ -336,7 +333,7 @@
 		load = dummy_load.actual_load
 		dummy_load.actual_load = null
 		qdel(dummy_load)
-		overlays.Cut()
+		ClearOverlays()
 	..()
 
 //-------------------------------------------

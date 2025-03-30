@@ -31,7 +31,8 @@ SUBSYSTEM_DEF(lighting)
 
 /datum/controller/subsystem/lighting/stat_entry()
 	var/list/out = list("Queued:{L:[light_queue.len] C:[corner_queue.len] O:[overlay_queue.len]}")
-	for (var/stype in stats_lists)
+
+	for(var/stype in stats_lists)
 		out += "[stype] updates: [jointext(stats_lists[stype], " | ")]"
 
 	..(out.Join("\n"))
@@ -47,6 +48,9 @@ SUBSYSTEM_DEF(lighting)
 	for (var/turf/T in (targets || world))
 		if (T.dynamic_lighting && T.loc:dynamic_lighting)
 			T.lighting_build_overlay()
+
+		// If this isn't here, BYOND will set-background us.
+		CHECK_TICK
 
 /datum/controller/subsystem/lighting/fire(resumed = FALSE, no_mc_tick = FALSE)
 	if (!resumed)
@@ -82,6 +86,9 @@ SUBSYSTEM_DEF(lighting)
 	for(i in 1 to length(queue))
 		var/datum/light_source/L = queue[i]
 
+		if(QDELETED(L))
+			continue
+
 		if(L.check() || L.destroyed || L.force_update)
 			L.remove_lum()
 			if(!L.destroyed)
@@ -112,6 +119,9 @@ SUBSYSTEM_DEF(lighting)
 	queue = corner_queue
 	for(i in 1 to length(queue))
 		var/datum/lighting_corner/C = queue[i]
+
+		if(QDELETED(C))
+			continue
 
 		C.needs_update = FALSE
 		C.update_overlays()

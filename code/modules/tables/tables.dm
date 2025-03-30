@@ -8,6 +8,10 @@
 	atom_flags = ATOM_FLAG_CLIMBABLE
 	layer = TABLE_LAYER
 	throwpass = 1
+	turf_height_offset = 12
+
+	rad_resist_type = /datum/rad_resist/none
+
 	var/flipped = 0
 	var/maxhealth = 10
 	var/health = 10
@@ -44,6 +48,13 @@
 			maxhealth += reinforced.integrity / 2
 
 	health += maxhealth - old_maxhealth
+	add_debris_element()
+
+/obj/structure/table/add_debris_element()
+	if(material?.name == MATERIAL_WOOD || material?.name == MATERIAL_DARKWOOD)
+		AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
+	else
+		AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 5)
 
 /obj/structure/table/proc/take_damage(amount)
 	// If the table is made of a brittle material, and is *not* reinforced with a non-brittle material, damage is multiplied by TABLE_BRITTLE_MATERIAL_MULTIPLIER
@@ -86,22 +97,25 @@
 	update_connections(1) // Update tables around us to ignore us (material=null forces no connections)
 	for(var/obj/structure/table/T in oview(src, 1))
 		T.update_icon()
+	return ..()
+
+/obj/structure/table/examine(mob/user, infix)
 	. = ..()
 
-/obj/structure/table/_examine_text(mob/user)
-	. = ..()
 	if(health < maxhealth)
 		switch(health / maxhealth)
 			if(0.0 to 0.5)
-				. += "\n<span class='warning'>It looks severely damaged!</span>"
+				. += SPAN_WARNING("It looks severely damaged!")
 			if(0.25 to 0.5)
-				. += "\n<span class='warning'>It looks damaged!</span>"
+				. += SPAN_WARNING("It looks damaged!")
 			if(0.5 to 1.0)
-				. += "\n<span class='notice'>It has a few scrapes and dents.</span>"
+				. += SPAN_WARNING("It has a few scrapes and dents.")
 
 /obj/structure/table/attackby(obj/item/W, mob/user)
+	if(atom_flags & ATOM_FLAG_NO_DECONSTRUCTION)
+		return ..()
 
-	if(reinforced && istype(W, /obj/item/screwdriver))
+	if(reinforced && isScrewdriver(W))
 		remove_reinforced(W, user)
 		if(!reinforced)
 			update_desc()
@@ -127,7 +141,7 @@
 			return 1
 		else
 			to_chat(user, "<span class='warning'>You don't have enough carpet!</span>")
-	if(!reinforced && !carpeted && material && istype(W, /obj/item/wrench))
+	if(!reinforced && !carpeted && material && isWrench(W))
 		remove_material(W, user)
 		if(!material)
 			update_connections(1)
@@ -138,21 +152,23 @@
 			update_material()
 		return 1
 
-	if(!carpeted && !reinforced && !material && istype(W, /obj/item/wrench))
+	if(!carpeted && !reinforced && !material && isWrench(W))
 		dismantle(W, user)
 		return 1
 
 	if(health < maxhealth && isWelder(W))
 		var/obj/item/weldingtool/F = W
-		if(F.welding)
-			to_chat(user, "<span class='notice'>You begin reparing damage to \the [src].</span>")
-			playsound(src.loc, 'sound/items/Welder.ogg', 50, 1)
-			if(!do_after(user, 20, src) || !F.remove_fuel(1, user))
-				return
-			user.visible_message("<span class='notice'>\The [user] repairs some damage to \the [src].</span>",
-			                              "<span class='notice'>You repair some damage to \the [src].</span>")
-			health = max(health+(maxhealth/5), maxhealth) // 20% repair per application
-			return 1
+		to_chat(user, SPAN_NOTICE("You begin reparing damage to \the [src]."))
+		if(!F.use_tool(src, user, delay = 2 SECONDS, amount = 1))
+			return FALSE
+
+		if(QDELETED(src) || !user)
+			return
+
+		user.visible_message(SPAN_NOTICE("\The [user] repairs some damage to \the [src]"),
+										SPAN_NOTICE("You repair some damage to \the [src]."))
+		health = max(health + (maxhealth / 5), maxhealth) // 20% repair per application
+		return TRUE
 
 	if(!material && can_plate && istype(W, /obj/item/stack/material))
 		material = common_material_add(W, user, "plat")
@@ -216,7 +232,7 @@
 	if(manipulating) return M
 	manipulating = 1
 	to_chat(user, "<span class='notice'>You begin [verb]ing \the [src] with [M.display_name].</span>")
-	if(!do_after(user, 20, src) || !S.use(1))
+	if(!do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG) || !S.use(1))
 		manipulating = 0
 		return null
 	user.visible_message("<span class='notice'>\The [user] [verb]es \the [src] with [M.display_name].</span>", "<span class='notice'>You finish [verb]ing \the [src].</span>")
@@ -235,7 +251,7 @@
 	                              "<span class='notice'>You begin removing the [type_holding] holding \the [src]'s [M.display_name] [what] in place.</span>")
 	if(sound)
 		playsound(src.loc, sound, 50, 1)
-	if(!do_after(user, 40, src))
+	if(!do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		manipulating = 0
 		return M
 	user.visible_message("<span class='notice'>\The [user] removes the [M.display_name] [what] from \the [src].</span>",
@@ -251,12 +267,17 @@
 	material = common_material_remove(user, material, 20, "plating", "bolts", 'sound/items/Ratchet.ogg')
 
 /obj/structure/table/proc/dismantle(obj/item/wrench/W, mob/user)
-	if(manipulating) return
+	if(atom_flags & ATOM_FLAG_NO_DECONSTRUCTION)
+		return
+
+	if(manipulating)
+		return
+
 	manipulating = 1
 	user.visible_message("<span class='notice'>\The [user] begins dismantling \the [src].</span>",
 	                              "<span class='notice'>You begin dismantling \the [src].</span>")
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
-	if(!do_after(user, 20, src))
+	if(!do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 		manipulating = 0
 		return
 	user.visible_message("<span class='notice'>\The [user] dismantles \the [src].</span>",
@@ -288,6 +309,9 @@
 // is to avoid filling the list with nulls, as place_shard won't place shards of certain materials (holo-wood, holo-steel)
 
 /obj/structure/table/proc/break_to_parts(full_return = 0)
+	if(atom_flags & ATOM_FLAG_HOLOGRAM)
+		return
+
 	var/list/shards = list()
 	var/obj/item/material/shard/S = null
 	if(reinforced)
@@ -313,40 +337,41 @@
 	qdel(src)
 	return shards
 
-/obj/structure/table/update_icon()
+/obj/structure/table/on_update_icon()
 	if(flipped != 1)
 		icon_state = "blank"
-		overlays.Cut()
+		ClearOverlays()
 
 		var/image/I
 
 		// Base frame shape. Mostly done for glass/diamond tables, where this is visible.
 		for(var/i = 1 to 4)
-			I = image(icon, dir = 1<<(i-1), icon_state = connections[i])
-			overlays += I
+			I = OVERLAY(icon, connections[i], dir = 1<<(i-1))
+			AddOverlays(I)
 
 		// Standard table image
 		if(material)
 			for(var/i = 1 to 4)
-				I = image(icon, "[material.table_icon_base]_[connections[i]]", dir = 1<<(i-1))
-				if(material.icon_colour) I.color = material.icon_colour
+				I = OVERLAY(icon, "[material.table_icon_base]_[connections[i]]", dir = 1<<(i-1))
+				if(material.icon_colour)
+					I.color = material.icon_colour
 				I.alpha = 255 * material.opacity
-				overlays += I
+				AddOverlays(I)
 
 		// Reinforcements
 		if(reinforced)
 			for(var/i = 1 to 4)
-				I = image(icon, "[reinforced.table_reinf]_[connections[i]]", dir = 1<<(i-1))
+				I = OVERLAY(icon, "[reinforced.table_reinf]_[connections[i]]", dir = 1<<(i-1))
 				I.color = reinforced.icon_colour
 				I.alpha = 255 * reinforced.opacity
-				overlays += I
+				AddOverlays(I)
 
 		if(carpeted)
 			for(var/i = 1 to 4)
-				I = image(icon, "carpet_[connections[i]]", dir = 1<<(i-1))
-				overlays += I
+				I = OVERLAY(icon, "carpet_[connections[i]]", dir = 1<<(i-1))
+				AddOverlays(I)
 	else
-		overlays.Cut()
+		ClearOverlays()
 		var/type = 0
 		var/tabledirs = 0
 		for(var/direction in list(turn(dir,90), turn(dir,-90)) )
@@ -364,22 +389,22 @@
 
 		icon_state = "flip[type]"
 		if(material)
-			var/image/I = image(icon, "[material.table_icon_base]_flip[type]")
+			var/image/I = OVERLAY(icon, "[material.table_icon_base]_flip[type]", dir = dir)
 			I.color = material.icon_colour
 			I.alpha = 255 * material.opacity
-			overlays += I
+			AddOverlays(I)
 			name = "[material.display_name] table"
 		else
 			name = "table frame"
 
 		if(reinforced)
-			var/image/I = image(icon, "[reinforced.table_reinf]_flip[type]")
+			var/image/I = OVERLAY(icon, "[reinforced.table_reinf]_flip[type]", dir = dir)
 			I.color = reinforced.icon_colour
 			I.alpha = 255 * reinforced.opacity
-			overlays += I
+			AddOverlays(I)
 
 		if(carpeted)
-			overlays += "carpet_flip[type]"
+			AddOverlays(OVERLAY(icon, "carpet_flip[type]", dir = dir))
 
 /obj/structure/table/proc/can_connect()
 	return TRUE
@@ -396,7 +421,7 @@
 
 	var/list/blocked_dirs = list()
 	for(var/obj/structure/window/W in get_turf(src))
-		if(W.is_fulltile())
+		if(W.is_full_window)
 			connections = list("0", "0", "0", "0")
 			return
 		blocked_dirs |= W.dir
@@ -404,7 +429,7 @@
 	for(var/D in list(NORTH, SOUTH, EAST, WEST) - blocked_dirs)
 		var/turf/T = get_step(src, D)
 		for(var/obj/structure/window/W in T)
-			if(W.is_fulltile() || W.dir == GLOB.reverse_dir[D])
+			if(W.is_full_window || W.dir == GLOB.reverse_dir[D])
 				blocked_dirs |= D
 				break
 			else
@@ -415,7 +440,7 @@
 		var/turf/T = get_step(src, D)
 
 		for(var/obj/structure/window/W in T)
-			if(W.is_fulltile() || (W.dir & GLOB.reverse_dir[D]))
+			if(W.is_full_window || (W.dir & GLOB.reverse_dir[D]))
 				blocked_dirs |= D
 				break
 

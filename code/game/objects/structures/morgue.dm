@@ -126,6 +126,8 @@
 		src.connected = null
 	return
 
+/obj/structure/morgue/allow_drop()
+	return TRUE
 
 /*
  * Morgue tray
@@ -308,14 +310,14 @@
 		return //don't let you cremate something twice or w/e
 
 	if(contents.len <= 0)
-		src.audible_message("<span class='warning'>You hear a hollow crackle.</span>", 1)
+		src.audible_message("<span class='warning'>You hear a hollow crackle.</span>", 1, splash_override = "*crackle*")
 		return
 
 	else
 		if(!isemptylist(src.search_contents_for(/obj/item/disk/nuclear)))
 			to_chat(loc, "The button's status indicator flashes yellow, indicating that something important is inside the crematorium, and must be removed.")
 			return
-		src.audible_message("<span class='warning'>You hear a roar as the [src] activates.</span>", 1)
+		src.audible_message("<span class='warning'>You hear a roar as the [src] activates.</span>", 1, splash_override = "*roaring*")
 
 		cremating = 1
 		locked = 1
@@ -324,7 +326,7 @@
 		for(var/mob/living/M in contents)
 			admin_attack_log(M, A, "Began cremating their victim.", "Has begun being cremated.", "began cremating")
 			for(var/I, I < 60, I++)
-				if(M.stat == DEAD || !(M in contents)) //In case we die or are removed at any point.
+				if(M.is_ooc_dead() || !(M in contents)) //In case we die or are removed at any point.
 					cremating = 0
 					update()
 					break
@@ -435,7 +437,7 @@
 	icon_state = "crema_switch"
 	id = 1
 
-/obj/machinery/button/crematorium/update_icon()
+/obj/machinery/button/crematorium/on_update_icon()
 	return
 
 /obj/machinery/button/crematorium/attack_hand(mob/user as mob)

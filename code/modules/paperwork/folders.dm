@@ -3,40 +3,48 @@
 	desc = "A folder."
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "folder"
+	item_state = "folder"
 	w_class = ITEM_SIZE_SMALL
+
+	drop_sound = SFX_DROP_PAPER
+	pickup_sound = SFX_PICKUP_PAPER
 
 /obj/item/folder/blue
 	desc = "A blue folder."
 	icon_state = "folder_blue"
+	item_state = "folder_blue"
 
 /obj/item/folder/red
 	desc = "A red folder."
 	icon_state = "folder_red"
+	item_state = "folder_red"
 
 /obj/item/folder/yellow
 	desc = "A yellow folder."
 	icon_state = "folder_yellow"
+	item_state = "folder_yellow"
 
 /obj/item/folder/white
 	desc = "A white folder."
 	icon_state = "folder_white"
+	item_state = "folder_white"
 
 /obj/item/folder/nt
 	desc = "A NanoTrasen folder."
 	icon_state = "folder_nt"
+	item_state = "folder_nt"
 
-/obj/item/folder/update_icon()
-	overlays.Cut()
+/obj/item/folder/on_update_icon()
+	ClearOverlays()
 	if(contents.len)
-		overlays += "folder_paper"
+		AddOverlays("folder_paper")
 	return
 
-/obj/item/folder/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/folder/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/paper) || istype(W, /obj/item/photo) || istype(W, /obj/item/paper_bundle))
-		user.drop_item()
-		W.loc = src
-		to_chat(user, "<span class='notice'>You put the [W] into \the [src].</span>")
-		update_icon()
+		if(user.drop(W, src))
+			to_chat(user, "<span class='notice'>You put the [W] into \the [src].</span>")
+			update_icon()
 	else if(istype(W, /obj/item/pen))
 		var/n_name = sanitizeSafe(input(usr, "What would you like to label the folder?", "Folder Labelling", null)  as text, MAX_NAME_LEN)
 		if((loc == usr && usr.stat == 0))
@@ -67,8 +75,7 @@
 		if(href_list["remove"])
 			var/obj/item/P = locate(href_list["remove"])
 			if(P && (P.loc == src) && istype(P))
-				P.loc = usr.loc
-				usr.put_in_hands(P)
+				usr.pick_or_drop(P, loc)
 
 		else if(href_list["read"])
 			var/obj/item/paper/P = locate(href_list["read"])
@@ -113,17 +120,18 @@
 	name = "envelope"
 	desc = "A thick envelope. You can't see what's inside."
 	icon_state = "envelope_sealed"
+	item_state = "envelope_sealed"
 	var/sealed = 1
 
-/obj/item/folder/envelope/update_icon()
+/obj/item/folder/envelope/on_update_icon()
 	if(sealed)
 		icon_state = "envelope_sealed"
 	else
 		icon_state = "envelope[contents.len > 0]"
 
-/obj/item/folder/envelope/_examine_text(user)
+/obj/item/folder/envelope/examine(mob/user, infix)
 	. = ..()
-	. += "\nThe seal is [sealed ? "intact" : "broken"]."
+	. += "The seal is [sealed ? "intact" : "broken"]."
 
 /obj/item/folder/envelope/proc/sealcheck(user)
 	var/ripperoni = alert("Are you sure you want to break the seal on \the [src]?", "Confirmation","Yes", "No")

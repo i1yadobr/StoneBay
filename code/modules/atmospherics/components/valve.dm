@@ -20,7 +20,7 @@
 	open = 1
 	icon_state = "map_valve1"
 
-/obj/machinery/atmospherics/valve/update_icon(animation)
+/obj/machinery/atmospherics/valve/on_update_icon(animation)
 	if(animation)
 		flick("valve[src.open][!src.open]",src)
 	else
@@ -72,8 +72,6 @@
 	return null
 
 /obj/machinery/atmospherics/valve/Destroy()
-	loc = null
-
 	if(node1)
 		node1.disconnect(src)
 		qdel(network_node1)
@@ -83,8 +81,10 @@
 
 	node1 = null
 	node2 = null
+	network_node1 = null
+	network_node2 = null
 
-	. = ..()
+	return ..()
 
 /obj/machinery/atmospherics/valve/proc/open()
 	if(open) return 0
@@ -227,7 +227,7 @@
 
 	var/frequency = 0
 	var/id = null
-	var/datum/radio_frequency/radio_connection
+	var/datum/frequency/radio_connection
 
 /obj/machinery/atmospherics/valve/digital/attack_ai(mob/user as mob)
 	return src.attack_hand(user)
@@ -236,24 +236,26 @@
 	if(!powered())
 		return
 	if(!src.allowed(user))
+		playsound(src.loc, 'sound/signals/error32.ogg', 50)
 		to_chat(user, "<span class='warning'>Access denied.</span>")
 		return
+	playsound(src.loc, 'sound/effects/using/switch/lever2.ogg', 50)
 	..()
 
 /obj/machinery/atmospherics/valve/digital/open
 	open = 1
 	icon_state = "map_valve1"
 
-/obj/machinery/atmospherics/valve/digital/update_icon()
+/obj/machinery/atmospherics/valve/digital/on_update_icon()
 	..()
 	if(!powered())
 		icon_state = "valve[open]nopower"
 
 /obj/machinery/atmospherics/valve/digital/proc/set_frequency(new_frequency)
-	radio_controller.remove_object(src, frequency)
+	SSradio.remove_object(src, frequency)
 	frequency = new_frequency
 	if(frequency)
-		radio_connection = radio_controller.add_object(src, frequency, RADIO_ATMOSIA)
+		radio_connection = SSradio.add_object(src, frequency, RADIO_ATMOSIA)
 
 /obj/machinery/atmospherics/valve/digital/Initialize()
 	. = ..()
@@ -281,23 +283,23 @@
 
 
 /obj/machinery/atmospherics/valve/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W, /obj/item/wrench))
+	if (!isWrench(W))
 		return ..()
 	var/datum/gas_mixture/int_air = return_air()
 	var/datum/gas_mixture/env_air = loc.return_air()
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 	to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
-	if (do_after(user, 40, src))
+	if (do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		user.visible_message( \
 			"<span class='notice'>\The [user] unfastens \the [src].</span>", \
 			"<span class='notice'>You have unfastened \the [src].</span>", \
 			"You hear a ratchet.")
-		var/obj/item/pipe/P = new(loc, make_from=src)
+		var/obj/item/pipe/P = new(loc, null, null, src)
 		if ((int_air.return_pressure()-env_air.return_pressure()) > 2*ONE_ATMOSPHERE)
 			to_chat(user, "<span class='warning'>\the [src] flies off because of the overpressure in it!</span>")
 			P.throw_at_random(0, round((int_air.return_pressure()-env_air.return_pressure()) / 100), 30)
 		qdel(src)
 
-/obj/machinery/atmospherics/valve/_examine_text(mob/user)
+/obj/machinery/atmospherics/valve/examine(mob/user, infix)
 	. = ..()
-	. += "\nIt is [open ? "open" : "closed"]."
+	. += "It is [open ? "open" : "closed"]."

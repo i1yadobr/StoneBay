@@ -3,6 +3,7 @@
 	var/atom_flags
 	var/effect_flags
 	var/list/blood_DNA
+	var/is_bloodied
 	var/was_bloodied
 	var/blood_color
 	var/last_bumped = 0
@@ -27,7 +28,7 @@
 	// replaced by OPENCONTAINER flags and atom/proc/is_open_container()
 	///Chemistry.
 
-	var/list/climbers = list()
+	var/list/climbers
 
 	var/tf_scale_x  // The atom's base transform scale for width.
 	var/tf_scale_y  // The atom's base transform scale for height.
@@ -40,6 +41,18 @@
 	/// Last color calculated for the the chatmessage overlays. Used for caching.
 	var/chat_color
 	var/chat_color_darkened
+
+	/// Icon state's name that can be used during icon generation as a base without impacting appearance of atom in mapping tools.
+	var/base_icon_state
+
+	/// This atom's cache of non-protected overlays, used for normal icon additions. Do not manipulate directly- See SSoverlays.
+	var/list/atom_overlay_cache
+
+	/// This atom's cache of overlays that can only be removed explicitly, like C4. Do not manipulate directly- See SSoverlays.
+	var/list/atom_protected_overlay_cache
+
+	/// This defines whether this atom will be added to SSpoi, set TRUE if you want it to be shown in follow panel
+	var/is_poi = FALSE
 
 /atom/New(loc, ...)
 	CAN_BE_REDEFINED(TRUE)
@@ -73,7 +86,7 @@
 	SHOULD_CALL_PARENT(TRUE)
 
 	if(atom_flags & ATOM_FLAG_INITIALIZED)
-		crash_with("Warning: [src]([type]) initialized multiple times!")
+		util_crash_with("Warning: [src]([type]) initialized multiple times!")
 	atom_flags |= ATOM_FLAG_INITIALIZED
 
 	if(loc)
@@ -88,11 +101,14 @@
 		if(istype(T))
 			T.RecalculateOpacity()
 
+	if(is_poi)
+		SSpoints_of_interest.make_point_of_interest(src)
+
 	return INITIALIZE_HINT_NORMAL
 
 //called if Initialize returns INITIALIZE_HINT_LATELOAD
 /atom/proc/LateInitialize()
-	return
+	set waitfor = FALSE
 
 /atom/proc/drop_location()
 	var/atom/L = loc
@@ -113,7 +129,8 @@
 /atom/Destroy()
 	QDEL_NULL(reagents)
 	QDEL_NULL(proximity_monitor)
-
+	ClearOverlays()
+	underlays.Cut()
 	return ..()
 
 /atom/proc/reveal_blood()
@@ -163,7 +180,7 @@
 	return FALSE
 
 /atom/proc/CheckExit()
-	return 1
+	return TRUE
 
 // If you want to use this, the atom must have the PROXMOVE flag, and the moving
 // atom must also have the PROXMOVE flag currently to help with lag. ~ ComicIronic
@@ -179,6 +196,7 @@
 
 /atom/proc/bullet_act(obj/item/projectile/P, def_zone)
 	P.on_hit(src, 0, def_zone)
+	SEND_SIGNAL(src, SIGNAL_BULLET_ACT, src, P)
 	. = 0
 
 /atom/proc/in_contents_of(container)//can take class or object instance as argument
@@ -285,31 +303,30 @@ its easier to just keep the beam vertical.
 					//I've found that 3 ticks provided a nice balance for my use.
 	for(var/obj/effect/overlay/beam/O in orange(10,src)) if(O.BeamSource==src) qdel(O)
 
-
-/atom/proc/_examine_text(mob/user, infix = "", suffix = "")
+/atom/proc/examine(mob/user, infix = "")
 	// This reformat names to get a/an properly working on item descriptions when they are bloody
 	var/f_name = "\a [SPAN("info", "<em>[src][infix]</em>")]."
-	if(src.blood_DNA && !istype(src, /obj/effect/decal))
-		if(gender == PLURAL)
-			f_name = "some "
-		else
-			f_name = "a "
+	if(is_bloodied && !istype(src, /obj/effect/decal))
+
+		f_name = (gender == PLURAL) ? "some " : "a "
+
 		if(blood_color != SYNTH_BLOOD_COLOUR)
 			f_name += "<span class='danger'>blood-stained</span> [SPAN("info", "<em>[name][infix]</em>")]!"
 		else
 			f_name += "oil-stained [name][infix]."
 
-	. = "\icon[src] That's [f_name] [suffix]"
-	. += "\n[desc]"
+	. = list("\icon[src] That's [f_name][infix]")
+	. += desc
 
 	return
 
-/atom/proc/examine(...)
+/atom/proc/baked_examine(...)
 	SHOULD_NOT_OVERRIDE(TRUE)
 
 	var/content = "<div class='Examine'>"
 
-	content += _examine_text(arglist(args))
+	var/list/strings_list = examine(arglist(args))
+	content += strings_list.Join("\n")
 	content += "</div>"
 
 	return content
@@ -336,7 +353,12 @@ its easier to just keep the beam vertical.
 	update_icon()
 
 /atom/proc/update_icon()
-	CAN_BE_REDEFINED(TRUE)
+	if(QDELETED(src))
+		return
+	on_update_icon(arglist(args))
+	return
+
+/atom/proc/on_update_icon()
 	return
 
 /atom/proc/blob_act(damage)
@@ -381,24 +403,30 @@ its easier to just keep the beam vertical.
 	playsound(src, hitby_sound, sound_loudness, 1)
 
 
-//returns 1 if made bloody, returns 0 otherwise
-/atom/proc/add_blood(mob/living/carbon/human/M as mob)
+// returns TRUE if made bloody, returns FALSE otherwise
+// accepts either a human or a hex color
+/atom/proc/add_blood(source)
 	if(atom_flags & ATOM_FLAG_NO_BLOOD)
-		return 0
+		return FALSE
 
-	if(!blood_DNA || !istype(blood_DNA, /list))	//if our list of DNA doesn't exist yet (or isn't a list) initialise it.
+	if(!islist(blood_DNA)) // if our list of DNA doesn't exist yet (or isn't a list) initialise it.
 		blood_DNA = list()
 
-	was_bloodied = 1
-	blood_color = COLOR_BLOOD_HUMAN
-	if(istype(M))
-		if (!istype(M.dna, /datum/dna))
+	is_bloodied = TRUE
+	was_bloodied = TRUE
+
+	if(ishuman(source))
+		var/mob/living/carbon/human/M = source
+		if(!istype(M.dna, /datum/dna))
 			M.dna = new /datum/dna(null)
 			M.dna.real_name = M.real_name
 		M.check_dna()
 		blood_color = M.species.get_blood_colour(M)
-	. = 1
-	return 1
+	else if(istext(source))
+		blood_color = source
+	else
+		blood_color = COLOR_BLOOD_HUMAN
+	return TRUE
 
 /atom/proc/add_vomit_floor(mob/living/carbon/M, toxvomit = 0, datum/reagents/inject_reagents)
 	if(istype(src, /turf/simulated))
@@ -412,12 +440,14 @@ its easier to just keep the beam vertical.
 
 /atom/proc/clean_blood()
 	if(!simulated)
-		return
+		return FALSE
+	is_bloodied = FALSE
 	fluorescent = 0
-	src.germ_level = 0
-	if(istype(blood_DNA, /list))
-		blood_DNA = null
-		return 1
+	germ_level = 0
+	if(islist(blood_DNA))
+		blood_DNA.Cut()
+	blood_color = null
+	return TRUE
 
 /atom/proc/get_global_map_pos()
 	if(!islist(GLOB.global_map) || isemptylist(GLOB.global_map)) return
@@ -464,7 +494,8 @@ its easier to just keep the beam vertical.
 // message is the message output to anyone who can hear.
 // deaf_message (optional) is what deaf people will see.
 // hearing_distance (optional) is the range, how many tiles away the message can be heard.
-/atom/proc/audible_message(message, deaf_message, hearing_distance = world.view, checkghosts = null)
+// spash_override replaces the runechatted message if provided. i.e. you can make the atom go "*beep*" instead of "The Machine states, "Bee ..."
+/atom/proc/audible_message(message, deaf_message, hearing_distance = world.view, checkghosts = null, splash_override = null)
 	var/list/hearing_mobs = list()
 	var/list/hearing_objs = list()
 	get_mobs_and_objs_in_view_fast(get_turf(src), hearing_distance, hearing_mobs, hearing_objs, checkghosts)
@@ -476,8 +507,8 @@ its easier to just keep the beam vertical.
 	for(var/m in hearing_mobs)
 		var/mob/M = m
 		M.show_message(message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE)
-		if(M.get_preference_value(/datum/client_preference/runechat) == GLOB.PREF_YES)
-			M.create_chat_message(src, message)
+		if(M.get_preference_value("CHAT_RUNECHAT") == GLOB.PREF_YES)
+			M.create_chat_message(src, splash_override ? splash_override : message)
 
 /atom/movable/proc/dropInto(atom/destination)
 	while(istype(destination))
@@ -500,7 +531,7 @@ its easier to just keep the beam vertical.
 
 /atom/attack_hand(mob/user)
 	..()
-	if(climbers.len && !(user in climbers))
+	if(LAZYLEN(climbers) && !LAZYISIN(climbers, user))
 		user.visible_message("<span class='warning'>[user.name] shakes \the [src].</span>", \
 					"<span class='notice'>You shake \the [src].</span>")
 		object_shaken()
@@ -515,18 +546,19 @@ its easier to just keep the beam vertical.
 	do_climb(usr)
 
 /atom/proc/can_climb(mob/living/user, post_climb_check=0)
-	if (!(atom_flags & ATOM_FLAG_CLIMBABLE) || !can_touch(user) || (!post_climb_check && (user in climbers)))
-		return 0
+	if (!(atom_flags & ATOM_FLAG_CLIMBABLE) || !can_touch(user) || (!post_climb_check && LAZYISIN(climbers, user)))
+		return FALSE
 
-	if (!user.Adjacent(src))
-		to_chat(user, "<span class='danger'>You can't climb there, the way is blocked.</span>")
-		return 0
+	if(!user.Adjacent(src))
+		show_splash_text(user, "can't climb!", SPAN_DANGER("You can't climb there, the way is blocked."))
+		return FALSE
 
 	var/obj/occupied = turf_is_crowded()
 	if(occupied)
-		to_chat(user, "<span class='danger'>There's \a [occupied] in the way.</span>")
-		return 0
-	return 1
+		show_splash_text(user, "no free space!", SPAN_DANGER("There's \a [occupied] in the way.."))
+		return FALSE
+
+	return TRUE
 
 /atom/proc/can_touch(mob/user)
 	if (!user)
@@ -555,44 +587,45 @@ its easier to just keep the beam vertical.
 	return 0
 
 /atom/proc/do_climb(mob/living/user)
-	if (!can_climb(user))
+	if(!can_climb(user))
 		return
 
-	user.visible_message("<span class='warning'>\The [user] starts climbing onto \the [src]!</span>")
-	climbers |= user
+	user.visible_message(SPAN_WARNING("\The [user] starts climbing onto \the [src]!"))
+	LAZYDISTINCTADD(climbers, user)
 
 	if(!do_after(user,(issmall(user) ? 30 : 50), src))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
-	if (!can_climb(user, post_climb_check=1))
-		climbers -= user
+	if(!can_climb(user, post_climb_check=1))
+		LAZYREMOVE(climbers, user)
 		return
 
 	user.forceMove(get_turf(src))
 
-	if (get_turf(user) == get_turf(src))
-		user.visible_message("<span class='warning'>\The [user] climbs onto \the [src]!</span>")
-	climbers -= user
+	if(get_turf(user) == get_turf(src))
+		user.visible_message(SPAN_WARNING("\The [user] climbs onto \the [src]!"))
+
+	LAZYREMOVE(climbers, user)
 
 /atom/proc/object_shaken()
 	for(var/mob/living/M in climbers)
 		M.Weaken(1)
-		to_chat(M, "<span class='danger'>You topple as you are shaken off \the [src]!</span>")
-		climbers.Cut(1,2)
+		show_splash_text(M, "you are shaken off!", SPAN_DANGER("You topple as you are shaken off \the [src]!"))
+		LAZYREMOVE(climbers, M)
 
 	for(var/mob/living/M in get_turf(src))
-		if(M.lying) return //No spamming this on people.
+		if(M.lying) //No spamming this on people.
+			return
 
 		M.Weaken(3)
-		to_chat(M, "<span class='danger'>You topple as \the [src] moves under you!</span>")
+		show_splash_text(M, "you topple!", SPAN_DANGER("You topple as \the [src] moves under you!"))
 
 		if(prob(25))
-
-			var/damage = rand(15,30)
+			var/damage = rand(15, 30)
 			var/mob/living/carbon/human/H = M
 			if(!istype(H))
-				to_chat(H, "<span class='danger'>You land heavily!</span>")
+				to_chat(H, SPAN_DANGER("You land heavily!"))
 				M.adjustBruteLoss(damage)
 				return
 
@@ -612,9 +645,8 @@ its easier to just keep the beam vertical.
 
 			H.UpdateDamageIcon()
 			H.updatehealth()
-	return
 
-/atom/MouseDrop_T(mob/target, mob/user)
+/atom/MouseDrop_T(atom/movable/target, mob/user)
 	var/mob/living/H = user
 	if(istype(H) && can_climb(H) && target == user)
 		do_climb(target)
@@ -664,7 +696,13 @@ its easier to just keep the beam vertical.
 		return FALSE
 
 	var/list/valid_turfs = list()
-	for(var/dir_to_test in GLOB.cardinal)
+	var/list/valid_dirs = GLOB.cardinal.Copy()
+
+	for(var/obj/machinery/door/window/slim_door in T.contents)
+		if(slim_door.density)
+			valid_dirs -= slim_door.dir
+
+	for(var/dir_to_test in valid_dirs)
 		var/turf/new_turf = get_step(T, dir_to_test)
 		if(!new_turf.contains_dense_objects(FALSE))
 			valid_turfs.Add("[dir_to_test]")
@@ -676,8 +714,16 @@ its easier to just keep the beam vertical.
 	for(var/atom/movable/A in T)
 		if(A == src)
 			continue
+
 		if(A.anchored)
 			continue
+
+		if(isobserver(A))
+			continue
+
+		if(!A.simulated)
+			continue
+
 		if(istype(A, /obj/item))
 			if(!shove_items)
 				continue
@@ -772,3 +818,16 @@ its easier to just keep the beam vertical.
 		offset_y = tf_offset_y,
 		others = others
 	)
+
+
+/// Respond to an RCD acting on our item
+/atom/proc/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	return FALSE
+
+///Return the values you get when an RCD eats you?
+/atom/proc/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
+	return FALSE
+
+/// Adds the debris element for projectile impacts
+/atom/proc/add_debris_element()
+	AddElement(/datum/element/debris, null, -40, 8, 0.7)

@@ -14,7 +14,10 @@
 	var/stack_full = 0 // 1 - stack looks different if it's never been used
 	var/stack_empty = 0 // 0 - stack disappears, 1 - stack can be empty, 2 - stack is already empty
 
-/obj/item/stack/medical/update_icon()
+	drop_sound = SFX_DROP_CARDBOARD
+	pickup_sound = SFX_PICKUP_CARDBOARD
+
+/obj/item/stack/medical/on_update_icon()
 	if(stack_full && amount == max_amount)
 		icon_state = "[icon_state_default]_full"
 	else if(!amount)
@@ -61,7 +64,7 @@
 
 	if ( ! (istype(user, /mob/living/carbon/human) || \
 			istype(user, /mob/living/silicon)) )
-		to_chat(user, SPAN("warning", "You don't have the dexterity to do this!"))
+		to_chat(user, FEEDBACK_YOU_LACK_DEXTERITY)
 		return 1
 
 	if (istype(M, /mob/living/carbon/human))
@@ -151,12 +154,15 @@
 				W.heal_damage(heal_brute)
 				used++
 			affecting.update_damages()
+			if(affecting.update_damstate())
+				H.UpdateDamageIcon()
 			if(used == get_amount())
 				if(affecting.is_bandaged())
 					to_chat(user, SPAN("warning", "\The [src] is used up."))
 				else
 					to_chat(user, SPAN("warning", "\The [src] is used up, but there are more wounds to treat on \the [affecting.name]."))
 			use(used)
+			H.update_bandages(1)
 
 /obj/item/stack/medical/ointment
 	name = "ointment"
@@ -170,6 +176,9 @@
 	animal_heal = 4
 	stack_empty = 1
 	splittable = 0
+
+	drop_sound = SFX_DROP_HERB
+	pickup_sound = SFX_PICKUP_HERB
 
 /obj/item/stack/medical/ointment/attack(mob/living/carbon/M as mob, mob/user as mob)
 	if(..())
@@ -270,12 +279,15 @@
 				W.heal_damage(heal_brute)
 				used++
 			affecting.update_damages()
+			if(affecting.update_damstate())
+				H.UpdateDamageIcon()
 			if(used == get_amount())
 				if(affecting.is_bandaged())
 					to_chat(user, SPAN("warning", "\The [src] is used up."))
 				else
 					to_chat(user, SPAN("warning", "\The [src] is used up, but there are more wounds to treat on \the [affecting.name]."))
 			use(used)
+			H.update_bandages(1)
 
 /obj/item/stack/medical/advanced/ointment
 	name = "burn gel"
@@ -350,7 +362,7 @@
 			user.visible_message(SPAN("notice", "[user] starts to apply \the [src] to their [limb]."), \
 						             SPAN("notice", "You start to apply \the [src] to your [limb]."), \
 						            SPAN("warning", "You hear something being wrapped."))
-		if(do_after(user, 50, M))
+		if(do_after(user, 50, M, luck_check_type = LUCK_CHECK_MED))
 			if(M == user && prob(75))
 				user.visible_message(SPAN("warning", "\The [user] fumbles [src]."), \
 							         SPAN("warning", "You fumble [src]."), \
@@ -429,6 +441,8 @@
 				W.bandage()
 				used++
 			affecting.update_damages()
+			if(affecting.update_damstate())
+				H.UpdateDamageIcon()
 			if(used == get_amount())
 				if(affecting.is_bandaged())
 					to_chat(user, SPAN("warning", "\The [src] is used up."))
@@ -452,15 +466,15 @@
 	if(..())
 		return 1
 
-	if(M.stat != DEAD)
+	if(!M.is_ic_dead())
 		to_chat(user, SPAN("notice", "\The [src] quickly retracts its needles as you bring it close to [M]."))
 		return
 
 	to_chat(user, SPAN("notice", "You prepare to inject [M]..."))
-	if(!do_after(user, 100))
+	if(!do_after(user, 100, luck_check_type = LUCK_CHECK_MED))
 		return
 
-	if(M.stat != DEAD)
+	if(!M.is_ic_dead())
 		to_chat(user, SPAN("notice", "\The [src] quickly retracts its needles as soon as you try to inject [M]!"))
 		return
 

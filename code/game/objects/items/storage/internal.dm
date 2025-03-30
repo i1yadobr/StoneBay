@@ -6,7 +6,7 @@
 
 /obj/item/storage/internal/New(obj/item/MI)
 	master_item = MI
-	loc = master_item
+	forceMove(master_item)
 	name = master_item.name
 	verbs -= /obj/item/verb/verb_pickup	//make sure this is never picked up.
 	..()
@@ -40,7 +40,7 @@
 			src.open(user)
 			return 0
 
-		if (!( istype(over_object, /obj/screen) ))
+		if (!( istype(over_object, /atom/movable/screen) ))
 			return 1
 
 		//makes sure master_item is equipped before putting it in hand, so that we can't drag it into our hand from miles away.
@@ -50,13 +50,18 @@
 
 		//TODO make this less terrible
 		if (!( user.restrained() ) && !( user.stat ))
-			switch(over_object.name)
-				if(BP_R_HAND)
-					if(user.unEquip(master_item))
+			var/atom/movable/screen/inventory/inv_box = over_object
+			if(!istype(inv_box))
+				return 0
+
+			switch(inv_box.slot_id)
+				if(slot_r_hand)
+					if(user.drop(master_item, changing_slots = TRUE))
 						user.put_in_r_hand(master_item)
-				if(BP_L_HAND)
-					if(user.unEquip(master_item))
+				if(slot_l_hand)
+					if(user.drop(master_item, changing_slots = TRUE))
 						user.put_in_l_hand(master_item)
+
 			master_item.add_fingerprint(user)
 			return 0
 	return 0
@@ -69,12 +74,12 @@
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
 		if(H.l_store == master_item && !H.get_active_hand())	//Prevents opening if it's in a pocket.
-			H.put_in_hands(master_item)
-			H.l_store = null
+			if(H.put_in_hands(master_item))
+				H.l_store = null
 			return 0
 		if(H.r_store == master_item && !H.get_active_hand())
-			H.put_in_hands(master_item)
-			H.r_store = null
+			if(H.put_in_hands(master_item))
+				H.r_store = null
 			return 0
 
 	src.add_fingerprint(user)

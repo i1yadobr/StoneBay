@@ -1,4 +1,4 @@
-/obj/item/computer_hardware/
+/obj/item/computer_hardware
 	name = "Hardware"
 	desc = "Unknown Hardware."
 	icon = 'icons/obj/modular_components.dmi'
@@ -13,7 +13,17 @@
 	var/damage_failure = 50			// "Failure" threshold. When damage exceeds this value the hardware piece will not work at all.
 	var/malfunction_probability = 10// Chance of malfunction when the component is damaged
 
-/obj/item/computer_hardware/attackby(obj/item/W as obj, mob/living/user as mob)
+/obj/item/computer_hardware/Initialize()
+	. = ..()
+	w_class = hardware_size
+	if(istype(loc, /obj/item/modular_computer))
+		holder2 = loc
+
+/obj/item/computer_hardware/Destroy()
+	holder2 = null
+	return ..()
+
+/obj/item/computer_hardware/attackby(obj/item/W, mob/living/user)
 	// Multitool. Runs diagnostics
 	if(isMultitool(W))
 		to_chat(user, "***** DIAGNOSTICS REPORT *****")
@@ -46,16 +56,6 @@
 /obj/item/computer_hardware/proc/diagnostics(mob/user)
 	to_chat(user, "Hardware Integrity Test... (Corruption: [damage]/[max_damage]) [damage > damage_failure ? "FAIL" : damage > damage_malfunction ? "WARN" : "PASS"]")
 
-/obj/item/computer_hardware/New(obj/L)
-	w_class = hardware_size
-	if(istype(L, /obj/item/modular_computer))
-		holder2 = L
-		return
-
-/obj/item/computer_hardware/Destroy()
-	holder2 = null
-	return ..()
-
 // Handles damage checks
 /obj/item/computer_hardware/proc/check_functionality()
 	// Turned off
@@ -71,14 +71,15 @@
 	// Good to go.
 	return 1
 
-/obj/item/computer_hardware/_examine_text(mob/user)
+/obj/item/computer_hardware/examine(mob/user, infix)
 	. = ..()
+
 	if(damage > damage_failure)
-		. += "\n<span class='danger'>It seems to be severely damaged!</span>"
+		. += SPAN_DANGER("It seems to be severely damaged!")
 	else if(damage > damage_malfunction)
-		. += "\n<span class='notice'>It seems to be damaged!</span>"
+		. += SPAN_NOTICE("It seems to be damaged!")
 	else if(damage)
-		. += "\nIt seems to be slightly damaged."
+		. += "It seems to be slightly damaged."
 
 // Damages the component. Contains necessary checks. Negative damage "heals" the component.
 /obj/item/computer_hardware/proc/take_damage(amount)

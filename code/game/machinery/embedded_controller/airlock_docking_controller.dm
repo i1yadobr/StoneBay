@@ -15,7 +15,7 @@
 		docking_program.display_name = display_name
 
 /obj/machinery/embedded_controller/radio/airlock/docking_port/attackby(obj/item/W, mob/user)
-	if(istype(W,/obj/item/device/multitool)) //give them part of code, would take few tries to get full
+	if(isMultitool(W)) //give them part of code, would take few tries to get full
 		var/code = docking_program.docking_codes
 		if(!code)
 			code = "N/A"
@@ -102,9 +102,9 @@
 	airlock_program.process()
 	..()
 
-/datum/computer/file/embedded_program/docking/airlock/receive_signal(datum/signal/signal, receive_method, receive_param)
-	airlock_program.receive_signal(signal, receive_method, receive_param)	//pass along to subprograms
-	..(signal, receive_method, receive_param)
+/datum/computer/file/embedded_program/docking/airlock/receive_signal(datum/signal/signal, receive_param)
+	airlock_program.receive_signal(signal, receive_param)	//pass along to subprograms
+	..(signal, receive_param)
 
 //tell the docking port to start getting ready for docking - e.g. pressurize
 /datum/computer/file/embedded_program/docking/airlock/prepare_for_docking()
@@ -179,7 +179,7 @@
 /obj/machinery/embedded_controller/radio/airlock/docking_port/verb/spoof_signal(command as text, sender as text)
 	set category = "Debug"
 	set src in view(1)
-	var/datum/signal/signal = new
+	var/datum/signal/signal = new()
 	signal.data["tag"] = sender
 	signal.data["command"] = command
 	signal.data["recipient"] = id_tag

@@ -15,6 +15,7 @@
 	var/program_icon_state = null			// Program-specific screen icon state
 	var/program_key_state = "standby_key"	// Program-specific keyboard icon state
 	var/program_menu_icon = "newwin"		// Icon to use for program's link in main menu
+	var/program_light_color = "#ffffff"     // Color of light emitted by a computer
 	var/requires_ntnet = 0					// Set to 1 for program to require nonstop NTNet connection to run. If NTNet connection is lost program crashes.
 	var/requires_ntnet_feature = 0			// Optional, if above is set to 1 checks for specific function of NTNet (currently NTNET_SOFTWAREDOWNLOAD, NTNET_PEERTOPEER, NTNET_SYSTEMCONTROL and NTNET_COMMUNICATION)
 	var/ntnet_status = 1					// NTNet status, updated every tick by computer running this program. Don't use this for checks if NTNet works, computers do that. Use this for calculations, etc.
@@ -134,7 +135,7 @@
 	if(computer && computer.computer_emagged)
 		return 1
 
-	var/obj/item/card/id/I = user.GetIdCard()
+	var/obj/item/card/id/I = user.get_id_card()
 	if(!I)
 		if(loud)
 			to_chat(user, "<span class='notice'>\The [computer] flashes an \"RFID Error - Unable to scan ID\" warning.</span>")

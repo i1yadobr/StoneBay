@@ -12,7 +12,7 @@
 
 	var/obj/item/reagent_containers/container = null
 
-/obj/machinery/disease2/antibodyanalyser/update_icon()
+/obj/machinery/disease2/antibodyanalyser/on_update_icon()
 	if(scanning)
 		icon_state = "analyser_processing"
 	else
@@ -20,9 +20,8 @@
 
 /obj/machinery/disease2/antibodyanalyser/attackby(obj/I as obj, mob/user as mob)
 	if(istype(I,/obj/item/reagent_containers))
-		if(!container && user.unEquip(I))
+		if(!container && user.drop(I, src))
 			container = I
-			I.forceMove(src)
 			user.visible_message("[user] adds a sample to \the [src]!", "You add a sample to \the [src]!")
 		return
 

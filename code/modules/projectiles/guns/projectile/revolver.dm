@@ -15,6 +15,7 @@
 	var/chamber_offset = 0 //how many empty chambers in the cylinder until you hit a round
 	fire_sound = 'sound/effects/weapons/gun/fire2.ogg'
 	mag_insert_sound = 'sound/effects/weapons/gun/spin_cylinder1.ogg'
+	has_safety = FALSE
 
 /obj/item/gun/projectile/revolver/coltpython
 	name = "Colt Python"
@@ -105,12 +106,13 @@
 	name = "Deckard .44"
 	desc = "A custom-built revolver, based off the semi-popular Detective Special model."
 	icon_state = "deckard-empty"
-	ammo_type = /obj/item/ammo_magazine/c38/rubber
+	caliber = ".44"
+	ammo_type = /obj/item/ammo_casing/c44/rubber
 
 /obj/item/gun/projectile/revolver/deckard/emp
-	ammo_type = /obj/item/ammo_casing/c38/emp
+	ammo_type = /obj/item/ammo_casing/c44/emp
 
-/obj/item/gun/projectile/revolver/deckard/update_icon()
+/obj/item/gun/projectile/revolver/deckard/on_update_icon()
 	..()
 	if(loaded.len)
 		icon_state = "deckard-loaded"
@@ -118,9 +120,10 @@
 		icon_state = "deckard-empty"
 
 /obj/item/gun/projectile/revolver/deckard/load_ammo(obj/item/A, mob/user)
-	if(istype(A, /obj/item/ammo_magazine))
-		flick("deckard-reload",src)
-	..()
+    var/old_loaded_len = loaded.len
+    ..()
+    if(old_loaded_len != loaded.len)
+        flick("deckard-reload",src)
 
 /obj/item/gun/projectile/revolver/capgun
 	name = "cap gun"
@@ -168,9 +171,13 @@
 	var/obj/item/cell/bcell
 
 /obj/item/gun/projectile/revolver/m2019/detective/Initialize()
+	. = ..()
 	bcell = new /obj/item/cell/device/high(src)
 	update_icon()
-	..()
+
+/obj/item/gun/projectile/revolver/m2019/detective/Destroy()
+	QDEL_NULL(bcell)
+	return ..()
 
 /*obj/item/gun/projectile/revolver/m2019/detective/proc/deductcharge(chrgdeductamt)
 	if(bcell)
@@ -183,12 +190,13 @@
 	return null*/
 
 
-/obj/item/gun/projectile/revolver/m2019/detective/_examine_text(mob/user)
+/obj/item/gun/projectile/revolver/m2019/detective/examine(mob/user, infix)
 	. = ..()
+
 	if(!bcell)
-		. += "\n\The [src] has no power cell installed."
+		. += "\The [src] has no power cell installed."
 	else
-		. += "\n\The [src] is [round(bcell.percent())]% charged."
+		. += "\The [src] is [round(CELL_PERCENT(bcell))]% charged."
 
 /obj/item/gun/projectile/revolver/m2019/detective/consume_next_projectile()
 	if(chamber_offset)
@@ -215,7 +223,7 @@
 						chambered = new /obj/item/ammo_casing/c38/chem/lethal(src)
 
 	if(chambered)
-		return chambered.BB
+		return chambered.expend()
 	return null
 
 /obj/item/gun/projectile/revolver/m2019/detective/attack_self(mob/living/user as mob)
@@ -235,23 +243,28 @@
 		return ..()
 	insert_cell(C, user)
 	return 1
+
 /obj/item/gun/projectile/revolver/m2019/detective/proc/usecharge(UC)
-	if(bcell && chambered?.BB)
-		if(bcell.checked_use(UC))
-			return 1
-		else
-			update_icon()
-			return 0
-	return null
+	if(!bcell)
+		return
+
+	if(!chambered)
+		return
+
+	if(!chambered.projectile_type || chambered.is_spent)
+		return
+
+	if(bcell.checked_use(UC))
+		update_icon()
+		return TRUE
 
 /obj/item/gun/projectile/revolver/m2019/detective/proc/insert_cell(obj/item/cell/B, mob/user)
 	if(bcell)
 		to_chat(user, "<span class='notice'>[src] already has the [bcell] installed.</span>")
 		return
-	if(user.unEquip(B))
+	if(user.drop(B, src))
 		to_chat(user, "<span class='notice'>You install the [B] into your [src].</span>")
 		bcell = B
-		bcell.forceMove(src)
 		chargemode = 1
 		update_icon()
 
@@ -260,9 +273,10 @@
 	set desc = "Remove the powercell from your gun."
 	set category = "Object"
 
-	if(!bcell) return
+	if(!bcell)
+		return
 	to_chat(usr, "<span class='notice'>You remove the [bcell.name] from your [src].</span>")
-	usr.put_in_hands(bcell)
+	usr.pick_or_drop(bcell, loc)
 	bcell = null
 	chargemode = 0
 	update_icon()
@@ -272,7 +286,7 @@
 	if(CanPhysicallyInteract(usr))
 		unload_ammo(usr)
 
-/obj/item/gun/projectile/revolver/m2019/detective/update_icon()
+/obj/item/gun/projectile/revolver/m2019/detective/on_update_icon()
 	..()
 	if(loaded.len)
 		icon_state = "[src.base_icon]-loaded"

@@ -29,14 +29,6 @@
 			playsound(src, 'sound/effects/fighting/punch4.ogg', 50, 1)
 			if(damtype == "brute")
 				step_away(M,src,15)
-			/*
-			if(M.stat>1)
-				M.gib()
-				melee_can_hit = 0
-				if(do_after(melee_cooldown))
-					melee_can_hit = 1
-				return
-			*/
 
 			var/hit_zone = ran_zone()
 			switch(damtype)
@@ -224,11 +216,11 @@
 /obj/mecha/combat/brain_moved_inside(obj/item/I, mob/user)
 	if(..())
 		var/mob/brainmob
-		if(istype(I, /obj/item/device/mmi))
-			var/obj/item/device/mmi/MMI = I
+		if(istype(I, /obj/item/organ/internal/cerebrum/mmi))
+			var/obj/item/organ/internal/cerebrum/mmi/MMI = I
 			brainmob = MMI.brainmob
-		else if(istype(I, /obj/item/organ/internal/posibrain))
-			var/obj/item/organ/internal/posibrain/PB = I
+		else if(istype(I, /obj/item/organ/internal/cerebrum/posibrain))
+			var/obj/item/organ/internal/cerebrum/posibrain/PB = I
 			brainmob = PB.brainmob
 		if(brainmob.client)
 			brainmob.client.mouse_pointer_icon = file("icons/mecha/mecha_mouse.dmi")

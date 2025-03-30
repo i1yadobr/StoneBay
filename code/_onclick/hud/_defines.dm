@@ -1,3 +1,17 @@
+/// Full HUD shown
+#define HUD_STYLE_STANDART 1
+/// Only static elements are shown
+#define HUD_STYLE_REDUCED  2
+/// No HUD shown
+#define HUD_STYLE_NONE     3
+/// Total amount of HUD styles, keep this up-to-date
+#define HUD_STYLE_TOTAL    3
+
+/// Width of fullscreen icons in tiles, update manually.
+#define DEFAULT_FULLSCREEN_WIDTH  15
+/// Height of fullscreen icons in tiles, update manually.
+#define DEFAULT_FULLSCREEN_HEIGHT 15
+
 /*
 	These defines specificy screen locations.  For more information, see the byond documentation on the screen_loc var.
 
@@ -14,14 +28,15 @@
 */
 
 #define ui_entire_screen "WEST,SOUTH to EAST,NORTH"
+#define ui_fullscreen "CENTER-7,CENTER-7"
 
 //Lower left, persistant menu
 #define ui_inventory "WEST:6,SOUTH:5"
 
 //Lower center, persistant menu
-#define ui_sstore1 "WEST+2:10,SOUTH:5"
-#define ui_id "WEST+3:12,SOUTH:5"
-#define ui_belt "WEST+4:14,SOUTH:5"
+#define ui_sstore1 "CENTER-5:10,SOUTH:5"
+#define ui_id "CENTER-4:12,SOUTH:5"
+#define ui_belt "CENTER-3:14,SOUTH:5"
 #define ui_back "CENTER-2:14,SOUTH:5"
 #define ui_rhand "CENTER-1:16,SOUTH:5"
 #define ui_lhand "CENTER:16,SOUTH:5"
@@ -102,6 +117,8 @@
 
 #define ui_head "WEST+1:8,SOUTH+3:11"
 
+#define ui_underwear "WEST:6,SOUTH+3:11"
+
 //Intent small buttons
 #define ui_help_small "EAST-3:8,SOUTH:1"
 #define ui_disarm_small "EAST-3:15,SOUTH:18"
@@ -127,13 +144,6 @@
 //Blocking and dashing
 #define ui_block "EAST-4:24,SOUTH:5"
 #define ui_blockswitch "EAST-4:24,SOUTH:5"
-
-//Vrhuman
-#define ui_vrhuman_shop "WEST+2:-2,SOUTH+4:20"
-#define ui_vrhuman_exit "WEST+1:-2,SOUTH+4:20"
-#define ui_vrhuman_main "WEST:-2,SOUTH+4:20"
-#define ui_vrhuman_cleanup "WEST+3:-2,SOUTH+4:20"
-#define ui_vrhuman_dienow "WEST+4:-2,SOUTH+4:20"
 
 // AI
 #define ui_ai_core "SOUTH:6,WEST"
@@ -171,9 +181,19 @@
 #define ui_ai_view_images "SOUTH:6+1,WEST+13"
 #define ui_ai_del_picture "SOUTH:6+1,WEST+14"
 
+// Ghost
+#define ui_ghost_spawners_menu "SOUTH:6,CENTER-2:24"
+#define ui_ghost_follow "SOUTH:6,CENTER-1:24"
+#define ui_ghost_reenter_corpse "SOUTH:6,CENTER:24"
+#define ui_ghost_teleport "SOUTH:6,CENTER+1:24"
+#define ui_ghost_move_up "SOUTH+1:6,EAST-1:28"
+#define ui_ghost_move_down "SOUTH:6,EAST-1:28"
+
 //Upper-middle right (alerts)
 #define ui_alert1 "EAST-1:28,CENTER+5:27"
 #define ui_alert2 "EAST-1:28,CENTER+4:25"
 #define ui_alert3 "EAST-1:28,CENTER+3:23"
 #define ui_alert4 "EAST-1:28,CENTER+2:21"
 #define ui_alert5 "EAST-1:28,CENTER+1:19"
+
+#define ui_holomap "SOUTH,WEST"

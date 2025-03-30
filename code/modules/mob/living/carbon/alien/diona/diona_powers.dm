@@ -5,10 +5,10 @@
 	set name = "Merge with gestalt"
 	set desc = "Merge with another diona."
 
-	if(stat == DEAD || paralysis || weakened || stunned || restrained())
+	if(is_ooc_dead() || paralysis || weakened || stunned || restrained())
 		return
 
-	if(istype(src.loc,/mob/living/carbon))
+	if(iscarbon(loc))
 		src.verbs -= /mob/living/carbon/alien/diona/proc/merge
 		return
 
@@ -35,7 +35,7 @@
 	to_chat(H, "You feel your being twine with that of \the [src] as it merges with your biomass.")
 	H.status_flags |= PASSEMOTES
 	to_chat(src, "You feel your being twine with that of \the [H] as you merge with its biomass.")
-	loc = H
+	forceMove(H)
 	verbs += /mob/living/carbon/alien/diona/proc/split
 	verbs -= /mob/living/carbon/alien/diona/proc/merge
 	return 1
@@ -46,10 +46,10 @@
 	set name = "Split from gestalt"
 	set desc = "Split away from your gestalt as a lone nymph."
 
-	if(stat == DEAD || paralysis || weakened || stunned || restrained())
+	if(is_ooc_dead() || paralysis || weakened || stunned || restrained())
 		return
 
-	if(!(istype(src.loc,/mob/living/carbon)))
+	if(!iscarbon(loc))
 		src.verbs -= /mob/living/carbon/alien/diona/proc/split
 		return
 
@@ -58,7 +58,8 @@
 
 	var/mob/living/M = src.loc
 
-	src.loc = get_turf(src)
+	dropInto(loc)
+
 	src.verbs -= /mob/living/carbon/alien/diona/proc/split
 	src.verbs += /mob/living/carbon/alien/diona/proc/merge
 

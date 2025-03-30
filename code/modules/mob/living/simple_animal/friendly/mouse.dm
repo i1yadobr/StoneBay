@@ -24,8 +24,8 @@
 	response_harm   = "stamps on"
 	density = 0
 	var/body_color //brown, gray and white, leave blank for random
-	minbodytemp = 223		//Below -50 Degrees Celcius
-	maxbodytemp = 323	//Above 50 Degrees Celcius
+	minbodytemp = -50 CELSIUS
+	maxbodytemp = 50 CELSIUS
 	universal_speak = 0
 	universal_understand = 1
 	holder_type = /obj/item/holder/mouse
@@ -109,10 +109,11 @@
 		QDEL_NULL(holding_item)
 	return ..()
 
-/mob/living/simple_animal/mouse/_examine_text(mob/user)
+/mob/living/simple_animal/mouse/examinate(atom/to_axamine)
 	. = ..()
+
 	if(holding_item)
-		. += "\n[SPAN_NOTICE("You may notice that she has \a [holding_item] glued with tape.")]"
+		. += SPAN_NOTICE("You may notice that it has \a [holding_item] taped to its back.")
 
 /mob/living/simple_animal/mouse/proc/splat()
 	icon_dead = "mouse_[body_color]_splat"
@@ -134,7 +135,7 @@
 			if(limb)
 				break
 
-		var/blocked = H.run_armor_check(limb.organ_tag, "melee")
+		var/blocked = H.get_flat_armor(limb.organ_tag, "melee")
 		for(var/obj/item/clothing/clothes in list(H.head, H.wear_mask, H.wear_suit, H.w_uniform, H.gloves, H.shoes))
 			if(istype(clothes) && (clothes.body_parts_covered & limb.body_part) && ((clothes.item_flags & ITEM_FLAG_THICKMATERIAL) || (blocked >= 30)))
 				visible_message(SPAN_NOTICE("[src] bites [H]'s [clothes] harmlessly."),
@@ -169,7 +170,7 @@
 
 /mob/living/simple_animal/mouse/attack_hand(mob/living/carbon/human/user)
 	if(holding_item && user.a_intent == I_HELP)
-		user.put_in_hands(holding_item)
+		user.pick_or_drop(holding_item, loc)
 		user.visible_message(SPAN_NOTICE("[user] removes \the [holding_item] from \the [name]."),
 							SPAN_NOTICE("You remove \the [holding_item] from \the [name]."))
 		holding_item = null
@@ -185,9 +186,9 @@
 		if(do_after(user, 3 SECONDS, src))
 			if(holding_item)
 				return
+			if(!user.drop(O, src))
+				return
 			holding_item = O
-			user.drop_item()
-			O.loc = src
 			user.visible_message(SPAN_NOTICE("[user] attaches \the [O] with duct tape to \the [name]."),
 								SPAN_NOTICE("You attach \the [O] with duct tape to \the [name]."))
 			playsound(loc, 'sound/effects/duct_tape.ogg', 50, 1)
@@ -195,10 +196,10 @@
 	else
 		return ..()
 
-/mob/living/simple_animal/mouse/update_icon()
-	overlays.Cut()
+/mob/living/simple_animal/mouse/on_update_icon()
+	ClearOverlays()
 	if(holding_item)
-		overlays += "holding_item[stat ? stat == DEAD ? "_dead" : "_lay" : ""]"
+		AddOverlays("holding_item[stat ? is_ic_dead() ? "_dead" : "_lay" : ""]")
 
 /*
  * Mouse types

@@ -64,26 +64,26 @@
 		health = round(material.integrity/10)
 		if(applies_material_colour)
 			if(m_overlay)
-				var/icon/mat_overlay = new /icon("icon" = 'icons/obj/weapons.dmi', "icon_state" = "[src.icon_state]_overlay")
+				var/icon/mat_overlay = icon('icons/obj/weapons.dmi', "[icon_state]_overlay")
 				mat_overlay.Blend(material.icon_colour, ICON_ADD)
-				overlays += mat_overlay
+				AddOverlays(mat_overlay)
 				//mob_icon.Blend(mat_overlay, ICON_OVERLAY)
 			else
 				color = material.icon_colour
 		if(material.products_need_process())
-			START_PROCESSING(SSobj, src)
+			set_next_think(world.time)
 		if(material.conductive)
 			obj_flags |= OBJ_FLAG_CONDUCTIBLE
 		else
 			obj_flags &= (~OBJ_FLAG_CONDUCTIBLE)
 		if(material.reagent_path)
-			create_reagents(material_amount * REAGENTS_PER_MATERIAL_SHEET)
+			if(!reagents)
+				create_reagents(material_amount * REAGENTS_PER_MATERIAL_SHEET)
+			else
+				reagents.clear_reagents()
+				reagents.maximum_volume = material_amount * REAGENTS_PER_MATERIAL_SHEET
 			reagents.add_reagent(material.reagent_path, material_amount * REAGENTS_PER_MATERIAL_SHEET)
 		update_force()
-
-/obj/item/material/Destroy()
-	STOP_PROCESSING(SSobj, src)
-	. = ..()
 
 /obj/item/material/apply_hit_effect()
 	. = ..()
@@ -102,36 +102,7 @@
 /obj/item/material/proc/shatter(consumed)
 	var/turf/T = get_turf(src)
 	T.visible_message("<span class='danger'>\The [src] [material.destruction_desc]!</span>")
-	if(istype(loc, /mob/living))
-		var/mob/living/M = loc
-		M.drop_from_inventory(src)
-	playsound(src, SFX_BREAK_WINDOW, 70, 1)
-	if(!consumed && drops_debris) material.place_shard(T)
+	playsound(T, SFX_BREAK_WINDOW, 70, 1)
+	if(!consumed && drops_debris)
+		material.place_shard(T)
 	qdel(src)
-/*
-Commenting this out pending rebalancing of radiation based on small objects.
-/obj/item/material/process()
-	if(!material.radioactivity)
-		return
-	for(var/mob/living/L in range(1,src))
-		L.apply_effect(round(material.radioactivity/30),IRRADIATE, blocked = L.getarmor(null, "rad"))
-*/
-
-/*
-// Commenting this out while fires are so spectacularly lethal, as I can't seem to get this balanced appropriately.
-/obj/item/material/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
-	TemperatureAct(exposed_temperature)
-
-// This might need adjustment. Will work that out later.
-/obj/item/material/proc/TemperatureAct(temperature)
-	health -= material.combustion_effect(get_turf(src), temperature, 0.1)
-	check_health(1)
-
-/obj/item/material/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/weldingtool))
-		var/obj/item/weldingtool/WT = W
-		if(material.ignition_point && WT.remove_fuel(0, user))
-			TemperatureAct(150)
-	else
-		return ..()
-*/

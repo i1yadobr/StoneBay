@@ -31,21 +31,24 @@
 	message = sanitize(message)
 
 	if(use_me)
-		usr.emote("me",usr.emote_type,message)
+		usr.custom_emote(message_type = emote_type, message = message, intentional = TRUE)
 	else
-		usr.emote(message)
+		usr.custom_emote(message = message, intentional = TRUE)
 
 	client?.spellcheck(message)
 
+	if(usr.ckey in config.indigo_bot.ignored_ckeys)
+		return
+
 	var/ckeyname = "[usr.ckey]/[usr.name]"
-	webhook_send_me(ckeyname, message)
+	GLOB.indigo_bot.chat_webhook(config.indigo_bot.emote_webhook, "**[ckeyname]:** [message]")
 
 /mob/proc/say_dead(message)
 	communicate(/decl/communication_channel/dsay, client, message)
 
 /mob/proc/say_understands(mob/other,datum/language/language = null)
 
-	if(src.stat == DEAD)
+	if(src.is_ooc_dead())
 		return TRUE
 
 	// Universal speak makes everything understandable, for obvious reasons.
@@ -64,7 +67,7 @@
 			return TRUE
 		return FALSE
 
-	if(language.flags & INNATE)
+	if(language.language_flags & INNATE)
 		return TRUE
 
 	//Language check.
@@ -126,7 +129,7 @@
 	if(length_char(message) >= 2 && is_language_prefix(prefix))
 		var/language_prefix = sanitize_cyrillic_char(copytext_char(message, 2 ,3))
 		var/datum/language/L = language_keys[language_prefix]
-		if(can_speak(L))
+		if(L && can_speak(L))
 			return L
 
 	return null

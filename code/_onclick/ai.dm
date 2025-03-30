@@ -132,6 +132,10 @@
 /obj/machinery/door/airlock/AICtrlAltClick() // Electrifies doors.
 	if(usr.incapacitated())
 		return
+
+	if(!CanUseTopic(usr))
+		return
+
 	if(!electrified_until)
 		// permanent shock
 		Topic(src, list("command"="electrify_permanently", "activate" = "1"))
@@ -149,6 +153,10 @@
 /obj/machinery/door/airlock/AIShiftClick()  // Opens and closes doors!
 	if(usr.incapacitated())
 		return
+
+	if(!CanUseTopic(usr))
+		return
+
 	if(density)
 		Topic(src, list("command"="open", "activate" = "1"))
 	else
@@ -161,6 +169,10 @@
 /obj/machinery/door/airlock/AICtrlClick() // Bolts doors
 	if(usr.incapacitated())
 		return
+
+	if(!CanUseTopic(usr))
+		return
+
 	if(locked)
 		Topic(src, list("command"="bolts", "activate" = "0"))
 	else
@@ -170,23 +182,37 @@
 /obj/machinery/power/apc/AICtrlClick() // turns off/on APCs.
 	if(usr.incapacitated())
 		return
+
+	if(!CanUseTopic(usr))
+		return
+
 	Topic(src, list("breaker"="1"))
 	return 1
 
-/obj/machinery/turretid/AICtrlClick() //turns off/on Turrets
+/obj/machinery/turret_control_panel/AICtrlClick() //turns off/on Turrets
 	if(usr.incapacitated())
 		return
-	Topic(src, list("command"="enable", "value"="[!enabled]"))
-	return 1
+
+	if(world.time >= last_enabled + toggle_cooldown)
+		last_enabled = world.time
+		enabled = !enabled
+		update_turrets()
+		update_icon()
+	else
+		show_splash_text(usr, "Turrets recalibrating!")
+
+	return TRUE
 
 /atom/proc/AIAltClick(atom/A)
 	return AltClick(A)
 
-/obj/machinery/turretid/AIAltClick() //toggles lethal on turrets
+/obj/machinery/turret_control_panel/AIAltClick() //toggles lethal on turrets
 	if(usr.incapacitated())
 		return
-	Topic(src, list("command"="lethal", "value"="[!lethal]"))
-	return 1
+
+	targeting_settings?.lethal_mode = !targeting_settings?.lethal_mode
+	update_turrets()
+	return TRUE
 
 /obj/machinery/atmospherics/binary/pump/AIAltClick()
 	return AltClick()

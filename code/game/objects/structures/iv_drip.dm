@@ -21,13 +21,13 @@
 	if(N)
 		transfer_amount = N
 
-/obj/structure/iv_drip/update_icon()
+/obj/structure/iv_drip/on_update_icon()
 	if(attached)
 		icon_state = "hooked"
 	else
 		icon_state = ""
 
-	overlays.Cut()
+	ClearOverlays()
 
 	if(beaker)
 		var/datum/reagents/reagents = beaker.reagents
@@ -44,7 +44,7 @@
 				if(80 to 90)	filling.icon_state = "reagent80"
 				if(91 to INFINITY)	filling.icon_state = "reagent100"
 			filling.icon += reagents.get_color()
-			overlays += filling
+			AddOverlays(filling)
 
 		if(attached)
 			var/image/light = image('icons/obj/iv_drip.dmi', "light_full")
@@ -52,7 +52,7 @@
 				light.icon_state = "light_low"
 			else if(percent < 60)
 				light.icon_state = "light_mid"
-			overlays += light
+			AddOverlays(light)
 
 /obj/structure/iv_drip/MouseDrop(over_object, src_location, over_location)
 	if(!CanMouseDrop(over_object))
@@ -64,17 +64,17 @@
 	else if(ishuman(over_object))
 		visible_message("\The [usr] hooks \the [over_object] up to \the [src].")
 		attached = over_object
-		START_PROCESSING(SSobj,src)
+		set_next_think(world.time)
 
 	update_icon()
 
 /obj/structure/iv_drip/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/reagent_containers))
-		if(!isnull(src.beaker))
+		if(!QDELETED(src.beaker))
 			to_chat(user, "There is already a reagent container loaded!")
 			return
-		user.drop_item()
-		W.forceMove(src)
+		if(!user.drop(W, src))
+			return
 		beaker = W
 		to_chat(user, "You attach \the [W] to \the [src].")
 		update_icon()
@@ -82,24 +82,24 @@
 		return ..()
 
 /obj/structure/iv_drip/Destroy()
-	STOP_PROCESSING(SSobj,src)
 	attached = null
 	qdel(beaker)
 	beaker = null
 	. = ..()
 
-/obj/structure/iv_drip/Process()
+/obj/structure/iv_drip/think()
 	if(attached)
 		if(!Adjacent(attached))
 			visible_message("The needle is ripped out of [src.attached], doesn't that hurt?")
 			attached.apply_damage(1, BRUTE, pick(BP_R_ARM, BP_L_ARM))
 			attached = null
 			update_icon()
-			return PROCESS_KILL
+			return
 	else
-		return PROCESS_KILL
+		return
 
 	if(!beaker)
+		set_next_think(world.time + 1 SECOND)
 		return
 
 	if(mode) // Give blood
@@ -112,9 +112,11 @@
 
 		if(amount == 0) // If the beaker is full, ping
 			if(prob(5)) visible_message("\The [src] pings.")
+			set_next_think(world.time + 1 SECOND)
 			return
 
 		if(!attached.should_have_organ(BP_HEART))
+			set_next_think(world.time + 1 SECOND)
 			return
 
 		// If the human is losing too much blood, beep.
@@ -123,6 +125,8 @@
 
 		if(attached.take_blood(beaker,amount))
 			update_icon()
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/structure/iv_drip/attack_hand(mob/user as mob)
 	if(beaker)
@@ -151,21 +155,21 @@
 	mode = !mode
 	to_chat(usr, "The IV drip is now [mode ? "injecting" : "taking blood"].")
 
-/obj/structure/iv_drip/_examine_text(mob/user)
+/obj/structure/iv_drip/examine(mob/user, infix)
 	. = ..()
 
-	if (get_dist(src, user) > 2)
+	if(get_dist(src, user) > 2)
 		return
 
-	. += "\nThe IV drip is [mode ? "injecting" : "taking blood"]."
-	. += "\nIt is set to transfer [transfer_amount]u of chemicals per cycle."
+	. += "The IV drip is [mode ? "injecting" : "taking blood"]."
+	. += "It is set to transfer [transfer_amount]u of chemicals per cycle."
 
 	if(beaker)
 		if(beaker.reagents && beaker.reagents.total_volume)
-			. += "\n<span class='notice'>Attached is \a [beaker] with [beaker.reagents.total_volume] units of liquid.</span>"
+			. += "<span class='notice'>Attached is \a [beaker] with [beaker.reagents.total_volume] units of liquid.</span>"
 		else
-			. += "\n<span class='notice'>Attached is an empty [beaker].</span>"
+			. += "<span class='notice'>Attached is an empty [beaker].</span>"
 	else
-		. += "\n<span class='notice'>No chemicals are attached.</span>"
+		. += "<span class='notice'>No chemicals are attached.</span>"
 
-	. += "\n<span class='notice'>[attached ? attached : "No one"] is hooked up to it.</span>"
+	. += "<span class='notice'>[attached ? attached : "No one"] is hooked up to it.</span>"

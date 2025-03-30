@@ -17,7 +17,6 @@
 		if(3.0)
 			qdel(src)
 			return
-		else
 	return
 
 /obj/structure/sign/attackby(obj/item/W, mob/user)	//deconstruction
@@ -50,7 +49,7 @@
 		if(direction == "Cancel")
 			fastening = 0
 			return
-		if(!QDELETED(src) && do_after(user, 10, src))
+		if(!QDELETED(src) && do_after(user, 10, src, luck_check_type = LUCK_CHECK_ENG))
 			if(!(loc_W == W.loc && loc_user == user.loc && Adjacent(user)))
 				fastening = 0
 				return
@@ -525,9 +524,40 @@
 		claimant = user.real_name
 	..()
 
-/obj/item/sign/medipolma/_examine_text(mob/user)
+/obj/item/sign/medipolma/examine(mob/user, infix)
 	. = ..()
+
 	if(claimant)
-		. += "\nThis one belongs to Dr.[claimant], MD."
+		. += "This one belongs to Dr.[claimant], MD."
 	else
-		. += "\nThe name is left blank for some reason."
+		. += "The name is left blank for some reason."
+
+/obj/structure/sign/flag
+	name = "large flag"
+	icon_state = "flag"
+	desc = "A large white flag. Perhaps, someone's surrendering?"
+
+/obj/structure/sign/flag/nt
+	name = "\improper NanoTrasen flag"
+	icon_state = "flag_nt"
+	desc = "Yep, that's the company you'll most likely live and die for."
+
+/obj/structure/sign/flag/syndie
+	name = "\improper Syndicate flag"
+	icon_state = "flag_syndie"
+	desc = "Who's that Syndie Kate, again?"
+
+/obj/structure/sign/flag/byonder
+	name = "\improper Developer flag"
+	icon_state = "flag_byonder"
+	desc = "It wields some sort of a deep meaning."
+
+/obj/structure/sign/flag/rainbow
+	name = "rainbow flag"
+	icon_state = "flag_rainbow"
+	desc = "This piece of cloth will get you jailed in Nova Magnitka, love it or hate it."
+
+/obj/structure/sign/flag/coder
+	name = "\improper GitTrasen Contributor flag"
+	icon_state = "flag_coder"
+	desc = "Weird things happen to the poor souls who write code for all these consoley thingies you use in space."

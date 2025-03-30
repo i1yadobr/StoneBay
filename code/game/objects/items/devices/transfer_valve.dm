@@ -15,7 +15,16 @@
 /obj/item/device/transfer_valve/proc/process_activation(obj/item/device/D)
 
 /obj/item/device/transfer_valve/Destroy()
+	if(!QDELETED(attached_device))
+		qdel(attached_device)
 	attached_device = null
+	if(!QDELETED(tank_one))
+		qdel(tank_one)
+	tank_one = null
+	if(!QDELETED(tank_two))
+		qdel(tank_two)
+	tank_two = null
+	attacher = null
 	return ..()
 
 /obj/item/device/transfer_valve/IsAssemblyHolder()
@@ -36,8 +45,8 @@
 			to_chat(user, "<span class='warning'>There are already two tanks attached, remove one first.</span>")
 			return
 
-		user.drop_item()
-		item.forceMove(src)
+		if(!user.drop(item, src))
+			return
 		if(!tank_one)
 			tank_one = item
 		else
@@ -65,10 +74,9 @@
 			to_chat(user, "<span class='warning'>There is already an device attached to the valve, remove it first.</span>")
 			return
 		if(A.proximity_monitor)
-			A.proximity_monitor.SetHost(src, A)
-		user.remove_from_mob(item)
+			A.proximity_monitor.set_host(src, A)
+		user.drop(item, src)
 		attached_device = A
-		A.forceMove(src)
 		to_chat(user, "<span class='notice'>You attach the [item] to the valve controls and secure it.</span>")
 		A.holder = src
 		A.toggle_secure()	//this calls update_icon(), which calls update_icon() on the holder (i.e. the bomb).
@@ -120,11 +128,11 @@
 	else if(attached_device)
 		if(href_list["rem_device"])
 			if(attached_device.proximity_monitor)
-				attached_device.proximity_monitor.SetHost(attached_device, attached_device)
+				attached_device.proximity_monitor.set_host(attached_device, attached_device)
 			if(istype(attached_device, /obj/item/device/assembly))
 				var/obj/item/device/assembly/A = attached_device
 				A.holder = null
-			attached_device.loc = get_turf(src)
+			attached_device.dropInto(get_turf(src))
 			attached_device = null
 			update_icon()
 		if(href_list["device"])
@@ -138,8 +146,8 @@
 		spawn(50) // To stop a signal being spammed from a proxy sensor constantly going off or whatever
 			toggle = 1
 
-/obj/item/device/transfer_valve/update_icon()
-	overlays.Cut()
+/obj/item/device/transfer_valve/on_update_icon()
+	ClearOverlays()
 	underlays = null
 
 	if(!tank_one && !tank_two && !attached_device)
@@ -148,13 +156,13 @@
 	icon_state = "valve"
 
 	if(tank_one)
-		overlays += "[tank_one.icon_state]"
+		AddOverlays("[tank_one.icon_state]")
 	if(tank_two)
 		var/icon/J = new(icon, icon_state = "[tank_two.icon_state]")
 		J.Shift(WEST, 13)
 		underlays += J
 	if(attached_device)
-		overlays += "device"
+		AddOverlays("device")
 
 /obj/item/device/transfer_valve/proc/remove_tank(obj/item/tank/T)
 	if(tank_one == T)
@@ -166,17 +174,22 @@
 	else
 		return
 
-	if(!tank_one && !tank_two) src.w_class = initial(src.w_class) //returns it to just the transfer valve size
-	T.dropInto(loc)
+	if(!tank_one && !tank_two)
+		w_class = initial(src.w_class) //returns it to just the transfer valve size
+	if(!QDELETED(T))
+		T.dropInto(loc)
 	update_icon()
 
 /obj/item/device/transfer_valve/proc/merge_gases()
 	if(valve_open)
 		return
-	tank_two.air_contents.volume += tank_one.air_contents.volume
+
+	var/datum/gas_mixture/mix_one = tank_one.return_air()
+	var/datum/gas_mixture/mix_two = tank_two.return_air()
+	mix_two.volume += mix_one.volume
 	var/datum/gas_mixture/temp
-	temp = tank_one.air_contents.remove_ratio(1)
-	tank_two.air_contents.merge(temp)
+	temp = mix_one.remove_ratio(1)
+	mix_two.merge(temp)
 	valve_open = 1
 
 /obj/item/device/transfer_valve/proc/split_gases()

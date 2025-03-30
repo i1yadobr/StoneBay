@@ -15,6 +15,9 @@
 	attack_verb = list("whipped", "lashed", "disciplined")
 	use_sound = SFX_SEARCH_CLOTHES
 
+	drop_sound = SFX_DROP_TOOLBELT
+	pickup_sound = SFX_PICKUP_TOOLBELT
+
 /obj/item/storage/belt/verb/toggle_layer()
 	set name = "Switch Belt Layer"
 	set category = "Object"
@@ -22,17 +25,23 @@
 	use_alt_layer = !use_alt_layer
 	update_icon()
 
-/obj/item/storage/update_icon()
+/obj/item/storage/on_update_icon()
 	if (ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_belt()
 
 
 /obj/item/storage/belt/get_mob_overlay(mob/user_mob, slot)
-	var/image/ret = ..()
-	if(slot == slot_belt_str && contents.len)
+	. = ..()
+
+	if(slot == slot_l_hand_str || slot == slot_r_hand_str)
+		return
+
+	var/image/ret = .
+
+	if(slot == slot_belt_str && length(contents))
 		for(var/obj/item/I in contents)
-			ret.overlays += image("icon" = 'icons/inv_slots/belts/mob.dmi', "icon_state" = "[I.item_state ? I.item_state : I.icon_state]")
+			ret.AddOverlays(image('icons/inv_slots/belts/mob.dmi', "[I.item_state ? I.item_state : I.icon_state]"))
 	return ret
 
 /obj/item/storage/belt/utility
@@ -168,7 +177,8 @@
 		/obj/item/device/radio,
 		/obj/item/material/knife,
 		/obj/item/material/butterfly,
-		/obj/item/material/hatchet/tacknife
+		/obj/item/material/hatchet/tacknife,
+		/obj/item/cell/ammo/charge
 		)
 
 /obj/item/storage/belt/soulstone
@@ -229,7 +239,7 @@
 
 /obj/item/storage/belt/waistpack/big/New()
 	..()
-	slowdown_per_slot[slot_belt] = 3
+	slowdown_per_slot[slot_belt] = 1
 
 /obj/item/storage/belt/mining
 	name = "explorer's belt"
@@ -302,7 +312,8 @@
 		/obj/item/stack/telecrystal,
 		/obj/item/material/knife,
 		/obj/item/material/butterfly,
-		/obj/item/material/hatchet/tacknife
+		/obj/item/material/hatchet/tacknife,
+		/obj/item/cell/ammo/charge
 		)
 
 /obj/item/storage/belt/janitor

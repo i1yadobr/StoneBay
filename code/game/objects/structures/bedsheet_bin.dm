@@ -7,8 +7,8 @@ LINEN BINS
 /obj/item/bedsheet
 	name = "bedsheet"
 	desc = "A surprisingly soft linen bedsheet."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "sheet"
+	icon = 'icons/obj/bedsheets.dmi'
+	icon_state = "sheetwhite"
 	item_state = "bedsheet"
 	randpixel = 0
 	slot_flags = SLOT_BACK
@@ -18,6 +18,8 @@ LINEN BINS
 	throw_range = 2
 	w_class = ITEM_SIZE_SMALL
 	var/folded = 0
+	drop_sound = SFX_DROP_CLOTH
+	pickup_sound = SFX_PICKUP_CLOTH
 
 /obj/item/bedsheet/attackby(obj/item/I, mob/user)
 	if(is_sharp(I))
@@ -40,6 +42,10 @@ LINEN BINS
 			folded = 0
 			icon_state = initial(icon_state)
 	return
+
+/obj/item/bedsheet/grey
+	icon_state = "sheetgrey"
+	item_state = "sheetgrey"
 
 /obj/item/bedsheet/blue
 	icon_state = "sheetblue"
@@ -65,6 +71,14 @@ LINEN BINS
 	icon_state = "sheetred"
 	item_state = "sheetred"
 
+/obj/item/bedsheet/brown
+	icon_state = "sheetbrown"
+	item_state = "sheetbrown"
+
+/obj/item/bedsheet/black
+	icon_state = "sheetblack"
+	item_state = "sheetblack"
+
 /obj/item/bedsheet/yellow
 	icon_state = "sheetyellow"
 	item_state = "sheetyellow"
@@ -89,6 +103,10 @@ LINEN BINS
 	icon_state = "sheetmedical"
 	item_state = "sheetmedical"
 
+/obj/item/bedsheet/chap
+	icon_state = "sheetchap"
+	item_state = "sheetchap"
+
 /obj/item/bedsheet/hos
 	icon_state = "sheethos"
 	item_state = "sheethos"
@@ -101,10 +119,45 @@ LINEN BINS
 	icon_state = "sheetce"
 	item_state = "sheetce"
 
-/obj/item/bedsheet/brown
-	icon_state = "sheetbrown"
-	item_state = "sheetbrown"
+/obj/item/bedsheet/qm
+	icon_state = "sheetqm"
+	item_state = "sheetqm"
 
+/obj/item/bedsheet/cmo
+	icon_state = "sheetcmo"
+	item_state = "sheetcmo"
+
+/obj/item/bedsheet/nt
+	icon_state = "sheetNT"
+	item_state = "sheetNT"
+
+/obj/item/bedsheet/centcom
+	icon_state = "sheetcentcom"
+	item_state = "sheetcentcom"
+
+/obj/item/bedsheet/syndie
+	icon_state = "sheetsyndie"
+	item_state = "sheetsyndie"
+
+/obj/item/bedsheet/cult
+	icon_state = "sheetcult"
+	item_state = "sheetcult"
+
+/obj/item/bedsheet/wiz
+	icon_state = "sheetwiz"
+	item_state = "sheetwiz"
+
+/obj/item/bedsheet/runtime
+	icon_state = "sheetruntime"
+	item_state = "sheetruntime"
+
+/obj/item/bedsheet/ian
+	icon_state = "sheetian"
+	item_state = "sheetian"
+
+/obj/item/bedsheet/pirate
+	icon_state = "sheetpirate"
+	item_state = "sheetpirate"
 
 /obj/structure/bedsheetbin
 	name = "linen bin"
@@ -117,35 +170,35 @@ LINEN BINS
 	var/obj/item/hidden = null
 
 
-/obj/structure/bedsheetbin/_examine_text(mob/user)
+/obj/structure/bedsheetbin/examine(mob/user, infix)
 	. = ..()
 
 	if(amount < 1)
-		. += "\nThere are no bed sheets in the bin."
+		. += "There are no bed sheets in the bin."
 		return
+
 	if(amount == 1)
-		. += "\nThere is one bed sheet in the bin."
+		. += "There is one bed sheet in the bin."
 		return
-	. += "\nThere are [amount] bed sheets in the bin."
+
+	. += "There are [amount] bed sheets in the bin."
 
 
-/obj/structure/bedsheetbin/update_icon()
-	switch(amount)
-		if(0)				icon_state = "linenbin-empty"
-		if(1 to amount / 2)	icon_state = "linenbin-half"
-		else				icon_state = "linenbin-full"
+/obj/structure/bedsheetbin/on_update_icon()
+	if(!amount)
+		icon_state = "linenbin-empty"
+	else if (amount <= amount / 2)
+		icon_state = "linenbin-half"
+	else
+		icon_state = "linenbin-full"
 
 
-/obj/structure/bedsheetbin/attackby(obj/item/I as obj, mob/user as mob)
-	if(istype(I, /obj/item/bedsheet))
-		user.drop_item()
-		I.loc = src
+/obj/structure/bedsheetbin/attackby(obj/item/I, mob/user)
+	if(istype(I, /obj/item/bedsheet) && user.drop(I, src))
 		sheets.Add(I)
 		amount++
 		to_chat(user, "<span class='notice'>You put [I] in [src].</span>")
-	else if(amount && !hidden && I.w_class < ITEM_SIZE_HUGE)	//make sure there's sheets to hide it among, make sure nothing else is hidden in there.
-		user.drop_item()
-		I.loc = src
+	else if(amount && !hidden && I.w_class < ITEM_SIZE_HUGE && user.drop(I, src)) // make sure there's sheets to hide it among, make sure nothing else is hidden in there.
 		hidden = I
 		to_chat(user, "<span class='notice'>You hide [I] among the sheets.</span>")
 
@@ -161,12 +214,11 @@ LINEN BINS
 		else
 			B = new /obj/item/bedsheet(loc)
 
-		B.loc = user.loc
-		user.put_in_hands(B)
+		user.pick_or_drop(B, loc)
 		to_chat(user, "<span class='notice'>You take [B] out of [src].</span>")
 
 		if(hidden)
-			hidden.loc = user.loc
+			hidden.dropInto(user.loc)
 			to_chat(user, "<span class='notice'>[hidden] falls out of [B]!</span>")
 			hidden = null
 
@@ -185,12 +237,12 @@ LINEN BINS
 		else
 			B = new /obj/item/bedsheet(loc)
 
-		B.loc = loc
+		B.dropInto(loc)
 		to_chat(user, "<span class='notice'>You telekinetically remove [B] from [src].</span>")
 		update_icon()
 
 		if(hidden)
-			hidden.loc = loc
+			hidden.dropInto(loc)
 			hidden = null
 
 

@@ -13,7 +13,7 @@ var/global/list/protected_objects = list(
 /mob/living/simple_animal/hostile/mimic
 	name = "crate"
 	desc = "A rectangular steel crate."
-	icon = 'icons/obj/storage.dmi'
+	icon = 'icons/obj/crates.dmi'
 	icon_state = "crate"
 	icon_living = "crate"
 
@@ -38,8 +38,6 @@ var/global/list/protected_objects = list(
 	faction = "mimic"
 	move_to_delay = 8
 
-	controllable = TRUE
-
 	var/obj/copy_of
 	var/weakref/creator // the creator
 	var/destroy_objects = FALSE
@@ -52,7 +50,7 @@ var/global/list/protected_objects = list(
 	var/_in_trap_mode = FALSE
 	var/obj/item/mimic_trap/trap
 
-/mob/living/simple_animal/hostile/mimic/New(newloc, obj/o, mob/living/creator)
+/mob/living/simple_animal/hostile/mimic/New(newloc, obj/o, mob/living/creator, make_controllable = FALSE)
 	..()
 
 	o = o || default_appearance
@@ -74,19 +72,24 @@ var/global/list/protected_objects = list(
 	mimicry(o)
 
 	health = maxHealth
-	register_signal(src, SIGNAL_MOVED, .proc/_on_moved)
+	if(make_controllable)
+		controllable = TRUE
+		GLOB.available_mobs_for_possess["\ref[src]"] += src
+
+	register_signal(src, SIGNAL_MOVED, nameof(.proc/_on_moved))
 
 /mob/living/simple_animal/hostile/mimic/proc/_on_moved()
 	_update_inactive_time()
 
 	if(_in_trap_mode)
 		_deactivate_trap()
-	
+
 	// Hack, `/obj/structure/bed` types have custom logic based on
 	// their self direction and that can significantly change appearance.
 	if(istype(copy_of, /obj/structure/bed))
 		copy_of.set_dir(dir)
 		copy_of.update_icon()
+		copy_of.ImmediateOverlayUpdate()
 		appearance = copy_of
 
 /mob/living/simple_animal/hostile/mimic/proc/_update_inactive_time()
@@ -99,7 +102,7 @@ var/global/list/protected_objects = list(
 		if(ismob(A))
 			var/mob/M = A
 
-			if(M.is_dead())
+			if(M.is_ic_dead())
 				M.forceMove(get_turf(src))
 				M.gib()
 			else
@@ -112,7 +115,7 @@ var/global/list/protected_objects = list(
 
 /mob/living/simple_animal/hostile/mimic/attack_hand(mob/user)
 	. = ..()
-	
+
 	if(user.a_intent != I_HURT)
 		if(_in_trap_mode)
 			_activate_trap(user)
@@ -127,7 +130,7 @@ var/global/list/protected_objects = list(
 
 /mob/living/simple_animal/hostile/mimic/Life()
 	. = ..()
-	
+
 	if(client)
 		update_action_buttons()
 
@@ -136,16 +139,22 @@ var/global/list/protected_objects = list(
 	_handle_contents()
 
 /mob/living/simple_animal/hostile/mimic/proc/_update_verbs()
-	verbs.Cut()
-
 	var/obj/item/C = copy_of
 
 	if(!is_target_valid_for_mimicry(C))
 		return
 
 	if(C.w_class < ITEM_SIZE_NORMAL)
-		verbs += /mob/living/proc/ventcrawl
-		verbs += /mob/living/proc/hide
+		verbs |= /mob/living/proc/ventcrawl
+		verbs |= /mob/living/proc/hide
+	else
+		verbs -= /mob/living/proc/ventcrawl
+		verbs -= /mob/living/proc/hide
+
+	if(can_setup_trap())
+		verbs |= /mob/living/simple_animal/hostile/mimic/verb/Trap
+	else
+		verbs -= /mob/living/simple_animal/hostile/mimic/verb/Trap
 
 /mob/living/simple_animal/hostile/mimic/proc/_handle_healing()
 	var/healing_check = world.time > inactive_time + WAIT_TO_HEAL
@@ -282,16 +291,19 @@ var/global/list/protected_objects = list(
 	if(QDELETED(O))
 		return FALSE
 
+	if((!istype(O, /obj/item) && !istype(O, /obj/structure)))
+		return FALSE
+
 	if(O.anchored)
 		return FALSE
 
-	if((!istype(O, /obj/item) && !istype(O, /obj/structure)))
-		return FALSE
-	
 	if(is_type_in_list(O, protected_objects))
 		return FALSE
-	
+
 	if(get_dist(src, O) > 1)
+		return FALSE
+
+	if(!isturf(loc) || !(O.loc == src || isturf(O.loc)))
 		return FALSE
 
 	return TRUE
@@ -301,7 +313,7 @@ var/global/list/protected_objects = list(
 
 	if(QDELETED(C))
 		return FALSE
-	
+
 	if(!istype(C))
 		return FALSE
 
@@ -316,12 +328,12 @@ var/global/list/protected_objects = list(
 
 	if(!length(targets))
 		return
-	
+
 	var/obj/T = input(usr, "Choose target for mimicry", "Mimicry") as null | anything in targets
 
 	if(!is_target_valid_for_mimicry(T))
 		return
-	
+
 	return T
 
 /mob/living/simple_animal/hostile/mimic/proc/_update_actions()
@@ -421,7 +433,7 @@ var/global/list/protected_objects = list(
 		"stunbaton" = /obj/item/melee/baton/loaded,
 		"10 diamonds" = /obj/item/stack/material/diamond/ten,
 		"1000 credit" = /obj/item/spacecash/bundle/c1000,
-		"rapid construction device" = /obj/item/rcd,
+		"rapid construction device" = /obj/item/construction/rcd,
 		"taser pistol" = /obj/item/gun/energy/security/pistol,
 		"crowbar" = /obj/item/crowbar,
 		"gold coin" = /obj/item/material/coin/gold,
@@ -438,6 +450,10 @@ var/global/list/protected_objects = list(
 		"rubber piggy" = /obj/item/toy/pig
 	)
 
+	if(!can_setup_trap())
+		to_chat(usr, SPAN("warning", "You can't do it in your current form"))
+		return
+
 	if(anchored)
 		to_chat(usr, SPAN("warning", "You can't move"))
 		return
@@ -450,9 +466,12 @@ var/global/list/protected_objects = list(
 		to_chat(src, SPAN("warning", "Enter the ambush mode first"))
 		return
 
+	if(!isturf(loc))
+		return
+
 	var/selected = input(usr, "Choose an appearance for the trap", "Trap") as null | anything in trap_targets
 
-	if(!selected)
+	if(!selected || !isturf(loc))
 		return
 
 	_set_closet_opened_state(TRUE)
@@ -467,11 +486,12 @@ var/global/list/protected_objects = list(
 
 	C.opened = state
 	C.update_icon()
+	C.ImmediateOverlayUpdate()
 	appearance = C
 
 /mob/living/simple_animal/hostile/mimic/proc/_activate_trap(mob/victim)
 	victim.forceMove(src)
-	
+
 	to_chat(victim, SPAN("danger", "\The [src] has stuffed you into itself and is starts tearing you apart!"))
 	to_chat(src, SPAN("notice", "You caught [victim]!"))
 

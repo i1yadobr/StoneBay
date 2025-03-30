@@ -46,10 +46,14 @@
 
 /turf/simulated/open/proc/update()
 	plane = OPENSPACE_PLANE
+	if(below)
+		unregister_signal(below, SIGNAL_TURF_CHANGED)
+		unregister_signal(below, SIGNAL_EXITED)
+		unregister_signal(below, SIGNAL_ENTERED)
 	below = GetBelow(src)
-	register_signal(below, SIGNAL_TURF_CHANGED, /turf/simulated/open/proc/turf_change)
-	register_signal(below, SIGNAL_EXITED, /turf/simulated/open/proc/handle_move)
-	register_signal(below, SIGNAL_ENTERED, /turf/simulated/open/proc/handle_move)
+	register_signal(below, SIGNAL_TURF_CHANGED, nameof(.proc/turf_change))
+	register_signal(below, SIGNAL_EXITED, nameof(.proc/handle_move))
+	register_signal(below, SIGNAL_ENTERED, nameof(.proc/handle_move))
 	levelupdate()
 	for(var/atom/movable/A in src)
 		A.fall()
@@ -77,71 +81,46 @@
 
 
 
-/turf/simulated/open/_examine_text(mob/user, infix, suffix)
+/turf/simulated/open/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 2)
 		var/depth = 1
 		for(var/T = GetBelow(src); isopenspace(T); T = GetBelow(T))
 			depth += 1
-		. += "\nIt is about [depth] level\s deep."
+		. += "It is about [depth] level\s deep."
 
 
 
 /**
 * Update icon and overlays of open space to be that of the turf below, plus any visible objects on that turf.
 */
-/turf/simulated/open/update_icon()
-	overlays.Cut()
+/turf/simulated/open/on_update_icon()
+	ClearOverlays()
 	underlays.Cut()
 	var/turf/below = GetBelow(src)
 	if(below)
 		var/below_is_open = isopenspace(below)
-		if(below_is_open)
-			underlays = below.underlays
-			overlays += below.overlays
-
-		else
-			var/image/bottom_turf = image(icon = below.icon, icon_state = below.icon_state, dir=below.dir, layer=below.layer)
-			bottom_turf.plane = src.plane
-			bottom_turf.color = below.color
-			underlays += bottom_turf
-			for(var/image/I in below.overlays)
-				var/image/temp = I
-				temp.plane = src.plane
-				temp.color = I.color
-				overlays += temp
-
-
-		// get objects (not mobs, they are handled by /obj/zshadow)
-		var/list/o_img = list()
-		for(var/obj/O in below)
-			if(O.invisibility) continue // Ignore objects that have any form of invisibility
-			if(O.loc != below) continue // Ignore multi-turf objects not directly below
-			var/image/temp2 = image(O, dir = O.dir, layer = O.layer)
-			temp2.plane = src.plane
-			temp2.color = O.color
-			// TODO Is pixelx/y needed?
-			o_img += temp2
-
-		var/overlays_pre = overlays.len
-		overlays += o_img
-
-		var/overlays_post = overlays.len
-		if(overlays_post != (overlays_pre + o_img.len)) //Here we go!
-			//log_world("Corrupted openspace turf at [x],[y],[z] being replaced. Pre: [overlays_pre], Post: [overlays_post]")
-			ChangeTurf(/turf/simulated/open)
-			return //Let's get out of here.
-
-		//TODO : Add overlays if people fall down holes
+		update_graphic()
 
 		if(!below_is_open)
-			overlays += GLOB.over_OS_darkness
+			AddOverlays(GLOB.over_OS_darkness)
 
 		return 0
 	return PROCESS_KILL
 
+/turf/simulated/open/update_graphic()
+	var/air_graphic = get_air_graphic()
+	if(LAZYLEN(air_graphic))
+		vis_contents = air_graphic
+	else
+		vis_contents = null
 
-/turf/simulated/open/attackby(obj/item/C as obj, mob/user as mob)
+	var/turf/below = GetBelow(src)
+	if(below)
+		vis_contents += below
+
+/turf/simulated/open/attackby(obj/item/C, mob/user)
 	if (istype(C, /obj/item/stack/rods))
 		var/obj/structure/lattice/L = locate(/obj/structure/lattice, src)
 		if(L)
@@ -196,11 +175,12 @@
 /turf/simulated/open/proc/clean_up()
 	//Unregister
 	unregister_signal(below, SIGNAL_TURF_CHANGED)
-	unregister_signal(below, SIGNAL_EXITED, /turf/simulated/open/proc/handle_move)
+	unregister_signal(below, SIGNAL_EXITED, nameof(.proc/handle_move))
 	unregister_signal(below, SIGNAL_ENTERED)
 	//Take care of shadow
 	for(var/mob/zshadow/M in src)
 		qdel(M)
+	vis_contents = list()
 
 //When turf changes, a bunch of things can take place
 /turf/simulated/open/proc/turf_change(turf/affected)

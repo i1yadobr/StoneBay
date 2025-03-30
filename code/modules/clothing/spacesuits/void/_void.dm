@@ -3,14 +3,15 @@
 	name = "void helmet"
 	desc = "A high-tech dark red space suit helmet. Used for AI satellite maintenance."
 	icon_state = "void"
+	item_state = "void"
 
 	heat_protection = HEAD
-	armor = list(melee = 40, bullet = 5, laser = 20,energy = 5, bomb = 35, bio = 100, rad = 20)
+	armor = list(melee = 40, bullet = 20, laser = 35,energy = 15, bomb = 35, bio = 100)
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0.4
 
 	//Species-specific stuff.
-	species_restricted = list(SPECIES_HUMAN, SPECIES_IPC)
+	species_restricted = list(SPECIES_HUMAN)
 
 	sprite_sheets_obj = list(
 		SPECIES_UNATHI = 'icons/obj/clothing/species/unathi/hats.dmi',
@@ -19,26 +20,29 @@
 	)
 
 	light_overlay = "helmet_light"
+	rad_resist_type = /datum/rad_resist/void
 
 /obj/item/clothing/suit/space/void
 	name = "voidsuit"
-	icon_state = "void"
-	//item_state = "syndie_hardsuit"
+	icon_state = "voidsuit"
+	item_state = "voidsuit"
 	w_class = ITEM_SIZE_HUGE//bulky item
 	desc = "A high-tech dark red space suit. Used for AI satellite maintenance."
-	armor = list(melee = 40, bullet = 5, laser = 20,energy = 5, bomb = 35, bio = 100, rad = 20)
+	armor = list(melee = 40, bullet = 20, laser = 35,energy = 15, bomb = 35, bio = 100)
 	allowed = list(/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit)
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0.4
 
-	species_restricted = list(SPECIES_HUMAN, SPECIES_SKRELL, SPECIES_IPC)
+	species_restricted = list(SPECIES_HUMAN, SPECIES_SKRELL)
 
 	sprite_sheets_obj = list(
 		SPECIES_UNATHI = 'icons/obj/clothing/species/unathi/suits.dmi',
 		SPECIES_TAJARA = 'icons/obj/clothing/species/tajaran/suits.dmi',
 		SPECIES_SKRELL = 'icons/obj/clothing/species/skrell/suits.dmi'
 	)
+
+	rad_resist_type = /datum/rad_resist/void
 
 	//Breach thresholds, should ideally be inherited by most (if not all) voidsuits.
 	//With 0.2 resiliance, will reach 10 breach damage after 3 laser carbine blasts or 8 smg hits.
@@ -60,6 +64,11 @@ else if(##equipment_var) {\
 	CRASH("[log_info_line(src)] has an invalid [#equipment_var] type: [log_info_line(##equipment_var)]");\
 }
 
+/datum/rad_resist/void
+	alpha_particle_resist = 59.4 MEGA ELECTRONVOLT
+	beta_particle_resist = 13.2 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
+
 /obj/item/clothing/suit/space/void/Initialize()
 	. = ..()
 	VOIDSUIT_INIT_EQUIPMENT(boots,  /obj/item/clothing/shoes/magboots)
@@ -78,14 +87,17 @@ else if(##equipment_var) {\
 	..()
 	slowdown_per_slot[slot_wear_suit] = 1
 
-/obj/item/clothing/suit/space/void/_examine_text(user)
+/obj/item/clothing/suit/space/void/examine(mob/user, infix)
 	. = ..()
+
 	var/list/part_list = new
 	for(var/obj/item/I in list(helmet,boots,tank))
 		part_list += "\a [I]"
-	. += "\n\The [src] has [english_list(part_list)] installed."
+
+	. += "\The [src] has [english_list(part_list)] installed."
+
 	if(tank && in_range(src,user))
-		. += "\n<span class='notice'>The wrist-mounted pressure gauge reads [max(round(tank.air_contents.return_pressure()),0)] kPa remaining in \the [tank].</span>"
+		. += SPAN_NOTICE("The wrist-mounted pressure gauge reads [max(round(tank.air_contents.return_pressure()),0)] kPa remaining in \the [tank].")
 
 /obj/item/clothing/suit/space/void/refit_for_species(target_species)
 	..()
@@ -133,19 +145,19 @@ else if(##equipment_var) {\
 		H = helmet.loc
 		if(istype(H))
 			if(helmet && H.head == helmet)
-				H.drop_from_inventory(helmet)
-				helmet.forceMove(src)
+				H.drop(helmet, src, TRUE)
 
 	if(boots)
 		boots.canremove = 1
 		H = boots.loc
 		if(istype(H))
 			if(boots && H.shoes == boots)
-				H.drop_from_inventory(boots)
-				boots.forceMove(src)
+				H.drop(boots, src, TRUE)
 
 	if(tank)
 		tank.canremove = 1
+		if(istype(H) && tank.loc == H)
+			H.drop(tank, src, TRUE)
 		tank.forceMove(src)
 
 /obj/item/clothing/suit/space/void/verb/toggle_helmet()
@@ -168,16 +180,15 @@ else if(##equipment_var) {\
 
 	if(H.head == helmet)
 		to_chat(H, "<span class='notice'>You retract your suit helmet.</span>")
-		helmet.canremove = 1
-		H.drop_from_inventory(helmet)
-		helmet.forceMove(src)
+		helmet.canremove = TRUE
+		H.drop(helmet, src)
 	else
 		if(H.head)
 			to_chat(H, "<span class='danger'>You cannot deploy your helmet while wearing \the [H.head].</span>")
 			return
 		if(H.equip_to_slot_if_possible(helmet, slot_head))
 			helmet.pickup(H)
-			helmet.canremove = 0
+			helmet.canremove = FALSE
 			to_chat(H, "<span class='info'>You deploy your suit helmet, sealing you off from the world.</span>")
 	helmet.update_light(H)
 
@@ -200,8 +211,8 @@ else if(##equipment_var) {\
 	if(H.wear_suit != src) return
 
 	to_chat(H, "<span class='info'>You press the emergency release, ejecting \the [tank] from your suit.</span>")
-	tank.canremove = 1
-	H.drop_from_inventory(tank)
+	tank.canremove = TRUE
+	H.drop(tank)
 	src.tank = null
 
 /obj/item/clothing/suit/space/void/attackby(obj/item/W as obj, mob/user as mob)
@@ -215,7 +226,7 @@ else if(##equipment_var) {\
 		to_chat(user, "<span class='warning'>You cannot modify \the [src] while it is being worn.</span>")
 		return
 
-	if(istype(W,/obj/item/screwdriver))
+	if(isScrewdriver(W))
 		if(helmet || boots || tank)
 			var/choice = input("What component would you like to remove?") as null|anything in list(helmet,boots,tank)
 			if(!choice) return
@@ -235,33 +246,30 @@ else if(##equipment_var) {\
 		else
 			to_chat(user, "\The [src] does not have anything installed.")
 		return
-	else if(istype(W,/obj/item/clothing/head/helmet/space))
+
+	else if(istype(W, /obj/item/clothing/head/helmet/space))
 		if(helmet)
 			to_chat(user, "\The [src] already has a helmet installed.")
-		else
+		else if(user.drop(W, src))
 			to_chat(user, "You attach \the [W] to \the [src]'s helmet mount.")
-			user.drop_item()
-			W.forceMove(src)
-			src.helmet = W
+			helmet = W
 		return
-	else if(istype(W,/obj/item/clothing/shoes/magboots))
+
+	else if(istype(W, /obj/item/clothing/shoes/magboots))
 		if(boots)
 			to_chat(user, "\The [src] already has magboots installed.")
-		else
+		else if(user.drop(W, src))
 			to_chat(user, "You attach \the [W] to \the [src]'s boot mounts.")
-			user.drop_item()
-			W.forceMove(src)
 			boots = W
 		return
-	else if(istype(W,/obj/item/tank))
+
+	else if(istype(W, /obj/item/tank))
 		if(tank)
 			to_chat(user, "\The [src] already has an airtank installed.")
-		else if(istype(W,/obj/item/tank/plasma))
+		else if(istype(W, /obj/item/tank/plasma))
 			to_chat(user, "\The [W] cannot be inserted into \the [src]'s storage compartment.")
-		else
+		else if(user.drop(W, src))
 			to_chat(user, "You insert \the [W] into \the [src]'s storage compartment.")
-			user.drop_item()
-			W.forceMove(src)
 			tank = W
 		return
 

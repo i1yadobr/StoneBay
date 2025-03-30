@@ -1,12 +1,12 @@
 /obj/machinery/atmospherics/unary/vent_scrubber
 	icon = 'icons/atmos/vent_scrubber.dmi'
 	icon_state = "map_scrubber_off"
-	plane = FLOOR_PLANE
+	plane = TURF_PLANE
 
 	name = "Air Scrubber"
 	desc = "Has a valve and pump attached to it."
 	use_power = POWER_USE_OFF
-	idle_power_usage = 150		//internal circuitry, friction losses and stuff
+	idle_power_usage = 150 WATTS //internal circuitry, friction losses and stuff
 	power_rating = 7500			//7500 W ~ 10 HP
 
 	connect_types = CONNECT_TYPE_REGULAR|CONNECT_TYPE_SCRUBBER //connects to regular and scrubber pipes
@@ -16,7 +16,7 @@
 	var/area/initial_loc
 	var/id_tag = null
 	var/frequency = 1439
-	var/datum/radio_frequency/radio_connection
+	var/datum/frequency/radio_connection
 
 	var/hibernate = 0 //Do we even process?
 	var/scrubbing = 1 //0 = siphoning, 1 = scrubbing
@@ -29,28 +29,30 @@
 	var/radio_filter_in
 
 	var/welded = 0
+	var/broken = VENT_UNDAMAGED
 
 /obj/machinery/atmospherics/unary/vent_scrubber/on
 	use_power = POWER_USE_IDLE
 	icon_state = "map_scrubber_on"
 
-/obj/machinery/atmospherics/unary/vent_scrubber/New()
-	..()
+/obj/machinery/atmospherics/unary/vent_scrubber/Initialize()
+	. = ..()
 	air_contents.volume = ATMOS_DEFAULT_VOLUME_FILTER
 	icon = null
 
 /obj/machinery/atmospherics/unary/vent_scrubber/Destroy()
-	unregister_radio(src, frequency)
+	SSradio.remove_object(src, frequency)
 	if(initial_loc)
 		initial_loc.air_scrub_info -= id_tag
 		initial_loc.air_scrub_names -= id_tag
+		initial_loc = null
 	return ..()
 
-/obj/machinery/atmospherics/unary/vent_scrubber/update_icon(safety = 0)
+/obj/machinery/atmospherics/unary/vent_scrubber/on_update_icon(safety = 0)
 	if(!check_icon_cache())
 		return
 
-	overlays.Cut()
+	ClearOverlays()
 
 
 	var/turf/T = get_turf(src)
@@ -58,15 +60,24 @@
 		return
 
 	var/scrubber_icon = "scrubber"
-	if(welded)
+	if(broken)
+		switch(broken)
+			if(VENT_DAMAGED_STAGE_ONE)
+				scrubber_icon += "damaged_1"
+			if(VENT_DAMAGED_STAGE_TWO)
+				scrubber_icon += "damaged_2"
+			if(VENT_DAMAGED_STAGE_THREE)
+				scrubber_icon += "damaged_3"
+			if(VENT_BROKEN)
+				scrubber_icon += "broken"
+	else if(welded)
 		scrubber_icon += "weld"
+	else if(!powered())
+		scrubber_icon += "off"
 	else
-		if(!powered())
-			scrubber_icon += "off"
-		else
-			scrubber_icon += "[use_power ? "[scrubbing ? "on" : "in"]" : "off"]"
+		scrubber_icon += "[use_power ? "[scrubbing ? "on" : "in"]" : "off"]"
 
-	overlays += icon_manager.get_atmos_icon("device", , , scrubber_icon)
+	AddOverlays(icon_manager.get_atmos_icon("device", , , scrubber_icon))
 
 /obj/machinery/atmospherics/unary/vent_scrubber/update_underlays()
 	if(..())
@@ -83,37 +94,38 @@
 				add_underlay(T,, dir)
 
 /obj/machinery/atmospherics/unary/vent_scrubber/proc/set_frequency(new_frequency)
-	radio_controller.remove_object(src, frequency)
+	SSradio.remove_object(src, frequency)
 	frequency = new_frequency
-	radio_connection = radio_controller.add_object(src, frequency, radio_filter_in)
+	radio_connection = SSradio.add_object(src, frequency, radio_filter_in)
 
 /obj/machinery/atmospherics/unary/vent_scrubber/proc/broadcast_status()
 	if(!radio_connection)
 		return 0
 
-	var/datum/signal/signal = new
-	signal.transmission_method = 1 //radio signal
-	signal.source = src
-	signal.data = list(
-		"area" = area_uid,
-		"tag" = id_tag,
-		"device" = "AScr",
-		"timestamp" = world.time,
-		"power" = use_power,
-		"scrubbing" = scrubbing,
-		"panic" = panic,
-		"filter_o2" = ("oxygen" in scrubbing_gas),
-		"filter_n2" = ("nitrogen" in scrubbing_gas),
-		"filter_co2" = ("carbon_dioxide" in scrubbing_gas),
-		"filter_plasma" = ("plasma" in scrubbing_gas),
-		"filter_n2o" = ("sleeping_agent" in scrubbing_gas),
-		"sigtype" = "status"
-	)
+	var/list/data = list(
+			"area" = area_uid,
+			"tag" = id_tag,
+			"device" = "AScr",
+			"timestamp" = world.time,
+			"power" = use_power,
+			"scrubbing" = scrubbing,
+			"panic" = panic,
+			"filter_o2" = ("oxygen" in scrubbing_gas),
+			"filter_n2" = ("nitrogen" in scrubbing_gas),
+			"filter_co2" = ("carbon_dioxide" in scrubbing_gas),
+			"filter_plasma" = ("plasma" in scrubbing_gas),
+			"filter_n2o" = ("sleeping_agent" in scrubbing_gas),
+			"sigtype" = "status"
+		)
+
 	if(!initial_loc.air_scrub_names[id_tag])
 		var/new_name = "[initial_loc.name] Air Scrubber #[initial_loc.air_scrub_names.len+1]"
 		initial_loc.air_scrub_names[id_tag] = new_name
 		src.SetName(new_name)
-	initial_loc.air_scrub_info[id_tag] = signal.data
+
+	initial_loc.air_scrub_info[id_tag] = data
+
+	var/datum/signal/signal = new(data)
 	radio_connection.post_signal(src, signal, radio_filter_out)
 
 	return 1
@@ -148,6 +160,8 @@
 	if(!use_power || (stat & (NOPOWER|BROKEN)))
 		return 0
 	if(welded)
+		return 0
+	if(broken)
 		return 0
 
 	var/datum/gas_mixture/environment = loc.return_air()
@@ -273,58 +287,81 @@
 		var/datum/gas_mixture/env_air = loc.return_air()
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 		to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
-		if (do_after(user, 40, src))
+		if (do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 			user.visible_message( \
 				"<span class='notice'>\The [user] unfastens \the [src].</span>", \
 				"<span class='notice'>You have unfastened \the [src].</span>", \
 				"You hear a ratchet.")
-			var/obj/item/pipe/P = new(loc, make_from=src)
+			var/obj/item/pipe/P = new(loc, null, null, src)
 			if ((int_air.return_pressure()-env_air.return_pressure()) > 2*ONE_ATMOSPHERE)
 				to_chat(user, "<span class='warning'>\the [src] flies off because of the overpressure in it!</span>")
 				P.throw_at_random(0, round((int_air.return_pressure()-env_air.return_pressure()) / 100), 30)
 			qdel(src)
 		return 1
 
-	if(istype(W, /obj/item/weldingtool))
+	if(isWelder(W))
 
 		var/obj/item/weldingtool/WT = W
 
-		if(!WT.isOn())
-			to_chat(user, "<span class='notice'>The welding tool needs to be on to start this task.</span>")
-			return 1
+		if(broken)
+			if(!WT.use_tool(src, user, delay = 2 SECONDS, amount = 5))
+				return
 
-		if(!WT.remove_fuel(0,user))
-			to_chat(user, "<span class='warning'>You need more welding fuel to complete this task.</span>")
-			return 1
+			if(QDELETED(src) || !user)
+				return
 
-		to_chat(user, "<span class='notice'>Now welding \the [src].</span>")
-		playsound(src.loc, 'sound/items/Welder2.ogg', 50, 1)
+			user.visible_message(SPAN_NOTICE("\The [user] repairing \the [src]."), \
+				SPAN_NOTICE("Now repairing \the [src]."), \
+				"You hear welding.")
 
-		if(!do_after(user, 20, src))
-			to_chat(user, "<span class='notice'>You must remain close to finish this task.</span>")
-			return 1
+			switch(broken)
+				if(VENT_DAMAGED_STAGE_ONE)
+					broken=VENT_UNDAMAGED
+				if(VENT_DAMAGED_STAGE_TWO)
+					broken=VENT_DAMAGED_STAGE_ONE
+				if(VENT_DAMAGED_STAGE_THREE)
+					broken=VENT_DAMAGED_STAGE_TWO
+				if(VENT_BROKEN)
+					to_chat(user, SPAN_NOTICE("\The [src] is ruined! You can't repair it!"))
+					return
 
-		if(!src)
-			return 1
+			update_icon()
+			return
 
-		if(!WT.isOn())
-			to_chat(user, "<span class='notice'>The welding tool needs to be on to finish this task.</span>")
-			return 1
+		else
+			if(!WT.use_tool(src, user, delay = 2 SECONDS, amount = 5))
+				return
 
-		welded = !welded
-		update_icon()
-		user.visible_message("<span class='notice'>\The [user] [welded ? "welds \the [src] shut" : "unwelds \the [src]"].</span>", \
-			"<span class='notice'>You [welded ? "weld \the [src] shut" : "unweld \the [src]"].</span>", \
-			"You hear welding.")
-		return 1
+			if(QDELETED(src) || !user)
+				return
+
+			welded = !welded
+			update_icon()
+			user.visible_message("<span class='notice'>\The [user] [welded ? "welds \the [src] shut" : "unwelds \the [src]"].</span>", \
+				"<span class='notice'>You [welded ? "weld \the [src] shut" : "unweld \the [src]"].</span>", \
+				"You hear welding.")
+			return
 
 	return ..()
 
-/obj/machinery/atmospherics/unary/vent_scrubber/_examine_text(mob/user)
+/obj/machinery/atmospherics/unary/vent_scrubber/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 1)
-		. += "\nA small gauge in the corner reads [round(last_flow_rate, 0.1)] L/s; [round(last_power_draw)] W"
+		. += "A small gauge in the corner reads [round(last_flow_rate, 0.1)] L/s; [round(last_power_draw)] W"
 	else
-		. += "\nYou are too far away to read the gauge."
+		. += "You are too far away to read the gauge."
+
 	if(welded)
-		. += "\nIt seems welded shut."
+		. += "It seems welded shut."
+
+	if(broken)
+		switch(broken)
+			if(VENT_DAMAGED_STAGE_ONE)
+				. += "It seems slightly damaged."
+			if(VENT_DAMAGED_STAGE_TWO)
+				. += "It seems pretty damaged."
+			if(VENT_DAMAGED_STAGE_THREE)
+				. += "It seems heavily damaged."
+			if(VENT_BROKEN)
+				. += "It seems absolutely destroyed."

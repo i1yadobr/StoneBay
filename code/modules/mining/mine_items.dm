@@ -10,13 +10,13 @@
 	icon_off = "miningsecoff"
 	req_access = list(access_mining)
 
-/obj/structure/closet/secure_closet/miner/New()
-	..()
-	sleep(2)
+/obj/structure/closet/secure_closet/miner/Initialize()
+	. = ..()
 	if(prob(50))
 		new /obj/item/storage/backpack/industrial(src)
 	else
 		new /obj/item/storage/backpack/satchel/eng(src)
+
 	new /obj/item/device/radio/headset/headset_cargo(src)
 	new /obj/item/clothing/under/rank/miner(src)
 	new /obj/item/clothing/gloves/thick(src)
@@ -31,40 +31,52 @@
 /*****************************Pickaxe********************************/
 
 /obj/item/pickaxe
-	name = "mining drill"
-	desc = "The most basic of mining drills, for short excavations and small mineral extractions."
+	name = "pickaxe"
+	desc = "Pure classics."
 	icon = 'icons/obj/tools.dmi'
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	force = 14.5
 	throwforce = 10.0
-	mod_weight = 1.35
+	mod_weight = 1.4
 	mod_reach = 1.25
-	mod_handy = 0.9
+	mod_handy = 0.7
+	armor_penetration = 70
 	icon_state = "pickaxe"
-	item_state = "jackhammer"
+	item_state = "pickaxe"
 	w_class = ITEM_SIZE_HUGE
 	matter = list(MATERIAL_STEEL = 3750)
-	var/digspeed = 40 //moving the delay to an item var so R&D can make improved picks. --NEO
 	origin_tech = list(TECH_MATERIAL = 1, TECH_ENGINEERING = 1)
 	attack_verb = list("hit", "pierced", "sliced", "attacked")
-	var/drill_sound = 'sound/effects/fighting/Genhit.ogg'
-	var/drill_verb = "drilling"
 	sharp = 1
 
-	var/excavation_amount = 200
+	var/power = 10 //Power to an item var so R&D can make improved picks
+	var/drilling = FALSE
+	var/excavation_amount = 0
+	var/drill_sound = 'sound/effects/fighting/Genhit.ogg'
+	var/drill_verb = "picking"
+
+/obj/item/pickaxe/drill
+	name = "mining drill" //Can dig sand as well!
+	icon_state = "handdrill"
+	item_state = "jackhammer"
+	desc = "The most basic of mining drills, for short excavations and small mineral extractions."
+	power = 100 //It will remove the rock in one go, but SLOWLY
+	drill_verb = "drilling"
+	power = 100
+	var/digspeed = 40 //Delay to an item var so R&D can make improved drills
 
 /obj/item/pickaxe/silver
 	name = "silver pickaxe"
 	icon_state = "spickaxe"
 	item_state = "spickaxe"
-	digspeed = 30
+	power = 30
 	origin_tech = list(TECH_MATERIAL = 3)
 	desc = "This makes no metallurgic sense."
 
-/obj/item/pickaxe/drill
-	name = "advanced mining drill" // Can dig sand as well!
-	icon_state = "handdrill"
+/obj/item/pickaxe/drill/adv
+	name = "advanced mining drill"
+	icon_state = "advdrill"
 	item_state = "jackhammer"
 	force = 15.5
 	digspeed = 30
@@ -79,8 +91,9 @@
 	force = 17.5
 	mod_weight = 1.5
 	mod_reach = 1.35
-	mod_handy = 0.9
-	digspeed = 20 //faster than drill, but cannot dig
+	mod_handy = 0.8
+	armor_penetration = 90
+	power = 50 //faster than drill, but cannot dig
 	origin_tech = list(TECH_MATERIAL = 3, TECH_POWER = 2, TECH_ENGINEERING = 2)
 	desc = "Cracks rocks with sonic blasts, perfect for killing cave lizards."
 	drill_verb = "hammering"
@@ -89,22 +102,20 @@
 	name = "golden pickaxe"
 	icon_state = "gpickaxe"
 	item_state = "gpickaxe"
-	digspeed = 20
+	power = 50
 	origin_tech = list(TECH_MATERIAL = 4)
 	desc = "This makes no metallurgic sense."
-	drill_verb = "picking"
 
 /obj/item/pickaxe/diamond
 	name = "diamond pickaxe"
 	icon_state = "dpickaxe"
 	item_state = "dpickaxe"
 	force = 19.0
-	digspeed = 10
+	power = 80
 	origin_tech = list(TECH_MATERIAL = 6, TECH_ENGINEERING = 4)
 	desc = "A pickaxe with a diamond pick head."
-	drill_verb = "picking"
 
-/obj/item/pickaxe/diamonddrill //When people ask about the badass leader of the mining tools, they are talking about ME!
+/obj/item/pickaxe/drill/diamonddrill //When people ask about the badass leader of the mining tools, they are talking about ME!
 	name = "diamond mining drill"
 	icon_state = "diamonddrill"
 	item_state = "jackhammer"
@@ -114,9 +125,9 @@
 	desc = "Yours is the drill that will pierce the heavens!"
 	drill_verb = "drilling"
 
-/obj/item/pickaxe/borgdrill
+/obj/item/pickaxe/drill/borgdrill
 	name = "cyborg mining drill"
-	icon_state = "pickaxe"
+	icon_state = "borgdrill"
 	item_state = "jackhammer"
 	digspeed = 10
 	desc = ""
@@ -135,8 +146,9 @@
 	mod_weight = 1.5
 	mod_reach = 1.0
 	mod_handy = 0.4
+	armor_penetration = 100 // It crushes walls
 	drill_verb = "hammering"
-	digspeed = 20
+	power = 50
 	var/wielded = 0
 
 /obj/item/pickaxe/sledgehammer/update_twohanding()
@@ -147,16 +159,18 @@
 		mod_handy = 1.2
 		mod_weight = 2.0
 		mod_reach = 1.5
+		improper_held_icon = TRUE
 	else
 		wielded = FALSE
 		force = 17.5
 		mod_weight = 1.5
 		mod_reach = 1.0
 		mod_handy = 0.4
+		improper_held_icon = FALSE
 	update_icon()
 	..()
 
-/obj/item/pickaxe/sledgehammer/update_icon()
+/obj/item/pickaxe/sledgehammer/on_update_icon()
 	var/new_state = "[icon_state][wielded]"
 	item_state_slots[slot_l_hand_str] = new_state
 	item_state_slots[slot_r_hand_str] = new_state
@@ -175,6 +189,7 @@
 	mod_weight = 1.25
 	mod_reach = 1.5
 	mod_handy = 0.9
+	armor_penetration = 20
 	item_state = "shovel"
 	w_class = ITEM_SIZE_HUGE
 	origin_tech = list(TECH_MATERIAL = 1, TECH_ENGINEERING = 1)
@@ -182,6 +197,9 @@
 	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
 	sharp = 0
 	edge = 1
+
+	drop_sound = SFX_DROP_SHOVEL
+	pickup_sound = SFX_PICKUP_SHOVEL
 
 /obj/item/shovel/spade
 	name = "spade"
@@ -193,6 +211,7 @@
 	mod_weight = 0.7
 	mod_reach = 0.7
 	mod_handy = 0.9
+	armor_penetration = 10
 	w_class = ITEM_SIZE_SMALL
 
 /**********************Flags**************************/
@@ -265,7 +284,7 @@
 	if(use(1)) // Don't skip use() checks even if you only need one! Stacks with the amount of 0 are possible, e.g. on synthetics!
 		var/obj/item/stack/flag/newflag = new src.type(T, 1)
 		newflag.set_up()
-		if(istype(T, /turf/simulated/floor/asteroid) || istype(T, /turf/simulated/floor/exoplanet))
+		if(istype(T, /turf/simulated/floor/asteroid))
 			user.visible_message("\The [user] plants \the [newflag.singular_name] firmly in the ground.")
 		else
 			user.visible_message("\The [user] attaches \the [newflag.singular_name] firmly to the ground.")
@@ -280,8 +299,7 @@
 		set_light(0.2, 0.1, 1) // Very dim so the rest of the flag is barely visible - if the turf is completely dark, you can't see anything on it, no matter what
 		var/image/addon = image(icon = src.icon, icon_state = fringe) // Bright fringe
 		addon.layer = ABOVE_LIGHTING_LAYER
-		addon.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-		overlays += addon
+		AddOverlays(addon)
 
 /obj/item/stack/flag/proc/knock_down()
 	pixel_x = rand(-randpixel, randpixel)
@@ -289,7 +307,7 @@
 	upright = 0
 	anchored = 0
 	icon_state = initial(icon_state)
-	overlays.Cut()
+	ClearOverlays()
 	set_light(0)
 
 /**********************Mining car (Crate like thing, not the rail car)**************************/
@@ -297,12 +315,14 @@
 /obj/structure/closet/crate/miningcar
 	desc = "A mining car. This one doesn't work on rails, but has to be dragged."
 	name = "Mining car (not for rails)"
-	icon = 'icons/obj/storage.dmi'
 	icon_state = "miningcar"
 	density = 1
 	icon_opened = "miningcaropen"
 	icon_closed = "miningcar"
 	pull_slowdown = PULL_SLOWDOWN_LIGHT
+
+	turf_height_offset = 15
+	opened_turf_height_offset = 3
 
 /**********************Pinpointer**********************/
 
@@ -325,18 +345,19 @@
 	if(!active)
 		active = 1
 		to_chat(usr, SPAN_NOTICE("You activate the pinpointer."))
-		START_PROCESSING(SSprocessing, src)
+		set_next_think(world.time)
 	else
 		active = 0
 		icon_state = "pinoff"
 		to_chat(usr, SPAN_NOTICE("You deactivate the pinpointer."))
-		STOP_PROCESSING(SSprocessing, src)
+		set_next_think(0)
 
-/obj/item/ore_radar/Process()
-	if (active)
-		workdisk()
-	else
-		STOP_PROCESSING(SSprocessing, src)
+/obj/item/ore_radar/think()
+	if(!active)
+		return
+
+	workdisk()
+	set_next_think(world.time + 2 SECONDS)
 
 /obj/item/ore_radar/proc/workdisk()
 	if(!src.loc)
@@ -391,7 +412,7 @@
 	if(isliving(target) && proximity_flag)
 		if(isanimal(target))
 			var/mob/living/simple_animal/M = target
-			if(M.stat == DEAD)
+			if(M.is_ooc_dead())
 				M.faction = "neutral"
 				if(emagged)	//if emagged, will set anything revived to the syndicate. Convert station pets to the traitor side!
 					M.faction = "syndicate"
@@ -413,28 +434,24 @@
 			to_chat(user, "<span class='info'>[src] is only effective on lesser beings.</span>")
 			return
 
-/obj/item/lazarus_injector/attackby(obj/item/I, mob/living/user)
-	if(istype(I, /obj/item/card/emag) && !emagged)
-		var/obj/item/card/emag/emag_card = I
-		if(!emag_card.uses)
-			return
-		emagged = TRUE
-		emag_card.uses -= 1
-		to_chat(user, SPAN_WARNING("You overload \the [src]'s injection matrix."))
+/obj/item/lazarus_injector/emag_act(remaining_charges, mob/user)
+	if(emagged)
 		return
-
-	return ..()
+	emagged = TRUE
+	to_chat(user, SPAN_WARNING("You overload \the [src]'s injection matrix."))
+	return 1
 
 /obj/item/lazarus_injector/emp_act()
 	if(!malfunctioning)
 		malfunctioning = TRUE
 
-/obj/item/lazarus_injector/_examine_text(mob/user)
+/obj/item/lazarus_injector/examine(mob/user, infix)
 	. = ..()
+
 	if(!loaded)
-		. += "\n<span class='info'>[src] is empty.</span>"
+		. += SPAN_INFO("[src] is empty.")
 	if(malfunctioning || emagged)
-		. += "\n<span class='info'>The display on [src] seems to be flickering.</span>"
+		. += SPAN_INFO("The display on [src] seems to be flickering.")
 
 /**********************Point Transfer Card**********************/
 
@@ -455,9 +472,9 @@
 			to_chat(user, "<span class='info'>There's no points left on [src].</span>")
 	..()
 
-/obj/item/card/mining_point_card/_examine_text(mob/user)
+/obj/item/card/mining_point_card/examine(mob/user, infix)
 	. = ..()
-	. += "\nThere's [points] point\s on the card."
+	. += "There's [points] point\s on the card."
 
 /**********************Resonator**********************/
 
@@ -472,6 +489,7 @@
 	mod_weight = 1.5
 	mod_reach = 1.25
 	mod_handy = 0.9
+	armor_penetration = 60
 	throwforce = 10
 	var/burst_time = 50
 	var/fieldlimit = 4
@@ -527,8 +545,8 @@
 	var/creator
 	var/obj/item/resonator/res
 
-/obj/effect/resonance/New(loc, set_creator, timetoburst, set_resonator)
-	..()
+/obj/effect/resonance/Initialize(mapload, set_creator, timetoburst, set_resonator)
+	. = ..()
 	creator = set_creator
 	res = set_resonator
 	var/turf/proj_turf = get_turf(src)
@@ -540,7 +558,7 @@
 		name = "strong resonance field"
 		resonance_damage = 30
 
-	addtimer(CALLBACK(src, .proc/burst, loc), timetoburst)
+	add_think_ctx("burst_context", CALLBACK(src, nameof(.proc/burst)), world.time + timetoburst, loc)
 
 /obj/effect/resonance/Destroy()
 	if(res)
@@ -576,27 +594,28 @@
 		return
 	toggle_on(user)
 
-/obj/item/oremagnet/Process()
+/obj/item/oremagnet/think()
+	if(!on)
+		return
+
 	for(var/obj/item/ore/O in oview(7, loc))
 		if(prob(80))
 			step_to(O, src.loc, 0)
 
 		if (TICK_CHECK)
-			return
+			break
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/oremagnet/proc/toggle_on(mob/user)
 	if (!on)
-		START_PROCESSING(SSprocessing, src)
+		set_next_think(world.time)
 		on = 1
 		to_chat(user, "You turn it on.")
 	else
-		STOP_PROCESSING(SSprocessing, src)
+		set_next_think(0)
 		on = 0
 		to_chat(user, "You turn it off.")
-
-/obj/item/oremagnet/Destroy()
-	STOP_PROCESSING(SSprocessing, src)
-	return ..()
 
 /******************************Ore Summoner*******************************/
 
@@ -625,8 +644,8 @@
 /******************************Sculpting*******************************/
 /obj/item/autochisel
 	name = "auto-chisel"
-	icon = 'icons/obj/tools.dmi'
-	icon_state = "jackhammer"
+	icon = 'icons/obj/mining.dmi'
+	icon_state = "auto-chisel"
 	item_state = "jackhammer"
 	origin_tech = list(TECH_MATERIAL = 3, TECH_POWER = 2, TECH_ENGINEERING = 2)
 	desc = "With an integrated AI chip and hair-trigger precision, this baby makes sculpting almost automatic!"
@@ -636,6 +655,7 @@
 	desc = "A finely chiselled sculpting block, it is ready to be your canvas."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "sculpting_block"
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 	density = 1
 	opacity = 1
 	anchored = 0
@@ -644,16 +664,10 @@
 	var/times_carved = 0
 	var/last_struck = 0
 
-/obj/structure/sculpting_block/verb/rotate()
-	set name = "Rotate"
-	set category = "Object"
-	set src in oview(1)
+/obj/structure/sculpting_block/Initialize()
+	. = ..()
 
-	if (src.anchored || usr:stat)
-		to_chat(usr, "It is fastened to the floor!")
-		return 0
-	src.set_dir(turn(src.dir, 90))
-	return 1
+	AddElement(/datum/element/simple_rotation)
 
 /obj/structure/sculpting_block/attackby(obj/item/C as obj, mob/user as mob)
 

@@ -1,9 +1,12 @@
+#define METROID_EXTRACT_CROSSING_REQUIRED 10
+
 /mob/living/carbon/metroid
 	name = "baby metroid"
 	icon = 'icons/mob/metroids.dmi'
 	icon_state = "green baby metroid"
 	pass_flags = PASS_FLAG_TABLE
 	speak_emote = list("chirps")
+	bubble_icon = "metroid"
 
 	maxHealth = 150
 	health = 150
@@ -45,13 +48,16 @@
 
 	var/AIproc = 0 // If it's 0, we need to launch an AI proc
 
-	var/hurt_temperature = T0C-50 // metroid keeps taking damage when its bodytemperature is below this
+	var/hurt_temperature = -50 CELSIUS // metroid keeps taking damage when its bodytemperature is below this
 	var/die_temperature = 50 // metroid dies instantly when its bodytemperature is below this
 
 	var/colour = "green"
 
 	var/core_removal_stage = 0 //For removing cores.
 
+	//CORES CROSSBREEDING
+	var/effectmod //What core modification is being used.
+	var/applied_cores = 0 //How many extracts of the modtype have been applied.
 
 /mob/living/carbon/metroid/getToxLoss()
 	return toxloss
@@ -63,7 +69,6 @@
 	adjustToxLoss(amount-getToxLoss())
 
 /mob/living/carbon/metroid/New(location, colour = "green")
-
 	verbs += /mob/living/proc/ventcrawl
 
 	src.colour = colour
@@ -99,9 +104,10 @@
 	return tally + config.movement.metroid_delay
 
 /mob/living/carbon/metroid/Bump(atom/movable/AM as mob|obj, yes)
-	if ((!(yes) || now_pushing))
-		return
-	now_pushing = 1
+	if((!(yes) || now_pushing))
+		return FALSE
+
+	now_pushing = TRUE
 
 	if(isobj(AM) && !client && powerlevel > 0)
 		var/probab = 10
@@ -124,16 +130,16 @@
 		if(is_adult)
 			if(istype(tmob, /mob/living/carbon/human))
 				if(prob(90))
-					now_pushing = 0
-					return
+					now_pushing = FALSE
+					return TRUE
 		else
 			if(istype(tmob, /mob/living/carbon/human))
-				now_pushing = 0
-				return
+				now_pushing = FALSE
+				return TRUE
 
-	now_pushing = 0
+	now_pushing = FALSE
 
-	..()
+	return ..()
 
 /mob/living/carbon/metroid/Allow_Spacemove()
 	return 1
@@ -145,7 +151,7 @@
 	stat(null, "Health: [round((health / maxHealth) * 100)]%")
 	stat(null, "Intent: [a_intent]")
 
-	if (client.statpanel == "Status")
+	if(client.statpanel == "Status")
 		stat(null, "Nutrition: [nutrition]/[get_max_nutrition()]")
 		if(amount_grown >= 10)
 			if(is_adult)
@@ -193,7 +199,7 @@
 	updatehealth()
 
 
-/mob/living/carbon/metroid/u_equip(obj/item/W)
+/mob/living/carbon/metroid/__unequip(obj/W)
 	return
 
 /mob/living/carbon/metroid/attack_ui(slot)
@@ -252,7 +258,7 @@
 
 			attacked += 10
 			if (prob(90))
-				if (MUTATION_HULK in H.mutations)
+				if((MUTATION_HULK in H.mutations) || (MUTATION_STRONG in H.mutations))
 					damage += 5
 					if(Victim || Target)
 						Feedstop()
@@ -276,6 +282,38 @@
 	return
 
 /mob/living/carbon/metroid/attackby(obj/item/W, mob/user)
+
+	if(istype(W,/obj/item/metroid_extract))
+		handle_crossbreeding(W,user)
+		return
+
+	if(istype(W, /obj/item/storage/xenobag))
+		var/obj/item/storage/P = W
+		if(!effectmod)
+			to_chat(user, SPAN_WARNING("The slime is not currently being mutated."))
+			return
+		var/hasOutput = FALSE //Have we outputted text?
+		var/hasFound = FALSE //Have we found an extract to be added?
+		for(var/obj/item/metroid_extract/S in P.contents)
+			if(S.effectmod == effectmod)
+				P.remove_from_storage(S, get_turf(src))
+				qdel(S)
+				applied_cores++
+				hasFound = TRUE
+			if(applied_cores >= METROID_EXTRACT_CROSSING_REQUIRED)
+				to_chat(user, SPAN_NOTICE("You feed the slime as many of the extracts from the bag as you can, and it mutates!"))
+				playsound(src, 'sound/effects/attackblob.ogg', 50, TRUE)
+				spawn_corecross()
+				hasOutput = TRUE
+				break
+		if(!hasOutput)
+			if(!hasFound)
+				to_chat(user, SPAN_WARNING("There are no extracts in the bag that this slime will accept!"))
+			else
+				to_chat(user, SPAN_NOTICE("You feed the slime some extracts from the bag."))
+				playsound(src, 'sound/effects/attackblob.ogg', 50, TRUE)
+		return
+
 	if(W.force > 0)
 		attacked += 10
 		if(!(stat) && prob(25)) //Only run this check if we're alive or otherwise motile, otherwise surgery will be agonizing for xenobiologists.
@@ -292,7 +330,7 @@
 	return 0
 
 /mob/living/carbon/metroid/var/co2overloadtime = null
-/mob/living/carbon/metroid/var/temperature_resistance = T0C+75
+/mob/living/carbon/metroid/var/temperature_resistance = 75 CELSIUS
 
 /mob/living/carbon/metroid/toggle_throw_mode()
 	return
@@ -304,7 +342,7 @@
 	return 0
 
 /mob/living/carbon/metroid/proc/gain_nutrition(amount)
-	nutrition += amount
+	add_nutrition(amount)
 	if(prob(amount * 2)) // Gain around one level per 50 nutrition
 		powerlevel++
 		if(powerlevel > 10)

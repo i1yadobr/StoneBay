@@ -35,6 +35,7 @@ var/global/photo_count = 0
 	var/scribble	//Scribble on the back.
 	var/image/tiny
 	var/photo_size = 3
+	var/list/disfigured_mobs = list()
 
 /obj/item/photo/New()
 	id = photo_count++
@@ -42,17 +43,17 @@ var/global/photo_count = 0
 /obj/item/photo/attack_self(mob/user as mob)
 	user.examinate(src)
 
-/obj/item/photo/update_icon()
-	overlays.Cut()
+/obj/item/photo/on_update_icon()
+	ClearOverlays()
 	var/scale = 8/(photo_size*32)
 	var/image/small_img = image(img)
 	small_img.SetTransform(scale = scale)
 	small_img.pixel_x = -32*(photo_size-1)/2 - 3
 	small_img.pixel_y = -32*(photo_size-1)/2
-	overlays |= small_img
+	AddOverlays(small_img)
 
 	tiny = image(img)
-	small_img.SetTransform(scale = 0.5 * scale)
+	tiny.SetTransform(scale = 0.5 * scale)
 	tiny.underlays += image('icons/obj/bureaucracy.dmi',"photo")
 	tiny.pixel_x = -32*(photo_size-1)/2 - 3
 	tiny.pixel_y = -32*(photo_size-1)/2 + 3
@@ -64,12 +65,13 @@ var/global/photo_count = 0
 			scribble = txt
 	..()
 
-/obj/item/photo/_examine_text(mob/user)
+/obj/item/photo/examine(mob/user, infix)
+	. = ..()
+
 	if(in_range(user, src))
 		show(user)
-		. += "\n[desc]"
 	else
-		. += "\n<span class='notice'>It is too far away.</span>"
+		. += SPAN_NOTICE("It is too far away.")
 
 /obj/item/photo/proc/show(mob/user as mob)
 	send_rsc(user, img, "tmp_photo_[id].png")
@@ -110,16 +112,16 @@ var/global/photo_count = 0
 /obj/item/storage/photo_album/MouseDrop(obj/over_object as obj)
 	if((ishuman(usr)))
 		var/mob/M = usr
-		if(!istype(over_object, /obj/screen))
+		if(!istype(over_object, /atom/movable/screen))
 			return ..()
 		playsound(loc, SFX_SEARCH_CLOTHES, 50, 1, -5)
 		if((!M.restrained() && !M.stat && M.back == src))
 			switch(over_object.name)
 				if("r_hand")
-					if(M.unEquip(src))
+					if(M.drop(src))
 						M.put_in_r_hand(src)
 				if("l_hand")
-					if(M.unEquip(src))
+					if(M.drop(src))
 						M.put_in_l_hand(src)
 			add_fingerprint(usr)
 			return
@@ -139,7 +141,7 @@ var/global/photo_count = 0
 	icon = 'icons/obj/items.dmi'
 	desc = "A polaroid camera."
 	icon_state = "camera"
-	item_state = "electropack"
+	item_state = "camera"
 	w_class = ITEM_SIZE_SMALL
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
@@ -151,8 +153,9 @@ var/global/photo_count = 0
 	var/icon_on = "camera"
 	var/icon_off = "camera_off"
 	var/size = 3
+	var/see_ghosts = FALSE
 
-/obj/item/device/camera/update_icon()
+/obj/item/device/camera/on_update_icon()
 	if(is_on)
 		icon_state = "[initial(icon_state)]"
 	else
@@ -184,9 +187,9 @@ var/global/photo_count = 0
 		if(pictures_left)
 			to_chat(user, "<span class='notice'>[src] still has some film in it!</span>")
 			return
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "<span class='notice'>You insert [I] into [src].</span>")
-		user.drop_item()
-		qdel(I)
 		// TODO [V] That's kinda strange: pictures_left should be stored in film rather than in camera
 		pictures_left = pictures_max
 		return
@@ -195,6 +198,13 @@ var/global/photo_count = 0
 
 /obj/item/device/camera/proc/get_mobs(turf/the_turf as turf)
 	var/mob_detail
+	if(see_ghosts)
+		for(var/mob/observer/ghost/A in the_turf)
+			if(!mob_detail)
+				mob_detail = "You can see [A] on the photo. "
+			else
+				mob_detail += "You can also see [A] on the photo."
+
 	for(var/mob/living/carbon/A in the_turf)
 		if(A.invisibility) continue
 		var/holding = null
@@ -210,6 +220,11 @@ var/global/photo_count = 0
 			mob_detail = "You can see [A] on the photo[(A.health / A.maxHealth) < 0.75 ? " - [A] looks hurt":""].[holding ? " [holding]":"."]. "
 		else
 			mob_detail += "You can also see [A] on the photo[(A.health / A.maxHealth)< 0.75 ? " - [A] looks hurt":""].[holding ? " [holding]":"."]."
+		if(ishuman(A))
+			var/mob/living/carbon/human/H = A
+			var/obj/item/organ/external/head/E = H.get_organ(BP_HEAD)
+			if(E && (E?.status & ORGAN_DISFIGURED)) // Check to see if we even have a head and if the head's disfigured.
+				mob_detail += "You can see [A] on the photo is disfigured."
 	return mob_detail
 
 /obj/item/device/camera/afterattack(atom/target as mob|obj|turf|area, mob/user as mob, flag)
@@ -228,10 +243,9 @@ var/global/photo_count = 0
 
 	update_icon()
 
-/obj/item/device/camera/_examine_text(mob/user)
+/obj/item/device/camera/examine(mob/user, infix)
 	. = ..()
-
-	. += "\nIt has [pictures_left] photo\s left."
+	. += "It has [pictures_left] photo\s left."
 
 /mob/living/proc/can_capture_turf(turf/T)
 	return (T in view(src))
@@ -241,36 +255,42 @@ var/global/photo_count = 0
 	var/y_c = target.y + (size-1)/2
 	var/z_c	= target.z
 	var/mobs = ""
+	var/list/disfigured = list()
 	for(var/i = 1 to size)
 		for(var/j = 1 to size)
 			var/turf/T = locate(x_c, y_c, z_c)
 			if(user.can_capture_turf(T))
 				mobs += get_mobs(T)
+				for(var/mob/living/carbon/A in T)
+					if(ishuman(A))
+						var/mob/living/carbon/human/H = A
+						var/obj/item/organ/external/head/E = H.get_organ(BP_HEAD)
+						if(E && (E?.status & ORGAN_DISFIGURED))
+							disfigured |= A
 			x_c++
 		y_c--
 		x_c = x_c - size
 
-	var/obj/item/photo/p = createpicture(target, user, mobs, flag)
+	var/obj/item/photo/p = createpicture(target, user, mobs, flag, disfigured)
 	printpicture(user, p)
 
-/obj/item/device/camera/proc/createpicture(atom/target, mob/user, mobs, flag)
+/obj/item/device/camera/proc/createpicture(atom/target, mob/user, mobs, flag, list/disfigured)
 	var/x_c = target.x - (size-1)/2
 	var/y_c = target.y - (size-1)/2
 	var/z_c	= target.z
-	var/icon/photoimage = generate_image(x_c, y_c, z_c, size, CAPTURE_MODE_REGULAR, user, 0)
+	var/icon/photoimage = generate_image(x_c, y_c, z_c, size, CAPTURE_MODE_REGULAR, user, 0, see_ghosts=src.see_ghosts)
 
 	var/obj/item/photo/p = new()
 	p.img = photoimage
 	p.desc = mobs
 	p.photo_size = size
+	p.disfigured_mobs = disfigured
 	p.update_icon()
 
 	return p
 
 /obj/item/device/camera/proc/printpicture(mob/user, obj/item/photo/p)
-	p.loc = user.loc
-	if(!user.get_inactive_hand())
-		user.put_in_inactive_hand(p)
+	user.pick_or_drop(p)
 
 /obj/item/photo/proc/copy(copy_id = 0)
 	var/obj/item/photo/p = new /obj/item/photo()
@@ -287,3 +307,35 @@ var/global/photo_count = 0
 		p.id = id
 
 	return p
+
+/obj/item/device/camera/spooky
+	name = "camera obscura"
+	desc = "A polaroid camera, some say it can see ghosts!"
+	see_ghosts = TRUE
+
+/obj/item/device/camera/random
+	name = "camera "
+	desc = "A polaroid camera. It seems to have an extra magnifier on the end."
+
+/obj/item/device/camera/random/createpicture(atom/target, mob/user, mobs, flag, list/disfigured)
+	var/atom/new_target = pick(GLOB.player_list)
+
+	var/x_c = new_target.x - (size-1)/2
+	var/y_c = new_target.y - (size-1)/2
+	var/z_c	= new_target.z
+	var/icon/photoimage = generate_image(x_c, y_c, z_c, size, CAPTURE_MODE_REGULAR, user, 0, see_ghosts=src.see_ghosts)
+
+	var/obj/item/photo/p = new()
+	p.img = photoimage
+	p.desc = mobs
+	p.photo_size = size
+	p.update_icon()
+
+	return p
+
+/obj/item/device/camera/fiery
+	name = "camera "
+	desc = "A polaroid camera. It seems to be kinda hot."
+
+/obj/item/device/camera/fiery/get_temperature_as_from_ignitor()
+	return 300

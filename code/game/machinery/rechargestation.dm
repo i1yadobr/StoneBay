@@ -5,7 +5,7 @@
 	icon_state = "borgcharger0"
 	density = 1
 	anchored = 1
-	idle_power_usage = 50
+	idle_power_usage = 50 WATTS
 	var/mob/living/occupant = null
 	var/obj/item/cell/cell = null
 	var/icon_update_tick = 0	// Used to rebuild the overlay only once every 10 ticks
@@ -33,7 +33,7 @@
 	update_icon()
 
 /obj/machinery/recharge_station/proc/has_cell_power()
-	return cell && cell.percent() > 0
+	return cell && CELL_PERCENT(cell) > 0
 
 /obj/machinery/recharge_station/Process()
 	if(stat & (BROKEN))
@@ -92,7 +92,7 @@
 		var/list/damaged = R.get_damaged_components(1,1,1)
 		if(damaged.len && wire_rate && weld_rate)
 			for(var/datum/robot_component/C in damaged)
-				if((C.installed == -1) && cell.checked_use(100 KILOWATTS * CELLRATE))
+				if((C.installed == -1) && cell.checked_use(100 KILO WATTS * CELLRATE))
 					C.repair()
 
 	if(ishuman(occupant))
@@ -101,7 +101,7 @@
 		if(potato)
 			target = potato.cell
 
-		if((!target || target.percent() > 95) && istype(H.back,/obj/item/rig))
+		if((!target || CELL_PERCENT(target) > 95) && istype(H.back,/obj/item/rig))
 			var/obj/item/rig/R = H.back
 			if(R.cell && !R.cell.fully_charged())
 				target = R.cell
@@ -112,14 +112,14 @@
 		target.give(charge_used)
 
 
-/obj/machinery/recharge_station/_examine_text(mob/user)
+/obj/machinery/recharge_station/examine(mob/user, infix)
 	. = ..()
-	. += "\nThe charge meter reads: [round(chargepercentage())]%"
+	. += "The charge meter reads: [round(chargepercentage())]%"
 
 /obj/machinery/recharge_station/proc/chargepercentage()
 	if(!cell)
 		return 0
-	return cell.percent()
+	return CELL_PERCENT(cell)
 
 /obj/machinery/recharge_station/relaymove(mob/user as mob)
 	if(user.stat)
@@ -172,22 +172,22 @@
 		desc += "<br>It is capable of repairing burn damage."
 
 /obj/machinery/recharge_station/proc/build_overlays()
-	overlays.Cut()
+	ClearOverlays()
 	switch(round(chargepercentage()))
 		if(1 to 20)
-			overlays += image('icons/obj/objects.dmi', "statn_c0")
+			AddOverlays(image('icons/obj/objects.dmi', "statn_c0"))
 		if(21 to 40)
-			overlays += image('icons/obj/objects.dmi', "statn_c20")
+			AddOverlays(image('icons/obj/objects.dmi', "statn_c20"))
 		if(41 to 60)
-			overlays += image('icons/obj/objects.dmi', "statn_c40")
+			AddOverlays(image('icons/obj/objects.dmi', "statn_c40"))
 		if(61 to 80)
-			overlays += image('icons/obj/objects.dmi', "statn_c60")
+			AddOverlays(image('icons/obj/objects.dmi', "statn_c60"))
 		if(81 to 98)
-			overlays += image('icons/obj/objects.dmi', "statn_c80")
+			AddOverlays(image('icons/obj/objects.dmi', "statn_c80"))
 		if(99 to 110)
-			overlays += image('icons/obj/objects.dmi', "statn_c100")
+			AddOverlays(image('icons/obj/objects.dmi', "statn_c100"))
 
-/obj/machinery/recharge_station/update_icon()
+/obj/machinery/recharge_station/on_update_icon()
 	..()
 	if(stat & BROKEN)
 		icon_state = "borgcharger0"
@@ -229,7 +229,7 @@
 		return (R.cell)
 	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
-		if(H.isSynthetic()) // FBPs and IPCs
+		if(H.isSynthetic()) // FBPs
 			return 1
 		if(istype(H.back,/obj/item/rig))
 			var/obj/item/rig/R = H.back

@@ -13,65 +13,90 @@
 	hitsound = SFX_FIGHTING_SWING
 	material_amount = 2
 	var/max_butts = 10
+	var/holey = FALSE
 
 /obj/item/material/ashtray/Destroy()
 	for(var/obj/O in contents)
 		qdel(O)
 	return ..()
 
-/obj/item/material/ashtray/_examine_text(mob/user)
+/obj/item/material/ashtray/examine(mob/user, infix)
 	. = ..()
-	if(material)
-		. += "\nIt's made of [material.display_name]."
-	if(contents.len >= max_butts)
-		. += "\nIt's full."
-	else if(contents.len)
-		. += "\nIt has [contents.len] cig butts in it."
 
-/obj/item/material/ashtray/update_icon()
-	overlays.Cut()
+	if(material)
+		. += "It's made of [material.display_name]."
+
+	if(length(contents) >= max_butts)
+		. += "It's full."
+
+	else if(length(contents))
+		. += "It has [contents.len] cig butts in it."
+
+/obj/item/material/ashtray/on_update_icon()
+	ClearOverlays()
 	if (contents.len == max_butts)
-		overlays |= image('icons/obj/objects.dmi', "ashtray_full")
+		AddOverlays(image('icons/obj/objects.dmi', "ashtray_full"))
 	else if (contents.len >= max_butts/2)
-		overlays |= image('icons/obj/objects.dmi', "ashtray_half")
+		AddOverlays(image('icons/obj/objects.dmi', "ashtray_half"))
+
+/obj/item/material/ashtray/proc/store(obj/item/W, mob/user)
+	if(QDELETED(W))
+		return FALSE
+	if(!(istype(W, /obj/item/cigbutt) || istype(W, /obj/item/clothing/mask/smokable/cigarette) || istype(W, /obj/item/flame/match)))
+		return FALSE
+	if(length(contents) >= max_butts)
+		to_chat(user, "\The [src] is full.")
+		return FALSE
+	if(istype(W, /obj/item/clothing/mask/smokable/cigarette))
+		var/obj/item/clothing/mask/smokable/cigarette/C = W
+		if(C.lit)
+			visible_message("[user] crushes [C] in [src], putting it out.")
+			W = C.die(nomessage = TRUE, nodestroy = TRUE)
+			if(QDELETED(W))
+				return // things without after-die remnants
+		else
+			to_chat(user, SPAN_NOTICE("You place [C] in [src] without even smoking it. Why would you do that?"))
+
+	visible_message("[user] places [W] in [src].")
+	if(iscarbon(W.loc))
+		var/mob/living/carbon/M = W.loc
+		M.drop(W, src)
+	else
+		W.forceMove(src)
+	add_fingerprint(user)
+	update_icon()
+
+	return TRUE
 
 /obj/item/material/ashtray/attackby(obj/item/W, mob/user)
 	if(health <= 0)
 		return
-	if(istype(W,/obj/item/cigbutt) || istype(W,/obj/item/clothing/mask/smokable/cigarette) || istype(W, /obj/item/flame/match))
-		if(contents.len >= max_butts)
-			to_chat(user, "\The [src] is full.")
-			return
-		user.remove_from_mob(W)
-		W.forceMove(src)
-
-		if(istype(W,/obj/item/clothing/mask/smokable/cigarette))
-			var/obj/item/clothing/mask/smokable/cigarette/cig = W
-			if (cig.lit == 1)
-				visible_message("[user] crushes [cig] in [src], putting it out.")
-				W = cig.die(nomessage = TRUE, nodestroy = TRUE) // No need to completely destroy the cigarette and its contents
-			else if (cig.lit == 0)
-				to_chat(user, "You place [cig] in [src] without even smoking it. Why would you do that?")
-		else
-			visible_message("[user] places [W] in [src].")
-
-		user.remove_from_mob(W, src)
-
-		user.update_inv_l_hand()
-		user.update_inv_r_hand()
-		add_fingerprint(user)
-		update_icon()
+	if(store(W, user))
+		return
+	if(isScrewdriver(W))
+		to_chat(user, "You punch some holes in \the [src]!")
+		holey = TRUE
+		return
+	else if(holey && istype(W, /obj/item/stack/rods))
+		var/obj/item/stack/rods/V = W
+		V.use(1)
+		var/obj/item/hookah_coal/makeshift/HC = new (get_turf(src))
+		HC.color = color
+		if(user.get_inactive_hand() == src)
+			user.drop(src)
+			user.pick_or_drop(HC)
+		qdel_self()
 	else
 		..()
-		health = max(0,health - W.force)
-		if (health < 1)
+		health = max(0, health - W.force)
+		if(health < 1)
 			shatter()
 
 /obj/item/material/ashtray/throw_impact(atom/hit_atom)
 	if (health > 0)
 		health = max(0,health - 3)
 		if (contents.len)
-			visible_message("<span class='danger'>\The [src] slams into [hit_atom], spilling its contents!</span>")
+			visible_message(SPAN_DANGER("\The [src] slams into [hit_atom], spilling its contents!"))
 			for (var/obj/O in contents)
 				O.dropInto(loc)
 		if (health < 1)
@@ -88,12 +113,13 @@
 		return
 
 	if(!contents.len)
-		to_chat(usr, SPAN("notice", "\The [src] is empty!"))
+		to_chat(usr, SPAN_NOTICE("\The [src] is empty!"))
 		return
 
-	visible_message(SPAN("notice", "[usr] flips \the [src], spilling its contents!"))
+	visible_message(SPAN_NOTICE("[usr] flips \the [src], spilling its contents!"))
 	for(var/obj/O in contents)
 		O.dropInto(loc)
+	update_icon()
 
 /obj/item/material/ashtray/plastic/New(newloc)
 	..(newloc, MATERIAL_PLASTIC)

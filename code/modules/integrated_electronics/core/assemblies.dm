@@ -74,8 +74,9 @@
 /obj/item/device/electronic_assembly/GetAccess()
 	return access_card ? access_card.GetAccess() : list()
 
-/obj/item/device/electronic_assembly/_examine_text(mob/user)
+/obj/item/device/electronic_assembly/examine(mob/user, infix)
 	. = ..()
+
 	if(can_anchor)
 		to_chat(user, SPAN_NOTICE("The anchoring bolts [anchored ? "are" : "can be"] <b>wrenched</b> in place and the maintenance panel [opened ? "can be" : "is"] <b>screwed</b> in place."))
 	else
@@ -86,6 +87,7 @@
 
 	for(var/obj/item/integrated_circuit/I in assembly_components)
 		I.external_examine(user)
+
 	interact(user)
 
 /obj/item/device/electronic_assembly/proc/check_interactivity(mob/user, datum/topic = GLOB.physical_state)
@@ -102,7 +104,7 @@
 /obj/item/device/electronic_assembly/Bump(atom/AM)
 	collw = AM
 	.=..()
-	if((istype(collw, /obj/machinery/door/airlock) ||  istype(collw, /obj/machinery/door/window)) && (!isnull(access_card)))
+	if((istype(collw, /obj/machinery/door/airlock) ||  istype(collw, /obj/machinery/door/window)) && (!QDELETED(access_card)))
 		var/obj/machinery/door/D = collw
 		if(D.check_access(access_card))
 			D.open()
@@ -518,17 +520,17 @@
 /obj/item/device/electronic_assembly/proc/can_move()
 	return FALSE
 
-/obj/item/device/electronic_assembly/update_icon()
+/obj/item/device/electronic_assembly/on_update_icon()
 	if(opened)
 		icon_state = initial(icon_state) + "-open"
 	else
 		icon_state = initial(icon_state)
-	overlays.Cut()
+	ClearOverlays()
 	if(detail_color == COLOR_ASSEMBLY_BLACK) //Black colored overlay looks almost but not exactly like the base sprite, so just cut the overlay and avoid it looking kinda off.
 		return
 	var/image/detail_overlay = image('icons/obj/assemblies/electronic_setups.dmi', src,"[icon_state]-color")
 	detail_overlay.color = detail_color
-	overlays.Add(detail_overlay)
+	AddOverlays(detail_overlay)
 
 /obj/item/device/electronic_assembly/proc/return_total_complexity()
 	var/returnvalue = 0
@@ -574,14 +576,17 @@
 		to_chat(user, SPAN_WARNING("You can't seem to add the '[IC]', since the case doesn't support the circuit type."))
 		return FALSE
 
-	if(!IC.forceMove(src))
+	if(IC.loc == user && !user.drop(IC))
+		return FALSE
+	IC.forceMove(src)
+
+	if(IC.loc != src)
 		return FALSE
 
 	to_chat(user, SPAN_NOTICE("You slide [IC] inside [src]."))
 	playsound(src, 'sound/items/Deconstruct.ogg', 50, 1)
 	add_allowed_scanner(user.ckey)
 	investigate_log("had [IC]([IC.type]) inserted by [key_name(user)].", INVESTIGATE_CIRCUIT)
-	user.drop_item(IC)
 	add_component(IC)
 	IC.create_moved_event()
 	return TRUE
@@ -608,7 +613,7 @@
 	if(!silent)
 		to_chat(user, SPAN_NOTICE("You pop \the [IC] out of the case, and slide it out."))
 		playsound(src, 'sound/items/crowbar.ogg', 50, 1)
-		user.put_in_hands(IC)
+		user.pick_or_drop(IC)
 	add_allowed_scanner(user.ckey)
 	investigate_log("had [IC]([IC.type]) removed by [key_name(user)].", INVESTIGATE_CIRCUIT)
 
@@ -647,9 +652,6 @@
 /obj/item/device/electronic_assembly/proc/welder_act(mob/living/user, obj/item/weldingtool/I)
 	var/type_to_use
 
-	if(!I.isOn())
-		return
-
 	if(!sealed)
 		type_to_use = input("What would you like to do?","[src] type setting") as null|anything in list("repair", "seal")
 	else
@@ -667,10 +669,12 @@
 
 		if("seal")
 			if(!opened)
-				if(I.remove_fuel(3,user))
-					sealed = TRUE
-					to_chat(user,SPAN_NOTICE("You seal the assembly, making it impossible to be opened."))
-					return TRUE
+				if(!I.use_tool(src, user, amount = 3))
+					return
+
+				sealed = TRUE
+				to_chat(user,SPAN_NOTICE("You seal the assembly, making it impossible to be opened."))
+				return TRUE
 
 			else
 				to_chat(user,SPAN_NOTICE("You need to close the assembly first before sealing it indefinitely!"))
@@ -678,14 +682,16 @@
 
 		if("unseal")
 			to_chat(user,SPAN_NOTICE("You start unsealing the assembly carefully..."))
-			if(I.remove_fuel(3,user))
-				for(var/obj/item/integrated_circuit/IC in assembly_components)
-					if(prob(50))
-						IC.disconnect_all()
+			if(!I.use_tool(src, user, amount = 3))
+				return
 
-				to_chat(user,SPAN_NOTICE("You unsealed the assembly."))
-				sealed = FALSE
-				return TRUE
+			for(var/obj/item/integrated_circuit/IC in assembly_components)
+				if(prob(50))
+					IC.disconnect_all()
+
+			to_chat(user,SPAN_NOTICE("You unsealed the assembly."))
+			sealed = FALSE
+			return TRUE
 
 /obj/item/device/electronic_assembly/proc/default_unfasten_wrench(mob/user, obj/item/I, time = 20)
 	if(isWrench(I) && istype(loc, /turf) && can_anchor)
@@ -720,7 +726,7 @@
 			return
 
 	if(istype(I, /obj/item/integrated_circuit))
-		if(!user.canUnEquip(I))
+		if(!user.can_unequip(I))
 			return FALSE
 		if(try_add_component(I, user))
 			return TRUE
@@ -756,8 +762,7 @@
 			for(var/obj/item/integrated_circuit/input/S in assembly_components)
 				S.attackby_react(I,user,user.a_intent)
 			return ..()
-		user.drop_item(I)
-		I.forceMove(src)
+		user.drop(I, src)
 		battery = I
 		playsound(src, 'sound/items/Deconstruct.ogg', 50, 1)
 		to_chat(user, SPAN_NOTICE("You slot the [I] inside \the [src]'s power supplier."))
@@ -1119,11 +1124,11 @@
 	if(gotwallitem(T, ndir))
 		to_chat(user, SPAN_WARNING("There's already an item on this wall!"))
 		return
-	playsound(src.loc, 'sound/machines/click.ogg', 75, 1)
+	playsound(loc, 'sound/machines/click.ogg', 75, 1)
 	user.visible_message("[user.name] attaches [src] to the wall.",
 		SPAN_NOTICE("You attach [src] to the wall."),
 		SPAN_NOTICE("You hear clicking."))
-	if(user.unEquip(src,T))
+	if(user.drop(src, T))
 		var/rotation = 0
 		switch(ndir)
 			if(NORTH)

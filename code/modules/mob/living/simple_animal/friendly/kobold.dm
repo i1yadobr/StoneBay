@@ -19,8 +19,8 @@
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
-	minbodytemp = 223	//Below -50 Degrees Celcius
-	maxbodytemp = 323	//Above 50 Degrees Celcius
+	minbodytemp = -50 CELSIUS
+	maxbodytemp = 50 CELSIUS
 	universal_speak = 1
 	universal_understand = 1
 	possession_candidate = 1
@@ -29,9 +29,12 @@
 /mob/living/simple_animal/kobold/Life()
 	..()
 	if(prob(15) && turns_since_move && !stat)
-		flick("kobold_act",src)
+		flick("kobold_act", src)
 
-/mob/living/simple_animal/kobold/Move(dir)
-	..()
+/mob/living/simple_animal/kobold/Move(newloc, direct)
+	. = ..()
+	if(!.)
+		return
+
 	if(!stat)
 		flick("kobold_walk",src)

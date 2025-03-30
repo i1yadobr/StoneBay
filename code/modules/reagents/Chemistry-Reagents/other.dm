@@ -113,7 +113,7 @@
 /datum/reagent/adminordrazine/affect_blood(mob/living/carbon/M, alien, removed)
 	M.setCloneLoss(0)
 	M.setOxyLoss(0)
-	M.radiation = 0
+	M.radiation = SPACE_RADIATION
 	M.heal_organ_damage(5,5)
 	M.adjustToxLoss(-5)
 	M.hallucination_power = 0
@@ -153,13 +153,14 @@
 	taste_description = "the inside of a reactor"
 	reagent_state = SOLID
 	color = "#b8b8c0"
-	radiation = 0.05
+	radiation = new /datum/radiation/preset/uranium_238
 
 /datum/reagent/uranium/affect_touch(mob/living/carbon/M, alien, removed)
 	affect_ingest(M, alien, removed)
 
 /datum/reagent/uranium/affect_blood(mob/living/carbon/M, alien, removed)
-	M.apply_effect(5 * removed, IRRADIATE, blocked = 0)
+	radiation.activity = radiation.specific_activity * volume
+	M.radiation += radiation.calc_equivalent_dose(AVERAGE_HUMAN_WEIGHT)
 
 /datum/reagent/uranium/touch_turf(turf/T)
 	if(volume >= 3)
@@ -184,20 +185,22 @@
 /datum/reagent/water/holywater/affect_ingest(mob/living/carbon/M, alien, removed)
 	..()
 	if(ishuman(M)) // Any location
-		if(iscultist(M))
+		if(iscultist(M) || is_species(M, /datum/species/golem/runic))
 			if(prob(10))
 				GLOB.cult.remove_antagonist(usr.mind, 1)
 			if(prob(2))
-				var/obj/effect/spider/spiderling/S = new /obj/effect/spider/spiderling(M.loc)
+				var/obj/structure/spider/spiderling/S = new /obj/structure/spider/spiderling(M.loc)
 				M.visible_message(SPAN_WARNING("\The [M] coughs up \the [S]!</span>"))
 
-		if(M.mind && M.mind.vampire)
-			M.adjustFireLoss(6)
-			M.adjust_fire_stacks(1)
-			M.IgniteMob()
-			if(prob(20))
-				for (var/mob/V in viewers(src))
-					V.show_message(SPAN_WARNING("[M]'s skin sizzles and burns."), 1)
+/datum/reagent/water/holywater/touch_mob(mob/living/L, amount)
+	if(!ishuman(L))
+		return
+	if(!L.mind)
+		return
+	if((L.mind.vampire && !(L.mind.vampire.vamp_status & VAMP_ISTHRALL)) || is_species(L, /datum/species/golem/runic))
+		L.adjust_fire_stacks(amount / 15)
+		L.IgniteMob()
+
 /datum/reagent/water/holywater/touch_turf(turf/T)
 	if(volume >= 5)
 		T.holy = TRUE
@@ -240,7 +243,7 @@
 		if(istype(T, /turf/simulated/wall))
 			var/turf/simulated/wall/W = T
 			W.thermite = 1
-			W.overlays += image('icons/effects/effects.dmi',icon_state = "#673910")
+			W.AddOverlays(image('icons/effects/effects.dmi',icon_state = "#673910"))
 			remove_self(5)
 	return
 
@@ -302,10 +305,30 @@
 			return
 	M.clean_blood()
 
+/datum/reagent/space_cleaner/affect_blood(mob/living/carbon/M, alien, removed)
+	if(alien == IS_VOX)
+		M.adjustOxyLoss(-removed * 5)
+	else if(alien != IS_DIONA)
+		M.adjustToxLoss(removed)
+
+/datum/reagent/space_cleaner/dry
+	name = "Concentrated space cleaner"
+	description = "A compound used to clean things after getting dissolved in water."
+	taste_description = "regrets"
+	reagent_state = SOLID
+	color = "#5DD8D4"
+
+/datum/reagent/space_cleaner/dry/affect_blood(mob/living/carbon/M, alien, removed)
+	if(alien == IS_VOX)
+		M.adjustOxyLoss(-removed * 10)
+	else if(alien != IS_DIONA)
+		M.adjustToxLoss(removed * 5)
+		M.druggy = max(M.druggy, 5)
+
 /datum/reagent/lube // TODO: spraying on borgs speeds them up
 	name = "Space Lube"
 	description = "Lubricant is a substance introduced between two moving surfaces to reduce the friction and wear between them. giggity."
-	taste_description = "metroid"
+	taste_description = "slime"
 	reagent_state = LIQUID
 	color = "#009ca8"
 
@@ -327,6 +350,17 @@
 		var/obj/structure/window/W = O
 		W.apply_silicate(volume)
 		remove_self(volume)
+	if(istype(O, /obj/structure/window_frame))
+		var/obj/structure/window_frame/WF = O
+		var/datum/windowpane/affected = null
+		if(WF.outer_pane)
+			affected = WF.outer_pane
+		else if(WF.inner_pane)
+			affected = WF.inner_pane
+		if(affected)
+			affected.apply_silicate(volume)
+		remove_self(volume)
+		WF.update_icon()
 	return
 
 /datum/reagent/glycerol

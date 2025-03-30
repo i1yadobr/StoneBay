@@ -30,8 +30,6 @@
 	s.set_up(3, 1, src)
 	s.start()
 	obj:radiation += 50
-	randmutb(obj)
-	domutcheck(obj,null)
 	spawn(0)
 		qdel(src)
 
@@ -75,7 +73,7 @@
 		qdel(src)
 
 /obj/effect/mine/proc/explode(obj)
-	explosion(loc, 0, 1, 2, 3)
+	explosion(loc, 1, 2, 3, 4)
 	spawn(0)
 		qdel(src)
 

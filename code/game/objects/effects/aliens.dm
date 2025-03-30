@@ -19,7 +19,6 @@
 	var/atom/target
 	var/acid_strength = ACID_WEAK
 	var/melt_time = 10 SECONDS
-	var/last_melt = 0
 
 /obj/effect/acid/New(loc, supplied_target)
 	..(loc)
@@ -28,21 +27,23 @@
 	desc += "\n<b>It's melting \the [target]!</b>"
 	pixel_x = target.pixel_x
 	pixel_y = target.pixel_y
-	START_PROCESSING(SSprocessing, src)
+	set_next_think(world.time)
+	register_signal(target, SIGNAL_QDELETING, nameof(.proc/onTargetDeleted))
 
 /obj/effect/acid/Destroy()
-	STOP_PROCESSING(SSprocessing, src)
 	target = null
 	. = ..()
 
-/obj/effect/acid/Process()
+/obj/effect/acid/think()
 	if(QDELETED(target))
 		qdel(src)
-	else if(world.time > last_melt + melt_time)
-		var/done_melt = target.acid_melt()
-		last_melt = world.time
-		if(done_melt)
-			qdel(src)
+		return
+
+	if(!target.acid_melt())
+		set_next_think(world.time + melt_time)
+
+/obj/effect/acid/proc/onTargetDeleted()
+	qdel(src)
 
 /atom/var/acid_melted = 0
 
@@ -50,13 +51,43 @@
 	. = FALSE
 	switch(acid_melted)
 		if(0)
-			visible_message("<span class='alium'>Acid hits \the [src] with a sizzle!</span>")
+			visible_message(SPAN("alium", "Acid hits \the [src] with a sizzle!"))
 		if(1 to 3)
-			visible_message("<span class='alium'>The acid melts \the [src]!</span>")
+			visible_message(SPAN("alium", "The acid melts \the [src]!"))
 		if(4)
-			visible_message("<span class='alium'>The acid melts \the [src] away into nothing!</span>")
+			visible_message(SPAN("alium", "The acid melts \the [src] away into nothing!"))
 			. = TRUE
 			qdel(src)
+			return
+	acid_melted++
+
+/turf/simulated/wall/acid_melt()
+	. = FALSE
+	switch(acid_melted)
+		if(0)
+			visible_message(SPAN("alium", "Acid splats all over \the [src] with a sizzle!"))
+		if(1 to 3)
+			visible_message(SPAN("alium", "The acid eats through \the [src]!"))
+		if(4)
+			visible_message(SPAN("alium", "The acid melts \the [src] away into nothing!"))
+			. = TRUE
+			dismantle_wall()
+			return
+	acid_melted++
+	return
+
+/turf/simulated/floor/acid_melt()
+	. = FALSE
+	switch(acid_melted)
+		if(0)
+			visible_message(SPAN("alium", "Acid splats all over \the [src] with a sizzle!"))
+		if(1 to 3)
+			visible_message(SPAN("alium", "The acid eats through \the [src]!"))
+		if(4)
+			visible_message(SPAN("alium", "The acid melts \the [src] away into nothing!"))
+			. = TRUE
+			dismantle_floor()
+			return
 	acid_melted++
 
 /*
@@ -74,16 +105,16 @@
 
 /obj/structure/alien/egg/Initialize()
 	. = ..()
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
 
-/obj/structure/alien/egg/Destroy()
-	STOP_PROCESSING(SSobj, src)
-	. = ..()
-
-/obj/structure/alien/egg/Process()
+/obj/structure/alien/egg/think()
 	progress++
+
 	if(progress >= progress_max*2)
 		hatch()
+		return
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/structure/alien/egg/attack_hand(mob/user)
 	if(progress == -1)
@@ -103,17 +134,20 @@
 		to_chat(M, "<span class='alium'>You caress \the [src] as it hatches at your command.</alium>")
 	hatch()
 
-/obj/structure/alien/egg/_examine_text(mob/user)
+/obj/structure/alien/egg/examine(mob/user, infix)
 	. = ..()
-	if(isliving(user))
-		var/mob/living/M = user
-		if(M.faction == "xenomorph")
-			if(progress < progress_max)
-				. += "\nIt's not ready to hatch yet..."
-			else
-				. += "\nIt's ready to hatch!"
 
-/obj/structure/alien/egg/update_icon()
+	if(!isliving(user))
+		return
+
+	var/mob/living/M = user
+	if(M.faction == "xenomorph")
+		if(progress < progress_max)
+			. += "It's not ready to hatch yet..."
+		else
+			. += "It's ready to hatch!"
+
+/obj/structure/alien/egg/on_update_icon()
 	if(progress == -1)
 		icon_state = "egg_opened"
 	else if(progress < progress_max)
@@ -125,7 +159,7 @@
 	set waitfor = 0
 
 	progress = -1
-	STOP_PROCESSING(SSobj, src)
+	set_next_think(0)
 	update_icon()
 	flick("egg_opening", src)
 	sleep(5)
@@ -143,7 +177,7 @@
 
 	anchored = 1
 	density = 0
-	plane = FLOOR_PLANE
+
 	layer = ABOVE_TILE_LAYER
 	var/obj/effect/alien/weeds/node/linked_node = null
 
@@ -220,11 +254,13 @@
 	else
 		visible_message("<span class='danger'>\The [src] have been attacked with \the [W][(user ? " by [user]." : ".")]</span>")
 
-	if(istype(W, /obj/item/weldingtool))
+	if(isWelder(W))
 		var/obj/item/weldingtool/WT = W
-		if(WT.remove_fuel(0, user))
-			qdel(src)
-			playsound(loc, 'sound/items/Welder.ogg', 100, 1)
+
+		if(!WT.use_tool(src, user, amount = 1))
+			return
+
+		qdel_self()
 
 	else
 		if(prob(50))
@@ -239,5 +275,5 @@
 
 
 /obj/effect/alien/weeds/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
-	if(exposed_temperature > 300 + T0C && prob(80))
+	if(exposed_temperature > (300 CELSIUS) && prob(80))
 		qdel(src)

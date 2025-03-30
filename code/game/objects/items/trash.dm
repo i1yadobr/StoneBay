@@ -11,6 +11,8 @@
 	mod_handy = 0.25
 
 /obj/item/trash/dish
+	name = "dish"
+	icon_state = "dish"
 	var/list/stack = list()
 	var/max_stack = 5
 
@@ -120,7 +122,13 @@
 	name = "\improper SkrellSnax"
 	icon_state = "skrellsnacks"
 
+/obj/item/trash/surstromming
+	name = "\improper old canned food"
+	icon_state = "surstromming"
+
 /obj/item/trash/cans
+	name = "crushed can"
+	icon_state = "can"
 	matter = list(MATERIAL_STEEL = 500)
 	var/base_state = ""
 
@@ -199,10 +207,14 @@
 	name = "\improper Red MULE"
 	icon_state = "red_mule"
 
+/obj/item/trash/cans/startrucks
+	name = "\improper Startrucks Cold Brew"
+	icon_state = "startrucks"
+
 /obj/item/trash/attack(mob/M as mob, mob/living/user as mob)
 	return
 
-/obj/item/trash/dish/update_icon()
+/obj/item/trash/dish/on_update_icon()
 	icon_state = "[initial(icon_state)][length(stack) || ""]"
 
 /obj/item/trash/dish/attackby(obj/item/I, mob/user)
@@ -215,8 +227,8 @@
 			dishestoadd += i
 
 		if((length(stack) + length(dishestoadd)) < max_stack)
-			user.drop_item()
-			dish.forceMove(src)
+			if(!user.drop(dish, src))
+				return
 			dish.stack.Cut()
 			dish.update_icon()
 			stack += dishestoadd
@@ -232,6 +244,6 @@
 	var/obj/item/trash/dish/dish = stack[length(stack)]
 	stack -= dish
 
-	user.put_in_hands(dish)
+	user.pick_or_drop(dish)
 
 	update_icon()

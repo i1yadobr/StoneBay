@@ -23,8 +23,8 @@ var/list/holder_mob_icon_cache = list()
 	..(loc)
 	ASSERT(mob_to_hold)
 	held_mob = mob_to_hold
-	register_signal(mob_to_hold, SIGNAL_QDELETING, /obj/item/holder/proc/onMobQdeleting)
-	START_PROCESSING(SSobj, src)
+	register_signal(mob_to_hold, SIGNAL_QDELETING, nameof(.proc/onMobQdeleting))
+	set_next_think(world.time)
 
 /obj/item/holder/proc/destroy_all()
 	QDEL_NULL(held_mob)
@@ -39,17 +39,16 @@ var/list/holder_mob_icon_cache = list()
 /obj/item/holder/Destroy()
 	if(held_mob)
 		unregister_signal(held_mob, SIGNAL_QDELETING)
-		held_mob.forceMove(get_turf(src))
+		if(held_mob in src)
+			held_mob.forceMove(get_turf(src))
 		held_mob = null
 	last_holder = null
-	if(ismob(loc))
-		var/mob/M = loc
-		M.drop_from_inventory(src, get_turf(M))
-	STOP_PROCESSING(SSobj, src)
 	return ..()
 
-/obj/item/holder/Process()
+/obj/item/holder/think()
 	check_condition()
+
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/holder/dropped()
 	..()
@@ -57,7 +56,9 @@ var/list/holder_mob_icon_cache = list()
 		check_condition()
 
 /obj/item/holder/proc/check_condition()
-	if(isturf(loc) || !held_mob)
+	if(!held_mob || !(held_mob in src))
+		qdel(src)
+	if(isturf(loc) && !throwing) // Throwing 'em little bastards is fun
 		qdel(src)
 
 /obj/item/holder/onDropInto(atom/movable/AM)
@@ -65,15 +66,17 @@ var/list/holder_mob_icon_cache = list()
 		return loc.loc
 	return ..()
 
-/obj/item/holder/GetIdCard()
-	return held_mob.GetIdCard()
+/obj/item/holder/get_id_card()
+	return held_mob.get_id_card()
 
 /obj/item/holder/GetAccess()
-	var/obj/item/I = GetIdCard()
+	var/obj/item/I = get_id_card()
 	return I ? I.GetAccess() : ..()
 
 /obj/item/holder/attack_self()
-	held_mob.show_inv(usr)
+	if(!held_mob.show_inv(usr))
+		return
+
 	usr.show_inventory?.open()
 
 /obj/item/holder/attack(mob/target, mob/user)
@@ -87,20 +90,20 @@ var/list/holder_mob_icon_cache = list()
 			to_chat(user, SPAN_WARNING("\The [blocked] is in the way!"))
 			return 1
 		M.devour(held_mob)
-		qdel(src)
+		check_condition()
 
 	..()
 
 /obj/item/holder/proc/sync()
 	dir = 2
-	overlays.Cut()
+	ClearOverlays()
 	icon = held_mob.icon
 	icon_state = held_mob.icon_state
 	item_state = held_mob.item_state
 	color = held_mob.color
 	name = held_mob.name
 	desc = held_mob.desc
-	overlays |= held_mob.overlays
+	AddOverlays(held_mob.overlays)
 
 	update_held_icon()
 
@@ -113,6 +116,9 @@ var/list/holder_mob_icon_cache = list()
 	origin_tech = list(TECH_MAGNET = 3, TECH_ENGINEERING = 5)
 
 /obj/item/holder/mouse
+	w_class = ITEM_SIZE_TINY
+
+/obj/item/holder/hamster
 	w_class = ITEM_SIZE_TINY
 
 /obj/item/holder/borer
@@ -136,6 +142,25 @@ var/list/holder_mob_icon_cache = list()
 	origin_tech = list(TECH_BIO = 2)
 	slot_flags = SLOT_HOLSTER
 
+/obj/item/holder/mini_pig
+	origin_tech = list(TECH_BIO = 2)
+	slot_flags = SLOT_HOLSTER
+
+/obj/item/holder/mini_pig/attack_self(mob/user)
+	if(!held_mob)
+		return
+
+	var/msg = pick("presses", "squeezes", "squashes", "champs", "pinches")
+
+	if(held_mob.stat)
+		user.visible_message(SPAN("notice", "[user] [msg] \the [src] in hand... But it doesn't react."))
+		return
+
+	playsound(loc, pick('sound/effects/pig1.ogg','sound/effects/pig2.ogg','sound/effects/pig3.ogg'), 100, 1)
+	user.visible_message(SPAN("notice", "[user] [msg] \the [src] in hand!"))
+	return
+
+
 /obj/item/holder/attackby(obj/item/W, mob/user)
 	held_mob.attackby(W, user)
 	sync()
@@ -145,7 +170,7 @@ var/list/holder_mob_icon_cache = list()
 
 /mob/living/proc/get_scooped(mob/living/carbon/human/grabber, self_grab)
 
-	if(!holder_type || buckled || pinned.len)
+	if(!holder_type || buckled || LAZYLEN(pinned))
 		return
 
 	if(self_grab)
@@ -224,11 +249,12 @@ var/list/holder_mob_icon_cache = list()
 
 		var/skin_colour = rgb(owner.r_skin, owner.g_skin, owner.b_skin)
 		var/hair_colour = rgb(owner.r_hair, owner.g_hair, owner.b_hair)
+		var/s_hair_color = rgb(owner.r_s_hair, owner.g_s_hair, owner.b_s_hair)
 		var/eye_colour =  rgb(owner.r_eyes, owner.g_eyes, owner.b_eyes)
 		var/species_name = lowertext(owner.species.name)
 
 		for(var/cache_entry in generate_for_slots)
-			var/cache_key = "[owner.species]-[cache_entry]-[skin_colour]-[hair_colour]"
+			var/cache_key = "[owner.species]-[cache_entry]-[skin_colour]-[hair_colour]-[s_hair_color]"
 			if(!holder_mob_icon_cache[cache_key])
 
 				// Generate individual icons.
@@ -236,11 +262,15 @@ var/list/holder_mob_icon_cache = list()
 				mob_icon.Blend(skin_colour, ICON_ADD)
 				var/icon/hair_icon = icon(icon, "[species_name]_holder_[cache_entry]_hair")
 				hair_icon.Blend(hair_colour, ICON_ADD)
+				var/icon/s_hair_icon = icon(icon, "[species_name]_holder_[cache_entry]_s_hair")
+				s_hair_icon.Blend(s_hair_color, ICON_ADD)
 				var/icon/eyes_icon = icon(icon, "[species_name]_holder_[cache_entry]_eyes")
 				eyes_icon.Blend(eye_colour, ICON_ADD)
 
 				// Blend them together.
 				mob_icon.Blend(eyes_icon, ICON_OVERLAY)
+
+				hair_icon.Blend(s_hair_icon, ICON_OVERLAY)
 				mob_icon.Blend(hair_icon, ICON_OVERLAY)
 
 				// Add to the cache.

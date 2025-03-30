@@ -10,7 +10,7 @@
 
 /obj/item/clothing/suit/storage/Destroy()
 	QDEL_NULL(pockets)
-	. = ..()
+	return ..()
 
 /obj/item/clothing/suit/storage/attack_hand(mob/user as mob)
 	if (pockets.handle_attack_hand(user))
@@ -22,7 +22,7 @@
 
 /obj/item/clothing/suit/storage/attackby(obj/item/W as obj, mob/user as mob)
 	..()
-	if(!(W in accessories))		//Make sure that an accessory wasn't successfully attached to suit.
+	if(!LAZYISIN(accessories, W))		//Make sure that an accessory wasn't successfully attached to suit.
 		pockets.attackby(W, user)
 
 /obj/item/clothing/suit/storage/emp_act(severity)
@@ -33,6 +33,7 @@
 /obj/item/clothing/suit/storage/toggle
 	var/icon_open
 	var/icon_closed
+	var/hidesuitstorage = TRUE //Enabled by default for all toggles suit
 
 /obj/item/clothing/suit/storage/toggle/verb/toggle()
 	set name = "Toggle Coat Buttons"
@@ -42,13 +43,19 @@
 		return 0
 
 	if(icon_state == icon_open) //Will check whether icon state is currently set to the "open" or "closed" state and switch it around with a message to the user
+		if(hidesuitstorage == TRUE) //We don't want any closed labcoats with analyzers sticking out where it's not appropriate.
+			flags_inv |= HIDEJUMPSUITACCESSORIES | HIDESUITSTORAGE
 		icon_state = icon_closed
-		to_chat(usr, "You button up the coat.")
+		item_state = icon_closed
+		to_chat(usr, "You button up the [src].")
 		flags_inv |= HIDEJUMPSUITACCESSORIES
+		coverage = 1.0
 	else if(icon_state == icon_closed)
 		icon_state = icon_open
-		to_chat(usr, "You unbutton the coat.")
+		item_state = icon_open
+		to_chat(usr, "You unbutton the [src].")
 		flags_inv &= HIDEJUMPSUITACCESSORIES
+		coverage = 0.8
 	else
 		to_chat(usr, "You attempt to button-up the velcro on your [src], before promptly realising how silly you are.")
 		return

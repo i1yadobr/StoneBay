@@ -48,7 +48,7 @@
 	// Will create sparks and print out the console's password. You will then have to wait a while for the console to be back online.
 	// It'll take more time if there's more characters in the password..
 	if(!emag && operable())
-		if(!isnull(src.linkedServer))
+		if(!QDELETED(src.linkedServer))
 			playsound(src.loc, 'sound/effects/computer_emag.ogg', 25)
 			emag = 1
 			screen = 2
@@ -65,7 +65,7 @@
 		else
 			to_chat(user, "<span class='notice'>A no server error appears on the screen.</span>")
 
-/obj/machinery/computer/message_monitor/update_icon()
+/obj/machinery/computer/message_monitor/on_update_icon()
 	if(emag || hacking)
 		icon_screen = hack_icon
 	else
@@ -264,7 +264,7 @@
 	return src.attack_hand(user)
 
 /obj/machinery/computer/message_monitor/proc/BruteForce(mob/user as mob)
-	if(isnull(linkedServer))
+	if(QDELETED(linkedServer))
 		to_chat(user, "<span class='warning'>Could not complete brute-force: Linked Server Disconnected!</span>")
 	else
 		var/currentKey = src.linkedServer.decryptkey
@@ -437,7 +437,7 @@
 					if(isnull(customsender) || customsender == "")
 						customsender = "UNKNOWN"
 
-					if(isnull(customrecepient))
+					if(QDELETED(customrecepient))
 						message = "<span class='notice'>NOTICE: No recepient selected!</span>"
 						return src.attack_hand(usr)
 
@@ -504,7 +504,6 @@
 
 
 /obj/item/paper/monitorkey
-	//..()
 	name = "Monitor Decryption Key"
 	var/obj/machinery/message_server/server = null
 
@@ -513,7 +512,7 @@
 	spawn(10)
 		if(message_servers)
 			for(var/obj/machinery/message_server/server in message_servers)
-				if(!isnull(server))
+				if(!QDELETED(server))
 					if(!isnull(server.decryptkey))
 						info = "<center><h2>Daily Key Reset</h2></center><br>The new message monitor key is '[server.decryptkey]'.<br>This key is only intended for personnel granted access to the messaging server. Keep it safe.<br>If necessary, change the password to a more secure one."
 						info_links = info

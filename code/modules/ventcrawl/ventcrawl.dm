@@ -11,8 +11,7 @@ var/list/ventcrawl_machinery = list(
 	/obj/machinery/camera,
 	/mob/living/simple_animal/borer,
 	/obj/item/organ/internal/biostructure,
-	/obj/effect/abstract/proximity_checker, //spiderbot staff
-	/obj/item/organ/internal/heart/gland/ventcrawling
+	/obj/item/organ/internal/adamantine_resonator
 	)
 
 /mob/living/var/list/icon/pipes_shown = list()
@@ -61,8 +60,6 @@ var/list/ventcrawl_machinery = list(
 		return TRUE
 	if(istype(species, /datum/species/xenos))
 		return TRUE
-	if(istype(internal_organs_by_name[BP_HEART], /obj/item/organ/internal/heart/gland/ventcrawling))
-		return TRUE
 	return ventcrawl_carry()
 
 /mob/living/carbon/human/ventcrawl_carry()
@@ -89,6 +86,11 @@ var/list/ventcrawl_machinery = list(
 	return ..()
 
 /mob/living/simple_animal/mouse/is_allowed_vent_crawl_item(obj/item/carried_item)
+	if(carried_item == holding_item)
+		return TRUE
+	return ..()
+
+/mob/living/simple_animal/hamster/is_allowed_vent_crawl_item(obj/item/carried_item)
 	if(carried_item == holding_item)
 		return TRUE
 	return ..()
@@ -133,6 +135,9 @@ var/list/ventcrawl_machinery = list(
 /mob/living/simple_animal/borer/ventcrawl_carry()
 	return 1
 
+/mob/living/simple_animal/hostile/giant_spider/viper/wizard/ventcrawl_carry()
+	return 1
+
 /mob/living/proc/handle_ventcrawl(atom/clicked_on)
 	if(!can_ventcrawl())
 		return
@@ -163,9 +168,9 @@ var/list/ventcrawl_machinery = list(
 				switch(vent_found.air_contents.temperature)
 					if(0 to BODYTEMP_COLD_DAMAGE_LIMIT)
 						to_chat(src, "<span class='danger'>You feel a painful freeze coming from the vent!</span>")
-					if(BODYTEMP_COLD_DAMAGE_LIMIT to T0C)
+					if(BODYTEMP_COLD_DAMAGE_LIMIT to (0 CELSIUS))
 						to_chat(src, "<span class='warning'>You feel an icy chill coming from the vent.</span>")
-					if(T0C + 40 to BODYTEMP_HEAT_DAMAGE_LIMIT)
+					if((40 CELSIUS) to BODYTEMP_HEAT_DAMAGE_LIMIT)
 						to_chat(src, "<span class='warning'>You feel a hot wash coming from the vent.</span>")
 					if(BODYTEMP_HEAT_DAMAGE_LIMIT to INFINITY)
 						to_chat(src, "<span class='danger'>You feel a searing heat coming from the vent!</span>")

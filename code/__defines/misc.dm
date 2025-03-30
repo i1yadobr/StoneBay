@@ -1,7 +1,11 @@
 #define DEBUG
 // Turf-only flags.
-#define TURF_FLAG_NOJAUNT 1 // This is used in literally one place, turf.dm, to block ethereal jaunt.
-#define TURF_FLAG_NORUINS 2
+/// This is used in literally one place, turf.dm, to block ethereal jaunt.
+#define TURF_FLAG_NOJAUNT (1<<0)
+#define TURF_FLAG_NORUINS (1<<1)
+/// Blocks lava rivers from generating
+#define TURF_FLAG_NOLAVA  (1<<2)
+
 
 #define RUIN_MAP_EDGE_PAD 15
 
@@ -44,7 +48,6 @@
 #define  STATUS_HUD_OOC 9 // STATUS_HUD without virus DB check for someone being ill.
 #define        LIFE_HUD 10 // STATUS_HUD that only reports dead or alive
 #define        XENO_HUD 11 // Alien embryo status.
-#define       GLAND_HUD 12 // Abductors data hud
 
 // Shuttle moving status.
 #define SHUTTLE_IDLE      0
@@ -76,15 +79,38 @@
 #define EVENT_LEVEL_MODERATE 2
 #define EVENT_LEVEL_MAJOR    3
 
+/// Weight as is.
+#define EVENT_OPTION_NORMAL          1
+/// Higher weight by `aggression_ratio` of storyteller character.
+#define EVENT_OPTION_AI_AGGRESSION   2
+/// Reverse of `EVENT_OPTION_AI_AGGRESSION`
+#define EVENT_OPTION_AI_AGGRESSION_R 3
+
 //General-purpose life speed define for plants.
 #define HYDRO_SPEED_MULTIPLIER 1
 
 #define DEFAULT_JOB_TYPE /datum/job/assistant
 
-//Area flags, possibly more to come
-#define AREA_FLAG_RAD_SHIELDED 1 // shielded from radiation, clearly
-#define AREA_FLAG_EXTERNAL     2 // External as in exposed to space, not outside in a nice, green, forest
-#define AREA_FLAG_NO_STATION   3
+//Area flags
+#define AREA_FLAG_RAD_SHIELDED      (1<<0)
+/// External as in exposed to space
+#define AREA_FLAG_EXTERNAL          (1<<1)
+/// Area that is not centcomm but not station either
+#define AREA_FLAG_NO_STATION        (1<<2)
+/// If mining tunnel generation is allowed in this area
+#define AREA_FLAG_CAVES_ALLOWED     (1<<3)
+/// If flora are allowed to spawn in this area randomly through tunnel generation
+#define AREA_FLAG_FLORA_ALLOWED     (1<<3)
+/// If mobs can be spawned by natural random generation
+#define AREA_FLAG_MOB_SPAWN_ALLOWED (1<<4)
+/// Are you forbidden from teleporting to the area? (centcom, mobs, wizard, hand teleporter)
+#define AREA_FLAG_NOTELEPORT        (1<<5)
+/// Hides area from player Teleport function.
+#define AREA_FLAG_HIDDEN_AREA       (1<<6)
+/// Loading multiple maps with this area type will create multiple instances.
+#define AREA_FLAG_UNIQUE_AREA       (1<<7)
+/// Allows weather effects to affect this area
+#define AREA_FLAG_ALLOW_WEATHER     (1<<8)
 
 //Area gravity flags
 #define AREA_GRAVITY_NEVER  -1 // No gravity, never
@@ -96,7 +122,6 @@
 #define TEMPLATE_FLAG_SPAWN_GUARANTEED 2 // Makes it ignore away site budget and just spawn (only for away sites)
 #define TEMPLATE_FLAG_CLEAR_CONTENTS   4 // if it should destroy objects it spawns on top of
 #define TEMPLATE_FLAG_NO_RUINS         8 // if it should forbid ruins from spawning on top of it
-#define TEMPLATE_FLAG_NO_RADS          16// Removes all radiation from the template after spawning.
 
 #define CUSTOM_ITEM_OBJ 'icons/obj/custom_items_obj.dmi'
 #define CUSTOM_ITEM_MOB null
@@ -154,10 +179,17 @@
 //Of course, this will affect code that checks for blocked < 100, as blocked will be less likely to actually be 100.
 #define ARMOR_BLOCK_CHANCE_MULT 1.0
 
+// Multiplier for projectiles' damage dealt to internal organs
+#define PROJECTILE_INTERNAL_DAMAGE_MULT 1.0
+
+// Projectiles' chance to embed/sever an artery, 25 seems to be fair but one might tweak it if needed
+#define PROJECTILE_EMBED_CHANCE 25
+
 // Special return values from bullet_act(). Positive return values are already used to indicate the blocked level of the projectile.
-#define PROJECTILE_CONTINUE		-1 //if the projectile should continue flying after calling bullet_act()
-#define PROJECTILE_FORCE_MISS	-2 //if the projectile should treat the attack as a miss (suppresses attack and admin logs) - only applies to mobs.
-#define PROJECTILE_FORCE_BLOCK	-3 //if the projectile should treat the attack as blocked (supresses attack, but not admin logs) - only applies to humans and human subtypes.
+#define PROJECTILE_CONTINUE         -1 //if the projectile should continue flying after calling bullet_act()
+#define PROJECTILE_FORCE_MISS       -2 //if the projectile should treat the attack as a miss (suppresses attack and admin logs) - only applies to mobs.
+#define PROJECTILE_FORCE_BLOCK      -3 //if the projectile should treat the attack as blocked (supresses attack, but not admin logs) - only applies to humans and human subtypes.
+#define PROJECTILE_FORCE_ARMORBLOCK -4 //the same as PROJECTILE_FORCE_BLOCK - only used for fancy messages
 
 // These determine how well one can block things with items
 #define BLOCK_TIER_NONE        0
@@ -218,13 +250,6 @@
 //Error handler defines
 #define ERROR_USEFUL_LEN 2
 
-#define RAD_LEVEL_LOW 0.5 // Around the level at which radiation starts to become harmful
-#define RAD_LEVEL_MODERATE 5
-#define RAD_LEVEL_HIGH 25
-#define RAD_LEVEL_VERY_HIGH 75
-
-#define RADIATION_THRESHOLD_CUTOFF 0.1	// Radiation will not affect a tile when below this value.
-
 #define LEGACY_RECORD_STRUCTURE(X, Y) GLOBAL_LIST_EMPTY(##X);/datum/computer_file/data/##Y/var/list/fields[0];/datum/computer_file/data/##Y/New(){..();GLOB.##X.Add(src);}/datum/computer_file/data/##Y/Destroy(){..();GLOB.##X.Remove(src);}
 
 #define EDIT_SHORTTEXT 1	// Short (single line) text input field
@@ -247,8 +272,8 @@
 #define CLIENT_FROM_VAR(I) (ismob(I) ? I:client : (istype(I, /client) ? I : (istype(I, /datum/mind) ? I:current?:client : null)))
 #define GRAYSCALE list(0.3,0.3,0.3,0,0.59,0.59,0.59,0,0.11,0.11,0.11,0,0,0,0,1,0,0,0,0)
 
-#define ADD_VERB_IN(the_atom,time,verb) addtimer(CALLBACK(the_atom, /atom/proc/add_verb, verb), time, TIMER_UNIQUE | TIMER_OVERRIDE | TIMER_NO_HASH_WAIT)
-#define ADD_VERB_IN_IF(the_atom,time,verb,callback) addtimer(CALLBACK(the_atom, /atom/proc/add_verb, verb, callback), time, TIMER_UNIQUE | TIMER_OVERRIDE | TIMER_NO_HASH_WAIT)
+#define ADD_VERB_IN(the_atom,time,verb) addtimer(CALLBACK(the_atom, nameof(/atom.proc/add_verb), verb), time, TIMER_UNIQUE | TIMER_OVERRIDE | TIMER_NO_HASH_WAIT)
+#define ADD_VERB_IN_IF(the_atom,time,verb,callback) addtimer(CALLBACK(the_atom, nameof(/atom.proc/add_verb), verb, callback), time, TIMER_UNIQUE | TIMER_OVERRIDE | TIMER_NO_HASH_WAIT)
 
 //Wiki book styles
 #define WIKI_FULL   1 // This is a standart web page. Beware, navigaton throw the internet is allowed!
@@ -290,3 +315,37 @@
 #define NOTIFY_JUMP "jump"
 #define NOTIFY_ATTACK "attack"
 #define NOTIFY_FOLLOW "follow"
+#define NOTIFY_POSSES "posses"
+#define NOTIFY_VOTE "vote"
+
+// Atmospherics vents
+#define VENT_UNDAMAGED 0
+#define VENT_DAMAGED_STAGE_ONE 1
+#define VENT_DAMAGED_STAGE_TWO 2
+#define VENT_DAMAGED_STAGE_THREE 3
+#define VENT_BROKEN 4
+
+// Headphones
+#define LOW_VOLUME  1
+#define MID_VOLUME  2
+#define HIGH_VOLUME 3
+
+//Lawgiver gun
+#define LAWGIVER_MAX_AMMO 5
+
+// Bitflags for magic resistance types
+/// Default magic resistance that blocks normal magic (wizard, spells, magical staff projectiles)
+#define MAGIC_RESISTANCE (1<<0)
+/// Tinfoil hat magic resistance that blocks mental magic (telepathy / mind links, mind curses)
+#define MAGIC_RESISTANCE_MIND (1<<1)
+/// Holy magic resistance that blocks unholy magic (vampire)
+#define MAGIC_RESISTANCE_HOLY (1<<2)
+
+// Shortcut for image_repository.overlay_image(...)
+#define OVERLAY(args...) image_repository.overlay_image(args)
+
+//Turf/area values for 'this space is outside' checks
+#define OUTSIDE_AREA null
+#define OUTSIDE_NO   FALSE
+#define OUTSIDE_YES  TRUE
+#define OUTSIDE_UNCERTAIN null

@@ -14,19 +14,26 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 /decl/uplink_source/proc/setup_uplink_source(mob/M, amount)
 	return SETUP_FAILED
 
+/decl/uplink_source/proc/check_source_setup(mob/M)
+	return FALSE
+
 /decl/uplink_source/pda
 	name = "PDA"
 	desc = NO_GUARANTEE_NO_EXTRA_COST_DESC("a PDA")
 
-/decl/uplink_source/pda/setup_uplink_source(mob/M, amount)
+/decl/uplink_source/pda/check_source_setup(mob/M)
 	var/obj/item/device/pda/P = find_in_mob(M, /obj/item/device/pda)
+	return (P ? P : FALSE)
+
+/decl/uplink_source/pda/setup_uplink_source(mob/M, amount)
+	var/obj/item/device/pda/P = check_source_setup(M)
 	if(!P)
 		return SETUP_FAILED
 
 	var/pda_pass = "[rand(100,999)] [pick(GLOB.greek_letters)]"
-	var/obj/item/device/uplink/T = new(P, M.mind, amount)
-	P.hidden_uplink = T
-	P.lock_code = pda_pass
+	P.AddComponent(/datum/component/uplink, M.mind, TRUE, FALSE, null, amount)
+	var/datum/component/uplink/uplink = P.get_component(/datum/component/uplink)
+	uplink.unlock_code = pda_pass
 	to_chat(M, "<span class='notice'>A portable object teleportation relay has been installed in your [P.name]. Simply enter the code \"[pda_pass]\" into the ringtone select to unlock its hidden features.</span>")
 	M.mind.store_memory("<B>Uplink Passcode:</B> [pda_pass] ([P.name]).")
 
@@ -34,8 +41,12 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 	name = "Radio"
 	desc = NO_GUARANTEE_NO_EXTRA_COST_DESC("a radio")
 
-/decl/uplink_source/radio/setup_uplink_source(mob/M, amount)
+/decl/uplink_source/radio/check_source_setup(mob/M)
 	var/obj/item/device/radio/R = find_in_mob(M, /obj/item/device/radio)
+	return (R ? R : FALSE)
+
+/decl/uplink_source/radio/setup_uplink_source(mob/M, amount)
+	var/obj/item/device/radio/R = check_source_setup(M)
 	if(!R)
 		return SETUP_FAILED
 
@@ -49,9 +60,9 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 			freq += 1
 
 	freq = freqlist[rand(1, freqlist.len)]
-	var/obj/item/device/uplink/T = new(R, M.mind, amount)
-	R.hidden_uplink = T
-	R.traitor_frequency = freq
+	R.AddComponent(/datum/component/uplink, M.mind, FALSE, FALSE, null, amount)
+	var/datum/component/uplink/uplink = R.get_component(/datum/component/uplink)
+	uplink.traitor_frequency = freq
 	to_chat(M, "<span class='notice'>A portable object teleportation relay has been installed in your [R.name]. Simply dial the frequency [format_frequency(freq)] to unlock its hidden features.</span>")
 	M.mind.store_memory("<B>Radio Freq:</B> [format_frequency(freq)] ([R.name]).")
 
@@ -59,25 +70,33 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 	name = "Implant"
 	desc = "Teleports an uplink implant into your head. Costs at least half the initial TC amount."
 
-/decl/uplink_source/implant/setup_uplink_source(mob/living/carbon/human/H, amount)
+/decl/uplink_source/implant/check_source_setup(mob/living/carbon/human/H)
 	if(!istype(H))
-		return SETUP_FAILED
+		return FALSE
 
 	var/obj/item/organ/external/head = H.organs_by_name[BP_HEAD]
+
+	return (head ? head : FALSE)
+
+/decl/uplink_source/implant/setup_uplink_source(mob/living/carbon/human/H, amount)
+	var/obj/item/organ/external/head = check_source_setup(H)
 	if(!head)
 		return SETUP_FAILED
 
-	var/obj/item/implant/uplink/U = new(H, IMPLANT_TELECRYSTAL_AMOUNT(amount))
+	var/obj/item/implant/uplink/U = new(H)
 	U.imp_in = H
 	U.implanted = TRUE
 	U.part = head
 	head.implants += U
 
-	U.implanted(H) // This proc handles the installation feedback
+	U.implanted(H, IMPLANT_TELECRYSTAL_AMOUNT(amount)) // This proc handles the installation feedback
 
 /decl/uplink_source/unit
 	name = "Uplink Unit"
 	desc = "Teleports an uplink unit to your location. Grants you three extra TCs."
+
+/decl/uplink_source/unit/check_source_setup(mob/M)
+	return (M.back ? TRUE : FALSE)
 
 /decl/uplink_source/unit/setup_uplink_source(mob/M, amount)
 	var/obj/item/device/radio/uplink/U = new(M, M.mind, round(amount * 1.25))
@@ -96,17 +115,17 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 		if(!istype(item, type))
 			continue
 		var/obj/item/I = item
-		if(!I.hidden_uplink)
+		var/datum/component/uplink/U = I.get_component(/datum/component/uplink)
+		if(!istype(U))
 			return I
 
 /decl/uplink_source/proc/put_on_mob(mob/M, atom/movable/AM, text)
 	var/obj/O = M.equip_to_storage(AM)
 	if(O)
 		to_chat(M, "<span class='notice'>[text] can be found in your [O.name].</span>")
-	else if(M.put_in_hands(AM))
+	else if(M.pick_or_drop(AM))
 		to_chat(M, "<span class='notice'>[text] appear in your hands.</span>")
 	else
-		AM.dropInto(M.loc)
 		to_chat(M, "<span class='notice'>[text] appear at your location.</span>")
 
 /proc/setup_uplink_source(mob/M, amount = DEFAULT_TELECRYSTAL_AMOUNT)
@@ -128,6 +147,20 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 			return TRUE
 
 	to_chat(M, "<span class='warning'>Either by choice or circumstance you will be without an uplink.</span>")
+	return FALSE
+
+/proc/check_uplink_sources(mob/M)
+	if(!istype(M) || !M.mind)
+		return FALSE
+
+	var/list/sources_list = list()
+	for(var/entry in GLOB.default_uplink_source_priority)
+		sources_list += decls_repository.get_decl(entry)
+
+	for(var/entry in sources_list)
+		var/decl/uplink_source/source = entry
+		if(source.check_source_setup(M))
+			return TRUE
 	return FALSE
 
 #undef NO_GUARANTEE_NO_EXTRA_COST_DESC

@@ -50,7 +50,6 @@
 /obj/item/storage/bag/trash
 	name = "trash bag"
 	desc = "It's the heavy-duty black polymer kind. Time to take out the trash!"
-	icon = 'icons/obj/janitor.dmi'
 	icon_state = "trashbag0"
 	item_state = "trashbag"
 
@@ -63,7 +62,7 @@
 	..()
 	update_icon()
 
-/obj/item/storage/bag/trash/update_icon()
+/obj/item/storage/bag/trash/on_update_icon()
 	switch(w_class)
 		if(2) icon_state = "trashbag0"
 		if(3) icon_state = "trashbag1"
@@ -77,7 +76,6 @@
 /obj/item/storage/bag/plasticbag
 	name = "plastic bag"
 	desc = "It's a very flimsy, very noisy alternative to a bag."
-	icon = 'icons/obj/trash.dmi'
 	icon_state = "plasticbag"
 	item_state = "plasticbag"
 
@@ -89,9 +87,7 @@
 /obj/item/storage/bag/plasticbag/attack_self(mob/user)
 	quick_empty()
 	to_chat(user, "You turned everything out of [src]!")
-	user.drop_from_inventory(src)
-	user.put_in_any_hand_if_possible(new /obj/item/clothing/mask/plasticbag)
-	qdel(src)
+	user.replace_item(src, new /obj/item/clothing/mask/plasticbag, TRUE, TRUE)
 
 // -----------------------------
 //           Cash Bag
@@ -99,7 +95,6 @@
 
 /obj/item/storage/bag/cash
 	name = "cash bag"
-	icon = 'icons/obj/storage.dmi'
 	icon_state = "cashbag"
 	desc = "A bag for carrying lots of cash. It's got a big dollar sign printed on the front."
 	max_storage_space = 100

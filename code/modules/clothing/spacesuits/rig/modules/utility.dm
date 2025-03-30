@@ -71,7 +71,7 @@
 	suit_overlay_inactive = "mounted-drill"
 	use_power_cost = 75
 	origin_tech = list(TECH_MATERIAL = 6, TECH_POWER = 4, TECH_ENGINEERING = 6)
-	device_type = /obj/item/pickaxe/diamonddrill
+	device_type = /obj/item/pickaxe/drill/diamonddrill
 
 /obj/item/rig_module/device/anomaly_scanner
 	name = "powersuit anomaly scanner"
@@ -109,8 +109,7 @@
 	engage_string = "Configure RCD"
 	use_power_cost = 300
 	origin_tech = list(TECH_MATERIAL = 6, TECH_MAGNET = 5, TECH_ENGINEERING = 7)
-	device_type = /obj/item/rcd/mounted
-
+	device_type = /obj/item/construction/rcd/mounted
 
 /obj/item/rig_module/chem_dispenser
 	name = "mounted chemical dispenser"
@@ -121,7 +120,7 @@
 	toggleable = 0
 	disruptive = 0
 	use_power_cost = 500
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
+
 
 	engage_string = "Inject"
 
@@ -190,11 +189,13 @@
 	return 1
 
 /obj/item/rig_module/chem_dispenser/engage(atom/target)
-
 	if(!..())
-		return 0
+		return FALSE
 
 	var/mob/living/carbon/human/H = holder.wearer
+
+	if(!Adjacent(H, target))
+		return FALSE
 
 	if(!charge_selected)
 		to_chat(H, "<span class='danger'>You have not selected a chemical type.</span>")
@@ -481,9 +482,9 @@
 	interface_name = "mounted cooling unit"
 	interface_desc = "A heat sink with liquid cooled radiator."
 	module_cooldown = 0 SECONDS //no cd because its critical for a life-support module
-	var/charge_consumption = 0.5 KILOWATTS
+	var/charge_consumption = 0.5 KILO WATTS
 	var/max_cooling = 12
-	var/thermostat = T20C
+	var/thermostat = 20 CELSIUS
 
 /obj/item/rig_module/cooling_unit/Process()
 	if(!active)

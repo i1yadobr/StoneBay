@@ -14,7 +14,10 @@
 /mob/living/carbon/Destroy()
 	QDEL_NULL(touching)
 	QDEL_NULL(bloodstr)
+	QDEL_NULL(surgery_status)
+	QDEL_NULL(handcuffed)
 
+	internal = null
 	reagents = null //We assume reagents is a reference to bloodstr here
 
 	// We assume that, in case of gib, organs and whatever have already done their business escaping the body,
@@ -41,18 +44,19 @@
 	var/datum/reagents/R = get_ingested_reagents()
 	if(istype(R))
 		R.clear_reagents()
-	nutrition = 300
+	set_nutrition(300)
 	..()
 
-/mob/living/carbon/Move(NewLoc, direct)
+/mob/living/carbon/Move(newloc, direct)
 	. = ..()
 	if(!.)
 		return
 
 	if(nutrition && stat != 2)
-		nutrition -= min(nutrition, DEFAULT_HUNGER_FACTOR/10)
+		remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 10))
 		if(m_intent == M_RUN)
-			nutrition -= min(nutrition, DEFAULT_HUNGER_FACTOR/10)
+			remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 10))
+
 	if((MUTATION_FAT in mutations) && m_intent == M_RUN && bodytemperature <= 360)
 		bodytemperature += 2
 
@@ -82,21 +86,21 @@
 
 		if(prob(getBruteLoss() - 50))
 			for(var/atom/movable/A in stomach_contents)
-				A.loc = loc
+				A.dropInto(loc)
 				stomach_contents.Remove(A)
 			gib()
 
-/mob/living/carbon/gib()
+/mob/living/carbon/gib(anim, do_gibs)
 	for(var/mob/M in src)
 		if(M in src.stomach_contents)
 			src.stomach_contents.Remove(M)
-		M.loc = src.loc
+		M.dropInto(loc)
 		for(var/mob/N in viewers(src, null))
 			if(N.client)
 				N.show_message(text("<span class='danger'>[M] bursts out of [src]!</span>"), 2)
 	..()
 
-/mob/living/carbon/attack_hand(mob/M as mob)
+/mob/living/carbon/attack_hand(mob/M)
 	if(!istype(M, /mob/living/carbon)) return
 	if (ishuman(M))
 		var/mob/living/carbon/human/H = M
@@ -108,6 +112,19 @@
 			return
 
 	return
+
+/mob/living/carbon/attack_ghost(mob/observer/ghost/user)
+	if(HAS_TRAIT(src, TRAIT_GHOSTATTACKABLE)) //Used for wizard's spell "No remorse" which allows ghosts to attack target
+		resolve_ghost_attack(user)
+		return
+
+	return ..()
+
+/mob/living/carbon/proc/resolve_ghost_attack(mob/observer/ghost/user)
+	adjustFireLoss(SPELL_NOREMORSE_GHOST_DAMAGE)
+	to_chat(user, SPAN_DANGER("You burn [src] with all the fury you can muster!"))
+	to_chat(src, SPAN_DANGER("You are being burned by something!"))
+	admin_attack_log(user, src, "Attacked [src] with ghostattack.", "Was ghostattacked by [user]!", "[user] has used nercomancy to attack [src]")
 
 /mob/living/carbon/electrocute_act(shock_damage, obj/source, siemens_coeff = 1.0, def_zone = null)
 	if(status_flags & GODMODE)
@@ -139,7 +156,7 @@
 			Stun(2)
 		if(21 to 25)
 			Weaken(2)
-		if(26 to 25)
+		if(26 to 30)
 			Weaken(5)
 		if(31 to INFINITY)
 			Weaken(10) //This should work for now, more is really silly and makes you lay there forever
@@ -188,7 +205,7 @@
 		swap_hand()
 
 /mob/living/carbon/proc/help_shake_act(mob/living/carbon/M)
-	if(!is_asystole())
+	if(!is_asystole() || isundead(src))
 		if (on_fire)
 			playsound(src.loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
 			if (M.on_fire)
@@ -247,7 +264,7 @@
 				if(M.on_fire)
 					src.IgniteMob()
 
-			if(stat != DEAD)
+			if(!is_ic_dead())
 				AdjustParalysis(-3)
 				AdjustStunned(-3)
 				AdjustWeakened(-3)
@@ -260,7 +277,7 @@
 /mob/living/carbon/proc/get_ear_protection()
 	return 0
 
-/mob/living/carbon/flash_eyes(intensity = FLASH_PROTECTION_MODERATE, override_blindness_check = FALSE, affect_silicon = FALSE, visual = FALSE, type = /obj/screen/fullscreen/flash, effect_duration = 25)
+/mob/living/carbon/flash_eyes(intensity = FLASH_PROTECTION_MODERATE, override_blindness_check = FALSE, affect_silicon = FALSE, visual = FALSE, type = /atom/movable/screen/fullscreen/flash, effect_duration = 25)
 	if(eyecheck() < intensity || override_blindness_check)
 		return ..()
 
@@ -275,32 +292,21 @@
 
 // ++++ROCKDTBEN++++ MOB PROCS //END
 
-/mob/living/carbon/clean_blood()
-	. = ..()
-	if(ishuman(src))
-		var/mob/living/carbon/human/H = src
-		if(H.gloves)
-			if(H.gloves.clean_blood())
-				H.update_inv_gloves(0)
-			H.gloves.germ_level = 0
-		else
-			if(!isnull(H.bloody_hands))
-				H.bloody_hands = null
-				H.update_inv_gloves(0)
-			H.germ_level = 0
-	update_icons()	//apply the now updated overlays to the mob
-
 //Throwing stuff
 /mob/proc/throw_item(atom/target)
 	return
 
 /mob/living/carbon/throw_item(atom/target)
+	THROTTLE(cooldown, 0.2 SECONDS)
+	if(!cooldown)
+		return
+
 	throw_mode_off()
 	if(!isturf(loc))
 		return
 	if(stat || !target)
 		return
-	if(target.type == /obj/screen)
+	if(target.type == /atom/movable/screen)
 		return
 
 	var/atom/movable/item = get_active_hand()
@@ -336,8 +342,8 @@
 				admin_attack_log(usr, M, "Threw the victim from [start_T_descriptor] to [end_T_descriptor].", "Was from [start_T_descriptor] to [end_T_descriptor].", "threw, from [start_T_descriptor] to [end_T_descriptor], ")
 	else
 		itemsize = I.w_class
+		drop(item)
 
-	drop_from_inventory(item)
 	if(!item || !isturf(item.loc))
 		return
 
@@ -371,17 +377,17 @@
 		return 1
 	return
 
-/mob/living/carbon/u_equip(obj/item/W as obj)
-	if(!W)	return 0
+/mob/living/carbon/__unequip(obj/W)
+	if(!W)
+		return
 
-	else if (W == handcuffed)
+	if(W == handcuffed)
 		handcuffed = null
 		update_inv_handcuffed()
-		if(buckled && buckled.buckle_require_restraints)
+		if(buckled?.buckle_require_restraints)
 			buckled.unbuckle_mob()
 	else
-	 ..()
-
+		..()
 	return
 
 /mob/living/carbon/verb/mob_sleep()
@@ -396,14 +402,16 @@
 
 /mob/living/carbon/Bump(atom/movable/AM, yes)
 	if(now_pushing || !yes)
-		return
-	..()
-	if(istype(AM, /mob/living/carbon) && prob(10))
-		src.spread_disease_to(AM, "Contact")
+		return FALSE
+	. = ..()
+	if(. && istype(AM, /mob/living/carbon) && prob(10))
+		spread_disease_to(AM, "Contact")
 
 /mob/living/carbon/slip(slipped_on, stun_duration = 8)
 	var/area/A = get_area(src)
 	if(!A.has_gravity())
+		return 0
+	if(HAS_TRAIT(src, TRAIT_NOSLIP))
 		return 0
 	if(buckled)
 		return 0
@@ -434,11 +442,17 @@
 	else
 		chem_effects[effect] = magnitude
 
+	if(effect == CE_SPEEDBOOST || effect == CE_SLOWDOWN)
+		update_chem_slowdown(effect)
+
 /mob/living/carbon/proc/add_up_to_chemical_effect(effect, magnitude = 1)
 	if(effect in chem_effects)
 		chem_effects[effect] = max(magnitude, chem_effects[effect])
 	else
 		chem_effects[effect] = magnitude
+
+	if(effect == CE_SPEEDBOOST || effect == CE_SLOWDOWN)
+		update_chem_slowdown(effect)
 
 /mob/living/carbon/get_default_language()
 	if(default_language && can_speak(default_language))
@@ -465,7 +479,7 @@
 	<BR>"}
 	show_browser(user, dat, text("window=mob[];size=325x500", name))
 	onclose(user, "mob[name]")
-	return
+	return TRUE
 
 /**
  *  Return FALSE if victim can't be devoured, DEVOUR_FAST if they can be devoured quickly, DEVOUR_SLOW for slow devour
@@ -493,7 +507,7 @@
 		set_see_in_dark(8)
 		set_see_invisible(SEE_INVISIBLE_NOLIGHTING)
 		if(species)
-			sight = species.get_vision_flags(src)
+			set_sight(species.get_vision_flags(src))
 
 /mob/living/carbon/proc/should_have_organ(organ_check)
 	return 0
@@ -559,3 +573,22 @@
 
 /mob/living/carbon/proc/set_species()
 	return FALSE
+
+/mob/living/carbon/IgniteMob()
+	if(species.species_flags & SPECIES_FLAG_NO_FIRE)
+		return
+	..()
+
+/mob/living/carbon/can_block_magic(casted_magic_flags)
+	if(casted_magic_flags == null) // magic with the null flag is immune to blocking
+		return FALSE
+
+	var/is_magic_blocked = FALSE
+
+	if(HAS_TRAIT(src, TRAIT_ANTIMAGIC))
+		return TRUE
+
+	if((casted_magic_flags & MAGIC_RESISTANCE_HOLY) && HAS_TRAIT(src, TRAIT_HOLY))
+		is_magic_blocked = TRUE
+
+	return is_magic_blocked

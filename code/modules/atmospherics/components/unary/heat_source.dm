@@ -9,19 +9,19 @@
 	density = 1
 	anchored = 1
 	use_power = POWER_USE_OFF
-	idle_power_usage = 5			//5 Watts for thermostat related circuitry
+	idle_power_usage = 5 WATTS //5 Watts for thermostat related circuitry
 
-	var/max_temperature = T20C + 680
-	var/internal_volume = 600	//L
+	var/max_temperature = 700 CELSIUS
+	var/internal_volume = 600 //L
 
-	var/max_power_rating = 20000	//power rating when the usage is turned up to 100
+	var/max_power_rating = 20000 //power rating when the usage is turned up to 100
 	var/power_setting = 100
 
-	var/set_temperature = T20C	//thermostat
-	var/heating = 0		//mainly for icon updates
+	var/set_temperature = 20 CELSIUS //thermostat
+	var/heating = 0 //mainly for icon updates
 
-/obj/machinery/atmospherics/unary/heater/New()
-	..()
+/obj/machinery/atmospherics/unary/heater/Initialize()
+	. = ..()
 	initialize_directions = dir
 
 	component_parts = list()
@@ -56,7 +56,7 @@
 	update_icon()
 
 
-/obj/machinery/atmospherics/unary/heater/update_icon()
+/obj/machinery/atmospherics/unary/heater/on_update_icon()
 	if(node)
 		if(use_power && heating)
 			icon_state = "heater_1"
@@ -104,7 +104,7 @@
 	data["powerSetting"] = power_setting
 
 	var/temp_class = "normal"
-	if(air_contents.temperature > (T20C+40))
+	if(air_contents.temperature > (60 CELSIUS))
 		temp_class = "bad"
 	data["gasTemperatureClass"] = temp_class
 
@@ -153,7 +153,7 @@
 			bin_rating += P.rating
 
 	max_power_rating = initial(max_power_rating) * cap_rating / 2
-	max_temperature = max(initial(max_temperature) - T20C, 0) * ((bin_rating * 4 + cap_rating) / 5) + T20C
+	max_temperature = max(initial(max_temperature) - (20 CELSIUS), 0) * ((bin_rating * 4 + cap_rating) / 5) + (20 CELSIUS)
 	air_contents.volume = max(initial(internal_volume) - 200, 0) + 200 * bin_rating
 	set_power_level(power_setting)
 
@@ -171,7 +171,8 @@
 
 	..()
 
-/obj/machinery/atmospherics/unary/heater/_examine_text(mob/user)
+/obj/machinery/atmospherics/unary/heater/examine(mob/user, infix)
 	. = ..()
+
 	if(panel_open)
-		. += "\nThe maintenance hatch is open."
+		. += "The maintenance hatch is open."

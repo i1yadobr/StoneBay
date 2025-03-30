@@ -25,12 +25,17 @@
 	if(!(affecting.a_intent == I_HELP))
 		upgrade(TRUE)
 
+/// For when we start choking 'em straight away
+/obj/item/grab/normal/quickchoke
+	type_name = GRAB_QUICKCHOKE
+	start_grab_name = NORM_KILL
+
 /datum/grab/normal
 	type_name = GRAB_NORMAL
 
 	var/drop_headbutt = 1
 
-	icon = 'icons/mob/screen1.dmi'
+	icon = 'icons/hud/actions.dmi'
 
 	help_action = "inspect"
 	disarm_action = "pin"
@@ -267,7 +272,7 @@
 	user.visible_message("<span class='danger'>\The [user] begins to slit [affecting]'s throat with \the [W]!</span>")
 
 	user.next_move = world.time + 30 //also should prevent user from triggering this repeatedly
-	if(!do_after(user, 30))
+	if(!do_after(user, 30, luck_check_type = LUCK_CHECK_COMBAT))
 		return 0
 	if(!(G && G.affecting == affecting)) //check that we still have a grab
 		return 0
@@ -319,7 +324,7 @@
 	user.visible_message("<span class='danger'>\The [user] begins to slit [affecting]'s cheeks with \the [W]!</span>")
 
 	user.next_move = world.time + 30
-	if(!do_after(user, 30))
+	if(!do_after(user, 30, luck_check_type = LUCK_CHECK_COMBAT))
 		return 0
 	if(!(G && G.affecting == affecting)) //check that we still have a grab
 		return 0
@@ -357,7 +362,7 @@
 	user.visible_message("<span class='danger'>\The [user] begins to cut \the [affecting]'s [O.tendon_name] with \the [W]!</span>")
 	user.next_move = world.time + 20
 
-	if(!do_after(user, 20, progress=0))
+	if(!do_after(user, 20, progress=0, , luck_check_type = LUCK_CHECK_COMBAT))
 		return 0
 	if(!(G && G.affecting == affecting)) //check that we still have a grab
 		return 0
@@ -391,7 +396,7 @@
 	user.visible_message("<span class='danger'>\The [user] aims \his [W.name] at [affecting]'s eyes!</span>")
 
 	user.next_move = world.time + 25
-	if(!do_after(user, 25))
+	if(!do_after(user, 25, , luck_check_type = LUCK_CHECK_COMBAT))
 		return 0
 	if(!(G && G.affecting == affecting)) //check that we still have a grab
 		return 0
@@ -406,7 +411,7 @@
 		if(prob(50))
 			if(affecting.stat != 2)
 				to_chat(affecting, "<span class='warning'>You drop what you're holding and clutch at your eyes!</span>")
-				affecting.drop_item()
+				affecting.drop_active_hand()
 			affecting.eye_blurry += 10
 			affecting.Paralyse(1)
 			affecting.Weaken(4)
@@ -423,7 +428,7 @@
 
 	if(!eyes)
 		return 0 //rare case of the victim's eyes being removed by someone faster than us
-	if(!do_after(user, 50))
+	if(!do_after(user, 50, , luck_check_type = LUCK_CHECK_COMBAT))
 		return 0
 	if(!(G && G.affecting == affecting)) //check that we still have a grab
 		return 0

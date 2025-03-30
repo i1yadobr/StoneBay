@@ -5,7 +5,7 @@ GLOBAL_LIST_EMPTY(common_report)
 	var/list/parts = list()
 	var/mob/Player = C.mob
 	if(Player.mind && !isnewplayer(Player))
-		if(Player.stat != DEAD && !isbrain(Player))
+		if(!Player.is_ooc_dead() && !isbrain(Player))
 			var/turf/playerTurf = get_turf(Player)
 			if(evacuation_controller.round_over() && evacuation_controller.emergency_evacuation)
 				if(!isAdminLevel(playerTurf.z))
@@ -50,7 +50,7 @@ GLOBAL_LIST_EMPTY(common_report)
 		if(!M.client)
 			continue
 		clients++
-		if(M.stat != DEAD)
+		if(!M.is_ooc_dead())
 			surviving_total++
 			if(ishuman(M))
 				surviving_humans++
@@ -83,47 +83,38 @@ GLOBAL_LIST_EMPTY(common_report)
 	if(escaped_total > 0)
 		feedback_set("escaped_total", escaped_total)
 
-	send2mainirc("A round of [src.name] has ended - [surviving_total] survivor\s, [ghosts] ghost\s.")
-
 	return parts.Join()
 
 /datum/controller/subsystem/ticker/proc/synths_report()
 	var/list/parts = list()
 	var/borg_spacer = FALSE //inserts an extra linebreak to seperate AIs from independent borgs, and then multiple independent borgs.
 	//Silicon laws report
-	for (var/mob/living/silicon/ai/aiPlayer in SSmobs.mob_list)
-		if (aiPlayer.stat != DEAD)
-			parts += "<b>[aiPlayer.name] (Played by: [aiPlayer.key])'s laws at the end of the round were:</b>"
-		else
-			parts += "<b>[aiPlayer.name] (Played by: [aiPlayer.key])'s laws when it was deactivated were:</b>"
-
-
-		parts += aiPlayer.laws?.print_laws()
-
-		if (aiPlayer.connected_robots.len)
-			parts += "<b>The AI's loyal minions were:</b> "
-			for(var/mob/living/silicon/robot/robo in aiPlayer.connected_robots)
-				parts += "[robo.name][robo.stat?" (Deactivated) (Played by: [robo.key]), ":" (Played by: [robo.key]), "]"
-
-		if(!borg_spacer)
-			borg_spacer = TRUE
-
 	var/dronecount = 0
-
-	for (var/mob/living/silicon/robot/robo in SSmobs.mob_list)
-
-		if(istype(robo,/mob/living/silicon/robot/drone))
-			dronecount++
-			continue
-
-		if (!robo.connected_ai)
-			parts += "[borg_spacer?"<br>":""]<b>[robo.name]</b> (Played by: <b>[robo.mind.key]</b>) [(robo.stat != DEAD)? "<span class='greentext'>survived</span> as an AI-less borg!" : "was <span class='redtext'>unable to survive</span> the rigors of being a cyborg without an AI."] Its laws were:"
-
-			if(robo) //How the hell do we lose robo between here and the world messages directly above this?
-				parts += robo.laws?.print_laws()
-
+	for(var/datum/mind/M in GLOB.all_synthetic_mind_to_data)
+		var/list/data = GLOB.all_synthetic_mind_to_data[M]
+		var/weakref/silicon_ref = data[3]
+		var/mob/living/silicon/ai/S = silicon_ref?.resolve()
+		if(data[2] in typesof(/mob/living/silicon/ai))
+			if(S && !S?.is_ooc_dead())
+				parts += "<b>[data[1]] (Played by: [M.key])'s laws at the end of the round were:</b>"
+			else
+				parts += "<b>[data[1]] (Played by: [M.key])'s laws when it was deactivated were:</b>"
+			parts += S?.laws?.print_laws() ? S?.laws?.print_laws() : data[4]
 			if(!borg_spacer)
 				borg_spacer = TRUE
+		else if(data[2] in typesof(/mob/living/silicon/robot/drone))
+			dronecount++
+		else if(data[2] in typesof(/mob/living/silicon/robot))
+			var/mob/living/silicon/robot/robo = silicon_ref?.resolve()
+			if (!robo.connected_ai)
+				parts += "[borg_spacer?"<br>":""]<b>[data[1]]</b> (Played by: <b>[M.key]</b>) [(!robo || robo?.is_ooc_dead()) ? "was <span class='redtext'>unable to survive</span> the rigors of being a cyborg." : "<span class='greentext'>survived</span> as borg!"]\
+				It was [robo?.connected_ai ? "[robo?.connected_ai.name]'s loyal minion" : "AI-less, independent machine"]. Its laws were:"
+
+				if(robo) //How the hell do we lose robo between here and the world messages directly above this?
+					parts += robo.laws?.print_laws()
+
+				if(!borg_spacer)
+					borg_spacer = TRUE
 
 	if(dronecount)
 		parts += "[borg_spacer?"<br>":""]<b>There [dronecount>1 ? "were" : "was"] [dronecount] industrious maintenance [dronecount>1 ? "drones" : "drone"] at the end of this round.</b>"
@@ -203,8 +194,6 @@ GLOBAL_LIST_EMPTY(common_report)
 
 	//Antagonists
 	parts += antag_report()
-
-	parts += SSevent.RoundEnd()
 
 	parts += _last_words_report()
 

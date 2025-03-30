@@ -21,10 +21,12 @@ var/list/mob_hat_cache = list()
 /mob/living/silicon/robot/drone
 	name = "maintenance drone"
 	real_name = "drone"
-	icon = 'icons/mob/robots.dmi'
 	icon_state = "repairbot"
 	maxHealth = 35
 	health = 35
+
+	default_hull = /datum/robot_hull/drone
+
 	cell_emp_mult = 1
 	universal_speak = 0
 	universal_understand = 1
@@ -65,7 +67,8 @@ var/list/mob_hat_cache = list()
 /mob/living/silicon/robot/drone/New()
 	..()
 
-	register_signal(src, SIGNAL_MOVED, /mob/living/silicon/robot/drone/proc/on_moved)
+	add_movespeed_modifier(/datum/movespeed_modifier/drone_movement)
+	register_signal(src, SIGNAL_MOVED, nameof(.proc/on_moved))
 
 /mob/living/silicon/robot/drone/Destroy()
 	if(hat)
@@ -118,6 +121,9 @@ var/list/mob_hat_cache = list()
 /mob/living/silicon/robot/drone/construction
 	name = "construction drone"
 	icon_state = "constructiondrone"
+
+	default_hull = /datum/robot_hull/drone/construction
+
 	module_type = /obj/item/robot_module/drone/construction
 	hat_x_offset = 1
 	hat_y_offset = -12
@@ -129,9 +135,10 @@ var/list/mob_hat_cache = list()
 	..()
 
 	verbs += /mob/living/proc/hide
-	remove_language("Robot Talk")
-	add_language("Robot Talk", 0)
-	add_language("Drone Talk", 1)
+
+	remove_language(LANGUAGE_ROBOT)
+	add_language(LANGUAGE_ROBOT, FALSE)
+	add_language(LANGUAGE_DRONE, TRUE)
 
 	// NO BRAIN.
 	mmi = null
@@ -164,21 +171,21 @@ var/list/mob_hat_cache = list()
 		real_name = "[initial(name)] ([random_id(type,100,999)])"
 	SetName(real_name)
 
-/mob/living/silicon/robot/drone/update_icon()
+/mob/living/silicon/robot/drone/on_update_icon()
 
-	overlays.Cut()
+	ClearOverlays()
 	if(stat == 0)
 		if(controlling_ai)
-			overlays += "eyes-[icon_state]-ai"
+			AddOverlays("eyes-[icon_state]-ai")
 		else if(emagged)
-			overlays += "eyes-[icon_state]-emag"
+			AddOverlays("eyes-[icon_state]-emag")
 		else
-			overlays += "eyes-[icon_state]"
+			AddOverlays("eyes-[icon_state]")
 	else
-		overlays -= "eyes"
+		CutOverlays("eyes")
 
 	if(hat) // Let the drones wear hats.
-		overlays |= get_hat_icon(hat, hat_x_offset, hat_y_offset)
+		AddOverlays(get_hat_icon(hat, hat_x_offset, hat_y_offset))
 
 /mob/living/silicon/robot/drone/choose_hull()
 	return
@@ -200,7 +207,8 @@ var/list/mob_hat_cache = list()
 		if(hat)
 			to_chat(user, "<span class='warning'>\The [src] is already wearing \the [hat].</span>")
 			return
-		user.unEquip(W)
+		if(!user.drop(W))
+			return
 		wear_hat(W)
 		user.visible_message("<span class='notice'>\The [user] puts \the [W] on \the [src].</span>")
 		return
@@ -256,6 +264,8 @@ var/list/mob_hat_cache = list()
 	to_chat(user, "<span class='danger'>You swipe the sequencer across [src]'s interface and watch its eyes flicker.</span>")
 	if(controlling_ai)
 		to_chat(src, "<span class='danger'>\The [user] loads some kind of subversive software into the remote drone, corrupting its lawset but luckily sparing yours.</span>")
+		release_ai_control("<b>WARNING: remote system failure. Connection rejected.</b>")
+		connected_ai = null
 	else
 		to_chat(src, "<span class='danger'>You feel a sudden burst of malware loaded into your execute-as-root buffer. Your tiny brain methodically parses, loads and executes the script.</span>")
 
@@ -266,7 +276,6 @@ var/list/mob_hat_cache = list()
 
 	emagged = 1
 	lawupdate = 0
-	connected_ai = null
 	clear_supplied_laws()
 	clear_inherent_laws()
 	QDEL_NULL(laws)
@@ -282,21 +291,24 @@ var/list/mob_hat_cache = list()
 //DRONE LIFE/DEATH
 //For some goddamn reason robots have this hardcoded. Redefining it for our fragile friends here.
 /mob/living/silicon/robot/drone/updatehealth()
+	var/previous_health = health
 	if(status_flags & GODMODE)
 		health = 35
 		set_stat(CONSCIOUS)
-		return
-	health = 35 - (getBruteLoss() + getFireLoss())
-	return
+	else
+		health = 35 - (getBruteLoss() + getFireLoss())
+
+	if(health != previous_health)
+		update_health_slowdown()
 
 //Easiest to check this here, then check again in the robot proc.
 //Standard robots use config for crit, which is somewhat excessive for these guys.
 //Drones killed by damage will gib.
 /mob/living/silicon/robot/drone/handle_regular_status_updates()
-	if(health <= -35 && src.stat != DEAD)
+	if(health <= -35 && !is_ooc_dead())
 		self_destruct()
 		return
-	if(health <= 0 && src.stat != DEAD)
+	if(health <= 0 && !is_ooc_dead())
 		death()
 		return
 	..()

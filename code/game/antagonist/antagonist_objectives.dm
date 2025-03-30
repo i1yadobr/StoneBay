@@ -38,7 +38,7 @@
 	set desc = "Recieve optional objectives."
 	set category = "OOC"
 
-	src.verbs -= /mob/proc/add_objectives
+	verbs -= /mob/proc/add_objectives
 
 	if(!src.mind)
 		return

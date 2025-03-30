@@ -9,7 +9,7 @@
 	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_EARS
 	var/hud_type = null
-	var/obj/screen/overlay = null
+	var/atom/movable/screen/overlay = null
 	var/vision_flags = 0
 	var/see_invisible = 0
 	var/darkness_view = 0 //Base human is 2
@@ -218,12 +218,13 @@
 	var/sec_hud = FALSE
 	var/med_hud = FALSE
 
-/obj/item/clothing/glasses/hud/_examine_text(mob/user)
+/obj/item/clothing/glasses/hud/examine(mob/user, infix)
 	. = ..()
+
 	if(matrix)
-		. += "\nIt has a [matrix.matrix_type] optical matrix installed."
+		. += "It has a [matrix.matrix_type] optical matrix installed."
 	if(lenses)
-		. += "\nIt has [lenses] installed."
+		. += "It has [lenses] installed."
 
 /obj/item/clothing/glasses/hud/Initialize()
 	. = ..()
@@ -249,12 +250,12 @@
 	if(med_hud)
 		process_med_hud(M, 1)
 
-/obj/item/clothing/glasses/hud/update_icon()
-	overlays.Cut()
+/obj/item/clothing/glasses/hud/on_update_icon()
+	ClearOverlays()
 	if(active && matrix)
-		overlays += overlay_image(icon, "[hud_icon]_[matrix.matrix_icon]")
+		AddOverlays(OVERLAY(icon, "[hud_icon]_[matrix.matrix_icon]", alpha))
 	if(lenses)
-		overlays += overlay_image(icon, "[hud_icon]_[lenses.icon_state]")
+		AddOverlays(OVERLAY(icon, "[hud_icon]_[lenses.icon_state]", alpha))
 
 /obj/item/clothing/glasses/hud/attackby(obj/item/W, mob/user)
 	if(isScrewdriver(W))
@@ -281,8 +282,7 @@
 		if(matrix)
 			to_chat(user, SPAN("notice", "\The [src] already has a [matrix] installed."))
 			return
-		if(user.unEquip(W))
-			W.forceMove(src)
+		if(user.drop(W, src))
 			matrix = W
 			cumulative_flash_protection += matrix.flash_protection
 			to_chat(user, SPAN("notice", "You install \the [matrix] into \the [src]."))
@@ -300,7 +300,7 @@
 		if(active)
 			to_chat(user, SPAN("notice", "You must deactivate the optical matrix first."))
 			return
-		if(user.unEquip(W))
+		if(user.drop(W))
 			var/obj/item/device/hudlenses/H = W
 			H.attach_lenses(src)
 			to_chat(user, SPAN("notice", "You install \the [H] into \the [src]."))
@@ -436,7 +436,7 @@
 
 /obj/item/clothing/glasses/hud/one_eyed
 	one_eyed = TRUE
-	body_parts_covered = 0 // Covering one eye isn't enough to protect you from eye-forking
+	body_parts_covered = NO_BODYPARTS // Covering one eye isn't enough to protect you from eye-forking
 	var/flipped = FALSE // Indicates left or right eye; FALSE = on the left
 
 /obj/item/clothing/glasses/hud/one_eyed/verb/flip_patch()
@@ -490,7 +490,7 @@
 /obj/item/clothing/glasses/hud/plain/attack_self(mob/user)
 	return
 
-/obj/item/clothing/glasses/hud/plain/update_icon()
+/obj/item/clothing/glasses/hud/plain/on_update_icon()
 	return
 
 /obj/item/clothing/glasses/hud/psychoscope
@@ -506,7 +506,7 @@
 	matrix_removable = FALSE
 	use_alt_layer = TRUE
 
-/obj/item/clothing/glasses/hud/psychoscope/update_icon()
+/obj/item/clothing/glasses/hud/psychoscope/on_update_icon()
 	if(active)
 		icon_state = "psychoscope_on"
 		item_state = "psychoscope_on"
@@ -516,16 +516,16 @@
 
 /obj/item/clothing/glasses/hud/psychoscope/Initialize()
 	. = ..()
-	
+
 	icon_state = "psychoscope_off"
 	item_state = "psychoscope_off"
 
 /obj/item/clothing/glasses/hud/psychoscope/activate_matrix()
 	. = ..()
-	
+
 	update_icon()
 
 /obj/item/clothing/glasses/hud/psychoscope/deactivate_matrix()
 	. = ..()
-	
+
 	update_icon()

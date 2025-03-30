@@ -16,8 +16,12 @@
 	spawn_flags = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 	power_draw_per_use = 2
 
+/obj/item/integrated_circuit/time/delay/Initialize()
+	. = ..()
+	add_think_ctx("activate_pin", CALLBACK(src, nameof(.proc/activate_pin)), 0)
+
 /obj/item/integrated_circuit/time/delay/do_work()
-	addtimer(CALLBACK(src, .proc/activate_pin, 2), delay)
+	set_next_think_ctx("activate_pin", world.time + delay, 2)
 
 /obj/item/integrated_circuit/time/delay/five_sec
 	name = "five-sec delay circuit"
@@ -77,7 +81,6 @@
 	icon_state = "tick-m"
 	complexity = 4
 	var/delay = 4 SECONDS
-	var/next_fire = 0
 	var/is_running = FALSE
 	inputs = list("enable ticking" = IC_PINTYPE_BOOLEAN)
 	activators = list("outgoing pulse" = IC_PINTYPE_PULSE_OUT)
@@ -85,23 +88,21 @@
 	power_draw_per_use = 4
 
 /obj/item/integrated_circuit/time/ticker/Destroy()
-	STOP_PROCESSING(SSfastprocess, src)
 	return ..()
 
 /obj/item/integrated_circuit/time/ticker/on_data_written()
 	var/do_tick = get_pin_data(IC_INPUT, 1)
 	if(do_tick && !is_running)
 		is_running = TRUE
-		START_PROCESSING(SSfastprocess, src)
+		set_next_think(world.time)
 	else if(!do_tick && is_running)
 		is_running = FALSE
-		STOP_PROCESSING(SSfastprocess, src)
+		set_next_think(0)
 
-/obj/item/integrated_circuit/time/ticker/Process()
-	if(world.time > next_fire)
-		next_fire = world.time + delay
-		activate_pin(1)
+/obj/item/integrated_circuit/time/ticker/think()
+	activate_pin(1)
 
+	set_next_think(world.time + delay)
 
 /obj/item/integrated_circuit/time/ticker/custom
 	name = "custom ticker"

@@ -2,7 +2,7 @@
 	layer = OBJ_LAYER
 
 	var/obj_flags
-
+	vis_flags = VIS_INHERIT_PLANE|VIS_INHERIT_ID
 	//Used to store information about the contents of the object.
 	var/list/matter
 	var/w_class // Size of the object.
@@ -16,17 +16,46 @@
 	var/armor_penetration = 0
 	var/anchor_fall = FALSE
 	var/pull_slowdown = PULL_SLOWDOWN_WEIGHT // How much it slows us down while we are pulling it
+	/// Used if the obj is dense.
+	var/rad_resist_type = /datum/rad_resist/none
 	hitby_sound = 'sound/effects/metalhit2.ogg'
+	var/turf_height_offset = 0
+
+/obj/Initialize()
+	. = ..()
+	if(turf_height_offset && isturf(loc))
+		var/turf/T = loc
+		T.update_turf_height()
+
+	add_debris_element()
 
 /obj/Destroy()
 	CAN_BE_REDEFINED(TRUE)
 	var/obj/item/smallDelivery/delivery = loc
-
-	if (istype(delivery))
+	if(istype(delivery))
 		delivery.wrapped = null
 
-	STOP_PROCESSING(SSobj, src)
+	var/turf/T = get_turf(src)
+	if(T && turf_height_offset)
+		set_turf_height_offset(0)
 	return ..()
+
+/obj/forceMove(atom/destination)
+	if(!turf_height_offset)
+		return ..() // Just act normally
+
+	var/atom/origin = loc
+	. = ..()
+	if(!.)
+		return
+
+	if(isturf(origin))
+		var/turf/T = origin
+		T.update_turf_height()
+
+	if(isturf(destination))
+		var/turf/T = destination
+		T.update_turf_height()
 
 /obj/item/proc/is_used_on(obj/O, mob/user)
 
@@ -86,7 +115,7 @@
 		if(!ai_in_use && !is_in_use)
 			in_use = 0
 
-/obj/attack_ghost(mob/user)
+/obj/attack_ghost(mob/observer/ghost/user)
 	ui_interact(user)
 	tgui_interact(user)
 	..()
@@ -104,7 +133,7 @@
 	if(machine)
 		unset_machine()
 	machine = O
-	register_signal(O, SIGNAL_QDELETING, .proc/unset_machine)
+	register_signal(O, SIGNAL_QDELETING, nameof(.proc/unset_machine))
 	if(istype(O))
 		O.in_use = TRUE
 
@@ -151,11 +180,20 @@
 
 /obj/attackby(obj/item/O as obj, mob/user as mob)
 	if(obj_flags & OBJ_FLAG_ANCHORABLE)
-		if(isWrench(O))
+		if(isWrench(O) && !(atom_flags & ATOM_FLAG_NO_DECONSTRUCTION))
 			wrench_floor_bolts(user)
 			update_icon()
 			return
 	return ..()
+
+/obj/examine(mob/user, infix)
+	. = ..()
+
+	if(hasHUD(user, HUD_SCIENCE))
+		. += "Stopping Power:"
+
+		. += "α-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(get_rad_resist_value(rad_resist_type, RADIATION_ALPHA_PARTICLE)), "eV", 3)]"
+		. += "β-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(get_rad_resist_value(rad_resist_type, RADIATION_ALPHA_PARTICLE)), "eV", 3)]"
 
 /obj/proc/wrench_floor_bolts(mob/user, delay=20)
 	playsound(loc, 'sound/items/Ratchet.ogg', 100, 1)
@@ -163,7 +201,7 @@
 		user.visible_message("\The [user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
 	else
 		user.visible_message("\The [user] begins securing \the [src] to the floor.", "You start securing \the [src] to the floor.")
-	if(do_after(user, delay, src))
+	if(do_after(user, delay, src, luck_check_type = LUCK_CHECK_ENG))
 		if(!src)
 			return 0
 		to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
@@ -183,3 +221,16 @@
 ///returns how much the object blocks an explosion. Used by subtypes.
 /obj/proc/GetExplosionBlock()
 	CRASH("Unimplemented GetExplosionBlock()")
+
+/obj/proc/set_turf_height_offset(new_val)
+	if(turf_height_offset == new_val)
+		return
+	turf_height_offset = new_val
+	var/turf/T = get_turf(src)
+	if(T)
+		T.update_turf_height()
+
+/obj/proc/change_pull_slowdown(new_slowdown)
+	pull_slowdown = new_slowdown
+	if(pulledby)
+		pulledby.update_pull_slowdown()

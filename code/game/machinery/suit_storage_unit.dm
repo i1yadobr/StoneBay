@@ -11,8 +11,8 @@
 	layer = BELOW_OBJ_LAYER
 	anchored = 1
 	density = 1
-	idle_power_usage = 50
-	active_power_usage = 200
+	idle_power_usage = 50 WATTS
+	active_power_usage = 200 WATTS
 	interact_offline = 1
 	req_access = list()
 
@@ -37,6 +37,15 @@
 	var/panelopen = 0
 	var/safetieson = 1
 	var/cycletime_left = 0
+
+	var/static/image/radial_eject = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_eject")
+	var/static/image/radial_open = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_open")
+	var/static/image/radial_close = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_close")
+	var/static/image/radial_disinfect = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_disinfect")
+	var/static/image/radial_lock = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_lock")
+	var/static/image/radial_unlock = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_unlock")
+	var/static/image/radial_uv = image(icon = 'icons/hud/radial.dmi', icon_state = "radial_uv")
+	var/static/image/radial_safety = image(icon = 'icons/hud/radial.dmi', icon_state = "toggle_safety")
 
 //The units themselves/////////////////
 
@@ -162,30 +171,30 @@
 		mask = new mask_type(src)
 	update_icon()
 
-/obj/machinery/suit_storage_unit/update_icon()
-	overlays.Cut()
+/obj/machinery/suit_storage_unit/on_update_icon()
+	ClearOverlays()
 	if(panelopen)
-		overlays += ("panel")
+		AddOverlays(("panel"))
 	if(isUV)
 		if(issuperUV)
-			overlays += ("super")
+			AddOverlays(("super"))
 		else if(occupant)
-			overlays += ("uvhuman")
+			AddOverlays(("uvhuman"))
 		else
-			overlays += ("uv")
+			AddOverlays(("uv"))
 	else if(isopen)
 		if(stat & BROKEN)
-			overlays += ("broken")
+			AddOverlays(("broken"))
 		else
-			overlays += ("open")
+			AddOverlays(("open"))
 			if(suit)
-				overlays += ("suit")
+				AddOverlays(("suit"))
 			if(helmet)
-				overlays += ("helm")
+				AddOverlays(("helm"))
 			if(boots || tank || mask)
-				overlays += ("storage")
+				AddOverlays(("storage"))
 	else if(occupant)
-		overlays += ("human")
+		AddOverlays(("human"))
 
 /obj/machinery/suit_storage_unit/ex_act(severity)
 	switch(severity)
@@ -203,114 +212,101 @@
 			return
 
 
-/obj/machinery/suit_storage_unit/attack_hand(mob/user as mob)
-	..()
-	var/dat = "<meta charset=\"utf-8\">"
-	if(!user.IsAdvancedToolUser())
-		return 0
-	if(panelopen) //The maintenance panel is open. Time for some shady stuff
-		dat+= "<HEAD><TITLE>Suit storage unit: Maintenance panel</TITLE></HEAD>"
-		dat+= "<Font color ='black'><B>Maintenance panel controls</B></font><HR>"
-		dat+= "<font color ='grey'>The panel is ridden with controls, button and meters, labeled in strange signs and symbols that <BR>you cannot understand. Probably the manufactoring world's language.<BR> Among other things, a few controls catch your eye.</font><BR><BR>"
-		dat+= text("<font color ='black'>A small dial with a small lambda symbol on it. It's pointing towards a gauge that reads []</font>.<BR> <span class='info'><A href='?src=\ref[];toggleUV=1'> Turn towards []</A></span><BR>",(issuperUV ? "15nm" : "185nm"),src,(issuperUV ? "185nm" : "15nm") )
-		dat+= text("<font color ='black'>A thick old-style button, with 2 grimy LED lights next to it. The [] LED is on.</font><BR><font color ='blue'><A href='?src=\ref[];togglesafeties=1'>Press button</a></font>",(safetieson? "<font color='green'><B>GREEN</B></font>" : "<font color='red'><B>RED</B></font>"),src)
-		dat+= text("<HR><BR><A href='?src=\ref[];mach_close=suit_storage_unit'>Close panel</A>", user)
-	else if(isUV) //The thing is running its cauterisation cycle. You have to wait.
-		dat += "<HEAD><TITLE>Suit storage unit</TITLE></HEAD>"
-		dat+= "<font color ='red'><B>Unit is cauterising contents with selected UV ray intensity. Please wait.</font></B><BR>"
-		dat+= "<font colr='black'><B>Cycle end in: [cycletime_left] seconds. </font></B>"
+/obj/machinery/suit_storage_unit/attack_hand(mob/user)
+	if(..() || inoperable(MAINT))
+		return
+
+	interact(user)
+
+/obj/machinery/suit_storage_unit/interact(mob/user)
+	var/list/choices = list()
+
+	if(panelopen)
+		choices["toggle_uv"] = radial_uv
+		choices["toggle_safety"] = radial_safety
+
+	if(islocked)
+		choices["unlock"] = radial_unlock
+	else if(isopen && !isbroken)
+		choices["close"] = radial_close
+		if(istype(suit))
+			choices["suit"] = icon(suit.icon, suit.icon_state)
+
+		if(istype(helmet))
+			choices["helmet"] = icon(helmet.icon, helmet.icon_state)
+
+		if(istype(boots))
+			choices["boots"] = icon(boots.icon, boots.icon_state)
+
+		if(istype(tank))
+			choices["tank"] = icon(tank.icon, tank.icon_state)
+
+		if(istype(mask))
+			choices["mask"] = icon(mask.icon, mask.icon_state)
+
+		if(istype(occupant))
+			choices["eject"] = radial_eject
 
 	else
-		if(!isbroken)
-			dat+= "<HEAD><TITLE>Suit storage unit</TITLE></HEAD>"
-			dat+= "<span class='info'><font size = 4><B>U-Stor-It Suit Storage Unit, model DS1900</B></FONT><BR>"
-			dat+= "<B>Welcome to the Unit control panel.</B></span><HR>"
-			dat+= text("<font color='black'>Helmet storage compartment: <B>[]</B></font><BR>",(helmet  ? helmet.name : "</font><font color ='grey'>No helmet detected.") )
-			if(helmet  && isopen)
-				dat+=text("<A href='?src=\ref[];dispense_helmet=1'>Dispense helmet</A><BR>",src)
-			dat+= text("<font color='black'>Suit storage compartment: <B>[]</B></font><BR>",(suit ? suit.name : "</font><font color ='grey'>No suit detected.") )
-			if(suit && isopen)
-				dat+=text("<A href='?src=\ref[];dispense_suit=1'>Dispense suit</A><BR>",src)
-			dat+= text("<font color='black'>Footwear storage compartment: <B>[]</B></font><BR>",(boots ? boots.name : "</font><font color ='grey'>No footwear detected.") )
-			if(boots && isopen)
-				dat+=text("<A href='?src=\ref[];dispense_boots=1'>Dispense footwear</A><BR>",src)
-			dat+= text("<font color='black'>Tank storage compartment: <B>[]</B></font><BR>",(tank ? tank.name : "</font><font color ='grey'>No air tank detected.") )
-			if(tank && isopen)
-				dat+=text("<A href='?src=\ref[];dispense_tank=1'>Dispense air tank</A><BR>",src)
-			dat+= text("<font color='black'>Breathmask storage compartment: <B>[]</B></font><BR>",(mask ? mask.name : "</font><font color ='grey'>No breathmask detected.") )
-			if(mask && isopen)
-				dat+=text("<A href='?src=\ref[];dispense_mask=1'>Dispense mask</A><BR>",src)
-			if(occupant)
-				dat+= "<HR><B><font color ='red'>WARNING: Biological entity detected inside the Unit's storage. Please remove.</B></font><BR>"
-				dat+= "<A href='?src=\ref[src];eject_guy=1'>Eject extra load</A>"
-			dat+= text("<HR><font color='black'>Unit is: [] - <A href='?src=\ref[];toggle_open=1'>[] Unit</A></font> ",(isopen ? "Open" : "Closed"),src,(isopen ? "Close" : "Open"))
-			if(isopen)
-				dat+="<HR>"
-			else
-				dat+= text(" - <A href='?src=\ref[];toggle_lock=1'><font color ='orange'>[] Unit</A></font><HR>",src,(islocked ? "Unlock" : "Lock") )
-			dat+= text("Unit status: []",(islocked? "<font color ='red'><B>LOCKED</B></font><BR>" : "<font color ='green'><B>UNLOCKED</B></font><BR>") )
-			dat+= text("<A href='?src=\ref[];start_UV=1'>Start Disinfection cycle</A><BR>",src)
-			dat += text("<BR><BR><A href='?src=\ref[];mach_close=suit_storage_unit'>Close control panel</A>", user)
-		else //Ohhhh shit it's dirty or broken! Let's inform the guy.
-			dat+= "<HEAD><TITLE>Suit storage unit</TITLE></HEAD>"
-			dat+= "<font color='maroon'><B>Unit chamber is too contaminated to continue usage. Please call for a qualified individual to perform maintenance.</font></B><BR><BR>"
-			dat+= text("<HR><A href='?src=\ref[];mach_close=suit_storage_unit'>Close control panel</A>", user)
+		choices["open"] = radial_open
+		choices["disinfect"] = radial_disinfect
+		choices["lock"] = radial_lock
 
-	show_browser(user, dat, "window=suit_storage_unit;size=400x500")
-	onclose(user, "suit_storage_unit")
-	return
-
-
-/obj/machinery/suit_storage_unit/Topic(href, href_list) //I fucking HATE this proc
-	if(..())
+	if(length(choices) < 1)
 		return
-	usr.set_machine(src)
-	if (href_list["toggleUV"])
-		toggleUV(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["togglesafeties"])
-		togglesafeties(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["dispense_helmet"])
-		dispense_helmet(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["dispense_suit"])
-		dispense_suit(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["dispense_boots"])
-		dispense_boots(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["dispense_tank"])
-		dispense_tank(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["dispense_mask"])
-		dispense_mask(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["toggle_open"])
-		toggle_open(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["toggle_lock"])
-		toggle_lock(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["start_UV"])
-		start_UV(usr)
-		updateUsrDialog()
-		update_icon()
-	if (href_list["eject_guy"])
-		eject_occupant(usr)
-		updateUsrDialog()
-		update_icon()
-	return
 
+	var/choice = show_radial_menu(user, src, choices, require_near = !issilicon(user))
+	if(!choice)
+		return
+
+	switch(choice)
+		if("open")
+			if(isopen)
+				return
+
+			toggle_open(usr)
+
+		if("close")
+			if(!isopen)
+				return
+
+			toggle_open(usr)
+
+		if("lock", "unlock")
+			if(isopen)
+				show_splash_text(user, "close first!", "\The [src] must be closed.")
+
+			toggle_lock(user)
+
+		if("disinfect")
+			start_UV(user)
+
+		if("toggle_uv")
+			toggleUV(user)
+
+		if("toggle_safety")
+			togglesafeties(user)
+
+		if("suit")
+			dispense_suit(user)
+
+		if("helmet")
+			dispense_helmet(user)
+
+		if("boots")
+			dispense_boots(user)
+
+		if("tank")
+			dispense_tank(user)
+
+		if("mask")
+			dispense_mask(user)
+
+		if("eject")
+			eject_occupant(user)
+
+	update_icon()
+	interact(user)
 
 /obj/machinery/suit_storage_unit/proc/toggleUV(mob/user as mob)
 	if(!panelopen)
@@ -418,7 +414,7 @@
 	for(i=0,i<4,i++)
 		sleep(50)
 		if(occupant)
-			occupant.apply_effect(50, IRRADIATE, blocked = occupant.getarmor(null, "rad"))
+			occupant.rad_act(new /datum/radiation_source(new /datum/radiation(4 TERA BECQUEREL, RADIATION_ALPHA_PARTICLE), src))
 			var/obj/item/organ/internal/diona/nutrients/rad_organ = locate() in occupant.internal_organs
 			if (!rad_organ)
 				if (occupant.can_feel_pain())
@@ -523,10 +519,13 @@
 		return
 	visible_message("\The [usr] starts squeezing into the suit storage unit!")
 	if(do_after(usr, 10, src))
+		if(QDELETED(src))
+			return
+
 		usr.stop_pulling()
 		usr.client.perspective = EYE_PERSPECTIVE
 		usr.client.eye = src
-		usr.loc = src
+		usr.forceMove(src)
 		occupant = usr
 		isopen = 0 //Close the thing after the guy gets inside
 		update_icon()
@@ -549,7 +548,7 @@
 	if(isCrowbar(I))
 		if((stat & NOPOWER) && !islocked && !isopen)
 			to_chat(user, "<span class='warning'>You begin prying the unit open.</span>")
-			if(do_after(user, 50, src))
+			if(do_after(user, 50, src, luck_check_type = LUCK_CHECK_ENG) && !QDELETED(src))
 				isopen = 1
 				to_chat(user, "<span class='warning'>You pry the unit open.</span>")
 				update_icon()
@@ -576,7 +575,7 @@
 			if (M.client)
 				M.client.perspective = EYE_PERSPECTIVE
 				M.client.eye = src
-			M.loc = src
+			M.forceMove(src)
 			occupant = M
 			isopen = 0 //close ittt
 			add_fingerprint(user)
@@ -592,9 +591,9 @@
 		if(suit)
 			to_chat(user, "<span class='notice'>The unit already contains a suit.</span>")
 			return
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "You load the [S.name] into the storage compartment.")
-		user.drop_item()
-		S.forceMove(src)
 		suit = S
 		update_icon()
 		updateUsrDialog()
@@ -606,9 +605,9 @@
 		if(helmet )
 			to_chat(user, "<span class='notice'>The unit already contains a helmet.</span>")
 			return
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "You load the [H.name] into the storage compartment.")
-		user.drop_item()
-		H.forceMove(src)
 		helmet  = H
 		update_icon()
 		updateUsrDialog()
@@ -620,9 +619,9 @@
 		if(boots)
 			to_chat(user, "<span class='notice'>The unit already contains a pair of magboots.</span>")
 			return
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "You load the [B.name] into the storage compartment.")
-		user.drop_item()
-		B.forceMove(src)
 		boots = B
 		update_icon()
 		updateUsrDialog()
@@ -634,9 +633,9 @@
 		if(tank)
 			to_chat(user, "<span class='notice'>The unit already contains an air tank.</span>")
 			return
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "You load the [T.name] into the storage compartment.")
-		user.drop_item()
-		T.forceMove(src)
 		tank = T
 		update_icon()
 		updateUsrDialog()
@@ -648,9 +647,9 @@
 		if(mask)
 			to_chat(user, "<span class='notice'>The unit already contains a mask.</span>")
 			return
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "You load the [M.name] into the storage compartment.")
-		user.drop_item()
-		M.forceMove(src)
 		mask = M
 		update_icon()
 		updateUsrDialog()
@@ -804,7 +803,7 @@
 			if (M.client)
 				M.client.perspective = EYE_PERSPECTIVE
 				M.client.eye = src
-			M.loc = src
+			M.forceMove(src)
 			occupant = M
 
 			add_fingerprint(user)
@@ -834,9 +833,9 @@
 			to_chat(user, "You cannot refit a customised voidsuit.")
 			return
 
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "You fit \the [I] into the suit cycler.")
-		user.drop_item()
-		I.loc = src
 		helmet = I
 
 		update_icon()
@@ -857,9 +856,9 @@
 			to_chat(user, "You cannot refit a customised voidsuit.")
 			return
 
+		if(!user.drop(I, src))
+			return
 		to_chat(user, "You fit \the [I] into the suit cycler.")
-		user.drop_item()
-		I.loc = src
 		suit = I
 
 		update_icon()
@@ -931,14 +930,14 @@
 	onclose(user, "suit_cycler")
 	return
 
-/obj/machinery/suit_cycler/Topic(href, href_list)
+/obj/machinery/suit_cycler/OnTopic(href, href_list)
 	if(href_list["eject_suit"])
 		if(!suit) return
-		suit.loc = get_turf(src)
+		suit.dropInto(get_turf(src))
 		suit = null
 	else if(href_list["eject_helmet"])
 		if(!helmet) return
-		helmet.loc = get_turf(src)
+		helmet.dropInto(get_turf(src))
 		helmet = null
 	else if(href_list["select_department"])
 		var/choice = input("Please select the target department paintjob.","Suit cycler",null) as null|anything in departments
@@ -1033,7 +1032,8 @@
 			occupant.take_organ_damage(0,radiation_level*2 + rand(1,3))
 		if(radiation_level > 1)
 			occupant.take_organ_damage(0,radiation_level + rand(1,3))
-		occupant.apply_effect(radiation_level*10, IRRADIATE, blocked = occupant.getarmor(null, "rad"))
+
+		occupant.rad_act(new /datum/radiation_source(new /datum/radiation((1250 KILO BECQUEREL) * radiation_level, RADIATION_ALPHA_PARTICLE), src))
 
 /obj/machinery/suit_cycler/proc/finished_job()
 	var/turf/T = get_turf(src)
@@ -1074,7 +1074,7 @@
 		occupant.client.eye = occupant.client.mob
 		occupant.client.perspective = MOB_PERSPECTIVE
 
-	occupant.loc = get_turf(occupant)
+	occupant.forceMove(get_turf(occupant))
 	occupant = null
 
 	add_fingerprint(user)
@@ -1097,11 +1097,11 @@
 		if("Engineering")
 			if(helmet)
 				helmet.SetName("engineering voidsuit helmet")
-				helmet.icon_state = "rig0-engineering"
+				helmet.icon_state = "eng_helm"
 				helmet.item_state = "eng_helm"
 			if(suit)
 				suit.SetName("engineering voidsuit")
-				suit.icon_state = "rig-engineering"
+				suit.icon_state = "eng_voidsuit"
 				suit.item_state_slots = list(
 					slot_l_hand_str = "eng_voidsuit",
 					slot_r_hand_str = "eng_voidsuit",
@@ -1109,11 +1109,11 @@
 		if("Mining")
 			if(helmet)
 				helmet.SetName("mining voidsuit helmet")
-				helmet.icon_state = "rig0-mining"
+				helmet.icon_state = "mining_helm"
 				helmet.item_state = "mining_helm"
 			if(suit)
 				suit.SetName("mining voidsuit")
-				suit.icon_state = "rig-mining"
+				suit.icon_state = "mining_voidsuit"
 				suit.item_state_slots = list(
 					slot_l_hand_str = "mining_voidsuit",
 					slot_r_hand_str = "mining_voidsuit",
@@ -1121,11 +1121,11 @@
 		if("Science")
 			if(helmet)
 				helmet.SetName("excavation voidsuit helmet")
-				helmet.icon_state = "rig0-excavation"
+				helmet.icon_state = "excavation_helm"
 				helmet.item_state = "excavation_helm"
 			if(suit)
 				suit.SetName("excavation voidsuit")
-				suit.icon_state = "rig-excavation"
+				suit.icon_state = "excavation_voidsuit"
 				suit.item_state_slots = list(
 					slot_l_hand_str = "excavation_voidsuit",
 					slot_r_hand_str = "excavation_voidsuit",
@@ -1133,11 +1133,11 @@
 		if("Medical")
 			if(helmet)
 				helmet.SetName("medical voidsuit helmet")
-				helmet.icon_state = "rig0-medical"
+				helmet.icon_state = "medical_helm"
 				helmet.item_state = "medical_helm"
 			if(suit)
 				suit.SetName("medical voidsuit")
-				suit.icon_state = "rig-medical"
+				suit.icon_state = "medical_voidsuit"
 				suit.item_state_slots = list(
 					slot_l_hand_str = "medical_voidsuit",
 					slot_r_hand_str = "medical_voidsuit",
@@ -1145,11 +1145,11 @@
 		if("Security")
 			if(helmet)
 				helmet.SetName("security voidsuit helmet")
-				helmet.icon_state = "rig0-sec"
+				helmet.icon_state = "sec_helm"
 				helmet.item_state = "sec_helm"
 			if(suit)
 				suit.SetName("security voidsuit")
-				suit.icon_state = "rig-sec"
+				suit.icon_state = "sec_voidsuit"
 				suit.item_state_slots = list(
 					slot_l_hand_str = "sec_voidsuit",
 					slot_r_hand_str = "sec_voidsuit",
@@ -1157,11 +1157,11 @@
 		if("Atmos")
 			if(helmet)
 				helmet.SetName("atmospherics voidsuit helmet")
-				helmet.icon_state = "rig0-atmos"
+				helmet.icon_state = "atmos_helm"
 				helmet.item_state = "atmos_helm"
 			if(suit)
 				suit.SetName("atmospherics voidsuit")
-				suit.icon_state = "rig-atmos"
+				suit.icon_state = "atmos_voidsuit"
 				suit.item_state_slots = list(
 					slot_l_hand_str = "atmos_voidsuit",
 					slot_r_hand_str = "atmos_voidsuit",
@@ -1178,11 +1178,11 @@
 		if("^%###^%$",  "Syndicate")
 			if(helmet)
 				helmet.SetName("blood-red voidsuit helmet")
-				helmet.icon_state = "rig0-syndie"
+				helmet.icon_state = "syndie_helm"
 				helmet.item_state = "syndie_helm"
 			if(suit)
 				suit.SetName("blood-red voidsuit")
-				suit.icon_state = "rig-syndie"
+				suit.icon_state = "syndie_voidsuit"
 				suit.item_state_slots = list(
 					slot_l_hand_str = "syndie_voidsuit",
 					slot_r_hand_str = "syndie_voidsuit",
@@ -1190,11 +1190,11 @@
 		if("Pilot")
 			if(helmet)
 				helmet.SetName("pilot voidsuit helmet")
-				helmet.icon_state = "rig0_pilot"
+				helmet.icon_state = "pilot_helm"
 				helmet.item_state = "pilot_helm"
 			if(suit)
 				suit.SetName("pilot voidsuit")
-				suit.icon_state = "rig-pilot"
+				suit.icon_state = "pilot_voidsuit"
 
 	if(helmet) helmet.SetName("refitted [helmet.name]")
 	if(suit) suit.SetName("refitted [suit.name]")

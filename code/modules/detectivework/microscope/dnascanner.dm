@@ -28,9 +28,8 @@
 
 	var/obj/item/forensics/swab/swab = W
 	if(istype(swab) && swab.is_used())
-		user.unEquip(W)
-		src.bloodsamp = swab
-		swab.loc = src
+		user.drop(swab, src)
+		bloodsamp = swab
 		to_chat(user, "<span class='notice'>You insert \the [W] into \the [src].</span>")
 	else
 		to_chat(user, "<span class='warning'>\The [src] only accepts used swabs.</span>")
@@ -108,7 +107,7 @@
 		var/obj/item/paper/P = new(src)
 		P.SetName("[src] report #[++report_num]: [bloodsamp.name]")
 		P.stamped = list(/obj/item/stamp)
-		P.overlays = list("paper_stamped")
+		P.AddOverlays("paper_stamped")
 		//dna data itself
 		var/data = "No scan information available."
 		if(bloodsamp.dna != null)
@@ -146,7 +145,7 @@
 	closed = !closed
 	src.update_icon()
 
-/obj/machinery/dnaforensics/update_icon()
+/obj/machinery/dnaforensics/on_update_icon()
 	..()
 	if(!(stat & NOPOWER) && scanning)
 		icon_state = "dnaworking"

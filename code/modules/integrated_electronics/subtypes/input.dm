@@ -141,7 +141,7 @@
 	radial_menu_icon = "colorpad"
 
 /obj/item/integrated_circuit/input/colorpad/ask_for_input(mob/user)
-	var/new_color = input(user, "Enter a color, please.", "Color", "#ffffff") as color|null
+	var/new_color = tgui_color_picker(user, "Enter a color, please.", "Color", "#ffffff")
 	if(new_color && user.IsAdvancedToolUser())
 		set_pin_data(IC_OUTPUT, 1, new_color)
 		push_data()
@@ -152,7 +152,7 @@
 
 /obj/item/integrated_circuit/input/colorpad/OnICTopic(href_list, mob/user)
 	if(href_list["enter_color"])
-		var/new_color = input(user, "Enter a color, please.", "Color", "#ffffff") as color|null
+		var/new_color = tgui_color_picker(user, "Enter a color, please.", "Color", "#ffffff")
 		if(new_color && user.IsAdvancedToolUser())
 			set_pin_data(IC_OUTPUT, 1, new_color)
 			push_data()
@@ -355,7 +355,7 @@
 
 		if(istype(H, /mob/living/carbon/human))
 			var/mob/living/carbon/human/M = H
-			var/msg = M._examine_text()
+			var/msg = M.examine(src)
 			if(msg)
 				set_pin_data(IC_OUTPUT, 2, msg)
 
@@ -682,19 +682,18 @@
 	cooldown_per_use = 5
 	var/frequency = 1357
 	var/code = 30
-	var/datum/radio_frequency/radio_connection
+	var/datum/frequency/radio_connection
 	var/hearing_range = 1
 
 /obj/item/integrated_circuit/input/signaler/Initialize()
 	. = ..()
-	spawn(40)
-		set_frequency(frequency)
-		// Set the pins so when someone sees them, they won't show as null
-		set_pin_data(IC_INPUT, 1, frequency)
-		set_pin_data(IC_INPUT, 2, code)
+	set_frequency(frequency)
+	// Set the pins so when someone sees them, they won't show as null
+	set_pin_data(IC_INPUT, 1, frequency)
+	set_pin_data(IC_INPUT, 2, code)
 
 /obj/item/integrated_circuit/input/signaler/Destroy()
-	radio_controller.remove_object(src,frequency)
+	SSradio.remove_object(src,frequency)
 	QDEL_NULL(radio_connection)
 	frequency = 0
 	return ..()
@@ -718,7 +717,6 @@
 
 /obj/item/integrated_circuit/input/signaler/proc/create_signal()
 	var/datum/signal/signal = new()
-	signal.transmission_method = 1
 	signal.source = src
 	if(isnum(code))
 		signal.encryption = code
@@ -728,9 +726,9 @@
 /obj/item/integrated_circuit/input/signaler/proc/set_frequency(new_frequency)
 	if(!frequency)
 		return
-	radio_controller.remove_object(src, frequency)
+	SSradio.remove_object(src, frequency)
 	frequency = new_frequency
-	radio_connection = radio_controller.add_object(src, frequency, RADIO_CHAT)
+	radio_connection = SSradio.add_object(src, frequency, RADIO_CHAT)
 
 /obj/item/integrated_circuit/input/signaler/proc/signal_good(datum/signal/signal)
 	if(!signal || signal.source == src)
@@ -781,7 +779,6 @@
 
 /obj/item/integrated_circuit/input/signaler/advanced/create_signal()
 	var/datum/signal/signal = new()
-	signal.transmission_method = 1
 	signal.data["tag"] = code
 	signal.data["command"] = command
 	signal.encryption = 0
@@ -813,11 +810,11 @@
 /obj/item/integrated_circuit/input/teleporter_locator/ask_for_input(mob/user)
 	var/list/teleporters_id = list()
 	var/list/teleporters = list()
-	for(var/obj/machinery/teleport/hub/R in GLOB.machines)
-		var/obj/machinery/computer/teleporter/com = R.com
-		if(istype(com, /obj/machinery/computer/teleporter) && com.locked && !com.one_time_use && com.operable())
-			teleporters_id.Add(com.id)
-			teleporters[com.id] = com
+	for(var/obj/machinery/teleporter_gate/gate in SSmachines.machinery)
+		var/obj/machinery/computer/teleporter/cons = gate.console
+		if(istype(cons, /obj/machinery/computer/teleporter) && gate.is_ready())
+			teleporters_id.Add(cons.id)
+			teleporters[cons.id] = cons
 
 	var/obj/machinery/computer/teleporter/selected_console
 	var/selected_id = input("Please select a teleporter to lock in. Do not select anything for random", "Teleport Selector") as null|anything in teleporters_id
@@ -835,10 +832,10 @@
 
 	var/output = "Current selection: [(current_console && current_console.id) || "None"]"
 	output += "\nList of avaliable teleporters:"
-	for(var/obj/machinery/teleport/hub/R in GLOB.machines)
-		var/obj/machinery/computer/teleporter/com = R.com
-		if(istype(com, /obj/machinery/computer/teleporter) && com.locked && !com.one_time_use && com.operable())
-			output += "\n[com.id] ([R.icon_state == "tele1" ? "Active" : "Inactive"])"
+	for(var/obj/machinery/teleporter_gate/gate in SSmachines.machinery)
+		var/obj/machinery/computer/teleporter/cons = gate.console
+		if(istype(cons, /obj/machinery/computer/teleporter) && gate.is_ready())
+			output += "\n[cons.id] ([gate.engaged ? "Active" : "Inactive"])"
 	to_chat(user, output)
 
 /obj/item/integrated_circuit/input/teleporter_locator/get_topic_data(mob/user)
@@ -848,10 +845,10 @@
 	. = list()
 	. += "Current selection: [(current_console && current_console.id) || "None"]"
 	. += "Please select a teleporter to lock in on:"
-	for(var/obj/machinery/teleport/hub/R in GLOB.machines)
-		var/obj/machinery/computer/teleporter/com = R.com
-		if(istype(com, /obj/machinery/computer/teleporter) && com.locked && !com.one_time_use && com.operable())
-			.["[com.id] ([R.icon_state == "tele1" ? "Active" : "Inactive"])"] = "tport=[any2ref(com)]"
+	for(var/obj/machinery/teleporter_gate/gate in SSmachines.machinery)
+		var/obj/machinery/computer/teleporter/cons = gate.console
+		if(istype(cons, /obj/machinery/computer/teleporter) && gate.is_ready())
+			.["[cons.id] ([gate.engaged ? "Active" : "Inactive"])"] = "tport=[any2ref(cons)]"
 	.["None (Dangerous)"] = "tport=random"
 
 /obj/item/integrated_circuit/input/teleporter_locator/OnICTopic(href_list, mob/user)
@@ -1011,10 +1008,10 @@
 	if(!check_then_do_work())
 		return FALSE
 	var/pu = get_pin_data(IC_INPUT, 1)
-	if(pu && !user.unEquip(A,get_turf(src)))
+	if(pu && !user.drop(A, get_turf(src)))
 		return FALSE
 	if(pu)
-		user.drop_item(A)
+		user.drop(A)
 	set_pin_data(IC_OUTPUT, 1, weakref(A))
 	push_data()
 	to_chat(user, SPAN("notice", "You let [assembly] scan [A]."))
@@ -1087,7 +1084,7 @@
 			if(get_turf(AM) in view(A))
 				set_pin_data(IC_OUTPUT, 1, C.charge)
 				set_pin_data(IC_OUTPUT, 2, C.maxcharge)
-				set_pin_data(IC_OUTPUT, 3, C.percent())
+				set_pin_data(IC_OUTPUT, 3, CELL_PERCENT(C))
 	push_data()
 	activate_pin(2)
 	return
@@ -1144,8 +1141,8 @@
 /obj/item/integrated_circuit/input/data_card_reader
 	name = "data card reader"
 	desc = "A circuit that can read from and write to data cards."
-	extended_desc = "Setting the \"write mode\" boolean to true will cause any data cards that are used on the assembly to replace\
- their existing function and data strings with the given strings, if it is set to false then using a data card on the assembly will cause\
+	extended_desc = "Setting the \"write mode\" boolean to true will cause any data cards that are used on the assembly to replace \
+ their existing function and data strings with the given strings, if it is set to false then using a data card on the assembly will cause \
  the function and data strings stored on the card to be written to the output pins."
 	icon_state = "card_reader"
 	complexity = 4

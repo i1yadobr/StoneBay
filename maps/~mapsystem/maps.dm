@@ -12,6 +12,9 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 			M.setup_map()
 		else
 			M = new type
+		if(M.name in config.mapping.allowed_maps)
+			M.can_be_voted = config.mapping.allowed_maps[M.name]
+
 		if(!M.path)
 			log_error("Map '[M]' does not have a defined path, not adding to map list!")
 		else
@@ -26,6 +29,8 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 
 	var/shuttle_types = null         // Only the specified shuttles will be initialized.
 	var/list/map_levels
+
+	var/list/derelict_levels		// List for random derelicts
 
 	var/list/usable_email_tlds = list("freemail.nt")
 	var/base_floor_type = /turf/simulated/floor/plating/airless // The turf type used when generating floors between Z-levels at startup.
@@ -49,41 +54,22 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 
 	var/map_admin_faxes = list()
 
-	var/shuttle_docked_message
-	var/shuttle_leaving_dock
-	var/shuttle_called_message
-	var/shuttle_recall_message
-	var/emergency_shuttle_docked_message
-	var/emergency_shuttle_leaving_dock
-	var/emergency_shuttle_recall_message
-
 	/// Areas where crew members are considered to have safely left the station.
 	/// Defaults to all area types on the centcom levels if left empty.
 	var/list/post_round_safe_areas = list()
 
 	var/list/station_networks = list() 		// Camera networks that will show up on the console.
 
-	var/list/holodeck_programs = list() // map of string ids to /datum/holodeck_program instances
-	var/list/holodeck_supported_programs = list() // map of maps - first level maps from list-of-programs string id (e.g. "BarPrograms") to another map
-												  // this is in order to support multiple holodeck program listings for different holodecks
-	                                              // second level maps from program friendly display names ("Picnic Area") to program string ids ("picnicarea")
-	                                              // as defined in holodeck_programs
-	var/list/holodeck_restricted_programs = list() // as above... but EVIL!
-
 	var/allowed_spawns = list("Arrivals Shuttle","Gateway", "Cryogenic Storage", "Cyborg Storage")
 	var/default_spawn = "Arrivals Shuttle"
 	var/flags = 0
 	var/evac_controller_type = /datum/evacuation_controller
 
-	var/lobby_icon									// The icon which contains the lobby image(s)
-	var/list/lobby_screens = list()                 // The list of lobby screen to pick() from. If left unset the first icon state is always selected.
 	var/lobby_music/lobby_music                     // The track that will play in the lobby screen. Handed in the /setup_map() proc.
 	var/welcome_sound = 'sound/signals/start1.ogg'	// Sound played on roundstart
 
 	var/default_law_type = /datum/ai_laws/nanotrasen  // The default lawset use by synth units, if not overriden by their laws var.
 	var/security_state = /decl/security_state/default // The default security state system to use.
-
-	var/id_hud_icons = 'icons/mob/hud.dmi' // Used by the ID HUD (primarily sechud) overlay.
 
 	var/list/loadout_blacklist	//list of types of loadout items that will not be pickable
 	var/legacy_mode = FALSE // When TRUE, some things (like walls and windows) use their classical appearance and mechanics
@@ -95,34 +81,33 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 	var/station_departments = list()//Gets filled automatically depending on jobs allowed
 
 	//Factions prefs stuff
-	var/list/faction_choices = list(
-		"NanoTrasen", // NanoTrasen must be first, else Company Provocation event will break
-		"Liu-Je Green Terraforming Industries",
-		"Charcoal TestLabs Ltd.",
-		"Blue Oceanic Explorers",
-		"Milky Way Trade Union",
-		"Redknight & Company Dominance Tech",
-		"Indigo Special Research Collaboration"
-		)
-
-	var/list/citizenship_choices = list(
-		"NanoTrasen",
-		"Nova Magnitka Government",
+	var/list/background_choices = list(
+		"Nanotrasen",
+		"Nova Magnitka",
 		"Gaia Magna",
+		"Zeng-Hu Clique",
+		"Zermig VIII",
+		"Independent Arcturia",
+		"Parthenonnus Ark Space Vessel",
 		"Moghes",
-		"Ahdomai",
-		"Qerrbalak",
-		"Parish of the Parthenonnus Ark"
+		"Skrell Empire",
+		"Adhomai",
+		"Corporate Sector"
 		)
 
 	var/list/home_system_choices = list(
-		"Nova Magnitka",
+		"Gilgamesh",
 		"Tau Ceti",
 		"Epsilon Ursae Minoris",
-		"Zermig VIII",
-		"Arcturia",
-		"Gaia Magna",
-		"Parthenonnus Ark Space Vessel"
+		"Zermig",
+		"Arcturus",
+		"Vega",
+		"Renenet",
+		"Alpha Centauri",
+		"Sirius",
+		"Qerrbalak",
+		"S`randarr",
+		"Uioa-Esa"
 		)
 
 	var/list/religion_choices = list(
@@ -139,58 +124,25 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 		"Atheism"
 		)
 
-	var/list/available_events = list(
-		/datum/event/nothing,
-		/datum/event/apc_damage,
-		/datum/event/brand_intelligence,
-		/datum/event/camera_damage,
-		/datum/event/economic_event,
-		/datum/event/carp_migration,
-		/datum/event/money_hacker,
-		/datum/event/money_lotto,
-		/datum/event/mundane_news,
-		/datum/event/shipping_error,
-		/datum/event/dust,
-		/datum/event/sensor_suit_jamming,
-		/datum/event/trivial_news,
-		/datum/event/infestation,
-		/datum/event/wallrot,
-		/datum/event/electrical_storm,
-		/datum/event/space_cold,
-		/datum/event/spontaneous_appendicitis,
-		/datum/event/communications_blackout,
-		/datum/event/grid_check,
-		/datum/event/ionstorm,
-		/datum/event/meteor_wave,
-		/datum/event/prison_break,
-		/datum/event/radiation_storm,
-		/datum/event/random_antag,
-		/datum/event/rogue_drone,
-		/datum/event/solar_storm,
-		/datum/event/prison_break/virology,
-		/datum/event/prison_break/xenobiology,
-		/datum/event/virus_minor,
-		/datum/event/stray_facehugger,
-		/datum/event/wormholes,
-		/datum/event/prison_break/station,
-		/datum/event/spacevine,
-		/datum/event/virus_major,
-		/datum/event/xenomorph_infestation,
-		/datum/event/biohazard_outbreak,
-		/datum/event/mimic_invasion
-	)
-
 /datum/map/New()
 	if(!allowed_jobs)
 		allowed_jobs = subtypesof(/datum/job)
 	if(!shuttle_types)
-		crash_with("[src] has no shuttle_types!")
+		util_crash_with("[src] has no shuttle_types!")
 
 /datum/map/proc/level_has_trait(z, trait)
 	return map_levels[z].has_trait(trait)
 
 /datum/map/proc/setup_map()
 	ASSERT(length(map_levels))
+
+	var/derelicts_index = config.mapping.derelicts_amount
+	while(length(derelict_levels) && derelicts_index)
+		var/list/rand_derelict = pick(derelict_levels)
+		derelict_levels.Remove(rand_derelict)
+		map_levels.Add(rand_derelict)
+		derelicts_index--
+
 	for(var/level = 1; level <= length(map_levels); level++)
 		var/datum/space_level/L = map_levels[level]
 
@@ -206,9 +158,12 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 /datum/map/proc/send_welcome()
 	return
 
-/datum/map/proc/perform_map_generation()
+/datum/map/proc/perform_map_generation(lateloading = FALSE)
 	for(var/level = 1; level <= length(map_levels); level++)
 		var/datum/space_level/L = map_levels[level]
+		if(L.lateloading_level != lateloading)
+			continue
+
 		L.generate(level)
 
 // Used to apply various post-compile procedural effects to the map.
@@ -254,7 +209,7 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 	if(!length(candidates))
 		return current_z_level
 
-	return text2num(pickweight(candidates))
+	return text2num(util_pick_weight(candidates))
 
 /datum/map/proc/get_empty_zlevel()
 	var/empty_levels = list()
@@ -319,7 +274,7 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 
 		if(!L.has_trait(trait))
 			result += level
-	
+
 	return result
 
 /datum/map/proc/get_levels_with_trait(trait)
@@ -341,9 +296,9 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 
 		for(var/T in args)
 			if(L.has_trait(T))
-				result += L
+				result += level
 				break
-	
+
 	return result
 
 /datum/map/proc/get_levels_with_all_traits(...)
@@ -357,8 +312,8 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 			if(!L.has_trait(T))
 				ok = FALSE
 				break
-		
+
 		if(ok)
-			result += L
-	
+			result += level
+
 	return result

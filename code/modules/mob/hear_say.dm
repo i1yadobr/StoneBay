@@ -29,11 +29,11 @@
 		return
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
-	if (language?.flags & NONVERBAL)
+	if (language?.language_flags & NONVERBAL)
 		if (!speaker || (src.sdisabilities & BLIND || src.blinded) || !near)
 			message = stars(message)
 
-	if(!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
+	if(!(language && (language.language_flags & INNATE))) // skip understanding checks for INNATE languages
 		if(!say_understands(speaker,language))
 			if(istype(speaker,/mob/living/simple_animal))
 				var/understand_animals = FALSE
@@ -82,12 +82,30 @@
 			message = "<b>[message]</b>"
 
 	if(is_deaf())
-		if(!language || !(language.flags & INNATE)) // INNATE is the flag for audible-emote-language, so we don't want to show an "x talks but you cannot hear them" message if it's set
+		if(!language || !(language.language_flags & INNATE)) // INNATE is the flag for audible-emote-language, so we don't want to show an "x talks but you cannot hear them" message if it's set
 			if(speaker == src)
 				to_chat(src, SPAN("warning", "You cannot hear yourself speak!"))
 			else if(!is_blind())
 				to_chat(src, "<span class='name'>[speaker_name]</span>[alt_name] talks but you cannot hear \him.")
 	else
+		if(isliving(src))
+			var/mob/living/M = src
+			var/datum/modifier/trait/headphones_volume/headphones_volume = locate(/datum/modifier/trait/headphones_volume) in M.modifiers
+			if(headphones_volume?.volume_status == MID_VOLUME)
+				if(dist_speech > 4)
+					to_chat(src, {"[SPAN("name", speaker_name)][alt_name] talks but the music is too loud."})
+					return
+			else if(headphones_volume?.volume_status == HIGH_VOLUME)
+				italics = TRUE
+				if(!is_blind() && speaker != src && dist_speech > 1)
+					to_chat(src, {"[SPAN("name", speaker_name)][alt_name] talks but the music is too loud!"})
+					return
+
+		if(src.z < speaker.z)
+			verb += " from above"
+		else if(src.z > speaker.z)
+			verb += " from below"
+
 		if(istype(src,/mob/living) && src.mind && src.mind.syndicate_awareness == SYNDICATE_SUSPICIOUSLY_AWARE)
 			message = highlight_codewords(message, GLOB.code_phrase_highlight_rule)  //  Same can be done with code_response or any other list of words, using regex created by generate_code_regex(). You can also add the name of CSS class as argument to change highlight style.
 		if(language)
@@ -131,11 +149,11 @@
 	var/track = null
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
-	if (language?.flags & NONVERBAL)
+	if (language?.language_flags & NONVERBAL)
 		if (!speaker || (src.sdisabilities & BLIND || src.blinded) || !(speaker in view(src)))
 			message = stars(message)
 
-	if(!(language?.flags & INNATE)) // skip understanding checks for INNATE languages
+	if(!(language?.language_flags & INNATE)) // skip understanding checks for INNATE languages
 		if(!say_understands(speaker, language))
 			if(istype(speaker,/mob/living/simple_animal))
 				var/mob/living/simple_animal/S = speaker

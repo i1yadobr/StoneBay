@@ -23,6 +23,9 @@
 
 	w_class = ITEM_SIZE_NO_CONTAINER
 	throw_range = 3
+
+	drop_sound = null
+	pickup_sound = null
 /*
 	This section is for overrides of existing procs.
 */
@@ -36,15 +39,17 @@
 
 	SetName("[name] ([O.name])")
 
+	add_think_ctx("handle_resist", CALLBACK(src, nameof(.proc/handle_resist)), 0)
+
 	if(start_grab_name)
 		current_grab = all_grabstates[start_grab_name]
 
-/obj/item/grab/_examine_text(user)
+/obj/item/grab/examine(mob/user, infix)
 	. = ..()
 	var/obj/item/O = get_targeted_organ()
-	. += "\nA grab on \the [affecting]'s [O.name]."
+	. += "A grab on \the [affecting]'s [O.name]."
 
-/obj/item/grab/Process()
+/obj/item/grab/think()
 	current_grab.process(src)
 
 /obj/item/grab/attack_self(mob/user)
@@ -69,7 +74,7 @@
 	if(!QDELING(src))
 		qdel(src)
 
-/obj/item/grab/can_be_dropped_by_client(mob/M)
+/obj/item/grab/can_be_unequipped_by(mob/M, disable_warning = 0)
 	return M == assailant
 
 /obj/item/grab/Destroy()
@@ -79,10 +84,9 @@
 		affecting.reset_plane_and_layer()
 		affecting = null
 	if(assailant)
-		assailant.u_equip(src)
+		assailant.__unequip(src)
 		assailant.client?.screen -= src
 		assailant = null
-		loc = null
 	return ..()
 
 /*
@@ -200,18 +204,26 @@
 		return
 
 	var/datum/grab/upgrab = current_grab.upgrade(src)
-	if(upgrab)
-		current_grab = upgrab
-		last_upgrade = world.time
-		adjust_position()
-		update_icons()
-		current_grab.enter_as_up(src)
+	if(QDELETED(upgrab) || !assailant)
+		delete_self()
+		return
+
+	current_grab = upgrab
+	last_upgrade = world.time
+	adjust_position()
+	update_icons()
+	current_grab.enter_as_up(src)
+	SEND_SIGNAL(assailant, SIGNAL_MOB_GRAB_SET_STATE, assailant, current_grab.state_name, affecting)
 
 /obj/item/grab/proc/downgrade()
 	var/datum/grab/downgrab = current_grab.downgrade()
-	if(downgrab)
-		current_grab = downgrab
-		update_icons()
+	if(QDELETED(downgrab) || !assailant)
+		delete_self()
+		return
+
+	current_grab = downgrab
+	update_icons()
+	SEND_SIGNAL(assailant, SIGNAL_MOB_GRAB_SET_STATE, assailant, current_grab.state_name, affecting)
 
 /obj/item/grab/proc/update_icons()
 	if(!current_grab)

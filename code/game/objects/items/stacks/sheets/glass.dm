@@ -15,6 +15,7 @@
 	singular_name = "glass sheet"
 	icon_state = "glass"
 	var/created_window = /obj/structure/window/basic
+	var/created_windoor_assembly = null
 	var/is_reinforced = 0
 	var/list/construction_options = list("One Direction", "Full Window")
 	default_type = "glass"
@@ -25,7 +26,7 @@
 /obj/item/stack/material/glass/attackby(obj/item/W, mob/user)
 	..()
 	if(!is_reinforced)
-		if(istype(W,/obj/item/stack/cable_coil))
+		if(isCoil(W))
 			var/obj/item/stack/cable_coil/CC = W
 			if (get_amount() < 1 || CC.get_amount() < 5)
 				to_chat(user, "<span class='warning'>You need five lengths of coil and one sheet of glass to make wired glass.</span>")
@@ -48,8 +49,8 @@
 			var/replace = (user.get_inactive_hand()==G)
 			V.use(1)
 			G.use(1)
-			if (!G && replace)
-				user.put_in_hands(RG)
+			if(!G && replace)
+				user.pick_or_drop(RG)
 
 /obj/item/stack/material/glass/proc/construct_window(mob/user as mob)
 	if(!user || !src)	return 0
@@ -116,7 +117,7 @@
 				to_chat(user, "<span class='warning'>You need more glass to do that.</span>")
 				return 1
 
-			new /obj/structure/windoor_assembly(user.loc, user.dir, 1)
+			new created_windoor_assembly(user.loc, user.dir, 1)
 			src.use(5)
 
 	return 0
@@ -133,6 +134,7 @@
 	created_window = /obj/structure/window/reinforced
 	is_reinforced = 1
 	construction_options = list("One Direction", "Full Window", "Windoor")
+	created_windoor_assembly = /obj/structure/windoor_assembly
 
 /*
  * Plasma Glass sheets
@@ -156,8 +158,8 @@
 		src = null
 		var/replace = (user.get_inactive_hand()==G)
 		G.use(1)
-		if (!G && !RG && replace)
-			user.put_in_hands(RG)
+		if(!G && !RG && replace)
+			user.pick_or_drop(RG)
 	else
 		return ..()
 
@@ -170,4 +172,6 @@
 	icon_state = "rplass"
 	default_type = "reinforced plass"
 	created_window = /obj/structure/window/plasmareinforced
+	created_windoor_assembly = /obj/structure/windoor_assembly/plasma
 	is_reinforced = 1
+	construction_options = list("One Direction", "Full Window", "Windoor")

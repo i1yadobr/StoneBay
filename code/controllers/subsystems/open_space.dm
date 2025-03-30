@@ -46,7 +46,7 @@ SUBSYSTEM_DEF(open_space)
 		suspend()
 
 /datum/controller/subsystem/open_space/stat_entry()
-	..("T: [length(turfs_to_process)], U: [times_updated]")
+	..("T: [length(turfs_to_process)] | U: [times_updated]")
 
 /datum/controller/subsystem/open_space/proc/update_turf(turf/T)
 	for(var/atom/movable/A in T)
@@ -73,8 +73,10 @@ SUBSYSTEM_DEF(open_space)
 	. = ..()
 	SSopen_space.add_turf(src)
 
+/turf/simulated/open/is_open()
+	return TRUE
 
-/obj/update_icon()
+/obj/on_update_icon()
 	. = ..()
 	if(!invisibility && isturf(loc))
 		var/turf/T = GetAbove(src)

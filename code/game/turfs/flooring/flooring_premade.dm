@@ -13,6 +13,62 @@
 	base_icon_state = "rough_plating"
 	tile_type = /obj/item/stack/tile/floor_rough
 
+//SNOWED FLOORING
+
+/turf/simulated/floor/plating/snowed
+	name = "snowed-over plating"
+	desc = "A section of heated plating, helps keep the snow from stacking up too high."
+	icon = 'icons/turf/snow.dmi'
+	icon_state = "snowplating"
+	temperature = -30 CELSIUS
+	footstep_sound = SFX_FOOTSTEP_SNOW
+
+
+/turf/simulated/floor/plating/snowed/smoothed
+	icon = 'icons/turf/snow_turf.dmi'
+	icon_state = "snow_turf-0-0"
+
+/turf/simulated/floor/plating/snowed/smoothed/Initialize()
+	. = ..()
+	update_icon()
+	redraw_nearby_snows()
+
+
+/turf/simulated/floor/plating/snowed/smoothed/Destroy()
+	redraw_nearby_snows()
+	return ..()
+
+/turf/simulated/floor/plating/snowed/smoothed/proc/redraw_nearby_snows()
+	for(var/direction in GLOB.alldirs)
+		var/turf/L = get_step(src, direction)
+		if(istype(L,/turf/simulated/floor/plating/snowed/smoothed))
+			L.update_icon() //so siding get updated properly
+
+
+/turf/simulated/floor/plating/snowed/smoothed/on_update_icon()
+	var/connectdir = 0
+	for(var/direction in GLOB.cardinal)
+		if(istype(get_step(src, direction),/turf/simulated/floor/plating/snowed/smoothed))
+			connectdir |= direction
+
+	//Check the diagonal connections for corners, where you have, for example, connections both north and east. In this case it checks for a north-east connection to determine whether to add a corner marker or not.
+	var/diagonalconnect = 0 //1 = NE; 2 = SE; 4 = NW; 8 = SW
+	var/dirs = list(1,2,4,8)
+	var/i = 1
+	for(var/diag in list(NORTHEAST, SOUTHEAST,NORTHWEST,SOUTHWEST))
+		if((connectdir & diag) == diag)
+			if(istype(get_step(src, diag),/turf/simulated/floor/plating/snowed/smoothed))
+				diagonalconnect |= dirs[i]
+		i += 1
+
+	icon_state = "snow_turf-[connectdir]-[diagonalconnect]"
+
+/turf/simulated/floor/plating/snowed/colder
+	temperature = -70 CELSIUS
+
+/turf/simulated/floor/plating/snowed/temperatre
+	temperature = 20 CELSIUS
+
 
 //GRID FLOORING
 
@@ -57,6 +113,7 @@
 	icon = 'icons/turf/flooring/tiles.dmi'
 	icon_state = "reinforced"
 	initial_flooring = /decl/flooring/reinforced
+	holodeck_compatible = TRUE
 
 /turf/simulated/floor/reinforced/airless
 	initial_gas = null
@@ -179,6 +236,13 @@
 /turf/simulated/floor/tiled/techfloor/ridge
 	icon_state = "techridge"
 	initial_flooring = /decl/flooring/tiling/techfloor/ridge
+
+//Elevator shaft
+/turf/simulated/floor/elevatorshaft
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "elevatorshaft"
+
+
 //ATMOS PREMADES
 
 /turf/simulated/floor/reinforced/airless
@@ -246,6 +310,7 @@
 	icon_state = "darkwood"
 	icon = 'icons/turf/flooring/wood.dmi'
 	initial_flooring = /decl/flooring/darkwood
+	footstep_sound = SFX_FOOTSTEP_WOOD
 
 /turf/simulated/floor/trim/wood/broken0
 	name = "wooden floor"
@@ -348,43 +413,61 @@
 	icon = 'icons/turf/flooring/grass.dmi'
 	icon_state = "grass0"
 	initial_flooring = null
+	footstep_sound = SFX_FOOTSTEP_ASTEROID
 
 /turf/simulated/floor/natural/grass
 	name = "grass patch"
 	icon = 'icons/turf/flooring/grass.dmi'
 	icon_state = "grass0"
 	initial_flooring = /decl/flooring/grass
+	footstep_sound = SFX_FOOTSTEP_GRASS
 
 /turf/simulated/floor/natural/ice
 	name = "ice"
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "ice"
+	footstep_sound = SFX_FOOTSTEP_SNOW
 
 /turf/simulated/floor/natural/snow
 	name = "snow"
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "snow"
+	footstep_sound = SFX_FOOTSTEP_SNOW
 
 /turf/simulated/floor/natural/frozenground
 	name = "frozen ground"
 	icon = 'icons/turf/flooring/frozenground.dmi'
 	icon_state = "frozen_ground"
-	temperature = 193.15
+	temperature = -30 CELSIUS
+	footstep_sound = SFX_FOOTSTEP_SNOW
 
 /turf/simulated/floor/natural/frozenground/cave
 	name = "frozen ground"
 	icon = 'icons/turf/flooring/frozenground.dmi'
 	icon_state = "wground1"
-	temperature = 243.15
+	temperature = 20 CELSIUS
 
-/turf/simulated/floor/natural/frozenground/ice/shallow
-	icon = 'icons/turf/ice.dmi'
-	icon_state = "ice1"
+/turf/simulated/floor/natural/frozenground/snow
+	name = "snow"
+	icon = 'icons/turf/snow.dmi'
+	icon_state = "snow0"
+	temperature = -30 CELSIUS
+
+/turf/simulated/floor/natural/frozenground/snow/Initialize()
+	if(prob(5))
+		icon_state = "snow[rand(1,12)]"
+	..()
 
 /turf/simulated/floor/natural/lava
 	name = "lava"
 	icon = 'icons/turf/flooring/lava.dmi'
 	icon_state = "lava"
+
+/turf/simulated/floor/natural/lava/Crossed(O)
+	. = ..()
+	if(isliving(O))
+		var/mob/living/M = O
+		M.IgniteMob()
 
 /turf/simulated/floor/natural/snow/New()
 	icon_state = pick("snow[rand(1,12)]","snow0")
@@ -423,7 +506,7 @@
 
 /turf/simulated/floor/natural/beach/water/New()
 	..()
-	overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=MOB_LAYER+0.1)
+	AddOverlays(image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=MOB_LAYER+0.1))
 
 //JUNGLE
 
@@ -431,6 +514,7 @@
 	name = "grass"
 	icon = 'icons/turf/jungle_turfs.dmi'
 	icon_state = "grass1"
+	footstep_sound = SFX_FOOTSTEP_GRASS
 
 /turf/simulated/floor/natural/jungle/grasscorner1
 	name = "grass"
@@ -455,6 +539,7 @@
 /turf/simulated/floor/natural/jungle/sandgrasscorner2
 	name = "grass"
 	icon_state = "grasssand_corner2"
+	footstep_sound = SFX_FOOTSTEP_ASTEROID
 
 /turf/simulated/floor/natural/jungle/dirt
 	name = "dirt"
@@ -466,12 +551,13 @@
 	desc = "Looks wet."
 	icon = 'icons/misc/beach.dmi'
 	icon_state = "seashallow"
+	footstep_sound = SFX_FOOTSTEP_WATER
 	var/overlay = TRUE
 
 /turf/simulated/floor/natural/jungle/water/New()
 	..()
 	if(overlay)
-		overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="riverwater","layer"=MOB_LAYER+1)
+		AddOverlays(image("icon"='icons/misc/beach.dmi',"icon_state"="riverwater","layer"=MOB_LAYER+1))
 
 /turf/simulated/floor/natural/jungle/water/edge
 	icon_state = "beach"
@@ -479,6 +565,7 @@
 /turf/simulated/floor/natural/jungle/water/corner
 	icon_state = "beachcorner"
 	overlay = FALSE
+	footstep_sound = SFX_FOOTSTEP_ASTEROID
 
 /turf/simulated/floor/natural/jungle/sand
 	name = "sand"
@@ -489,6 +576,7 @@
 	base_desc = "Looks sandy."
 	base_icon = 'icons/misc/beach.dmi'
 	base_icon_state = "desert0"
+	footstep_sound = SFX_FOOTSTEP_ASTEROID
 	var/rand_state = TRUE
 
 /turf/simulated/floor/natural/jungle/sand/New()
@@ -573,13 +661,3 @@
 	if(istype(AM, /mob/living))
 		var/mob/living/M = AM
 		M.slip(src, 4)
-
-/turf/simulated/floor/misc/abductor
-	name = "alien floor"
-	icon = 'icons/turf/flooring/abductor.dmi'
-	icon_state = "alienpod1"
-	var/previous_type = /turf/simulated/floor
-
-/turf/simulated/floor/misc/abductor/Initialize()
-	icon_state = "alienpod[rand(1,9)]"
-	..()

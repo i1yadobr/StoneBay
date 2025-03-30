@@ -1,7 +1,7 @@
 /* The old single tank bombs that dont really work anymore
 /obj/effect/spawner/bomb
 	name = "bomb"
-	icon = 'icons/mob/screen1.dmi'
+	icon = 'icons/misc/markers.dmi'
 	icon_state = "x"
 	var/btype = 0  //0 = radio, 1= prox, 2=time
 	var/explosive = 1	// 0= firebomb
@@ -127,7 +127,7 @@
 
 /obj/effect/spawner/newbomb
 	name = "TTV bomb"
-	icon = 'icons/mob/screen1.dmi'
+	icon = 'icons/misc/markers.dmi'
 	icon_state = "x"
 
 	var/assembly_type = /obj/item/device/assembly/signaler
@@ -170,17 +170,21 @@
 	OT.master = V
 
 	PT.valve_welded = 1
-	PT.air_contents.gas["plasma"] = plasma_amt
-	PT.air_contents.gas["carbon_dioxide"] = carbon_amt
-	PT.air_contents.total_moles = plasma_amt + carbon_amt
-	PT.air_contents.temperature = PLASMA_MINIMUM_BURN_TEMPERATURE+1
-	PT.air_contents.update_values()
+
+	var/datum/gas_mixture/PM = PT.return_air()
+	var/datum/gas_mixture/OM = OT.return_air()
+
+	PM.gas["plasma"] = plasma_amt
+	PM.gas["carbon_dioxide"] = carbon_amt
+	PM.total_moles = plasma_amt + carbon_amt
+	PM.temperature = FLAMMABLE_GAS_MINIMUM_BURN_TEMPERATURE + 1
+	PM.update_values()
 
 	OT.valve_welded = 1
-	OT.air_contents.gas["oxygen"] = oxygen_amt
-	OT.air_contents.total_moles = oxygen_amt
-	OT.air_contents.temperature = PLASMA_MINIMUM_BURN_TEMPERATURE+1
-	OT.air_contents.update_values()
+	OM.gas["oxygen"] = oxygen_amt
+	OM.total_moles = oxygen_amt
+	OM.temperature = FLAMMABLE_GAS_MINIMUM_BURN_TEMPERATURE + 1
+	OM.update_values()
 
 
 	var/obj/item/device/assembly/S = new assembly_type(V)
@@ -200,7 +204,7 @@
 
 /obj/effect/spawner/onetankbomb
 	name = "Single-tank bomb"
-	icon = 'icons/mob/screen1.dmi'
+	icon = 'icons/misc/markers.dmi'
 	icon_state = "x"
 
 //	var/assembly_type = /obj/item/device/assembly/signaler

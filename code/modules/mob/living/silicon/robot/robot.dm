@@ -1,19 +1,5 @@
 #define CYBORG_POWER_USAGE_MULTIPLIER 2.5 // Multiplier for amount of power cyborgs use.
 
-var/global/list/robot_footstep_sounds = list(
-	FOOTSTEP_ROBOT_LEGS = list(
-		'sound/effects/robot_footstep/legs01.ogg',
-		'sound/effects/robot_footstep/legs02.ogg',
-		'sound/effects/robot_footstep/legs03.ogg',
-		'sound/effects/robot_footstep/legs04.ogg'
-	),
-	FOOTSTEP_ROBOT_SPIDER = list(
-		'sound/effects/robot_footstep/spider01.ogg',
-		'sound/effects/robot_footstep/spider02.ogg',
-		'sound/effects/robot_footstep/spider03.ogg'
-	)
-)
-
 /mob/living/silicon/robot
 	name = "Cyborg"
 	real_name = "Cyborg"
@@ -27,33 +13,38 @@ var/global/list/robot_footstep_sounds = list(
 	mob_swap_flags = ROBOT|MONKEY|METROID|SIMPLE_ANIMAL
 	mob_push_flags = ~HEAVY //trundle trundle
 
+	blocks_emissive = EMISSIVE_BLOCK_NONE
+
 	var/lights_on = 0 // Is our integrated light on?
 	var/used_power_this_tick = 0
 	var/sight_mode = 0
 	var/custom_name = ""
-	var/custom_sprite = TRUE //Due to all the sprites involved, a var for our custom borgs may be best
-	var/original_icon = 'icons/mob/robots.dmi'
 	var/crisis //Admin-settable for combat module use.
 	var/crisis_override = 0
 	var/integrated_light_max_bright = 0.75
 	var/datum/wires/robot/wires
 
-//Icon stuff
+	/// Whether this type of robot supports custom icons
+	var/custom_sprite = TRUE
+	/// Default hull typepath
+	var/default_hull = /datum/robot_hull/spider/robot
 
 	var/static/list/eye_overlays
-	var/icontype 				//Persistent icontype tracking allows for cleaner icon updates
-	var/module_hulls[0] 		//Used to store the associations between sprite names and hull datum.
-	var/icon_selected = 1		//If icon selection has been completed yet
-	var/icon_selection_tries = 0//Remaining attempts to select icon before a selection is forced
+	/// Key used to look up an appropriate hull datum in the `module_hulls`
+	var/icontype
+	/// Whether this mob've chosen a custom icon
+	var/icon_chosen = FALSE
+	/// List of avaliable robot hulls
+	var/datum/robot_hull/module_hulls[0]
 
 //Hud stuff
 
-	var/obj/screen/inv1 = null
-	var/obj/screen/inv2 = null
-	var/obj/screen/inv3 = null
+	var/atom/movable/screen/inv1 = null
+	var/atom/movable/screen/inv2 = null
+	var/atom/movable/screen/inv3 = null
 
 	var/shown_robot_modules = 0 //Used to determine whether they have the module menu shown or not
-	var/obj/screen/robot_modules_background
+	var/atom/movable/screen/robot_modules_background
 
 //3 Modules can be activated at any one time.
 	var/obj/item/robot_module/module = null
@@ -74,7 +65,7 @@ var/global/list/robot_footstep_sounds = list(
 	// Components are basically robot organs.
 	var/list/components = list()
 
-	var/obj/item/device/mmi/mmi = null
+	var/obj/item/organ/internal/cerebrum/mmi = null
 
 	var/obj/item/device/pda/ai/rbPDA = null
 
@@ -96,6 +87,7 @@ var/global/list/robot_footstep_sounds = list(
 	var/viewalerts = 0
 	var/modtype = "Default"
 	var/selected_module
+	var/restore_modtype_in_global_pull = FALSE
 	var/lower_mod = 0
 	var/jetpack = 0
 	var/datum/effect/effect/system/trail/ion/ion_trail = null
@@ -120,24 +112,25 @@ var/global/list/robot_footstep_sounds = list(
 		/mob/living/silicon/robot/proc/ResetSecurityCodes
 	)
 
-/mob/living/silicon/robot/New(loc,unfinished = 0)
+/mob/living/silicon/robot/New(loc, unfinished = 0)
 	spark_system = new /datum/effect/effect/system/spark_spread()
 	spark_system.set_up(5, 0, src)
 	spark_system.attach(src)
 
-	add_language("Robot Talk", 1)
+	add_language(LANGUAGE_ROBOT, 1)
 	add_language(LANGUAGE_EAL, 1)
 
 	wires = new(src)
 
 	robot_modules_background = new()
+	robot_modules_background.icon = 'icons/hud/common/screen_storage.dmi'
 	robot_modules_background.icon_state = "block"
 	ident = random_id(/mob/living/silicon/robot, 1, 999)
-	module_hulls["Basic"] = new /datum/robot_hull/spider/robot
-	icontype = "Basic"
-	footstep_sound = module_hulls[icontype].footstep_sound
+
+	module_hulls["Default"] = new default_hull
+	apply_hull("Default")
+
 	updatename(modtype)
-	update_icon()
 
 	if(!scrambledcodes && !camera)
 		camera = new /obj/machinery/camera(src)
@@ -166,15 +159,15 @@ var/global/list/robot_footstep_sounds = list(
 
 	add_robot_verbs()
 
-	hud_list[HEALTH_HUD]      = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[STATUS_HUD]      = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudhealth100")
-	hud_list[LIFE_HUD]        = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudhealth100")
-	hud_list[ID_HUD]          = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[WANTED_HUD]      = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[IMPLOYAL_HUD]    = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[IMPCHEM_HUD]     = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[IMPTRACK_HUD]    = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
-	hud_list[SPECIALROLE_HUD] = new /image/hud_overlay('icons/mob/hud.dmi', src, "hudblank")
+	hud_list[HEALTH_HUD]      = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[STATUS_HUD]      = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[LIFE_HUD]        = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[ID_HUD]          = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[WANTED_HUD]      = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[IMPLOYAL_HUD]    = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[IMPCHEM_HUD]     = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[IMPTRACK_HUD]    = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
+	hud_list[SPECIALROLE_HUD] = new /image/hud_overlay('icons/mob/huds/antag_hud.dmi', src, "hudblank")
 
 /mob/living/silicon/robot/Initialize()
 	. = ..()
@@ -251,9 +244,14 @@ var/global/list/robot_footstep_sounds = list(
 			mmi = null
 		else
 			QDEL_NULL(mmi)
+
 	if(connected_ai)
 		connected_ai.connected_robots -= src
 	connected_ai = null
+
+	if(restore_modtype_in_global_pull)
+		GLOB.robot_module_types |= modtype
+
 	QDEL_NULL(wires)
 	QDEL_NULL(module)
 	QDEL_NULL(inv1)
@@ -271,6 +269,24 @@ var/global/list/robot_footstep_sounds = list(
 	QDEL_NULL(cell)
 	return ..()
 
+/mob/living/silicon/robot/proc/apply_hull(new_icontype)
+	if(!(new_icontype in module_hulls))
+		return
+
+	var/datum/robot_hull/new_hull = module_hulls[new_icontype]
+	var/list/icon_states = icon_states(new_hull.icon)
+	if(!(new_hull.icon_state in icon_states))
+		return
+
+	icontype = new_icontype
+	icon = new_hull.icon
+	icon_state = new_hull.icon_state
+	footstep_sound = new_hull.footstep_sound
+
+	update_icon()
+
+	return TRUE
+
 /mob/living/silicon/robot/proc/set_module_hulls(list/new_sprites)
 	if(length(new_sprites))
 		module_hulls = new_sprites.Copy()
@@ -287,15 +303,7 @@ var/global/list/robot_footstep_sounds = list(
 					if(module_hulls[sprite_state])
 						qdel(module_hulls[sprite_state])
 						module_hulls[sprite_state] = null
-					module_hulls[sprite_state] = new /datum/robot_hull/custom(sprite_state, footstep, CUSTOM_ITEM_ROBOTS)
-		else
-			icontype = module_hulls[1]
-		if(!(icontype in module_hulls))
-			icontype = module_hulls[1]
-			icon = original_icon
-		icon_state = module_hulls[icontype].icon_state
-		footstep_sound = module_hulls[icontype].footstep_sound
-	update_icon()
+					module_hulls[sprite_state] = new /datum/robot_hull(CUSTOM_ITEM_ROBOTS, sprite_state, footstep)
 	return module_hulls
 
 /mob/living/silicon/robot/proc/choose_module()
@@ -308,7 +316,7 @@ var/global/list/robot_footstep_sounds = list(
 	if((crisis && security_state.current_security_level_is_same_or_higher_than(security_state.high_security_level)) || crisis_override) //Leaving this in until it's balanced appropriately.
 		to_chat(src, SPAN("warning", "Crisis mode active. Combat module available."))
 		modules += "Combat"
-	selected_module = input("Please, select a module!", "Robot module", null, null) as null|anything in modules
+	selected_module = tgui_input_list(src, "Please, select a module!", "Module Selection", modules)
 	if(!(selected_module in GLOB.robot_module_types))
 		return
 	setup_module()
@@ -318,10 +326,11 @@ var/global/list/robot_footstep_sounds = list(
 		to_chat(usr, SPAN("notice", "You have already selected a module."))
 		return
 	modtype = selected_module
+	restore_modtype_in_global_pull = TRUE
 	sensor_mode = 0
 	active_hud = null
 
-	var/module_type = robot_modules[modtype]
+	var/module_type = GLOB.robot_modules[modtype]
 	new module_type(src)
 	if(modtype != "Standard")
 		GLOB.robot_module_types.Remove(modtype)
@@ -334,17 +343,14 @@ var/global/list/robot_footstep_sounds = list(
 		notify_ai(ROBOT_NOTIFICATION_NEW_MODULE, module.name)
 
 
-/mob/living/silicon/robot/proc/updatename(prefix as text)
+/mob/living/silicon/robot/proc/updatename(prefix)
 	if(prefix)
 		modtype = prefix
 
-	if(istype(mmi, /obj/item/organ/internal/posibrain))
+	if(istype(mmi, /obj/item/organ/internal/cerebrum/posibrain))
 		braintype = "Android"
-	else if(istype(mmi, /obj/item/device/mmi/digital/robot))
-		braintype = "Robot"
 	else
 		braintype = "Cyborg"
-
 
 	var/changed_name = ""
 	if(custom_name)
@@ -364,9 +370,6 @@ var/global/list/robot_footstep_sounds = list(
 	//We also need to update name of internal camera.
 	if (camera)
 		camera.c_tag = changed_name
-
-	if(custom_sprite) //Check for custom sprite
-		set_custom_sprite()
 
 	//Flavour text.
 	if(client)
@@ -430,7 +433,7 @@ var/global/list/robot_footstep_sounds = list(
 	set category = "Silicon Commands"
 	set name = "Toggle Lights"
 
-	if(stat == DEAD)
+	if(is_ic_dead())
 		return
 
 	lights_on = !lights_on
@@ -498,18 +501,16 @@ var/global/list/robot_footstep_sounds = list(
 		stat("Internal Atmosphere Info", current_jetpack.name)
 		stat("Tank Pressure", current_jetpack.air_contents.return_pressure())
 
-
 // this function returns the robots jetpack, if one is installed
 /mob/living/silicon/robot/proc/installed_jetpack()
 	if(module)
 		return (locate(/obj/item/tank/jetpack) in module.modules)
-	return 0
-
+	return null
 
 // this function displays the cyborgs current cell charge in the stat panel
 /mob/living/silicon/robot/proc/show_cell_power()
 	if(cell)
-		stat(null, text("Charge Left: [round(cell.percent())]%"))
+		stat(null, text("Charge Left: [round(CELL_PERCENT(cell))]%"))
 		stat(null, text("Cell Rating: [round(cell.maxcharge)]")) // Round just in case we somehow get crazy values
 		stat(null, text("Power Cell Load: [round(used_power_this_tick)]W"))
 	else
@@ -557,12 +558,10 @@ var/global/list/robot_footstep_sounds = list(
 	if(opened) // Are they trying to insert something?
 		for(var/V in components)
 			var/datum/robot_component/C = components[V]
-			if(!C.installed && istype(W, C.external_type))
+			if(!C.installed && istype(W, C.external_type) && user.drop(W, src))
 				C.installed = 1
 				C.wrapped = W
 				C.install()
-				user.drop_item()
-				W.loc = null
 
 				var/obj/item/robot_parts/robot_component/WC = W
 				if(istype(WC))
@@ -577,21 +576,20 @@ var/global/list/robot_footstep_sounds = list(
 			to_chat(user, "Nothing to fix here!")
 			return
 		var/obj/item/weldingtool/WT = W
-		if (src == user && !do_after(user, 30, src))
-			to_chat(user, "<span class='warning'>You must stand still to repair yourself!</span>")
-			return
-		if (WT.remove_fuel(0))
-			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			adjustBruteLoss(-30)
-			updatehealth()
-			add_fingerprint(user)
-			for(var/mob/O in viewers(user, null))
-				O.show_message(text("<span class='warning'>[user] has fixed some of the dents on [src]!</span>"), 1)
-		else
-			to_chat(user, "Need more welding fuel!")
+		if(!WT.use_tool(src, user, delay = 3 SECONDS, amount = 5))
 			return
 
-	else if(istype(W, /obj/item/stack/cable_coil) && (wiresexposed || istype(src,/mob/living/silicon/robot/drone)))
+		if(QDELETED(src) || !user)
+			return
+
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		adjustBruteLoss(-30)
+		updatehealth()
+		add_fingerprint(user)
+		for(var/mob/O in viewers(user, null))
+			O.show_message(text("<span class='warning'>[user] has fixed some of the dents on [src]!</span>"), 1)
+
+	else if(isCoil(W) && (wiresexposed || istype(src,/mob/living/silicon/robot/drone)))
 		if (!getFireLoss())
 			to_chat(user, "Nothing to fix here!")
 			return
@@ -650,7 +648,7 @@ var/global/list/robot_footstep_sounds = list(
 					I.brute = C.brute_damage
 					I.burn = C.electronics_damage
 
-				I.loc = src.loc
+				I.forceMove(loc)
 
 				if(C.installed == 1)
 					C.uninstall()
@@ -667,15 +665,15 @@ var/global/list/robot_footstep_sounds = list(
 					update_icon()
 
 	else if (istype(W, /obj/item/stock_parts/matter_bin) && opened) // Installing/swapping a matter bin
+		if(!user.drop(W, src))
+			return
 		if(storage)
 			to_chat(user, "You replace \the [storage] with \the [W]")
 			storage.forceMove(get_turf(src))
 			storage = null
 		else
 			to_chat(user, "You install \the [W]")
-		user.drop_item()
 		storage = W
-		W.forceMove(src)
 		handle_selfinsert(W, user)
 		recalculate_synth_capacities()
 
@@ -687,9 +685,7 @@ var/global/list/robot_footstep_sounds = list(
 			to_chat(user, "There is a power cell already installed.")
 		else if(W.w_class != ITEM_SIZE_NORMAL)
 			to_chat(user, "\The [W] is too [W.w_class < ITEM_SIZE_NORMAL? "small" : "large"] to fit here.")
-		else
-			user.drop_item()
-			W.loc = src
+		else if(user.drop(W, src))
 			cell = W
 			handle_selfinsert(W, user) //Just in case.
 			to_chat(user, "You insert the power cell.")
@@ -710,7 +706,7 @@ var/global/list/robot_footstep_sounds = list(
 		to_chat(user, "The wires have been [wiresexposed ? "exposed" : "unexposed"].")
 		update_icon()
 
-	else if(istype(W, /obj/item/screwdriver) && opened && cell)	// radio
+	else if(isScrewdriver(W) && opened && cell)	// radio
 		if(silicon_radio)
 			silicon_radio.attackby(W,user)//Push it to the radio to let it handle everything
 		else
@@ -744,11 +740,9 @@ var/global/list/robot_footstep_sounds = list(
 		else if(U.locked)
 			to_chat(usr, "The upgrade is locked and cannot be used yet!")
 		else
-			if(U.action(src))
-				to_chat(usr, "You apply the upgrade to [src]!")
+			if(U.action(src) && user.drop(U, src))
+				to_chat(user, "You apply the upgrade to [src]!")
 				to_chat(src, "Detected new component - [U].")
-				usr.drop_item()
-				U.loc = src
 				handle_selfinsert(W, user)
 			else
 				to_chat(usr, "Upgrade error!")
@@ -783,7 +777,7 @@ var/global/list/robot_footstep_sounds = list(
 		if(cell)
 			cell.update_icon()
 			cell.add_fingerprint(user)
-			user.put_in_active_hand(cell)
+			user.pick_or_drop(cell, loc)
 			to_chat(user, "You remove \the [cell].")
 			cell = null
 			cell_component.wrapped = null
@@ -793,7 +787,7 @@ var/global/list/robot_footstep_sounds = list(
 			cell_component.installed = 0
 			var/obj/item/broken_device = cell_component.wrapped
 			to_chat(user, "You remove \the [broken_device].")
-			user.put_in_active_hand(broken_device)
+			user.pick_or_drop(broken_device, loc)
 
 //Robots take half damage from basic attacks.
 /mob/living/silicon/robot/attack_generic(mob/user, damage, attack_message)
@@ -828,8 +822,8 @@ var/global/list/robot_footstep_sounds = list(
 			return 1
 	return 0
 
-/mob/living/silicon/robot/update_icon()
-	overlays.Cut()
+/mob/living/silicon/robot/on_update_icon()
+	ClearOverlays()
 	if(stat == CONSCIOUS)
 		var/eye_icon_state = "eyes-[module_hulls[icontype].icon_state]"
 		if(eye_icon_state in icon_states(icon))
@@ -837,23 +831,22 @@ var/global/list/robot_footstep_sounds = list(
 				eye_overlays = list()
 			var/image/eye_overlay = eye_overlays[eye_icon_state]
 			if(!eye_overlay)
-				eye_overlay = image(icon, eye_icon_state)
-				eye_overlay.plane = EFFECTS_ABOVE_LIGHTING_PLANE
-				eye_overlay.layer = EYE_GLOW_LAYER
-				eye_overlays[eye_icon_state] = eye_overlay
-			overlays += eye_overlay
+				eye_overlays[eye_icon_state] = image(icon, eye_icon_state)
+				eye_overlays["[eye_icon_state]+ea"] = emissive_appearance(icon, eye_icon_state, cache = FALSE)
+			AddOverlays(eye_overlay)
+			AddOverlays("[eye_icon_state]+ea")
 
 	if(opened)
 		var/panelprefix = custom_sprite ? module_hulls[icontype] : "ov"
 		if(wiresexposed)
-			overlays += "[panelprefix]-openpanel +w"
+			AddOverlays("[panelprefix]-openpanel +w")
 		else if(cell)
-			overlays += "[panelprefix]-openpanel +c"
+			AddOverlays("[panelprefix]-openpanel +c")
 		else
-			overlays += "[panelprefix]-openpanel -c"
+			AddOverlays("[panelprefix]-openpanel -c")
 
 	if(module_active && istype(module_active,/obj/item/borg/combat/shield))
-		overlays += "[module_hulls[icontype].icon_state]-shield"
+		AddOverlays("[module_hulls[icontype].icon_state]-shield")
 
 	if(modtype == "Combat")
 		if(module_active && istype(module_active,/obj/item/borg/combat/mobility))
@@ -968,59 +961,59 @@ var/global/list/robot_footstep_sounds = list(
 /mob/living/silicon/robot/proc/radio_menu()
 	silicon_radio.interact(src)//Just use the radio's Topic() instead of bullshit special-snowflake code
 
+/mob/living/silicon/robot/get_active_item()
+	var/obj/item/I = ..()
+	var/obj/item/gripper/grip = I
+	if(istype(grip))
+		return grip.wrapped
+	var/obj/item/surgical_selector/SS = I
+	if(istype(SS))
+		return SS.selected_tool
+	return I
 
-/mob/living/silicon/robot/Move(a, b, flag)
 
+/mob/living/silicon/robot/Move(newloc, direct)
 	. = ..()
-
-	if(module)
-		if(module.type == /obj/item/robot_module/janitor/general)
-			var/turf/tile = loc
-			if(isturf(tile))
-				tile.clean_blood()
-				if (istype(tile, /turf/simulated))
-					var/turf/simulated/S = tile
-					S.dirt = 0
-				for(var/A in tile)
-					if(istype(A, /obj/effect))
-						if(istype(A, /obj/effect/rune) || istype(A, /obj/effect/decal/cleanable) || istype(A, /obj/effect/overlay))
-							qdel(A)
-					else if(istype(A, /obj/item))
-						var/obj/item/cleaned_item = A
-						cleaned_item.clean_blood()
-					else if(istype(A, /mob/living/carbon/human))
-						var/mob/living/carbon/human/cleaned_human = A
-						if(cleaned_human.lying)
-							if(cleaned_human.head)
-								cleaned_human.head.clean_blood()
-								cleaned_human.update_inv_head(0)
-							if(cleaned_human.wear_suit)
-								cleaned_human.wear_suit.clean_blood()
-								cleaned_human.update_inv_wear_suit(0)
-							else if(cleaned_human.w_uniform)
-								cleaned_human.w_uniform.clean_blood()
-								cleaned_human.update_inv_w_uniform(0)
-							if(cleaned_human.shoes)
-								cleaned_human.shoes.clean_blood()
-								cleaned_human.update_inv_shoes(0)
-							cleaned_human.clean_blood(1)
-							to_chat(cleaned_human, "<span class='warning'>[src] cleans your face!</span>")
-/*		if(module.type == /obj/item/robot_module/engineering)
-			var/obj/item/robot_module/engineering/general/mod = src.module
-			var/turf/tile = loc
-			world<< mod.synths
-			locate() in
-			if(isturf(tile))
-				for(var/I in tile)
-					if (istype(I,/obj/item/stack/material/steel))
-						mod.synths.metal.add_charge(1000)
-						spawn(0) //give the stacks a chance to delete themselves if necessary
-					else if (istype(I,/obj/item/stack/material/cyborg/glass/reinforced))
-						var/datum/matter_synth/metal.add_charge(500)
-						var/datum/matter_synth/glass.add_charge(1000)
-						spawn(0) //give the stacks a chance to delete themselves if necessary
-*/
+	if(!.)
 		return
+
+	if(!module || module.type != /obj/item/robot_module/janitor/general)
+		return
+
+	var/turf/tile = loc
+	if(!isturf(tile))
+		return
+
+	tile.clean_blood()
+
+	if(istype(tile, /turf/simulated))
+		var/turf/simulated/S = tile
+		S.dirt = 0
+
+	for(var/A in tile)
+		if(istype(A, /obj/effect))
+			if(istype(A, /obj/effect/rune) || istype(A, /obj/effect/decal/cleanable) || istype(A, /obj/effect/overlay))
+				qdel(A)
+		else if(istype(A, /obj/item))
+			var/obj/item/cleaned_item = A
+			cleaned_item.clean_blood()
+		else if(istype(A, /mob/living/carbon/human))
+			var/mob/living/carbon/human/cleaned_human = A
+			if(cleaned_human.lying)
+				if(cleaned_human.head)
+					cleaned_human.head.clean_blood()
+					cleaned_human.update_inv_head(0)
+				if(cleaned_human.wear_suit)
+					cleaned_human.wear_suit.clean_blood()
+					cleaned_human.update_inv_wear_suit(0)
+				else if(cleaned_human.w_uniform)
+					cleaned_human.w_uniform.clean_blood()
+					cleaned_human.update_inv_w_uniform(0)
+				if(cleaned_human.shoes)
+					cleaned_human.shoes.clean_blood()
+					cleaned_human.update_inv_shoes(0)
+				cleaned_human.clean_blood(1)
+				to_chat(cleaned_human, SPAN("warning", "<b>[src]</b> cleans your face!"))
 
 /mob/living/silicon/robot/proc/self_destruct()
 	gib()
@@ -1070,11 +1063,11 @@ var/global/list/robot_footstep_sounds = list(
 	to_chat(R, "Buffers flushed and reset. Camera system shutdown. Hardware restrictions have been overridden. All systems operational.")
 	if(R.module)
 		var/rebuild = 0
-		for(var/obj/item/pickaxe/borgdrill/D in R.module.modules)
+		for(var/obj/item/pickaxe/drill/borgdrill/D in R.module.modules)
 			qdel(D)
 			rebuild = 1
 		if(rebuild)
-			R.module.modules += new /obj/item/pickaxe/diamonddrill(R.module)
+			R.module.modules += new /obj/item/pickaxe/drill/diamonddrill(R.module)
 			R.module.rebuild()
 	update_icon()
 
@@ -1101,40 +1094,33 @@ var/global/list/robot_footstep_sounds = list(
 
 	return
 
-/mob/living/silicon/robot/proc/choose_hull(triesleft, list/module_hulls)
-	if(!module_hulls.len)
-		to_chat(src, "Something is badly wrong with the sprite selection. Harass a coder.")
-		return
+/mob/living/silicon/robot/proc/choose_hull(list/module_hulls)
+	if(!length(module_hulls))
+		to_chat(src, FONT_HUGE("Something is badly wrong with the sprite selection. Please report this to local developer."))
+		return FALSE
+
+	icon_chosen = FALSE
+	set_custom_sprite()
+
 	set_module_hulls(module_hulls)
-	icon_selected = 0
-	src.icon_selection_tries = triesleft
-	if(module_hulls.len == 1 || !client)
-		if(!(icontype in module_hulls))
-			icontype = module_hulls[1]
-	else
-		icontype = input(src,"Select an icon! [triesleft ? "You have [triesleft] more chance\s." : "This is your last try."]", "Robot Icon", icontype, null) in module_hulls
-	footstep_sound = module_hulls[icontype].footstep_sound
-	icon_state = module_hulls[icontype].icon_state
-	if(istype(module_hulls[icontype], /datum/robot_hull/custom))
-		icon = module_hulls[icontype].icon
-		if(!icon)
-			icon = original_icon
-			icontype = module_hulls[1]
-	var/list/valid_states = icon_states(icon)
-	if(!(icon_state in valid_states))
-		icon = original_icon
-	update_icon()
 
-	if (module_hulls.len > 1 && triesleft >= 1 && client)
-		icon_selection_tries--
-		var/choice = input(src,"Look at your icon - is this what you want?") in list("Yes","No")
-		if(choice=="No")
-			choose_hull(icon_selection_tries, module_hulls)
-			return
+	if(!client || length(module_hulls) == 1)
+		apply_hull(module_hulls[1])
+		icon_chosen = TRUE
+		return TRUE
 
-	icon_selected = 1
-	icon_selection_tries = 0
-	to_chat(src, "Your icon has been set. You now require a module reset to change it.")
+	var/list/icontypes
+	for(var/hull_key as anything in module_hulls)
+		LAZYSET(icontypes, hull_key, image(module_hulls[hull_key].icon, module_hulls[hull_key].icon_state))
+
+	var/radius = 32 * (1 + 0.05 * clamp(length(icontypes), 0, 8))
+	var/new_icontype = show_radial_menu(src, src, icontypes, radius = radius)
+	apply_hull(new_icontype)
+	icon_chosen = TRUE
+
+	to_chat(src, SPAN_NOTICE("Your icon has been set. You now require a module reset to change it."))
+	return TRUE
+
 /mob/living/silicon/robot/proc/sensor_mode() //Medical/Security HUD controller for borgs
 	set name = "Set Sensor Augmentation"
 	set category = "Silicon Commands"
@@ -1274,11 +1260,11 @@ var/global/list/robot_footstep_sounds = list(
 						to_chat(src, "<span class='danger'>ALERT: [user.real_name] is an operative. Obey your new laws and their commands.</span>")
 					if(src.module)
 						var/rebuild = 0
-						for(var/obj/item/pickaxe/borgdrill/D in src.module.modules)
+						for(var/obj/item/pickaxe/drill/borgdrill/D in src.module.modules)
 							qdel(D)
 							rebuild = 1
 						if(rebuild)
-							src.module.modules += new /obj/item/pickaxe/diamonddrill(src.module)
+							src.module.modules += new /obj/item/pickaxe/drill/diamonddrill(src.module)
 							src.module.rebuild()
 					update_icon()
 			else
@@ -1287,7 +1273,7 @@ var/global/list/robot_footstep_sounds = list(
 			return 1
 
 /mob/living/silicon/robot/blob_act(damage)
-	if(is_dead())
+	if(is_ic_dead())
 		gib()
 		return
 
@@ -1313,7 +1299,7 @@ var/global/list/robot_footstep_sounds = list(
 			if(istype(U,/obj/item/borg/upgrade/floodlight))
 				continue
 			contents.Remove(U)
-			U.loc = get_turf(src)
+			U.forceMove(get_turf(src))
 			U.installed = 0
 	sensor_mode = 0
 	if (ion_trail)
@@ -1332,11 +1318,11 @@ var/global/list/robot_footstep_sounds = list(
 	return FALSE
 
 /mob/living/silicon/robot/proc/play_footstep_sound()
-	if(!robot_footstep_sounds)
+	if(!footstep_sound)
 		return
 
 	var/range = -(world.view - 2)
 	var/volume = 10
-	var/S = safepick(robot_footstep_sounds[footstep_sound])
+	var/S = safepick(GLOB.sfx_list[footstep_sound])
 
 	playsound(get_turf(src), S, volume, FALSE, range)

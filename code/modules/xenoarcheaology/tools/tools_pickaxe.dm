@@ -8,10 +8,10 @@
 	mod_weight = 0.9
 	mod_reach = 1
 	mod_handy = 1.2
-	digspeed = 20
 	w_class = ITEM_SIZE_SMALL
 	drill_sound = 'sound/items/Screwdriver.ogg'
 	drill_verb = "delicately picking"
+	power = 0
 
 /obj/item/pickaxe/archaeologist/brush
 	name = "brush"
@@ -62,7 +62,6 @@
 	name = "hand pickaxe"
 	icon_state = "pick_hand"
 	item_state = "syringe_0"
-	digspeed = 30
 	desc = "A smaller, more precise version of the pickaxe (30 centimetre excavation depth)."
 	excavation_amount = 30
 	drill_sound = 'sound/items/Crowbar.ogg'
@@ -73,7 +72,6 @@
 
 /obj/item/storage/excavation
 	name = "excavation pick set"
-	icon = 'icons/obj/storage.dmi'
 	icon_state = "excavation"
 	desc = "A set of picks for excavation."
 	item_state = "syringe_kit"
@@ -109,7 +107,7 @@
 	var/list/obj/item/pickaxe/picksToSort = list()
 	for(var/obj/item/pickaxe/P in src)
 		picksToSort += P
-		P.loc = null
+		P.forceMove(null)
 	while(picksToSort.len)
 		var/min = 200 // No pick is bigger than 200
 		var/selected = 0
@@ -119,6 +117,6 @@
 				selected = i
 				min = current.excavation_amount
 		var/obj/item/pickaxe/smallest = picksToSort[selected]
-		smallest.loc = src
+		smallest.forceMove(src)
 		picksToSort -= smallest
 	prepare_ui()

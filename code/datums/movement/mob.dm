@@ -35,7 +35,7 @@
 
 // Death handling
 /datum/movement_handler/mob/death/DoMove(direction, mob/mover)
-	if(mob.stat != DEAD)
+	if(!mob.is_ooc_dead())
 		return
 	. = MOVEMENT_HANDLED
 	if(!mob.client)
@@ -116,6 +116,9 @@
 		return MOVEMENT_HANDLED
 
 	if(mob.pulledby || mob.buckled) // Wheelchair driving!
+		if(istype(mob.buckled, /obj/effect/dummy/immaterial_form))
+			mob.buckled.relaymove(mob, direction)
+			return MOVEMENT_HANDLED
 		if(istype(mob.loc, /turf/space))
 			return // No wheelchair driving in space
 		if(istype(mob.buckled, /obj/structure/bed/chair/pedalgen))
@@ -180,6 +183,10 @@
 		if(G.assailant == G.affecting)
 			return
 		. = max(., G.grab_slowdown())
+
+/datum/movement_handler/mob/delay/proc/InstantUpdateGlideSize()
+	var/supposed_delay = max(1, mob.movement_delay() + GetGrabSlowdown())
+	host.set_glide_size(DELAY2GLIDESIZE(supposed_delay))
 
 // Stop effect
 /datum/movement_handler/mob/stop_effect/DoMove()

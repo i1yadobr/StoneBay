@@ -16,11 +16,11 @@
 
 /obj/item/robot_parts/New(newloc, model)
 	..(newloc)
-	if(model_info && model)
+	if(model_info)
 		if(isnull(model))
 			model = "Unbranded"
 		model_info = model
-		var/datum/robolimb/R = all_robolimbs[model]
+		var/datum/robolimb/R = GLOB.all_robolimbs[model]
 		if(R)
 			SetName("[R.company] [initial(name)]")
 			desc = "[R.desc]"
@@ -105,6 +105,9 @@
 	name = "endoskeleton"
 	desc = "A complex metal backbone with standard limb sockets and pseudomuscle anchors."
 	icon_state = "robo_suit"
+	force = 8.0
+	throw_range = 4
+	w_class = ITEM_SIZE_HUGE
 	var/parts = list()
 	var/created_name = ""
 
@@ -112,20 +115,20 @@
 	..()
 	src.update_icon()
 
-/obj/item/robot_parts/robot_suit/update_icon()
-	src.overlays.Cut()
+/obj/item/robot_parts/robot_suit/on_update_icon()
+	src.ClearOverlays()
 	if(src.parts[BP_L_ARM])
-		src.overlays += "l_arm+o"
+		AddOverlays("l_arm+o")
 	if(src.parts[BP_R_ARM])
-		src.overlays += "r_arm+o"
+		AddOverlays("r_arm+o")
 	if(src.parts[BP_CHEST])
-		src.overlays += "chest+o"
+		AddOverlays("chest+o")
 	if(src.parts[BP_L_LEG])
-		src.overlays += "l_leg+o"
+		AddOverlays("l_leg+o")
 	if(src.parts[BP_R_LEG])
-		src.overlays += "r_leg+o"
+		AddOverlays("r_leg+o")
 	if(src.parts[BP_HEAD])
-		src.overlays += "head+o"
+		AddOverlays("head+o")
 
 /obj/item/robot_parts/robot_suit/proc/check_completion()
 	if(src.parts[BP_L_ARM] && src.parts[BP_R_ARM] && src.parts[BP_L_LEG] && src.parts[BP_R_LEG] && src.parts[BP_CHEST] && src.parts[BP_HEAD])
@@ -139,31 +142,30 @@
 		var/obj/item/stack/material/M = W
 		if (M.use(1))
 			var/obj/item/secbot_assembly/ed209_assembly/B = new /obj/item/secbot_assembly/ed209_assembly
-			B.loc = get_turf(src)
+			B.forceMove(get_turf(src))
 			to_chat(user, "<span class='notice'>You armed the robot frame.</span>")
 			if (user.get_inactive_hand()==src)
-				user.remove_from_mob(src)
+				user.drop(src)
 				user.put_in_inactive_hand(B)
 			qdel(src)
 		else
 			to_chat(user, "<span class='warning'>You need one sheet of metal to arm the robot frame.</span>")
 
-	if (istype(W, /obj/item/robot_parts))
+	if(istype(W, /obj/item/robot_parts))
 		var/obj/item/robot_parts/part = W
-		if(src.parts[part.bp_tag])	return
-		if(part.can_install(user))
-			user.drop_item()
-			part.loc = src
-			src.parts[part.bp_tag] = part
-			src.update_icon()
+		if(parts[part.bp_tag])
+			return
+		if(part.can_install(user) && user.drop(part, src))
+			parts[part.bp_tag] = part
+			update_icon()
 
-	if(istype(W, /obj/item/device/mmi) || istype(W, /obj/item/organ/internal/posibrain))
+	if(istype(W, /obj/item/organ/internal/cerebrum/mmi) || istype(W, /obj/item/organ/internal/cerebrum/posibrain))
 		var/mob/living/carbon/brain/B
-		if(istype(W, /obj/item/device/mmi))
-			var/obj/item/device/mmi/M = W
+		if(istype(W, /obj/item/organ/internal/cerebrum/mmi))
+			var/obj/item/organ/internal/cerebrum/mmi/M = W
 			B = M.brainmob
 		else
-			var/obj/item/organ/internal/posibrain/P = W
+			var/obj/item/organ/internal/cerebrum/posibrain/P = W
 			B = P.brainmob
 		if(check_completion())
 			if(!istype(loc,/turf))
@@ -183,7 +185,7 @@
 					to_chat(user, "<span class='notice'>\The [W] is completely unresponsive; there's no point.</span>")
 					return
 
-			if(B.stat == DEAD)
+			if(B.is_ooc_dead())
 				to_chat(user, "<span class='warning'>Sticking a dead [W] into the frame would sort of defeat the purpose.</span>")
 				return
 
@@ -192,10 +194,11 @@
 				return
 
 			var/mob/living/silicon/robot/O = new /mob/living/silicon/robot(get_turf(loc), unfinished = 1)
-			if(!O)	return
+			if(!O)
+				return
 
-			user.drop_item()
-
+			if(!user.drop(W))
+				return
 			O.mmi = W
 			O.set_invisibility(0)
 			O.custom_name = created_name
@@ -203,15 +206,15 @@
 
 			B.mind.transfer_to(O)
 
-			if(O.mind && O.mind.special_role)
+			if(O.mind?.special_role)
 				O.mind.store_memory("In case you look at this after being borged, the objectives are only here until I find a way to make them not show up for you, as I can't simply delete them without screwing up round-end reporting. --NeoFite")
 
 			O.job = "Cyborg"
 
 			var/obj/item/robot_parts/chest/chest = parts[BP_CHEST]
 			O.cell = chest.cell
-			O.cell.loc = O
-			W.loc = O//Should fix cybros run time erroring when blown up. It got deleted before, along with the frame.
+			O.cell.forceMove(O)
+			W.forceMove(O) // Should fix cybros run time erroring when blown up. It got deleted before, along with the frame.
 
 			// Since we "magically" installed a cell, we also have to update the correct component.
 			if(O.cell)
@@ -238,17 +241,15 @@
 
 	return
 
-/obj/item/robot_parts/chest/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/robot_parts/chest/attackby(obj/item/W, mob/user)
 	..()
 	if(istype(W, /obj/item/cell))
-		if(src.cell)
+		if(cell)
 			to_chat(user, "<span class='warning'>You have already inserted a cell!</span>")
 			return
-		else
-			user.drop_item()
-			W.loc = src
-			src.cell = W
-			to_chat(user, "<span class='notice'>You insert the cell!</span>")
+		else if(user.drop(W, src))
+			cell = W
+			to_chat(user, "<span class='notice'>You insert \the [W]!</span>")
 	if(isCoil(W))
 		if(src.wires)
 			to_chat(user, "<span class='warning'>You have already inserted wire!</span>")
@@ -288,7 +289,7 @@
 				qdel(organ)
 
 			// Remove brain (we want to put one in).
-			var/obj/item/organ/internal/brain = H.internal_organs_by_name[BP_BRAIN]
+			var/obj/item/organ/internal/cerebrum/brain = H.internal_organs_by_name[BP_BRAIN]
 			H.organs -= brain
 			H.organs_by_name.Remove(brain.organ_tag)
 			qdel(brain)
@@ -335,27 +336,28 @@
 		else
 			add_flashes(W,user)
 	else if(istype(W, /obj/item/stock_parts/manipulator))
+		if(!user.drop(W))
+			return
 		to_chat(user, "<span class='notice'>You install some manipulators and modify the head, creating a functional spider-bot!</span>")
 		new /mob/living/simple_animal/spiderbot(get_turf(loc))
-		user.drop_item()
 		qdel(W)
 		qdel(src)
 		return
 	return
 
 /obj/item/robot_parts/head/proc/add_flashes(obj/item/W as obj, mob/user as mob) //Made into a seperate proc to avoid copypasta
-	if(src.flash1 && src.flash2)
+	if(flash1 && flash2)
 		to_chat(user, "<span class='notice'>You have already inserted the eyes!</span>")
 		return
-	else if(src.flash1)
-		user.drop_item()
-		W.loc = src
-		src.flash2 = W
+
+	if(!user.drop(W, src))
+		return
+
+	if(flash1)
+		flash2 = W
 		to_chat(user, "<span class='notice'>You insert the flash into the eye socket!</span>")
 	else
-		user.drop_item()
-		W.loc = src
-		src.flash1 = W
+		flash1 = W
 		to_chat(user, "<span class='notice'>You insert the flash into the eye socket!</span>")
 
 

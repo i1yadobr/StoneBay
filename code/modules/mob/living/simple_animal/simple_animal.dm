@@ -82,6 +82,8 @@
 	. = ..()
 	if(is_pet)
 		mob_ai = new /datum/mob_ai/pet()
+	else if(ispath(mob_ai))
+		mob_ai = new mob_ai()
 	else
 		mob_ai = new()
 	mob_ai.holder = src
@@ -89,7 +91,10 @@
 	if(bodyparts)
 		bodyparts = decls_repository.get_decl(bodyparts)
 
+	add_movespeed_modifier(/datum/movespeed_modifier/simple_animal)
+
 /mob/living/simple_animal/Destroy()
+	mob_ai.holder = null
 	QDEL_NULL(mob_ai)
 	panic_target = null
 	. = ..()
@@ -103,7 +108,7 @@
 	mob_ai.listen(speaker, message)
 
 /mob/living/simple_animal/Life()
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		return 0
 	. = ..()
 	if(!.)
@@ -178,23 +183,18 @@
 /mob/living/simple_animal/proc/handle_supernatural()
 	if(purge)
 		purge -= 1
+		update_purge_movespeed()
 
-/mob/living/simple_animal/gib()
-	..(icon_gib,1)
-
-/mob/living/simple_animal/proc/visible_emote(act_desc)
-	custom_emote(1, act_desc)
-
-/mob/living/simple_animal/proc/audible_emote(act_desc)
-	custom_emote(2, act_desc)
+/mob/living/simple_animal/gib(anim, do_gibs = TRUE)
+	..(icon_gib, do_gibs)
 
 /mob/living/simple_animal/bullet_act(obj/item/projectile/Proj)
-	if(!Proj || Proj.nodamage)
+	if(!Proj)
 		return
 
 	var/damage = Proj.damage * ((100 - armor_projectile) / 100)
-	if(Proj.damtype == STUN)
-		damage = (Proj.damage / 8)
+	if(Proj.damtype == STUN || Proj.damtype == PAIN)
+		damage = (Proj.damage / 8) + (Proj.agony / 8)
 
 	adjustBruteLoss(damage)
 	return 0
@@ -222,7 +222,7 @@
 
 /mob/living/simple_animal/attackby(obj/item/O, mob/user)
 	if(istype(O, /obj/item/stack/medical))
-		if(stat != DEAD)
+		if(!is_ooc_dead())
 			var/obj/item/stack/medical/MED = O
 			if(!MED.animal_heal)
 				to_chat(user, "<span class='notice'>That [MED] won't help \the [src] at all!</span>")
@@ -239,7 +239,7 @@
 		else
 			to_chat(user, "<span class='notice'>\The [src] is dead, medical items won't bring \him back to life.</span>")
 		return
-	if(meat_type && (stat == DEAD))	//if the animal has a meat, and if it is dead.
+	if(meat_type && (is_ooc_dead()))	//if the animal has a meat, and if it is dead.
 		if(istype(O, /obj/item/material/knife) || istype(O, /obj/item/material/knife/butch))
 			harvest(user)
 	else
@@ -264,20 +264,16 @@
 	if(supernatural && istype(O,/obj/item/nullrod))
 		damage *= 2
 		purge = 3
+		update_purge_movespeed()
 	adjustBruteLoss(damage)
 
 	return 0
 
-/mob/living/simple_animal/movement_delay()
-	var/tally = ..() //Incase I need to add stuff other than "speed" later
-
-	tally += speed
-	if(purge)//Purged creatures will move more slowly. The more time before their purge stops, the slower they'll move.
-		if(tally <= 0)
-			tally = 1
-		tally *= purge
-
-	return tally + config.movement.animal_delay
+/mob/living/simple_animal/proc/update_purge_movespeed()
+	if(purge > 0)
+		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/purge_slowdown, slowdown = cached_slowdown * purge)
+	else
+		remove_movespeed_modifier(/datum/movespeed_modifier/purge_slowdown)
 
 /mob/living/simple_animal/Stat()
 	. = ..()
@@ -289,6 +285,7 @@
 	. = ..()
 	if(.)
 		icon_state = icon_dead
+		item_state = icon_dead
 		density = 0
 		health = 0 //Make sure dey dead.
 		walk_to(src, 0)
@@ -299,7 +296,7 @@
 	set_density(1)
 
 /mob/living/simple_animal/updatehealth()
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		return
 	if(status_flags & GODMODE)
 		health = maxHealth
@@ -317,7 +314,7 @@
 	switch(severity)
 		if(1.0)
 			damage = 500
-			if(!prob(getarmor(null, "bomb")))
+			if(!prob(get_flat_armor(null, "bomb")))
 				gib()
 		if(2.0)
 			damage = 120
@@ -325,7 +322,7 @@
 		if(3.0)
 			damage = 30
 
-	adjustBruteLoss(damage * blocked_mult(getarmor(null, "bomb")))
+	adjustBruteLoss(damage * blocked_mult(get_flat_armor(null, "bomb")))
 
 /mob/living/simple_animal/adjustBruteLoss(damage)
 	..()
@@ -367,13 +364,13 @@
 	return verb
 
 /mob/living/simple_animal/put_in_hands(obj/item/W) // No hands.
-	W.loc = get_turf(src)
+	W.forceMove(get_turf(src))
 	return 1
 
 // Harvest an animal's delicious byproducts
 /mob/living/simple_animal/proc/harvest(mob/user)
 	var/actual_meat_amount = max(1,(meat_amount/2))
-	if(meat_type && actual_meat_amount>0 && (stat == DEAD))
+	if(meat_type && actual_meat_amount>0 && (is_ooc_dead()))
 		for(var/i=0;i<actual_meat_amount;i++)
 			var/obj/item/meat = new meat_type(get_turf(src))
 			meat.SetName("[src.name] [meat.name]")

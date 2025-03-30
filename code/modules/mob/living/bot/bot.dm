@@ -1,3 +1,6 @@
+/// How many times bot will try to find a path from the same X,Y before becoming inactive
+#define MAX_SAMEPOS_COUNT 15
+
 /mob/living/bot
 	name = "Bot"
 	health = 20
@@ -96,7 +99,7 @@
 	explode()
 
 /mob/living/bot/attackby(obj/item/O, mob/user)
-	if(O.GetIdCard())
+	if(O.get_id_card())
 		if(access_scanner.allowed(user) && !open)
 			locked = !locked
 			to_chat(user, "<span class='notice'>Controls are now [locked ? "locked." : "unlocked."]</span>")
@@ -224,7 +227,7 @@
 		if(!istype(D, /obj/machinery/door/firedoor) && !istype(D, /obj/machinery/door/blast) && D.check_access(botcard))
 			D.open()
 	else
-		..()
+		return ..()
 
 /mob/living/bot/emag_act(remaining_charges, mob/user)
 	return 0
@@ -234,6 +237,7 @@
 
 	if(client)
 		return
+
 	if(length(ignore_list))
 		for(var/atom/A in ignore_list)
 			if(!A || !A.loc || prob(1))
@@ -250,6 +254,7 @@
 				stepToTarget()
 		if(max_frustration && frustration > max_frustration * target_speed)
 			handleFrustrated(1)
+
 	else
 		resetTarget()
 		lookForTargets()
@@ -305,17 +310,34 @@
 	return 1
 
 /mob/living/bot/proc/handlePatrol()
-	makeStep(patrol_path)
-	return
+	if(!LAZYLEN(patrol_path))
+		return
+
+	var/list/pos = patrol_path[patrol_path.len - 1 > 1 ? patrol_path.len - 1 : 1]
+	var/turf/next_step = locate(pos["x"], pos["y"], pos["z"])
+	step_towards(src, next_step)
+	if(get_turf(src) == next_step)
+		patrol_path.Cut(patrol_path.len - 1, patrol_path.len)
+	else
+		frustration++
 
 /mob/living/bot/proc/startPatrol()
-	var/turf/T = getPatrolTurf()
-	if(T)
-		patrol_path = AStar(get_turf(loc), T, /turf/proc/CardinalTurfsWithAccess, /turf/proc/Distance, 0, max_patrol_dist, id = botcard, exclude = obstacle)
-		if(!patrol_path)
-			patrol_path = list()
-		obstacle = null
-	return
+	var/turf/target_turf = getPatrolTurf()
+	if(isnull(target_turf))
+		return
+
+	var/result = rustg_generate_path_astar(\
+		json_encode(list("x" = x, "y" = y, "z" = z)),\
+		json_encode(list("x" = target_turf.x, "y" = target_turf.y, "z" = target_turf.z)),\
+		NODE_TURF_BIT,\
+		(NODE_DENSE_BIT | NODE_SPACE_BIT),\
+		null\
+	)
+
+	if(!rustg_json_is_valid(result))
+		CRASH(result)
+
+	patrol_path = json_decode(result)
 
 /mob/living/bot/proc/getPatrolTurf()
 	var/minDist = INFINITY
@@ -325,6 +347,7 @@
 		for(var/obj/machinery/navbeacon/N in navbeacons)
 			if(!N.codes["patrol"])
 				continue
+
 			if(get_dist(src, N) < minDist)
 				minDist = get_dist(src, N)
 				targ = N
@@ -337,6 +360,7 @@
 
 	if(targ)
 		return get_turf(targ)
+
 	return null
 
 /mob/living/bot/proc/handleIdle()
@@ -353,7 +377,8 @@
 
 /mob/living/bot/proc/makeStep(list/path)
 	if(!path.len)
-		return 0
+		return FALSE
+
 	var/turf/T = path[1]
 	if(get_turf(src) == T)
 		path -= T

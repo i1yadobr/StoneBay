@@ -7,21 +7,18 @@
 
 	var/working = 0
 	var/next_movement_time = 0
-	var/speed = 10 //lower = better
 	var/obj/item/holding = null
 	var/obj/item/device/bot_controller/controller = null
 
-/mob/living/bot/remotebot/movement_delay()
-	var/tally = ..()
-	tally += speed
-	if(holding)
-		tally += (2 * holding.w_class)
-	return tally
-
-/mob/living/bot/remotebot/_examine_text(mob/user)
+/mob/living/bot/remotebot/Initialize(mapload, ...)
 	. = ..()
+	add_movespeed_modifier(/datum/movespeed_modifier/remotebot)
+
+/mob/living/bot/remotebot/examinate(atom/to_axamine)
+	. = ..()
+
 	if(holding)
-		. += "\n<span class='notice'>It is holding \the \icon[holding] [holding].</span>"
+		. += SPAN_NOTICE("It is holding \the \icon[holding] [holding].")
 
 /mob/living/bot/remotebot/explode()
 	on = 0
@@ -33,7 +30,7 @@
 	for(var/i in 1 to rand(3,5))
 		var/obj/item/stack/material/cardboard/C = new(src.loc)
 		if(prob(50))
-			C.loc = get_step(src, pick(GLOB.alldirs))
+			C.forceMove(get_step(src, pick(GLOB.alldirs)))
 
 	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
 	s.set_up(3, 1, src)
@@ -68,12 +65,14 @@
 	working = 0
 	I.forceMove(src)
 	holding = I
+	add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/remotebot_holding, 2 * I.w_class)
 
-/mob/living/bot/remotebot/proc/drop()
+/mob/living/bot/remotebot/proc/drop_holding()
 	if(working || !holding)
 		return
 	holding.forceMove(loc)
 	holding = null
+	remove_movespeed_modifier(/datum/movespeed_modifier/remotebot_holding)
 
 /mob/living/bot/remotebot/proc/hit(atom/movable/a)
 	src.visible_message("<b>\The [src]</b> taps \the [a] with its claw.")
@@ -127,7 +126,7 @@
 		return
 
 	if(href_list["drop"])
-		bot.drop()
+		bot.drop_holding()
 	if(href_list["look"])
 		if(href_list["look"] == "1")
 			usr.reset_view(usr)
@@ -158,13 +157,12 @@
 /obj/item/device/bot_kit
 	name = "Remote-Bot Kit"
 	desc = "The cover says 'control your own cardboard nuclear powered robot. Comes with real plutonium!"
-	icon = 'icons/obj/storage.dmi'
+	icon = 'icons/obj/storage/boxes.dmi'
 	icon_state = "remotebot"
 
 /obj/item/device/bot_kit/attack_self(mob/living/user)
 	to_chat(user, "You quickly dismantle the box and retrieve the controller and the remote bot itself.")
-	var/turf/T = get_turf(src.loc)
+	var/turf/T = get_turf(loc)
 	new /mob/living/bot/remotebot(T)
 	new /obj/item/device/bot_controller(T)
-	user.drop_from_inventory(src)
 	qdel(src)

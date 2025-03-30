@@ -1,7 +1,7 @@
 /obj/structure/closet/crate
 	name = "crate"
 	desc = "A rectangular steel crate."
-	icon = 'icons/obj/storage.dmi'
+	icon = 'icons/obj/crates.dmi'
 	icon_state = "crate"
 	icon_opened = "crateopen"
 	icon_closed = "crate"
@@ -12,17 +12,40 @@
 	open_delay = 3
 
 	dremovable = 0
+	intact_closet = FALSE
 
 	storage_types = CLOSET_STORAGE_ITEMS
 
 	var/points_per_crate = 5
 	var/rigged = 0
 
+	var/has_overlay = TRUE
+	var/image/crate_overlay
+
+	turf_height_offset = 14
+	var/opened_turf_height_offset = 3
+	var/closed_turf_height_offset = 0
+
+/obj/structure/closet/crate/Initialize()
+	. = ..()
+	if(!closed_turf_height_offset)
+		closed_turf_height_offset = turf_height_offset
+	if(has_overlay)
+		crate_overlay = OVERLAY(icon, "[icon_closed]over", layer = ABOVE_HUMAN_LAYER)
+	update_icon()
+
+/obj/structure/closet/crate/on_update_icon()
+	..()
+	if(opened && crate_overlay)
+		AddOverlays(crate_overlay)
+
 /obj/structure/closet/crate/open()
 	if((atom_flags & ATOM_FLAG_OPEN_CONTAINER) && !opened && can_open())
 		object_shaken()
 	. = ..()
 	if(.)
+		if(opened_turf_height_offset)
+			set_turf_height_offset(opened_turf_height_offset)
 		if(rigged)
 			visible_message(SPAN_DANGER("There are wires attached to the lid of [src]..."))
 			for(var/obj/item/device/assembly_holder/H in src)
@@ -30,22 +53,28 @@
 			for(var/obj/item/device/assembly/A in src)
 				A.activate()
 
-/obj/structure/closet/crate/_examine_text(mob/user)
+/obj/structure/closet/crate/close()
 	. = ..()
+	if(. && closed_turf_height_offset)
+		set_turf_height_offset(closed_turf_height_offset)
+
+/obj/structure/closet/crate/examine(mob/user, infix)
+	. = ..()
+
 	if(rigged && opened)
 		var/list/devices = list()
 		for(var/obj/item/device/assembly_holder/H in src)
 			devices += H
 		for(var/obj/item/device/assembly/A in src)
 			devices += A
-		. += "\nThere are some wires attached to the lid, connected to [english_list(devices)]."
+		. += "There are some wires attached to the lid, connected to [english_list(devices)]."
 
 /obj/structure/closet/crate/attackby(obj/item/W, mob/user)
 	if(opened)
 		return ..()
 	else if(istype(W, /obj/item/packageWrap))
 		return
-	else if(istype(W, /obj/item/stack/cable_coil))
+	else if(isCoil(W))
 		var/obj/item/stack/cable_coil/C = W
 		if(rigged)
 			to_chat(user, SPAN_NOTICE("[src] is already rigged!"))
@@ -56,9 +85,13 @@
 			return
 	else if(istype(W, /obj/item/device/assembly_holder) || istype(W, /obj/item/device/assembly))
 		if(rigged)
+			if(istype(W.loc, /obj/item/gripper)) // Snowflaaaaakeeeeey
+				var/obj/item/gripper/G = W.loc
+				G.wrapped.forceMove(src)
+				G.wrapped = null
+			else if(!user.drop(W, src))
+				return
 			to_chat(user, SPAN_NOTICE("You attach [W] to [src]."))
-			user.drop_item()
-			W.forceMove(src)
 			return
 	else if(isWirecutter(W))
 		if(rigged)
@@ -84,18 +117,14 @@
 	setup = CLOSET_HAS_LOCK
 	locked = TRUE
 
-/obj/structure/closet/crate/secure/Initialize()
-	. = ..()
-	update_icon()
-
-/obj/structure/closet/crate/secure/update_icon()
+/obj/structure/closet/crate/secure/on_update_icon()
 	..()
 	if(broken)
-		overlays += emag
+		AddOverlays(emag)
 	else if(locked)
-		overlays += redlight
+		AddOverlays(redlight)
 	else
-		overlays += greenlight
+		AddOverlays(greenlight)
 
 /obj/structure/closet/crate/plastic
 	name = "plastic crate"
@@ -135,6 +164,9 @@
 	icon_closed = "trashcart"
 	pull_slowdown = PULL_SLOWDOWN_LIGHT
 
+	turf_height_offset = 15
+	opened_turf_height_offset = 4
+
 /obj/structure/closet/crate/medical
 	name = "medical crate"
 	desc = "A medical crate."
@@ -152,7 +184,7 @@
 /obj/structure/closet/crate/rcd/WillContain()
 	return list(
 		/obj/item/rcd_ammo = 3,
-		/obj/item/rcd
+		/obj/item/construction/rcd
 	)
 
 /obj/structure/closet/crate/solar
@@ -178,7 +210,8 @@
 	icon_state = "freezer"
 	icon_opened = "freezeropen"
 	icon_closed = "freezer"
-	var/target_temp = T0C - 40
+	turf_height_offset = 15
+	var/target_temp = -40 CELSIUS
 	var/cooling_power = 40
 
 	return_air()
@@ -209,13 +242,21 @@
 	icon_opened = "largebinopen"
 	icon_closed = "largebin"
 
+	turf_height_offset = 16
+	opened_turf_height_offset = 2
+
 /obj/structure/closet/crate/radiation
 	name = "radioactive crate"
 	desc = "A leadlined crate with a radiation sign on it."
 	icon_state = "radiation"
 	icon_opened = "radiationopen"
 	icon_closed = "radiation"
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
+	rad_resist_type = /datum/rad_resist/crate_radiation
+
+/datum/rad_resist/crate_radiation
+	alpha_particle_resist = 808 MEGA ELECTRONVOLT
+	beta_particle_resist = 24 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/structure/closet/crate/science
 	name = "science crate"
@@ -237,7 +278,7 @@
 	icon_state = "radiation"
 	icon_opened = "radiationopen"
 	icon_closed = "radiation"
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
+
 
 /obj/structure/closet/crate/radiation_gear/WillContain()
 	return list(/obj/item/clothing/suit/radiation = 8)
@@ -272,7 +313,8 @@
 	icon_state = "plasmacrate"
 	icon_opened = "plasmacrateopen"
 	icon_closed = "plasmacrate"
-	req_access = list(access_medical,access_research,access_engine)
+	req_access = null
+	req_one_access = list(access_medical, access_research, access_engine)
 
 /obj/structure/closet/crate/secure/gear
 	name = "gear crate"
@@ -301,15 +343,22 @@
 	sparks = "largebinsparks"
 	emag = "largebinemag"
 
+	turf_height_offset = 16
+	opened_turf_height_offset = 2
+
 /obj/structure/closet/crate/large
 	name = "large crate"
 	desc = "A hefty metal crate."
-	icon = 'icons/obj/storage.dmi'
 	icon_state = "largemetal"
 	icon_opened = "largemetalopen"
 	icon_closed = "largemetal"
+
 	storage_capacity = 2 * MOB_LARGE
 	storage_types = CLOSET_STORAGE_ITEMS|CLOSET_STORAGE_STRUCTURES
+
+	has_overlay = FALSE
+	turf_height_offset = 0
+	opened_turf_height_offset = 0
 
 /obj/structure/closet/crate/large/hydroponics
 	icon_state = "hydro_crate_large"
@@ -319,7 +368,6 @@
 /obj/structure/closet/crate/secure/large
 	name = "large crate"
 	desc = "A hefty metal crate with an electronic locking system."
-	icon = 'icons/obj/storage.dmi'
 	icon_state = "largemetal"
 	icon_opened = "largemetalopen"
 	icon_closed = "largemetal"
@@ -329,12 +377,22 @@
 	storage_capacity = 2 * MOB_LARGE
 	storage_types = CLOSET_STORAGE_ITEMS|CLOSET_STORAGE_STRUCTURES
 
+	has_overlay = FALSE
+	turf_height_offset = 0
+	opened_turf_height_offset = 0
+
 /obj/structure/closet/crate/secure/large/plasma
 	icon_state = "plasma_crate_large"
 	icon_opened = "plasma_crate_large_open"
 	icon_closed = "plasma_crate_large"
 	req_access = list(access_mailsorting, access_medical, access_research, access_engine)
 
+/obj/structure/closet/crate/secure/large/plasma/supermatter
+	name = "supermatter crate"
+	req_access = list(access_engine)
+
+/obj/structure/closet/crate/secure/large/plasma/supermatter/prespawned/WillContain()
+	return list(/obj/machinery/power/supermatter)
 //fluff variant
 /obj/structure/closet/crate/secure/large/reinforced
 	desc = "A hefty, reinforced metal crate with an electronic locking system."
@@ -351,6 +409,7 @@
 
 /obj/structure/closet/crate/hydroponics/prespawned/WillContain()
 	return list(
+		/obj/item/reagent_containers/vessel/bucket/watercan = 2,
 		/obj/item/reagent_containers/spray/plantbgone = 2,
 		/obj/item/material/minihoe = 2,
 		/obj/item/storage/plants = 2,
@@ -371,6 +430,9 @@
 	storage_types = CLOSET_STORAGE_ITEMS|CLOSET_STORAGE_MOBS
 	pull_slowdown = PULL_SLOWDOWN_LIGHT
 
+	turf_height_offset = 15
+	opened_turf_height_offset = 4
+
 /obj/structure/closet/crate/secure/biohazard/blanks/WillContain()
 	return list(/mob/living/carbon/human/blank, /obj/item/usedcryobag)
 
@@ -390,7 +452,7 @@
 	icon_state = "radiation"
 	icon_opened = "radiationopen"
 	icon_closed = "radiation"
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
+
 
 /obj/structure/closet/crate/uranium/WillContain()
 	return list(/obj/item/stack/material/uranium/ten = 5)

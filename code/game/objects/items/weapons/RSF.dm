@@ -16,10 +16,11 @@ RSF
 	var/mode = 1
 	w_class = ITEM_SIZE_NORMAL
 
-/obj/item/rsf/_examine_text(mob/user)
+/obj/item/rsf/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 0)
-		. += "\nIt currently holds [stored_matter]/30 fabrication-units."
+		. += "It currently holds [stored_matter]/30 fabrication-units."
 
 /obj/item/rsf/attackby(obj/item/W as obj, mob/user as mob)
 	..()
@@ -121,7 +122,7 @@ RSF
 			used_energy = 50
 
 	to_chat(user, "Dispensing [product ? product : "product"]...")
-	product.loc = get_turf(A)
+	product.dropInto(get_turf(A))
 
 	if(isrobot(user))
 		var/mob/living/silicon/robot/R = user

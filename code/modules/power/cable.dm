@@ -36,7 +36,7 @@ var/list/possible_cable_coil_colours
 	var/d2 = 1
 
 	layer = TURF_DETAIL_LAYER
-	plane = FLOOR_PLANE
+	plane = TURF_PLANE
 
 	color = COLOR_RED
 	var/obj/machinery/power/breakerbox/breaker_box
@@ -77,7 +77,7 @@ var/list/possible_cable_coil_colours
 	..()
 
 	layer = EXPOSED_WIRE_LAYER
-	plane = FLOOR_PLANE
+
 
 	// ensure d1 & d2 reflect the icon_state for entering and exiting cable
 
@@ -99,15 +99,13 @@ var/list/possible_cable_coil_colours
 	. = ..()                       // then go ahead and delete the cable
 
 
-// Ghost examining the cable -> tells him the power
-/obj/structure/cable/attack_ghost(mob/user)
-	if(user.client && user.client.inquisitive_ghost)
+/obj/structure/cable/attack_ghost(mob/observer/ghost/user)
+	if(user.inquisitiveness)
 		user.examinate(src)
-		// following code taken from attackby (multitool)
 		if(powernet && (powernet.avail > 0))
-			to_chat(user, "<span class='warning'>[get_wattage()] in power network.</span>")
+			to_chat(user, SPAN_WARNING("[get_wattage()] in power network."))
 		else
-			to_chat(user, "<span class='warning'>The cable is not powered.</span>")
+			to_chat(user, SPAN_WARNING("The cable is not powered."))
 	return
 
 ///////////////////////////////////
@@ -130,7 +128,7 @@ var/list/possible_cable_coil_colours
 /obj/structure/cable/hides_under_flooring()
 	return 1
 
-/obj/structure/cable/update_icon()
+/obj/structure/cable/on_update_icon()
 	icon_state = "[d1]-[d2]"
 	alpha = invisibility ? 127 : 255
 
@@ -489,6 +487,7 @@ var/list/possible_cable_coil_colours
 	item_state = "coil"
 	attack_verb = list("whipped", "lashed", "disciplined", "flogged")
 	stacktype = /obj/item/stack/cable_coil
+	tool_behaviour = TOOL_COIL
 
 /obj/item/stack/cable_coil/single
 	amount = 1
@@ -534,7 +533,7 @@ var/list/possible_cable_coil_colours
 	return ..()
 
 
-/obj/item/stack/cable_coil/update_icon()
+/obj/item/stack/cable_coil/on_update_icon()
 	if (!color)
 		color = possible_cable_coil_colours[pick(possible_cable_coil_colours)]
 	if(amount == 1)
@@ -564,17 +563,18 @@ var/list/possible_cable_coil_colours
 	else
 		w_class = ITEM_SIZE_SMALL
 
-/obj/item/stack/cable_coil/_examine_text(mob/user)
+/obj/item/stack/cable_coil/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 1)
 		return
 
 	if(get_amount() == 1)
-		. += "\nA short piece of power cable."
+		. += "A short piece of power cable."
 	else if(get_amount() == 2)
-		. += "\nA piece of power cable."
+		. += "A piece of power cable."
 	else
-		. += "\nA coil of power cable. There are [get_amount()] lengths of cable in the coil."
+		. += "A coil of power cable. There are [get_amount()] lengths of cable in the coil."
 
 
 /obj/item/stack/cable_coil/verb/make_restraint()

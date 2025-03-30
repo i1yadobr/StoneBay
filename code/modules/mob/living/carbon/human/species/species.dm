@@ -15,17 +15,20 @@
 
 	// Icon/appearance vars.
 	var/icobase = 'icons/mob/human_races/r_human.dmi'   // Normal icon set.
-	var/deform = 'icons/mob/human_races/r_def_human.dmi' // Mutated icon set.
 
 	// Damage overlay and masks.
 	var/damage_overlays = 'icons/mob/human_races/masks/dam_human.dmi'
 	var/damage_mask = 'icons/mob/human_races/masks/dam_mask_human.dmi'
 
-	var/prone_icon                            // If set, draws this from icobase when mob is prone.
-	var/has_floating_eyes                     // Eyes will overlay over darkness (glow)
+	var/icon/organs_icon // species specific internal organs icons
 
-	var/blood_color = COLOR_BLOOD_HUMAN               // Red.
+	var/prone_icon                            // If set, draws this from icobase when mob is prone.
+
+	var/blood_color = COLOR_BLOOD_HUMAN       // Red.
 	var/flesh_color = "#ffc896"               // Pink.
+	var/default_eye_color = "#000000"         // Black
+	var/fixed_mut_color
+	var/fixed_skin_tone
 	var/blood_oxy = 1
 	var/base_color                            // Used by changelings. Should also be used for icon previes..
 	var/limb_blend = ICON_ADD
@@ -37,13 +40,12 @@
 	var/list/hair_styles
 	var/list/facial_hair_styles
 
-	var/eye_icon = "eyes_s"
-	var/eye_icon_location = 'icons/mob/human_face.dmi'
-
-	var/organs_icon		//species specific internal organs icons
+	var/has_eyes_icon = TRUE
 
 	var/default_h_style = "Bald"
 	var/default_f_style = "Shaved"
+	var/hair_key = ""
+	var/facial_hair_key = ""
 
 	var/race_key = 0                          // Used for mob icon cache string.
 	var/icon/icon_template = 'icons/mob/human_races/r_template.dmi' // Used for mob icon generation for non-32x32 species.
@@ -59,6 +61,7 @@
 	var/blood_volume = 560                    // Initial blood volume.
 	var/hunger_factor = DEFAULT_HUNGER_FACTOR // Multiplier for hunger.
 	var/taste_sensitivity = TASTE_NORMAL      // How sensitive the species is to minute tastes.
+	var/troublesome_sexual_dimorphism = FALSE // Do other species have hard time differentiating our biological genders?
 
 	var/min_age = 17
 	var/max_age = 70
@@ -88,7 +91,7 @@
 	var/radiation_mod =  1                    // Radiation modifier
 	var/flash_mod =      1                    // Stun from blindness modifier.
 	var/metabolism_mod = 1                    // Reagent metabolism modifier
-	var/vision_flags = SEE_SELF               // Same flags as glasses.
+	var/vision_flags = SEE_SELF|SEE_BLACKNESS // Same flags as glasses.
 	var/generic_attack_mod = 1.0              // Damage dealt to simple animals with unarmed attacks multiplier.
 
 	// Death vars.
@@ -146,14 +149,20 @@
 
 	// Body/form vars.
 	var/list/inherent_verbs 	       // Species-specific verbs.
+	var/list/inherent_traits		   // Species-specific traits.
 	var/has_fine_manipulation = 1      // Can use small items.
 	var/siemens_coefficient = 1        // The lower, the thicker the skin and better the insulation.
 	var/darksight_range = 2            // Native darksight distance.
 	var/darksight_tint = DARKTINT_NONE // How shadows are tinted.
 	var/species_flags = 0              // Various specific features.
-	var/appearance_flags = 0           // Appearance/display related features.
+	var/species_appearance_flags = 0           // Appearance/display related features.
 	var/spawn_flags = 0                // Flags that specify who can spawn as this species
-	var/slowdown = 0                   // Passive movement speed malus (or boost, if negative)
+
+	/// Movespeed modifier. Defined in movespeed_species.dm
+	var/movespeed_modifier = /datum/movespeed_modifier/species
+	/// Allows to calculate value representing `cached_slowdown` that can be interpreted as walking.
+	var/walk_speed_perc = 0.5
+
 	var/primitive_form                 // Lesser form, if any (ie. monkey for humans)
 	var/greater_form                   // Greater form, if any, ie. human for monkeys.
 	var/holder_type
@@ -167,7 +176,7 @@
 		BP_LUNGS =    /obj/item/organ/internal/lungs,
 		BP_LIVER =    /obj/item/organ/internal/liver,
 		BP_KIDNEYS =  /obj/item/organ/internal/kidneys,
-		BP_BRAIN =    /obj/item/organ/internal/brain,
+		BP_BRAIN =    /obj/item/organ/internal/cerebrum/brain,
 		BP_APPENDIX = /obj/item/organ/internal/appendix,
 		BP_EYES =     /obj/item/organ/internal/eyes
 		)
@@ -192,15 +201,12 @@
 		BP_R_FOOT = list("path" = /obj/item/organ/external/foot/right)
 		)
 
-	// The basic skin colours this species uses
-	var/list/base_skin_colours
-
 	var/list/genders = list(MALE, FEMALE)
 
 	// Bump vars
-	var/bump_flag = HUMAN	// What are we considered to be when bumped?
-	var/push_flags = ~HEAVY	// What can we push?
-	var/swap_flags = ~HEAVY	// What can we swap place with?
+	var/bump_flag  = HUMAN            // What are we considered to be when bumped?
+	var/push_flags = ~HEAVY           // What can we push?
+	var/swap_flags = (~HEAVY) ^ ROBOT // What can we swap place with?
 
 	var/pass_flags = 0
 	var/breathing_sound = 'sound/voice/monkey.ogg'
@@ -314,11 +320,11 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	for(var/limb_type in has_limbs)
 		var/list/organ_data = has_limbs[limb_type]
 		var/limb_path = organ_data["path"]
-		new limb_path(H)
+		new limb_path(H, H)
 
 	for(var/organ_tag in has_organ)
 		var/organ_type = has_organ[organ_tag]
-		var/obj/item/organ/O = new organ_type(H)
+		var/obj/item/organ/O = new organ_type(H, H)
 		if(organ_tag != O.organ_tag)
 			warning("[O.type] has a default organ tag \"[O.organ_tag]\" that differs from the species' organ tag \"[organ_tag]\". Updating organ_tag to match.")
 			O.organ_tag = organ_tag
@@ -443,8 +449,27 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 			H.verbs |= verb_path
 	return
 
+/datum/species/proc/remove_inherent_traits(mob/living/carbon/human/H)
+	if(inherent_traits)
+		for(var/trait in inherent_traits)
+			REMOVE_TRAIT(H, trait)
+	return
+
+/datum/species/proc/add_inherent_traits(mob/living/carbon/human/H)
+	if(inherent_traits)
+		for(var/trait in inherent_traits)
+			ADD_TRAIT(H, trait)
+	return
+
+/datum/species/proc/on_species_loss(mob/living/carbon/human/H)
+	H.remove_movespeed_modifier(movespeed_modifier)
+	remove_inherent_verbs(H)
+	remove_inherent_traits(H)
+
 /datum/species/proc/handle_post_spawn(mob/living/carbon/human/H) //Handles anything not already covered by basic species assignment.
+	H.add_movespeed_modifier(movespeed_modifier)
 	add_inherent_verbs(H)
+	add_inherent_traits(H)
 	H.mob_bump_flag = bump_flag
 	H.mob_swap_flags = swap_flags
 	H.mob_push_flags = push_flags
@@ -458,6 +483,9 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 
 /datum/species/proc/handle_new_grab(mob/living/carbon/human/H, obj/item/grab/G)
 	return
+
+/datum/species/proc/negates_gravity()
+	return FALSE
 
 // Only used for alien plasma weeds atm, but could be used for Dionaea later.
 /datum/species/proc/handle_environment_special(mob/living/carbon/human/H)
@@ -493,6 +521,14 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 /datum/species/proc/handle_fall_special(mob/living/carbon/human/H, turf/landing)
 	return FALSE
 
+// Used to handle some special damage behaviour.
+/datum/species/proc/handle_damage(mob/living/carbon/human/H)
+	return
+
+// Used to override normal bullet_act. Return TRUE if you want to continue normal one after this
+/datum/species/proc/bullet_act(obj/item/projectile/P, mob/living/carbon/human/H)
+	return TRUE
+
 // Called when using the shredding behavior.
 /datum/species/proc/can_shred(mob/living/carbon/human/H, ignore_intent)
 
@@ -514,15 +550,15 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 /datum/species/proc/handle_vision(mob/living/carbon/human/H)
 	H.update_sight()
 	H.set_sight(H.sight|get_vision_flags(H)|H.equipment_vision_flags)
-	H.change_light_color(darksight_tint)
+	H.set_fullscreen_color("lighting_backdrop", darksight_tint)
 
-	if(H.stat == DEAD)
+	if(H.is_ooc_dead())
 		return 1
 
 	if(!H.druggy)
 		H.set_see_in_dark(max(
 			H.see_in_dark,
-			H.sight == (SEE_TURFS|SEE_MOBS|SEE_OBJS) ? 8 : H.see_in_dark,
+			(H.sight & (SEE_TURFS|SEE_MOBS|SEE_OBJS)) == (SEE_TURFS|SEE_MOBS|SEE_OBJS) ? 8 : H.see_in_dark,
 			darksight_range + H.equipment_darkness_modifier
 		))
 		if(H.equipment_see_invis)
@@ -534,15 +570,15 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	if(!H.client)//no client, no screen to update
 		return 1
 
-	H.set_fullscreen(H.eye_blind && !H.equipment_prescription, "blind", /obj/screen/fullscreen/blind)
-	H.set_fullscreen(H.stat == UNCONSCIOUS, "blackout", /obj/screen/fullscreen/blackout)
+	H.set_fullscreen(H.eye_blind && !H.equipment_prescription, "blind", /atom/movable/screen/fullscreen/blind)
+	H.set_fullscreen(H.stat == UNCONSCIOUS, "blackout", /atom/movable/screen/fullscreen/blackout)
 
 	if(config.misc.welder_vision_allowed)
-		H.set_fullscreen(H.equipment_tint_total, "welder", /obj/screen/fullscreen/impaired, H.equipment_tint_total)
+		H.set_fullscreen(H.equipment_tint_total, "welder", /atom/movable/screen/fullscreen/impaired, H.equipment_tint_total)
 	var/how_nearsighted = get_how_nearsighted(H)
-	H.set_fullscreen(how_nearsighted, "nearsighted", /obj/screen/fullscreen/oxy, how_nearsighted)
-	H.set_fullscreen(H.eye_blurry, "blurry", /obj/screen/fullscreen/blurry)
-	H.set_fullscreen(H.druggy, "high", /obj/screen/fullscreen/high)
+	H.set_fullscreen(how_nearsighted, "nearsighted", /atom/movable/screen/fullscreen/oxy, how_nearsighted)
+	H.set_renderer_filter(H.eye_blurry, SCENE_GROUP_RENDERER, EYE_BLURRY_FILTER_NAME, 0, EYE_BLURRY_FILTER(H.eye_blurry))
+	H.set_fullscreen(H.druggy, "high", /atom/movable/screen/fullscreen/high)
 
 	for(var/overlay in H.equipment_overlays)
 		H.client.screen |= overlay
@@ -580,6 +616,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	H.h_style = H.species.default_h_style
 	H.f_style = H.species.default_f_style
 	H.update_hair()
+	H.update_facial_hair()
 
 /datum/species/proc/get_blood_name()
 	return "blood"
@@ -593,10 +630,13 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 
 // Impliments different trails for species depending on if they're wearing shoes.
 /datum/species/proc/get_move_trail(mob/living/carbon/human/H)
-	if( H.shoes || ( H.wear_suit && (H.wear_suit.body_parts_covered & FEET) ) )
+	if(H.lying)
+		return /obj/effect/decal/cleanable/blood/tracks/trail
+
+	if(H.shoes || (H.wear_suit && (H.wear_suit.body_parts_covered & FEET)))
 		return /obj/effect/decal/cleanable/blood/tracks/footprints
-	else
-		return move_trail
+
+	return move_trail
 
 /datum/species/proc/update_skin(mob/living/carbon/human/H)
 	return
@@ -629,7 +669,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 				target.visible_message("<span class='danger'>[target]'s [W] goes off during the struggle!</span>")
 				return W.afterattack(shoot_to,target)
 
-	var/effective_armor = target.getarmor(attacker.zone_sel.selecting, "melee")
+	var/effective_armor = target.get_flat_armor(attacker.zone_sel.selecting, "melee")
 	var/poisedmg = round(4.0 + 4.0 * ((100 - effective_armor) / 100), 0.1)
 	if(istype(attacker.gloves, /obj/item/clothing/gloves/chameleon/robust))
 		poisedmg *= 1.75
@@ -638,12 +678,12 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	//target.visible_message("Debug \[DISARM\]: [target] lost [round(4.0+4.0*((100-effective_armor)/100),0.1)] poise ([target.poise]/[target.poise_pool])") // Debug Message
 
 	//var/randn = rand(1, 100)
-	if(!(species_flags & SPECIES_FLAG_NO_SLIP) && target.poise <= 20 && !prob(target.poise*4.5) && !target.lying)
+	if(!(species_flags & SPECIES_FLAG_NO_SLIP) && target.poise <= 20 && !prob(target.poise*4.5) && !target.check_poise_immunity())
 		var/armor_check = target.run_armor_check(affecting, "melee")
 		playsound(target.loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
 		if(prob(100-target.poise*6.5))
 			target.visible_message("<span class='danger'>[attacker] has pushed [target]!</span>")
-			target.apply_effect(4, WEAKEN, armor_check)
+			target.apply_effect(5, WEAKEN, armor_check)
 		else
 			target.visible_message("<span class='warning'>[attacker] attempted to push [target]!</span>")
 		return
@@ -656,7 +696,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 
 		//Actually disarm them
 		for(var/obj/item/I in holding)
-			if(target.unEquip(I))
+			if(target.drop(I))
 				target.visible_message("<span class='danger'>[attacker] has disarmed [target]!</span>")
 				playsound(target.loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
 				return
@@ -669,9 +709,9 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	return "<span class='danger'>[T.His] face is horribly mangled!</span>\n"
 
 /datum/species/proc/max_skin_tone()
-	if(appearance_flags & HAS_SKIN_TONE_GRAV)
+	if(species_appearance_flags & HAS_SKIN_TONE_GRAV)
 		return 100
-	if(appearance_flags & HAS_SKIN_TONE_SPCR)
+	if(species_appearance_flags & HAS_SKIN_TONE_SPCR)
 		return 165
 	return 220
 
@@ -716,7 +756,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	return TRUE
 
 /datum/species/proc/get_species_runechat_color(mob/living/carbon/human/H)
-	if(appearance_flags & HAS_SKIN_COLOR)
+	if(species_appearance_flags & HAS_SKIN_COLOR)
 		return H.s_base
 	else
 		var/list/A = list(max(64, H.r_hair), max(64, H.g_hair), max(64, H.b_hair))

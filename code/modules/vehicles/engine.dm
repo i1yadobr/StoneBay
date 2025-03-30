@@ -36,10 +36,8 @@
 	if(istype(I,/obj/item/cell))
 		if(cell)
 			to_chat(user, "<span class='warning'>There is already a cell in \the [src].</span>")
-		else
+		else if(user.drop(I, src))
 			cell = I
-			user.drop_from_inventory(I)
-			I.forceMove(src)
 		return 1
 	else if(isCrowbar(I))
 		if(cell)
@@ -58,10 +56,10 @@
 	return cell.use(cost_per_move * CELLRATE)
 
 /obj/item/engine/electric/rev_engine(atom/movable/M)
-	M.audible_message("\The [M] beeps, spinning up.")
+	M.audible_message("\The [M] beeps, spinning up.", splash_override = "*beeeeep*")
 
 /obj/item/engine/electric/putter(atom/movable/M)
-	M.audible_message("\The [M] makes one depressed beep before winding down.")
+	M.audible_message("\The [M] makes one depressed beep before winding down.", splash_override = "*beep...*")
 
 /obj/item/engine/electric/emp_act(severity)
 	if(cell)
@@ -137,7 +135,7 @@
 	return use_power()
 
 /obj/item/engine/thermal/rev_engine(atom/movable/M)
-	M.audible_message("\The [M] rumbles to life.")
+	M.audible_message("\The [M] rumbles to life.", splash_override = "*rumble*")
 
 /obj/item/engine/electric/putter(atom/movable/M)
-	M.audible_message("\The [M] putters before turning off.")
+	M.audible_message("\The [M] putters before turning off.", splash_override = "*pshh...*")

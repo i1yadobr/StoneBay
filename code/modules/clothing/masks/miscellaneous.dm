@@ -15,13 +15,14 @@
 	icon_state = "tape_cross"
 	item_state = null
 	w_class = ITEM_SIZE_TINY
-
+	use_alt_layer = TRUE
 
 /obj/item/clothing/mask/muzzle/ballgag
 	name = "Ballgag"
 	desc = "For when Master wants silence."
 	icon_state = "ballgag"
 	item_state = "ballgag"
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/muzzle/Initialize()
 	. = ..()
@@ -29,7 +30,7 @@
 	say_verbs = list("mumbles", "says")
 
 // Clumsy folks can't take the mask off themselves.
-/obj/item/clothing/mask/muzzle/attack_hand(mob/user as mob)
+/obj/item/clothing/mask/muzzle/attack_hand(mob/user)
 	if(user.wear_mask == src && !user.IsAdvancedToolUser())
 		return 0
 	..()
@@ -44,121 +45,119 @@
 	item_flags = 0
 	gas_transfer_coefficient = 0.90
 	permeability_coefficient = 0.01
-	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 60, rad = 0)
+	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 60)
 	down_gas_transfer_coefficient = 1
 	down_body_parts_covered = null
 	down_icon_state = "steriledown"
 	pull_mask = 1
+	use_alt_layer = TRUE
+
+	rad_resist_type = /datum/rad_resist/mask_syrgical
+
+/datum/rad_resist/mask_syrgical
+	alpha_particle_resist = 13.5 MEGA ELECTRONVOLT
+	beta_particle_resist = 2.2 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/item/clothing/mask/fakemoustache
 	name = "fake moustache"
 	desc = "Warning: moustache is fake."
 	icon_state = "fake-moustache"
 	flags_inv = HIDEFACE
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	visible_name = "Scoundrel"
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/snorkel
 	name = "Snorkel"
 	desc = "For the Swimming Savant."
 	icon_state = "snorkel"
 	flags_inv = HIDEFACE
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 
 /obj/item/clothing/mask/bluescarf
 	name = "blue neck scarf"
 	desc = "A blue neck scarf."
 	icon_state = "blueneckscarf"
 	item_state = "blueneckscarf"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	item_flags = 0
 	w_class = ITEM_SIZE_SMALL
+	can_use_alt_layer = TRUE
+
+/obj/item/clothing/mask/uwu
+	name = "UwU mask"
+	desc = "Weaboo mask."
+	icon_state = "uwu"
+	item_state = "uwu"
+	body_parts_covered = NO_BODYPARTS
+	item_flags = 0
+	w_class = ITEM_SIZE_SMALL
+	use_alt_layer = TRUE
 
 /obj/item/clothing/mask/redwscarf
 	name = "red white scarf"
 	desc = "A red and white checkered neck scarf."
 	icon_state = "redwhite_scarf"
 	item_state = "redwhite_scarf"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	item_flags = 0
 	w_class = ITEM_SIZE_SMALL
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/greenscarf
 	name = "green scarf"
 	desc = "A green neck scarf."
 	icon_state = "green_scarf"
 	item_state = "green_scarf"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	w_class = ITEM_SIZE_SMALL
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/ninjascarf
 	name = "ninja scarf"
 	desc = "A stealthy, dark scarf."
 	icon_state = "ninja_scarf"
 	item_state = "ninja_scarf"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	w_class = ITEM_SIZE_SMALL
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/sbluescarf
 	name = "stripped blue scarf"
 	desc = "A stripped blue neck scarf."
 	icon_state = "sblue_scarf"
 	item_state = "sblue_scarf"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	w_class = ITEM_SIZE_SMALL
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/sgreenscarf
 	name = "stripped green scarf"
 	desc = "A stripped green neck scarf."
 	icon_state = "sgreen_scarf"
 	item_state = "sgreen_scarf"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	w_class = ITEM_SIZE_SMALL
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/sredscarf
 	name = "stripped red scarf"
 	desc = "A stripped red neck scarf."
 	icon_state = "sred_scarf"
 	item_state = "sred_scarf"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	w_class = ITEM_SIZE_SMALL
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/redscarf
 	name = "red scarf"
 	desc = "A red neck scarf."
 	icon_state = "red_scarf"
 	item_state = "red_scarf"
-	body_parts_covered = 0
+	body_parts_covered = NO_BODYPARTS
 	w_class = ITEM_SIZE_SMALL
-
-/obj/item/clothing/mask/pig
-	name = "pig mask"
-	desc = "A rubber pig mask."
-	icon_state = "pig"
-	item_state = "pig"
-	flags_inv = HIDEFACE|BLOCKHAIR
-	w_class = ITEM_SIZE_SMALL
-	siemens_coefficient = 0.7
-	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 0, rad = 0)
-
-/obj/item/clothing/mask/horsehead
-	name = "horse head mask"
-	desc = "A mask made of soft vinyl and latex, representing the head of a horse."
-	icon_state = "horsehead"
-	item_state = "horsehead"
-	flags_inv = HIDEFACE|BLOCKHAIR
-	body_parts_covered = HEAD|FACE|EYES
-	w_class = ITEM_SIZE_SMALL
-	siemens_coefficient = 0.7
-	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 0, rad = 0)
-
-/obj/item/clothing/mask/horsehead/New()
-	..()
-	// The horse mask doesn't cause voice changes by default, the wizard spell changes the flag as necessary
-	say_messages = list("NEEIIGGGHHHH!", "NEEEIIIIGHH!", "NEIIIGGHH!", "HAAWWWWW!", "HAAAWWW!")
-	say_verbs = list("whinnies", "neighs", "says")
-
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/ai
 	name = "camera MIU"
@@ -169,7 +168,10 @@
 	body_parts_covered = FACE|EYES
 	action_button_name = "Toggle MUI"
 	origin_tech = list(TECH_DATA = 5, TECH_ENGINEERING = 5)
-	armor = list(melee = 10, bullet = 10, laser = 10, energy = 5, bomb = 0, bio = 0, rad = 0) //Well it's made of some sort of plastic.
+	armor = list(melee = 10, bullet = 10, laser = 10, energy = 5, bomb = 0, bio = 0) //Well it's made of some sort of plastic.
+	use_alt_layer = TRUE
+	can_use_alt_layer = TRUE
+
 	var/active = FALSE
 	var/mob/observer/eye/cameranet/eye
 
@@ -227,7 +229,13 @@
 	flags_inv = HIDEFACE|BLOCKHAIR
 	siemens_coefficient = 0.7
 	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 0, rad = 0)
+	armor = list(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 0)
+	rad_resist_type = /datum/rad_resist/mask_rubber
+
+/datum/rad_resist/mask_rubber
+	alpha_particle_resist = 16 MEGA ELECTRONVOLT
+	beta_particle_resist = 3.4 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/item/clothing/mask/rubber/trasen
 	name = "Jack Trasen mask"
@@ -303,7 +311,16 @@
 	item_state = "bandblack"
 	item_flags = 0
 	w_class = ITEM_SIZE_SMALL
-	armor = list(melee = 5, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 15, rad = 0)
+	armor = list(melee = 5, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 15)
+	use_alt_layer = TRUE
+	can_use_alt_layer = TRUE
+
+	rad_resist_type = /datum/rad_resist/bandana
+
+/datum/rad_resist/bandana
+	alpha_particle_resist = 12 MEGA ELECTRONVOLT
+	beta_particle_resist = 2.18 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/item/clothing/mask/bandana/equipped(mob/user, slot)
 	switch(slot)
@@ -364,6 +381,12 @@
 	desc = "A fine black bandana with nanotech lining and a skull emblem. Can be worn on the head or face."
 	icon_state = "bandskull"
 	item_state = "bandskull"
+	rad_resist_type = /datum/rad_resist/bandana
+
+/datum/rad_resist/bandana
+	alpha_particle_resist = 12 MEGA ELECTRONVOLT
+	beta_particle_resist = 2.18 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/item/clothing/mask/bandana/customwhite //Custom item
 	name = "white bandana"
@@ -379,8 +402,9 @@
 	icon_state = "skullmask"
 	item_state = "skullmask"
 	w_class = ITEM_SIZE_NORMAL
-	armor = list(melee = 15, bullet = 10, laser = 10, energy = 0, bomb = 0, bio = 0, rad = 0)
+	armor = list(melee = 15, bullet = 10, laser = 10, energy = 0, bomb = 0, bio = 0)
 	siemens_coefficient = 0.8
+	can_use_alt_layer = TRUE
 
 /obj/item/clothing/mask/plasticbag
 	name = "plastic bag"
@@ -390,6 +414,9 @@
 	flags_inv = HIDEFACE|BLOCKHAIR
 	body_parts_covered = HEAD|FACE|EYES
 	tint = TINT_BLIND
+
+/obj/item/clothing/mask/plasticbag/attack_self(mob/user)
+	user.replace_item(src, new /obj/item/storage/bag/plasticbag, TRUE, TRUE)
 
 /obj/item/clothing/mask/plasticbag/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/tape_roll))

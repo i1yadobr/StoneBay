@@ -4,21 +4,6 @@
 /datum/uplink_item/item/tools
 	category = /datum/uplink_category/tools
 
-/datum/uplink_item/item/tools/std/buy(obj/item/device/uplink/U)
-	. = ..()
-	if(. && istype(U.loc, /obj/item/implant/uplink))
-		var/obj/item/storage/briefcase/std/STD = .
-		if(istype(STD))
-			STD.uplink = U
-			STD.authentication_complete = TRUE
-			STD.visible_message("\The [STD] blinks green!")
-
-/datum/uplink_item/item/tools/std
-	name = "Syndicate Teleportation Device (STD)"
-	desc = "It utilizes a local wormhole generator to teleport the stored items to our base. Upon successful teleportation, the device self-destructs for safety reasons. To use it, briefly put your uplink device inside for authorization, place the items you need to transport inside, and follow the instructions indicated on the STD."
-	item_cost = 1
-	path = /obj/item/storage/briefcase/std
-
 /datum/uplink_item/item/tools/encryptionkey_radio
 	name = "Encrypted Radio Channel Key"
 	item_cost = 1
@@ -130,6 +115,24 @@
 	item_cost = 4
 	path = /obj/item/card/emag
 
+/datum/uplink_item/item/tools/personal_shield
+	name = "Personal Shield"
+	desc = "This small device creates defensive shield around the user, protecting both them and their enemies for a few shots. Rechargable."
+	item_cost = 6
+	path = /obj/item/device/personal_shield
+
+/datum/uplink_item/item/tools/advemag
+	name = "Advanced Cryptographic Sequencer"
+	desc = "This sophisticated piece of equipment allows you to quite literally open anything: doors, lockers, crates and other things. \
+			However, the affected machinery will be broken permanently and while this can have the desired effect, \
+			it also leaves a trail for people to follow (mostly doors). \
+			Emagging something is also fairly noticeable, so you should make sure nobody's watching. \
+			This one is disguised as a PDA, and won't be permanently broken after a few uses, but will rather require its battery to be replaced.\
+			Press \"Remove ID\" button to turn on/off.\
+			Press \"Remove Cartridge\" button to remove battery"
+	item_cost = 6
+	path = /obj/item/device/emag
+
 /datum/uplink_item/item/tools/powersink
 	name = "Powersink"
 	desc = "This bad boy is a station engineers and AI's worst enemy. When bought, this thing is useless, \
@@ -176,7 +179,13 @@
 	path = /obj/item/aiModule/syndicate
 
 /datum/uplink_item/item/tools/teleporter
-	name = "Teleporter Circuit Board"
+	name = "Teleporter Console Circuit Board"
 	item_cost = 8
 	path = /obj/item/circuitboard/teleporter
+	antag_roles = list(MODE_NUKE)
+
+/datum/uplink_item/item/tools/teleporter
+	name = "Teleporter Gate Circuit Board"
+	item_cost = 8
+	path = /obj/item/circuitboard/teleporter_gate
 	antag_roles = list(MODE_NUKE)

@@ -9,11 +9,12 @@
 	var/board = list()
 	var/selected = -1
 
-/obj/item/board/_examine_text(mob/user)
+/obj/item/board/examine(mob/user, infix)
 	if(in_range(user,src))
 		user.set_machine(src)
 		interact(user)
 		return
+
 	. = ..()
 
 /obj/item/board/attack_hand(mob/living/carbon/human/M)
@@ -39,10 +40,9 @@
 	if(!user.Adjacent(src))
 		return 0
 
-	user.drop_from_inventory(I)
-	I.forceMove(src)
+	if(!user.drop(I, src))
+		return 0
 	num++
-
 
 	if(!board_icons["[I.icon] [I.icon_state]"])
 		board_icons["[I.icon] [I.icon_state]"] = new /icon(I.icon,I.icon_state)

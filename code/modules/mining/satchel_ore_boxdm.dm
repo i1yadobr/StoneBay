@@ -10,14 +10,13 @@
 	desc = "A heavy box used for storing ore."
 	density = 1
 	pull_slowdown = PULL_SLOWDOWN_HEAVY
-	effect_flags = EFFECT_FLAG_RAD_SHIELDED
+
 	var/last_update = 0
 	var/list/stored_ore = list()
 
 /obj/structure/ore_box/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/ore))
-		user.remove_from_mob(W)
-		src.contents += W
+	if(istype(W, /obj/item/ore))
+		user.drop(W, src)
 	if (istype(W, /obj/item/storage))
 		var/obj/item/storage/S = W
 		S.hide_from(usr)
@@ -41,7 +40,7 @@
 		else
 			stored_ore[O.name] = 1
 
-/obj/structure/ore_box/_examine_text(mob/user)
+/obj/structure/ore_box/examine(mob/user, infix)
 	. = ..()
 
 	// Borgs can now check contents too.
@@ -54,18 +53,16 @@
 	add_fingerprint(user)
 
 	if(!contents.len)
-		. += "\nIt is empty."
+		. += "It is empty."
 		return
 
 	if(world.time > last_update + 10)
 		update_ore_count()
 		last_update = world.time
 
-	. += "\nIt holds:"
+	. += "It holds:"
 	for(var/ore in stored_ore)
-		. += "\n- [stored_ore[ore]] [ore]"
-	return
-
+		. += "- [stored_ore[ore]] [ore]"
 
 /obj/structure/ore_box/verb/empty_box()
 	set name = "Empty Ore Box"
@@ -91,7 +88,7 @@
 
 	for (var/obj/item/ore/O in contents)
 		contents -= O
-		O.loc = src.loc
+		O.dropInto(loc)
 	to_chat(usr, "<span class='notice'>You empty the ore box</span>")
 
 	return
@@ -99,7 +96,7 @@
 /obj/structure/ore_box/ex_act(severity)
 	if(severity == 1.0 || (severity < 3.0 && prob(50)))
 		for (var/obj/item/ore/O in contents)
-			O.loc = src.loc
+			O.dropInto(loc)
 			O.ex_act(severity++)
 		qdel(src)
 		return

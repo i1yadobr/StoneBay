@@ -6,8 +6,8 @@
 	layer = BELOW_OBJ_LAYER
 	density = 1
 	anchored = 1
-	idle_power_usage = 5
-	active_power_usage = 100
+	idle_power_usage = 5 WATTS
+	active_power_usage = 100 WATTS
 	atom_flags = ATOM_FLAG_NO_REACT
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
 	var/operating = 0 // Is it on?
@@ -65,7 +65,7 @@
 				SPAN("notice", "\The [user] starts to fix part of the microwave."), \
 				SPAN("notice", "You start to fix part of the microwave.") \
 			)
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 				user.visible_message( \
 					SPAN("notice", "\The [user] fixes part of the microwave."), \
 					SPAN("notice", "You have fixed part of the microwave.") \
@@ -76,7 +76,7 @@
 				SPAN("notice", "\The [user] starts to fix part of the microwave."), \
 				SPAN("notice", "You start to fix part of the microwave.") \
 			)
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 				user.visible_message( \
 					SPAN("notice", "\The [user] fixes the microwave."), \
 					SPAN("notice", "You have fixed the microwave.") \
@@ -94,7 +94,7 @@
 				SPAN("notice", "\The [user] starts to clean the microwave."), \
 				SPAN("notice", "You start to clean the microwave.") \
 			)
-			if (do_after(user, 20, src))
+			if (do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 				user.visible_message( \
 					SPAN("notice", "\The [user] has cleaned the microwave."), \
 					SPAN("notice", "You have cleaned the microwave.") \
@@ -119,7 +119,7 @@
 			SPAN("notice", "\The [user] begins [src.anchored ? "unsecuring" : "securing"] the microwave."), \
 			SPAN("notice", "You attempt to [src.anchored ? "unsecure" : "secure"] the microwave.")
 			)
-		if(do_after(user,20, src))
+		if(do_after(user,20, src, luck_check_type = LUCK_CHECK_ENG))
 			src.anchored = !src.anchored
 			user.visible_message( \
 			SPAN("notice", "\The [user] [src.anchored ? "secures" : "unsecures"] the microwave."), \
@@ -140,18 +140,17 @@
 		if(istype(O, /obj/item/stack)) // This is bad, but I can't think of how to change it
 			var/obj/item/stack/S = O
 			if(S.get_amount() > 1)
-				new O.type (src)
+				new O.type(src)
 				S.use(1)
-			else
-				user.drop_item(src)
+			else if(!user.drop(O, src))
+				return
 			user.visible_message( \
 					SPAN("notice", "\The [user] has added one of [O] to \the [src]."), \
 					SPAN("notice", "You add one of [O] to \the [src]."))
 			return
 		else
-			if(!user.drop_from_inventory(O))
+			if(!user.drop(O, src))
 				return
-			O.forceMove(src)
 			user.visible_message( \
 				SPAN("notice", "\The [user] has added \the [O] to \the [src]."), \
 				SPAN("notice", "You add \the [O] to \the [src]."))
@@ -297,7 +296,7 @@
 			cooked.dropInto(loc)
 			return
 	else
-		var/halftime = round(recipe.time / 5)
+		var/halftime = round(recipe.time / 20)
 		if (!wzhzhzh(halftime))
 			abort()
 			return
@@ -313,7 +312,7 @@
 		return
 
 /obj/machinery/microwave/proc/wzhzhzh(seconds as num) // Whoever named this proc is fucking literally Satan. ~ Z
-	seconds = min(round(seconds / cook_speed), 1)
+	seconds = max(round(seconds / cook_speed), 1)
 	for (var/i = 1 to seconds)
 		if (stat & (NOPOWER|BROKEN))
 			return 0
@@ -377,7 +376,7 @@
 	src.updateUsrDialog()
 	src.update_icon()
 
-/obj/machinery/microwave/update_icon()
+/obj/machinery/microwave/on_update_icon()
 	if(dirty == 100)
 		src.icon_state = "mwbloody[operating]"
 	else if(broken)
@@ -426,5 +425,5 @@
 		else if(ismanipulator(P))
 			man_rating += P.rating
 
-	active_power_usage = 100 - ml_rating * 6 // Normally, 72 power usage with 10 max power usage with max micro lasers
+	active_power_usage = (100 WATTS) - ml_rating * 6 // Normally, 72 power usage with 10 max power usage with max micro lasers
 	cook_speed = man_rating // More -> better

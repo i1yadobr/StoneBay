@@ -16,6 +16,9 @@
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
 	slot_flags = SLOT_BELT
 
+	drop_sound = SFX_DROP_GUN
+	pickup_sound = SFX_PICKUP_GUN
+
 /obj/item/reagent_containers/hypospray/do_surgery(mob/living/carbon/M, mob/living/user)
 	if(user.a_intent != I_HELP) //in case it is ever used as a surgery tool
 		return ..()
@@ -72,7 +75,7 @@
 			reagents.trans_to_holder(loaded_vial.reagents,volume)
 			reagents.maximum_volume = 0
 			loaded_vial.update_icon()
-			user.put_in_hands(loaded_vial)
+			user.pick_or_drop(loaded_vial)
 			loaded_vial = null
 			to_chat(user, "You remove the vial from the [src].")
 			update_icon()
@@ -82,16 +85,16 @@
 	else
 		return ..()
 
-/obj/item/reagent_containers/hypospray/vial/attackby(obj/item/W, mob/user as mob)
+/obj/item/reagent_containers/hypospray/vial/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/reagent_containers/vessel/beaker/vial))
 		if(!loaded_vial)
-			if(!do_after(user,10) || loaded_vial || !(W in user))
-				return 0
+			if(!do_after(user, 10, , luck_check_type = LUCK_CHECK_MED) || loaded_vial || !(W in user))
+				return FALSE
+			if(!user.drop(W, src))
+				return
 			if(W.is_open_container())
 				W.atom_flags ^= ATOM_FLAG_OPEN_CONTAINER
 				W.update_icon()
-			user.drop_item()
-			W.forceMove(src)
 			loaded_vial = W
 			reagents.maximum_volume = loaded_vial.reagents.maximum_volume
 			loaded_vial.reagents.trans_to_holder(reagents,volume)
@@ -128,18 +131,19 @@
 	update_icon()
 	return
 
-/obj/item/reagent_containers/hypospray/autoinjector/update_icon()
+/obj/item/reagent_containers/hypospray/autoinjector/on_update_icon()
 	if(reagents.total_volume > 0)
 		icon_state = "[base_state]1"
 	else
 		icon_state = "[base_state]0"
 
-/obj/item/reagent_containers/hypospray/autoinjector/_examine_text(mob/user)
+/obj/item/reagent_containers/hypospray/autoinjector/examine(mob/user, infix)
 	. = ..()
+
 	if(reagents && reagents.reagent_list.len)
-		. += "\n<span class='notice'>It is currently loaded.</span>"
+		. += SPAN_NOTICE("It is currently loaded.")
 	else
-		. += "\n<span class='notice'>It is spent.</span>"
+		. += SPAN_NOTICE("It is spent.")
 
 /obj/item/reagent_containers/hypospray/autoinjector/detox
 	icon_state = "green1"
@@ -148,9 +152,9 @@
 	startswith = list(/datum/reagent/dylovene)
 
 /obj/item/reagent_containers/hypospray/autoinjector/tricordrazine
-	icon_state = "red1"
+	icon_state = "lightpurple1"
 	content_desc = "Tricordrazine 10u. Use to speed up recovery from physical trauma."
-	base_state = "red"
+	base_state = "lightpurple"
 	startswith = list(/datum/reagent/tricordrazine)
 
 /obj/item/reagent_containers/hypospray/autoinjector/pain
@@ -161,7 +165,7 @@
 
 /obj/item/reagent_containers/hypospray/autoinjector/combatpain
 	icon_state = "black1"
-	content_desc = "Metazine 5u"
+	content_desc = "Metazine 5u. Used for immediate and temporary pain relief."
 	base_state = "black"
 	amount_per_transfer_from_this = 5
 	volume = 5
@@ -190,3 +194,21 @@
 	startswith = list(
 		/datum/reagent/hyronalin = 5,
 		/datum/reagent/dylovene = 5)
+
+/obj/item/reagent_containers/hypospray/autoinjector/dexalinp
+	icon_state = "darkblue1"
+	content_desc = "Dexalin plus 10u. Used for hypoxia. Increases oxygenation to almost 85%!"
+	base_state = "darkblue"
+	startswith = list(/datum/reagent/dexalinp)
+
+/obj/item/reagent_containers/hypospray/autoinjector/bicaridine
+	icon_state = "red1"
+	content_desc = "Bicaridine 10u. Used to treat serious physical wounds."
+	base_state = "red"
+	startswith = list(/datum/reagent/bicaridine)
+
+/obj/item/reagent_containers/hypospray/autoinjector/dermaline
+	icon_state = "yellow1"
+	content_desc = "Dermaline 10u. Used to treat burn wounds."
+	base_state = "yellow"
+	startswith = list(/datum/reagent/dermaline)

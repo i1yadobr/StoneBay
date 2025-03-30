@@ -10,7 +10,7 @@
 	var/health = 100
 	var/image/over = null
 
-/obj/structure/bed/nest/update_icon()
+/obj/structure/bed/nest/on_update_icon()
 	return
 
 /obj/structure/bed/nest/Initialize()
@@ -25,9 +25,9 @@
 /obj/structure/bed/nest/post_buckle_mob(mob/living/M)
 	..()
 	if(M == buckled_mob)
-		overlays.Add(over)
+		AddOverlays(over)
 	else
-		overlays.Cut()
+		ClearOverlays()
 
 /obj/structure/bed/nest/user_unbuckle_mob(mob/living/user)
 	if(buckled_mob)
@@ -47,7 +47,7 @@
 					"<span class='warning'>[buckled_mob.name] struggles to break free of the gelatinous resin...</span>",\
 					"<span class='warning'>You struggle to break free from the gelatinous resin...</span>",\
 					"<span class='notice'>You hear squelching...</span>")
-				if(!do_after(M, NEST_RESIST_TIME))
+				if(!do_after(M, NEST_RESIST_TIME, luck_check_type = LUCK_CHECK_COMBAT))
 					to_chat(M, SPAN("warning", "You fail to untie yourself!"))
 					M.last_special = world.time - NEST_RESIST_TIME/2 // Don't make them wait forever till next try, but also don't allow them to try again immediately
 					return

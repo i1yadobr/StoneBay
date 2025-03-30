@@ -47,7 +47,7 @@
 /datum/reagent/nutriment/proc/adjust_nutrition(mob/living/carbon/M, alien, removed)
 	switch(alien)
 		if(IS_UNATHI) removed *= 0.1 // Unathi get most of their nutrition from meat.
-	M.nutrition += nutriment_factor * removed // For hunger and fatness
+	M.add_nutrition(nutriment_factor * removed) // For hunger and fatness
 
 /datum/reagent/nutriment/glucose
 	name = "Glucose"
@@ -70,7 +70,7 @@
 /datum/reagent/nutriment/protein/adjust_nutrition(mob/living/carbon/M, alien, removed)
 	switch(alien)
 		if(IS_UNATHI) removed *= 2.25
-	M.nutrition += nutriment_factor * removed // For hunger and fatness
+	M.add_nutrition(nutriment_factor * removed) // For hunger and fatness
 
 /datum/reagent/nutriment/protein/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien && alien == IS_SKRELL)
@@ -187,7 +187,7 @@
 /datum/reagent/nutriment/cornoil
 	name = "Corn Oil"
 	description = "An oil derived from various types of corn."
-	taste_description = "metroid"
+	taste_description = "slime"
 	taste_mult = 0.1
 	reagent_state = LIQUID
 	nutriment_factor = 20
@@ -316,7 +316,7 @@
 	else
 		M.apply_effect(agony_amount, PAIN, 0)
 		if(prob(5))
-			M.custom_emote(2, "[pick("dry heaves!","coughs!","splutters!")]")
+			M.custom_emote(AUDIBLE_MESSAGE, pick("dry heaves!","coughs!","splutters!"), "AUTO_EMOTE")
 			to_chat(M, "<span class='danger'>You feel like your insides are burning!</span>")
 	if(istype(M, /mob/living/carbon/metroid))
 		M.bodytemperature += rand(0, 15) + metroid_temp_adj
@@ -384,7 +384,7 @@
 	else if(!no_pain)
 		message = "<span class='danger'>Your face and throat burn!</span>"
 		if(prob(25))
-			M.custom_emote(2, "[pick("coughs!","coughs hysterically!","splutters!")]")
+			M.custom_emote(AUDIBLE_MESSAGE, pick("coughs!","coughs hysterically!","splutters!"), "AUTO_EMOTE")
 		M.Weaken(5)
 		M.Stun(6)
 
@@ -422,7 +422,7 @@
 	return
 
 /datum/reagent/drink/affect_ingest(mob/living/carbon/M, alien, removed)
-	M.nutrition += nutrition * removed
+	M.add_nutrition(nutrition * removed)
 	M.dizziness = max(0, M.dizziness + adj_dizzy)
 	M.drowsyness = max(0, M.drowsyness + adj_drowsy)
 	M.sleeping = max(0, M.sleeping + adj_sleepy)
@@ -698,117 +698,11 @@
 	color = "#104038" // rgb: 16, 64, 56
 	adj_temp = -5
 
+	glass_required = "square"
+	glass_icon_state = "icedtea"
 	glass_name = "iced tea"
 	glass_desc = "No relation to a certain rap artist/ actor."
 	glass_special = list(DRINK_ICE)
-
-/datum/reagent/drink/coffee
-	name = "Coffee"
-	description = "Coffee is a brewed drink prepared from roasted seeds, commonly called coffee beans, of the coffee plant."
-	taste_description = "bitterness"
-	taste_mult = 1.3
-	color = "#482000"
-	adj_dizzy = -5
-	adj_drowsy = -3
-	adj_sleepy = -2
-	adj_temp = 25
-	adj_speed = 0.3
-	overdose = 45
-
-	glass_name = "coffee"
-	glass_desc = "Don't drop it, or you'll send scalding liquid and glass shards everywhere."
-	glass_special = list(DRINK_VAPOR)
-
-/datum/reagent/drink/coffee/affect_ingest(mob/living/carbon/M, alien, removed)
-	if(alien == IS_DIONA)
-		return
-	..()
-	if(alien == IS_TAJARA)
-		M.adjustToxLoss(0.5 * removed)
-		M.make_jittery(4) //extra sensitive to caffine
-	if(adj_temp > 0)
-		holder.remove_reagent(/datum/reagent/frostoil, 10 * removed)
-	if(volume > 15)
-		M.add_chemical_effect(CE_PULSE, 1)
-
-/datum/reagent/nutriment/coffee/affect_blood(mob/living/carbon/M, alien, removed)
-	..()
-	if(alien == IS_TAJARA)
-		M.adjustToxLoss(2 * removed)
-		M.make_jittery(4)
-		return
-	M.add_chemical_effect(CE_PULSE, 2)
-
-/datum/reagent/drink/coffee/overdose(mob/living/carbon/M, alien)
-	if(alien == IS_DIONA)
-		return
-	if(alien == IS_TAJARA)
-		M.adjustToxLoss(4 * REM)
-		M.apply_effect(3, STUTTER)
-	M.make_jittery(5)
-	M.add_chemical_effect(CE_PULSE, 2)
-	M.add_up_to_chemical_effect(CE_SPEEDBOOST, 1)
-
-/datum/reagent/drink/coffee/icecoffee
-	name = "Iced Coffee"
-	description = "Coffee and ice, refreshing and cool."
-	taste_description = "bitter coldness"
-	color = "#888179"
-	adj_temp = -5
-
-	glass_required = "square"
-	glass_icon_state = "coffeelatte"
-	glass_name = "iced coffee"
-	glass_desc = "A drink to perk you up and refresh you!"
-	glass_special = list(DRINK_ICE)
-
-/datum/reagent/drink/coffee/soy_latte
-	name = "Soy Latte"
-	description = "A nice and tasty beverage while you are reading your hippie books."
-	taste_description = "creamy coffee"
-	color = "#c65905"
-	adj_temp = 5
-
-	glass_required = "coffeecup"
-	glass_icon_state = "soylatte"
-	glass_name = "soy latte"
-	glass_desc = "A nice and refrshing beverage while you are reading."
-
-/datum/reagent/drink/coffee/soy_latte/affect_ingest(mob/living/carbon/M, alien, removed)
-	..()
-	M.heal_organ_damage(0.5 * removed, 0)
-
-/datum/reagent/drink/coffee/cafe_latte
-	name = "Cafe Latte"
-	description = "A nice, strong and tasty beverage while you are reading."
-	taste_description = "bitter cream"
-	color = "#c65905"
-	adj_temp = 5
-
-	glass_required = "coffeecup"
-	glass_icon_state = "coffeelatte"
-	glass_name = "cafe latte"
-	glass_desc = "A nice, strong and refreshing beverage while you are reading."
-
-/datum/reagent/drink/coffee/cafe_latte/affect_ingest(mob/living/carbon/M, alien, removed)
-	..()
-	M.heal_organ_damage(0.5 * removed, 0)
-
-/datum/reagent/drink/coffee/cappuccino
-	name = "Cappuccino"
-	description = "A nice, light coffee beverage made of espresso and steamed milk."
-	taste_description = "creamy coffee"
-	color = "#c65905"
-	adj_temp = 5
-
-	glass_required = "coffeecup"
-	glass_icon_state = "cappuccino"
-	glass_name = "cappuccino"
-	glass_desc = "A nice, light coffee beverage made of espresso and steamed milk."
-
-/datum/reagent/drink/coffee/cappuccino/affect_ingest(mob/living/carbon/M, alien, removed)
-	..()
-	M.heal_organ_damage(0.5 * removed, 0)
 
 /datum/reagent/drink/hot_coco
 	name = "Hot Chocolate"
@@ -870,6 +764,7 @@
 	color = "#ffff00"
 	adj_temp = -5
 
+	glass_name = "lemonade"
 	glass_desc = "Oh the nostalgia..."
 	glass_special = list(DRINK_FIZZ, DRINK_ICE)
 
@@ -1153,3 +1048,31 @@
 
 	glass_name = "nothing"
 	glass_desc = "Absolutely nothing."
+
+/datum/reagent/nutriment/magical_custard
+	name = "Magical Custard"
+	description = "It's both tasty and healthy. Must be magic."
+	taste_description = "sweet pleasure"
+	reagent_state = LIQUID
+	color = "#FFE6A3"
+	scannable = TRUE
+	flags = IGNORE_MOB_SIZE
+
+/datum/reagent/magical_custard/affect_ingest(mob/living/carbon/M, alien, removed)
+	M.heal_organ_damage(5 * removed, 5 * removed)
+
+/datum/reagent/astrotame
+	name = "Astrotame"
+	description = "A space age artifical sweetener."
+	reagent_state = SOLID
+	color = "#FFFFFF" // rgb: 255, 255, 255
+	taste_mult = 8
+	taste_description = "sweetness"
+
+/datum/reagent/sugar/caramel
+	name = "Caramel"
+	description = "Who would have guessed that heating sugar is so delicious?"
+	taste_description = "bitter sweetness"
+	taste_mult = 2
+	reagent_state = SOLID
+	color = "#ffffff"

@@ -12,6 +12,8 @@
 		/mob/living/bot,
 		/mob/living/carbon/metroid,
 		/mob/living/simple_animal/mouse,
+		/mob/living/simple_animal/lizard,
+		/mob/living/simple_animal/hamster,
 		/mob/living/silicon/robot/drone
 		)
 
@@ -47,6 +49,17 @@
 		if (3)
 			if (prob(5))
 				qdel(src)
+
+/obj/structure/plasticflaps/attackby(obj/item/O, mob/user)
+	if(isWrench(O))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, 1)
+		show_splash_text(user, "deconstructing...", "You begin deconstructing <b>\the [src]</b>.")
+		if(do_after(user, 30, src, luck_check_type = LUCK_CHECK_ENG))
+			new /obj/item/stack/material/plastic(loc, 5)
+			qdel(src)
+		return
+
+	return ..()
 
 /obj/structure/plasticflaps/mining //A specific type for mining that doesn't allow airflow because of them damn crates
 	name = "airtight plastic flaps"

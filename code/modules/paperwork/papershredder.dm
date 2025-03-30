@@ -7,6 +7,7 @@
 	anchored = 1
 	atom_flags = ATOM_FLAG_CLIMBABLE
 	obj_flags = OBJ_FLAG_ANCHORABLE
+	turf_height_offset = 22
 	var/max_paper = 10
 	var/paperamount = 0
 	var/list/shred_amounts = list(
@@ -33,14 +34,13 @@
 				to_chat(user, "<span class='warning'>\The [src] is full; please empty it before you continue.</span>")
 				return
 			paperamount += paper_result
-			user.drop_from_inventory(W)
 			qdel(W)
 			playsound(src.loc, 'sound/items/pshred.ogg', 75, 1)
 			if(paperamount > max_paper)
 				to_chat(user, "<span class='danger'>\The [src] was too full, and shredded paper goes everywhere!</span>")
 				for(var/i=(paperamount-max_paper);i>0;i--)
 					var/obj/item/shreddedp/SP = get_shredded_paper()
-					SP.loc = get_turf(src)
+					SP.forceMove(get_turf(src))
 					SP.throw_at(get_edge_target_turf(src, pick(GLOB.alldirs)), 1, 1)
 				paperamount = max_paper
 			update_icon()
@@ -97,7 +97,7 @@
 	paperamount--
 	return new /obj/item/shreddedp(get_turf(src))
 
-/obj/machinery/papershredder/update_icon()
+/obj/machinery/papershredder/on_update_icon()
 	icon_state = "papershredder[max(0,min(5,Floor(paperamount/2)))]"
 
 /obj/item/shreddedp/attackby(obj/item/W as obj, mob/user)
@@ -122,9 +122,6 @@
 	FireBurn()
 
 /obj/item/shreddedp/proc/FireBurn()
-	var/mob/living/M = loc
-	if(istype(M))
-		M.drop_from_inventory(src)
 	new /obj/effect/decal/cleanable/ash(get_turf(src))
 	qdel(src)
 

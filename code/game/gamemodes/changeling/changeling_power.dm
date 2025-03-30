@@ -4,7 +4,7 @@
 	var/desc = "Get the Power!"
 	var/text_activate = "We use some power."
 
-	var/icon = 'icons/mob/screen_spells.dmi'
+	var/icon = 'icons/hud/screen_spells.dmi'
 	var/icon_state = "ling_open"
 
 	var/chems_drain = 0 // Chemicals drain while active
@@ -13,7 +13,7 @@
 
 	var/required_chems = 0 // Chemicals required to use the ability
 	var/required_dna = 0   // DNA required to use the ability
-	var/max_genetic_damage = 100 // Can't use the ability if genetic damage is higher than this
+	var/max_genome_damage = 100 // Can't use the ability if genome damage is higher than this
 	var/max_stat = CONSCIOUS // In what state we can use the ability
 	var/allow_stasis = FALSE // Whether we can use the ability while in stasis
 	var/allow_lesser = FALSE // Can we use this ability while not in a human form?
@@ -47,7 +47,7 @@
 	update_recursive_enhancement()
 
 /datum/changeling_power/proc/update_screen_button()
-	var/obj/screen/ability/changeling_power/CP = my_mob.ability_master.get_ability_by_changeling_power(src)
+	var/atom/movable/screen/ability/changeling_power/CP = my_mob.ability_master.get_ability_by_changeling_power(src)
 	CP?.update_icon()
 
 /datum/changeling_power/proc/check_incapacitated(_max_stat, _allow_stasis)
@@ -89,7 +89,7 @@
 			to_chat(my_mob, SPAN("changeling", "We require at least <b>[required_chems]</b> units of chemicals to do that!"))
 		return
 
-	if(changeling.geneticdamage > max_genetic_damage)
+	if(changeling.genome_damage > max_genome_damage)
 		if(!no_message)
 			to_chat(my_mob, SPAN("changeling", "Our genomes are still reassembling. We need time to recover first."))
 		return
@@ -132,11 +132,11 @@
 
 /datum/changeling_power/passive/activate()
 	if(power_processing)
-		START_PROCESSING(SSprocessing, src) // We just start processing straight away.
+		set_next_think(world.time) // We just start thinking straight away.
 
 /datum/changeling_power/passive/deactivate()
 	if(power_processing)
-		STOP_PROCESSING(SSprocessing, src) // We just start processing straight away.
+		set_next_think(0) // We just start thinking straight away.
 
 
 // Toggle-able powers
@@ -155,7 +155,7 @@
 		return
 	to_chat(my_mob, SPAN("changeling", text_activate))
 	if(power_processing)
-		START_PROCESSING(SSprocessing, src)
+		set_next_think(world.time)
 	update_screen_button()
 
 /datum/changeling_power/toggled/deactivate(no_message = TRUE)
@@ -165,10 +165,10 @@
 	if(!no_message)
 		to_chat(my_mob, SPAN("changeling", text_deactivate))
 	if(power_processing)
-		STOP_PROCESSING(SSprocessing, src)
+		set_next_think(0)
 	update_screen_button()
 
-/datum/changeling_power/toggled/Process()
+/datum/changeling_power/toggled/think()
 	if(check_incapacitated())
 		deactivate()
 		return FALSE
@@ -180,6 +180,7 @@
 				deactivate()
 				update_screen_button()
 				return FALSE
+	set_next_think(world.time + 1 SECOND)
 	return TRUE
 
 
@@ -202,7 +203,7 @@
 		return FALSE
 
 	var/obj/item/I = new item_type(H)
-	H.put_in_hands(I)
+	H.pick_or_drop(I)
 
 	use_chems(required_chems)
 	if(loud)

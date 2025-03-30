@@ -31,7 +31,7 @@ var/const/FINGERPRINT_COMPLETE = 6
 	return 1
 
 /atom/proc/add_fingerprint(mob/M, ignoregloves, obj/item/tool)
-	if(isnull(M)) return
+	if(QDELETED(M)) return
 	if(isAI(M)) return
 	if(!M || !M.key)
 		return
@@ -152,7 +152,7 @@ var/const/FINGERPRINT_COMPLETE = 6
 	return FALSE
 
 /mob/living/carbon/get_full_print()
-	if (!dna || (mFingerprints in mutations))
+	if (!dna)
 		return FALSE
 	return md5(dna.uni_identity)
 

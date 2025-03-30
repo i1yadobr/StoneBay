@@ -1,17 +1,15 @@
 //Brain slug proc for voluntary removal of control.
 /mob/living/carbon/proc/release_control()
-
 	set category = "Abilities"
 	set name = "Release Control"
 	set desc = "Release control of your host's body."
 
 	var/mob/living/simple_animal/borer/B = has_brain_worms()
 
-	if(B && B.host_brain && B.can_use_abilities("controlling"))
-		to_chat(src, SPAN("danger", "You withdraw your probosci, releasing control of [B.host_brain]"))
-		B.detatch()
-	else
-		to_chat(src, SPAN("danger" ,"ERROR NO BORER OR BRAINMOB DETECTED IN THIS MOB, THIS IS A BUG!"))
+	ASSERT(B && B.host_brain && B.can_use_abilities(BORER_STATUS_CONTROLLING))
+
+	to_chat(src, SPAN("danger", "You withdraw your probosci, releasing control of [B.host_brain]"))
+	B.detatch()
 
 //Brain slug proc for tormenting the host.
 /mob/living/carbon/proc/punish_host()
@@ -22,7 +20,7 @@
 	var/mob/living/simple_animal/borer/B = has_brain_worms()
 
 
-	if(B && B.host_brain?.ckey && B.can_use_abilities("controlling"))
+	if(B && B.host_brain?.ckey && B.can_use_abilities(BORER_STATUS_CONTROLLING))
 		to_chat(src, SPAN("danger", "You send a punishing spike of psychic agony lancing into your host's brain."))
 		if (!can_feel_pain())
 			to_chat(B.host_brain, SPAN("warning", "You feel a strange sensation as a foreign influence prods your mind."))
@@ -37,7 +35,7 @@
 
 	var/mob/living/simple_animal/borer/B = has_brain_worms()
 
-	if(B && B.can_use_abilities("controlling") && B.chemicals >= 100)
+	if(B && B.can_use_abilities(BORER_STATUS_IN_HOST) && B.chemicals >= 100)
 		to_chat(src, SPAN("danger", "Your host twitches and quivers as you rapidly excrete a larva from your sluglike body."))
 		visible_message(SPAN("danger", "\The [src] heaves violently, expelling a rush of vomit and a wriggling, sluglike creature!"))
 		B.chemicals -= 100
@@ -62,18 +60,18 @@
 	var/eat_speed = 100
 	if(can_eat == DEVOUR_FAST)
 		eat_speed = 30
-	src.visible_message("<span class='danger'>\The [src] is attempting to devour \the [victim]!</span>")
+	visible_message("<span class='danger'>\The [src] is attempting to devour \the [victim]!</span>")
 	var/mob/target = victim
 	if(isobj(victim))
 		target = src
 	if(!do_mob(src,target,eat_speed))
 		return FALSE
-	src.visible_message("<span class='danger'>\The [src] devours \the [victim]!</span>")
+	visible_message("<span class='danger'>\The [src] devours \the [victim]!</span>")
 	if(ismob(victim))
 		admin_attack_log(src, victim, "Devoured.", "Was devoured by.", "devoured")
 	else
-		src.drop_from_inventory(victim)
+		drop(victim)
 	victim.forceMove(src)
-	src.stomach_contents.Add(victim)
+	stomach_contents.Add(victim)
 
 	return TRUE

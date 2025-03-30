@@ -9,7 +9,7 @@
 		return
 	..()
 
-	if(stat != DEAD && can_progress())
+	if(!is_ic_dead() && can_progress())
 		update_progression()
 	blinded = null
 	//Status updates, death etc.
@@ -19,35 +19,38 @@
 	return 1
 
 /mob/living/carbon/alien/updatehealth()
-	if(stat == DEAD)
-		return 0
+	if(is_ooc_dead())
+		return FALSE
 
 	if(status_flags & GODMODE)
 		health = maxHealth
 		set_stat(CONSCIOUS)
 	else
-		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss() - getHalLoss()
+		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss()
 		if(health <= 0)
 			death()
-			return 0
-	return 1
+			return FALSE
+
+	update_health_slowdown()
+
+	return TRUE
 
 
 // Currently both Dionaea and larvae like to eat radiation, so I'm defining the
 // rad absorbtion here. This will need to be changed if other baby aliens are added.
 /mob/living/carbon/alien/handle_mutations_and_radiation()
-	if(!radiation)
+	if(radiation <= SAFE_RADIATION_DOSE)
 		return
-	var/rads = radiation/25
-	radiation -= rads
-	nutrition += rads
+	var/rads = radiation / (0.05 SIEVERT)
+	radiation = max(SPACE_RADIATION, radiation - rads)
+	add_nutrition(rads)
 	heal_overall_damage(rads, rads)
 	adjustOxyLoss(-rads)
 	adjustToxLoss(-rads)
 	return
 
 /mob/living/carbon/alien/handle_regular_status_updates()
-	if(stat == DEAD)
+	if(is_ooc_dead())
 		blinded = 1
 		silent = 0
 		return 1 // We are dead for good
@@ -92,34 +95,15 @@
 
 /mob/living/carbon/alien/handle_regular_hud_updates()
 	update_sight()
-	if(healths)
-		if(stat != 2)
-			switch(health)
-				if(100 to INFINITY)
-					healths.icon_state = "health0"
-				if(80 to 100)
-					healths.icon_state = "health1"
-				if(60 to 80)
-					healths.icon_state = "health2"
-				if(40 to 60)
-					healths.icon_state = "health3"
-				if(20 to 40)
-					healths.icon_state = "health4"
-				if(0 to 20)
-					healths.icon_state = "health5"
-				else
-					healths.icon_state = "health6"
-		else
-			healths.icon_state = "health7"
 
-	if(stat != DEAD)
+	if(!is_ooc_dead())
 		if(blinded)
-			overlay_fullscreen("blind", /obj/screen/fullscreen/blind)
+			overlay_fullscreen("blind", /atom/movable/screen/fullscreen/blind)
 		else
 			clear_fullscreen("blind")
-			set_fullscreen(disabilities & NEARSIGHTED, "impaired", /obj/screen/fullscreen/impaired, 1)
-			set_fullscreen(eye_blurry, "blurry", /obj/screen/fullscreen/blurry)
-			set_fullscreen(druggy, "high", /obj/screen/fullscreen/high)
+			set_fullscreen(disabilities & NEARSIGHTED, "impaired", /atom/movable/screen/fullscreen/impaired, 1)
+			set_renderer_filter(eye_blurry, SCENE_GROUP_RENDERER, EYE_BLURRY_FILTER_NAME, 0, EYE_BLURRY_FILTER(eye_blurry))
+			set_fullscreen(druggy, "high", /atom/movable/screen/fullscreen/high)
 		if(machine)
 			if(machine.check_eye(src) < 0)
 				reset_view(null)
@@ -135,8 +119,8 @@
 	if(!environment)
 		return
 
-	if(environment.temperature > (T0C+66))
-		adjustFireLoss((environment.temperature - (T0C+66))/5) // Might be too high, check in testing.
+	if(environment.temperature > (66 CELSIUS))
+		adjustFireLoss((environment.temperature - (66 CELSIUS))/5) // Might be too high, check in testing.
 		if(fire)
 			fire.icon_state = "fire2"
 		if(prob(20))

@@ -8,6 +8,10 @@
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
 	attack_verb = list("jabbed","stabbed","ripped")
 	material_amount = 3
+	armor_penetration = 50
+
+	drop_sound = SFX_DROP_SWORD
+	pickup_sound = SFX_PICKUP_SWORD
 
 /obj/item/material/hatchet
 	name = "hatchet"
@@ -22,13 +26,17 @@
 	mod_weight = 1.0
 	mod_reach = 0.7
 	mod_handy = 1.2
+	armor_penetration = 20
 	sharp = 1
 	edge = 1
 	origin_tech = list(TECH_MATERIAL = 2, TECH_COMBAT = 1)
 	attack_verb = list("chopped", "torn", "cut")
-	applies_material_colour = 0
+	applies_material_colour = FALSE
 	hitsound = SFX_CHOP
 	material_amount = 3
+
+	pickup_sound = SFX_PICKUP_KNIFE
+	drop_sound = SFX_DROP_KNIFE
 
 /obj/item/material/hatchet/tacknife
 	name = "tactical knife"
@@ -41,9 +49,9 @@
 	mod_weight = 0.65
 	mod_reach = 0.5
 	mod_handy = 1.25
+	armor_penetration = 35
 	attack_verb = list("stabbed", "chopped", "cut")
 	hitsound = 'sound/weapons/bladeslice.ogg'
-	applies_material_colour = 1
 
 /obj/item/material/hatchet/machete
 	name = "machete"
@@ -83,6 +91,7 @@
 	mod_reach = 0.5
 	mod_handy = 1.0
 	attack_verb = list("slashed", "sliced", "cut", "clawed")
+	applies_material_colour = FALSE
 	material_amount = 2
 
 /obj/item/material/scythe
@@ -100,9 +109,12 @@
 	mod_weight = 1.35
 	mod_reach = 1.5
 	mod_handy = 1.2
+	armor_penetration = 50 // You can run it between armor segments right?
 	slot_flags = SLOT_BACK
 	origin_tech = list(TECH_MATERIAL = 2, TECH_COMBAT = 2)
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
+	applies_material_colour = FALSE
 	material_amount = 5
 
-
+	drop_sound = SFX_DROP_SWORD
+	pickup_sound = SFX_PICKUP_SWORD

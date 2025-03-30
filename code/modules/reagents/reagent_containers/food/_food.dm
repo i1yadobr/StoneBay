@@ -38,10 +38,6 @@
 /obj/item/reagent_containers/food/proc/On_Consume(mob/M)
 	if(!reagents.total_volume)
 		M.visible_message(SPAN("notice", "[M] finishes eating \the [src]."), SPAN("notice", "You finish eating \the [src]."))
-		var/is_held = (M == loc)
-		if(is_held)
-			M.drop_item()
-
 		if(trash)
 			var/obj/item/trash_item
 			if(ispath(trash, /obj/item))
@@ -51,8 +47,8 @@
 
 			if(trash_item)
 				trash_item.forceMove(get_turf(src))
-				if(is_held)
-					M.put_in_hands(trash_item)
+				if(M.is_equipped(src))
+					M.replace_item(src, trash_item, force = TRUE)
 
 		if(istype(loc, /obj/item/organ))
 			var/obj/item/organ/O = loc
@@ -68,8 +64,7 @@
 
 /obj/item/reagent_containers/food/attack(mob/M, mob/user, def_zone)
 	if(!reagents.total_volume)
-		to_chat(user, SPAN("danger", "None of [src] left!"))
-		user.drop_from_inventory(src)
+		to_chat(user, SPAN("danger", "The empty shell of [src] crumbles in your hands!"))
 		qdel(src)
 		return FALSE
 
@@ -128,7 +123,7 @@
 			admin_attack_log(user, M, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
 			user.visible_message(SPAN("danger", "[user] feeds [M] [src]."))
 
-		if(reagents)								//Handle ingestion of the reagent.
+		if(reagents && !(atom_flags & ATOM_FLAG_HOLOGRAM))								//Handle ingestion of the reagent.
 			playsound(M.loc, SFX_EAT, rand(45, 60), FALSE)
 			if(reagents.total_volume)
 				if(reagents.total_volume > bitesize)
@@ -155,12 +150,13 @@
 			return SPAN("notice", "\n\The [src] was bitten multiple times!")
 
 
-/obj/item/reagent_containers/food/_examine_text(mob/user)
+/obj/item/reagent_containers/food/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 1)
 		return
-	. += get_bitecount()
 
+	. += get_bitecount()
 
 /obj/item/reagent_containers/food/throw_impact(atom/hit_atom, speed, thrown_with, target_zone)
 	var/mob/living/carbon/human/H = hit_atom
@@ -203,11 +199,11 @@
 
 			bitecount++
 			// TODO: Replace with U.update_icon()
-			U.overlays.Cut()
+			U.ClearOverlays()
 			U.loaded = "[src]"
 			var/image/I = new(U.icon, "loadedfood")
 			I.color = src.filling_color
-			U.overlays += I
+			U.AddOverlays(I)
 			// /TODO
 
 			if(!reagents)
@@ -228,9 +224,10 @@
 			if(length(contents) > 3)
 				to_chat(user, SPAN_WARNING("There's too much stuff inside!"))
 				return
+			if(!user.drop(W, src))
+				return
 
 			to_chat(user, SPAN("warning", "You slip \the [W] inside \the [src]."))
-			user.drop_from_inventory(W, src)
 			add_fingerprint(user)
 			contents += W
 			return
@@ -265,7 +262,7 @@
 		reagents.trans_to_mob(user, bitesize, CHEM_INGEST)
 	spawn(5)
 		if(!src && !user.client)
-			user.custom_emote(1,"[pick("burps", "cries for more", "burps twice", "looks at the area where the food was")]")
+			user.custom_emote(VISIBLE_MESSAGE, pick("burps", "cries for more", "burps twice", "looks at the area where the food was"), "AUTO_EMOTE")
 			qdel(src)
 	On_Consume(user)
 

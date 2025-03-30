@@ -2,10 +2,13 @@
 	name = "shuttle"
 	icon = 'icons/turf/shuttle.dmi'
 
+/obj/structure/shuttle/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 8, 1)
+
 /obj/structure/shuttle/window
 	name = "shuttle window"
 	icon = 'icons/obj/podwindows.dmi'
-	icon_state = "1"
+	icon_state = "window-whiteship0"
 	density = 1
 	opacity = 0
 	anchored = 1
@@ -44,6 +47,16 @@
 /obj/structure/shuttle/engine/propulsion/burst/right
 	name = "right"
 	icon_state = "burst_r"
+
+/obj/structure/shuttle/engine/propulsion/burst/big
+	name = "burst"
+	icon_state = "thruster_big"
+	icon = 'icons/turf/thruster_big.dmi'
+
+/obj/structure/shuttle/engine/propulsion/burst/huge
+	name = "burst"
+	icon_state = "thruster_huge"
+	icon = 'icons/turf/thruster_huge.dmi'
 
 /obj/structure/shuttle/engine/router
 	name = "router"

@@ -10,13 +10,19 @@
 		slot_l_hand_str = 'icons/mob/onmob/items/lefthand_backpacks.dmi',
 		slot_r_hand_str = 'icons/mob/onmob/items/righthand_backpacks.dmi',
 		)
+	icon = 'icons/obj/storage/backpacks.dmi'
 	icon_state = "backpack"
+	inspect_state = TRUE
 	item_state = null
 	w_class = ITEM_SIZE_HUGE
 	slot_flags = SLOT_BACK
 	max_w_class = ITEM_SIZE_LARGE
 	max_storage_space = DEFAULT_BACKPACK_STORAGE
 	use_sound = SFX_SEARCH_CLOTHES
+	var/worn_access = TRUE // Whether it can be opened while worn on back
+
+	drop_sound = SFX_DROP_BACKPACK
+	pickup_sound = SFX_PICKUP_BACKPACK
 
 /obj/item/storage/backpack/Initialize()
 	. = ..()
@@ -31,7 +37,28 @@
 /obj/item/storage/backpack/equipped(mob/user, slot)
 	if(slot == slot_back && use_sound)
 		playsound(loc, use_sound, 50, 1, -5)
+	if(!worn_access && worn_check())
+		close_all()
 	..(user, slot)
+
+/obj/item/storage/backpack/handle_item_insertion(obj/item/W, prevent_warning = FALSE, NoUpdate = FALSE)
+	if(!worn_access && worn_check())
+		to_chat(usr, SPAN("warning", "You can't insert \the [W] while \the [src] is on your back."))
+		return
+	. = ..()
+
+/obj/item/storage/backpack/open(mob/user)
+	if(!worn_access && worn_check())
+		to_chat(user, SPAN("warning", "You can't open \the [src] while it is on your back."))
+		return
+	. = ..()
+
+/obj/item/storage/backpack/proc/worn_check()
+	if(ishuman(loc))
+		var/mob/living/carbon/human/H = loc
+		if(H.get_inventory_slot(src) == slot_back)
+			return TRUE
+	return FALSE
 
 /*
  * Backpack Types
@@ -42,18 +69,22 @@
 	desc = "A backpack that opens into a localized pocket of Blue Space."
 	origin_tech = list(TECH_BLUESPACE = 4)
 	icon_state = "holdingpack"
+	inspect_state = FALSE
 	max_w_class = ITEM_SIZE_GARGANTUAN
 	max_storage_space = 56
 
 /obj/item/storage/backpack/holding/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/storage/backpack/holding))
-		investigate_log("has become a singularity. Caused by [user.key]", "singulo")
+		investigate_log("has triggered a wormhole event. Caused by [user.key]")
 		to_chat(usr, "\red The Bluespace interfaces of the two devices catastrophically malfunction!")
-		qdel(W)
-		new /obj/singularity(src.loc, 300)
 		log_and_message_admins("detonated a bag of holding", user, src.loc)
-		qdel(src)
+		explosion(get_turf(src), 0, 1, 3, 3)
+		var/datum/event/E = SSevents.total_events["wormholes"]
+		E.fire()
+		qdel(W)
+		qdel_self()
 		return
+
 	..()
 
 /obj/item/storage/backpack/santabag
@@ -61,6 +92,7 @@
 	desc = "Space Santa uses this to deliver toys to all the nice children in space for Christmas! Wow, it's pretty big!"
 	icon_state = "giftbag0"
 	item_state = "giftbag"
+	inspect_state = FALSE
 	w_class = ITEM_SIZE_HUGE
 	max_w_class = ITEM_SIZE_NORMAL
 	max_storage_space = 400 // can store a ton of shit!
@@ -129,6 +161,11 @@
 	desc = "It's an orange backpack which was designed to hold beakers, pill bottles and bottles."
 	icon_state = "chempack"
 
+/obj/item/storage/backpack/emt
+	name = "emt backpack"
+	desc = "It's a blue backpack with white cross on it which was designed for initial medical emergency works."
+	icon_state = "emtpack"
+
 /*
  * Duffle Types
  */
@@ -139,21 +176,12 @@
 	icon_state = "duffle"
 	w_class = ITEM_SIZE_HUGE
 	max_storage_space = DEFAULT_BACKPACK_STORAGE + 14
-
-/obj/item/storage/backpack/dufflebag/New()
-	..()
-	slowdown_per_slot[slot_back] = 3
-	slowdown_per_slot[slot_r_hand] = 1
-	slowdown_per_slot[slot_l_hand] = 1
+	worn_access = FALSE
 
 /obj/item/storage/backpack/dufflebag/syndie
 	name = "black dufflebag"
 	desc = "A large dufflebag for holding extra tactical supplies."
 	icon_state = "duffle_syndie"
-
-/obj/item/storage/backpack/dufflebag/syndie/New()
-	..()
-	slowdown_per_slot[slot_back] = 1
 
 /obj/item/storage/backpack/dufflebag/syndie/med
 	name = "medical dufflebag"
@@ -174,6 +202,11 @@
 	name = "medical dufflebag"
 	desc = "A large dufflebag for holding extra medical supplies."
 	icon_state = "duffle_med"
+
+/obj/item/storage/backpack/dufflebag/emt
+	name = "emt dufflebag"
+	desc = "A large dufflebag for holding extra medical emergency supplies."
+	icon_state = "duffle_emt"
 
 /obj/item/storage/backpack/dufflebag/sec
 	name = "security dufflebag"
@@ -208,13 +241,21 @@
 	icon_state = "satchel"
 	color = "#3d2711"
 
+/obj/item/storage/backpack/satchel/leather/Initialize()
+	. = ..()
+	update_icon()
+
+/obj/item/storage/backpack/satchel/leather/on_update_icon()
+	ClearOverlays()
+	AddOverlays(OVERLAY(icon, (being_inspected ? "satchel_overlay-open" : "satchel_overlay"), alpha, RESET_COLOR))
+
 /obj/item/storage/backpack/satchel/leather/khaki
 	name = "khaki leather satchel"
 	color = "#baa481"
 
 /obj/item/storage/backpack/satchel/leather/black
 	name = "black leather satchel"
-	color = "#212121"
+	color = "#3F3F3F"
 
 /obj/item/storage/backpack/satchel/leather/navy
 	name = "navy leather satchel"
@@ -232,15 +273,20 @@
 	name = "black pocketbook"
 	desc = "A neat little folding clasp pocketbook with a shoulder sling."
 	icon_state = "pocketbook"
-	w_class = ITEM_SIZE_HUGE // to avoid recursive backpacks
-	slot_flags = SLOT_BACK
-	max_w_class = ITEM_SIZE_NORMAL
 	max_storage_space = DEFAULT_LARGEBOX_STORAGE
-	color = "#212121"
+	color = "#3F3F3F"
 	item_state_slots = list(
 		slot_l_hand_str = "satchel-flat",
 		slot_r_hand_str = "satchel-flat",
 		)
+
+/obj/item/storage/backpack/satchel/pocketbook/Initialize()
+	. = ..()
+	update_icon()
+
+/obj/item/storage/backpack/satchel/pocketbook/on_update_icon()
+	ClearOverlays()
+	AddOverlays(OVERLAY(icon, (being_inspected ? "pocketbook_overlay-open" : "pocketbook_overlay"), alpha, RESET_COLOR))
 
 /obj/item/storage/backpack/satchel/pocketbook/brown
 	name = "brown pocketbook"
@@ -274,6 +320,11 @@
 	name = "geneticist satchel"
 	desc = "A sterile satchel with geneticist colours."
 	icon_state = "satchel-gen"
+
+/obj/item/storage/backpack/satchel/emt
+	name = "emt satchel"
+	desc = "A sterile satchel with EMT colours."
+	icon_state = "satchel-emt"
 
 /obj/item/storage/backpack/satchel/tox
 	name = "scientist satchel"
@@ -309,6 +360,7 @@
 	name = "emergency response team backpack"
 	desc = "A spacious backpack with lots of pockets, used by members of the Emergency Response Team."
 	icon_state = "ert_commander"
+	inspect_state = FALSE
 	item_state_slots = list(
 		slot_l_hand_str = "securitypack",
 		slot_r_hand_str = "securitypack",
@@ -348,7 +400,7 @@
 
 /obj/item/storage/backpack/messenger/chem
 	name = "chemistry messenger bag"
-	desc = "A serile backpack worn over one shoulder. This one is in Chemsitry colors."
+	desc = "A sterile backpack worn over one shoulder. This one is in Chemsitry colors."
 	icon_state = "courierbagchem"
 
 /obj/item/storage/backpack/messenger/med
@@ -360,6 +412,11 @@
 	name = "virology messenger bag"
 	desc = "A sterile backpack worn over one shoulder. This one is in Virology colors."
 	icon_state = "courierbagviro"
+
+/obj/item/storage/backpack/messenger/emt
+	name = "emt messenger bag"
+	desc = "A blue backpack with white cross on it worn over one shoulder. This one is in EMT colors."
+	icon_state = "courierbagemt"
 
 /obj/item/storage/backpack/messenger/tox
 	name = "research messenger bag"
@@ -421,6 +478,7 @@
 	name = "Space carp backpack"
 	desc = "It's a backpack made of real space carp."
 	icon_state = "carppack"
+	inspect_state = FALSE
 	item_state_slots = list(
 		slot_l_hand_str = "backpack",
 		slot_r_hand_str = "backpack",
@@ -433,4 +491,14 @@
 	item_state_slots = list(
 		slot_l_hand_str = "satchel",
 		slot_r_hand_str = "satchel",
+		)
+
+/obj/item/storage/backpack/shipack
+	name = "Spaceship backpack"
+	desc = "Some say that humanity conquered space inside such things. Today it has obviously broken but looks neat, and you can store your stuff inside."
+	icon_state = "shipack"
+	inspect_state = FALSE
+	item_state_slots = list(
+		slot_l_hand_str = "shipack",
+		slot_r_hand_str = "shipack",
 		)

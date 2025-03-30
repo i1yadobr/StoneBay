@@ -52,34 +52,33 @@
 	else if(istype(I, /obj/item/cell))
 		if(bcell)
 			to_chat(user, "<span class='warning'>There's already a cell in \the [src].</span>")
-		else if(user.unEquip(I))
-			I.forceMove(src)
+		else if(user.drop(I, src))
 			bcell = I
 			to_chat(user, "<span class='notice'>You insert \the [bcell] into \the [src]..</span>")
 		else
 			to_chat(user, "<span class='warning'>You're unable to insert the battery.</span>")
 
-/obj/item/device/suit_sensor_jammer/update_icon()
-	overlays.Cut()
+/obj/item/device/suit_sensor_jammer/on_update_icon()
+	ClearOverlays()
 	if(bcell)
-		var/percent = bcell.percent()
+		var/percent = CELL_PERCENT(bcell)
 		switch(percent)
 			if(0 to 25)
-				overlays += "forth_quarter"
+				AddOverlays("forth_quarter")
 			if(25 to 50)
-				overlays += "one_quarter"
-				overlays += "third_quarter"
+				AddOverlays("one_quarter")
+				AddOverlays("third_quarter")
 			if(50 to 75)
-				overlays += "two_quarters"
-				overlays += "second_quarter"
+				AddOverlays("two_quarters")
+				AddOverlays("second_quarter")
 			if(75 to 99)
-				overlays += "three_quarters"
-				overlays += "first_quarter"
+				AddOverlays("three_quarters")
+				AddOverlays("first_quarter")
 			else
-				overlays += "four_quarters"
+				AddOverlays("four_quarters")
 
 		if(active)
-			overlays += "active"
+			AddOverlays("active")
 
 /obj/item/device/suit_sensor_jammer/emp_act(severity)
 	..()
@@ -99,16 +98,20 @@
 	var/new_range = range + (rand(0,6) / severity) - (rand(0,3) / severity)
 	set_range(new_range)
 
-/obj/item/device/suit_sensor_jammer/_examine_text(user)
+/obj/item/device/suit_sensor_jammer/examine(mob/user, infix)
 	. = ..()
-	if(get_dist(src, user) <= 3)
-		var/list/message = list()
-		message += "This device appears to be [active ? "" : "in"]active and "
-		if(bcell)
-			message += "displays a charge level of [bcell.percent()]%."
-		else
-			message += "is lacking a cell."
-		. += "\n[jointext(message, " ")]"
+
+	if(get_dist(src, user) > 3)
+		return
+
+	var/list/message = list()
+	message += "This device appears to be [active ? "" : "in"]active and "
+	if(bcell)
+		message += "displays a charge level of [CELL_PERCENT(bcell)]%."
+	else
+		message += "is lacking a cell."
+
+	. += jointext(message, " ")
 
 /obj/item/device/suit_sensor_jammer/tgui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -162,22 +165,26 @@
 				set_method(method)
 				. = TRUE
 
-/obj/item/device/suit_sensor_jammer/Process(wait)
+/obj/item/device/suit_sensor_jammer/think(wait)
 	if(bcell)
 		// With a range of 2 and jammer cost of 3 the default (high capacity) cell will last for almost 14 minutes, give or take
 		// 10000 / (2^2 * 3 / 10) ~= 8333 ticks ~= 13.8 minutes
 		var/deduction = JAMMER_POWER_CONSUMPTION(wait)
 		if(!bcell.use(deduction))
 			disable()
+			return
 	else
 		disable()
+		return
+
 	update_icon()
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/device/suit_sensor_jammer/proc/enable()
 	if(active)
 		return FALSE
 	active = TRUE
-	START_PROCESSING(SSobj, src)
+	set_next_think(world.time)
 	jammer_method.enable()
 	update_icon()
 	return TRUE
@@ -187,7 +194,7 @@
 		return FALSE
 	active = FALSE
 	jammer_method.disable()
-	STOP_PROCESSING(SSobj, src)
+	set_next_think(0)
 	update_icon()
 	return TRUE
 

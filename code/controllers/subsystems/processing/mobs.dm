@@ -8,19 +8,23 @@ PROCESSING_SUBSYSTEM_DEF(mobs)
 	// List of Z levels where player are
 	var/static/list/player_levels = list()
 	var/static/list/mob_list = list()
+	/// Count of mobs per type
+	var/static/list/mob_types = list()
 
 /datum/controller/subsystem/processing/mobs/PreInit()
 	mob_list = processing // Simply setups a more recognizable var name than "processing"
 
 /datum/controller/subsystem/processing/mobs/fire(resumed = 0)
 	if(!resumed)
+		mob_types.Cut()
 		current_run = processing.Copy()
 		player_levels.Cut()
 		for(var/P in GLOB.player_list)
 			var/mob/living/player = P
-			if(!istype(player) || (player.z in player_levels))
+			var/turf/T = get_turf(player)
+			if(!istype(player) || !istype(T) || (T.z in player_levels))
 				continue
-			player_levels += player.z
+			player_levels |= T.z
 
 	var/mob/thing
 	for(var/i = current_run.len to 1 step -1)
@@ -30,7 +34,14 @@ PROCESSING_SUBSYSTEM_DEF(mobs)
 			processing -= thing
 			continue
 
-		if(thing.client || (thing.z in player_levels) || thing.teleop)
+		var/ty = "[thing.type]"
+		if(!mob_types[ty])
+			mob_types[ty] = 1
+		else
+			mob_types[ty] += 1
+
+		var/turf/T = get_turf(thing)
+		if(thing.client || (istype(T) && (T.z in player_levels)) || thing.teleop)
 			thing.Life()
 
 		if(MC_TICK_CHECK)

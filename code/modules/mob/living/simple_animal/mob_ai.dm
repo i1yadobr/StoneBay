@@ -27,18 +27,21 @@
 					do_move()
 
 /datum/mob_ai/proc/do_move()
-	var/dir
+	var/d = pick_wander_dir()
+	if(d)
+		holder.SelfMove(d)
+
+/datum/mob_ai/proc/pick_wander_dir()
 	var/list/cardinals_to_go = GLOB.cardinal.Copy()
 	while(length(cardinals_to_go))
-		dir = pick(cardinals_to_go)
-		cardinals_to_go.Remove(dir)
+		. = pick(cardinals_to_go)
+		cardinals_to_go.Remove(.)
 		if(!safe_area) // we don't have safe_area, free moving allowed.
 			break
-		var/turf/T = get_step(holder, dir)
+		var/turf/T = get_step(holder, .)
 		if(T?.loc == safe_area)
 			break
-		dir = null
-	holder.SelfMove(dir)
+		. = null
 
 /datum/mob_ai/proc/process_speaking()
 	//Speaking
@@ -52,11 +55,11 @@
 
 			switch(action)
 				if("speak")
-					holder.say(pickweight(holder.speak))
+					holder.say(util_pick_weight(holder.speak))
 				if("emote_hear")
-					holder.audible_emote("[pickweight(holder.emote_hear)].")
+					holder.audible_emote("[util_pick_weight(holder.emote_hear)].")
 				if("emote_see")
-					holder.visible_emote("[pickweight(holder.emote_see)].")
+					holder.visible_emote("[util_pick_weight(holder.emote_see)].")
 
 /datum/mob_ai/proc/process_special_actions()
 	return

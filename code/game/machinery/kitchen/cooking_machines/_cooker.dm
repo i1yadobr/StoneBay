@@ -7,6 +7,8 @@
 
 // Tracks precooked food to stop deep fried baked grilled grilled grilled diona nymph cereal.
 /obj/item/reagent_containers/food
+	drop_sound = SFX_DROP_FOOD
+	pickup_sound = SFX_PICKUP_FOOD
 	var/list/cooked_types = list()
 
 // Root type for cooking machines. See following files for specific implementations.
@@ -16,7 +18,7 @@
 	icon = 'icons/obj/cooking_machines.dmi'
 	density = 1
 	anchored = 1
-	idle_power_usage = 5
+	idle_power_usage = 5 WATTS
 
 	var/on_icon						// Icon state used when cooking.
 	var/off_icon					// Icon state used when not cooking.
@@ -39,6 +41,7 @@
 	var/next_burn_time
 	var/cooking_is_done = FALSE
 
+
 /obj/machinery/cooker/Destroy()
 	if(thing_inside)
 		qdel(thing_inside)
@@ -47,22 +50,23 @@
 		stop()
 	return ..()
 
-/obj/machinery/cooker/_examine_text(mob/user)
+/obj/machinery/cooker/examine(mob/user, infix)
 	. = ..()
+
 	if(Adjacent(user))
 		switch(product_status())
 			//if NO_PRODUCT, say no more
 			if(COOKING)
-				. += "\nYou can see \a [thing_inside] inside."
+				. += "You can see \a [thing_inside] inside."
 			if(COOKED)
 				var/smell = "good"
 				if(istype(thing_inside, /obj/item/reagent_containers/food))
 					var/obj/item/reagent_containers/food/S = thing_inside
 					if(islist(S.nutriment_desc) && length(S.nutriment_desc))
 						smell = pick(S.nutriment_desc)
-				. += "\nYou can see \a [thing_inside] inside. It smells [smell]."
+				. += "You can see \a [thing_inside] inside. It smells [smell]."
 			if(BURNED)
-				. += "\n[SPAN_WARNING("Inside is covered by dirt, and it smells smoke!")]"
+				. += "[SPAN_WARNING("Inside is covered by dirt, and it smells smoke!")]"
 
 /obj/machinery/cooker/attackby(obj/item/I, mob/user)
 	set waitfor = 0  //So that any remaining parts of calling proc don't have to wait for the long cooking time ahead.
@@ -115,7 +119,7 @@
 		return 0
 
 	// Not sure why a food item that passed the previous checks would fail to drop, but safety first.
-	if(!istype(I, /obj/item/grab) && !user.drop_from_inventory(I))
+	if(!istype(I, /obj/item/grab) && !user.drop(I))
 		return
 
 	if(inserted_mob)
@@ -208,7 +212,8 @@
 						smoke.attach(src)
 						smoke.set_up(10, 0, loc)
 						smoke.start()
-		if(BURNED) // Just keep running
+		if(BURNED)
+			pass()
 		else
 			stop()
 			CRASH("Something weird happened during product_status() check in [src].")
@@ -227,13 +232,14 @@
 		if(is_cooking)
 			stop()
 		return
-	if(receiver)
+
+	if(receiver && Adjacent(receiver))
 		if(isliving(thing_inside))
 			var/mob/living/L = thing_inside
 			L.get_scooped(receiver, self_grab = FALSE)
 		else
 			to_chat(receiver, SPAN_NOTICE("You grab \the [thing_inside] from \the [src]."))
-			receiver.put_in_hands(thing_inside)
+			receiver.pick_or_drop(thing_inside)
 	else
 		thing_inside.forceMove(get_turf(src))
 
@@ -298,7 +304,7 @@
 			I.color = S.filling_color
 		if(!I.color)
 			I.color = food_color
-		product.overlays += I
+		product.AddOverlays(I)
 	return product
 
 #undef NO_PRODUCT

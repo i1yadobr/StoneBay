@@ -74,7 +74,9 @@
 	bst.add_language(LANGUAGE_SPACER)
 	bst.add_language(LANGUAGE_ROBOT)
 
-	addtimer(CALLBACK(src, .proc/bluespace_tech_post_spawn, bst), 10)
+	spawn(1 SECOND)
+		bluespace_tech_post_spawn(bst)
+
 	log_debug("Bluespace Tech Spawned: X:[bst.x] Y:[bst.y] Z:[bst.z] User:[src]")
 
 /client/proc/bluespace_tech_post_spawn(mob/living/carbon/human/bluespace_tech/bst)
@@ -105,7 +107,7 @@
 
 /mob/living/carbon/human/bluespace_tech/can_inject(mob/user, target_zone)
 	to_chat(user, SPAN_DANGER("The [src] disarms you before you can inject them."))
-	user.drop_item()
+	user.drop_active_hand()
 	return 0
 
 /mob/living/carbon/human/bluespace_tech/binarycheck()
@@ -114,7 +116,7 @@
 /mob/living/carbon/human/bluespace_tech/proc/suicide()
 	if(QDELETED(src))
 		return
-	custom_emote(VISIBLE_MESSAGE, "presses a button on their suit, followed by a polite bow.")
+	custom_emote(VISIBLE_MESSAGE, "presses a button on their suit, followed by a polite bow.", "AUTO_EMOTE")
 	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
 	s.set_up(5, 1, src)
 	s.start()

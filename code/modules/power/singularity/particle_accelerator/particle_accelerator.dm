@@ -65,12 +65,18 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 	icon_state = "none"
 	anchored = 0
 	density = 1
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 	var/obj/machinery/particle_accelerator/control_box/master = null
 	var/construction_state = 0
 	var/reference = null
 	var/powered = 0
 	var/strength = null
 	var/desc_holder = null
+
+/obj/structure/particle_accelerator/Initialize()
+	. = ..()
+
+	AddElement(/datum/element/simple_rotation)
 
 /obj/structure/particle_accelerator/Destroy()
 	construction_state = 0
@@ -84,34 +90,11 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 	icon_state = "end_cap"
 	reference = "end_cap"
 
-/obj/structure/particle_accelerator/update_icon()
+/obj/structure/particle_accelerator/on_update_icon()
 	..()
 	return
 
-
-/obj/structure/particle_accelerator/verb/rotate()
-	set name = "Rotate Clockwise"
-	set category = "Object"
-	set src in oview(1)
-
-	if (src.anchored || usr:stat)
-		to_chat(usr, "It is fastened to the floor!")
-		return 0
-	src.set_dir(turn(src.dir, 270))
-	return 1
-
-/obj/structure/particle_accelerator/verb/rotateccw()
-	set name = "Rotate Counter Clockwise"
-	set category = "Object"
-	set src in oview(1)
-
-	if (src.anchored || usr:stat)
-		to_chat(usr, "It is fastened to the floor!")
-		return 0
-	src.set_dir(turn(src.dir, 90))
-	return 1
-
-/obj/structure/particle_accelerator/_examine_text(mob/user)
+/obj/structure/particle_accelerator/examine(mob/user, infix)
 	switch(src.construction_state)
 		if(0)
 			src.desc = text("A [name], looks like it's not attached to the flooring")
@@ -124,8 +107,6 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 			if(powered)
 				src.desc = src.desc_holder
 	. = ..()
-	return
-
 
 /obj/structure/particle_accelerator/attackby(obj/item/W, mob/user)
 	if(istool(W))
@@ -136,7 +117,7 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 
 
 /obj/structure/particle_accelerator/Move()
-	..()
+	. = ..()
 	if(master && master.active)
 		master.toggle_power()
 		investigate_log("was moved whilst active; it <font color='red'>powered down</font>.","singulo")
@@ -154,10 +135,9 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 			if (prob(25))
 				qdel(src)
 				return
-		else
 	return
 
-/obj/structure/particle_accelerator/update_icon()
+/obj/structure/particle_accelerator/on_update_icon()
 	switch(construction_state)
 		if(0,1)
 			icon_state="[reference]"
@@ -197,10 +177,10 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 	return 0
 
 
-/obj/structure/particle_accelerator/proc/process_tool_hit(obj/O, mob/user)
+/obj/structure/particle_accelerator/proc/process_tool_hit(obj/item/O, mob/user)
 	if(!(O) || !(user))
 		return 0
-	if(!ismob(user) || !isobj(O))
+	if(!ismob(user) || !istype(O))
 		return 0
 	var/temp_state = src.construction_state
 
@@ -256,9 +236,10 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 	icon_state = "none"
 	anchored = 0
 	density = 1
+	obj_flags = OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 	use_power = POWER_USE_OFF
-	idle_power_usage = 0
-	active_power_usage = 0
+	idle_power_usage = 0 WATTS
+	active_power_usage = 0 WATTS
 	var/construction_state = 0
 	var/active = 0
 	var/reference = null
@@ -266,33 +247,15 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 	var/strength = 0
 	var/desc_holder = null
 
+/obj/machinery/particle_accelerator/Initialize()
+	. = ..()
 
-/obj/machinery/particle_accelerator/verb/rotate()
-	set name = "Rotate Clockwise"
-	set category = "Object"
-	set src in oview(1)
+	AddElement(/datum/element/simple_rotation)
 
-	if (src.anchored || usr:stat)
-		to_chat(usr, "It is fastened to the floor!")
-		return 0
-	src.set_dir(turn(src.dir, 270))
-	return 1
-
-/obj/machinery/particle_accelerator/verb/rotateccw()
-	set name = "Rotate Counter-Clockwise"
-	set category = "Object"
-	set src in oview(1)
-
-	if (src.anchored || usr:stat)
-		to_chat(usr, "It is fastened to the floor!")
-		return 0
-	src.set_dir(turn(src.dir, 90))
-	return 1
-
-/obj/machinery/particle_accelerator/update_icon()
+/obj/machinery/particle_accelerator/on_update_icon()
 	return
 
-/obj/machinery/particle_accelerator/_examine_text(mob/user)
+/obj/machinery/particle_accelerator/examine(mob/user, infix)
 	switch(src.construction_state)
 		if(0)
 			src.desc = text("A [name], looks like it's not attached to the flooring")
@@ -305,7 +268,6 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 			if(powered)
 				src.desc = src.desc_holder
 	. = ..()
-	return
 
 
 /obj/machinery/particle_accelerator/attackby(obj/item/W, mob/user)
@@ -328,7 +290,6 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 			if (prob(25))
 				qdel(src)
 				return
-		else
 	return
 
 
@@ -336,10 +297,10 @@ So, hopefully this is helpful if any more icons are to be added/changed/wonderin
 	return 0
 
 
-/obj/machinery/particle_accelerator/proc/process_tool_hit(obj/O, mob/user)
+/obj/machinery/particle_accelerator/proc/process_tool_hit(obj/item/O, mob/user)
 	if(!(O) || !(user))
 		return 0
-	if(!ismob(user) || !isobj(O))
+	if(!ismob(user) || !istype(O))
 		return 0
 	var/temp_state = src.construction_state
 	switch(src.construction_state)//TODO:Might be more interesting to have it need several parts rather than a single list of steps
