@@ -185,7 +185,7 @@
 /obj/item/clothing/under/lawyer/blue
 	name = "blue Lawyer suit"
 	icon_state = "lawyer_blue"
-	item_state = "lawyer_red"
+	item_state = "lawyer_blue"
 
 /obj/item/clothing/under/lawyer/bluesuit
 	name = "Blue Suit"
@@ -193,6 +193,12 @@
 	icon_state = "bluesuit"
 	item_state = "bluesuit"
 	starting_accessories = list(/obj/item/clothing/accessory/red)
+
+/obj/item/clothing/under/lawyer/bluesuit/skirt
+	name = "Blue Suit Skirt"
+	desc = "A classy suit skirt."
+	icon_state = "bluesuit_skirt"
+	item_state = "bluesuit_skirt"
 
 /obj/item/clothing/under/lawyer/purpsuit
 	name = "Purple Suit"

@@ -36,6 +36,7 @@
 	/datum/job/cargo_tech = list(/obj/item/clothing/under/rank/cargotech/skirt),
 	/datum/job/mining = list(/obj/item/clothing/under/rank/miner/skirt),
 	/datum/job/iaa = list(/obj/item/clothing/under/rank/internalaffairs/skirt),
+	/datum/job/lawyer = list(/obj/item/clothing/under/lawyer/bluesuit/skirt),
 	/datum/job/janitor = list(/obj/item/clothing/under/rank/janitor/skirt),
 	/datum/job/hydro = list(/obj/item/clothing/under/rank/hydroponics/skirt),
 	/datum/job/chef = list(/obj/item/clothing/under/rank/chef/skirt),
