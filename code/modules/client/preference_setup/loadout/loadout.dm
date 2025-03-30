@@ -490,11 +490,6 @@ var/list/hash_to_gear = list()
 		ASSERT(!user.client.donator_info.has_item(G.type))
 		pref.loadout_is_busy = TRUE
 
-		var/author_ckey = G.author_ckey
-		if(author_ckey)
-			var/author_comment = "Reward for [G.display_name] purchased by [user.ckey]"
-			SSdonations.create_transaction(author_ckey, 1, DONATIONS_TRANSACTION_TYPE_REWARD, author_comment)
-
 		var/comment = "Donation store purchase: [G.type]"
 		var/adjusted_price = G.discount ? G.price * G.discount : G.price
 		var/transaction = SSdonations.create_transaction(user.client, -adjusted_price, DONATIONS_TRANSACTION_TYPE_PURCHASE, comment)
