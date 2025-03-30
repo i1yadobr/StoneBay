@@ -29,7 +29,7 @@
 /decl/hierarchy/outfit/job/security/detective
 	name = OUTFIT_JOB_NAME("Detective")
 	head = /obj/item/clothing/head/det
-	uniform = /obj/item/clothing/under/det
+	uniform = /obj/item/clothing/under/rank/det
 	suit = /obj/item/clothing/suit/storage/toggle/det_trench
 	l_pocket = /obj/item/flame/lighter/zippo
 	shoes = /obj/item/clothing/shoes/laceup

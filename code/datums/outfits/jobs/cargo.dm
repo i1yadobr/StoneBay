@@ -4,7 +4,7 @@
 
 /decl/hierarchy/outfit/job/cargo/qm
 	name = OUTFIT_JOB_NAME("Cargo")
-	uniform = /obj/item/clothing/under/rank/cargo
+	uniform = /obj/item/clothing/under/rank/qm
 	shoes = /obj/item/clothing/shoes/brown
 	glasses = /obj/item/clothing/glasses/sunglasses
 	l_hand = /obj/item/clipboard
