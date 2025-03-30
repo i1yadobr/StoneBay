@@ -32,13 +32,9 @@
 		/obj/item/clothing/under/rank/engineer/skirt,
 		/obj/item/clothing/under/rank/atmospheric_technician/skirt),
 	/datum/job/hop = list(/obj/item/clothing/under/rank/head_of_personnel/skirt),
-	/datum/job/qm = list(
-		/obj/item/clothing/under/rank/qm/skirt,
-		/obj/item/clothing/under/rank/cargotech/skirt),
+	/datum/job/qm = list(/obj/item/clothing/under/rank/qm/skirt),
 	/datum/job/cargo_tech = list(/obj/item/clothing/under/rank/cargotech/skirt),
-	/datum/job/mining = list(
-		/obj/item/clothing/under/rank/miner/skirt,
-		/obj/item/clothing/under/rank/cargotech/skirt),
+	/datum/job/mining = list(/obj/item/clothing/under/rank/miner/skirt),
 	/datum/job/iaa = list(/obj/item/clothing/under/rank/internalaffairs/skirt),
 	/datum/job/janitor = list(/obj/item/clothing/under/rank/janitor/skirt),
 	/datum/job/hydro = list(/obj/item/clothing/under/rank/hydroponics/skirt),
