@@ -321,7 +321,8 @@
 
 //ID
 /obj/item/card/id/bluespace_tech
-	icon_state = "centcom"
+	icon_state = "card_centcom"
+	item_state = "card_centcom"
 	desc = "An ID straight from Central Command. This one looks highly classified."
 
 /obj/item/card/id/bluespace_tech/Initialize()
