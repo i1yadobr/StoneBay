@@ -225,16 +225,16 @@
 #define BP_CANCER     "cancer"
 #define BP_EMBRYO     "alien embryo"
 #define BP_GANGLION   "spinal ganglion"
-#define BP_ADAMANTINE_RESONATOR "adamantine resonator"
-#define BP_ADAMANTINE_VOCAL_CORDS "adamantine vocal cords"
 #define BP_METROID    "metroid jelly vessel"
+#define BP_ADAMANTINE_RESONATOR   "adamantine resonator"
+#define BP_ADAMANTINE_VOCAL_CORDS "adamantine vocal cords"
 
 // Robo Organs.
 #define BP_CELL       "cell"
-#define BP_POSIBRAIN	"posibrain"
-#define BP_VOICE		"vocal synthesiser"
-#define BP_STACK		"stack"
-#define BP_OPTICS		"optics"
+#define BP_POSIBRAIN  "posibrain"
+#define BP_VOICE      "vocal synthesiser"
+#define BP_STACK      "stack"
+#define BP_OPTICS     "optics"
 
 // Limbs.
 #define BP_L_FOOT "l_foot"
