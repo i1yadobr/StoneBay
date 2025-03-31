@@ -232,7 +232,7 @@
 
 /obj/item/gun/energy/security/rifle
 	name = "taser rifle"
-	icon_state = "taser_rifle"
+	icon_state = "taser_rifle" //TODO: Draw a normal sprite for one-handed holding
 	subtype = /decl/taser_types/rifle
 
 /decl/taser_types
