@@ -524,8 +524,11 @@
 		set_pin_data(IC_OUTPUT, 6, H.internal_organs_by_name[BP_KIDNEYS])
 		set_pin_data(IC_OUTPUT, 7, H.internal_organs_by_name[BP_STOMACH])
 		set_pin_data(IC_OUTPUT, 8, H.internal_organs_by_name[BP_APPENDIX])
-		set_pin_data(IC_OUTPUT, 9, H.internal_organs_by_name[BP_CELL])
-		set_pin_data(IC_OUTPUT, 10, H.internal_organs_by_name[BP_STACK])
+		set_pin_data(IC_OUTPUT, 9, H.internal_organs_by_name[BP_TONGUE])
+		set_pin_data(IC_OUTPUT, 10, H.internal_organs_by_name[BP_BLADDER])
+		set_pin_data(IC_OUTPUT, 11, H.internal_organs_by_name[BP_INTESTINES])
+		set_pin_data(IC_OUTPUT, 12, H.internal_organs_by_name[BP_CELL])
+		set_pin_data(IC_OUTPUT, 13, H.internal_organs_by_name[BP_STACK])
 
 	push_data()
 	activate_pin(2)

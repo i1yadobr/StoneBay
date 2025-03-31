@@ -16,6 +16,7 @@
 	var/override_organic_icon = TRUE
 	/// Should this organ be hidden on scanners?
 	var/hidden = FALSE
+	var/autoheal_value = 0.05
 
 /obj/item/organ/internal/New(mob/living/carbon/holder)
 	if(max_damage)
@@ -48,6 +49,18 @@
 		var/obj/item/organ/external/E = owner.organs_by_name[parent_organ]
 		if(istype(E)) E.internal_organs -= src
 	return ..()
+
+/obj/item/organ/internal/think()
+	..()
+
+	if(!owner)
+		return
+
+	if(isundead(owner))
+		return
+
+	if(damage)
+		autoheal()
 
 /obj/item/organ/internal/set_dna(datum/dna/new_dna)
 	..()
@@ -160,6 +173,22 @@
 				if(damage < 5)
 					degree = " a bit"
 				owner.custom_pain("Something inside your [parent.name] hurts[degree].", amount, affecting = parent)
+
+// Slowly heals towards 0 damage if not bruised, or towards min_bruised_damage if already bruised.
+/obj/item/organ/internal/proc/autoheal()
+	if(!damage)
+		return
+
+	if(BP_IS_ROBOTIC(src))
+		return // Flesh is superior.
+
+	var/heal_value = autoheal_value * owner.coagulation
+
+	if(damage >= min_bruised_damage)
+		damage = max(min_bruised_damage, damage - heal_value)
+		return
+
+	damage = max(0, damage - heal_value)
 
 /obj/item/organ/internal/emp_act(severity)
 	if(owner?.status_flags & GODMODE)

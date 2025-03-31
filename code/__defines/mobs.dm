@@ -273,6 +273,13 @@
 #define TASTE_DULL 0.5 //anything below 30%
 #define TASTE_NUMB 0.1 //anything below 150%
 
+// Humanoid coagulation (blood clotting)
+#define COAGULATION_NONE   0
+#define COAGULATION_WEAK   0.5
+#define COAGULATION_NORMAL 1.0
+#define COAGULATION_STRONG 2.0
+#define COAGULATION_FORCED 99999
+
 //Used by show_message() and emotes
 #define VISIBLE_MESSAGE 1
 #define AUDIBLE_MESSAGE 2

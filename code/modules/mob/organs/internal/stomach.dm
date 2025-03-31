@@ -4,7 +4,7 @@
 	icon_state = "stomach"
 	dead_icon = "stomach"
 	organ_tag = BP_STOMACH
-	parent_organ = BP_GROIN
+	parent_organ = BP_CHEST
 	var/datum/reagents/metabolism/ingested
 	var/next_cramp = 0
 

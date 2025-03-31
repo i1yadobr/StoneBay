@@ -369,7 +369,7 @@ datum/preferences/proc/clear_character_previews()
 	//For species that don't care about your silly prefs
 	character.species.handle_limbs_setup(character)
 	if(!is_preview_copy)
-		for(var/name in list(BP_HEART,BP_EYES,BP_BRAIN,BP_LUNGS,BP_LIVER,BP_KIDNEYS,BP_STOMACH))
+		for(var/name in list(BP_HEART, BP_EYES, BP_BRAIN, BP_LUNGS, BP_LIVER, BP_KIDNEYS, BP_STOMACH, BP_TONGUE, BP_BLADDER, BP_INTESTINES))
 			var/status = organ_data[name]
 			if(!status)
 				continue

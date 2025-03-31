@@ -10,6 +10,7 @@
 	max_damage = 70
 	relative_size = 60
 	var/tox_filtering = 0
+	var/coagulation = COAGULATION_NORMAL
 
 /obj/item/organ/internal/liver/robotize()
 	. = ..()
@@ -17,16 +18,41 @@
 	icon_state = "liver-prosthetic"
 	dead_icon = "liver-prosthetic-br"
 
+/obj/item/organ/internal/liver/set_dna(datum/dna/new_dna)
+	..()
+	update_coagulation()
+
+/obj/item/organ/internal/liver/removed(mob/living/user, drop_organ = TRUE, detach = TRUE)
+	owner?.coagulation = COAGULATION_NONE
+	..()
+
+/obj/item/organ/internal/liver/replaced(mob/living/carbon/human/target, obj/item/organ/external/affected)
+	. = ..()
+	if(. && owner)
+		update_coagulation()
+
+/obj/item/organ/internal/liver/proc/update_coagulation()
+	if(species)
+		coagulation = species.coagulation
+	if(is_broken())
+		coagulation = COAGULATION_NONE
+	else if(is_bruised())
+		coagulation = COAGULATION_WEAK
+	if(owner)
+		owner.coagulation = coagulation
+	return coagulation
+
 /obj/item/organ/internal/liver/proc/store_tox(amount) // Store toxins up to min_broken_damage, return excessive toxins
 	var/cap_toxins = max(0, min_broken_damage - tox_filtering)
 	. = max(0, amount - cap_toxins)
 	tox_filtering += amount - .
 
 /obj/item/organ/internal/liver/think()
-
 	..()
+
 	if(!owner)
 		return
+
 	if(isundead(owner))
 		return
 

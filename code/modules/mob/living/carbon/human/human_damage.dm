@@ -306,12 +306,15 @@
 				amount = 0
 
 /mob/living/carbon/human/proc/can_autoheal(dam_type)
-	if(!species || !dam_type) return FALSE
+	if(!species || !dam_type)
+		return FALSE
 
 	if(dam_type == BRUTE)
-		return(getBruteLoss() < species.total_health)
-	else if(dam_type == BURN)
-		return(getFireLoss() < species.total_health)
+		return !!coagulation && (getBruteLoss() < species.total_health) // No blood clotting = no brute autohealing, simple as that.
+
+	if(dam_type == BURN)
+		return (getFireLoss() < species.total_health)
+
 	return FALSE
 
 ////////////////////////////////////////////

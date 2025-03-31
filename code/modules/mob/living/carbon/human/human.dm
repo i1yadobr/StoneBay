@@ -64,6 +64,9 @@
 		sync_organ_dna()
 	make_blood()
 
+	if(!should_have_organ(BP_LIVER)) // Blood can clot w/out a liver.
+		coagulation = species.coagulation
+
 	BITSET(hud_updateflag, STATUS_HUD)
 
 /mob/living/carbon/human/Destroy()
@@ -828,6 +831,8 @@
 	if(should_have_organ(BP_HEART))
 		vessel.add_reagent(/datum/reagent/blood, species.blood_volume - vessel.total_volume)
 		fixblood()
+	if(!should_have_organ(BP_LIVER)) // Blood can clot w/out a liver.
+		coagulation = species.coagulation
 
 	species.create_organs(src) // Reset our organs/limbs.
 
@@ -1454,15 +1459,16 @@
 /mob/living/carbon/human/should_have_organ(organ_check)
 
 	var/obj/item/organ/external/affecting
-	if(organ_check in list(BP_HEART, BP_LUNGS))
+	if(organ_check in list(BP_HEART, BP_LUNGS, BP_STOMACH, BP_LIVER))
 		affecting = organs_by_name[BP_CHEST]
-	else if(organ_check in list(BP_LIVER, BP_KIDNEYS))
+	else if(organ_check in list(BP_KIDNEYS, BP_BLADDER, BP_INTESTINES))
 		affecting = organs_by_name[BP_GROIN]
-	else if(organ_check in list(BP_EYES))
+	else if(organ_check in list(BP_EYES, BP_TONGUE))
 		affecting = organs_by_name[BP_HEAD]
 
 	if(affecting && BP_IS_ROBOTIC(affecting))
 		return 0
+
 	return (species && species.has_organ[organ_check])
 
 /mob/living/carbon/human/has_limb(limb_check)	//returns 1 if found, 2 if limb is robotic, 0 if not found and null if its chest or groin (dont pass those)
