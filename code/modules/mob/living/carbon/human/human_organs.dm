@@ -398,3 +398,16 @@
 		if((E && E.damage > 0) || !E || (E && (E.status & ORGAN_BROKEN)) || (E && (E.status &= ~ORGAN_ARTERY_CUT)))
 			return 1
 	return 0
+
+/mob/living/carbon/human/proc/handle_coagulation()
+	if(!should_have_organ(BP_LIVER)) // Blood can clot w/out a liver.
+		coagulation = species.coagulation
+		return
+
+	var/obj/item/organ/internal/liver/L = internal_organs_by_name[BP_LIVER]
+	if(istype(L))
+		coagulation = L.coagulation
+		return
+
+	coagulation = COAGULATION_NONE
+	return

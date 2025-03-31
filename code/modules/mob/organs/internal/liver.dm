@@ -12,6 +12,10 @@
 	var/tox_filtering = 0
 	var/coagulation = COAGULATION_NORMAL
 
+/obj/item/organ/internal/liver/New(mob/living/carbon/holder)
+	..(holder)
+	update_coagulation()
+
 /obj/item/organ/internal/liver/robotize()
 	. = ..()
 	SetName("hepatic filter")
@@ -38,8 +42,6 @@
 		coagulation = COAGULATION_NONE
 	else if(is_bruised())
 		coagulation = COAGULATION_WEAK
-	if(owner)
-		owner.coagulation = coagulation
 	return coagulation
 
 /obj/item/organ/internal/liver/proc/store_tox(amount) // Store toxins up to min_broken_damage, return excessive toxins
@@ -100,11 +102,3 @@
 
 	//Blood regeneration if there is some space
 	owner.regenerate_blood(0.1 + owner.chem_effects[CE_BLOODRESTORE])
-
-	// Blood loss or liver damage make you lose nutriments
-	var/blood_volume = owner.get_blood_volume()
-	if(blood_volume < BLOOD_VOLUME_SAFE || is_bruised())
-		if(owner.nutrition >= 300)
-			owner.remove_nutrition(10)
-		else if(owner.nutrition >= 200)
-			owner.remove_nutrition(3)

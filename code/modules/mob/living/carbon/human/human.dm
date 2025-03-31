@@ -831,8 +831,6 @@
 	if(should_have_organ(BP_HEART))
 		vessel.add_reagent(/datum/reagent/blood, species.blood_volume - vessel.total_volume)
 		fixblood()
-	if(!should_have_organ(BP_LIVER)) // Blood can clot w/out a liver.
-		coagulation = species.coagulation
 
 	species.create_organs(src) // Reset our organs/limbs.
 
