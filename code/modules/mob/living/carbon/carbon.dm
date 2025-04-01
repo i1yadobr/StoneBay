@@ -52,10 +52,17 @@
 	if(!.)
 		return
 
-	if(nutrition && stat != 2)
-		remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 10))
-		if(m_intent == M_RUN)
-			remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 10))
+	if(stat != 2)
+		if(nutrition)
+			if(m_intent == M_RUN)
+				remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 5))
+			else
+				remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 10))
+		if(hydration)
+			if(m_intent == M_RUN)
+				remove_hydration(min(hydration, DEFAULT_THIRST_FACTOR / 5))
+			else
+				remove_nutrition(min(nutrition, DEFAULT_THIRST_FACTOR / 10))
 
 	if((MUTATION_FAT in mutations) && m_intent == M_RUN && bodytemperature <= 360)
 		bodytemperature += 2

@@ -334,11 +334,6 @@
 	//Stuff like the xenomorph's plasma regen happens here.
 	species.handle_environment_special(src)
 
-	//Undead does not eat.
-
-	if(isundead(src))
-		set_nutrition(300)
-
 	//Moved pressure calculations here for use in skip-processing check.
 	var/pressure = environment.return_pressure()
 	var/adjusted_pressure = calculate_affecting_pressure(pressure)
@@ -467,8 +462,8 @@
 		return //too busy for pesky metabolic regulation
 
 	if(bodytemperature < species.cold_level_1) //260.15 is 310.15 - 50, the temperature where you start to feel effects.
-		if(nutrition >= 2) //If we are very, very cold we'll use up quite a bit of nutriment to heat us up.
-			remove_nutrition(2) // We don't take bodybuild's stomach_capacity so fat people can endure cold easier than slim ones
+		if(nutrition >= 1) //If we are very, very cold we'll use up quite a bit of nutriment to heat us up.
+			remove_nutrition(1) // We don't take bodybuild's stomach_capacity so fat people can endure cold easier than slim ones
 		var/recovery_amt = max((body_temperature_difference / BODYTEMP_AUTORECOVERY_DIVISOR), BODYTEMP_AUTORECOVERY_MINIMUM)
 //		log_debug("Cold. Difference = [body_temperature_difference]. Recovering [recovery_amt]")
 		bodytemperature += recovery_amt
@@ -681,26 +676,46 @@
 					total_plasmaloss += vsc.plc.CONTAMINATION_LOSS
 			adjustToxLoss(total_plasmaloss)
 
-		// nutrition decrease
-		if(nutrition > 0 && !isundead(src))
-			var/nutrition_reduction = species.hunger_factor * body_build.stomach_capacity
-			for(var/datum/modifier/mod in modifiers)
-				if(!isnull(mod.metabolism_percent))
-					nutrition_reduction *= mod.metabolism_percent
-			remove_nutrition(nutrition_reduction)
+		// Hydration & nutrition
+		if(!isundead(src))
+			if(nutrition > 0)
+				var/nutrition_reduction = species.hunger_factor * body_build.stomach_capacity
+				for(var/datum/modifier/mod in modifiers)
+					if(!isnull(mod.metabolism_percent))
+						nutrition_reduction *= mod.metabolism_percent
+				remove_nutrition(nutrition_reduction)
 
-		// malnutrition \ obesity
-		if(prob(1) && stat == CONSCIOUS && !isSynthetic(src) && !isundead(src))
-			var/normalized_nutrition = nutrition / body_build.stomach_capacity
-			switch(normalized_nutrition)
-				if(0 to STOMACH_FULLNESS_SUPER_LOW)
-					to_chat(src, SPAN("warning", "[pick("You feel really hungry", "You want to gobble anything", "You starve", "It becomes hard to stand on your legs")]!"))
-				if(STOMACH_FULLNESS_SUPER_LOW to STOMACH_FULLNESS_LOW)
-					to_chat(src, SPAN("warning", "[pick("You feel hungry", "You really want to eat something", "You feel like you need a snack")]..."))
-				if(STOMACH_FULLNESS_HIGH to STOMACH_FULLNESS_SUPER_HIGH)
-					to_chat(src, SPAN("warning", "[pick("It seems you overate a bit", "Your own weight pulls you to the floor", "It would be nice to lose some weight")]..."))
-				if(STOMACH_FULLNESS_SUPER_HIGH to INFINITY)
-					to_chat(src, SPAN("warning", "[pick("You definitely overate", "Thinking about food makes you gag", "It would be nice to clear your stomach")]..."))
+			if(!isSynthetic(src))
+				if(should_have_organ(BP_KIDNEYS))
+					var/obj/item/organ/internal/kidneys/K
+					if(K)
+						K.process_hydration()
+					else
+						remove_hydration(DEFAULT_THIRST_FACTOR) // It just goes nowhere. I can't invent anything better, yet we can't let kidney-less things maintain hydration forever.
+				else
+					set_hydration(HYDRATION_NORMAL) // Xenomorphs and shit don't have to deal with such mundane needs.
+
+				if(stat == CONSCIOUS)
+					// malnutrition \ obesity
+					if(prob(1))
+						var/normalized_nutrition = nutrition / body_build.stomach_capacity
+						switch(normalized_nutrition)
+							if(0 to STOMACH_FULLNESS_SUPER_LOW)
+								to_chat(src, SPAN("warning", "[pick("You feel really hungry", "You want to gobble anything", "You starve", "It becomes hard to stand on your legs")]!"))
+							if(STOMACH_FULLNESS_SUPER_LOW to STOMACH_FULLNESS_LOW)
+								to_chat(src, SPAN("warning", "[pick("You feel hungry", "You really want to eat something", "You feel like you need a snack")]..."))
+					// thirst
+					if(prob(1))
+						switch(hydration)
+							if(HYDRATION_NONE)
+								to_chat(src, SPAN("warning", "[pick("Your mouth feels like a desert", "You're dried up", "You are extremely thirsty", "You really need some water")]!"))
+							if(HYDRATION_NONE to HYDRATION_LOW)
+								to_chat(src, SPAN("notice", "[pick("It'd be nice to have a drink", "Your mouth is getting dry", "Some water wouldn't hurt")]..."))
+
+		//Undead does not eat.nor drink.
+		else
+			set_nutrition(300)
+			set_hydration(HYDRATION_NORMAL)
 
 		if(stasis_value > 1 && drowsyness < stasis_value * 4)
 			drowsyness += min(stasis_value, 3)
@@ -779,22 +794,47 @@
 				else                pains.icon_state = "pain0"
 
 		if(nutrition_icon)
-			var/normalized_nutrition = nutrition / body_build.stomach_capacity
-			switch(normalized_nutrition)
-				if(STOMACH_FULLNESS_SUPER_HIGH to INFINITY)
-					nutrition_icon.icon_state = "nutrition0"
-				if(STOMACH_FULLNESS_HIGH to STOMACH_FULLNESS_SUPER_HIGH)
-					nutrition_icon.icon_state = "nutrition1"
-				if(STOMACH_FULLNESS_MEDIUM to STOMACH_FULLNESS_HIGH)
-					nutrition_icon.icon_state = "nutrition2"
-				if(STOMACH_FULLNESS_LOW to STOMACH_FULLNESS_MEDIUM)
-					nutrition_icon.icon_state = "nutrition3"
-				if(STOMACH_FULLNESS_SUPER_LOW to STOMACH_FULLNESS_LOW)
-					nutrition_icon.icon_state = "nutrition4"
-				else
-					nutrition_icon.icon_state = "nutrition5"
 			if(isundead(src))
 				nutrition_icon.icon_state = "nutrition2"
+			else
+				var/normalized_nutrition = nutrition / body_build.stomach_capacity
+				switch(normalized_nutrition)
+					if(STOMACH_FULLNESS_SUPER_HIGH to INFINITY)
+						nutrition_icon.icon_state = "nutrition0"
+					if(STOMACH_FULLNESS_HIGH to STOMACH_FULLNESS_SUPER_HIGH)
+						nutrition_icon.icon_state = "nutrition1"
+					if(STOMACH_FULLNESS_MEDIUM to STOMACH_FULLNESS_HIGH)
+						nutrition_icon.icon_state = "nutrition2"
+					if(STOMACH_FULLNESS_LOW to STOMACH_FULLNESS_MEDIUM)
+						nutrition_icon.icon_state = "nutrition3"
+					if(STOMACH_FULLNESS_SUPER_LOW to STOMACH_FULLNESS_LOW)
+						nutrition_icon.icon_state = "nutrition4"
+					else
+						nutrition_icon.icon_state = "nutrition5"
+
+		if(hydration_icon)
+			if(isundead(src))
+				nutrition_icon.icon_state = "hydration2"
+			else
+				switch(hydration)
+					if(HYDRATION_SUPER to INFINITY)
+						nutrition_icon.icon_state = "hydration0"
+					if(HYDRATION_HIGH to HYDRATION_SUPER)
+						nutrition_icon.icon_state = "hydration1"
+					if(HYDRATION_NORMAL to HYDRATION_HIGH)
+						nutrition_icon.icon_state = "hydration2"
+					if(HYDRATION_LOW to HYDRATION_NORMAL)
+						nutrition_icon.icon_state = "hydration3"
+					if(HYDRATION_NONE + 0.1 to HYDRATION_LOW)
+						nutrition_icon.icon_state = "hydration4"
+					else
+						nutrition_icon.icon_state = "hydration5"
+
+		if(bladder_icon)
+			/// TODO
+
+		if(bowels_icon)
+			/// TODO
 
 		if(full_prosthetic)
 			var/obj/item/organ/internal/cell/C = internal_organs_by_name[BP_CELL]
@@ -921,23 +961,6 @@
 	return
 
 /mob/living/carbon/human/handle_random_events()
-	// Puke if toxloss is too high
-	var/vomit_score = 0
-	for(var/tag in list(BP_LIVER,BP_KIDNEYS))
-		var/obj/item/organ/internal/I = internal_organs_by_name[tag]
-		if(I)
-			vomit_score += I.damage
-		else if (should_have_organ(tag))
-			vomit_score += 45
-	if(chem_effects[CE_TOXIN] || radiation)
-		vomit_score += 0.5 * getToxLoss()
-	if(chem_effects[CE_ALCOHOL_TOXIC])
-		vomit_score += 10 * chem_effects[CE_ALCOHOL_TOXIC]
-	if(chem_effects[CE_ALCOHOL])
-		vomit_score += 10
-	if(!is_ic_dead() && !isundead(src) && vomit_score > 25 && prob(10))
-		spawn vomit(1, vomit_score, vomit_score/25)
-
 	//0.1% chance of playing a scary sound to someone who's in complete darkness
 	if(isturf(loc) && rand(1,1000) == 1)
 		var/turf/T = loc

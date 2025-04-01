@@ -430,19 +430,33 @@
 
 	// Kidney-less species still get some passive detox as a placeholder. Xenomorphs and golems are immune to toxins anyway, but we can't be sure.
 	var/detox_efficiency = 0.25
+	var/obj/item/organ/internal/kidneys/K
 	if(should_have_organ(BP_KIDNEYS))
-		var/obj/item/organ/internal/kidneys/K = internal_organs_by_name[BP_KIDNEYS]
+		K = internal_organs_by_name[BP_KIDNEYS]
 		if(K)
 			detox_efficiency = K.detox_efficiency
 		else
 			detox_efficiency = -0.5
+
+	switch(hydration)
+		if(HYDRATION_NONE)
+			detox_efficiency -= 0.25
+		if(HYDRATION_NONE to HYDRATION_LOW)
+			detox_efficiency -= 0.1
+		if(HYDRATION_HIGH to HYDRATION_SUPER)
+			if(hydration_efficiency >= 0) // No effect if kidneys are broken
+				detox_efficiency += 0.1
+		if(HYDRATION_SUPER to INFINITY)
+			if(hydration_efficiency >= 0) // No effect if kidneys are broken
+				detox_efficiency += 0.25
+
 	adjustToxLoss(detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
 
 	// For simplicity, let's assume that quarter the blood volume equals the amount of toxins that's enough to completely wreck the body.
 	// The actual volume of toxins we can extract via dyalisis is x0.1 of toxLoss.
 	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.25) : 140) * 100)
 
-	/// TOXLOSS EFFECTS HERE
+	var/kidney_strain = 0.0
 	if(toxic_severity >= 100) // tb 140+, we're wrecked, lethal poisoning
 		adjustBrainLoss(1.0)
 		Weaken(30)
@@ -464,6 +478,8 @@
 			vomit(timevomit = 3, silent = TRUE)
 			adjustInternalDamage(3.0)
 
+		kidney_strain = 2.5
+
 	else if(toxic_severity >= 50) // tb 70+, we're in danger, severe poisoning
 		make_dizzy(6)
 		eye_blurry = max(eye_blurry, 5)
@@ -477,6 +493,8 @@
 			vomit(timevomit = 2, silent = TRUE)
 			adjustInternalDamage(2.0) // Things start to become dangerous.
 
+		kidney_strain = 2.0
+
 	else if(toxic_severity >= 25) // tb 35+, we're not feeling well, mild poisoning
 		make_dizzy(6)
 
@@ -489,6 +507,8 @@
 			vomit(timevomit = 1, silent = TRUE)
 			adjustInternalDamage(1.0) // Generalized organ damage in addition to the above. Still not lethal, but nasty.
 
+		kidney_strain = 1.5
+
 	else if(toxic_severity >= 5) // tb 7+, we start to notice that something's off, casual poisoning
 		if(prob(10))
 			make_dizzy(6)
@@ -497,3 +517,9 @@
 		if(prob(1))
 			to_chat(src, "<i>You feel a bit [pick("nauseous", "sick", "weak"]...</i>")
 			vomit(timevomit = 1, level = 2, silent = TRUE)
+
+	else if(toxic_severity)
+		kidney_strain = 1.25
+
+	if(K)
+		K.hydration_consumption = DEFAULT_THIRST_FACTOR * kidney_strain

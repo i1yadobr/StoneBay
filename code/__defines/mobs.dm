@@ -402,9 +402,19 @@ GLOBAL_LIST_INIT(organ_tag_to_name, list(
 #define STOMACH_FULLNESS_HIGH       425
 #define STOMACH_FULLNESS_SUPER_HIGH 550
 
-#define STOMACH_CAPACITY_LOW    0.75 // Slim people
-#define STOMACH_CAPACITY_NORMAL 1.0  // Normal human beings
-#define STOMACH_CAPACITY_HIGH   1.45 // Spherical boiz
+// Slim people
+#define STOMACH_CAPACITY_LOW    0.75
+ // Normal human beings
+#define STOMACH_CAPACITY_NORMAL 1.0
+// Spherical boiz
+#define STOMACH_CAPACITY_HIGH   1.45
+
+#define HYDRATION_NONE 0
+#define HYDRATION_LOW 45
+#define HYDRATION_NORMAL 90
+#define HYDRATION_HIGH 135
+#definy HYDRATION_SUPER 180
+#define HYDRATION_LIMIT 240
 
 #define HUMAN_POWER_NONE    "None"
 #define HUMAN_POWER_SPIT    "Spit"

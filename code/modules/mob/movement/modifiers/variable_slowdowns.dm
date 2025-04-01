@@ -96,6 +96,9 @@
 /datum/movespeed_modifier/nutrition_slowdown
 	variable = TRUE
 
+/datum/movespeed_modifier/hydration_slowdown
+	variable = TRUE
+
 /datum/movespeed_modifier/pull_slowdown
 	variable = TRUE
 	flags = MOVESPEED_FLAG_SPACEMOVEMENT

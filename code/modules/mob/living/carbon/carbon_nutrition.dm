@@ -5,7 +5,7 @@
 	if(isSynthetic())
 		return
 
-	nutrition = max(0, nutrition += amount)
+	nutrition = max(0, nutrition + amount)
 	if(amount >= 1 || world.time >= last_nutrition_speed_update + UPDATE_DELAY) // This proc is often called with extremely small amounts
 		update_nutrition_movespeed_if_necessary()
 
@@ -14,7 +14,7 @@
 	if(isSynthetic())
 		return
 
-	nutrition = max(0, nutrition -= amount)
+	nutrition = max(0, nutrition - amount)
 	if(amount >= 1  || world.time >= last_nutrition_speed_update + UPDATE_DELAY) // This proc is often called with extremely small amounts
 		update_nutrition_movespeed_if_necessary()
 
@@ -35,12 +35,9 @@
 		return
 
 	var/normalized_nutrition = nutrition / body_build.stomach_capacity
-	switch(normalized_nutrition)
-		if(0 to STOMACH_FULLNESS_LOW)
-			add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown, slowdown = (1.25 - (normalized_nutrition / 100)))
-		if(STOMACH_FULLNESS_HIGH to INFINITY)
-			add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown, slowdown = ((normalized_nutrition / 100) - 4.25))
-		else if(has_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown))
-			remove_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown)
+	if(normalized_nutrition < STOMACH_FULLNESS_LOW)
+		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown, slowdown = (1.25 - (normalized_nutrition / 100)))
+	else if(has_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown))
+		remove_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown)
 
 #undef UPDATE_DELAY

@@ -444,6 +444,7 @@
 
 	if(!character.isSynthetic())
 		character.set_nutrition(rand(140, 360) * character.body_build.stomach_capacity)
+		character.set_hydration(rand(HYDRATION_LOW, HYDRATION_HIGH))
 
 	return
 

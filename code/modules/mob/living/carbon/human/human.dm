@@ -795,6 +795,7 @@
 					if(istype(location, /turf/simulated))
 						location.add_vomit_floor(src, toxvomit, stomach.ingested)
 					remove_nutrition(30)
+					remove_hydration(20)
 		sleep(350)	//wait 35 seconds before next volley
 		lastpuke = 0
 

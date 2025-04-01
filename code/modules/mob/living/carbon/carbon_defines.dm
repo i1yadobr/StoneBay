@@ -25,6 +25,7 @@
 	var/lastpuke = 0
 	var/last_nutrition_speed_update
 	var/nutrition = 400
+	var/last_hydration_speed_update
 	var/hydration = 120
 
 	var/toxic_buildup = 0.0 // Absolute value of the toxic damage buildup.
