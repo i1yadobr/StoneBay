@@ -16,7 +16,7 @@
 	var/override_organic_icon = TRUE
 	/// Should this organ be hidden on scanners?
 	var/hidden = FALSE
-	var/autoheal_value = 0.05
+	var/autoheal_value = 0.1
 
 /obj/item/organ/internal/New(mob/living/carbon/holder)
 	if(max_damage)
@@ -182,13 +182,19 @@
 	if(BP_IS_ROBOTIC(src))
 		return // Flesh is superior.
 
-	var/heal_value = autoheal_value * owner.coagulation
-
-	if(damage >= min_bruised_damage)
-		damage = max(min_bruised_damage, damage - heal_value)
+	if(status & ORGAN_DEAD)
 		return
 
-	damage = max(0, damage - heal_value)
+	var/heal_value = autoheal_value * owner.coagulation
+
+	if(damage >= min_broken_damage)
+		damage = max(min_broken_damage, damage - heal_value)
+	else if(damage >= min_bruised_damage)
+		damage = max(min_bruised_damage, damage - heal_value)
+	else
+		damage = max(0, damage - heal_value)
+
+	return
 
 /obj/item/organ/internal/emp_act(severity)
 	if(owner?.status_flags & GODMODE)

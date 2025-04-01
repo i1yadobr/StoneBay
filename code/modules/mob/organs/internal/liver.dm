@@ -9,8 +9,9 @@
 	min_broken_damage = 45 // Also the amount of toxic damage it can store
 	max_damage = 70
 	relative_size = 60
-	var/tox_filtering = 0
+	var/stored_tox = 0
 	var/coagulation = COAGULATION_NORMAL
+	var/filtering_efficiency = 3
 
 /obj/item/organ/internal/liver/New(mob/living/carbon/holder)
 	..(holder)
@@ -45,9 +46,9 @@
 	return coagulation
 
 /obj/item/organ/internal/liver/proc/store_tox(amount) // Store toxins up to min_broken_damage, return excessive toxins
-	var/cap_toxins = max(0, min_broken_damage - tox_filtering)
+	var/cap_toxins = max(0, min_broken_damage - stored_tox)
 	. = max(0, amount - cap_toxins)
-	tox_filtering += amount - .
+	stored_tox += amount - .
 
 /obj/item/organ/internal/liver/think()
 	..()
@@ -58,47 +59,56 @@
 	if(isundead(owner))
 		return
 
-	if (germ_level > INFECTION_LEVEL_ONE)
+	if(germ_level > INFECTION_LEVEL_ONE)
 		if(prob(1))
 			to_chat(owner, "<span class='danger'>Your skin itches.</span>")
-	if (germ_level > INFECTION_LEVEL_TWO)
+	if(germ_level > INFECTION_LEVEL_TWO)
 		if(prob(1))
 			spawn owner.vomit()
 
-	//Detox can heal small amounts of damage
-	if (damage < max_damage && !owner.chem_effects[CE_TOXIN])
-		heal_damage(0.2 * owner.chem_effects[CE_ANTITOX])
-
-	// Get the effectiveness of the liver.
-	var/filter_effect = 3
+	// Update the filtering efficiency of the liver.
+	filtering_efficiency = 3
 	if(is_bruised())
-		filter_effect -= 1
+		filtering_efficiency -= 1
 	if(is_broken())
-		filter_effect -= 2
+		filtering_efficiency -= 2
 	// Robotic organs filter better but don't get benefits from dylovene for filtering.
-	if(BP_IS_ROBOTIC(src))
-		filter_effect += 1
-	else if(owner.chem_effects[CE_ANTITOX])
-		filter_effect += 1
+	if(BP_IS_ROBOTIC(src) || owner.chem_effects[CE_ANTITOX])
+		filtering_efficiency += 1
+	if(owner.chem_effects[CE_ALCOHOL_TOXIC])
+		filtering_efficiency -= 2
+	else if(owner.chem_effects[CE_ALCOHOL])
+		filtering_efficiency -= 1
+
 	// If you're not filtering well, you're going to take damage. Even more if you have alcohol in you.
-	if(filter_effect < 2)
-		owner.adjustToxLoss(0.5 * max(2 - filter_effect, 0) * (1 + owner.chem_effects[CE_ALCOHOL_TOXIC] + 0.5 * owner.chem_effects[CE_ALCOHOL]))
+	if(filtering_efficiency < 2)
+		owner.adjustToxLoss(0.5 * max(2 - filtering_efficiency, 0) * (1 + owner.chem_effects[CE_ALCOHOL_TOXIC] + 0.5 * owner.chem_effects[CE_ALCOHOL]))
 	else
 		// Get rid of some stored toxins.
-		tox_filtering = max(damage, (tox_filtering - filter_effect * 0.1))
+		stored_tox = max(damage, (stored_tox - filtering_efficiency * 0.1))
 
-	if((tox_filtering > (min_broken_damage * 0.5)) && prob(tox_filtering * 0.1))
+	if((stored_tox > min_bruised_damage) && prob(stored_tox * 0.1))
 		to_chat(src, SPAN("warning", "You feel nauseous..."))
 
 	if(owner.chem_effects[CE_ALCOHOL_TOXIC])
 		take_internal_damage(store_tox(owner.chem_effects[CE_ALCOHOL_TOXIC]/2), prob(90)) // Chance to warn them
 
-	// Heal a bit if needed and we're not busy. This allows recovery from low amounts of toxloss.
-	if(!owner.chem_effects[CE_ALCOHOL] && !owner.chem_effects[CE_TOXIN] && owner.radiation <= SAFE_RADIATION_DOSE && damage > 0)
-		if(damage < min_broken_damage)
-			heal_damage(0.2)
-		if(damage < min_bruised_damage)
-			heal_damage(0.3)
+/obj/item/organ/internal/liver/autoheal()
+	if(!damage)
+		return
 
-	//Blood regeneration if there is some space
-	owner.regenerate_blood(0.1 + owner.chem_effects[CE_BLOODRESTORE])
+	if(BP_IS_ROBOTIC(src))
+		return // Flesh is superior.
+
+	var/heal_value = autoheal_value * owner.coagulation
+
+	// Boost healing a bit if we're not busy. Livers regenerate well, after all.
+	if(!(owner.chem_effects[CE_ALCOHOL] || owner.chem_effects[CE_TOXIN] || owner.radiation > SAFE_RADIATION_DOSE))
+		heal_value *= 2
+
+	if(damage >= min_bruised_damage)
+		damage = max(min_bruised_damage, damage - heal_value)
+		return
+
+	damage = max(0, damage - heal_value)
+	return

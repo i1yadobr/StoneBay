@@ -242,7 +242,7 @@
 		adjustToxLoss(getToxLoss()-amount)
 
 // TODO: better internal organ damage procs.
-/mob/living/carbon/human/adjustToxLoss(amount)
+/mob/living/carbon/human/adjustToxLoss(amount, bypass_liver = FALSE)
 
 	if((species.species_flags & SPECIES_FLAG_NO_POISON) || isSynthetic() || isundead(src))
 		return
@@ -262,7 +262,7 @@
 		pick_organs.Insert(1, kidneys)
 	// Liver is buffering some toxic damage, preventing its friends from getting damage unless it's too busy with filtering.
 	var/obj/item/organ/internal/liver/liver = internal_organs_by_name[BP_LIVER]
-	if(liver)
+	if(liver && !bypass_liver)
 		if(!heal)
 			amount -= liver.store_tox(amount)
 			if(amount <= 0)

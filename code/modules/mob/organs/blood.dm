@@ -107,6 +107,13 @@
 		return 0
 	return vessel.remove_reagent(/datum/reagent/blood, amt * (src.mob_size/MOB_MEDIUM))
 
+
+/mob/living/carbon/human/proc/handle_blood()
+	// No longer tied to liver. Bone marrow goes brr.
+	if(should_have_organ(BP_HEART))
+		regenerate_blood(0.1 + owner.chem_effects[CE_BLOODRESTORE])
+
+
 /****************************************************
 				BLOOD TRANSFERS
 ****************************************************/

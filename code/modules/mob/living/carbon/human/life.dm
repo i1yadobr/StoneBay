@@ -83,6 +83,8 @@
 		handle_organs_pain()
 		stabilize_body_temperature() //Body temperature adjusts itself (self-regulation)
 		handle_coagulation()
+		handle_blood()
+		handle_toxins()
 		handle_shock()
 		handle_pain()
 		handle_medical_side_effects()

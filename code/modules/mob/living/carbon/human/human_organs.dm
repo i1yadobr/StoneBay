@@ -411,3 +411,19 @@
 
 	coagulation = COAGULATION_NONE
 	return
+
+/mob/living/carbon/human/proc/handle_toxins()
+	// Liverless species don't suffer from missing a liver, obviously.
+	if(should_have_organ(BP_LIVER))
+		var/obj/item/organ/internal/liver/L = internal_organs_by_name[BP_LIVER]
+		var/filtering_efficiency = L ? L.filtering_efficiency : 0
+
+		if(filtering_efficiency < 2) // Liver's not feeling alright, getting poisoned by our own metabolism.
+			adjustToxLoss((2 - filtering_efficiency) * 0.5, TRUE)
+
+	if(should_have_organ(BP_KIDNEYS))
+		var/obj/item/organ/internal/kidneys/K = internal_organs_by_name[BP_KIDNEYS]
+		var/detox_efficiency = -1.0
+		if(K)
+			detox_efficiency = K.detox_efficiency
+		adjustToxLoss(detox_efficiency, TRUE) // Either healing tox damage, or applying even more, bypassing a liver's protection.
