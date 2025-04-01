@@ -239,7 +239,7 @@ Class Procs:
 		if(!user.Adjacent(get_turf(src)))
 			return FALSE
 	else
-		if(stat & (BROKEN|NOPOWER))
+		if(inoperable())
 			to_chat(user, SPAN("notice", "\The [src] is not functional"))
 			return FALSE
 
@@ -261,7 +261,7 @@ Class Procs:
 	*container = null
 	update_icon()
 
-	if(!(stat & (BROKEN|NOPOWER)))
+	if(operable())
 		playsound(src, clicksound, clickvol)
 
 	return TRUE
