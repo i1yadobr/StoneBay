@@ -212,7 +212,7 @@
 			to_chat(user, "<span class='warning'>The lock seems to be broken.</span>")
 			return
 		if(allowed(user))
-			toggle_lock()
+			toggle_lock(user)
 		else
 			to_chat(user, "<span class='warning'>Access denied.</span>")
 		return
