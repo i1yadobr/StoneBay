@@ -235,16 +235,17 @@ Class Procs:
 	return (stat & (POWEROFF|NOPOWER|BROKEN|additional_flags))
 
 /obj/machinery/proc/grab_container(mob/user, obj/item/reagent_containers/container, atom/drop_loc = loc)
-	if(issilicon(user))
+	if(!issilicon(user))
+		if(!user.Adjacent(get_turf(src)))
+			return FALSE
+	else
 		if(stat & (BROKEN|NOPOWER))
 			to_chat(user, SPAN("notice", "\The [src] is not functional"))
 			return FALSE
-	else
-		if(!user.Adjacent(get_turf(src)))
-			return FALSE
-		if(!can_use(user))
-			to_chat(user, SPAN("notice", "You cannot remove [container.name]."))
-			return FALSE
+
+	if(!can_use(user))
+		to_chat(user, SPAN("notice", "You cannot remove [container.name]."))
+		return FALSE
 
 	if(!*container)
 		to_chat(user, SPAN("notice", "\The [src] does not have a [istype(src, /obj/machinery/chemical_dispenser) ? "container" : "beaker"] in it."))
@@ -268,7 +269,7 @@ Class Procs:
 /obj/machinery/proc/can_use(mob/user)
 	if(user.stat || user.restrained() || user.paralysis || user.stunned || user.weakened)
 		return 0
-	if(in_range(src, user))
+	if(issilicon(user) || Adjacent(user))
 		return 1
 	else
 		return 0
