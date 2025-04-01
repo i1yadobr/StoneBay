@@ -11,7 +11,7 @@
 	relative_size = 60
 	var/stored_tox = 0
 	var/coagulation = COAGULATION_NORMAL
-	var/filtering_efficiency = 3
+	var/filtering_efficiency = 3.0
 
 /obj/item/organ/internal/liver/New(mob/living/carbon/holder)
 	..(holder)
@@ -68,30 +68,31 @@
 
 	// Update the filtering efficiency of the liver.
 	filtering_efficiency = 3
+	// Not enough to cease functions, but works at reduced efficiency..
 	if(is_bruised())
 		filtering_efficiency -= 1
+	// That's where we're in trouble.
 	if(is_broken())
 		filtering_efficiency -= 2
 	// Robotic organs filter better but don't get benefits from dylovene for filtering.
 	if(BP_IS_ROBOTIC(src) || owner.chem_effects[CE_ANTITOX])
 		filtering_efficiency += 1
+	// Enough to get poisoned even w/ a healthy liver, unless it's robotic or dylovene-boosted.
 	if(owner.chem_effects[CE_ALCOHOL_TOXIC])
 		filtering_efficiency -= 2
+	// Not enough to get poisoned when your liver is fine, but it's better not to touch booze when it's bruised.
 	else if(owner.chem_effects[CE_ALCOHOL])
 		filtering_efficiency -= 1
 
-	// If you're not filtering well, you're going to take damage. Even more if you have alcohol in you.
-	if(filtering_efficiency < 2)
-		owner.adjustToxLoss(0.5 * max(2 - filtering_efficiency, 0) * (1 + owner.chem_effects[CE_ALCOHOL_TOXIC] + 0.5 * owner.chem_effects[CE_ALCOHOL]))
-	else
-		// Get rid of some stored toxins.
+	// If the liver's not too busy, the body slowly regains its "anti-toxic shield".
+	if(filtering_efficiency >= 2)
 		stored_tox = max(damage, (stored_tox - filtering_efficiency * 0.1))
 
-	if((stored_tox > min_bruised_damage) && prob(stored_tox * 0.1))
-		to_chat(src, SPAN("warning", "You feel nauseous..."))
-
-	if(owner.chem_effects[CE_ALCOHOL_TOXIC])
-		take_internal_damage(store_tox(owner.chem_effects[CE_ALCOHOL_TOXIC]/2), prob(90)) // Chance to warn them
+	if(stored_tox * 0.1)
+		if(stored_tox > min_broken_damage)
+			to_chat(src, SPAN("warning", "You feel nauseous..."))
+		else if(stored_tox > min_bruised_damage)
+			to_chat(src, SPAN("warning", "You feel a little nauseous..."))
 
 /obj/item/organ/internal/liver/autoheal()
 	if(!damage)

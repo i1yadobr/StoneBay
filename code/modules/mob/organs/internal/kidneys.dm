@@ -20,23 +20,14 @@
 
 	if(!owner)
 		return
+
 	if(isundead(owner))
 		return
 
-	// Coffee is really bad for you with busted kidneys.
-	// This should probably be expanded in some way, but fucked if I know
-	// what else kidneys can process in our reagent list.
-	var/datum/reagent/coffee = locate(/datum/reagent/drink/coffee) in owner.reagents.reagent_list
-	if(coffee)
-		if(is_bruised())
-			owner.adjustToxLoss(0.1)
-		else if(is_broken())
-			owner.adjustToxLoss(0.3)
-
-	//If your kidneys aren't working, your body's going to have a hard time cleaning your blood.
-	if(!owner.reagents.has_reagent(/datum/reagent/dylovene))
-		if(prob(33))
-			if(is_broken())
-				owner.adjustToxLoss(0.5)
-			if(status & ORGAN_DEAD)
-				owner.adjustToxLoss(1)
+	detox_efficiency = 1.0
+	// Technically, ceases toxloss healing function. Lore-wise, still filters out the body's natural toxic buildup, but can't handle anything beyond that.
+	if(is_bruised())
+		detox_efficiency -= 1
+	// Causes the body's natural toxic buildup to... build up.
+	if(is_broken())
+		detox_efficiency -= 1

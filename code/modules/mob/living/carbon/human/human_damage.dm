@@ -229,22 +229,34 @@
 			breathe_organ.add_oxygen_deprivation(amount)
 	BITSET(hud_updateflag, HEALTH_HUD)
 
-/mob/living/carbon/human/getToxLoss() // In fact, returns internal organs damage. Should be reworked sometime in the future.
-	if((species.species_flags & SPECIES_FLAG_NO_POISON) || isSynthetic() || isundead(src))
+/mob/living/carbon/human/getToxLoss()
+	if(isSynthetic() || isundead(src))
+		return 0
+	return toxic_severity
+
+/mob/living/carbon/human/setToxLoss(amount)
+	if(isSynthetic() || isundead(src))
+		return
+	adjustToxLoss(getToxLoss() - amount)
+
+/mob/living/carbon/human/adjustToxLoss(amount, bypass_liver = FALSE)
+	if(isSynthetic() || isundead(src))
+		return
+
+/mob/living/carbon/human/proc/getInternalLoss() // In the year 2025, we finally have separate toxLoss and internalLoss. Awe.
+	if(isSynthetic() || isundead(src))
 		return 0
 	var/amount = 0
 	for(var/obj/item/organ/internal/I in internal_organs)
-		amount += I.getToxLoss()
+		amount += I.damage
 	return amount
 
-/mob/living/carbon/human/setToxLoss(amount)
-	if(!(species.species_flags & SPECIES_FLAG_NO_POISON) && !isSynthetic() && !isundead(src))
-		adjustToxLoss(getToxLoss()-amount)
+/mob/living/carbon/human/proc/setInternalLoss(amount)
+	if(!isSynthetic() && !isundead(src))
+		adjustInternalLoss(getInternalLoss() - amount)
 
-// TODO: better internal organ damage procs.
-/mob/living/carbon/human/adjustToxLoss(amount, bypass_liver = FALSE)
-
-	if((species.species_flags & SPECIES_FLAG_NO_POISON) || isSynthetic() || isundead(src))
+/mob/living/carbon/human/proc/adjustInternalLoss(amount)
+	if(isSynthetic() || isundead(src))
 		return
 
 	var/heal = amount < 0 || HAS_TRAIT(src, TRAIT_TOXINLOVER)
@@ -428,15 +440,6 @@ In most cases it makes more sense to use apply_damage() instead! And make sure t
 
 
 ////////////////////////////////////////////
-
-/*
-This function restores the subjects blood to max.
-*/
-/mob/living/carbon/human/proc/restore_blood()
-	if(!should_have_organ(BP_HEART))
-		return
-	if(vessel.total_volume < species.blood_volume)
-		vessel.add_reagent(/datum/reagent/blood, species.blood_volume - vessel.total_volume)
 
 /*
 This function restores all organs.

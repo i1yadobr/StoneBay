@@ -209,6 +209,12 @@
 		//AB is a universal receiver.
 	return 0
 
+/mob/living/carbon/human/proc/restore_blood()
+	if(!should_have_organ(BP_HEART))
+		return
+	if(vessel.total_volume < species.blood_volume)
+		vessel.add_reagent(/datum/reagent/blood, species.blood_volume - vessel.total_volume)
+
 /mob/living/carbon/human/proc/regenerate_blood(amount)
 	var/blood_volume_raw = vessel.get_reagent_amount(/datum/reagent/blood)
 	amount = max(0,min(amount, species.blood_volume - blood_volume_raw))

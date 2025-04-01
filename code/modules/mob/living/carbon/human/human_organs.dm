@@ -400,6 +400,10 @@
 	return 0
 
 /mob/living/carbon/human/proc/handle_coagulation()
+	if(isSynthetic() || isundead(src))
+		coagulation = COAGULATION_NONE
+		return
+
 	if(!should_have_organ(BP_LIVER)) // Blood can clot w/out a liver.
 		coagulation = species.coagulation
 		return
@@ -413,6 +417,9 @@
 	return
 
 /mob/living/carbon/human/proc/handle_toxins()
+	if(isSynthetic() || isundead(src))
+		return
+
 	// Liverless species don't suffer from missing a liver, obviously.
 	if(should_have_organ(BP_LIVER))
 		var/obj/item/organ/internal/liver/L = internal_organs_by_name[BP_LIVER]
@@ -421,9 +428,18 @@
 		if(filtering_efficiency < 2) // Liver's not feeling alright, getting poisoned by our own metabolism.
 			adjustToxLoss((2 - filtering_efficiency) * 0.5, TRUE)
 
+	// Kidney-less species still get some passive detox as a placeholder. Xenomorphs and golems are immune to toxins anyway, but we can't be sure.
+	var/detox_efficiency = 1.0
 	if(should_have_organ(BP_KIDNEYS))
 		var/obj/item/organ/internal/kidneys/K = internal_organs_by_name[BP_KIDNEYS]
-		var/detox_efficiency = -1.0
 		if(K)
 			detox_efficiency = K.detox_efficiency
-		adjustToxLoss(detox_efficiency, TRUE) // Either healing tox damage, or applying even more, bypassing a liver's protection.
+		else
+			detox_efficiency = -1.0
+	adjustToxLoss(detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
+
+	// For simplicity, let's assume that half the blood volume equals the amount of toxins that's enough to completely wreck the body.
+	// The actual volume of toxins we can extract via dyalisis is x0.1 of toxLoss.
+	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.5) : 280) * 100)
+
+	/// TOXLOSS EFFECTS HERE
