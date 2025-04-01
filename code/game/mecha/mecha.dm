@@ -868,12 +868,11 @@
 		if(!WT.use_tool(src, user, amount = 1))
 			return
 
-		if(!hasInternalDamage(MECHA_INT_TANK_BREACH))
+		if(hasInternalDamage(MECHA_INT_TANK_BREACH))
+			clearInternalDamage(MECHA_INT_TANK_BREACH)
+			to_chat(user, SPAN_NOTICE("You repair the damaged gas tank."))
+			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			return
-
-		clearInternalDamage(MECHA_INT_TANK_BREACH)
-		to_chat(user, SPAN_NOTICE("You repair the damaged gas tank."))
-		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 		if(health < initial(health))
 			to_chat(user, SPAN_NOTICE("You repair some damage to [src.name]."))
