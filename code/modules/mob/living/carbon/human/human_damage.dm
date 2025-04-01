@@ -243,6 +243,21 @@
 	if(isSynthetic() || isundead(src))
 		return
 
+	var/heal = amount < 0 || HAS_TRAIT(src, TRAIT_TOXINLOVER)
+	amount = abs(amount)
+
+	// Liver is buffering some toxic damage, unless it's too busy. And unless the damage bypasses the liver (i.e. damage caused by liver failure).
+	var/obj/item/organ/internal/liver/liver = internal_organs_by_name[BP_LIVER]
+	if(liver && !bypass_liver && !heal)
+		amount -= liver.store_tox(amount)
+		if(amount <= 0)
+			return // Try to store toxins in the liver; stop right here if it sponges all the damage
+
+	if(heal)
+		toxic_buildup = max(0, toxic_buildup - amount)
+	else
+		toxic_buildup += amount
+
 /mob/living/carbon/human/proc/getInternalLoss() // In the year 2025, we finally have separate toxLoss and internalLoss. Awe.
 	if(isSynthetic() || isundead(src))
 		return 0
@@ -255,32 +270,26 @@
 	if(!isSynthetic() && !isundead(src))
 		adjustInternalLoss(getInternalLoss() - amount)
 
-/mob/living/carbon/human/proc/adjustInternalLoss(amount)
+/mob/living/carbon/human/proc/adjustInternalLoss(amount, toxic = FALSE)
 	if(isSynthetic() || isundead(src))
 		return
 
 	var/heal = amount < 0 || HAS_TRAIT(src, TRAIT_TOXINLOVER)
 	amount = abs(amount)
 
-	if(!heal && (CE_ANTITOX in chem_effects))
-		amount *= 1 - (chem_effects[CE_ANTITOX] * 0.25)
-
 	var/list/pick_organs = shuffle(internal_organs.Copy())
 
-	// Prioritize damaging our filtration organs first.
-	var/obj/item/organ/internal/kidneys/kidneys = internal_organs_by_name[BP_KIDNEYS]
-	if(kidneys)
-		pick_organs -= kidneys
-		pick_organs.Insert(1, kidneys)
-	// Liver is buffering some toxic damage, preventing its friends from getting damage unless it's too busy with filtering.
-	var/obj/item/organ/internal/liver/liver = internal_organs_by_name[BP_LIVER]
-	if(liver && !bypass_liver)
-		if(!heal)
-			amount -= liver.store_tox(amount)
-			if(amount <= 0)
-				return // Try to store toxins in the liver; stop right here if it sponges all the damage
-		pick_organs -= liver
-		pick_organs.Insert(1, liver)
+	// Prioritize damaging our *working* filtration organs first if it's toxic damage.
+	if(toxic)
+		var/obj/item/organ/internal/kidneys/kidneys = internal_organs_by_name[BP_KIDNEYS]
+		if(kidneys && !kidneys.is_broken())
+			pick_organs -= kidneys
+			pick_organs.Insert(1, kidneys)
+
+		var/obj/item/organ/internal/liver/liver = internal_organs_by_name[BP_LIVER]
+		if(liver && !liver.is_broken())
+			pick_organs -= liver
+			pick_organs.Insert(1, liver)
 
 	// Move the brain to the very end since damage to it is vastly more dangerous
 	// (and isn't technically counted as toxloss) than general organ damage.
@@ -290,6 +299,9 @@
 		pick_organs += brain
 
 	for(var/obj/item/organ/internal/I in pick_organs)
+		if(toxic && BP_IS_ROBOTIC(I))
+			continue
+
 		if(amount <= 0)
 			for(var/datum/modifier/M in modifiers)
 				if(!isnull(M.incoming_healing_percent))

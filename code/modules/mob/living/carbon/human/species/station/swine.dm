@@ -67,5 +67,6 @@
 	if(H.InStasis() || H.is_ic_dead() || isundead(H))
 		return
 	if(H.nutrition < 50)
-		H.adjustToxLoss(2, 0)
+		H.adjustInternalLoss(2.0)
+		H.adjustToxLoss(2.0, TRUE)
 		return

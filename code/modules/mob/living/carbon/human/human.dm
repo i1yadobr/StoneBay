@@ -746,7 +746,7 @@
 		return 0
 	return 1
 
-/mob/living/carbon/human/proc/vomit(toxvomit = 0, timevomit = 1, level = 3)
+/mob/living/carbon/human/proc/vomit(toxvomit = 0, timevomit = 1, level = 3, silent = FALSE)
 	set waitfor = 0
 	if(!check_has_mouth() || isSynthetic() || !timevomit || !level)
 		return
@@ -756,7 +756,8 @@
 		return
 	if(!lastpuke)
 		lastpuke = 1
-		to_chat(src, "<span class='warning'>You feel nauseous...</span>")
+		if(!silent)
+			to_chat(src, "<span class='warning'>You feel nauseous...</span>")
 		if(level > 1)
 			sleep(150 / timevomit)	//15 seconds until second warning
 			to_chat(src, "<span class='warning'>You feel like you are about to throw up!</span>")

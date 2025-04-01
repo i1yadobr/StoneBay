@@ -290,7 +290,7 @@
 			H.nutrition = STOMACH_FULLNESS_HIGH
 		if(light_amount > 0.2) //if there's enough light, heal
 			H.heal_overall_damage(brute = 0.5*0.1, burn = 0.5*0.1)
-			H.adjustToxLoss(-0.5)
+			H.adjustInternalLoss(-0.5)
 			H.adjustOxyLoss(-0.5)
 
 	if(H.nutrition < STOMACH_FULLNESS_LOW + 50)

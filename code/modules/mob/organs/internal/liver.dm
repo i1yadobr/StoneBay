@@ -88,12 +88,6 @@
 	if(filtering_efficiency >= 2)
 		stored_tox = max(damage, (stored_tox - filtering_efficiency * 0.1))
 
-	if(stored_tox * 0.1)
-		if(stored_tox > min_broken_damage)
-			to_chat(src, SPAN("warning", "You feel nauseous..."))
-		else if(stored_tox > min_bruised_damage)
-			to_chat(src, SPAN("warning", "You feel a little nauseous..."))
-
 /obj/item/organ/internal/liver/autoheal()
 	if(!damage)
 		return

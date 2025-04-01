@@ -429,17 +429,71 @@
 			adjustToxLoss((2 - filtering_efficiency) * 0.5, TRUE)
 
 	// Kidney-less species still get some passive detox as a placeholder. Xenomorphs and golems are immune to toxins anyway, but we can't be sure.
-	var/detox_efficiency = 1.0
+	var/detox_efficiency = 0.25
 	if(should_have_organ(BP_KIDNEYS))
 		var/obj/item/organ/internal/kidneys/K = internal_organs_by_name[BP_KIDNEYS]
 		if(K)
 			detox_efficiency = K.detox_efficiency
 		else
-			detox_efficiency = -1.0
+			detox_efficiency = -0.5
 	adjustToxLoss(detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
 
-	// For simplicity, let's assume that half the blood volume equals the amount of toxins that's enough to completely wreck the body.
+	// For simplicity, let's assume that quarter the blood volume equals the amount of toxins that's enough to completely wreck the body.
 	// The actual volume of toxins we can extract via dyalisis is x0.1 of toxLoss.
-	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.5) : 280) * 100)
+	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.25) : 140) * 100)
 
 	/// TOXLOSS EFFECTS HERE
+	if(toxic_severity >= 100) // tb 140+, we're wrecked, lethal poisoning
+		adjustBrainLoss(1.0)
+		Weaken(30)
+		Paralyse(20)
+		adjustInternalDamage(5.0, TRUE)
+
+	if(toxic_severity >= 75) // tb 105+, we're in immediate danger, critical poisoning
+		if(prob(10))
+			losebreath++
+			adjustInternalDamage(5.0, TRUE)
+
+		make_dizzy(6)
+		slurring = max(M.slurring, 30)
+		eye_blurry = max(eye_blurry, 10)
+
+		if(prob(5))
+			Weaken(3)
+			to_chat(src, SPAN("danger", "<b>You feel extremely [pick("nauseous", "sick", "weak"]!</b>"))
+			vomit(timevomit = 3, silent = TRUE)
+			adjustInternalDamage(3.0)
+
+	else if(toxic_severity >= 50) // tb 70+, we're in danger, severe poisoning
+		make_dizzy(6)
+		eye_blurry = max(eye_blurry, 5)
+
+		if(prob(10))
+			slurring = max(M.slurring, 10)
+			adjustInternalDamage(3.0, TRUE)
+
+		if(prob(5))
+			to_chat(src, SPAN("danger", "You feel really [pick("nauseous", "sick", "weak"]!"))
+			vomit(timevomit = 2, silent = TRUE)
+			adjustInternalDamage(2.0) // Things start to become dangerous.
+
+	else if(toxic_severity >= 25) // tb 35+, we're not feeling well, mild poisoning
+		make_dizzy(6)
+
+		if(prob(10))
+			eye_blurry = max(eye_blurry, 5)
+			adjustInternalDamage(1.5, TRUE)
+
+		if(prob(3))
+			to_chat(src, SPAN("danger", "You feel [pick("nauseous", "sick", "weak"]..."))
+			vomit(timevomit = 1, silent = TRUE)
+			adjustInternalDamage(1.0) // Generalized organ damage in addition to the above. Still not lethal, but nasty.
+
+	else if(toxic_severity >= 5) // tb 7+, we start to notice that something's off, casual poisoning
+		if(prob(10))
+			make_dizzy(6)
+			adjustInternalDamage(1.0, TRUE) // Not enough to be life-threatening, but may cause trouble if we have ongoing health issues.
+
+		if(prob(1))
+			to_chat(src, "<i>You feel a bit [pick("nauseous", "sick", "weak"]...</i>")
+			vomit(timevomit = 1, level = 2, silent = TRUE)
