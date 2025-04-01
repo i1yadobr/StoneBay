@@ -7,9 +7,70 @@
 	path = /obj/item/clothing/under/color
 	flags = GEAR_HAS_COLOR_SELECTION
 
-/datum/gear/uniform/roboticist_skirt
-	display_name = "skirt, roboticist"
-	path = /obj/item/clothing/under/rank/roboticist/skirt
+/datum/gear/uniform/jumpskirt
+	display_name = "jumpskirt, colour select"
+	path = /obj/item/clothing/under/jumpskirt
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/uniform/department_jumpskirt
+	display_name = "departmental jumpskirt selection"
+	path = /obj/item/clothing/under/jumpskirt
+
+/datum/gear/uniform/department_jumpskirt/New()
+	..()
+	var/list/paths_to_jobs = list(
+	/datum/job = list(/obj/item/clothing/under/jumpskirt),
+	/datum/job/captain = list(/obj/item/clothing/under/rank/captain/skirt),
+	/datum/job/hos = list(
+		/obj/item/clothing/under/rank/head_of_security/skirt,
+		/obj/item/clothing/under/rank/head_of_security/jensen/skirt),
+	/datum/job/warden = list(/obj/item/clothing/under/rank/warden/skirt),
+	/datum/job/detective = list(/obj/item/clothing/under/rank/det/skirt),
+	/datum/job/officer = list(/obj/item/clothing/under/rank/security/skirt),
+	/datum/job/chief_engineer = list(/obj/item/clothing/under/rank/chief_engineer/skirt),
+	/datum/job/engineer = list(
+		/obj/item/clothing/under/rank/engineer/skirt,
+		/obj/item/clothing/under/rank/atmospheric_technician/skirt),
+	/datum/job/hop = list(/obj/item/clothing/under/rank/head_of_personnel/skirt),
+	/datum/job/qm = list(/obj/item/clothing/under/rank/qm/skirt),
+	/datum/job/cargo_tech = list(/obj/item/clothing/under/rank/cargotech/skirt),
+	/datum/job/mining = list(/obj/item/clothing/under/rank/miner/skirt),
+	/datum/job/iaa = list(/obj/item/clothing/under/rank/internalaffairs/skirt),
+	/datum/job/lawyer = list(/obj/item/clothing/under/lawyer/bluesuit/skirt),
+	/datum/job/janitor = list(/obj/item/clothing/under/rank/janitor/skirt),
+	/datum/job/hydro = list(/obj/item/clothing/under/rank/hydroponics/skirt),
+	/datum/job/chef = list(/obj/item/clothing/under/rank/chef/skirt),
+	/datum/job/librarian = list(/obj/item/clothing/under/librarian/skirt),
+	/datum/job/chaplain = list(/obj/item/clothing/under/rank/chaplain/skirt),
+	/datum/job/bartender = list(/obj/item/clothing/under/rank/bartender/skirt),
+	/datum/job/cmo = list(
+		/obj/item/clothing/under/rank/chief_medical_officer/skirt,
+		/obj/item/clothing/under/rank/medical/skirt),
+	/datum/job/doctor = list(/obj/item/clothing/under/rank/medical/skirt),
+	/datum/job/psychiatrist = list(
+		/obj/item/clothing/under/rank/psych/skirt,
+		/obj/item/clothing/under/rank/medical/skirt),
+	/datum/job/chemist = list(
+		/obj/item/clothing/under/rank/chemist/skirt,
+		/obj/item/clothing/under/rank/medical/skirt),
+	/datum/job/virologist = list(
+		/obj/item/clothing/under/rank/virologist/skirt,
+		/obj/item/clothing/under/rank/medical/skirt),
+	/datum/job/paramedic = list(
+		/obj/item/clothing/under/rank/medical/paramedic/skirt,
+		/obj/item/clothing/under/rank/medical/skirt),
+	/datum/job/rd = list(
+		/obj/item/clothing/under/rank/research_director/skirt,
+		/obj/item/clothing/under/rank/scientist/skirt),
+	/datum/job/scientist = list(/obj/item/clothing/under/rank/scientist/skirt),
+	/datum/job/xenobiologist = list(/obj/item/clothing/under/rank/scientist/skirt),
+	/datum/job/roboticist = list(
+		/obj/item/clothing/under/rank/roboticist/skirt,
+		/obj/item/clothing/under/rank/scientist/skirt),
+	/datum/job/merchant = list(/obj/item/clothing/under/jumpskirt/black)
+	)
+
+	gear_tweaks += new /datum/gear_tweak/departmental(paths_to_jobs)
 
 /datum/gear/uniform/suit
 	display_name = "clothes selection"
@@ -31,14 +92,9 @@
 	suits += /obj/item/clothing/under/lawyer/black
 	suits += /obj/item/clothing/under/scratch
 	suits += /obj/item/clothing/under/lawyer/bluesuit
-	suits += /obj/item/clothing/under/rank/internalaffairs/plain
 	suits += /obj/item/clothing/under/blazer
-	suits += /obj/item/clothing/under/blackjumpskirt
 	suits += /obj/item/clothing/under/kilt
 	suits += /obj/item/clothing/under/dress/dress_hr
-	suits += /obj/item/clothing/under/det
-	suits += /obj/item/clothing/under/det/black
-	suits += /obj/item/clothing/under/det/grey
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(suits)
 
 /datum/gear/uniform/scrubs
@@ -71,15 +127,29 @@
 	path = /obj/item/clothing/under/skirt
 	flags = GEAR_HAS_TYPE_SELECTION
 
-/datum/gear/uniform/skirt_c
-	display_name = "short skirt, colour select"
-	path = /obj/item/clothing/under/skirt_c
-	flags = GEAR_HAS_COLOR_SELECTION
-
 /datum/gear/uniform/skirt_c/dress
 	display_name = "simple dress, colour select"
 	path = /obj/item/clothing/under/skirt_c/dress
 	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/uniform/skirts_color
+	display_name = "skirt selection, colour select"
+	path = /obj/item/clothing/under/skirt_c
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/uniform/skirts_color/New()
+	..()
+	var/skirts_colorable = list()
+	skirts_colorable += /obj/item/clothing/under/skirt_c
+	skirts_colorable += /obj/item/clothing/under/skirt_c/pencil
+	skirts_colorable += /obj/item/clothing/under/skirt_c/casual
+	skirts_colorable += /obj/item/clothing/under/skirt_c/high
+	skirts_colorable += /obj/item/clothing/under/skirt_c/long
+	skirts_colorable += /obj/item/clothing/under/skirt_c/swept
+	skirts_colorable += /obj/item/clothing/under/skirt_c/plaid
+	skirts_colorable += /obj/item/clothing/under/skirt_c/skater
+	skirts_colorable += /obj/item/clothing/under/skirt_c/tube
+	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(skirts_colorable)
 
 /datum/gear/uniform/casual_pants
 	display_name = "casual pants selection"
@@ -125,32 +195,6 @@
 /datum/gear/uniform/tacticool_turtleneck
 	display_name = "tacticool turtleneck"
 	path = /obj/item/clothing/under/syndicate/tacticool
-
-// /datum/gear/uniform/turtleneck
-// 	display_name = "sweater, colour select"
-// 	path = /obj/item/clothing/under/rank/psych/turtleneck/sweater
-// 	flags = GEAR_HAS_COLOR_SELECTION
-
-/* MissingNo. uniform. Causes logs wreckage. *shrug
-/datum/gear/uniform/corporate
-	display_name = "corporate uniform selection"
-	path = /obj/item/clothing/under
-
-/datum/gear/uniform/corporate/New()
-	..()
-	var/corps = list()
-	// corps += /obj/item/clothing/under/saare
-	// corps += /obj/item/clothing/under/aether
-	// corps += /obj/item/clothing/under/hephaestus
-	// corps += /obj/item/clothing/under/grayson
-	// corps += /obj/item/clothing/under/focal
-	// corps += /obj/item/clothing/under/rank/ntwork
-	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(corps)
-*/
-
-/datum/gear/uniform/sterile
-	display_name = "sterile jumpsuit"
-	path = /obj/item/clothing/under/sterile
 
 /datum/gear/uniform/hazard
 	display_name = "hazard jumpsuit"
@@ -344,7 +388,7 @@
 
 /datum/gear/uniform/shortjumpskirt
 	display_name = "short jumpskirt"
-	path = /obj/item/clothing/under/shortjumpskirt
+	path = /obj/item/clothing/under/jumpskirt/grey
 	price = 10
 
 /datum/gear/uniform/charcoal
@@ -452,7 +496,7 @@
 
 /datum/gear/uniform/dress/captain_dress_alt
 	display_name = "captain's formal dress"
-	path = /obj/item/clothing/under/dress/dress_cap/captain_dress_alt
+	path = /obj/item/clothing/under/dress/captain_dress_alt
 	price = 10
 	allowed_roles = list(/datum/job/captain)
 
@@ -465,3 +509,21 @@
 	display_name = "fig leaf"
 	path = /obj/item/clothing/under/fig_leaf
 	price = 5
+
+/datum/gear/uniform/captain_alt
+	display_name = "old captain's uniform"
+	path = /obj/item/clothing/under/rank/captain/alt
+	price = 10
+	allowed_roles = list(/datum/job/captain)
+
+/datum/gear/uniform/camouflage
+	display_name = "camouflage jumpsuits"
+	price = 15
+
+/datum/gear/uniform/camouflage/New()
+	..()
+	var/camo = list()
+	camo += /obj/item/clothing/under/camo
+	camo += /obj/item/clothing/under/camo/firestarter
+	camo += /obj/item/clothing/under/camo/urban
+	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(camo)

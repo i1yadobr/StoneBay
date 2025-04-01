@@ -11,7 +11,6 @@ var/list/ventcrawl_machinery = list(
 	/obj/machinery/camera,
 	/mob/living/simple_animal/borer,
 	/obj/item/organ/internal/biostructure,
-	/obj/effect/abstract/proximity_checker, //spiderbot staff
 	/obj/item/organ/internal/adamantine_resonator
 	)
 
@@ -87,6 +86,11 @@ var/list/ventcrawl_machinery = list(
 	return ..()
 
 /mob/living/simple_animal/mouse/is_allowed_vent_crawl_item(obj/item/carried_item)
+	if(carried_item == holding_item)
+		return TRUE
+	return ..()
+
+/mob/living/simple_animal/hamster/is_allowed_vent_crawl_item(obj/item/carried_item)
 	if(carried_item == holding_item)
 		return TRUE
 	return ..()

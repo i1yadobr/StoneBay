@@ -6,17 +6,13 @@
 	opacity = 1
 	density = 1
 	blocks_air = 1
-	plane = TURF_PLANE
+	plane = DEFAULT_PLANE // TURF_PLANE is for floors, but here we need structure-like rendering.
 	thermal_conductivity = WALL_HEAT_TRANSFER_COEFFICIENT
 	heat_capacity = 312500 //a little over 5 cm thick , 312500 for 1 m by 2.5 m by 0.25 m plasteel wall
 	hitby_sound = 'sound/effects/metalhit2.ogg'
 	explosion_block = 1
 
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 100 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 20.2 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
+	rad_resist_type = /datum/rad_resist/wall
 
 	var/damage = 0
 	var/damage_overlay = 0
@@ -34,6 +30,23 @@
 	var/masks_icon = 'icons/turf/wall_masks.dmi'
 	var/static/list/mask_overlay_states = list()
 
+	///The current number of bulletholes in this turf
+	var/current_bulletholes = 0
+	///A reference to the current bullethole overlay image, this is added and deleted as needed
+	var/image/bullethole_overlay
+	/**
+	 * The variation set we're using
+	 * There are 10 sets and it gets picked randomly the first time a wall is shot
+	 * It corresponds to the first number in the icon_state (bhole_[**bullethole_variation**]_[current_bulletholes])
+	 * Gets reset to 0 if the wall reaches maximum health, so a new variation is picked when the wall gets shot again
+	 */
+	var/bullethole_variation = 0
+
+/datum/rad_resist/wall
+	alpha_particle_resist = 100 MEGA ELECTRONVOLT
+	beta_particle_resist = 20.2 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
+
 /turf/simulated/wall/Initialize(mapload, materialtype, rmaterialtype)
 	. = ..(mapload)
 	if(GLOB.using_map.legacy_mode)
@@ -46,6 +59,11 @@
 		reinf_material = get_material_by_name(rmaterialtype)
 	update_material()
 	hitsound = material.hitsound
+	add_debris_element()
+
+/turf/simulated/wall/Destroy()
+	QDEL_NULL(bullethole_overlay)
+	return ..()
 
 // Walls always hide the stuff below them.
 /turf/simulated/wall/levelupdate()
@@ -242,8 +260,11 @@
 	//cap the amount of damage, so that things like emitters can't destroy walls in one hit.
 	var/damage = min(proj_damage, 100)
 
+	if(Proj.check_armour != ENERGY && Proj.check_armour != LASER)
+		current_bulletholes++
+
 	take_damage(damage)
-	return
+	return ..()
 
 /turf/simulated/wall/hitby(atom/movable/AM, speed = THROWFORCE_SPEED_DIVISOR, nomsg = FALSE)
 	..()
@@ -276,22 +297,21 @@
 	return ..()
 
 //Appearance
-/turf/simulated/wall/_examine_text(mob/user)
+/turf/simulated/wall/examine(mob/user, infix)
 	. = ..()
-
 	if(!damage)
-		. += "\n<span class='notice'>It looks fully intact.</span>"
+		. += SPAN_NOTICE("It looks fully intact.")
 	else
 		var/dam = damage / material.integrity
 		if(dam <= 0.3)
-			. += "\n<span class='warning'>It looks slightly damaged.</span>"
+			. += SPAN_WARNING("It looks slightly damaged.")
 		else if(dam <= 0.6)
-			. += "\n<span class='warning'>It looks moderately damaged.</span>"
+			. += SPAN_WARNING("It looks moderately damaged.")
 		else
-			. += "\n<span class='danger'>It looks heavily damaged.</span>"
+			. += SPAN_WARNING("It looks heavily damaged.")
 
 	if(locate(/obj/effect/overlay/wallrot) in src)
-		. += "\n<span class='warning'>There is fungus growing on [src].</span>"
+		. += SPAN_WARNING("There is fungus growing on [src].")
 
 //Damage
 
@@ -388,7 +408,7 @@
 		new /obj/effect/overlay/wallrot(src)
 
 /turf/simulated/wall/proc/can_melt()
-	if(material.flags & MATERIAL_UNMELTABLE)
+	if(material.material_flags & MATERIAL_UNMELTABLE)
 		return 0
 	return 1
 
@@ -430,3 +450,37 @@
 				W.burn((temperature/4))
 			for(var/obj/machinery/door/airlock/plasma/D in range(3,src))
 				D.ignite(temperature/4)
+
+/turf/simulated/wall/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
+	switch(the_rcd.mode)
+		if(RCD_DECONSTRUCT)
+			return list("delay" = 4 SECONDS, "cost" = 26)
+
+		if(RCD_WALLFRAME)
+			return list("delay" = 1 SECONDS, "cost" = 8)
+
+	return FALSE
+
+/turf/simulated/wall/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	switch(rcd_data["[RCD_DESIGN_MODE]"])
+		if(RCD_WALLFRAME) // We need a hero who will make a single parent-class for all wallmounts...
+			var/obj/wallmount = rcd_data["[RCD_DESIGN_PATH]"]
+			if(ispath(wallmount, /obj/machinery/firealarm) || ispath(wallmount, /obj/machinery/alarm))
+				new wallmount(user.drop_location(), GLOB.flip_dir[user.dir], src)
+
+			else if(ispath(wallmount, /obj/machinery/power/apc))
+				new wallmount(user.drop_location(), user.dir, TRUE)
+
+			else if(ispath(wallmount, /obj/item/device/radio/intercom))
+				new wallmount(user.drop_location(), GLOB.flip_dir[user.dir])
+
+			return TRUE
+
+		if(RCD_DECONSTRUCT)
+			dismantle_wall(no_product = TRUE)
+			return TRUE
+
+	return FALSE
+
+/turf/simulated/wall/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 8, 1)

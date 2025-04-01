@@ -115,7 +115,7 @@
 	var/datum/gas_mixture/env_air = loc.return_air()
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 	to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
-	if (do_after(user, 40, src))
+	if (do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		if(clamp)
 			to_chat(user, SPAN("warning", "You must remove \the [clamp] first."))
 			return TRUE
@@ -123,7 +123,7 @@
 			"<span class='notice'>\The [user] unfastens \the [src].</span>", \
 			"<span class='notice'>You have unfastened \the [src].</span>", \
 			"You hear a ratchet.")
-		var/obj/item/pipe/P = new(loc, make_from=src)
+		var/obj/item/pipe/P = new(loc, null, null, src)
 		if ((int_air.return_pressure()-env_air.return_pressure()) > 2*ONE_ATMOSPHERE)
 			to_chat(user, "<span class='warning'>\the [src] flies off because of the overpressure in it!</span>")
 			P.throw_at_random(0, round((int_air.return_pressure()-env_air.return_pressure()) / 100), 30)
@@ -293,7 +293,7 @@
 
 	if(!node1 && !node2)
 		var/turf/T = get_turf(src)
-		new /obj/item/pipe(loc, make_from=src)
+		new /obj/item/pipe(loc, null, null, src)
 		for (var/obj/machinery/meter/meter in T)
 			if (meter.target == src)
 				new /obj/item/pipe_meter(T)
@@ -546,7 +546,7 @@
 
 	if(!node1 && !node2 && !node3)
 		var/turf/T = get_turf(src)
-		new /obj/item/pipe(loc, make_from=src)
+		new /obj/item/pipe(loc, null, null, src)
 		for (var/obj/machinery/meter/meter in T)
 			if (meter.target == src)
 				new /obj/item/pipe_meter(T)
@@ -805,7 +805,7 @@
 
 	if(!node1 && !node2 && !node3 && !node4)
 		var/turf/T = get_turf(src)
-		new /obj/item/pipe(loc, make_from=src)
+		new /obj/item/pipe(loc, null, null, src)
 		for (var/obj/machinery/meter/meter in T)
 			if (meter.target == src)
 				new /obj/item/pipe_meter(T)

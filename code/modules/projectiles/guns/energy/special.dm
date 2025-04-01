@@ -3,6 +3,7 @@
 	desc = "The NT Mk60 EW Halicon is a man portable anti-armor weapon designed to disable mechanical threats, produced by NT. Not the best of its type."
 	icon_state = "ionrifle"
 	item_state = "ionrifle"
+	improper_held_icon = TRUE
 	origin_tech = list(TECH_COMBAT = 2, TECH_MAGNET = 4)
 	w_class = ITEM_SIZE_HUGE
 	force = 12.5
@@ -25,8 +26,9 @@
 /obj/item/gun/energy/ionrifle/small
 	name = "ion pistol"
 	desc = "The NT Mk72 EW Preston is a personal defense weapon designed to disable mechanical threats."
-	icon_state = "ionpistolonyx"
-	item_state = "ionpistolonyx"
+	icon_state = "ionpistol"
+	item_state = "ionpistol"
+	improper_held_icon = FALSE
 	origin_tech = list(TECH_COMBAT = 2, TECH_MAGNET = 4)
 	w_class = ITEM_SIZE_NORMAL
 	force = 8.5
@@ -35,6 +37,7 @@
 	charge_cost = 20
 	max_shots = 6
 	projectile_type = /obj/item/projectile/ion/small
+	wielded_item_state = null
 	fire_sound = 'sound/effects/weapons/energy/fire1.ogg'
 
 /obj/item/gun/energy/decloner
@@ -80,17 +83,16 @@
 	set category = "Object"
 	set src in view(1)
 
-	var/genemask = input("Choose a gene to modify.") as null|anything in SSplants.plant_gene_datums
-
-	if(!genemask)
+	var/gene_name = tgui_input_list(usr, "Choose a gene to modify.", "Gene Selection", ALL_GENES)
+	if (isnull(gene_name))
 		return
 
-	gene = SSplants.plant_gene_datums[genemask]
+	var/decl/plantgene/gene = SSplants.plant_gene_datums[gene_name]
+	if (!isnull(gene))
+		return
 
-	to_chat(usr, "<span class='info'>You set the [src]'s targeted genetic area to [genemask].</span>")
-
-	return
-
+	src.gene = gene
+	show_splash_text(usr, "target gene set", SPAN_INFO("You set the [src]'s targeted genetic area to [gene_name]."))
 
 /obj/item/gun/energy/floragun/consume_next_projectile()
 	. = ..()
@@ -231,9 +233,9 @@
 	. = ..()
 	switch_firemodes()
 
-/obj/item/gun/energy/plasmacutter/_examine_text(mob/user)
+/obj/item/gun/energy/plasmacutter/examine(mob/user, infix)
 	. = ..()
-	to_chat(user, "It has a recharge port with a capital letter P.")
+	. += "It has a recharge port with a capital letter P."
 
 /obj/item/gun/energy/plasmacutter/attackby(obj/item/stack/material/plasma/W, mob/user)
 	if(user.stat || user.restrained() || user.lying)

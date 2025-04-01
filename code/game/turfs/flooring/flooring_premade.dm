@@ -113,6 +113,7 @@
 	icon = 'icons/turf/flooring/tiles.dmi'
 	icon_state = "reinforced"
 	initial_flooring = /decl/flooring/reinforced
+	holodeck_compatible = TRUE
 
 /turf/simulated/floor/reinforced/airless
 	initial_gas = null
@@ -431,6 +432,13 @@
 	name = "snow"
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "snow"
+	footstep_sound = SFX_FOOTSTEP_SNOW
+
+/turf/simulated/floor/natural/frozenground
+	name = "frozen ground"
+	icon = 'icons/turf/flooring/frozenground.dmi'
+	icon_state = "frozen_ground"
+	temperature = -30 CELSIUS
 	footstep_sound = SFX_FOOTSTEP_SNOW
 
 /turf/simulated/floor/natural/frozenground/cave

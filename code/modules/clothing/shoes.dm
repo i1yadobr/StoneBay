@@ -20,6 +20,12 @@
 	drop_sound = SFX_DROP_SHOES
 	pickup_sound = SFX_PICKUP_SHOES
 
+	item_state_slots = list(
+		slot_l_hand_str = "shoes",
+		slot_r_hand_str = "shoes",
+		)
+	valid_accessory_slots = list(ACCESSORY_SLOT_COVER)
+
 	var/overshoes = 0
 	var/can_hold_knife
 	var/obj/item/holding
@@ -86,6 +92,9 @@
 	return ..()
 
 /obj/item/clothing/shoes/proc/handle_movement(turf/walking, running)
+	var/obj/item/clothing/accessory/shoe_covers/SC = get_accessory_cover()
+	if(!isnull(SC))
+		SC.handle_movement(walking, running, FALSE)
 	return
 
 /obj/item/clothing/shoes/update_clothing_icon()
@@ -94,11 +103,30 @@
 		M.update_inv_shoes()
 
 /obj/item/clothing/shoes/add_blood(source, new_track_blood = 0)
+	var/obj/item/clothing/accessory/shoe_covers/SC = get_accessory_cover()
+	if(!isnull(SC))
+		SC.add_blood(source)
+		return
+
 	. = ..(source)
 	if(.)
 		track_blood = max(new_track_blood, track_blood)
 
 /obj/item/clothing/shoes/clean_blood()
+	var/obj/item/clothing/accessory/shoe_covers/SC = get_accessory_cover()
+	if(!isnull(SC))
+		SC.clean_blood()
+		return
+
 	. = ..()
 	if(.)
 		track_blood = 0
+
+
+/obj/item/clothing/shoes/proc/get_accessory_cover()
+	for(var/i = length(src.accessories), i > 0, i--)
+		var/obj/item/clothing/accessory/A = src.accessories[i]
+		if(istype(A, /obj/item/clothing/accessory/shoe_covers))
+			return A
+
+	return null

@@ -83,8 +83,6 @@
 			return global.SStgui;
 		if("SSticker")
 			return global.SSticker;
-		if("SStimer")
-			return global.SStimer;
 		if("SStrade")
 			return global.SStrade;
 		if("SSvines")
@@ -233,8 +231,6 @@
 			return global.changelog_hash;
 		if("channel_to_radio_key")
 			return global.channel_to_radio_key;
-		if("chargen_robolimbs")
-			return global.chargen_robolimbs;
 		if("checked_for_inactives")
 			return global.checked_for_inactives;
 		if("chemical_reaction_logs")
@@ -271,8 +267,6 @@
 			return global.crew_repository;
 		if("custom_event_msg")
 			return global.custom_event_msg;
-		if("custom_items")
-			return global.custom_items;
 		if("damage_icon_parts")
 			return global.damage_icon_parts;
 		if("dbcon")
@@ -667,28 +661,6 @@
 			return global.sparring_attack_cache;
 		if("splatter_cache")
 			return global.splatter_cache;
-		if("sqladdress")
-			return global.sqladdress;
-		if("sqldb")
-			return global.sqldb;
-		if("sqllogging")
-			return global.sqllogging;
-		if("sqllogin")
-			return global.sqllogin;
-		if("sqlpass")
-			return global.sqlpass;
-		if("sqlport")
-			return global.sqlport;
-		if("sqldonaddress")
-			return global.sqldonaddress;
-		if("sqldonport")
-			return global.sqldonport;
-		if("sqldondb")
-			return global.sqldondb;
-		if("sqldonlogin")
-			return global.sqldonlogin;
-		if("sqldonpass")
-			return global.sqldonpass;
 		if("station_account")
 			return global.station_account;
 		if("station_date")
@@ -755,8 +727,6 @@
 			return global.trait_type_to_ref;
 		if("transfer_controller")
 			return global.transfer_controller;
-		if("turret_icons")
-			return global.turret_icons;
 		if("uniqueness_repository")
 			return global.uniqueness_repository;
 		if("universe_has_ended")
@@ -791,16 +761,12 @@
 			return global.weighted_mundaneevent_locations;
 		if("weighted_randomevent_locations")
 			return global.weighted_randomevent_locations;
-		if("whitelist")
-			return global.whitelist;
 		if("whitelisted_species")
 			return global.whitelisted_species;
 		if("wireColours")
 			return global.wireColours;
 		if("world_topic_spam_protect_time")
 			return global.world_topic_spam_protect_time;
-		if("world_uplinks")
-			return global.world_uplinks;
 		if("worths")
 			return global.worths;
 		if("wrapped_species_by_ref")
@@ -894,8 +860,6 @@
 			global.SStgui=newval;
 		if("SSticker")
 			global.SSticker=newval;
-		if("SStimer")
-			global.SStimer=newval;
 		if("SStrade")
 			global.SStrade=newval;
 		if("SSvines")
@@ -1048,8 +1012,6 @@
 			global.changelog_hash=newval;
 		if("channel_to_radio_key")
 			global.channel_to_radio_key=newval;
-		if("chargen_robolimbs")
-			global.chargen_robolimbs=newval;
 		if("checked_for_inactives")
 			global.checked_for_inactives=newval;
 		if("chemical_reaction_logs")
@@ -1086,8 +1048,6 @@
 			global.crew_repository=newval;
 		if("custom_event_msg")
 			global.custom_event_msg=newval;
-		if("custom_items")
-			global.custom_items=newval;
 		if("damage_icon_parts")
 			global.damage_icon_parts=newval;
 		if("dbcon")
@@ -1482,28 +1442,6 @@
 			global.sparring_attack_cache=newval;
 		if("splatter_cache")
 			global.splatter_cache=newval;
-		if("sqladdress")
-			global.sqladdress=newval;
-		if("sqldb")
-			global.sqldb=newval;
-		if("sqllogging")
-			global.sqllogging=newval;
-		if("sqllogin")
-			global.sqllogin=newval;
-		if("sqlpass")
-			global.sqlpass=newval;
-		if("sqlport")
-			global.sqlport=newval;
-		if("sqldonaddress")
-			global.sqldonaddress=newval;
-		if("sqldonport")
-			global.sqldonport=newval;
-		if("sqldondb")
-			global.sqldondb=newval;
-		if("sqldonlogin")
-			global.sqldonlogin=newval;
-		if("sqldonpass")
-			global.sqldonpass=newval;
 		if("station_account")
 			global.station_account=newval;
 		if("station_date")
@@ -1570,8 +1508,6 @@
 			global.trait_type_to_ref=newval;
 		if("transfer_controller")
 			global.transfer_controller=newval;
-		if("turret_icons")
-			global.turret_icons=newval;
 		if("universe_has_ended")
 			global.universe_has_ended=newval;
 		if("uplink")
@@ -1604,16 +1540,12 @@
 			global.weighted_mundaneevent_locations=newval;
 		if("weighted_randomevent_locations")
 			global.weighted_randomevent_locations=newval;
-		if("whitelist")
-			global.whitelist=newval;
 		if("whitelisted_species")
 			global.whitelisted_species=newval;
 		if("wireColours")
 			global.wireColours=newval;
 		if("world_topic_spam_protect_time")
 			global.world_topic_spam_protect_time=newval;
-		if("world_uplinks")
-			global.world_uplinks=newval;
 		if("worths")
 			global.worths=newval;
 		if("wrapped_species_by_ref")
@@ -1757,7 +1689,6 @@
 	"cargo_supply_packs",
 	"changelog_hash",
 	"channel_to_radio_key",
-	"chargen_robolimbs",
 	"checked_for_inactives",
 	"chemical_reaction_logs",
 	"chemical_reactions_list",
@@ -2083,7 +2014,6 @@
 	"whitelisted_species",
 	"wireColours",
 	"world_topic_spam_protect_time",
-	"world_uplinks",
 	"worths",
 	"wrapped_species_by_ref",
 	"z_levels",

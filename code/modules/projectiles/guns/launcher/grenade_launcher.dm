@@ -10,7 +10,7 @@
 	mod_reach = 0.8
 	mod_handy = 1.0
 
-	fire_sound = 'sound/weapons/empty.ogg'
+	fire_sound = SFX_GRENADE_LAUNCHER
 	fire_sound_text = "a metallic thunk"
 	screen_shake = 0
 	throw_distance = 7
@@ -47,13 +47,14 @@
 		to_chat(M, "<span class='warning'>You pump [src], but the magazine is empty.</span>")
 	update_icon()
 
-/obj/item/gun/launcher/grenade/_examine_text(mob/user)
+/obj/item/gun/launcher/grenade/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 2)
 		var/grenade_count = grenades.len + (chambered? 1 : 0)
-		. += "\nHas [grenade_count] grenade\s remaining."
+		. += "Has [grenade_count] grenade\s remaining."
 		if(chambered)
-			. += "\n\A [chambered] is chambered."
+			. += "\A [chambered] is chambered."
 
 /obj/item/gun/launcher/grenade/proc/load(obj/item/grenade/G, mob/user)
 	if(!can_load_grenade_type(G, user))

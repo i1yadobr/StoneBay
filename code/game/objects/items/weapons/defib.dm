@@ -202,6 +202,7 @@
 	icon = 'icons/obj/defibrillator.dmi'
 	icon_state = "defibpaddles"
 	item_state = "defibpaddles"
+	improper_held_icon = TRUE
 	gender = PLURAL
 	force = 2
 	throwforce = 6
@@ -335,7 +336,7 @@
 
 	//beginning to place the paddles on patient's chest to allow some time for people to move away to stop the process
 	user.visible_message("<span class='warning'>\The [user] begins to place [src] on [H]'s chest.</span>", "<span class='warning'>You begin to place [src] on [H]'s chest...</span>")
-	if(!do_after(user, 30, H))
+	if(!do_after(user, 30, H, luck_check_type = LUCK_CHECK_MED))
 		return
 	user.visible_message("<span class='notice'>\The [user] places [src] on [H]'s chest.</span>", "<span class='warning'>You place [src] on [H]'s chest.</span>")
 	playsound(src, 'sound/machines/defib_charge.ogg', 50, 0)
@@ -350,7 +351,7 @@
 		make_announcement("buzzes, \"Warning - Patient is in hypovolemic shock and may require a blood transfusion.\"", "warning") //also includes heart damage
 
 	//placed on chest and short delay to shock for dramatic effect, revive time is 5sec total
-	if(!do_after(user, chargetime, H))
+	if(!do_after(user, chargetime, H, , luck_check_type = LUCK_CHECK_MED))
 		return
 
 	//deduct charge here, in case the base unit was EMPed or something during the delay time
@@ -397,9 +398,9 @@
 		return
 
 	playsound(src, 'sound/machines/defib_charge.ogg', 50, 0)
-	audible_message("<span class='warning'>\The [src] lets out a steadily rising hum...</span>")
+	audible_message("<span class='warning'>\The [src] lets out a steadily rising hum...</span>", splash_override = "*hummm*")
 
-	if(!do_after(user, chargetime, H))
+	if(!do_after(user, chargetime, H, , luck_check_type = LUCK_CHECK_MED))
 		return
 
 	//deduct charge here, in case the base unit was EMPed or something during the delay time
@@ -448,7 +449,7 @@
 	H.setBrainLoss(brain_damage)
 
 /obj/item/shockpaddles/proc/make_announcement(message, msg_class)
-	audible_message("<b>\The [src]</b> [message]", "\The [src] vibrates slightly.")
+	audible_message("<b>\The [src]</b> [message]", "\The [src] vibrates slightly.", splash_override = "[message]")
 
 /obj/item/shockpaddles/emag_act(uses, mob/user, obj/item/defibrillator/base)
 	if(istype(src, /obj/item/shockpaddles/linked))
@@ -534,7 +535,7 @@
 	return (base_unit.bcell && base_unit.bcell.checked_use(charge_amt))
 
 /obj/item/shockpaddles/linked/make_announcement(message, msg_class)
-	base_unit.audible_message("<b>\The [base_unit]</b> [message]", "\The [base_unit] vibrates slightly.")
+	base_unit.audible_message("<b>\The [base_unit]</b> [message]", "\The [base_unit] vibrates slightly.", splash_override = "[message]")
 
 /*
 	Standalone Shockpaddles
@@ -584,7 +585,6 @@
 /obj/item/shockpaddles/standalone/traitor
 	name = "defibrillator paddles"
 	desc = "A pair of unusual looking paddles powered by an experimental miniaturized reactor. It possesses both the ability to penetrate armor and to deliver powerful shocks."
-	icon = 'icons/obj/weapons.dmi'
 	icon_state = "defibpaddles0"
 	item_state = "defibpaddles0"
 	combat = 1

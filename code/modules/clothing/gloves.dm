@@ -16,6 +16,11 @@
 	drop_sound = SFX_DROP_GLOVES
 	pickup_sound = SFX_PICKUP_GLOVES
 
+	item_state_slots = list(
+		slot_l_hand_str = "bgloves",
+		slot_r_hand_str = "bgloves",
+		)
+
 	var/transfer_blood = 0
 	var/mob/living/carbon/human/bloody_hands_mob
 
@@ -121,10 +126,10 @@
 		species_restricted -= SPECIES_TAJARA
 	return
 
-/obj/item/clothing/gloves/mob_can_equip(mob/user)
+/obj/item/clothing/gloves/mob_can_equip(mob/user, slot)
 	var/mob/living/carbon/human/H = user
 
-	if(istype(H.gloves, /obj/item/clothing/ring))
+	if(istype(H.gloves, /obj/item/clothing/ring) && slot == slot_gloves)
 		var/obj/item/clothing/ring/R = H.gloves
 		ring = weakref(R)
 		if(!R.undergloves)

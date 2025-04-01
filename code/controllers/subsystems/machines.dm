@@ -91,10 +91,8 @@ SUBSYSTEM_DEF(machines)
 
 
 /datum/controller/subsystem/machines/stat_entry()
-	var/msg = list()
-	msg += "M:[processing.len]|"
-	msg += "PN:[powernets.len]"
-	..(jointext(msg, null))
+	var/msg = "M:[processing.len] | PN:[powernets.len]"
+	..(msg)
 
 
 /datum/controller/subsystem/machines/fire(resumed, no_mc_tick)
@@ -197,3 +195,13 @@ SUBSYSTEM_DEF(machines)
 		else if(MC_TICK_CHECK)
 			queue.Cut(i)
 			return
+
+/datum/controller/subsystem/machines/proc/flicker_all_lights()
+	for(var/obj/machinery/light/L in machinery)
+		if(!(L.z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION)))
+			continue
+
+		if(!prob(95))
+			continue
+
+		L.flicker(rand(2, 5))

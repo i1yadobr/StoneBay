@@ -40,7 +40,7 @@ var/global/list/all_grabstates[0]
 var/global/list/all_grabobjects[0]
 
 // Uplinks
-var/list/obj/item/device/uplink/world_uplinks = list()
+GLOBAL_LIST_EMPTY(uplinks)
 
 // Surgery steps
 GLOBAL_LIST_EMPTY(surgery_steps)
@@ -71,6 +71,9 @@ var/datum/visualnet/camera/cameranet = new()
 var/global/list/rune_list = new()
 
 var/global/list/syndicate_access = list(access_maint_tunnels, access_syndicate, access_external_airlocks)
+
+/// Implants
+GLOBAL_LIST_EMPTY(implants_list)
 
 // Strings which corraspond to bodypart covering flags, useful for outputting what something covers.
 var/global/list/string_part_flags = list(
@@ -208,7 +211,7 @@ var/global/list/string_slot_flags = list(
 
 	for (var/language_name in all_languages)
 		var/datum/language/L = all_languages[language_name]
-		if(!(L.flags & NONGLOBAL))
+		if(!(L.language_flags & NONGLOBAL))
 			language_keys[lowertext(L.key)] = L
 
 	var/rkey = 0

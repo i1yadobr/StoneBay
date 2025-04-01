@@ -9,6 +9,13 @@
 	slot = slot_tie
 	flags = GEAR_HAS_COLOR_SELECTION
 
+/datum/gear/clothing/flannel/New()
+	..()
+	var/list/flannel = list()
+	flannel["comfy flannel"] = /obj/item/clothing/accessory/toggleable/flannel
+	flannel["soft flannel"] = /obj/item/clothing/accessory/toggleable/flannel/alt
+	gear_tweaks += new /datum/gear_tweak/path(flannel)
+
 /datum/gear/clothing/scarf
 	display_name = "scarf"
 	path = /obj/item/clothing/accessory/scarf
@@ -27,6 +34,11 @@
 	gear_tweaks += new /datum/gear_tweak/path(shirts)
 
 /datum/gear/clothing/vest
+	display_name = "vest, colour select"
+	path = /obj/item/clothing/accessory/toggleable/color_vest
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/clothing/black_vest
 	display_name = "black vest"
 	path = /obj/item/clothing/accessory/toggleable/vest
 

@@ -60,7 +60,6 @@
 	callHook("death", list(src, gibbed))
 
 	if(SSticker.mode)
-		sql_report_death(src)
 		SSticker.mode.check_win()
 
 	if(wearing_rig)
@@ -108,3 +107,4 @@
 	if(h_style)
 		h_style = "Bald"
 	update_hair(FALSE)
+	update_facial_hair(FALSE)

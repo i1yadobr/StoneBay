@@ -32,6 +32,14 @@
 	build_path = /obj/item/device/mass_spectrometer/adv
 	sort_string = "MACAB"
 
+/datum/design/item/medical/shoe_covers
+	desc = "Technological shoe covers."
+	id = "shoe_covers"
+	req_tech = list(TECH_MATERIAL = 2, TECH_BIO = 2)
+	materials = list(MATERIAL_PLASTIC = 20)
+	build_path = /obj/item/compact_shoe_covers
+	sort_string = "MACAC"
+
 /datum/design/item/medical/reagent_scanner
 	desc = "A device for identifying chemicals."
 	id = "reagent_scanner"
@@ -82,6 +90,14 @@
 	materials = list(MATERIAL_STEEL = 3000)
 	build_path = /obj/item/reagent_containers/vessel/beaker/noreact
 	sort_string = "MCAAB"
+
+/datum/design/item/spray/noreact
+	desc = "A cryostasis spray that allows for chemical storage without reactions. Can hold up to 250 units."
+	id = "spraynoreact"
+	req_tech = list(TECH_BLUESPACE = 4, TECH_MATERIAL = 6)
+	materials = list(MATERIAL_STEEL = 3000, MATERIAL_PLASMA = 3000)
+	build_path = /obj/item/reagent_containers/spray/noreact
+	sort_string = "MCABA"
 
 /datum/design/item/beaker/bluespace
 	desc = "A bluespace beaker, powered by experimental bluespace technology and Element Cuban combined with the Compound Pete. Can hold up to 300 units."

@@ -106,10 +106,11 @@
 	name = "Deckard .44"
 	desc = "A custom-built revolver, based off the semi-popular Detective Special model."
 	icon_state = "deckard-empty"
-	ammo_type = /obj/item/ammo_magazine/c38/rubber
+	caliber = ".44"
+	ammo_type = /obj/item/ammo_casing/c44/rubber
 
 /obj/item/gun/projectile/revolver/deckard/emp
-	ammo_type = /obj/item/ammo_casing/c38/emp
+	ammo_type = /obj/item/ammo_casing/c44/emp
 
 /obj/item/gun/projectile/revolver/deckard/on_update_icon()
 	..()
@@ -119,9 +120,10 @@
 		icon_state = "deckard-empty"
 
 /obj/item/gun/projectile/revolver/deckard/load_ammo(obj/item/A, mob/user)
-	if(istype(A, /obj/item/ammo_magazine))
-		flick("deckard-reload",src)
-	..()
+    var/old_loaded_len = loaded.len
+    ..()
+    if(old_loaded_len != loaded.len)
+        flick("deckard-reload",src)
 
 /obj/item/gun/projectile/revolver/capgun
 	name = "cap gun"
@@ -188,12 +190,13 @@
 	return null*/
 
 
-/obj/item/gun/projectile/revolver/m2019/detective/_examine_text(mob/user)
+/obj/item/gun/projectile/revolver/m2019/detective/examine(mob/user, infix)
 	. = ..()
+
 	if(!bcell)
-		. += "\n\The [src] has no power cell installed."
+		. += "\The [src] has no power cell installed."
 	else
-		. += "\n\The [src] is [round(CELL_PERCENT(bcell))]% charged."
+		. += "\The [src] is [round(CELL_PERCENT(bcell))]% charged."
 
 /obj/item/gun/projectile/revolver/m2019/detective/consume_next_projectile()
 	if(chamber_offset)

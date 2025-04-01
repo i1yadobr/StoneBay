@@ -30,6 +30,50 @@
 	var/list/startswith
 	var/datum/storage_ui/storage_ui = /datum/storage_ui/default
 
+	/// FALSE = no overlay, TRUE = uses 'icon_state + "-open"', string = lets the thing's update_icon() deal with its own shit. Easy.
+	var/inspect_state = FALSE
+	var/being_inspected = FALSE
+
+/obj/item/storage/Initialize()
+	. = ..()
+	if(allow_quick_empty)
+		verbs += /obj/item/storage/verb/quick_empty
+	else
+		verbs -= /obj/item/storage/verb/quick_empty
+
+	if(allow_quick_gather)
+		verbs += /obj/item/storage/verb/toggle_gathering_mode
+	else
+		verbs -= /obj/item/storage/verb/toggle_gathering_mode
+
+	if(isnull(max_storage_space) && !isnull(storage_slots))
+		max_storage_space = storage_slots * base_storage_cost(max_w_class)
+
+	storage_ui = new storage_ui(src)
+	prepare_ui()
+
+	if(inspect_state)
+		if(!base_icon_state)
+			base_icon_state = icon_state // It'll save us later
+		if(!item_state)
+			item_state = icon_state // I wish that dumb feature never was a thing at all
+		register_signal(src, SIGNAL_STORAGE_OPENED, nameof(.proc/on_storage_opened))
+		register_signal(src, SIGNAL_STORAGE_CLOSED, nameof(.proc/on_storage_closed))
+
+	if(startswith)
+		for(var/item_path in startswith)
+			var/list/data = startswith[item_path]
+			if(islist(data))
+				var/qty = data[1]
+				var/list/argsl = data.Copy()
+				argsl[1] = src
+				for(var/i in 1 to qty)
+					new item_path(arglist(argsl))
+			else
+				for(var/i in 1 to (isnull(data)? 1 : data))
+					new item_path(src)
+		update_icon()
+
 /obj/item/storage/Destroy()
 	QDEL_NULL(storage_ui)
 	. = ..()
@@ -51,16 +95,22 @@
 		if(loc != usr)
 			return
 
-		add_fingerprint(usr)
-		switch(over_object.name)
-			if(BP_R_HAND)
+
+		var/atom/movable/screen/inventory/inv_box = over_object
+		if(!istype(inv_box))
+			return
+
+		switch(inv_box.slot_id)
+			if(slot_r_hand)
 				if(usr.drop(src))
 					usr.put_in_r_hand(src)
-			if(BP_L_HAND)
+			if(slot_l_hand)
 				if(usr.drop(src))
 					usr.put_in_l_hand(src)
-			if("back")
+			if(slot_back)
 				usr.drop(src)
+
+		add_fingerprint(usr)
 
 /obj/item/storage/AltClick(mob/usr)
 	if(!canremove)
@@ -68,7 +118,10 @@
 
 	if((((ishuman(usr) || isrobot(usr) || issmall(usr)) && (!isxenomorph(usr) && !islarva(usr))) && !usr.incapacitated() && Adjacent(usr)))
 		add_fingerprint(usr)
-		open(usr)
+		if(usr.s_active == src)
+			close(usr)
+		else
+			open(usr)
 		return TRUE
 
 /obj/item/storage/proc/return_inv()
@@ -295,13 +348,12 @@
 		var/turf/T = get_turf(user)
 		for(var/obj/item/light/L in src.contents)
 			if(L.status == 0)
-				if(LP.uses < LP.max_uses)
-					LP.AddUses(1)
+				if(LP.bulbs_amt() < LP.max_uses)
 					amt_inserted++
 					remove_from_storage(L, T)
-					qdel(L)
+					LP.load_bulb_and_qdel(L)
 		if(amt_inserted)
-			to_chat(user, "You inserted [amt_inserted] light\s into \the [LP.name]. You have [LP.uses] light\s remaining.")
+			to_chat(user, "You inserted [amt_inserted] light\s into \the [LP.name]. You have [LP.bulbs_amt()] light\s remaining.")
 			return
 
 	if(!can_be_inserted(W, user))
@@ -318,6 +370,11 @@
 					to_chat(user, "<span class='warning'>God damnit!</span>")
 	W.add_fingerprint(user)
 	return handle_item_insertion(W)
+
+/obj/item/storage/throw_at(atom/target, range, speed = throw_speed, atom/thrower, thrown_with, target_zone, launched_div)
+	if(ismob(thrower))
+		close(thrower)
+	return ..()
 
 /obj/item/storage/allow_drop()
 	return TRUE
@@ -390,38 +447,6 @@
 		remove_from_storage(I, T, 1)
 	finish_bulk_removal()
 
-/obj/item/storage/Initialize()
-	. = ..()
-	if(allow_quick_empty)
-		verbs += /obj/item/storage/verb/quick_empty
-	else
-		verbs -= /obj/item/storage/verb/quick_empty
-
-	if(allow_quick_gather)
-		verbs += /obj/item/storage/verb/toggle_gathering_mode
-	else
-		verbs -= /obj/item/storage/verb/toggle_gathering_mode
-
-	if(isnull(max_storage_space) && !isnull(storage_slots))
-		max_storage_space = storage_slots * base_storage_cost(max_w_class)
-
-	storage_ui = new storage_ui(src)
-	prepare_ui()
-
-	if(startswith)
-		for(var/item_path in startswith)
-			var/list/data = startswith[item_path]
-			if(islist(data))
-				var/qty = data[1]
-				var/list/argsl = data.Copy()
-				argsl[1] = src
-				for(var/i in 1 to qty)
-					new item_path(arglist(argsl))
-			else
-				for(var/i in 1 to (isnull(data)? 1 : data))
-					new item_path(src)
-		update_icon()
-
 /obj/item/storage/emp_act(severity)
 	if(!istype(src.loc, /mob/living))
 		for(var/obj/O in contents)
@@ -445,6 +470,18 @@
 		can_hold[I.type]++
 		max_w_class = max(I.w_class, max_w_class)
 		max_storage_space += I.get_storage_cost()
+
+/obj/item/storage/proc/on_storage_opened(obj/item/storage/source, mob/user)
+	being_inspected = TRUE
+	if(inspect_state == TRUE)
+		icon_state = base_icon_state + "-open"
+	update_icon()
+
+/obj/item/storage/proc/on_storage_closed(obj/item/storage/source, mob/user)
+	being_inspected = FALSE
+	if(inspect_state == TRUE)
+		icon_state = base_icon_state
+	update_icon()
 
 //Returns the storage depth of an atom. This is the number of storage items the atom is contained in before reaching toplevel (the area).
 //Returns -1 if the atom was not found on container.

@@ -105,6 +105,9 @@
 	return
 
 /obj/structure/bed/attackby(obj/item/W as obj, mob/user as mob)
+	if(atom_flags & ATOM_FLAG_NO_DECONSTRUCTION)
+		return ..()
+
 	if(isWrench(W))
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 		dismantle()
@@ -122,7 +125,7 @@
 			padding_type = MATERIAL_CARPET
 		else if(istype(W,/obj/item/stack/material))
 			var/obj/item/stack/material/M = W
-			if(M.material && (M.material.flags & MATERIAL_PADDING))
+			if(M.material && (M.material.material_flags & MATERIAL_PADDING))
 				padding_type = "[M.material.name]"
 		if(!padding_type)
 			to_chat(user, "You cannot pad \the [src] with that.")
@@ -146,7 +149,7 @@
 		var/obj/item/grab/G = W
 		var/mob/living/affecting = G.affecting
 		user.visible_message("<span class='notice'>[user] attempts to buckle [affecting] into \the [src]!</span>")
-		if(do_after(user, 20, src))
+		if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_COMBAT))
 			if(user_buckle_mob(affecting, user))
 				qdel(W)
 	else
@@ -157,9 +160,12 @@
 	if(Adjacent(user)) // Robots can open/close it, but not the AI.
 		attack_hand(user)
 
-/obj/structure/bed/Move()
+/obj/structure/bed/Move(newloc, direct)
 	. = ..()
-	if(buckled_mob)
+	if(!.)
+		return
+
+	if(buckled_mob?.buckled == src)
 		buckled_mob.forceMove(loc, unbuckle_mob = FALSE)
 
 /obj/structure/bed/forceMove()
@@ -364,8 +370,11 @@
 		unbuckle()
 
 
-/obj/structure/bed/roller/Move()
+/obj/structure/bed/roller/Move(newloc, direct)
 	. = ..()
+	if(!.)
+		return
+
 	if(buckled_bodybag)
 		buckled_bodybag.set_glide_size(glide_size)
 		buckled_bodybag.forceMove(loc)

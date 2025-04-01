@@ -69,7 +69,6 @@
 	adjustToxLoss(amount-getToxLoss())
 
 /mob/living/carbon/metroid/New(location, colour = "green")
-
 	verbs += /mob/living/proc/ventcrawl
 
 	src.colour = colour
@@ -105,9 +104,10 @@
 	return tally + config.movement.metroid_delay
 
 /mob/living/carbon/metroid/Bump(atom/movable/AM as mob|obj, yes)
-	if ((!(yes) || now_pushing))
-		return
-	now_pushing = 1
+	if((!(yes) || now_pushing))
+		return FALSE
+
+	now_pushing = TRUE
 
 	if(isobj(AM) && !client && powerlevel > 0)
 		var/probab = 10
@@ -130,16 +130,16 @@
 		if(is_adult)
 			if(istype(tmob, /mob/living/carbon/human))
 				if(prob(90))
-					now_pushing = 0
-					return
+					now_pushing = FALSE
+					return TRUE
 		else
 			if(istype(tmob, /mob/living/carbon/human))
-				now_pushing = 0
-				return
+				now_pushing = FALSE
+				return TRUE
 
-	now_pushing = 0
+	now_pushing = FALSE
 
-	..()
+	return ..()
 
 /mob/living/carbon/metroid/Allow_Spacemove()
 	return 1
@@ -151,7 +151,7 @@
 	stat(null, "Health: [round((health / maxHealth) * 100)]%")
 	stat(null, "Intent: [a_intent]")
 
-	if (client.statpanel == "Status")
+	if(client.statpanel == "Status")
 		stat(null, "Nutrition: [nutrition]/[get_max_nutrition()]")
 		if(amount_grown >= 10)
 			if(is_adult)
@@ -258,7 +258,7 @@
 
 			attacked += 10
 			if (prob(90))
-				if (MUTATION_HULK in H.mutations)
+				if((MUTATION_HULK in H.mutations) || (MUTATION_STRONG in H.mutations))
 					damage += 5
 					if(Victim || Target)
 						Feedstop()

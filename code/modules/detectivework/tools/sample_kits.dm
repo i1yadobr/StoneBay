@@ -63,7 +63,7 @@
 	desc = "Records a set of fingerprints."
 	icon = 'icons/obj/card.dmi'
 	icon_state = "fingerprint0"
-	item_state = "paper"
+	item_state = "fingerprint"
 
 /obj/item/sample/print/attack_self(mob/user)
 	if(evidence && evidence.len)

@@ -64,10 +64,11 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 	var/obj/item/device/paicard/pai = null	// A slot for a personal AI device
 
-/obj/item/device/pda/_examine_text(mob/user)
+/obj/item/device/pda/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 1)
-		. += "\nThe time [stationtime2text()] is displayed in the corner of the screen."
+		. += "The time [stationtime2text()] is displayed in the corner of the screen."
 
 /obj/item/device/pda/medical
 	default_cartridge = /obj/item/cartridge/medical
@@ -370,6 +371,12 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		return attack_self(M)
 	return
 
+/obj/item/device/pda/get_examine_line(examine_distance = 10)
+	var/visible_name = examine_distance < 3 ? name : initial(name)
+	if(is_bloodied)
+		. = SPAN("warning", "\icon[src] a [(blood_color != SYNTH_BLOOD_COLOUR) ? "blood" : "oil"]-stained [SPAN("info", "<em>[visible_name]</em>")]")
+	else
+		. = "\icon[src] \a [SPAN("info", "<em>[visible_name]</em>")]"
 
 /obj/item/device/pda/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = 1)
 	ui_tick++
@@ -574,7 +581,9 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 	user.set_machine(src)
 
-	if(active_uplink_check(user))
+	var/datum/component/uplink/U = get_component(/datum/component/uplink)
+	if(istype(U) && U.active)
+		U.interact(user)
 		return
 
 	ui_interact(user) //NanoUI requires this proc
@@ -719,11 +728,14 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 		if("Ringtone")
 			var/t = input(U, "Please enter new ringtone", name, ttone) as text
-			if (in_range(src, U) && loc == U)
-				if (t)
-					if(src.hidden_uplink && hidden_uplink.check_trigger(U, lowertext(t), lowertext(lock_code)))
-						to_chat(U, "The PDA softly beeps.")
+			if(Adjacent(src, U) && loc == U)
+				if(t)
+					var/datum/component/uplink/uplink = get_component(/datum/component/uplink)
+					if(uplink?.unlock_code == t)
+						to_chat(U, "\The [src] beeps softly.")
+						uplink.locked = FALSE
 						ui.close()
+						uplink.interact(U)
 					else
 						t = sanitize(t, 20)
 						ttone = t
@@ -825,7 +837,8 @@ var/global/list/obj/item/device/pda/PDAs = list()
 							difficulty += P.cartridge.access_engine
 							difficulty += P.cartridge.access_clown
 							difficulty += P.cartridge.access_janitor
-							if(P.hidden_uplink)
+							var/datum/component/uplink/uplink = P.get_component(/datum/component/uplink)
+							if(istype(uplink))
 								difficulty += 3
 
 						if(prob(difficulty))

@@ -35,6 +35,7 @@
 #define ACCESSORY_SLOT_ARMOR_M  "Misc armor"
 #define ACCESSORY_SLOT_HELM_C	"Helmet cover"
 #define ACCESSORY_SLOT_HELM_H   "Helmet holochip"
+#define ACCESSORY_SLOT_COVER    "Cover"
 
 // Bitmasks for the flags_inv variable. These determine when a piece of clothing hides another, i.e. a helmet hiding glasses.
 // WARNING: The following flags apply only to the external suit!
@@ -257,7 +258,7 @@ var/list/default_onmob_icons = list(
 		slot_handcuffed_str = 'icons/mob/onmob/misc.dmi',
 		slot_legcuffed_str = 'icons/mob/onmob/misc.dmi',
 		slot_gloves_str = 'icons/inv_slots/gloves/mob.dmi',
-		slot_s_store_str = 'icons/inv_slots/belts/mirror/mob.dmi',
+		slot_s_store_str = 'icons/inv_slots/suitstorage/mob.dmi',
 		slot_tie_str = 'icons/inv_slots/acessories/mob.dmi',
 		slot_hidden_str = 'icons/inv_slots/hidden/mob.dmi'
 		)

@@ -239,7 +239,7 @@ BORER_STATUS_HUSK = list(\
 
 	chemicals -= 100
 
-	addtimer(CALLBACK(host, nameof(/mob/living/carbon/human.proc/host_pain_enable)), 30 SECONDS)
+	host.set_next_think_ctx("host_pain_enable", world.time + 30 SECONDS)
 
 /mob/living/simple_animal/borer/verb/secrete_chemicals()
 	set category = "Abilities"
@@ -481,9 +481,10 @@ BORER_STATUS_HUSK = list(\
 //TODO: if verbs will update within other objects(BYOND issue), make it to add only needed abilities.
 /mob/living/simple_animal/borer/proc/update_abilities()
 	clear_abilities()
-	if(host)
-		if(controlling)
-			host.verbs |= BORER_ALL_ABILITIES[BORER_STATUS_CONTROLLING]
+
+	if(host && controlling)
+		host.verbs |= BORER_ALL_ABILITIES[BORER_STATUS_CONTROLLING]
+
 	verbs |= BORER_ALL_ABILITIES[BORER_STATUS_NOT_CONTROLLING]
 	verbs |= BORER_ALL_ABILITIES[BORER_STATUS_IN_HOST]
 	verbs |= BORER_ALL_ABILITIES[BORER_STATUS_OUT_HOST]

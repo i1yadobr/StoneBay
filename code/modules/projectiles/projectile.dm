@@ -173,30 +173,16 @@
 /obj/item/projectile/proc/check_penetrate(atom/A)
 	return 1
 
-/obj/item/projectile/proc/launch(atom/target, target_zone, mob/user, params, obj/item/gun/launcher, Angle_override, forced_spread = 0)
+/obj/item/projectile/proc/launch(atom/target, target_zone, atom/movable/firer, params, obj/item/gun/launcher, Angle_override, forced_spread = 0)
 	original = target
 	previous = get_turf(loc)
 	def_zone = check_zone(target_zone)
-	firer = user
+	src.firer = firer
 	var/direct_target
 	if(get_turf(target) == get_turf(src))
 		direct_target = target
-	preparePixelProjectile(target, user? user : get_turf(src), params, forced_spread)
+	preparePixelProjectile(target, firer? firer : get_turf(src), params, forced_spread)
 	return fire(Angle_override, direct_target)
-
-//sets the click point of the projectile using mouse input params
-/obj/item/projectile/proc/set_clickpoint(params)
-	var/list/mouse_control = params2list(params)
-	if(mouse_control["icon-x"])
-		p_x = text2num(mouse_control["icon-x"])
-	if(mouse_control["icon-y"])
-		p_y = text2num(mouse_control["icon-y"])
-
-	//randomize clickpoint a bit based on dispersion
-	if(dispersion)
-		var/radius = round((dispersion*0.443)*world.icon_size*0.8) //0.443 = sqrt(pi)/4 = 2a, where a is the side length of a square that shares the same area as a circle with diameter = dispersion
-		p_x = between(0, p_x + rand(-radius, radius), world.icon_size)
-		p_y = between(0, p_y + rand(-radius, radius), world.icon_size)
 
 //Used to change the direction of the projectile in flight.
 /obj/item/projectile/proc/redirect(new_x, new_y, atom/starting_loc, mob/new_firer=null, is_ricochet = FALSE)
@@ -456,6 +442,9 @@
 		var/matrix/M = new
 		M.Turn(Angle)
 		transform = M
+	trajectory_ignore_forcemove = TRUE
+	forceMove(starting)
+	trajectory_ignore_forcemove = FALSE
 	trajectory = new(starting.x, starting.y, starting.z, 0, 0, Angle, pixel_speed)
 	last_projectile_move = world.time
 	fired = TRUE
@@ -463,15 +452,15 @@
 		return process_hitscan()
 
 	if(muzzle_type)
-		var/atom/movable/thing = new muzzle_type
-		update_effect(thing)
-		thing.forceMove(starting)
-		thing.pixel_x = trajectory.return_px() + (trajectory.mpx * 0.5)
-		thing.pixel_y = trajectory.return_py() + (trajectory.mpy * 0.5)
+		var/atom/movable/muzzle = new muzzle_type
+		update_effect(muzzle)
+		muzzle.forceMove(starting)
+		muzzle.pixel_x = trajectory.return_px() + (trajectory.mpx * 0.5)
+		muzzle.pixel_y = trajectory.return_py() + (trajectory.mpy * 0.5)
 		var/matrix/M = new
 		M.Turn(Angle)
-		thing.transform = M
-		QDEL_IN(thing, 3)
+		muzzle.transform = M
+		QDEL_IN(muzzle, 3)
 
 	if(!is_processing)
 		START_PROCESSING(SSprojectiles, src)
@@ -480,8 +469,12 @@
 /obj/item/projectile/proc/preparePixelProjectile(atom/target, atom/source, params, Angle_offset = 0)
 	var/turf/curloc = get_turf(source)
 	var/turf/targloc = get_turf(target)
+	trajectory_ignore_forcemove = TRUE
 	forceMove(curloc)
+	trajectory_ignore_forcemove = FALSE
 	starting = curloc
+	pixel_x = source.pixel_x
+	pixel_y = source.pixel_y
 	original = target
 
 	var/list/calculated = list(null,null,null)
@@ -594,7 +587,7 @@
 	//Calculate the "resolution" of screen based on client's view and world's icon size. This will work if the user can view more tiles than average.
 	if(!user.client.view)
 		return list(0, 0)
-	var/list/screenview = getviewsize(user.client.view)
+	var/list/screenview = get_view_size(user.client.view)
 	screenview[1] *= world.icon_size
 	screenview[2] *= world.icon_size
 

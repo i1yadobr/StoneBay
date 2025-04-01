@@ -7,6 +7,9 @@
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "shards"
 
+/obj/effect/decal/cleanable/generic/blue_shards
+	icon_state = "blue_shards"
+
 /obj/effect/decal/cleanable/ash
 	name = "ashes"
 	desc = "Ashes to ashes, dust to dust, and into space."
@@ -97,11 +100,11 @@
 /obj/effect/decal/cleanable/vomit/Initialize()
 	. = ..()
 	var/drytime = DRYING_TIME * (rand(20, 30) / 10) // 10 to 15 minutes
-	addtimer(CALLBACK(src, nameof(.proc/dry)), drytime)
+	set_next_think(world.time + drytime)
 	if(prob(75))
 		SetTransform(rotation = pick(90, 180, 270))
 
-/obj/effect/decal/cleanable/vomit/proc/dry()
+/obj/effect/decal/cleanable/vomit/think()
 	viruses.Cut()
 	name = "dried vomit"
 	color = "#cccc00"

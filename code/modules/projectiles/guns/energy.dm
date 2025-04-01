@@ -101,9 +101,9 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 					return suit.cell
 	return null
 
-/obj/item/gun/energy/_examine_text(mob/user)
+/obj/item/gun/energy/examine(mob/user, infix)
 	. = ..()
-	. += "\nHas <b>[power_supply ? round(power_supply.charge / charge_cost) : "0"]</b> shot\s remaining."
+	. += "Has <b>[power_supply ? round(power_supply.charge / charge_cost) : "0"]</b> shot\s remaining."
 
 /obj/item/gun/energy/on_update_icon()
 	if(charge_meter)
@@ -191,7 +191,7 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 
 /obj/item/gun/energy/secure/special_check()
 	if(!emagged && (!authorized_modes[sel_mode] || !registered_owner))
-		audible_message("<span class='warning'>\The [src] buzzes, refusing to fire.</span>")
+		audible_message("<span class='warning'>\The [src] buzzes, refusing to fire.</span>", splash_override = "*buzz*")
 		playsound(loc, 'sound/signals/error1.ogg', 50, 0)
 		return 0
 
@@ -210,11 +210,11 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 
 	return new_mode
 
-/obj/item/gun/energy/secure/_examine_text(mob/user)
+/obj/item/gun/energy/secure/examine(mob/user, infix)
 	. = ..()
 
 	if(registered_owner)
-		. += "\nA small screen on the side of the weapon indicates that it is registered to [registered_owner]."
+		. += "A small screen on the side of the weapon indicates that it is registered to [registered_owner]."
 
 /obj/item/gun/energy/secure/proc/get_next_authorized_mode()
 	. = sel_mode

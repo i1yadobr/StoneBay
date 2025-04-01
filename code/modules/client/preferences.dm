@@ -217,7 +217,7 @@
 	for(var/render_holder in char_render_holders)
 		client.screen |= char_render_holders[render_holder]
 
-datum/preferences/proc/clear_character_previews()
+/datum/preferences/proc/clear_character_previews()
 	for(var/index in char_render_holders)
 		var/atom/movable/screen/S = char_render_holders[index]
 		client?.screen -= S
@@ -415,6 +415,7 @@ datum/preferences/proc/clear_character_previews()
 	character.update_body(0)
 	character.update_underwear(0)
 	character.update_hair(0)
+	character.update_facial_hair(0)
 	character.update_deformities(0)
 	character.update_icons()
 
@@ -430,7 +431,7 @@ datum/preferences/proc/clear_character_previews()
 	character.flavor_texts["hands"] = flavor_texts["hands"]
 	character.flavor_texts["legs"] = flavor_texts["legs"]
 	character.flavor_texts["feet"] = flavor_texts["feet"]
-	character.flavor_texts["ooc"] = flavor_texts["ooc"]
+	character.flavor_texts["action"] = flavor_texts["action"]
 
 	character.med_record = med_record
 	character.sec_record = sec_record
@@ -474,7 +475,14 @@ datum/preferences/proc/clear_character_previews()
 	ASSERT(client)
 
 	client.apply_fps(clientfps)
-	client.update_chat_position(client.get_preference_value(/datum/client_preference/chat_position))
+
+	client.update_chat_position(client.get_preference_value("INPUT_POSITION"))
+
+	client.view_size.set_zoom()
+	client.view_size.set_zoom_mode()
+	client.view_size.set_default(get_screen_size(client.get_preference_value("WIDESCREEN") == GLOB.PREF_YES))
+
+	client.attempt_fit_viewport()
 
 	if(client.get_preference_value(/datum/client_preference/fullscreen_mode) != GLOB.PREF_NO)
 		client.toggle_fullscreen(client.get_preference_value(/datum/client_preference/fullscreen_mode))
@@ -484,3 +492,6 @@ datum/preferences/proc/clear_character_previews()
 		winset(client, "browseroutput", "is-disabled=1;is-visible=0")
 	else
 		client.tgui_panel.initialize()
+
+	if(client.get_preference_value("STATUSBAR") != GLOB.PREF_YES)
+		winset(client, "statusbar", "is-visible=0")

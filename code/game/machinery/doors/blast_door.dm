@@ -19,6 +19,8 @@
 	var/icon_state_closed = null
 	var/icon_state_closing = null
 
+	blocks_emissive = EMISSIVE_BLOCK_GENERIC
+
 	explosion_block = 3
 
 	var/open_sound = 'sound/machines/blastdoor_open.ogg'
@@ -46,11 +48,12 @@
 
 	var/assembly_path = /obj/structure/secure_door_assembly/blast
 
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 600 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 10 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1.5 ELECTRONVOLT
-	)
+	rad_resist_type = /datum/rad_resist/door_blast
+
+/datum/rad_resist/door_blast
+	alpha_particle_resist = 600 MEGA ELECTRONVOLT
+	beta_particle_resist = 10 MEGA ELECTRONVOLT
+	hawking_resist = 1.5 ELECTRONVOLT
 
 /obj/machinery/door/blast/Initialize(loc, code, frequency, dir)
 	. = ..()
@@ -175,7 +178,7 @@
 			return
 
 		to_chat(usr, SPAN_NOTICE("You begin repairing [src]..."))
-		if(do_after(user, 30, src))
+		if(do_after(user, 30, src, luck_check_type = LUCK_CHECK_ENG))
 			if(P.use(amt))
 				to_chat(user, SPAN_NOTICE("You have repaired \the [src]"))
 				repair()

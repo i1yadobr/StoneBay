@@ -23,12 +23,6 @@
 	anchor_fall = TRUE
 	w_class = ITEM_SIZE_NO_CONTAINER
 
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 250 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 10 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
-
 	var/initial_icon = null //Mech type for resetting icon. Only used for reskinning kits (see custom items)
 	var/base_color = null // Mecha padding color. Used to paint visible equipment in special color.
 	var/can_move = 1
@@ -90,6 +84,13 @@
 	var/datum/legacy_events/events
 
 	var/strafe = FALSE
+
+	rad_resist_type = /datum/rad_resist/mecha
+
+/datum/rad_resist/mecha
+	alpha_particle_resist = 250 MEGA ELECTRONVOLT
+	beta_particle_resist = 10 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
 
 /obj/mecha/drain_power(drain_check)
 
@@ -251,24 +252,24 @@
 	else
 		return 0
 
-/obj/mecha/_examine_text(mob/user)
+/obj/mecha/examine(mob/user, infix)
 	. = ..()
 	var/integrity = health/initial(health)*100
 	switch(integrity)
 		if(85 to 100)
-			. += "\nIt's fully intact."
+			. += "It's fully intact."
 		if(65 to 85)
-			. += "\nIt's slightly damaged."
+			. += "It's slightly damaged."
 		if(45 to 65)
-			. += "\nIt's badly damaged."
+			. += "It's badly damaged."
 		if(25 to 45)
-			. += "\nIt's heavily damaged."
+			. += "It's heavily damaged."
 		else
-			. += "\nIt's falling apart."
+			. += "It's falling apart."
 	if(equipment && equipment.len)
-		. += "\nIt's equipped with:"
+		. += "It's equipped with:"
 		for(var/obj/item/mecha_parts/mecha_equipment/ME in equipment)
-			. += "\n\icon[ME] [ME]"
+			. += "\icon[ME] [ME]"
 	return
 
 
@@ -374,10 +375,12 @@
 ////////  Movement procs  ////////
 //////////////////////////////////
 
-/obj/mecha/Move()
+/obj/mecha/Move(newloc, direct)
 	. = ..()
-	if(.)
-		events.fireEvent("onMove",get_turf(src))
+	if(!.)
+		return
+
+	events.fireEvent("onMove", get_turf(src))
 
 /obj/mecha/relaymove(mob/user,direction)
 	if(user != src.occupant) //While not "realistic", this piece is player friendly.
@@ -619,7 +622,7 @@
 			user.visible_message(SPAN("danger", "\The [user] hits \the [src]. Nothing happens."), SPAN("danger", "You hit \the [src] with no visible effect."))
 			log_append_to_last("Armor saved.")
 		return
-	else if((MUTATION_HULK in user.mutations) && !deflect_hit(is_melee = 1))
+	else if(((MUTATION_HULK in user.mutations) || (MUTATION_STRONG in user.mutations)) && !deflect_hit(is_melee = 1))
 		hit_damage(damage = 15, is_melee = 1)
 		check_for_internal_damage(list(MECHA_INT_TEMP_CONTROL, MECHA_INT_TANK_BREACH, MECHA_INT_CONTROL_LOST))
 		user.visible_message("<font color='red'><b>[user] hits [name], doing some damage.</b></font>", "<font color='red'><b>You hit [name] with all your might. The metal creaks and bends.</b></font>")
@@ -861,19 +864,23 @@
 
 	else if(isWelder(W) && user.a_intent != I_HURT)
 		var/obj/item/weldingtool/WT = W
-		if (WT.remove_fuel(0,user))
-			if (hasInternalDamage(MECHA_INT_TANK_BREACH))
-				clearInternalDamage(MECHA_INT_TANK_BREACH)
-				to_chat(user, "<span class='notice'>You repair the damaged gas tank.</span>")
-				user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		else
+
+		if(!WT.use_tool(src, user, amount = 1))
 			return
-		if(src.health<initial(src.health))
-			to_chat(user, "<span class='notice'>You repair some damage to [src.name].</span>")
+
+		if(!hasInternalDamage(MECHA_INT_TANK_BREACH))
+			return
+
+		clearInternalDamage(MECHA_INT_TANK_BREACH)
+		to_chat(user, SPAN_NOTICE("You repair the damaged gas tank."))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+
+		if(health < initial(health))
+			to_chat(user, SPAN_NOTICE("You repair some damage to [src.name]."))
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			src.health += min(10, initial(src.health)-src.health)
+			src.health += min(10, initial(health) - health)
 		else
-			to_chat(user, "The [src.name] is at full integrity")
+			to_chat(user, "\The [name] is at full integrity")
 		return
 
 	else if(istype(W, /obj/item/mecha_parts/mecha_tracking))
@@ -1108,7 +1115,7 @@
 
 	visible_message("<span class='notice'>\The [user] starts to climb into [src.name]</span>")
 
-	if(do_after(user, 40, target))
+	if(do_after(user, 40, target, luck_check_type = LUCK_CHECK_COMBAT))
 		if(!occupant)
 			moved_inside(user)
 		else if(occupant != user)
@@ -1502,6 +1509,18 @@
 	return output
 
 
+/obj/mecha/proc/get_mecha_log()
+	var/list/data = list()
+
+	for(var/list/entry in log)
+		data.Add(list(list(
+			"time" = time2text(entry["time"], "DDD MMM DD hh:mm:ss"),
+			"message" = entry["message"],
+		)))
+
+	return data
+
+
 /obj/mecha/proc/get_log_html()
 	var/output = "<html><meta charset=\"utf-8\"><head><title>[src.name] Log</title></head><body style='font: 13px 'Courier', monospace;'>"
 	for(var/list/entry in log)
@@ -1717,7 +1736,7 @@
 		var/mob/occupant = P.occupant
 
 		user.visible_message("<span class='notice'>\The [user] begins opening the hatch on \the [P]...</span>", "<span class='notice'>You begin opening the hatch on \the [P]...</span>")
-		if (!do_after(user, 40, src, needhand = FALSE))
+		if (!do_after(user, 40, src, needhand = FALSE, luck_check_type = LUCK_CHECK_COMBAT))
 			return
 
 		user.visible_message("<span class='notice'>\The [user] opens the hatch on \the [P] and removes [occupant]!</span>", "<span class='notice'>You open the hatch on \the [P] and remove [occupant]!</span>")
@@ -1760,7 +1779,7 @@
 		src.occupant_message("Recalibrating coordination system.")
 		src.log_message("Recalibration of coordination system started.")
 		var/T = src.loc
-		if(do_after(usr, 100, src))
+		if(do_after(usr, 100, src, luck_check_type = LUCK_CHECK_COMBAT))
 			if(T == src.loc)
 				src.clearInternalDamage(MECHA_INT_CONTROL_LOST)
 				src.occupant_message("<span class='info'>Recalibration successful.</span>")

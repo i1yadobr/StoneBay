@@ -66,6 +66,19 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/weapons/gun/casing_drop6.ogg',
 		'sound/effects/weapons/gun/casing_drop7.ogg'
 	),
+	SFX_792_FIRE = list(
+		'sound/effects/weapons/gun/fire_792.ogg'
+	),
+	SFX_792_BOLT_BACK = list(
+		'sound/effects/weapons/gun/bolt_back_2.ogg'
+	),
+	SFX_792_BOLT_FORWARD = list(
+		'sound/effects/weapons/gun/bolt_forward_2.ogg'
+	),
+	SFX_GRENADE_LAUNCHER = list(
+		'sound/effects/weapons/gun/grenade/glauncher1.ogg',
+		'sound/effects/weapons/gun/grenade/glauncher2.ogg',
+	),
 	// FEMALE EMOTES
 	SFX_FEMALE_INTERNAL_BREATH = list(
 		'sound/effects/emotes/f_internalb1.ogg'
@@ -516,6 +529,14 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/ambient/jungle/junglethunder2.ogg',
 		'sound/ambient/jungle/junglethunder1.ogg',
 	),
+	SFX_AMBIENT_DESERT = list(
+		'sound/effects/wind/wind_2_1.ogg',
+		'sound/effects/wind/wind_2_2.ogg',
+		'sound/effects/wind/wind_3_1.ogg',
+		'sound/effects/wind/wind_4_1.ogg',
+		'sound/effects/wind/wind_4_2.ogg',
+		'sound/effects/wind/wind_5_1.ogg'
+	),
 	// AMBIENT MUSIC
 	SFX_AMBIENT_MUSIC_NORMAL = list(
 		'sound/ambient_music/normal_1.ogg',
@@ -602,6 +623,15 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_AMBIENT_MUSIC_CENTCOMM = list(
 		'sound/ambient_music/centcomm_1.ogg',
 	),
+	SFX_AMBIENT_MUSIC_THUNDERDOME = list(
+		'sound/music/THUNDERDOME.ogg'
+	),
+	SFX_AMBIENT_MUSIC_PICNIC = list(
+		'sound/music/classic/title2.ogg'
+	),
+	SFX_AMBIENT_MUSIC_COURT = list(
+		'sound/music/classic/traitor.ogg'
+	),
 	// ITEMS USING
 	SFX_USE_HANDCUFFS = list(
 		'sound/effects/using/cuffs/use1.ogg',
@@ -667,6 +697,11 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/machines/button2.ogg',
 		'sound/machines/button3.ogg',
 		'sound/machines/button4.ogg'
+	),
+	SFX_USE_KNOB = list(
+		'sound/machines/knob1.ogg',
+		'sound/machines/knob2.ogg',
+		'sound/machines/knob3.ogg'
 	),
 	SFX_USE_LIGHTER = list(
 		'sound/items/lighter1.ogg',
@@ -1484,12 +1519,23 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/fighting/punch1.ogg',
 		'sound/effects/fighting/punch2.ogg',
 		'sound/effects/fighting/punch3.ogg',
-		'sound/effects/fighting/punch4.ogg'
+		'sound/effects/fighting/punch4.ogg',
+		'sound/effects/fighting/punch5.ogg',
+		'sound/effects/fighting/punch6.ogg',
 	),
 	SFX_FIGHTING_SWING = list(
 		'sound/effects/fighting/genhit1.ogg',
 		'sound/effects/fighting/genhit2.ogg',
 		'sound/effects/fighting/genhit3.ogg'
+	),
+	SFX_STUNSTICK_HIT = list(
+		'sound/effects/fighting/stunstick_hit1.ogg',
+		'sound/effects/fighting/stunstick_hit2.ogg',
+	),
+	SFX_FALL_DAMAGE = list(
+		'sound/effects/fall_damage1.ogg',
+		'sound/effects/fall_damage2.ogg',
+		'sound/effects/fall_damage3.ogg',
 	),
 	// MISC
 	SFX_VENT = list(
@@ -1519,12 +1565,12 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/weapons/chainsaw_attack3.ogg'
 	),
 	SFX_GLASS_HIT = list(
-		'sound/effects/materials/glass/knock1.ogg',
-		'sound/effects/materials/glass/knock2.ogg',
-		'sound/effects/materials/glass/knock3.ogg',
-		'sound/effects/materials/glass/knock4.ogg',
-		'sound/effects/materials/glass/knock5.ogg',
-		'sound/effects/materials/glass/knock6.ogg'
+		'sound/effects/materials/glass/kick1.ogg',
+		'sound/effects/materials/glass/kick2.ogg',
+		'sound/effects/materials/glass/kick3.ogg',
+		'sound/effects/materials/glass/kick4.ogg',
+		'sound/effects/materials/glass/kick5.ogg',
+		'sound/effects/materials/glass/kick6.ogg'
 	),
 	SFX_GLASS_KNOCK = list(
 		'sound/effects/materials/glass/glassknock.ogg'
@@ -1544,6 +1590,15 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_CLOWN = list(
 		'sound/effects/clownstep1.ogg',
 		'sound/effects/clownstep2.ogg'
+	),
+	SFX_HEELS = list(
+		'sound/effects/heelsstep1.ogg',
+		'sound/effects/heelsstep2.ogg'
+	),
+	SFX_SHOE_COVERS = list(
+		'sound/effects/coversstep1.ogg',
+		'sound/effects/coversstep2.ogg',
+		'sound/effects/coversstep3.ogg'
 	),
 	SFX_HISS = list(
 		'sound/voice/hiss1.ogg',
@@ -1612,6 +1667,24 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/pig2.ogg',
 		'sound/effects/pig3.ogg'
 	),
+	SFX_PLANTCROSS = list(
+		'sound/effects/plantcross1.ogg',
+		'sound/effects/plantcross2.ogg',
+		'sound/effects/plantcross3.ogg',
+		'sound/effects/plantcross4.ogg'
+	),
+	SFX_THUNDER = list(
+		'sound/effects/thunder/thunder1.ogg',
+		'sound/effects/thunder/thunder2.ogg',
+		'sound/effects/thunder/thunder3.ogg',
+		'sound/effects/thunder/thunder4.ogg',
+		'sound/effects/thunder/thunder5.ogg',
+		'sound/effects/thunder/thunder6.ogg',
+		'sound/effects/thunder/thunder7.ogg',
+		'sound/effects/thunder/thunder8.ogg',
+		'sound/effects/thunder/thunder9.ogg',
+		'sound/effects/thunder/thunder10.ogg',
+	),
 	// DEVICES
 	SFX_GEIGER_LOW = list(
 		'sound/effects/geiger/geiger_low_1.ogg',
@@ -1628,6 +1701,16 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_GEIGER_VERY_HIGH = list(
 		'sound/effects/geiger/geiger_very_high_1.ogg',
 		'sound/effects/geiger/geiger_very_high_2.ogg'
+	),
+	SFX_WELDING = list(
+		'sound/items/Welder.ogg',
+		'sound/items/Welder2.ogg'
+	),
+	SFX_WELDER_ACTIVATE = list(
+		'sound/effects/welderactivate.ogg'
+	),
+	SFX_WELDER_DEACTIVATE = list(
+		'sound/effects/welderdeactivate.ogg'
 	),
 	// FOOTSTEPS
 	SFX_DISTANT_MOVEMENT = list(
@@ -1657,7 +1740,6 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/footstep/wood2.ogg',
 		'sound/effects/footstep/wood3.ogg',
 		'sound/effects/footstep/wood4.ogg',
-		'sound/effects/footstep/wood5.ogg'
 	),
 	SFX_FOOTSTEP_TILES = list(
 		'sound/effects/footstep/floor1.ogg',
@@ -1681,11 +1763,10 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/footstep/carpet5.ogg'
 	),
 	SFX_FOOTSTEP_ASTEROID = list(
-		'sound/effects/footstep/asteroid1.ogg',
-		'sound/effects/footstep/asteroid2.ogg',
-		'sound/effects/footstep/asteroid3.ogg',
-		'sound/effects/footstep/asteroid4.ogg',
-		'sound/effects/footstep/asteroid5.ogg'
+		'sound/effects/footstep/gravel1.ogg',
+		'sound/effects/footstep/gravel2.ogg',
+		'sound/effects/footstep/gravel3.ogg',
+		'sound/effects/footstep/gravel4.ogg',
 	),
 	SFX_FOOTSTEP_SNOW = list(
 		'sound/effects/footstep/snow1.ogg',
@@ -1724,6 +1805,12 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_FOOTSTEP_STAIRS = list(
 		'sound/effects/stairs_step.ogg'
 	),
+	SFX_FOOTSTEP_SWAMP = list(
+		'sound/effects/footstep/swamp1.ogg',
+		'sound/effects/footstep/swamp2.ogg',
+		'sound/effects/footstep/swamp3.ogg',
+		'sound/effects/footstep/swamp4.ogg',
+	),
 	SFX_KEYBOARD = list(
 		'sound/machines/keyboard/keystroke1.ogg',
 		'sound/machines/keyboard/keystroke2.ogg',
@@ -1745,5 +1832,26 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	),
 	SFX_VENDING_GENERIC = list(
 		'sound/effects/using/disposal/drop2.ogg'
+	),
+	SFX_LIGHT_TUBE_ON = list(
+		'sound/machines/sound_effects_light_on.ogg'
+	),
+	SFX_LIGHT_BULB_ON = list(
+		'sound/machines/lightson.ogg'
+	),
+	SFX_LIGHT_BURNOUT = list(
+		'sound/machines/lightsburnout.ogg'
+	),
+	SFX_MINESWEEPER_CLICK = list(
+		'sound/machines/arcade/minesweeper_click.ogg'
+	),
+	SFX_MINESWEEPER_LOSE = list(
+		'sound/machines/arcade/minesweeper_lose.ogg'
+	),
+	SFX_MINESWEEPER_START = list(
+		'sound/machines/arcade/minesweeper_start.ogg'
+	),
+	SFX_MINESWEEPER_WIN = list(
+		'sound/machines/arcade/minesweeper_win.ogg'
 	)
 ))

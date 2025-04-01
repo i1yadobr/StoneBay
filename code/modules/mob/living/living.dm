@@ -16,6 +16,12 @@
 
 	update_transform() // Some mobs may start bigger or smaller than normal.
 
+/mob/living/get_description_fluff()
+	if(flavor_text)
+		return flavor_text
+
+	return ..()
+
 //mob verbs are faster than object verbs. See mob/verb/examine.
 /mob/living/verb/pulled(atom/movable/AM as mob|obj in oview(1))
 	set name = "Pull"
@@ -72,16 +78,17 @@
 	return ..()
 
 /mob/living/Bump(atom/movable/AM, yes)
+	if(now_pushing || !yes || !loc)
+		return FALSE
+
 	spawn(0)
-		if ((!( yes ) || now_pushing) || !loc)
-			return
 		if(!istype(AM, /mob/living/bot/mulebot))
 			now_pushing = 1
 		if (istype(AM, /mob/living))
 			var/mob/living/tmob = AM
 
 			for(var/mob/living/M in range(tmob, 1))
-				if(tmob.pinned.len ||  ((M.pulling == tmob && ( tmob.restrained() && !( M.restrained() ) && M.stat == 0)) || locate(/obj/item/grab, tmob.grabbed_by.len)) )
+				if(LAZYLEN(tmob.pinned) ||  ((M.pulling == tmob && ( tmob.restrained() && !( M.restrained() ) && M.stat == 0)) || locate(/obj/item/grab, tmob.grabbed_by.len)) )
 					if ( !(world.time % 5) )
 						to_chat(src, "<span class='warning'>[tmob] is restrained, you cannot push past</span>")
 					now_pushing = 0
@@ -145,45 +152,68 @@
 		spawn(0)
 			..()
 			var/saved_dir = AM.dir
-			if (!istype(AM, /atom/movable) || AM.anchored || AM.atom_flags & ATOM_FLAG_UNPUSHABLE)
+
+			if(!istype(AM, /atom/movable) || AM.anchored || AM.atom_flags & ATOM_FLAG_UNPUSHABLE)
 				if(confused && prob(50) && m_intent == M_RUN && !lying)
 					var/obj/machinery/disposal/D = AM
+
 					if(istype(D) && !(D.stat & BROKEN))
 						Weaken(6)
 						playsound(AM, 'sound/effects/clang.ogg', 75)
 						visible_message(SPAN_WARNING("[src] falls into \the [AM]!"), SPAN_WARNING("You fall into \the [AM]!"))
-						if (client)
+
+						if(client)
 							client.perspective = EYE_PERSPECTIVE
 							client.eye = src
+
 						forceMove(AM)
 					else
 						Weaken(2)
 						playsound(loc, SFX_FIGHTING_PUNCH, rand(80, 100), 1, -1)
 						visible_message(SPAN_WARNING("[src] [pick("ran", "slammed")] into \the [AM]!"))
+
 					src.apply_damage(5, BRUTE)
 				return
+
 			if (!now_pushing)
 				now_pushing = 1
 
 				var/t = get_dir(src, AM)
-				if (istype(AM, /obj/structure/window))
+
+				if(istype(AM, /obj/structure/window))
 					for(var/obj/structure/window/win in get_step(AM,t))
 						now_pushing = 0
 						return
-				step(AM, t)
-				if (istype(AM, /mob/living))
+
+				var/pulled_pushing = (AM.pulledby == src && pulling == AM)
+				if(pulled_pushing)
+					step_glide(AM, t, AM.glide_size)
+				else
+					step(AM, t)
+
+				if(istype(AM, /mob/living))
 					var/mob/living/tmob = AM
 					if(istype(tmob.buckled, /obj/structure/bed))
 						if(!tmob.buckled.anchored)
-							step(tmob.buckled, t)
+							step_glide(tmob.buckled, t, tmob.buckled.glide_size)
+
 				if(ishuman(AM))
 					var/mob/living/carbon/human/M = AM
 					for(var/obj/item/grab/G in M.grabbed_by)
 						step(G.assailant, get_dir(G.assailant, AM))
 						G.adjust_position()
+
 				if(saved_dir)
 					AM.set_dir(saved_dir)
+
+				if(pulled_pushing)
+					step_glide(src, t, glide_size)
+					if(pulling != AM)
+						start_pulling(AM, TRUE)
+
 				now_pushing = 0
+
+	return TRUE
 
 /proc/swap_density_check(mob/swapper, mob/swapee)
 	var/turf/T = get_turf(swapper)
@@ -524,7 +554,7 @@
 
 	return
 
-/mob/living/Move(a, b, flag)
+/mob/living/Move(newloc, direct)
 	if(buckled)
 		return
 
@@ -533,17 +563,16 @@
 
 	var/turf/old_loc = get_turf(src)
 
-	if(lying)
-		pull_sound = SFX_PULL_BODY
-	else
-		pull_sound = null
+	pull_sound = lying ? SFX_PULL_BODY : null
 
 	. = ..()
+	if(!.)
+		return
 
-	if(. && pulling)
+	if(pulling)
 		handle_pulling_after_move(old_loc)
 
-	if(s_active && !(s_active in contents) && get_turf(s_active) != get_turf(src))
+	if(s_active && !((s_active in contents) || Adjacent(s_active)))
 		s_active.close(src)
 
 	if(update_metroids)

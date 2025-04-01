@@ -110,6 +110,9 @@
 		return
 	QDEL_NULL_LIST(worn_underwear)
 	for(var/obj/item/I in src)
+		if(I.loc != src)
+			continue
+
 		drop(I)
 	regenerate_icons()
 	ADD_TRANSFORMATION_MOVEMENT_HANDLER(src)
@@ -180,6 +183,7 @@
 		new_metroid = new /mob/living/carbon/metroid(loc)
 		if(adult)
 			new_metroid.is_adult = 1
+
 	new_metroid.key = key
 
 	to_chat(new_metroid, "<B>You are now a metroid. Skreee!</B>")
@@ -200,6 +204,7 @@
 
 	var/mob/living/simple_animal/corgi/new_corgi = new /mob/living/simple_animal/corgi (loc)
 	new_corgi.a_intent = I_HURT
+
 	new_corgi.key = key
 
 	to_chat(new_corgi, "<B>You are now a Corgi. Yap Yap!</B>")
@@ -233,7 +238,6 @@
 	new_mob.key = key
 	new_mob.a_intent = I_HURT
 
-
 	to_chat(new_mob, "You suddenly feel more... animalistic.")
 	spawn()
 		qdel(src)
@@ -251,6 +255,7 @@
 	var/mob/new_mob = new mobpath(src.loc)
 
 	new_mob.key = key
+
 	new_mob.a_intent = I_HURT
 	to_chat(new_mob, "You feel more... animalistic")
 
@@ -266,9 +271,6 @@
 //Bad mobs! - Remember to add a comment explaining what's wrong with the mob
 	if(!MP)
 		return 0	//Sanity, this should never happen.
-
-	if(ispath(MP, /mob/living/simple_animal/space_worm))
-		return 0 //Unfinished. Very buggy, they seem to just spawn additional space worms everywhere and eating your own tail results in new worms spawning.
 
 	if(ispath(MP, /mob/living/simple_animal/construct/behemoth))
 		return 0 //I think this may have been an unfinished WiP or something. These constructs should really have their own class simple_animal/construct/subtype
@@ -299,6 +301,8 @@
 		return 1
 	if(ispath(MP, /mob/living/simple_animal/mouse))
 		return 1 //It is impossible to pull up the player panel for mice (Fixed! - Nodrak)
+	if(ispath(MP, /mob/living/simple_animal/hamster))
+		return 1
 	if(ispath(MP, /mob/living/simple_animal/hostile/bear))
 		return 1 //Bears will auto-attack mobs, even if they're player controlled (Fixed! - Nodrak)
 	if(ispath(MP, /mob/living/simple_animal/parrot))

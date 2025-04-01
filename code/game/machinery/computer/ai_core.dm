@@ -33,26 +33,26 @@
 		if(AI_STAGE_FRAME)
 			if(isWrench(P))
 				playsound(loc, 'sound/items/Ratchet.ogg', 50, 1)
-				if(do_after(user, 20, src))
+				if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 					to_chat(user, SPAN("notice", "You wrench the frame into place."))
 					anchored = TRUE
 					state = AI_STAGE_CIRCUIT
 			if(isWelder(P))
 				var/obj/item/weldingtool/WT = P
-				if(!WT.isOn())
-					to_chat(user, "The welder must be on for this task.")
+				if(!WT.use_tool(src, user, delay = 4 SECONDS, amount = 5))
 					return
-				playsound(loc, 'sound/items/Welder.ogg', 50, 1)
-				if(do_after(user, 20, src))
-					if(!src || !WT.remove_fuel(0, user)) return
-					to_chat(user, SPAN("notice", "You deconstruct the frame."))
-					new /obj/item/stack/material/plasteel(loc, 4)
-					qdel(src)
+
+				if(QDELETED(src) || !user)
 					return
+
+				to_chat(user, SPAN("notice", "You deconstruct the frame."))
+				new /obj/item/stack/material/plasteel(loc, 4)
+				qdel(src)
+				return
 		if(AI_STAGE_CIRCUIT)
 			if(isWrench(P))
 				playsound(loc, 'sound/items/Ratchet.ogg', 50, 1)
-				if(do_after(user, 20, src))
+				if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 					to_chat(user, SPAN("notice", "You unfasten the frame."))
 					anchored = FALSE
 					state = AI_STAGE_FRAME
@@ -257,7 +257,7 @@
 	else if(isWrench(W))
 		if(anchored)
 			user.visible_message("<span class='notice'>\The [user] starts to unbolt \the [src] from the plating...</span>")
-			if(!do_after(user,40,src))
+			if(!do_after(user,40,src,luck_check_type = LUCK_CHECK_ENG))
 				user.visible_message("<span class='notice'>\The [user] decides not to unbolt \the [src].</span>")
 				return
 			user.visible_message("<span class='notice'>\The [user] finishes unfastening \the [src]!</span>")
@@ -265,7 +265,7 @@
 			return
 		else
 			user.visible_message("<span class='notice'>\The [user] starts to bolt \the [src] to the plating...</span>")
-			if(!do_after(user,40,src))
+			if(!do_after(user,40,src, luck_check_type = LUCK_CHECK_ENG))
 				user.visible_message("<span class='notice'>\The [user] decides not to bolt \the [src].</span>")
 				return
 			user.visible_message("<span class='notice'>\The [user] finishes fastening down \the [src]!</span>")

@@ -10,11 +10,7 @@
 	thermal_conductivity = OPEN_HEAT_TRANSFER_COEFFICIENT
 	var/dirt = 0
 
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 0,
-		RADIATION_BETA_PARTICLE = 0,
-		RADIATION_HAWKING = 0
-	)
+	rad_resist_type = /datum/rad_resist/none
 
 /turf/space/Initialize()
 	. = ..()
@@ -48,6 +44,11 @@
 
 /turf/space/is_solid_structure()
 	return locate(/obj/structure/lattice, src) //counts as solid structure if it has a lattice
+
+/turf/space/__get_astar_node_mask()
+	. = ..()
+
+	. |= NODE_SPACE_BIT
 
 /turf/space/proc/update_starlight()
 	if(!config.misc.starlight)
@@ -86,7 +87,8 @@
 			return
 		else
 			to_chat(user, "<span class='warning'>The plating is going to need some support.</span>")
-	return
+
+	return ..()
 
 
 // Ported from unstable r355
@@ -96,6 +98,12 @@
 	if(A && A.loc == src)
 		if (A.x <= TRANSITION_EDGE || A.x >= (world.maxx - TRANSITION_EDGE + 1) || A.y <= TRANSITION_EDGE || A.y >= (world.maxy - TRANSITION_EDGE + 1))
 			A.touch_map_edge()
+
+/turf/space/is_open()
+	return TRUE
+
+/turf/space/is_outside()
+	return OUTSIDE_YES
 
 /turf/space/proc/Sandbox_Spacemove(atom/movable/A as mob|obj)
 	var/cur_x
@@ -212,6 +220,23 @@
 
 /turf/space/ChangeTurf(turf/N, tell_universe = TRUE, force_lighting_update = FALSE)
 	return ..(N, tell_universe, TRUE)
+
+/turf/space/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
+	if(the_rcd.mode == RCD_TURF && the_rcd.rcd_design_path == /turf/simulated/floor/plating)
+		var/obj/structure/lattice/L = locate(/obj/structure/lattice, src)
+		if(L)
+			return list("delay" = 0, "cost" = 1)
+		else
+			return list("delay" = 0, "cost" = 3)
+
+	return FALSE
+
+/turf/space/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	if(rcd_data["[RCD_DESIGN_MODE]"] == RCD_TURF)
+		ChangeTurf(/turf/simulated/floor/plating/airless)
+		return TRUE
+
+	return FALSE
 
 //Bluespace turfs for shuttles and possible future transit use
 /turf/bluespace

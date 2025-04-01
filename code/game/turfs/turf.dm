@@ -10,6 +10,8 @@
 
 	var/holy = FALSE
 
+	var/open_turf_type // Which open turf type to use by default above this turf in a multiz context. Overridden by area.
+
 	// Initial air contents (in moles)
 	var/list/initial_gas
 
@@ -27,11 +29,8 @@
 	var/icon_old = null
 	var/pathweight = 1          // How much does it cost to pathfind over this turf?
 	var/blessed = 0             // Has the turf been blessed?
-	var/list/rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 38 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 50 KILO ELECTRONVOLT,
-		RADIATION_HAWKING = 81 MILLI ELECTRONVOLT
-	)
+
+	var/rad_resist_type = /datum/rad_resist/turf
 
 	var/list/decals
 
@@ -41,6 +40,48 @@
 
 	var/turf_height = 0 // "Vertical" offset. Mostly used for mobs and dropped items.
 
+	/// Whether this turf can be used inside a blank holodeck i.e reinforced tile.
+	var/holodeck_compatible = FALSE
+
+	/// If this turf contained an RCD'able object (or IS one, for walls)
+	/// but is now destroyed, this will preserve the value.
+	/// See __DEFINES/construction.dm for RCD_MEMORY_*.
+	var/rcd_memory
+
+	/**
+	 * Certified atmos shitfuckery.
+	 */
+
+	/// Will participate in ZAS, join zones, etc.
+	var/zone_membership_candidate = TRUE
+	/// Will participate in external atmosphere simulation if the turf is outside and no zone is set.
+	var/external_atmosphere_participation = TRUE
+
+	///The turf's current zone.
+	var/zone/zone
+	///All directions in which a turf that can contain air is present.
+	var/open_directions
+
+	///Is this turf queued in the TURFS cycle of SSair?
+	var/needs_air_update = 0
+
+	///The cached air mixture of a turf. Never directly access, use `return_air()`.
+	//This exists to store air during zone rebuilds, as well as for unsimulated turfs.
+	//They are never deleted to not overwhelm the garbage collector.
+	var/datum/gas_mixture/air
+
+	///Whether this tile is willing to copy air from a previous tile through ChangeTurf, transfer_turf_properties etc.
+	var/can_inherit_air = TRUE
+
+	/// TL DR leave this shit alone please.
+	var/is_outside = OUTSIDE_AREA
+	var/last_outside_check = OUTSIDE_UNCERTAIN
+
+/datum/rad_resist/turf
+	alpha_particle_resist = 38 MEGA ELECTRONVOLT
+	beta_particle_resist = 50 KILO ELECTRONVOLT
+	hawking_resist = 81 MILLI ELECTRONVOLT
+
 /turf/Initialize(mapload, ...)
 	. = ..()
 	if(dynamic_lighting)
@@ -48,11 +89,23 @@
 	else
 		luminosity = 1
 
+	if(!mapload)
+		SSair.mark_for_update(src)
+
 	RecalculateOpacity()
+	update_astar_node()
+	update_graphic()
 
 /turf/Destroy()
 	if(!changing_turf)
 		util_crash_with("Improper turf qdel. Do not qdel turfs directly.")
+
+	if(zone)
+		if(can_safely_remove_from_zone())
+			c_copy_air()
+			zone.remove(src)
+		else
+			zone.rebuild()
 
 	changing_turf = FALSE
 	remove_cleanables()
@@ -296,16 +349,14 @@ var/const/enterloopsanity = 100
 /turf/allow_drop()
 	return TRUE
 
-/turf/_examine_text(mob/user, infix, suffix)
+/turf/examine(mob/user, infix)
 	. = ..()
 
 	if(hasHUD(user, HUD_SCIENCE))
-		. += "\nStopping Power:"
+		. += "Stopping Power:"
 
-		. += "\nα-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(rad_resist[RADIATION_ALPHA_PARTICLE]), "eV", 3)]"
-		. += "\nβ-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(rad_resist[RADIATION_BETA_PARTICLE]), "eV", 3)]"
-
-	return .
+		. += "α-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(get_rad_resist_value(rad_resist_type, RADIATION_ALPHA_PARTICLE)), "eV", 3)]"
+		. += "β-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(get_rad_resist_value(rad_resist_type, RADIATION_BETA_PARTICLE)), "eV", 3)]"
 
 /turf/proc/get_footstep_sound()
 	if(footstep_sound)
@@ -319,3 +370,101 @@ var/const/enterloopsanity = 100
 	turf_height = max_height
 	for(var/mob/M in contents)
 		M.update_height_offset(turf_height)
+
+/// Used for astar pathfinding
+/turf/proc/__get_astar_linked_nodes()
+	return list()
+
+/// Used for astar pathfinding
+/turf/proc/__get_astar_node_mask()
+	. = density ? NODE_DENSE_BIT : 0
+	. |= NODE_TURF_BIT
+
+/turf/proc/__get_astar_node()
+	return list(
+		"position" = list("x" = x, "y" = y, "z" = z),
+		"mask" = __get_astar_node_mask(),
+		"links" = __get_astar_linked_nodes(),
+	)
+
+/turf/proc/update_astar_node()
+	var/result = rustg_update_nodes_astar(json_encode(list(__get_astar_node())))
+
+	if(result != "1")
+		CRASH(result)
+
+// Updates turf participation in ZAS according to outside status. Must be called whenever the outside status of a turf may change.
+/turf/proc/update_external_atmos_participation()
+	var/old_outside = last_outside_check
+	last_outside_check = OUTSIDE_UNCERTAIN
+	if(is_outside())
+		if(zone && external_atmosphere_participation)
+			if(can_safely_remove_from_zone())
+				zone.remove(src)
+			else
+				zone.rebuild()
+	else if(!zone && zone_membership_candidate && old_outside == OUTSIDE_YES)
+		// Set the turf's air to the external atmosphere to add to its new zone.
+		air = get_external_air(FALSE)
+
+	SSair.mark_for_update(src)
+
+/turf/proc/is_outside()
+
+	// Can't rain inside or through solid walls.
+	// TODO: dense structures like full windows should probably also block weather.
+	if(density)
+		return OUTSIDE_NO
+
+	if(last_outside_check != OUTSIDE_UNCERTAIN)
+		return last_outside_check
+
+	// What is our local outside value?
+	// Some turfs can be roofed irrespective of the turf above them in multiz.
+	// I have the feeling this is redundat as a roofed turf below max z will
+	// have a floor above it, but ah well.
+	. = is_outside
+	if(. == OUTSIDE_AREA)
+		var/area/A = get_area(src)
+		var/is_area_outside = (A.area_flags & AREA_FLAG_EXTERNAL) ? TRUE : FALSE
+		. = A ? is_area_outside : OUTSIDE_NO
+
+	// If we are in a multiz volume and not already inside, we return
+	// the outside value of the highest unenclosed turf in the stack.
+	if(HasAbove(z))
+		. =  OUTSIDE_YES // assume for the moment we're unroofed until we learn otherwise.
+		var/turf/top_of_stack = src
+		while(HasAbove(top_of_stack.z))
+			var/turf/next_turf = GetAbove(top_of_stack)
+			if(!next_turf.is_open())
+				return OUTSIDE_NO
+			top_of_stack = next_turf
+		// If we hit the top of the stack without finding a roof, we ask the upmost turf if we're outside.
+		. = top_of_stack.is_outside()
+	last_outside_check = . // Cache this for later calls.
+
+/turf/proc/set_outside(new_outside)
+	if(is_outside == new_outside)
+		return FALSE
+
+	is_outside = new_outside
+	update_external_atmos_participation()
+
+	if(!HasBelow(z))
+		return TRUE
+
+	// Invalidate the outside check cache for turfs below us.
+	var/turf/checking = src
+	while(HasBelow(checking.z))
+		checking = GetBelow(checking)
+		if(!isturf(checking))
+			break
+
+		checking.update_external_atmos_participation()
+		if(!checking.is_open())
+			break
+
+	return TRUE
+
+/turf/proc/is_open()
+	return FALSE

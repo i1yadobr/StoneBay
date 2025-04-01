@@ -1,3 +1,4 @@
+
  /**
   * StonedMC
   *
@@ -287,7 +288,10 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	var/list/subsystems_to_check
 	//the actual loop.
 	while (1)
+		rustg_prom_counter_inc(PROM_MASTER_ITERATIONS, null)
+
 		tickdrift = max(0, MC_AVERAGE_FAST(tickdrift, (((REALTIMEOFDAY - init_timeofday) - (world.time - init_time)) / world.tick_lag)))
+
 		var/starting_tick_usage = TICK_USAGE
 		if (processing <= 0)
 			current_ticklimit = TICK_LIMIT_RUNNING
@@ -504,11 +508,12 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 				continue
 
 			queue_node.ticks = MC_AVERAGE(queue_node.ticks, queue_node.paused_ticks)
-			tick_usage += queue_node.paused_tick_usage
 
+			tick_usage += queue_node.paused_tick_usage
 			queue_node.tick_usage = MC_AVERAGE_FAST(queue_node.tick_usage, tick_usage)
 
 			queue_node.cost = MC_AVERAGE_FAST(queue_node.cost, TICK_DELTA_TO_MS(tick_usage))
+
 			queue_node.paused_ticks = 0
 			queue_node.paused_tick_usage = 0
 

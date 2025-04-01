@@ -250,29 +250,31 @@
 	area.apc = src
 	update_icon()
 
-/obj/machinery/power/apc/_examine_text(mob/user)
+/obj/machinery/power/apc/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 1)
 		if(stat & BROKEN)
-			. += "\nLooks broken."
+			. += "Looks broken."
 			return
+
 		if(opened)
 			if(has_electronics && terminal)
-				. += "\nThe cover is [opened==2?"removed":"open"] and the power cell is [ cell ? "installed" : "missing"]."
+				. += "The cover is [opened==2?"removed":"open"] and the power cell is [ cell ? "installed" : "missing"]."
 			else if (!has_electronics && terminal)
-				. += "\nThere are some wires but no any electronics."
+				. += "There are some wires but no any electronics."
 			else if (has_electronics && !terminal)
-				. += "\nElectronics installed but not wired."
+				. += "Electronics installed but not wired."
 			else /* if (!has_electronics && !terminal) */
-				. += "\nThere is no electronics nor connected wires."
+				. += "There is no electronics nor connected wires."
 
 		else
 			if (stat & MAINT)
-				. += "\nThe cover is closed. Something wrong with it: it doesn't work."
+				. += "The cover is closed. Something wrong with it: it doesn't work."
 			else if (hacker && !hacker.hacked_apcs_hidden)
-				. += "\nThe cover is locked."
+				. += "The cover is locked."
 			else
-				. += "\nThe cover is closed."
+				. += "The cover is closed."
 
 // update the APC icon to show the three base states
 // also add overlays for indicator lights
@@ -410,7 +412,7 @@
 			playsound(src.loc, 'sound/items/Crowbar.ogg', 50, 1)
 			to_chat(user, "You are trying to remove the power control board...")//lpeters - fixed grammar issues
 
-			if(do_after(user, 50, src))
+			if(do_after(user, 50, src, luck_check_type = LUCK_CHECK_ENG))
 				if (has_electronics==1)
 					has_electronics = 0
 					if ((stat & BROKEN))
@@ -487,7 +489,7 @@
 		else if(stat & (BROKEN|MAINT))
 			to_chat(user, "Nothing happens.")
 		else if(hacker && !hacker.hacked_apcs_hidden)
-			playsound(src.loc, 'sound/signals/error7.ogg', 25)
+			playsound(src.loc, 'sound/signals/error31.ogg', 50)
 			to_chat(user, "<span class='warning'>Access denied.</span>")
 		else
 			if(src.allowed(usr) && !isWireCut(APC_WIRE_IDSCAN))
@@ -496,7 +498,7 @@
 				to_chat(user, "You [ locked ? "lock" : "unlock"] the APC interface.")
 				update_icon()
 			else
-				playsound(src.loc, 'sound/signals/error7.ogg', 25)
+				playsound(src.loc, 'sound/signals/error31.ogg', 50)
 				to_chat(user, "<span class='warning'>Access denied.</span>")
 	else if (isCoil(W) && !terminal && opened && has_electronics!=2)
 		var/turf/T = loc
@@ -510,7 +512,7 @@
 		user.visible_message("<span class='warning'>[user.name] adds cables to the APC frame.</span>", \
 							"You start adding cables to the APC frame...")
 		playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, 1)
-		if(do_after(user, 20, src))
+		if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 			if (C.amount >= 10 && !terminal && opened && has_electronics != 2)
 				var/obj/structure/cable/N = T.get_cable_node()
 				if (prob(50) && electrocute_mob(usr, N, N))
@@ -533,7 +535,7 @@
 		user.visible_message("<span class='warning'>[user.name] dismantles the power terminal from [src].</span>", \
 							"You begin to cut the cables...")
 		playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, 1)
-		if(do_after(user, 50, src))
+		if(do_after(user, 50, src, luck_check_type = LUCK_CHECK_ENG))
 			if(terminal && opened && has_electronics!=2)
 				if (prob(50) && electrocute_mob(usr, terminal.powernet, terminal))
 					var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
@@ -548,7 +550,7 @@
 		user.visible_message("<span class='warning'>[user.name] inserts the power control board into [src].</span>", \
 							"You start to insert the power control board into the frame...")
 		playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, 1)
-		if(do_after(user, 10, src))
+		if(do_after(user, 10, src, luck_check_type = LUCK_CHECK_ENG))
 			if(has_electronics==0)
 				has_electronics = 1
 				reboot() //completely new electronics
@@ -559,29 +561,30 @@
 		return
 	else if(isWelder(W) && opened && has_electronics==0 && !terminal)
 		var/obj/item/weldingtool/WT = W
-		if (WT.get_fuel() < 3)
-			to_chat(user, "<span class='warning'>You need more welding fuel to complete this task.</span>")
-			return
 		user.visible_message("<span class='warning'>[user.name] welds [src].</span>", \
 							"You start welding the APC frame...", \
 							"You hear welding.")
-		playsound(src.loc, 'sound/items/Welder.ogg', 50, 1)
-		if(do_after(user, 50, src))
-			if(!src || !WT.remove_fuel(3, user)) return
-			if (emagged || (stat & BROKEN) || opened==2)
-				new /obj/item/stack/material/steel(loc)
-				user.visible_message(\
-					"<span class='warning'>[src] has been cut apart by [user.name] with the weldingtool.</span>",\
-					"<span class='notice'>You disassembled the broken APC frame.</span>",\
-					"You hear welding.")
-			else
-				new /obj/item/frame/apc(loc)
-				user.visible_message(\
-					"<span class='warning'>[src] has been cut from the wall by [user.name] with the weldingtool.</span>",\
-					"<span class='notice'>You cut the APC frame from the wall.</span>",\
-					"You hear welding.")
-			qdel(src)
+		if(!WT.use_tool(src, user, delay = 5 SECONDS, amount = 5))
 			return
+
+		if(QDELETED(src) || !user)
+			return
+
+		if(emagged || (stat & BROKEN) || opened==2)
+			new /obj/item/stack/material/steel(loc)
+			user.visible_message(\
+				"<span class='warning'>[src] has been cut apart by [user.name] with the weldingtool.</span>",\
+				"<span class='notice'>You disassembled the broken APC frame.</span>",\
+				"You hear welding.")
+		else
+			new /obj/item/frame/apc(loc)
+			user.visible_message(\
+				"<span class='warning'>[src] has been cut from the wall by [user.name] with the weldingtool.</span>",\
+				"<span class='notice'>You cut the APC frame from the wall.</span>",\
+				"You hear welding.")
+
+		qdel(src)
+		return
 	else if (istype(W, /obj/item/frame/apc) && opened && emagged)
 		emagged = 0
 		if (opened==2)
@@ -597,7 +600,7 @@
 			return
 		user.visible_message("<span class='warning'>[user.name] replaces the damaged APC frame with a new one.</span>",\
 							"You begin to replace the damaged APC frame...")
-		if(do_after(user, 50, src))
+		if(do_after(user, 50, src, luck_check_type = LUCK_CHECK_ENG))
 			user.visible_message(\
 				"<span class='notice'>[user.name] has replaced the damaged APC frame with new one.</span>",\
 				"You replace the damaged APC frame with new one.")
@@ -658,7 +661,7 @@
 			to_chat(user, "Nothing happens.")
 		else
 			flick("apc-spark", src)
-			if (do_after(user,6,src))
+			if (do_after(user,6,src, luck_check_type = LUCK_CHECK_ENG))
 				if(prob(50))
 					playsound(src.loc, 'sound/effects/computer_emag.ogg', 25)
 					emagged = 1

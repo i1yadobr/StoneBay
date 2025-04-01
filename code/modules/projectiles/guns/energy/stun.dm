@@ -174,10 +174,11 @@
 		subtype = decls_repository.get_decl(subtype)
 	update_subtype()
 
-/obj/item/gun/energy/security/_examine_text(mob/user)
+/obj/item/gun/energy/security/examine(mob/user, infix)
 	. = ..()
+
 	if(owner)
-		. += "\nIt is assigned to <b>[owner]</b>."
+		. += "It is assigned to <b>[owner]</b>."
 
 /obj/item/gun/energy/security/proc/update_subtype()
 	var/decl/taser_types/tt = subtype
@@ -231,7 +232,7 @@
 
 /obj/item/gun/energy/security/rifle
 	name = "taser rifle"
-	icon_state = "taser_rifle"
+	icon_state = "taser_rifle" //TODO: Draw a normal sprite for one-handed holding
 	subtype = /decl/taser_types/rifle
 
 /decl/taser_types

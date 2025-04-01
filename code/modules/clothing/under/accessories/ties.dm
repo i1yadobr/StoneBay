@@ -54,8 +54,10 @@
 	..()
 
 /obj/item/clothing/accessory/bowtie/on_attached(obj/item/clothing/under/S, mob/user as mob)
-	..()
-	has_suit.verbs += /obj/item/clothing/accessory/bowtie/verb/toggle
+	. = ..()
+	if(.)
+		has_suit.verbs += /obj/item/clothing/accessory/bowtie/verb/toggle
+	return .
 
 /obj/item/clothing/accessory/bowtie/on_removed(mob/user as mob)
 	if(has_suit)
@@ -107,10 +109,6 @@
 	name = "vynil corset"
 	desc = "Have fun.."
 	icon_state = "vynilcorset"
-
-/obj/item/clothing/accessory/choker
-	name = "choker"
-	icon_state = "choker_color"
 
 /obj/item/clothing/accessory/bowtie/ugly
 	name = "horrible bowtie"

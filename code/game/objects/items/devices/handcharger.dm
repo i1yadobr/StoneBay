@@ -30,6 +30,9 @@
 	. = ..()
 
 /obj/item/device/handcharger/proc/remove_cell(mob/user)
+	if(!my_cell)
+		return FALSE
+
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
 		H.pick_or_drop(my_cell)
@@ -41,14 +44,17 @@
 	my_cell = null
 	update_icon()
 
-/obj/item/device/handcharger/_examine_text(mob/user)
+	return TRUE
+
+/obj/item/device/handcharger/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 2)
 		return
 
-	. += "\nThere's [my_cell ? "a" : "no"] power cell in \the [src]."
+	. += "There's [my_cell ? "a" : "no"] power cell in \the [src]."
 	if(my_cell)
-		. += "\nCurrent charge: [my_cell.charge]"
+		. += "Current charge: [my_cell.charge]"
 
 /obj/item/device/handcharger/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/cell))
@@ -107,8 +113,8 @@
 
 /obj/item/device/handcharger/attack_hand(mob/user)
 	if(user.get_inactive_hand() == src)
-		remove_cell(user)
-		return
+		if(remove_cell(user))
+			return
 	return ..()
 
 /obj/item/device/handcharger/attack_self(mob/user)

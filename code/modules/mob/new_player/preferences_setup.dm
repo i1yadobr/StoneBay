@@ -17,17 +17,17 @@
 		h_style = random_hair_style(gender, species)
 		f_style = random_facial_hair_style(gender, species)
 		if(current_species)
-			if(current_species.appearance_flags & HAS_A_SKIN_TONE)
+			if(current_species.species_appearance_flags & HAS_A_SKIN_TONE)
 				s_tone = current_species.get_random_skin_tone() || s_tone
-			if(current_species.appearance_flags & HAS_EYE_COLOR)
+			if(current_species.species_appearance_flags & HAS_EYE_COLOR)
 				ASSIGN_LIST_TO_COLORS(current_species.get_random_eye_color(), r_eyes, g_eyes, b_eyes)
 			else
 				r_eyes = hex2num(copytext(current_species.default_eye_color, 2, 4))
 				g_eyes = hex2num(copytext(current_species.default_eye_color, 4, 6))
 				b_eyes = hex2num(copytext(current_species.default_eye_color, 6, 8))
-			if(current_species.appearance_flags & HAS_SKIN_COLOR)
+			if(current_species.species_appearance_flags & HAS_SKIN_COLOR)
 				ASSIGN_LIST_TO_COLORS(current_species.get_random_skin_color(), r_skin, g_skin, b_skin)
-			if(current_species.appearance_flags & HAS_HAIR_COLOR)
+			if(current_species.species_appearance_flags & HAS_HAIR_COLOR)
 				var/hair_colors = current_species.get_random_hair_color()
 				if(hair_colors)
 					ASSIGN_LIST_TO_COLORS(hair_colors, r_hair, g_hair, b_hair)
@@ -43,7 +43,7 @@
 				if(hair_colors)
 					ASSIGN_LIST_TO_COLORS(hair_colors, r_s_hair, g_s_hair, b_s_hair)
 
-		if(current_species.appearance_flags & HAS_UNDERWEAR)
+		if(current_species.species_appearance_flags & HAS_UNDERWEAR)
 			all_underwear.Cut()
 			for(var/datum/category_group/underwear/WRC in GLOB.underwear.categories)
 				var/datum/category_item/underwear/WRI = pick(WRC.items)
@@ -67,14 +67,16 @@
 	mannequin.update_icon = TRUE
 
 	var/datum/job/previewJob
+	var/list/selected_jobs = (job_high ? list(job_high) : list()) | job_medium | job_low
 	if(equip_preview_mob && job_master)
-		// Determine what job is marked as 'High' priority, and dress them up as such.
+		// Determine what job is the highest priority, and dress them up as such.
+		// Order of the same priority jobs is not enforced.
 		if("Assistant" in job_low)
 			previewJob = job_master.GetJob("Assistant")
 		else
-			for(var/datum/job/job in job_master.occupations)
-				if(job.title == job_high)
-					previewJob = job
+			for(var/job_title in selected_jobs)
+				previewJob = job_master.occupations_by_title[job_title]
+				if(previewJob)
 					break
 	else
 		return
@@ -89,6 +91,8 @@
 
 	if((equip_preview_mob & EQUIP_PREVIEW_LOADOUT) && !previewJob?.preview_override)
 		// Equip custom gear loadout, replacing any job items
+		var/wrist_underwear_equipped = FALSE
+		var/neck_underwear_equipped = FALSE
 		var/list/loadout_taken_slots = list()
 		var/list/accessories = list()
 
@@ -114,9 +118,25 @@
 				if(!permitted)
 					continue
 
+				if(G.is_departmental() && previewJob)
+					if(previewJob)
+						G.set_selected_jobs(previewJob, selected_jobs)
+					else
+						G.set_selected_jobs(new DEFAULT_JOB_TYPE(), selected_jobs)
+
 				if(G.slot == slot_tie)
 					accessories.Add(G)
 					continue
+
+				if(ispath(G.path, /obj/item/underwear/wrist) && !wrist_underwear_equipped)
+					G.spawn_on_mob(mannequin, gears[G.display_name])
+					wrist_underwear_equipped = TRUE
+					update_icon = TRUE
+
+				if(ispath(G.path, /obj/item/underwear/neck) && !neck_underwear_equipped)
+					G.spawn_on_mob(mannequin, gears[G.display_name])
+					neck_underwear_equipped = TRUE
+					update_icon = TRUE
 
 				if(G.slot && !(G.slot in loadout_taken_slots) && G.spawn_on_mob(mannequin, gears[G.display_name]))
 					loadout_taken_slots.Add(G.slot)

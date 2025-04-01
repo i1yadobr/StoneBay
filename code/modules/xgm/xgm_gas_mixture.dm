@@ -1,3 +1,5 @@
+#define TEMPERATURE_OVERLAY_HEAT "t_overlay_heat"
+
 /datum/gas_mixture
 	//Associative list of gas moles.
 	//Gases with 0 moles are not tracked and are pruned by update_values()
@@ -343,11 +345,6 @@
 
 	return 1
 
-
-/datum/gas_mixture/proc/react()
-	return zburn(null, force_burn=FALSE, no_check=FALSE) //could probably just call zburn() here with no args but I like being explicit.
-
-
 //Rechecks the gas_mixture and adjusts the graphic list if needed.
 //Two lists can be passed by reference if you need know specifically which graphics were added and removed.
 /datum/gas_mixture/proc/check_tile_graphic(list/graphic_add = null, list/graphic_remove = null)
@@ -364,6 +361,14 @@
 				if(!graphic_add)
 					graphic_add = list()
 				graphic_add += gas_data.tile_overlay[g]
+	. = 0
+
+	var/atom/movable/gas_overlay/temp_overlay/heat/heat_overlay = get_temperature_overlay(TEMPERATURE_OVERLAY_HEAT)
+	if(temperature >= CARBON_LIFEFORM_FIRE_RESISTANCE)
+		if(!LAZYISIN(graphic, heat_overlay))
+			graphic_add += heat_overlay
+	else if(heat_overlay in graphic)
+		graphic_remove += heat_overlay
 
 	. = 0
 	//Apply changes
@@ -374,6 +379,16 @@
 		graphic -= graphic_remove
 		. = 1
 
+/datum/gas_mixture/proc/get_temperature_overlay(overlay_type)
+	var/atom/movable/gas_overlay/temp_overlay/heat/overlay = LAZYACCESS(gas_data.temp_overlay_cache, overlay_type)
+	if(!isnull(overlay))
+		return overlay
+
+	if(overlay_type == TEMPERATURE_OVERLAY_HEAT)
+		overlay = new /atom/movable/gas_overlay/temp_overlay/heat(null, TEMPERATURE_OVERLAY_HEAT)
+		LAZYSET(gas_data.temp_overlay_cache, overlay_type, overlay)
+
+	return overlay
 
 //Simpler version of merge(), adjusts gas amounts directly and doesn't account for temperature or group_multiplier.
 /datum/gas_mixture/proc/add(datum/gas_mixture/right_side)
@@ -510,3 +525,5 @@
 	var/M = get_total_moles()
 	if(M)
 		return get_mass()/M
+
+#undef TEMPERATURE_OVERLAY_HEAT

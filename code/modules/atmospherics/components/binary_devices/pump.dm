@@ -54,7 +54,7 @@ Thus, the two variables affect pump operation are set in New():
 	if(!allowed(user))
 		return
 
-	show_splash_text(user, "toggled [use_power ? "off" : "on"]")
+	show_splash_text(user, "toggled [use_power ? "off" : "on"]", "You toggle \the [src] [use_power ? "off" : "on"].")
 	update_use_power(!use_power)
 	update_icon()
 
@@ -69,7 +69,7 @@ Thus, the two variables affect pump operation are set in New():
 		return
 
 	target_pressure = max_pressure_setting
-	show_splash_text(user, "target pressure set to [target_pressure] kPa")
+	show_splash_text(user, "target pressure set to [target_pressure] kPa", "You set the target pressure to <b>[target_pressure] kPa</b>.")
 
 /obj/machinery/atmospherics/binary/pump/on
 	icon_state = "map_on"
@@ -177,6 +177,7 @@ Thus, the two variables affect pump operation are set in New():
 		return 0
 
 	if(signal.data["power"])
+		playsound(src.loc, 'sound/effects/using/switch/lever2.ogg', 50)
 		if(text2num(signal.data["power"]))
 			update_use_power(POWER_USE_IDLE)
 		else
@@ -217,6 +218,7 @@ Thus, the two variables affect pump operation are set in New():
 	if((. = ..())) return
 
 	if(href_list["power"])
+		playsound(src.loc, 'sound/effects/using/switch/lever2.ogg', 50)
 		update_use_power(!use_power)
 		. = 1
 
@@ -249,10 +251,10 @@ Thus, the two variables affect pump operation are set in New():
 		return 1
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 	to_chat(user, SPAN_NOTICE("You begin to unfasten \the [src]..."))
-	if (do_after(user, 40, src))
+	if (do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		user.visible_message( \
 			SPAN_NOTICE("\The [user] unfastens \the [src]."), \
 			SPAN_NOTICE("You have unfastened \the [src]."), \
 			"You hear ratchet.")
-		new /obj/item/pipe(loc, make_from=src)
+		new /obj/item/pipe(loc, null, null, src)
 		qdel(src)

@@ -3,7 +3,9 @@
 	name = "SweatMAX"
 	desc = "An exercise aid and nutrition supplement vendor that preys on your inadequacy."
 
+	icon = 'icons/obj/machines/vending/fitness.dmi'
 	icon_state = "fitness"
+	light_color = "#EAEAEA"
 
 	vend_delay = 6
 	use_vend_state = TRUE
@@ -24,7 +26,11 @@
 		/obj/item/reagent_containers/food/packaged/nutribar = 8,
 		/obj/item/reagent_containers/food/liquidfood = 8,
 		/obj/item/reagent_containers/pill/diet = 8,
-		/obj/item/towel/random = 8
+		/obj/item/towel/random = 8,
+		/obj/item/clothing/gloves/boxing = 2,
+		/obj/item/clothing/gloves/boxing/blue = 2,
+		/obj/item/clothing/gloves/boxing/green = 2,
+		/obj/item/clothing/gloves/boxing/yellow = 2,
 		)
 
 	illegal = list(
@@ -39,7 +45,11 @@
 		/obj/item/reagent_containers/food/packaged/nutribar = 5,
 		/obj/item/reagent_containers/food/liquidfood = 5,
 		/obj/item/reagent_containers/pill/diet = 25,
-		/obj/item/towel/random = 40
+		/obj/item/towel/random = 40,
+		/obj/item/clothing/gloves/boxing = 50,
+		/obj/item/clothing/gloves/boxing/blue = 50,
+		/obj/item/clothing/gloves/boxing/green = 50,
+		/obj/item/clothing/gloves/boxing/yellow = 50,
 		)
 
 /obj/item/vending_cartridge/fitness

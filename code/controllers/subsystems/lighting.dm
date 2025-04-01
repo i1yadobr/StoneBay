@@ -31,7 +31,8 @@ SUBSYSTEM_DEF(lighting)
 
 /datum/controller/subsystem/lighting/stat_entry()
 	var/list/out = list("Queued:{L:[light_queue.len] C:[corner_queue.len] O:[overlay_queue.len]}")
-	for (var/stype in stats_lists)
+
+	for(var/stype in stats_lists)
 		out += "[stype] updates: [jointext(stats_lists[stype], " | ")]"
 
 	..(out.Join("\n"))

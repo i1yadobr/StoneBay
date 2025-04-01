@@ -185,11 +185,18 @@
 	if(admin_datum)
 		if(admin_datum in GLOB.deadmined_list)
 			deadmin_holder = admin_datum
-			verbs |= /client/proc/readmin_self
+			src.verbs |= /client/proc/readmin_self
 		else
 			holder = admin_datum
 			GLOB.admins += src
 		admin_datum.owner = src
+	else if(config.admin.promote_localhost)
+		var/static/localhost_addresses = list("127.0.0.1", "::1")
+
+		if(isnull(address) || (address in localhost_addresses))
+			var/datum/admins/A = new /datum/admins("Host", R_ALL, ckey)
+
+			A.associate(src)
 
 	else if((config.multiaccount.panic_bunker != 0) && (get_player_age(ckey) < config.multiaccount.panic_bunker))
 		var/player_age = get_player_age(ckey)
@@ -209,14 +216,15 @@
 	SSeams.CollectDataForClient(src)
 
 	setup_preferences()
+	view_size = new(src, get_screen_size(TRUE))
 
 	. = ..()	// calls mob.Login()
 
-	if(byond_version < config.general.client_min_major_version || byond_build < config.general.client_min_minor_version)
-		to_chat(src, "<b><center><font size='5' color='red'>Your <font color='blue'>BYOND</font> version is too out of date!</font><br>\
-		<font size='3'>Please update it to [config.general.client_min_major_version].[config.general.client_min_minor_version].</font></center>")
-		spawn(1)
-			qdel(src)
+	if(byond_version < config.general.client_min_major_version || byond_build < config.general.client_min_minor_version || (byond_build in config.general.client_blacklisted_minor_versions))
+		to_chat(src, "<b><center><font size='5' color='red'>Your <font color='blue'>BYOND</font> version is [(byond_build in config.general.client_blacklisted_minor_versions) ? "blacklisted" : "too out of date!"]</font><br>\
+		<font size='3'>Please update it to [config.general.client_min_major_version].[config.general.client_recommended_minor_version].</font>\
+		<font size='3'>You can use this link: https://secure.byond.com/download/build/515/</font></center>")
+		QDEL_IN(src, 1)
 		return
 
 	GLOB.using_map.map_info(src)
@@ -268,9 +276,7 @@
 		qdel(src)
 		return
 
-/*	if(holder)
-		src.control_freak = 0 // Devs need 0 for profiler access
-*/
+	load_luck()
 	//////////////
 	//DISCONNECT//
 	//////////////
@@ -315,7 +321,6 @@
 	return FALSE
 
 /client/proc/log_client_to_db()
-
 	if(IsGuestKey(src.key))
 		return
 
@@ -417,6 +422,8 @@
 		'html/images/stamp_images/stamp-cargo.png',
 		'html/images/stamp_images/stamp-intaff.png',
 		'html/images/stamp_images/stamp-ward.png',
+		'html/images/stamp_images/stamp-ntd.png',
+		'html/images/stamp_images/stamp-merchant.png',
 		'html/search.js',
 		'html/panels.css',
 		'html/spacemag.css',
@@ -468,64 +475,78 @@
 	if(world.byond_version >= 511 && byond_version >= 511 && client_fps >= CLIENT_MIN_FPS && client_fps <= CLIENT_MAX_FPS)
 		fps = client_fps
 
-/client/proc/update_chat_position(use_alternative)
-	var/input_height = 0
-	var/mode = get_preference_value(/datum/client_preference/chat_position)
-	var/currently_alternative = (winget(src, "input", "is-default") == "false") ? TRUE : FALSE
+#define VERTICAL_INPUT_MARGIN 9
 
-	// Hell
-	if(mode == GLOB.PREF_YES && !currently_alternative)
-		input_height = winget(src, "input", "size")
-		input_height = text2num(splittext(input_height, "x")[2])
+/**
+ * Manages `input` and `input_alt` visibility, due to skin limitations this proc is extreely
+ * snowflake, thus be sure to change `VERTICAL_INPUT_MARGIN` when moving it's elements
+ * inside `skin.dmf`.
+ *
+ * Known bugs:
+ * - Doesn't mount instantly due to user prefs loading.
+ * - Doesn't display typing indicator 'cause code copypasta is bad.
+ */
+/client/proc/update_chat_position(new_position)
+	var/alternate = winget(src, "input", "is-default") == "false"
+
+	if(!alternate && new_position == GLOB.PREF_LEGACY)
+		var/list/game_size = splittext(winget(src, "mainvsplit", "size"), "x")
+		var/list/input_size = splittext(winget(src, "input_alt", "size"), "x")
+
+		winset(src, "mainvsplit", "size=[game_size[1]]x[text2num(game_size[2]) - text2num(input_size[2]) - VERTICAL_INPUT_MARGIN]")
+
+		var/list/chat_size = splittext(winget(src, "outputwindow", "size"), "x")
+
+		winset(src, "browseroutput", "size=[chat_size[1]]x[chat_size[2]]")
+		winset(src, "output", "size=[chat_size[1]]x[chat_size[2]]")
 
 		winset(src, "input_alt", "is-visible=true;is-disabled=false;is-default=true")
-		winset(src, "hotkey_toggle_alt", "is-visible=true;is-disabled=false;is-default=true")
 		winset(src, "saybutton_alt", "is-visible=true;is-disabled=false;is-default=true")
+		winset(src, "hotkey_toggle_alt", "is-visible=true;is-disabled=false;is-default=true")
 
 		winset(src, "input", "is-visible=false;is-disabled=true;is-default=false")
-		winset(src, "hotkey_toggle", "is-visible=false;is-disabled=true;is-default=false")
 		winset(src, "saybutton", "is-visible=false;is-disabled=true;is-default=false")
+		winset(src, "hotkey_toggle", "is-visible=false;is-disabled=true;is-default=false")
 
-		var/current_size = splittext(winget(src, "outputwindow.output", "size"), "x")
-		var/new_size = "[current_size[1]]x[text2num(current_size[2]) - input_height]"
-		winset(src, "outputwindow.output", "size=[new_size]")
-		winset(src, "outputwindow.browseroutput", "size=[new_size]")
+	else if(alternate && new_position == GLOB.PREF_MODERN)
+		var/list/game_size = splittext(winget(src, "mainvsplit", "size"), "x")
+		var/list/alt_input_size = splittext(winget(src, "input_alt", "size"), "x")
 
-		current_size = splittext(winget(src, "mainwindow.mainvsplit", "size"), "x")
-		new_size = "[current_size[1]]x[text2num(current_size[2]) + input_height]"
-		winset(src, "mainwindow.mainvsplit", "size=[new_size]")
-	else if(mode == GLOB.PREF_NO && currently_alternative)
-		input_height = winget(src, "input_alt", "size")
-		input_height = text2num(splittext(input_height, "x")[2])
+		winset(src, "mainvsplit", "size=[game_size[1]]x[text2num(game_size[2]) + text2num(alt_input_size[2]) + 9]")
+
+		var/list/chat_size = splittext(winget(src, "outputwindow", "size"), "x")
+		var/list/input_size = splittext(winget(src, "input", "size"), "x")
+
+		var/output_height = text2num(chat_size[2]) - text2num(input_size[2]) - VERTICAL_INPUT_MARGIN
+
+		winset(src, "browseroutput", "size=[chat_size[1]]x[output_height]")
+		winset(src, "output", "size=[chat_size[1]]x[output_height]")
 
 		winset(src, "input_alt", "is-visible=false;is-disabled=true;is-default=false")
-		winset(src, "hotkey_toggle_alt", "is-visible=false;is-disabled=true;is-default=false")
 		winset(src, "saybutton_alt", "is-visible=false;is-disabled=true;is-default=false")
+		winset(src, "hotkey_toggle_alt", "is-visible=false;is-disabled=true;is-default=false")
 
 		winset(src, "input", "is-visible=true;is-disabled=false;is-default=true")
-		winset(src, "hotkey_toggle", "is-visible=true;is-disabled=false;is-default=true")
 		winset(src, "saybutton", "is-visible=true;is-disabled=false;is-default=true")
+		winset(src, "hotkey_toggle", "is-visible=true;is-disabled=false;is-default=true")
 
-		var/current_size = splittext(winget(src, "outputwindow.output", "size"), "x")
-		var/new_size = "[current_size[1]]x[text2num(current_size[2]) + input_height]"
-		winset(src, "outputwindow.output", "size=[new_size]")
-		winset(src, "outputwindow.browseroutput", "size=[new_size]")
-
-		current_size = splittext(winget(src, "mainwindow.mainvsplit", "size"), "x")
-		new_size = "[current_size[1]]x[text2num(current_size[2]) - input_height]"
-		winset(src, "mainwindow.mainvsplit", "size=[new_size]")
+#undef VERTICAL_INPUT_MARGIN
 
 /client/proc/toggle_fullscreen(new_value)
 	if((new_value == GLOB.PREF_BASIC) || (new_value == GLOB.PREF_FULL))
 		winset(src, "mainwindow", "is-maximized=false;can-resize=false;titlebar=false")
 		if(new_value == GLOB.PREF_FULL)
-			winset(src, "mainwindow", "menu=null;statusbar=false")
-		winset(src, "mainwindow.mainvsplit", "pos=0x0")
+			winset(src, "mainwindow", "menu=null;")
 	else
 		winset(src, "mainwindow", "is-maximized=false;can-resize=true;titlebar=true")
-		winset(src, "mainwindow", "menu=menu;statusbar=true")
-		winset(src, "mainwindow.mainvsplit", "pos=3x0")
+		winset(src, "mainwindow", "menu=menu;")
 	winset(src, "mainwindow", "is-maximized=true")
+
+/client/proc/attempt_fit_viewport()
+	if(get_preference_value("AUTOFIT") != GLOB.PREF_YES)
+		return
+
+	fit_viewport()
 
 /client/verb/fit_viewport()
 	set name = "Fit Viewport"
@@ -533,7 +554,7 @@
 	set desc = "Fit the width of the map window to match the viewport"
 
 	// Fetch aspect ratio
-	var/view_size = getviewsize(view)
+	var/view_size = get_view_size(view)
 	var/aspect_ratio = view_size[1] / view_size[2]
 
 	// Calculate desired pixel width using window size and aspect ratio
@@ -614,6 +635,18 @@
 
 	return FALSE
 
+/client/proc/change_view(new_view)
+	if(isnull(new_view))
+		CRASH("change_view was called without an argument")
+
+	view = new_view
+	attempt_fit_viewport()
+	/**
+	 * We create view in 'client/New()' BEFORE client is actually logged in his mob
+	 * Otherwise apply_post_login_preferences() crashes due to view being not initialized.
+	 */
+	mob?.reload_fullscreen()
+
 /client/MouseDrag(src_object, over_object, src_location, over_location, src_control, over_control, params)
 	. = ..()
 	var/mob/living/M = mob
@@ -631,3 +664,139 @@
 	var/mob/living/M = mob
 	if(istype(M) && !M.in_throw_mode)
 		M.OnMouseDown(object, location, control, params)
+
+/client/proc/get_luck_for_type(luck_type)
+	switch(luck_type)
+		if(LUCK_CHECK_GENERAL)
+			return luck_general
+
+		if(LUCK_CHECK_COMBAT)
+			return luck_combat
+
+		if(LUCK_CHECK_ENG)
+			return luck_eng
+
+		if(LUCK_CHECK_MED)
+			return luck_med
+
+		if(LUCK_CHECK_RND)
+			return luck_rnd
+
+/client/proc/load_luck()
+	if(!establish_db_connection())
+		error("Ban database connection failure.")
+		log_misc("Ban database connection failure.")
+		return
+
+	var/DBQuery/query = sql_query({"
+			SELECT
+				luck_level,
+				luck_type
+			FROM
+				erro_ban
+			WHERE
+				(ckey = $ckeytext)
+				AND
+				(
+					bantype = 'LUCK_PERMABAN'
+					OR
+					bantype = 'LUCK_TEMPBAN'
+				)
+				AND
+				isnull(unbanned)
+				[isnull(config.general.server_id) ? "" : " AND server_id = $server_id"]
+			"}, dbcon, list(ckeytext = src.ckey, server_id = config.general.server_id))
+
+	while(query.NextRow())
+		var/luck_level =  text2num(query.item[1])
+		var/luck_type = query.item[2]
+		switch(luck_type)
+			if(LUCK_CHECK_GENERAL)
+				luck_general =luck_level
+			if(LUCK_CHECK_COMBAT)
+				luck_combat = luck_level
+			if(LUCK_CHECK_ENG)
+				luck_eng = luck_level
+			if(LUCK_CHECK_MED)
+				luck_med = luck_level
+			if(LUCK_CHECK_RND)
+				luck_rnd = luck_level
+
+
+
+/client/proc/write_luck(lucktype, luck_level, duration=-1, admin, reason)
+	if(!establish_db_connection())
+		error("Ban database connection failure.")
+		log_misc("Ban database connection failure.")
+		return
+
+	var/datum/admins/admin_datum = admin
+	var/bantype = BANTYPE_PERMA_LUCKBAN
+	if(duration!=-1)
+		bantype = BANTYPE_TEMP_LUCKBAN
+
+	admin_datum.DB_ban_record(bantype,src.mob,duration,reason,null,TRUE,src.ckey,null,src.computer_id,luck_level,lucktype)
+	load_luck()
+
+/client/proc/update_luck()
+	if(!establish_db_connection())
+		error("Ban database connection failure.")
+		log_misc("Ban database connection failure.")
+		return
+
+	var/DBQuery/query = sql_query({"
+			SELECT
+				id,
+				duration,
+				rounds
+			FROM
+				erro_ban
+			WHERE
+				(ckey = $ckeytext)
+				AND
+				bantype = 'LUCK_TEMPBAN'
+				AND
+				isnull(unbanned)
+				[isnull(config.general.server_id) ? "" : " AND server_id = $server_id"]
+			"}, dbcon, list(ckeytext = src.ckey, server_id = config.general.server_id))
+
+	while(query.NextRow())
+		var/id = text2num(query.item[1])
+		var/duration = text2num(query.item[2])
+		var/isRounds = text2num(query.item[3])
+		if(!isRounds)
+			return
+		if(duration>1)
+			sql_query({"
+				UPDATE
+					erro_ban
+				SET
+					duration = $duration
+				WHERE
+					id = $id
+					AND
+					ckey = $ckeytext
+					AND
+					bantype = 'LUCK_TEMPBAN'
+					AND
+					isnull(unbanned)
+					[isnull(config.general.server_id) ? "" : " AND server_id = $server_id"]
+				"}, dbcon, list(id = id, duration = duration-1, ckeytext = src.ckey, server_id = config.general.server_id))
+		else
+			sql_query({"
+				UPDATE
+					erro_ban
+				SET
+					unbanned = 1,
+					unbanned_reason = 'Expired',
+					unbanned_datetime = Now()
+				WHERE
+					id = $id
+					AND
+					ckey = $ckeytext
+					AND
+					bantype = 'LUCK_TEMPBAN'
+					AND
+					isnull(unbanned)
+					[isnull(config.general.server_id) ? "" : " AND server_id = $server_id"]
+				"}, dbcon, list(id = id, ckeytext = src.ckey, server_id = config.general.server_id))

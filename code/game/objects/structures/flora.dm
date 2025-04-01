@@ -12,12 +12,15 @@
 	var/cut_level = PLANT_CUT
 	var/cut_hits = 20
 
+/obj/structure/flora/tree/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
+
 /obj/structure/flora/tree/attackby(obj/item/W, mob/living/user)
 	if(istype(W, /obj/item/material/twohanded/chainsaw))
 		if(do_after(usr, TIME_CUT))
 			playsound(user, 'sound/weapons/chainsaw_attack1.ogg', 25, 1)
 			to_chat(user, SPAN_WARNING("You cut down \the [src] with \the [W]."))
-			if(!istype(get_turf(loc), /turf/simulated/floor/holofloor))
+			if(!(atom_flags & ATOM_FLAG_HOLOGRAM))
 				new /obj/item/stack/material/wood/ten(loc)
 			qdel(src)
 			return
@@ -28,7 +31,7 @@
 		to_chat(user, SPAN_WARNING("You chop \the [src] with \the [W]."))
 		playsound(src, 'sound/effects/fighting/chop3.ogg', 25, 1)
 		if(cut_hits <= 0)
-			if(!istype(get_turf(loc), /turf/simulated/floor/holofloor))
+			if(!(atom_flags & ATOM_FLAG_HOLOGRAM))
 				new /obj/item/stack/material/wood/ten(loc)
 			qdel(src)
 		return

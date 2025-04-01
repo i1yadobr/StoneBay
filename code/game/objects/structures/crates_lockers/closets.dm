@@ -9,12 +9,6 @@
 	w_class = ITEM_SIZE_NO_CONTAINER
 	layer = STRUCTURE_LAYER
 
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 41 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 3.4 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
-
 	var/icon_closed = "closed"
 	var/icon_opened = "open"
 
@@ -49,11 +43,21 @@
 
 	var/intact_closet = TRUE // List operations overhead bad
 
+	rad_resist_type = /datum/rad_resist/closet
+
+/datum/rad_resist/closet
+	alpha_particle_resist = 41 MEGA ELECTRONVOLT
+	beta_particle_resist = 3.4 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
+
 /obj/structure/closet/nodoor
 	nodoor = TRUE
 	opened = TRUE
 	density = FALSE
 	intact_closet = FALSE
+
+/obj/structure/closet/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 5)
 
 /obj/item/shield/closet
 	name = "closet door"
@@ -171,23 +175,24 @@
 /obj/structure/closet/proc/WillContain()
 	return null
 
-/obj/structure/closet/_examine_text(mob/user)
+/obj/structure/closet/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) <= 1 && !opened)
 		var/content_size = 0
 		for(var/atom/movable/AM in src.contents)
 			if(!AM.anchored)
 				content_size += content_size(AM)
 		if(!content_size)
-			. += "\nIt is empty."
+			. += "It is empty."
 		else if(storage_capacity > content_size*4)
-			. += "\nIt is barely filled."
+			. += "It is barely filled."
 		else if(storage_capacity > content_size*2)
-			. += "\nIt is less than half full."
+			. += "It is less than half full."
 		else if(storage_capacity > content_size)
-			. += "\nThere is still some free space."
+			. += "There is still some free space."
 		else
-			. += "\nIt is full."
+			. += "It is full."
 
 	if(isghost(user))
 		var/mob/observer/ghost/G = user
@@ -197,7 +202,7 @@
 		if(src.opened)
 			return
 
-		. += "\nIt contains: [items_english_list(contents)]."
+		. += "It contains: [items_english_list(contents)]."
 
 /obj/structure/closet/CanPass(atom/movable/mover, turf/target)
 	if(wall_mounted)
@@ -309,7 +314,7 @@
 /obj/structure/closet/proc/store_mobs(stored_units)
 	. = 0
 	for(var/mob/living/M in loc)
-		if(M.buckled || M.pinned.len || M.anchored)
+		if(M.buckled || LAZYLEN(M.pinned) || M.anchored)
 			continue
 		var/mob_size = content_size(M)
 		if(CLOSET_CHECK_TOO_BIG(mob_size))
@@ -431,11 +436,13 @@
 			return FALSE
 		if(istype(W,/obj/item/tk_grab))
 			return FALSE
+
 		if(isWelder(W))
 			var/obj/item/weldingtool/WT = W
-			if(WT.isOn())
+			if(WT.use_tool(src, user))
 				slice_into_parts(WT, user)
 				return
+
 		if(istype(W, /obj/item/storage/laundry_basket) && W.contents.len)
 			var/obj/item/storage/laundry_basket/LB = W
 			var/turf/T = get_turf(src)
@@ -449,7 +456,7 @@
 		if(isScrewdriver(W) && dremovable && cdoor)
 			user.visible_message(SPAN_NOTICE("[user] starts unscrewing [cdoor] from [src]."))
 			user.next_move = world.time + 10
-			if(!do_after(user, 30))
+			if(!do_after(user, 30, luck_check_type = LUCK_CHECK_COMBAT))
 				return FALSE
 			if(!cdoor)
 				return FALSE
@@ -461,7 +468,7 @@
 			var/obj/item/shield/closet/C = W
 			user.visible_message(SPAN_NOTICE("[user] starts connecting [C] to [src]."))
 			user.next_move = world.time + 10
-			if(!do_after(user, 20))
+			if(!do_after(user, 20, luck_check_type = LUCK_CHECK_COMBAT))
 				return FALSE
 			if(cdoor)
 				return FALSE
@@ -508,12 +515,9 @@
 		return
 	else if(isWelder(W) && (setup & CLOSET_CAN_BE_WELDED))
 		var/obj/item/weldingtool/WT = W
-		if(!WT.remove_fuel(0,user))
-			if(!WT.isOn())
-				return
-			else
-				to_chat(user, SPAN_NOTICE("You need more welding fuel to complete this task."))
-				return
+		if(!WT.use_tool(src, user))
+			return
+
 		src.welded = !src.welded
 		src.update_icon()
 		user.visible_message(SPAN_WARNING("\The [src] has been [welded?"welded shut":"unwelded"] by \the [user]."), blind_message = "You hear welding.", range = 3)
@@ -527,7 +531,7 @@
 		for(var/i in 1 to rand(4, 8))
 			user.visible_message(SPAN("warning", "[user] picks in wires of \the [name] with a multitool."),
 								 SPAN("warning", "I am trying to reset circuitry lock module ([i])..."))
-			if(!do_after(user, 200, src) || locked != prev_locked || opened || (!istype(src, /obj/structure/closet/crate) && dremovable && !cdoor))
+			if(!do_after(user, 200, src, luck_check_type = LUCK_CHECK_COMBAT) || locked != prev_locked || opened || (!istype(src, /obj/structure/closet/crate) && dremovable && !cdoor))
 				multi.in_use = 0
 				return
 		locked = !locked
@@ -542,9 +546,9 @@
 		src.attack_hand(user)
 
 /obj/structure/closet/proc/slice_into_parts(obj/item/weldingtool/WT, mob/user)
-	if(!WT.remove_fuel(0,user))
-		to_chat(user, SPAN_NOTICE("You need more welding fuel to complete this task."))
+	if(!WT.use_tool(src, user, amount = 1))
 		return
+
 	if(material != null)
 		new material(loc)
 	else
@@ -594,7 +598,7 @@
 		to_chat(user, SPAN("warning", "You can't do this right now."))
 		return
 	in_use = TRUE
-	if(open_delay && !do_after(user, open_delay))
+	if(open_delay && !do_after(user, open_delay, luck_check_type = LUCK_CHECK_COMBAT))
 		in_use = FALSE
 		return
 	toggle(user)
@@ -767,6 +771,7 @@
 		update_icon()
 		return TRUE
 	else
+		playsound(src.loc, 'sound/signals/error31.ogg', 50)
 		to_chat(user, SPAN_WARNING("Access denied!"))
 		return FALSE
 

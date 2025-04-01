@@ -52,6 +52,7 @@ SUBSYSTEM_DEF(ticker)
 /datum/controller/subsystem/ticker/proc/pregame_tick()
 	if(round_progressing && last_fire)
 		pregame_timeleft -= world.time - last_fire
+
 	if(pregame_timeleft <= 0 || auto_start)
 		pregame_timeleft = 0
 		Master.SetRunLevel(RUNLEVEL_SETUP)
@@ -109,9 +110,6 @@ SUBSYSTEM_DEF(ticker)
 		//Holiday Round-start stuff	~Carn
 		Holiday_Game_Start()
 
-	if(!length(GLOB.admins))
-		send2adminirc("Round has started with no admins online.")
-
 	if(config.game.disable_ooc_at_roundstart)
 		disable_ooc()
 
@@ -126,6 +124,7 @@ SUBSYSTEM_DEF(ticker)
 		Master.SetRunLevel(RUNLEVEL_POSTGAME)
 		end_game_state = END_GAME_READY_TO_END
 		INVOKE_ASYNC(src, nameof(.proc/declare_completion))
+		INVOKE_ASYNC(src, nameof(.proc/update_clients_luck))
 
 	else if(mode_finished && (end_game_state <= END_GAME_NOT_OVER))
 		end_game_state = END_GAME_MODE_FINISH_DONE
@@ -173,7 +172,7 @@ SUBSYSTEM_DEF(ticker)
 			log_error("Ticker arrived at round end in an unexpected endgame state.")
 
 
-/datum/controller/subsystem/ticker/stat_entry()
+/datum/controller/subsystem/ticker/stat_entry(msg)
 	switch(GAME_STATE)
 		if(RUNLEVEL_LOBBY)
 			..("[round_progressing ? "START:[round(pregame_timeleft/10)]s" : "(PAUSED)"]")
@@ -386,6 +385,13 @@ Helpers
 			return
 	message_staff("<span class='warning'><b>No active tickets remaining, restarting in [restart_timeout/10] seconds if an admin has not delayed the round end.</b></span>")
 	end_game_state = END_GAME_ENDING
+
+/datum/controller/subsystem/ticker/proc/update_clients_luck()
+	for(var/client/C in GLOB.clients)
+		if(isnewplayer(C.mob))
+			continue
+
+		C.update_luck()
 
 /datum/controller/subsystem/ticker/proc/declare_completion()
 	to_world("<br><br><br><H1>A round of [mode.name] has ended!</H1>")

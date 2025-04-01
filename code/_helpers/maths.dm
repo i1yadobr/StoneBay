@@ -16,6 +16,11 @@
 
 #define PERCENT(a, b) (b ? 100 * a / b : 0)
 
+// round() acts like floor(x, 1) by default but can't handle other values
+#define FLOOR(x, y) (round((x) / (y)) * (y))
+/// Gets the sign of x, returns -1 if negative, 0 if 0, 1 if positive
+#define SIGN(x) ( ((x) > 0) - ((x) < 0) )
+
 // min is inclusive, max is exclusive
 /proc/Wrap(val, min, max)
 	var/d = max - min
@@ -143,3 +148,83 @@
 
 /proc/RoundUpToPowerOfTwo(val)
 	return 2 ** -round(-log(2,val))
+
+//Finds the shortest angle that angle A has to change to get to angle B. Aka, whether to move clock or counterclockwise.
+/proc/closer_angle_difference(a, b)
+	if(!isnum(a) || !isnum(b))
+		return
+	a = SIMPLIFY_DEGREES(a)
+	b = SIMPLIFY_DEGREES(b)
+	var/inc = b - a
+	if(inc < 0)
+		inc += 360
+	var/dec = a - b
+	if(dec < 0)
+		dec += 360
+	. = inc > dec ? -dec : inc
+
+// Determines if `mid` is inbetween `start` and  `end`, inclusive. All values are in degrees.
+/proc/angle_between_two_angles(start, mid, end)
+	end = (end - start) < 0 ? end - start + 360 : end - start
+	mid = (mid - start) < 0 ? mid - start + 360 : mid - start
+	return mid <= end
+
+#define POLAR_TO_CART_X(R,T) ((R) * sin(T))
+#define POLAR_TO_CART_Y(R,T) ((R) * cos(T))
+
+/proc/polar2turf(x, y, z, angle, distance)
+	var/x_offset = POLAR_TO_CART_X(distance, angle)
+	var/y_offset = POLAR_TO_CART_Y(distance, angle)
+	return locate(ceil(x + x_offset), ceil(y + y_offset), z)
+
+/proc/get_turf_from_angle(x, y, z, angle, ideal_distance)
+	do
+		. = polar2turf(x, y, z, angle, ideal_distance)
+		ideal_distance -= 1
+	while (!. && ideal_distance > 0)
+
+/**
+ * Get a list of turfs in a line from `starting_atom` to `ending_atom`.
+ *
+ * Uses the ultra-fast [Bresenham Line-Drawing Algorithm](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm).
+ */
+/proc/get_line(atom/starting_atom, atom/ending_atom)
+	var/current_x_step = starting_atom.x//start at x and y, then add 1 or -1 to these to get every turf from starting_atom to ending_atom
+	var/current_y_step = starting_atom.y
+	var/starting_z = starting_atom.z
+
+	var/list/line = list(get_turf(starting_atom))//get_turf(atom) is faster than locate(x, y, z)
+
+	var/x_distance = ending_atom.x - current_x_step //x distance
+	var/y_distance = ending_atom.y - current_y_step
+
+	var/abs_x_distance = abs(x_distance)//Absolute value of x distance
+	var/abs_y_distance = abs(y_distance)
+
+	var/x_distance_sign = SIGN(x_distance) //Sign of x distance (+ or -)
+	var/y_distance_sign = SIGN(y_distance)
+
+	var/x = abs_x_distance >> 1 //Counters for steps taken, setting to distance/2
+	var/y = abs_y_distance >> 1 //Bit-shifting makes me l33t.  It also makes get_line() unnessecarrily fast.
+
+	if(abs_x_distance >= abs_y_distance) //x distance is greater than y
+		for(var/distance_counter in 0 to (abs_x_distance - 1))//It'll take abs_x_distance steps to get there
+			y += abs_y_distance
+
+			if(y >= abs_x_distance) //Every abs_y_distance steps, step once in y direction
+				y -= abs_x_distance
+				current_y_step += y_distance_sign
+
+			current_x_step += x_distance_sign //Step on in x direction
+			line += locate(current_x_step, current_y_step, starting_z)//Add the turf to the list
+	else
+		for(var/distance_counter in 0 to (abs_y_distance - 1))
+			x += abs_x_distance
+
+			if(x >= abs_y_distance)
+				x -= abs_y_distance
+				current_x_step += x_distance_sign
+
+			current_y_step += y_distance_sign
+			line += locate(current_x_step, current_y_step, starting_z)
+	return line

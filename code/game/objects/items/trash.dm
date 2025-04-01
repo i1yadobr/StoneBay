@@ -11,6 +11,8 @@
 	mod_handy = 0.25
 
 /obj/item/trash/dish
+	name = "dish"
+	icon_state = "dish"
 	var/list/stack = list()
 	var/max_stack = 5
 
@@ -125,6 +127,8 @@
 	icon_state = "surstromming"
 
 /obj/item/trash/cans
+	name = "crushed can"
+	icon_state = "can"
 	matter = list(MATERIAL_STEEL = 500)
 	var/base_state = ""
 
@@ -202,6 +206,10 @@
 /obj/item/trash/cans/red_mule
 	name = "\improper Red MULE"
 	icon_state = "red_mule"
+
+/obj/item/trash/cans/startrucks
+	name = "\improper Startrucks Cold Brew"
+	icon_state = "startrucks"
 
 /obj/item/trash/attack(mob/M as mob, mob/living/user as mob)
 	return

@@ -6,6 +6,7 @@
 	name = "fire alarm"
 	desc = "<i>\"In case of emergency press HERE\"</i>. Or shoot."
 	icon = 'icons/obj/monitors.dmi'
+	base_icon_state = "fire"
 	icon_state = "fire"
 	var/activated = FALSE
 	var/detecting = TRUE
@@ -51,11 +52,12 @@
 	QDEL_NULL(seclevel_overlay)
 	return ..()
 
-/obj/machinery/firealarm/_examine_text(mob/user)
+/obj/machinery/firealarm/examine(mob/user, infix)
 	. = ..()
+
 	if(detecting && !wiresexposed)
 		var/decl/security_state/security_state = decls_repository.get_decl(GLOB.using_map.security_state)
-		. += "\nThe current alert level is <span style='color:[security_state.current_security_level.light_color_alarm];'>[security_state.current_security_level.name]</span>."
+		. += "The current alert level is <span style='color:[security_state.current_security_level.light_color_alarm];'>[security_state.current_security_level.name]</span>."
 
 /obj/machinery/firealarm/on_update_icon()
 	if(!status_overlays)
@@ -170,7 +172,7 @@
 				else if(isCrowbar(W))
 					to_chat(user, SPAN("danger", "You pry out the circuit!"))
 					playsound(src.loc, 'sound/items/Crowbar.ogg', 50, 1)
-					if(do_after(user, 20, src))
+					if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG) && !QDELETED(src))
 						var/obj/item/firealarm_electronics/circuit = new /obj/item/firealarm_electronics()
 						circuit.dropInto(user.loc)
 						buildstage = FIREALARM_NOCIRCUIT
@@ -314,3 +316,19 @@ Just a object used in constructing fire alarms
 	desc = "A circuit. It has a label on it, it says \"Can handle heat levels up to 40 degrees celsius!\"."
 	w_class = ITEM_SIZE_SMALL
 	matter = list(MATERIAL_STEEL = 50, MATERIAL_GLASS = 50)
+
+/obj/machinery/firealarm/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
+	if((buildstage == FIREALARM_NOCIRCUIT) && (the_rcd.upgrade & RCD_UPGRADE_SIMPLE_CIRCUITS))
+		return list("delay" = 2 SECONDS, "cost" = 1)
+
+	return FALSE
+
+/obj/machinery/firealarm/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	switch(rcd_data["[RCD_DESIGN_MODE]"])
+		if(RCD_WALLFRAME)
+			show_splash_text(user, "circuit installed", SPAN("notice", "You install the circuit into \the [src]!"))
+			buildstage = FIREALARM_NOWIRES
+			update_icon()
+			return TRUE
+
+	return FALSE

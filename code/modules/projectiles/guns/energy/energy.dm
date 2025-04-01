@@ -46,8 +46,8 @@
 	modifystate = "smallgunstun"
 
 	firemodes = list(
-		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,   modifystate = "smallgunstun"),
-		list(mode_name = "lethal", projectile_type = /obj/item/projectile/energy/laser/small, modifystate = "smallgunkill")
+		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode, modifystate = "smallgunstun"),
+		list(mode_name = "lethal", projectile_type = /obj/item/projectile/beam/laser/small, modifystate = "smallgunkill")
 		)
 
 /obj/item/gun/energy/secure/gun/small
@@ -96,15 +96,19 @@
 
 	var/fail_counter = 0
 
+/obj/item/gun/energy/gun/nuclear/Initialize(mapload)
+	. = ..()
+	add_think_ctx("fail_thinker", CALLBACK(src, nameof(.proc/fail_thinker)), world.time + 5 SECONDS)
+
 //override for failcheck behaviour
-/obj/item/gun/energy/gun/nuclear/Process()
+/obj/item/gun/energy/gun/nuclear/proc/fail_thinker()
 	if(fail_counter > 0)
 		fail_counter--
 		if(fail_counter > 20)
 			var/datum/radiation_source/rad_source = SSradiation.radiate(src, new /datum/radiation/preset/uranium_238(fail_counter))
 			rad_source.schedule_decay(10 SECONDS)
 
-	return ..()
+	set_next_think_ctx("fail_thinker", world.time + 5 SECONDS)
 
 /obj/item/gun/energy/gun/nuclear/emp_act(severity)
 	..()
@@ -117,7 +121,7 @@
 			if(ismob(loc))
 				to_chat(loc, SPAN("warning", "\The [src] feels pleasantly warm."))
 
-/obj/item/gun/energy/gun/nuclear/Fire(atom/target, mob/living/user, clickparams, pointblank = 0, reflex = 0)
+/obj/item/gun/energy/gun/nuclear/Fire(atom/target, mob/living/user, clickparams, pointblank = 0, reflex = 0, target_zone = BP_CHEST)
 	..()
 	if(fail_counter > 35)
 		var/datum/effect/effect/system/spark_spread/spark_system = new /datum/effect/effect/system/spark_spread()
@@ -144,13 +148,14 @@
 	else if(fail_counter > 15)
 		to_chat(loc, SPAN("warning", "\The [src] feels pleasantly warm."))
 
-/obj/item/gun/energy/gun/nuclear/_examine_text(mob/user)
+/obj/item/gun/energy/gun/nuclear/examine(mob/user, infix)
 	. = ..()
+
 	if(. && user.Adjacent(src))
 		if(fail_counter > 30)
-			. += "\n[SPAN("danger", "It feels burning hot!")]"
+			. += SPAN("danger", "It feels burning hot!")
 		else if(fail_counter > 15)
-			. += "\n[SPAN("warning", "It feels pleasantly warm.")]"
+			. += SPAN("warning", "It feels pleasantly warm.")
 
 /obj/item/gun/energy/gun/nuclear/proc/get_charge_overlay()
 	var/ratio = CELL_PERCENT(power_supply)
@@ -201,8 +206,8 @@
 	combustion = FALSE
 
 	firemodes = list(
-		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,    modifystate="egunstun"),
-		list(mode_name = "lethal", projectile_type = /obj/item/projectile/energy/laser/lesser, modifystate="egunkill")
+		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,  modifystate="egunstun"),
+		list(mode_name = "lethal", projectile_type = /obj/item/projectile/beam/laser/small, modifystate="egunkill")
 		)
 
 /obj/item/gun/energy/egun/elite
@@ -218,8 +223,8 @@
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 5, TECH_POWER = 3)
 
 	firemodes = list(
-		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,    modifystate="egunestun"),
-		list(mode_name = "lethal", projectile_type = /obj/item/projectile/energy/laser/lesser, modifystate="egunekill")
+		list(mode_name = "stun",   projectile_type = /obj/item/projectile/energy/electrode,  modifystate="egunestun"),
+		list(mode_name = "lethal", projectile_type = /obj/item/projectile/beam/laser/lesser, modifystate="egunekill")
 		)
 
 /obj/item/gun/energy/rifle
@@ -228,6 +233,7 @@
 	icon_state = "eriflestun"
 	item_state = "erifle"
 	modifystate = "eriflestun"
+	improper_held_icon = TRUE
 	slot_flags = SLOT_BELT|SLOT_BACK
 	w_class = ITEM_SIZE_LARGE
 	force = 12.5
@@ -248,8 +254,7 @@
 
 	firemodes = list(
 		list(mode_name = "stun", modifystate = "eriflestun", projectile_type = /obj/item/projectile/energy/electrode, fire_delay = null, charge_cost = 10, burst = 2),
-		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/mid,   fire_delay = 8,    charge_cost = 20, burst = 1),
-		list(mode_name = "bolt", modifystate = "eriflekill", projectile_type = /obj/item/projectile/energy/laser/mid, fire_delay = 8,    charge_cost = 20, burst = 1)
+		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/mid,   fire_delay = 8,    charge_cost = 20, burst = 1)
 	)
 
 /obj/item/gun/energy/rifle/on_update_icon()
@@ -264,9 +269,11 @@
 		if(M.can_wield_item(src) && is_held_twohanded(M))
 			item_state_slots[slot_l_hand_str] = "[modifystate][ratio]-wielded"
 			item_state_slots[slot_r_hand_str] = "[modifystate][ratio]-wielded"
+			improper_held_icon = TRUE
 		else
 			item_state_slots[slot_l_hand_str] = "[modifystate][ratio]"
 			item_state_slots[slot_r_hand_str] = "[modifystate][ratio]"
+			improper_held_icon = FALSE
 	update_held_icon()
 
 /obj/item/gun/energy/rifle/cheap
@@ -284,7 +291,6 @@
 	projectile_type = /obj/item/projectile/energy/electrode/stunsphere
 
 	firemodes = list(
-		list(mode_name = "stun", modifystate = "eriflestun", projectile_type = /obj/item/projectile/energy/electrode,    fire_delay = null, charge_cost = 10, burst = 2),
-		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/lesser,   fire_delay = 10,   charge_cost = 20, burst = 1),
-		list(mode_name = "bolt", modifystate = "eriflekill", projectile_type = /obj/item/projectile/energy/laser/lesser, fire_delay = 10,   charge_cost = 20, burst = 1)
+		list(mode_name = "stun", modifystate = "eriflestun", projectile_type = /obj/item/projectile/energy/electrode,  fire_delay = null, charge_cost = 10, burst = 2),
+		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/lesser, fire_delay = 10,   charge_cost = 20, burst = 1)
 	)

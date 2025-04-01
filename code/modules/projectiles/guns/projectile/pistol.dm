@@ -118,6 +118,7 @@
 	name = "silenced pistol"
 	desc = "A handgun with an integral silencer. Uses .45 rounds."
 	icon_state = "silenced_pistol"
+	item_state = "silenced_pistol"
 	w_class = ITEM_SIZE_NORMAL
 	caliber = ".45"
 	silenced = 1
@@ -128,6 +129,13 @@
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2, TECH_ILLEGAL = 8)
 	magazine_type = /obj/item/ammo_magazine/c45m
 	allowed_magazines = /obj/item/ammo_magazine/c45m
+
+/obj/item/gun/projectile/pistol/silenced/on_update_icon()
+	..()
+	if(ammo_magazine && ammo_magazine.stored_ammo.len)
+		icon_state = "silenced_pistol"
+	else
+		icon_state = "silenced_pistol-e"
 
 /obj/item/gun/projectile/pistol/magnum_pistol
 	name = ".50 magnum pistol"
@@ -310,12 +318,13 @@
 /obj/item/zipgunframe/on_update_icon()
 	icon_state = "zipgun[buildstate]"
 
-/obj/item/zipgunframe/_examine_text(mob/user)
+/obj/item/zipgunframe/examine(mob/user, infix)
 	. = ..()
+
 	switch(buildstate)
-		if(1) . += "\nIt has a barrel loosely fitted to the stock."
-		if(2) . += "\nIt has a barrel that has been secured to the stock with tape."
-		if(3) . += "\nIt has a trigger and firing pin assembly loosely fitted into place."
+		if(1) . += "It has a barrel loosely fitted to the stock."
+		if(2) . += "It has a barrel that has been secured to the stock with tape."
+		if(3) . += "It has a trigger and firing pin assembly loosely fitted into place."
 
 /obj/item/zipgunframe/attackby(obj/item/thing, mob/user)
 	if(istype(thing,/obj/item/pipe) && buildstate == 0)

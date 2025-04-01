@@ -8,12 +8,17 @@
 	icon = 'icons/obj/doors/secure_door_assembly.dmi'
 	anchored = FALSE
 	density = TRUE
-	obj_flags = OBJ_FLAG_ANCHORABLE
+	obj_flags = OBJ_FLAG_ANCHORABLE | OBJ_FLAG_ANCHOR_BLOCKS_ROTATION
 	var/state = STATE_UNANCHORED
 	var/obj/item/device/assembly/signaler/signaler = null
 	var/base_icon = null
 	var/material_path = null
 	var/door_path = null
+
+/obj/structure/secure_door_assembly/Initialize()
+	. = ..()
+
+	AddElement(/datum/element/simple_rotation)
 
 /obj/structure/secure_door_assembly/Destroy()
 	QDEL_NULL(signaler)
@@ -66,21 +71,18 @@
 	return ..()
 
 /obj/structure/secure_door_assembly/proc/deconstruct_assembly(obj/item/weldingtool/WT, mob/user)
-	if (WT.remove_fuel(0, user))
-		playsound(loc, 'sound/items/Welder2.ogg', 50, 1)
-		user.visible_message("[user] dissassembles \the [src] .", "You start to dissassemble \the [src] .")
-		if(do_after(user, 40, src))
-			if(!WT.isOn())
-				return
-
-			to_chat(user, SPAN_NOTICE("You dissasembled \the [src] a!"))
-			new /obj/item/stack/material/steel(loc, 10)
-			qdel(src)
-	else
-		to_chat(user, SPAN_NOTICE("You need more welding fuel."))
+	user.visible_message("[user] dissassembles \the [src].", "You start to dissassemble \the [src].")
+	if(!WT.use_tool(src, user, delay = 4 SECONDS, amount = 5))
 		return
 
+	to_chat(user, SPAN_NOTICE("You dissasembled \the [src]!"))
+	new material_path(loc, 10)
+	qdel(src)
+
 /obj/structure/secure_door_assembly/wrench_floor_bolts(mob/user, delay = 40)
+	if(state > STATE_EMPTY)
+		return
+
 	. = ..()
 
 	if(anchored)
@@ -94,7 +96,7 @@
 		return
 
 	user.visible_message("[user] wires \the [src].", "You start to wire \the [src].")
-	if(do_after(user, 40, src) && anchored)
+	if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG) && anchored)
 		if (C.use(1))
 			to_chat(user, SPAN_NOTICE("You wire \the [src]."))
 			state = STATE_WIRED
@@ -104,7 +106,7 @@
 	playsound(loc, 'sound/items/Wirecutter.ogg', 100, 1)
 	user.visible_message("[user] cuts the wires from \the [src].", "You start to cut the wires from \the [src].")
 
-	if(do_after(user, 40, src))
+	if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		to_chat(user, SPAN_NOTICE("You cut \the [src] wires!"))
 		new /obj/item/stack/cable_coil(loc, 1)
 		state = STATE_EMPTY
@@ -114,7 +116,7 @@
 	playsound(loc, 'sound/items/Screwdriver.ogg', 100, 1)
 	user.visible_message("[user] installs the signaller into \the [src].", "You start to install signaller into \the [src].")
 
-	if(do_after(user, 40, src))
+	if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		if(!user.drop(W, src))
 			return
 
@@ -126,7 +128,7 @@
 /obj/structure/secure_door_assembly/proc/remove_signaler(mob/user)
 	user.visible_message("\The [user] starts removing the signaller from \the [src].", "You start removing the signaller from \the [src].")
 
-	if(do_after(user, 40, src))
+	if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		to_chat(user, SPAN_NOTICE("You removed \the signaller!"))
 		state = STATE_WIRED
 		signaler.dropInto(loc)
@@ -137,7 +139,7 @@
 	playsound(loc, 'sound/items/Screwdriver.ogg', 100, 1)
 	to_chat(user, SPAN_NOTICE("Now finishing \the shutters."))
 
-	if(do_after(user, 40, src))
+	if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		new door_path(loc, signaler?.code, signaler?.frequency, dir)
 		qdel(src)
 

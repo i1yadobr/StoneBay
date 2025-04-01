@@ -67,13 +67,17 @@
 #define SFX_FAR_FIRE                "far_fire"
 #define SFX_SILENT_FIRE             "silent_fire"
 #define SFX_MAGAZINE_INSERT         "magazine_insert"
-#define SFX_BULLET_INSERT "bullet_insert"
-#define SFX_SHELL_INSERT "shell_insert"
-#define SFX_SPAS12_SHELL_INSERT "spas12_shell_insert"
-#define SFX_REM870_SHELL_INSERT "rem870_shell_insert"
+#define SFX_BULLET_INSERT           "bullet_insert"
+#define SFX_SHELL_INSERT            "shell_insert"
+#define SFX_SPAS12_SHELL_INSERT     "spas12_shell_insert"
+#define SFX_REM870_SHELL_INSERT     "rem870_shell_insert"
 #define SFX_SHOTGUN_PUMP_IN         "shotgun_pump_in"
 #define SFX_SHOTGUN_PUMP_OUT        "shotgun_pump_out"
 #define SFX_CASING_DROP             "casing_drop"
+#define SFX_792_FIRE                "792_fire"
+#define SFX_792_BOLT_BACK           "792_bolt_back"
+#define SFX_792_BOLT_FORWARD        "792_bolt_back"
+#define SFX_GRENADE_LAUNCHER        "glauncher"
 
 // FEMALE EMOTES
 #define SFX_FEMALE_INTERNAL_BREATH  "female_internal_breath"
@@ -119,6 +123,7 @@
 #define SFX_AMBIENT_ATMOSPHERICS        "ambient_atmospherics"
 #define SFX_AMBIENT_MORGUE              "ambient_morgue"
 #define SFX_AMBIENT_JUNGLE              "ambient_jungle"
+#define SFX_AMBIENT_DESERT              "ambient_desert"
 
 // AMBIENT MUSIC
 #define SFX_AMBIENT_MUSIC_NORMAL       "ambient_music_normal"
@@ -126,6 +131,9 @@
 #define SFX_AMBIENT_MUSIC_SPACE        "ambient_music_space"
 #define SFX_AMBIENT_MUSIC_SPACE_TRAVEL "ambient_music_space_travel"
 #define SFX_AMBIENT_MUSIC_CENTCOMM     "ambient_music_centcomm"
+#define SFX_AMBIENT_MUSIC_THUNDERDOME  "ambient_music_court"
+#define SFX_AMBIENT_MUSIC_PICNIC       "ambient_music_picnic"
+#define SFX_AMBIENT_MUSIC_COURT        "ambient_music_court"
 
 // ITEMS USING
 #define SFX_USE_HANDCUFFS           "use_handcuffs"
@@ -138,6 +146,7 @@
 #define SFX_USE_LIGHTER             "use_lighter"
 #define SFX_USE_CHISEL              "use_chisel"
 #define SFX_KEYBOARD                "use_keyboard"
+#define SFX_USE_KNOB                "use_knob"
 
 // PULLING
 #define SFX_PULL_BODY               "pull_body"
@@ -309,12 +318,17 @@
 #define SFX_FIGHTING_CRUNCH         "fighting_crunch"
 #define SFX_FIGHTING_PUNCH          "fighting_punch"
 #define SFX_FIGHTING_SWING          "fighting_swing"
+#define SFX_STUNSTICK_HIT           "stunstick_hit"
+#define SFX_FALL_DAMAGE             "fall_damage"
 
 // DEVICES
 #define SFX_GEIGER_LOW              "geiger_low"
 #define SFX_GEIGER_MODERATE         "geiger_moderate"
 #define SFX_GEIGER_HIGH             "geiger_high"
 #define SFX_GEIGER_VERY_HIGH        "geiger_very_high"
+#define SFX_WELDING                 "welding_sound"
+#define SFX_WELDER_ACTIVATE         "welder_activate"
+#define SFX_WELDER_DEACTIVATE       "welder_deactivate"
 
 // MISC
 #define SFX_VENT                    "vent"
@@ -323,6 +337,7 @@
 #define SFX_GLASS_KNOCK             "glass_knock"
 #define SFX_GIB                     "gib"
 #define SFX_CLOWN                   "clown"
+#define SFX_HEELS                   "heels"
 #define SFX_HISS                    "hiss"
 #define SFX_WHISTLE                 "whistle"
 #define SFX_SNORE                   "snore"
@@ -333,6 +348,9 @@
 #define SFX_THROWING                "throwing"
 #define SFX_DISPOSAL                "disposal"
 #define SFX_OINK                    "oink"
+#define SFX_PLANTCROSS              "plantcross"
+#define SFX_THUNDER                 "thunder"
+#define SFX_SHOE_COVERS             "shoe_covers"
 
 // FOOTSTEPS
 #define SFX_DISTANT_MOVEMENT        "distant_movement"
@@ -348,11 +366,24 @@
 #define SFX_FOOTSTEP_ROBOT_LEGS     "footstep_robot_legs"
 #define SFX_FOOTSTEP_ROBOT_SPIDER   "footstep_robot_spider"
 #define SFX_FOOTSTEP_STAIRS         "footstep_stairs"
+#define SFX_FOOTSTEP_SWAMP          "footstep_swamp"
 
 // VENDING
 #define SFX_VENDING_CANS            "vending_cans"
 #define SFX_VENDING_COFFEE          "vending_coffee"
 #define SFX_VENDING_DROP            "vending_drop"
 #define SFX_VENDING_GENERIC         "vending_generic"
+
+
+// Lighting
+#define SFX_LIGHT_TUBE_ON           "light_tube_on"
+#define SFX_LIGHT_BULB_ON           "light_bulb_on"
+#define SFX_LIGHT_BURNOUT           "light_burnout"
+
+// Arcade (minesweeper)
+#define SFX_MINESWEEPER_CLICK       "minesweeper_click"
+#define SFX_MINESWEEPER_LOSE        "minesweeper_lose"
+#define SFX_MINESWEEPER_START       "minesweeper_start"
+#define SFX_MINESWEEPER_WIN         "minesweeper_win"
 
 #define GET_SFX(name) pick(GLOB.sfx_list[name])

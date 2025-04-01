@@ -17,11 +17,7 @@
 	var/anchor_fall = FALSE
 	var/pull_slowdown = PULL_SLOWDOWN_WEIGHT // How much it slows us down while we are pulling it
 	/// Used if the obj is dense.
-	var/list/rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 0,
-		RADIATION_BETA_PARTICLE = 0,
-		RADIATION_HAWKING = 0
-	)
+	var/rad_resist_type = /datum/rad_resist/none
 	hitby_sound = 'sound/effects/metalhit2.ogg'
 	var/turf_height_offset = 0
 
@@ -30,6 +26,8 @@
 	if(turf_height_offset && isturf(loc))
 		var/turf/T = loc
 		T.update_turf_height()
+
+	add_debris_element()
 
 /obj/Destroy()
 	CAN_BE_REDEFINED(TRUE)
@@ -182,22 +180,20 @@
 
 /obj/attackby(obj/item/O as obj, mob/user as mob)
 	if(obj_flags & OBJ_FLAG_ANCHORABLE)
-		if(isWrench(O))
+		if(isWrench(O) && !(atom_flags & ATOM_FLAG_NO_DECONSTRUCTION))
 			wrench_floor_bolts(user)
 			update_icon()
 			return
 	return ..()
 
-/obj/_examine_text(mob/user, infix, suffix)
+/obj/examine(mob/user, infix)
 	. = ..()
 
 	if(hasHUD(user, HUD_SCIENCE))
-		. += "\nStopping Power:"
+		. += "Stopping Power:"
 
-		. += "\nα-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(rad_resist[RADIATION_ALPHA_PARTICLE]), "eV", 3)]"
-		. += "\nβ-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(rad_resist[RADIATION_BETA_PARTICLE]), "eV", 3)]"
-
-	return .
+		. += "α-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(get_rad_resist_value(rad_resist_type, RADIATION_ALPHA_PARTICLE)), "eV", 3)]"
+		. += "β-particle: [fmt_siunit(CONV_JOULE_ELECTRONVOLT(get_rad_resist_value(rad_resist_type, RADIATION_ALPHA_PARTICLE)), "eV", 3)]"
 
 /obj/proc/wrench_floor_bolts(mob/user, delay=20)
 	playsound(loc, 'sound/items/Ratchet.ogg', 100, 1)
@@ -205,7 +201,7 @@
 		user.visible_message("\The [user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
 	else
 		user.visible_message("\The [user] begins securing \the [src] to the floor.", "You start securing \the [src] to the floor.")
-	if(do_after(user, delay, src))
+	if(do_after(user, delay, src, luck_check_type = LUCK_CHECK_ENG))
 		if(!src)
 			return 0
 		to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")

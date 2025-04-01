@@ -74,9 +74,9 @@
 /obj/machinery/slot_machine/proc/money_roll()
 	plays = TRUE
 	update_icon()
-	addtimer(CALLBACK(src, .proc/_money_roll), 3 SECONDS)
+	set_next_think(world.time + 3 SECONDS)
 
-/obj/machinery/slot_machine/proc/_money_roll()
+/obj/machinery/slot_machine/think()
 	var/roll = rand(1, max_roll)
 	var/exclamation = ""
 	var/amount = 0
@@ -125,12 +125,12 @@
 	update_icon()
 
 /obj/machinery/slot_machine/attackby(obj/item/W, mob/user)
-	if(pay(W, user))
-		return
 	if((obj_flags & OBJ_FLAG_ANCHORABLE) && isWrench(W))
 		if(wrench_floor_bolts(user))
 			update_standing_icon()
 			power_change()
+		return
+	if(pay(W, user))
 		return
 	else if(W.force >= 10)
 		user.visible_message(SPAN("danger", "\The [src] has been [pick(W.attack_verb)] with [W] by [user]!"))

@@ -87,24 +87,22 @@ var/bomb_set
 			if(0)
 				if(isWelder(O))
 					var/obj/item/weldingtool/WT = O
-					if(!WT.isOn()) return
-					if(WT.get_fuel() < 5) // uses up 5 fuel.
-						to_chat(user, "<span class='warning'>You need more fuel to complete this task.</span>")
-						return
-
 					user.visible_message("[user] starts cutting loose the anchoring bolt covers on [src].", "You start cutting loose the anchoring bolt covers with [O]...")
+					if(!WT.use_tool(src, user, delay = 4 SECONDS, amount = 5))
+						return FALSE
 
-					if(do_after(user,40, src))
-						if(!src || !user || !WT.remove_fuel(5, user)) return
-						user.visible_message("\The [user] cuts through the bolt covers on \the [src].", "You cut through the bolt cover.")
-						removal_stage = 1
+					if(QDELETED(src) || !user )
+						return FALSE
+
+					user.visible_message("\The [user] cuts through the bolt covers on \the [src].", "You cut through the bolt cover.")
+					removal_stage = 1
 				return
 
 			if(1)
 				if(isCrowbar(O))
 					user.visible_message("[user] starts forcing open the bolt covers on [src].", "You start forcing open the anchoring bolt covers with [O]...")
 
-					if(do_after(user, 15, src))
+					if(do_after(user, 15, src, luck_check_type = LUCK_CHECK_ENG) && !QDELETED(src))
 						if(!src || !user) return
 						user.visible_message("\The [user] forces open the bolt covers on \the [src].", "You force open the bolt covers.")
 						removal_stage = 2
@@ -113,23 +111,21 @@ var/bomb_set
 			if(2)
 				if(isWelder(O))
 					var/obj/item/weldingtool/WT = O
-					if(!WT.isOn()) return
-					if (WT.get_fuel() < 5) // uses up 5 fuel.
-						to_chat(user, "<span class='warning'>You need more fuel to complete this task.</span>")
-						return
-
 					user.visible_message("[user] starts cutting apart the anchoring system sealant on [src].", "You start cutting apart the anchoring system's sealant with [O]...")
+					if(!WT.use_tool(src, user, delay = 4 SECONDS, amount = 5))
+						return FALSE
 
-					if(do_after(user, 40, src))
-						if(!src || !user || !WT.remove_fuel(5, user)) return
-						user.visible_message("\The [user] cuts apart the anchoring system sealant on \the [src].", "You cut apart the anchoring system's sealant.")
-						removal_stage = 3
+					if(QDELETED(src) || !user)
+						return FALSE
+
+					user.visible_message("\The [user] cuts apart the anchoring system sealant on \the [src].", "You cut apart the anchoring system's sealant.")
+					removal_stage = 3
 				return
 
 			if(3)
 				if(isWrench(O))
 					user.visible_message("[user] begins unwrenching the anchoring bolts on [src].", "You begin unwrenching the anchoring bolts...")
-					if(do_after(user, 50, src))
+					if(do_after(user, 50, src, luck_check_type = LUCK_CHECK_ENG) && !QDELETED(src))
 						if(!src || !user) return
 						user.visible_message("[user] unwrenches the anchoring bolts on [src].", "You unwrench the anchoring bolts.")
 						removal_stage = 4
@@ -138,7 +134,7 @@ var/bomb_set
 			if(4)
 				if(isCrowbar(O))
 					user.visible_message("[user] begins lifting [src] off of the anchors.", "You begin lifting the device off the anchors...")
-					if(do_after(user, 80, src))
+					if(do_after(user, 80, src, luck_check_type = LUCK_CHECK_ENG) && !QDELETED(src))
 						if(!src || !user) return
 						user.visible_message("\The [user] crowbars \the [src] off of the anchors. It can now be moved.", "You jam the crowbar under the nuclear device and lift it off its anchors. You can now move it!")
 						anchored = 0
@@ -422,9 +418,9 @@ var/bomb_set
 		/obj/item/modular_computer/laptop/preset/custom_loadout/cheap/
 	)
 
-/obj/item/storage/secure/briefcase/nukedisk/_examine_text(user)
+/obj/item/storage/secure/briefcase/nukedisk/examine(mob/user, infix)
 	. = ..()
-	. += "\nOn closer inspection, you see \a [GLOB.using_map.company_name] emblem is etched into the front of it."
+	. += "On closer inspection, you see \a [GLOB.using_map.company_name] emblem is etched into the front of it."
 
 /obj/item/folder/envelope/nuke_instructions
 	name = "instructions envelope"

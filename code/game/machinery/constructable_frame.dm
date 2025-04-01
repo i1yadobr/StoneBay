@@ -16,20 +16,19 @@
 	var/state = STAGE_CABLE
 
 /obj/machinery/constructable_frame/proc/deconstruct_frame(obj/item/weldingtool/WT, mob/user, amount=1)
-	if(!WT.remove_fuel(0, user))
-		to_chat(user, "\The [WT] must be on to complete this task.")
+	if(!WT.use_tool(src, user, delay = 2 SECONDS, amount = 5))
 		return
-	playsound(loc, 'sound/items/Welder.ogg', 50, 1)
-	if(do_after(user, 20, src))
-		if(!src || !WT.isOn())
-			return
-		to_chat(user, SPAN("notice", "You deconstruct \the [src]"))
-		new /obj/item/stack/material/steel(loc, amount)
-		qdel(src)
+
+	if(QDELETED(src) || !user)
+		return
+
+	to_chat(user, SPAN("notice", "You deconstruct \the [src]"))
+	new /obj/item/stack/material/steel(loc, amount)
+	qdel(src)
 
 /obj/machinery/constructable_frame/proc/wrench_frame(mob/user)
 	playsound(loc, 'sound/items/Ratchet.ogg', 50, 1)
-	if(do_after(user, 20, src))
+	if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 		to_chat(user, SPAN_NOTICE("You [anchored ? "unwrench" : "wrench"] \the [src] [anchored ? "from" : "into"] place."))
 		anchored = !anchored
 
@@ -83,7 +82,7 @@
 		return
 	playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, 1)
 	to_chat(user, SPAN("notice", "You start to add cables to \the [src]."))
-	if(do_after(user, 20, src) && state == STAGE_CABLE)
+	if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG) && state == STAGE_CABLE)
 		if(C.use(5))
 			to_chat(user, SPAN("notice", "You add cables to \the [src]."))
 			state = STAGE_CIRCUIT

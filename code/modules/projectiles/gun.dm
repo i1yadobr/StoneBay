@@ -91,10 +91,30 @@
 	var/autofire_enabled = FALSE
 	var/atom/autofiring_at
 	var/mob/autofiring_by
-	var/autofiring_timer
+	var/already_autofiring = FALSE
 
 	drop_sound = SFX_DROP_GUN
 	pickup_sound = SFX_PICKUP_GUN
+
+/*
+ *  HEAT MECHANIC VARS
+ *
+*/
+	/// heat on this gun. at over 100 heat stops you from firing and goes on cooldown
+	var/heat_amount = 0
+	///heat that we add every successful fire()
+	var/heat_per_fire = 0
+	///heat reduction per second
+	var/cool_amount = 5
+	/// Whether this gun is in overheat mode and on cooldown until it cools
+	var/on_overheat = FALSE
+	///multiplier on cool amount to determine overheat time
+	var/overheat_multiplier = 1.1
+	///image we create to keep track of heat
+	var/image/heat_bar/heat_meter
+
+	/// Whether this gun has smoke particles
+	var/has_smoke_particles = FALSE
 
 /obj/item/gun/Initialize()
 	. = ..()
@@ -106,6 +126,10 @@
 
 	if(config.misc.toogle_gun_safety)
 		verbs |= /obj/item/gun/proc/toggle_safety_verb
+
+	add_think_ctx("autofire_context", CALLBACK(src, nameof(.proc/handle_autofire)), 0)
+	add_think_ctx("overheat_context", CALLBACK(src, nameof(.proc/end_overheat)), 0)
+	set_next_think(world.time + 1 SECOND)
 
 /obj/item/gun/Destroy()
 	// autofire timer is automatically cleaned up
@@ -127,17 +151,17 @@
 	if(.)
 		autofiring_at = fire_at
 		autofiring_by = fire_by
-		if(!autofiring_timer)
-			autofiring_timer = addtimer(CALLBACK(src, nameof(.proc/handle_autofire)), burst_delay, (TIMER_STOPPABLE | TIMER_LOOP | TIMER_UNIQUE | TIMER_OVERRIDE))
+		if(!already_autofiring)
+			already_autofiring = TRUE
+			set_next_think_ctx("autofire_context", world.time + burst_delay)
 	else
 		clear_autofire()
 
 /obj/item/gun/proc/clear_autofire()
 	autofiring_at = null
 	autofiring_by = null
-	if(autofiring_timer)
-		deltimer(autofiring_timer)
-		autofiring_timer = null
+	already_autofiring = FALSE
+	set_next_think_ctx("autofire_context", 0)
 
 /obj/item/gun/proc/handle_autofire()
 	set waitfor = FALSE
@@ -152,7 +176,8 @@
 		clear_autofire()
 	else if(can_autofire())
 		autofiring_by.set_dir(get_dir(src, autofiring_at))
-		Fire(autofiring_at, autofiring_by, null, (get_dist(autofiring_at, autofiring_by) <= 1), FALSE, FALSE)
+		Fire(autofiring_at, autofiring_by, null, (get_dist(autofiring_at, autofiring_by) <= 1), FALSE, FALSE, target_zone = autofiring_by.zone_sel?.selecting)
+		set_next_think_ctx("autofire_context", world.time + burst_delay)
 
 /obj/item/gun/update_twohanding()
 	if(one_hand_penalty)
@@ -166,9 +191,11 @@
 			if(M.can_wield_item(src) && is_held_twohanded(M))
 				item_state_slots[slot_l_hand_str] = wielded_item_state
 				item_state_slots[slot_r_hand_str] = wielded_item_state
+				improper_held_icon = TRUE
 			else
 				item_state_slots[slot_l_hand_str] = initial(item_state)
 				item_state_slots[slot_r_hand_str] = initial(item_state)
+				improper_held_icon = FALSE
 	update_held_icon()
 
 /obj/item/gun/equipped(mob/living/user, slot)
@@ -191,6 +218,10 @@
 		return FALSE
 	if(!user.IsAdvancedToolUser())
 		return FALSE
+
+	if(!prob(user.client?.get_luck_for_type(LUCK_CHECK_COMBAT)))
+		show_splash_text(user, "Gun misfires!", SPAN_DANGER("Your Gun misfires!"))
+		return
 
 	var/mob/living/M = user
 	if(is_pacifist(user))
@@ -232,7 +263,7 @@
 		PreFire(A,user,params) //They're using the new gun system, locate what they're aiming at.
 		return
 
-	Fire(A,user,params) //Otherwise, fire normally.
+	Fire(A, user, params, target_zone = user.zone_sel?.selecting) //Otherwise, fire normally.
 
 /obj/item/gun/attack(atom/A, mob/living/user, def_zone)
 	if(ishuman(A) && user.zone_sel.selecting == BP_MOUTH && user.a_intent != I_HURT && !weapon_in_mouth)
@@ -240,54 +271,75 @@
 	if (A == user && user.zone_sel.selecting == BP_MOUTH && !mouthshoot)
 		handle_suicide(user)
 	else if(user.a_intent == I_HURT) //point blank shooting
-		Fire(A, user, pointblank=1)
+		Fire(A, user, pointblank = 1, target_zone = def_zone)
 	else
 		return ..() //Pistolwhippin'
 
-/obj/item/gun/proc/Fire(atom/target, mob/living/user, clickparams, pointblank=0, reflex=0)
-	if(!user || !target) return
-	if(target.z != user.z) return
-
-	add_fingerprint(user)
-
-	if(!special_check(user))
+/obj/item/gun/proc/Fire(atom/target, atom/movable/firer, clickparams, pointblank = FALSE, reflex = FALSE, target_zone = BP_CHEST)
+	if(!firer || !target)
 		return
+
+	if(target.z != firer.z)
+		return
+
+	if(ismob(firer))
+		add_fingerprint(firer)
+
+		if(!special_check(firer))
+			return
 
 	if(world.time < next_fire_time)
-		if (world.time % 3) //to prevent spam
-			to_chat(user, "<span class='warning'>[src] is not ready to fire again!</span>")
+		if(world.time % 3) //to prevent spam
+			to_chat(firer, SPAN_WARNING("[src] is not ready to fire again!"))
 		return
 
-	var/shoot_time = (burst - 1)* burst_delay
-	user.setClickCooldown(shoot_time) //no clicking on things while shooting
-	user.setMoveCooldown(shoot_time) //no moving while shooting either
-	next_fire_time = world.time + shoot_time
+	// Handling heat now
+	if(on_overheat)
+		show_splash_text(firer, "Overheat!", SPAN_DANGER("\The [src] is not ready to fire!"))
+		return
 
-	var/held_twohanded = (user.can_wield_item(src) && src.is_held_twohanded(user))
+	heat_amount += heat_per_fire
+
+	var/shoot_time = (burst - 1)* burst_delay
+
+	var/held_twohanded = TRUE
+
+	if(ismob(firer))
+		var/mob/user = firer
+		user.setClickCooldown(shoot_time) //no clicking on things while shooting
+		user.setMoveCooldown(shoot_time) //no moving while shooting either
+		held_twohanded = user.can_wield_item(src) && src.is_held_twohanded(user)
+
+	next_fire_time = world.time + shoot_time
 
 	//actually attempt to shoot
 	var/turf/targloc = get_turf(target) //cache this in case target gets deleted during shooting, e.g. if it was a securitron that got destroyed.
 	var/fired = FALSE
 	for(var/i in 1 to burst)
-		var/obj/projectile = consume_next_projectile(user)
+		var/obj/projectile = consume_next_projectile(firer)
 		if(!projectile)
-			handle_click_empty(user)
+			handle_click_empty(firer)
 			break
 
 		fired = TRUE
-		process_accuracy(projectile, user, target, i, held_twohanded)
+		if(ismob(firer))
+			var/mob/living/A = firer
+			if(!A.aura_check(AURA_TYPE_BULLET, projectile, target_zone, firer))
+				target = firer
+				targloc = get_turf(target)
+		process_accuracy(projectile, firer, target, i, held_twohanded)
 
 		if(pointblank)
-			process_point_blank(projectile, user, target)
+			process_point_blank(projectile, firer, target)
 
-		if(process_projectile(projectile, user, target, user.zone_sel?.selecting, clickparams))
+		if(process_projectile(projectile, firer, target, target_zone, clickparams))
 			var/burstfire = 0
 			if(burst > 1) // It ain't a burst? Then just act normally
 				if(i > 1)
 					burstfire = -1  // We've already seen the BURST message, so shut up
 				else
 					burstfire = 1 // We've yet to see the BURST message
-			handle_post_fire(user, target, pointblank, reflex, burstfire)
+			handle_post_fire(firer, target, pointblank, reflex, burstfire)
 			update_icon()
 
 		if(i < burst)
@@ -298,16 +350,44 @@
 			pointblank = 0
 
 	//update timing
-	var/turf/T = get_turf(user)
+	var/turf/T = get_turf(firer)
 	var/area/A = get_area(T)
-	if(((istype(T, /turf/space)) || (A.has_gravity == FALSE)) && fired)
-		user.inertia_dir = get_dir(target, src)
-		user.setMoveCooldown(shoot_time) //no moving while shooting either
-		step(user, user.inertia_dir) // they're in space, move em in the opposite direction
+	if(ismob(firer))
+		var/mob/user = firer
 
-	user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
-	user.setMoveCooldown(move_delay)
+		if(((istype(T, /turf/space)) || (A.has_gravity == FALSE)) && fired)
+			user.inertia_dir = get_dir(target, src)
+			user.setMoveCooldown(shoot_time) //no moving while shooting either
+			step(user, user.inertia_dir) // they're in space, move em in the opposite direction
+
+		user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
+		user.setMoveCooldown(move_delay)
+
+	if(heat_amount >= 100)
+		overheat()
+
 	next_fire_time = world.time + fire_delay
+
+/obj/item/gun/proc/overheat()
+	on_overheat = TRUE
+	playsound(src, 'sound/effects/weapons/misc/gun_overheat.ogg', 25, 1, 5)
+	/// overheat gives either you a bonus or penalty depending on gun, by default it is +10% time.
+	var/overheat_time = ((heat_amount / cool_amount * overheat_multiplier) SECONDS)
+	new /atom/movable/particle_emitter/attachable/overheat_smoke(src, overheat_time)
+	set_next_think_ctx("overheat_context", world.time + overheat_time)
+
+/obj/item/gun/proc/end_overheat()
+	on_overheat = FALSE
+	heat_amount = 0
+	for(var/atom/movable/particle_emitter/attachable/overheat_smoke/S in contents)
+		QDEL_NULL(S)
+
+/obj/item/gun/think()
+	heat_amount = max(0, heat_amount - cool_amount)
+	if(!heat_amount)
+		set_next_think(0)
+
+	set_next_think(world.time + 1 SECOND)
 
 //obtains the next projectile to fire
 /obj/item/gun/proc/consume_next_projectile()
@@ -333,48 +413,58 @@
 	user.visible_message(SPAN_WARNING("[user] squeezes the trigger of \the [src] but it doesn't move!"), SPAN_WARNING("You squeeze the trigger but it doesn't move!"), range = 3)
 
 //called after successfully firing
-/obj/item/gun/proc/handle_post_fire(mob/user, atom/target, pointblank = 0, reflex = 0, burstfire = 0)
+/obj/item/gun/proc/handle_post_fire(atom/movable/firer, atom/target, pointblank = 0, reflex = 0, burstfire = 0)
 
 	if(!silenced && (burstfire != -1))
 		if(reflex)
-			user.visible_message(
-				"<span class='reflex_shoot'><b>\The [user] fires \the [src][pointblank ? " point blank at \the [target]":""][burstfire == 1 ? " in a burst":""] by reflex!</b></span>",
+			firer.visible_message(
+				"<span class='reflex_shoot'><b>\The [firer] fires \the [src][pointblank ? " point blank at \the [target]":""][burstfire == 1 ? " in a burst":""] by reflex!</b></span>",
 				"<span class='reflex_shoot'>You fire \the [src] by reflex!</span>",
-				"You hear a [fire_sound_text]!"
+				(ismob(firer) ? "You hear a [fire_sound_text]!" : world.view)
 			)
 		else
-			user.visible_message(
-				"<span class='danger'>\The [user] fires \the [src][pointblank ? " point blank at \the [target]":""][burstfire == 1 ? " in a burst":""]!</span>",
+			firer.visible_message(
+				"<span class='danger'>\The [firer] fires \the [src][pointblank ? " point blank at \the [target]":""][burstfire == 1 ? " in a burst":""]!</span>",
 				"<span class='warning'>You fire \the [src]!</span>",
-				"You hear a [fire_sound_text]!"
+				(ismob(firer) ? "You hear a [fire_sound_text]!" : world.view)
 				)
 
-	if(one_hand_penalty && (burstfire != -1))
-		if(!src.is_held_twohanded(user))
-			switch(one_hand_penalty)
-				if(1)
-					if(prob(50)) //don't need to tell them every single time
-						to_chat(user, "<span class='warning'>Your aim wavers slightly.</span>")
-				if(2)
-					to_chat(user, "<span class='warning'>Your aim wavers as you fire \the [src] with just one hand.</span>")
-				if(3)
-					to_chat(user, "<span class='warning'>You have trouble keeping \the [src] on target with just one hand.</span>")
-				if(4 to INFINITY)
-					to_chat(user, "<span class='warning'>You struggle to keep \the [src] on target with just one hand!</span>")
-		else if(!user.can_wield_item(src))
-			switch(one_hand_penalty)
-				if(1)
-					if(prob(50)) //don't need to tell them every single time
-						to_chat(user, "<span class='warning'>Your aim wavers slightly.</span>")
-				if(2)
-					to_chat(user, "<span class='warning'>Your aim wavers as you try to hold \the [src] steady.</span>")
-				if(3)
-					to_chat(user, "<span class='warning'>You have trouble holding \the [src] steady.</span>")
-				if(4 to INFINITY)
-					to_chat(user, "<span class='warning'>You struggle to hold \the [src] steady!</span>")
+	if(ismob(firer))
+		var/mob/user = firer
 
-	if(screen_shake)
-		INVOKE_ASYNC(GLOBAL_PROC, /proc/directional_recoil, user, screen_shake+1, Get_Angle(user, target))
+		if(one_hand_penalty && (burstfire != -1))
+			if(!src.is_held_twohanded(user))
+				switch(one_hand_penalty)
+					if(1)
+						if(prob(50)) //don't need to tell them every single time
+							to_chat(user, "<span class='warning'>Your aim wavers slightly.</span>")
+					if(2)
+						to_chat(user, "<span class='warning'>Your aim wavers as you fire \the [src] with just one hand.</span>")
+					if(3)
+						to_chat(user, "<span class='warning'>You have trouble keeping \the [src] on target with just one hand.</span>")
+					if(4 to INFINITY)
+						to_chat(user, "<span class='warning'>You struggle to keep \the [src] on target with just one hand!</span>")
+			else if(!user.can_wield_item(src))
+				switch(one_hand_penalty)
+					if(1)
+						if(prob(50)) //don't need to tell them every single time
+							to_chat(user, "<span class='warning'>Your aim wavers slightly.</span>")
+					if(2)
+						to_chat(user, "<span class='warning'>Your aim wavers as you try to hold \the [src] steady.</span>")
+					if(3)
+						to_chat(user, "<span class='warning'>You have trouble holding \the [src] steady.</span>")
+					if(4 to INFINITY)
+						to_chat(user, "<span class='warning'>You struggle to hold \the [src] steady!</span>")
+
+		if(screen_shake)
+			INVOKE_ASYNC(GLOBAL_PROC, /proc/directional_recoil, user, screen_shake+1, Get_Angle(user, target))
+
+	if(has_smoke_particles)
+		var/firing_angle = Get_Angle(firer, target)
+		var/x_component = sin(firing_angle) * 40
+		var/y_component = cos(firing_angle) * 40
+		var/atom/movable/particle_emitter/firing_smoke/firing_smoke = new(get_turf(src))
+		firing_smoke.particles.velocity = list(x_component, y_component)
 
 	if(combustion)
 		var/turf/curloc = get_turf(src)
@@ -402,7 +492,7 @@
 	P.damage *= max_mult
 	P.accuracy += 4
 
-/obj/item/gun/proc/process_accuracy(obj/projectile, mob/user, atom/target, burst, held_twohanded)
+/obj/item/gun/proc/process_accuracy(obj/projectile, atom/movable/firer, atom/target, burst, held_twohanded)
 	var/obj/item/projectile/P = projectile
 	if(!istype(P))
 		return //default behaviour only applies to true projectiles
@@ -416,7 +506,8 @@
 			disp_mod += one_hand_penalty*0.5 //dispersion per point of two-handedness
 
 	// Shooting precisely while trying to turtle yourself up with a shield is hard
-	if(user?.blocking)
+	var/mob/user = firer
+	if(istype(user) && user.blocking)
 		acc_mod -= 1
 		disp_mod += 1
 
@@ -432,31 +523,28 @@
 		P.accuracy += 2
 
 //does the actual launching of the projectile
-/obj/item/gun/proc/process_projectile(obj/projectile, mob/user, atom/target, target_zone, params=null)
+/obj/item/gun/proc/process_projectile(obj/projectile, atom/movable/firer, atom/target, target_zone, params=null)
 	var/obj/item/projectile/P = projectile
 	if(!istype(P))
 		return 0 //default behaviour only applies to true projectiles
 
-	if(params)
-		P.set_clickpoint(params)
-
 	//shooting while in shock
 	var/shock_dispersion = 0
-	if(istype(user, /mob/living/carbon/human))
-		var/mob/living/carbon/human/mob = user
+	if(istype(firer, /mob/living/carbon/human))
+		var/mob/living/carbon/human/mob = firer
 		if(mob.shock_stage > 120)
 			shock_dispersion = rand(-4,4)
 		else if(mob.shock_stage > 70)
 			shock_dispersion = rand(-2,2)
 	P.dispersion += shock_dispersion
 
-	var/launched = !P.launch(target, target_zone, user, params, src)
+	var/launched = !P.launch(target, target_zone, firer, params, src)
 	if(launched)
-		play_fire_sound(user,P)
+		play_fire_sound(firer, P)
 
 	return launched
 
-/obj/item/gun/proc/play_fire_sound(mob/user, obj/item/projectile/P)
+/obj/item/gun/proc/play_fire_sound(atom/movable/firer, obj/item/projectile/P)
 	var/shot_sound = (istype(P) && P.fire_sound)? P.fire_sound : fire_sound
 
 	if (!silenced)
@@ -585,14 +673,13 @@
 	//looking through a scope limits your periphereal vision
 	//still, increase the view size by a tiny amount so that sniping isn't too restricted to NSEW
 	var/zoom_offset = round(world.view * zoom_amount)
-	var/view_size = round(world.view + zoom_amount)
 	var/scoped_accuracy_mod = zoom_offset
 
 	if(zoom)
 		unzoom(user)
 		return
 
-	zoom(user, zoom_offset, view_size)
+	zoom(user, zoom_offset, zoom_amount)
 	if(zoom)
 		accuracy = scoped_accuracy + scoped_accuracy_mod
 		if(screen_shake)
@@ -604,13 +691,15 @@
 	accuracy = initial(accuracy)
 	screen_shake = initial(screen_shake)
 
-/obj/item/gun/_examine_text(mob/user)
+/obj/item/gun/examine(mob/user, infix)
 	. = ..()
+
 	if(firemodes.len > 1)
 		var/datum/firemode/current_mode = firemodes[sel_mode]
-		. += "\nThe fire selector is set to [current_mode.name]."
+		. += "The fire selector is set to [current_mode.name]."
+
 	if(config.misc.toogle_gun_safety && has_safety)
-		. += "\nThe safety is [safety() ? "on" : "off"]"
+		. += "The safety is [safety() ? "on" : "off"]"
 
 // (re)Setting firemodes from the given list
 /obj/item/gun/proc/set_firemodes(list/_firemodes = null)
@@ -635,6 +724,13 @@
 	new_mode.apply_to(src)
 
 	return new_mode
+
+/obj/item/gun/proc/set_firemode()
+	if(sel_mode > firemodes.len)
+		return
+
+	var/datum/firemode/new_mode = firemodes[sel_mode]
+	new_mode.apply_to(src)
 
 /obj/item/gun/attack_self(mob/user)
 	var/datum/firemode/new_mode = switch_firemodes(user)

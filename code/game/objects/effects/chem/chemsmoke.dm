@@ -26,14 +26,16 @@
 	if(destination)
 		walk_to(src, destination)
 
-/obj/effect/effect/smoke/chem/Move()
+/obj/effect/effect/smoke/chem/Move(newloc, direct)
 	var/list/oldlocs = view(1, src)
 	. = ..()
-	if(.)
-		for(var/turf/T in view(1, src) - oldlocs)
-			for(var/atom/movable/AM in T)
-				if(!istype(AM, /obj/effect/effect/smoke/chem))
-					reagents.splash(AM, splash_amount, copy = 1)
+	if(!.)
+		return
+
+	for(var/turf/T in view(1, src) - oldlocs)
+		for(var/atom/movable/AM in T)
+			if(!istype(AM, /obj/effect/effect/smoke/chem))
+				reagents.splash(AM, splash_amount, copy = 1)
 
 /obj/effect/effect/smoke/chem/Crossed(atom/movable/AM)
 	..()
@@ -220,6 +222,7 @@
 
 	pending += location
 
+	var/airblock
 	while(pending.len)
 		for(var/turf/current in pending)
 			for(var/D in GLOB.cardinal)
@@ -236,10 +239,15 @@
 					continue
 				if(!(target in targetTurfs))
 					continue
-				if(current.c_airblock(target)) //this is needed to stop chemsmoke from passing through thin window walls
+
+				ATMOS_CANPASS_TURF(airblock, current, target)
+				if(airblock)
 					continue
-				if(target.c_airblock(current))
+
+				ATMOS_CANPASS_TURF(airblock, target, current)
+				if(airblock)
 					continue
+
 				pending += target
 
 			pending -= current

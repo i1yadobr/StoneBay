@@ -56,7 +56,9 @@ var/list/holder_mob_icon_cache = list()
 		check_condition()
 
 /obj/item/holder/proc/check_condition()
-	if(isturf(loc) || !held_mob || !(held_mob in src))
+	if(!held_mob || !(held_mob in src))
+		qdel(src)
+	if(isturf(loc) && !throwing) // Throwing 'em little bastards is fun
 		qdel(src)
 
 /obj/item/holder/onDropInto(atom/movable/AM)
@@ -72,7 +74,9 @@ var/list/holder_mob_icon_cache = list()
 	return I ? I.GetAccess() : ..()
 
 /obj/item/holder/attack_self()
-	held_mob.show_inv(usr)
+	if(!held_mob.show_inv(usr))
+		return
+
 	usr.show_inventory?.open()
 
 /obj/item/holder/attack(mob/target, mob/user)
@@ -114,6 +118,9 @@ var/list/holder_mob_icon_cache = list()
 /obj/item/holder/mouse
 	w_class = ITEM_SIZE_TINY
 
+/obj/item/holder/hamster
+	w_class = ITEM_SIZE_TINY
+
 /obj/item/holder/borer
 	origin_tech = list(TECH_BIO = 6)
 
@@ -135,6 +142,25 @@ var/list/holder_mob_icon_cache = list()
 	origin_tech = list(TECH_BIO = 2)
 	slot_flags = SLOT_HOLSTER
 
+/obj/item/holder/mini_pig
+	origin_tech = list(TECH_BIO = 2)
+	slot_flags = SLOT_HOLSTER
+
+/obj/item/holder/mini_pig/attack_self(mob/user)
+	if(!held_mob)
+		return
+
+	var/msg = pick("presses", "squeezes", "squashes", "champs", "pinches")
+
+	if(held_mob.stat)
+		user.visible_message(SPAN("notice", "[user] [msg] \the [src] in hand... But it doesn't react."))
+		return
+
+	playsound(loc, pick('sound/effects/pig1.ogg','sound/effects/pig2.ogg','sound/effects/pig3.ogg'), 100, 1)
+	user.visible_message(SPAN("notice", "[user] [msg] \the [src] in hand!"))
+	return
+
+
 /obj/item/holder/attackby(obj/item/W, mob/user)
 	held_mob.attackby(W, user)
 	sync()
@@ -144,7 +170,7 @@ var/list/holder_mob_icon_cache = list()
 
 /mob/living/proc/get_scooped(mob/living/carbon/human/grabber, self_grab)
 
-	if(!holder_type || buckled || pinned.len)
+	if(!holder_type || buckled || LAZYLEN(pinned))
 		return
 
 	if(self_grab)

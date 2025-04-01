@@ -67,10 +67,18 @@ var/global/datum/controller/occupations/job_master
 
 
 	proc/GetJob(rank)
-		if(!rank)	return null
+		if(!rank)
+			return null
+
+		rank = lowertext(rank)
+
 		for(var/datum/job/J in occupations)
-			if(!J)	continue
-			if(J.title == rank)	return J
+			if(!J)
+				continue
+
+			if(lowertext(J.title) == rank)
+				return J
+
 		return null
 
 	proc/ShouldCreateRecords(rank)
@@ -424,6 +432,9 @@ var/global/datum/controller/occupations/job_master
 							to_chat(H, SPAN("warning", "Your current species, job, whitelist status or loadout configuration does not permit you to spawn with [thing]!"))
 							continue
 
+						if(G.is_departmental())
+							G.set_selected_jobs(job, null)
+
 						if(!G.slot || G.slot == slot_tie || G.slot == slot_belt ||(G.slot in loadout_taken_slots) || !G.spawn_on_mob(H, H.client.prefs.Gear()[G.display_name]))
 							spawn_in_storage.Add(G)
 						else
@@ -495,8 +506,8 @@ var/global/datum/controller/occupations/job_master
 		to_chat(H, "<b>To speak on your department's radio channel use :h. For the use of other channels, examine your headset.</b>")
 
 		if(rank == "Merchant" && GLOB.merchant_illegalness)
-			to_chat(H, SPAN_DANGER("<b>Your trading license is a forgery. Trading on NSS \"Exodus\" is illegal!</b>"))
-			H.mind.store_memory("Your trading license is a forgery. Trading on NSS \"Exodus\" is illegal.")
+			to_chat(H, SPAN_DANGER("<b>Your trading license is a forgery. Trading on [station_name()] is illegal!</b>"))
+			H.mind.store_memory("Your trading license is a forgery. Trading on [station_name()] is illegal.")
 
 		if(job.req_admin_notify)
 			to_chat(H, "<b>You are playing a job that is important for Game Progression. If you have to disconnect, please notify the admins via adminhelp.</b>")
@@ -546,26 +557,19 @@ var/global/datum/controller/occupations/job_master
 		BITSET(H.hud_updateflag, SPECIALROLE_HUD)
 		return H
 
-	proc/LoadJobs(jobsfile) //ran during round setup, reads info from jobs.toml -- Urist
+	proc/LoadJobs()
 		if(!config.misc.load_jobs_from_txt)
 			return FALSE
 
-		var/raw_data = rustg_read_toml_file(jobsfile)
+		var/list/job_entries = config.jobs.maps[lowertext(GLOB.using_map.name)] || list()
 
-		var/list/jobEntries = raw_data[GLOB.using_map.name]
+		for(var/job in job_entries)
+			var/datum/job/J = GetJob(job)
 
-		for(var/job in jobEntries)
-			if(!length(job) || !isnum(jobEntries[job]))
+			if(!J)
 				continue
 
-			var/name = replacetext_char(job, "_", " ")
-			var/value = jobEntries[job]
-
-			if(name && value)
-				var/datum/job/J = GetJob(name)
-				if(!J)
-					continue
-				J.set_positions(value)
+			J.set_positions(job_entries[job])
 
 		return TRUE
 

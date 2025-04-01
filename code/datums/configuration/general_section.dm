@@ -1,25 +1,28 @@
 /datum/configuration_section/general
 	name = "general"
 
-	var/server_name = null
-	var/subserver_name = null
-	var/server_id = null
-	var/server_suffix = FALSE
-	var/server_port = null
-	var/hosted_by = null
-	var/player_limit = 0
-	var/hard_player_limit = 0
-	var/ticklag = 0.625
-	var/client_fps = 65
-	var/fps = 20
-	var/aggressive_changelog = FALSE
-	var/tick_limit_mc_init = TICK_LIMIT_MC_INIT_DEFAULT
-	var/minute_topic_limit = null
-	var/second_topic_limit = null
-	var/wait_for_sigusr1 = FALSE
+	var/server_name
+	var/subserver_name
+	var/server_id
+	var/server_suffix
+	var/server_port
+	var/hosted_by
+	var/player_limit
+	var/hard_player_limit
+	var/ticklag
+	var/client_fps
+	var/fps
+	var/aggressive_changelog
+	var/tick_limit_mc_init
+	var/minute_topic_limit
+	var/second_topic_limit
+	var/wait_for_sigusr1
 
-	var/client_min_major_version = 514
-	var/client_min_minor_version = 1572
+	var/client_min_major_version
+	var/client_min_minor_version
+	var/client_recommended_minor_version
+	var/list/client_blacklisted_minor_versions
+	var/prometheus_port
 
 /datum/configuration_section/general/load_data(list/data)
 	CONFIG_LOAD_STR(server_name, data["server_name"])
@@ -34,6 +37,8 @@
 
 	CONFIG_LOAD_NUM(client_min_major_version, data["client_min_major_version"])
 	CONFIG_LOAD_NUM(client_min_minor_version, data["client_min_minor_version"])
+	CONFIG_LOAD_NUM(client_recommended_minor_version, data["client_recommended_minor_version"])
+	CONFIG_LOAD_LIST(client_blacklisted_minor_versions, data["blacklisted_builds"])
 
 	if(ticklag)
 		fps = 10 / ticklag
@@ -48,3 +53,4 @@
 	CONFIG_LOAD_NUM(minute_topic_limit, data["minute_topic_limit"])
 	CONFIG_LOAD_NUM(second_topic_limit, data["second_topic_limit"])
 	CONFIG_LOAD_BOOL(wait_for_sigusr1, data["wait_for_sigusr1"])
+	CONFIG_LOAD_STR(prometheus_port, data["prometheus_port"])

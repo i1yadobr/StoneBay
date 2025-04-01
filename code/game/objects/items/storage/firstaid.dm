@@ -102,8 +102,9 @@
 	name = "combat medical kit"
 	desc = "Contains advanced medical treatments."
 	icon_state = "firstaid-bezerk"
-	item_state = "firstaid-advanced"
+	item_state = "firstaid-bezerk"
 	storage_slots = 9 // Tacticoolness makes it more spaceous
+	max_storage_space = null
 
 	startswith = list(
 		/obj/item/stack/medical/advanced/bruise_pack,
@@ -137,7 +138,13 @@
 	can_hold = list(
 		/obj/item/reagent_containers/pill/,
 		/obj/item/reagent_containers/hypospray/autoinjector/,
-		/obj/item/reagent_containers/syringe/
+		/obj/item/reagent_containers/syringe/,
+		/obj/item/pen/,
+		/obj/item/reagent_containers/dropper/,
+		/obj/item/reagent_containers/vessel/beaker/vial/,
+		/obj/item/scalpel/,
+		/obj/item/hemostat/,
+		/obj/item/clothing/mask/smokable/cigarette/
 		)
 
 /obj/item/storage/firstaid/surgery
@@ -145,6 +152,7 @@
 	desc = "Contains tools for surgery. Has precise foam fitting for safe transport and automatically sterilizes the content between uses."
 	icon_state = "surgerykit"
 	item_state = "firstaid-surgery"
+	inspect_state = TRUE
 
 	storage_slots = 14
 	max_w_class = ITEM_SIZE_NORMAL

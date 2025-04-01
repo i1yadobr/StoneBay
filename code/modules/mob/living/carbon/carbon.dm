@@ -47,7 +47,7 @@
 	set_nutrition(300)
 	..()
 
-/mob/living/carbon/Move(NewLoc, direct)
+/mob/living/carbon/Move(newloc, direct)
 	. = ..()
 	if(!.)
 		return
@@ -56,6 +56,7 @@
 		remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 10))
 		if(m_intent == M_RUN)
 			remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 10))
+
 	if((MUTATION_FAT in mutations) && m_intent == M_RUN && bodytemperature <= 360)
 		bodytemperature += 2
 
@@ -296,6 +297,10 @@
 	return
 
 /mob/living/carbon/throw_item(atom/target)
+	THROTTLE(cooldown, 0.2 SECONDS)
+	if(!cooldown)
+		return
+
 	throw_mode_off()
 	if(!isturf(loc))
 		return
@@ -397,10 +402,10 @@
 
 /mob/living/carbon/Bump(atom/movable/AM, yes)
 	if(now_pushing || !yes)
-		return
-	..()
-	if(istype(AM, /mob/living/carbon) && prob(10))
-		src.spread_disease_to(AM, "Contact")
+		return FALSE
+	. = ..()
+	if(. && istype(AM, /mob/living/carbon) && prob(10))
+		spread_disease_to(AM, "Contact")
 
 /mob/living/carbon/slip(slipped_on, stun_duration = 8)
 	var/area/A = get_area(src)
@@ -474,7 +479,7 @@
 	<BR>"}
 	show_browser(user, dat, text("window=mob[];size=325x500", name))
 	onclose(user, "mob[name]")
-	return
+	return TRUE
 
 /**
  *  Return FALSE if victim can't be devoured, DEVOUR_FAST if they can be devoured quickly, DEVOUR_SLOW for slow devour

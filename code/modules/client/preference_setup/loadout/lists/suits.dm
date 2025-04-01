@@ -74,18 +74,10 @@
 	path = /obj/item/clothing/suit/storage/hooded/hoodie
 	flags = GEAR_HAS_COLOR_SELECTION
 
-/datum/gear/suit/hoodie_sel
-	display_name = "standard hoodies"
-	path = /obj/item/clothing/suit/storage/toggle/hoodie
-
-/datum/gear/suit/hoodie_sel/New()
-	..()
-	var/hoodies = list()
-	hoodies += /obj/item/clothing/suit/storage/toggle/hoodie/cti
-	hoodies += /obj/item/clothing/suit/storage/toggle/hoodie/mu
-	hoodies += /obj/item/clothing/suit/storage/toggle/hoodie/nt
-	hoodies += /obj/item/clothing/suit/storage/toggle/hoodie/smw
-	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(hoodies)
+/datum/gear/suit/ziphoodie
+	display_name = "zip-up hoodie, colour select"
+	path = /obj/item/clothing/suit/storage/hooded/toggle/hoodie
+	flags = GEAR_HAS_COLOR_SELECTION
 
 /datum/gear/suit/labcoat
 	display_name = "labcoat, colour select"
@@ -202,6 +194,28 @@
 	display_name = "chicken suit"
 	path = /obj/item/clothing/suit/chickensuit
 	price = 10
+
+/datum/gear/suit/yuri
+	display_name = "yuri coat"
+	path = /obj/item/clothing/suit/yuri
+	price = 10
+
+/datum/gear/suit/bee
+	display_name = "bee suit"
+	path = /obj/item/clothing/suit/storage/hooded/bee
+	price = 10
+
+/datum/gear/suit/hos_formal
+	display_name = "head of security's formal coat"
+	path = /obj/item/clothing/suit/hos_formal
+	price = 10
+	allowed_roles = list(/datum/job/hos)
+
+/datum/gear/suit/witchhunter
+	display_name = "witchunter garb"
+	path = /obj/item/clothing/suit/witchhunter
+	price = 10
+	allowed_roles = list(/datum/job/chaplain)
 
 /datum/gear/suit/wizrobe_fake
 	display_name = "wizard robe"

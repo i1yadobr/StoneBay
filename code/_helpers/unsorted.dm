@@ -354,10 +354,10 @@ Turf and target are seperate in case you want to teleport some distance from a t
 	return "[pick("1","2","3","4","5","6","7","8","9","0")][pick("!","@","#","$","%","^","&","*")][pick("!","@","#","$","%","^","&","*")][pick("!","@","#","$","%","^","&","*")]"
 
 /atom/proc/add_verb(the_verb, datum/callback/callback)
-	if (callback && !callback.Invoke())
+	if(callback && !callback.Invoke())
 		return
-
 	verbs += the_verb
+
 //When an AI is activated, it can choose from a list of non-slaved borgs to have as a slave.
 /proc/freeborg()
 	var/select = null
@@ -592,13 +592,24 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 	return 1
 
-/proc/is_blocked_turf(turf/T)
-	var/cant_pass = 0
-	if(T.density) cant_pass = 1
-	for(var/atom/A in T)
-		if(A.density)//&&A.anchored
-			cant_pass = 1
-	return cant_pass
+/proc/is_blocked_turf(turf/T, caller = null, exclude_mobs = FALSE, list/ignore_atoms = FALSE)
+	if(T.density)
+		return TRUE
+
+	for(var/atom/atom in T)
+		if(T == caller) // Ignoring ourselves
+			continue
+
+		if(length(ignore_atoms) && is_type_in_list(atom, ignore_atoms))
+			continue
+
+		if(atom.density)
+			if(exclude_mobs && isliving(atom))
+				continue
+			else
+				return FALSE
+
+	return FALSE
 
 /proc/get_step_towards2(atom/ref , atom/trg)
 	var/base_dir = get_dir(ref, get_step_towards(ref,trg))
@@ -636,7 +647,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 //Takes: Area type as text string or as typepath OR an instance of the area.
 //Returns: A list of all areas of that type in the world.
-/proc/get_areas(areatype)
+/proc/get_areas(areatype, subtypes = TRUE)
 	if(!areatype) return null
 	if(istext(areatype)) areatype = text2path(areatype)
 	if(isarea(areatype))
@@ -644,8 +655,16 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		areatype = areatemp.type
 
 	var/list/areas = new /list()
-	for(var/area/N in world)
-		if(istype(N, areatype)) areas += N
+	if(subtypes)
+		var/list/cache = typecacheof(areatype)
+		for(var/area/V in world)
+			if(cache[V.type])
+				areas += V
+	else
+		for(var/area/V in world)
+			if(V.type == areatype)
+				areas += V
+
 	return areas
 
 //Takes: Area type as text string or as typepath OR an instance of the area.

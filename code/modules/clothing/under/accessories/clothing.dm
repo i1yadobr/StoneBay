@@ -81,8 +81,10 @@
 	..()
 
 /obj/item/clothing/accessory/toggleable/on_attached(obj/item/clothing/under/S, mob/user as mob)
-	..()
-	has_suit.verbs += /obj/item/clothing/accessory/toggleable/verb/toggle
+	. = ..()
+	if(.)
+		has_suit.verbs += /obj/item/clothing/accessory/toggleable/verb/toggle
+	return .
 
 /obj/item/clothing/accessory/toggleable/on_removed(mob/user as mob)
 	if(has_suit)
@@ -121,6 +123,11 @@
 	name = "black vest"
 	desc = "Slick black suit vest."
 	icon_state = "det_vest"
+
+/obj/item/clothing/accessory/toggleable/color_vest
+	name = "slick vest"
+	desc = "Slick suit vest."
+	icon_state = "color_vest"
 
 /obj/item/clothing/accessory/toggleable/tan_jacket
 	name = "tan suit jacket"
@@ -180,7 +187,7 @@
 	color = color_rotation(rand(-11,12)*15)
 
 /obj/item/clothing/accessory/toggleable/flannel
-	name = "flannel shirt"
+	name = "comfy flannel shirt"
 	desc = "A comfy, plaid flannel shirt."
 	icon_state = "flannel"
 	var/rolled = 0
@@ -188,9 +195,11 @@
 	var/buttoned = 0
 
 /obj/item/clothing/accessory/toggleable/flannel/on_attached(obj/item/clothing/under/S, mob/user as mob)
-	..()
-	has_suit.verbs += /obj/item/clothing/accessory/toggleable/flannel/verb/tuck
-	has_suit.verbs += /obj/item/clothing/accessory/toggleable/flannel/verb/roll_up_sleeves
+	. = ..()
+	if(.)
+		has_suit.verbs += /obj/item/clothing/accessory/toggleable/flannel/verb/tuck
+		has_suit.verbs += /obj/item/clothing/accessory/toggleable/flannel/verb/roll_up_sleeves
+	return .
 
 /obj/item/clothing/accessory/toggleable/flannel/on_removed(mob/user as mob)
 	if(has_suit)
@@ -262,6 +271,11 @@
 		icon_state += "b"
 	update_clothing_icon()
 
+/obj/item/clothing/accessory/toggleable/flannel/alt
+	name = "soft flannel shirt"
+	desc = "A soft, plaid flannel shirt."
+	icon_state = "flannel_alt"
+
 /obj/item/clothing/accessory/tangzhuang
 	name = "tangzhuang jacket"
 	desc = "A traditional Chinese coat tied together with straight, symmetrical knots."
@@ -274,8 +288,10 @@
 	var/rolled = FALSE
 
 /obj/item/clothing/accessory/security_shirt/on_attached(obj/item/clothing/under/S, mob/user)
-	..()
-	has_suit.verbs += /obj/item/clothing/accessory/security_shirt/verb/roll_up_sleeves
+	. = ..()
+	if(.)
+		has_suit.verbs += /obj/item/clothing/accessory/security_shirt/verb/roll_up_sleeves
+	return .
 
 /obj/item/clothing/accessory/security_shirt/on_removed(mob/user)
 	if(has_suit)

@@ -16,11 +16,7 @@ var/global/list/stool_cache = list() //haha stool
 	throwforce = 10
 	w_class = ITEM_SIZE_HUGE
 
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 0,
-		RADIATION_BETA_PARTICLE = 0,
-		RADIATION_HAWKING = 0
-	)
+	rad_resist_type = /datum/rad_resist/none
 
 	var/base_icon = "stool"
 	var/material/material
@@ -48,7 +44,7 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/stool/bar_new
 	name = "wooden bar stool"
 	icon_state = "barstool_new_preview" //set for the map
-	item_state = "barstool_new"
+	item_state = "bar_stool"
 	base_icon = "barstool_new"
 
 /obj/item/stool/bar_new/padded
@@ -161,7 +157,7 @@ var/global/list/stool_cache = list() //haha stool
 			padding_type = MATERIAL_CARPET
 		else if(istype(W,/obj/item/stack/material))
 			var/obj/item/stack/material/M = W
-			if(M.material && (M.material.flags & MATERIAL_PADDING))
+			if(M.material && (M.material.material_flags & MATERIAL_PADDING))
 				padding_type = "[M.material.name]"
 		if(!padding_type)
 			to_chat(user, "You cannot pad \the [src] with that.")

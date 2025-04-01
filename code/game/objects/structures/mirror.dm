@@ -6,7 +6,7 @@
 	icon_state = "mirror"
 	density = 0
 	anchored = 1
-	var/shattered = 0
+	var/shattered = FALSE
 	var/list/ui_users = list()
 
 	/// Visual object for handling the viscontents
@@ -19,6 +19,10 @@
 	var/obj/effect/reflection/reflection = new(src.loc)
 	reflection.setup_visuals(src)
 	ref = weakref(reflection)
+	if(shattered)
+		shattered = FALSE
+		shatter()
+
 /obj/structure/mirror/attack_hand(mob/user as mob)
 
 	if(shattered)	return
@@ -37,7 +41,7 @@
 
 /obj/structure/mirror/proc/shatter()
 	if(shattered)	return
-	shattered = 1
+	shattered = TRUE
 	icon_state = "mirror_broke"
 	playsound(src, SFX_BREAK_WINDOW, 70, 1)
 	desc = "Oh no, seven years of bad luck!"
@@ -101,7 +105,7 @@
 /obj/structure/mirror/raider
 	name = "cracked mirror"
 	desc = "Something seems strange about this old, dirty mirror. Your reflection doesn't look like you remember it."
-	icon_state = "mirror_broke"
+	icon_state = "mirrormagic_broke"
 	shattered = 1
 
 /obj/structure/mirror/raider/attack_hand(mob/living/carbon/human/user)
@@ -124,6 +128,24 @@
 					GLOB.raiders.update_access(vox)
 				qdel(user)
 	..()
+
+/obj/structure/mirror/magic
+	name = "magic mirror"
+	desc = "Something seems strange about this mirror. Your reflection doesn't look like you remember it."
+	icon_state = "mirrormagic"
+
+/obj/structure/mirror/magic/shatter()
+	if(shattered)
+		return
+	shattered = TRUE
+	icon_state = "mirrormagic_broke"
+	playsound(src, SFX_BREAK_WINDOW, 70, 1)
+	desc = "Oh no, seven years of bad luck!"
+
+	var/obj/effect/reflection/reflection = ref.resolve()
+	if(istype(reflection))
+		reflection.alpha_icon_state = "mirror_mask_broken"
+		reflection.update_mirror_filters()
 
 /obj/item/mirror
 	name = "mirror"
@@ -221,7 +243,7 @@
 		return
 	var/datum/vampire/V = H.mind.vampire
 	if(V)
-		if(V.status & VAMP_ISTHRALL)
+		if(V.vamp_status & VAMP_ISTHRALL)
 			filters += blur_filter
 		else
 			H.vis_flags |= VIS_HIDE
@@ -233,7 +255,7 @@
 		return
 	var/datum/vampire/V = H.mind.vampire
 	if(V)
-		if(V.status & VAMP_ISTHRALL)
+		if(V.vamp_status & VAMP_ISTHRALL)
 			filters -= blur_filter
 		else
 			H.vis_flags &= ~VIS_HIDE

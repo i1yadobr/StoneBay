@@ -81,12 +81,12 @@
 	var/datum/gas_mixture/env_air = loc.return_air()
 	to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
-	if(do_after(user, 40, src))
+	if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		user.visible_message( \
 			"<span class='notice'>\The [user] unfastens \the [src].</span>", \
 			"<span class='notice'>You have unfastened \the [src].</span>", \
 			"You hear a ratchet.")
-		var/obj/item/pipe/P = new(loc, make_from=src)
+		var/obj/item/pipe/P = new(loc, null, null, src)
 		if ((int_pressure - env_air.return_pressure()) > 2*ONE_ATMOSPHERE)
 			to_chat(user, "<span class='warning'>\the [src] flies off because of the overpressure in it!</span>")
 			P.throw_at_random(0, round((int_pressure - env_air.return_pressure()) / 100), 30)

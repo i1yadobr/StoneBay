@@ -5,7 +5,7 @@
 /obj/machinery/vending
 	name = "Vendomat"
 	desc = "A generic vending machine."
-	icon = 'icons/obj/machines/vending.dmi'
+	icon = 'icons/obj/machines/vending/generic.dmi'
 	icon_state = "generic"
 	layer = BELOW_OBJ_LAYER
 	anchored = 1
@@ -74,6 +74,7 @@
 	var/gen_rand_amount = FALSE // If we want to generate random amount of items in our cartridge.
 
 	var/vending_sound = SFX_VENDING_DROP
+	light_color = COLOR_GREEN_GRAY
 
 /obj/machinery/vending/on_update_icon()
 	ClearOverlays()
@@ -85,6 +86,20 @@
 		icon_state = "[base_icon]-off"
 	if(panel_open)
 		AddOverlays(image(icon, "[base_icon]-panel"))
+
+	var/should_glow = update_glow()
+	if(should_glow)
+		AddOverlays(emissive_appearance(icon, "[base_icon]_ea"))
+		if(!panel_open)
+			AddOverlays(emissive_appearance(icon, "[base_icon]_panel_ea"))
+
+/obj/machinery/vending/proc/update_glow()
+	if(inoperable(MAINT))
+		set_light(0)
+		return FALSE
+
+	set_light(1, 0.5, 2, 3.5, light_color)
+	return TRUE
 
 /obj/machinery/vending/Initialize(mapload)
 	. = ..()
@@ -103,6 +118,7 @@
 	setup_cartridge()
 	power_change()
 	setup_icon_states()
+	update_icon()
 
 /obj/machinery/vending/proc/refresh_cartridge()
 	cartridge = locate() in component_parts
@@ -116,16 +132,16 @@
 		cartridge.extra = products
 		cartridge.build_inventory(gen_rand_amount)
 
-/obj/machinery/vending/_examine_text(mob/user)
+/obj/machinery/vending/examine(mob/user, infix)
 	. = ..()
-	if(.)
-		if(stat & BROKEN)
-			to_chat(user, SPAN("warning", "It's broken."))
-		else
-			if(health <= 0.4 * max_health)
-				to_chat(user, SPAN("warning", "It's heavily damaged!"))
-			else if(health < max_health)
-				to_chat(user, SPAN("warning", "It's showing signs of damage."))
+
+	if(stat & BROKEN)
+		. += SPAN("warning", "It's broken.")
+	else
+		if(health <= 0.4 * max_health)
+			. += SPAN("warning", "It's heavily damaged!")
+		else if(health < max_health)
+			. += SPAN("warning", "It's showing signs of damage.")
 
 /obj/machinery/vending/proc/take_damage(force)
 	if(health > 0)
@@ -243,7 +259,7 @@
 /obj/machinery/vending/default_deconstruction_crowbar(mob/user, obj/item/crowbar/C)
 	if(!istype(C) || !(stat & (POWEROFF | NOPOWER)) || !panel_open)
 		return FALSE
-	if(!do_after(user, 40, src) || !(stat & (POWEROFF | NOPOWER)) || !panel_open)
+	if(!do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG) || !(stat & (POWEROFF | NOPOWER)) || !panel_open)
 		return FALSE
 	. = dismantle()
 
@@ -263,21 +279,24 @@
 	qdel(src)
 	return FALSE
 
-/obj/machinery/vending/proc/attempt_to_repair(mob/user, obj/item/weldingtool/W)
-	if(!istype(W) || !W.isOn())
+/obj/machinery/vending/proc/attempt_to_repair(mob/user, obj/item/weldingtool/WT)
+	if(!istype(WT))
 		return FALSE
+
 	if(health == max_health)
 		to_chat(user, SPAN("notice", "\The [src] is undamaged."))
 		return FALSE
-	if(!W.remove_fuel(0, user))
-		to_chat(user, SPAN("notice", "You need more welding fuel to complete this task."))
-		return FALSE
-	playsound(src, 'sound/items/Welder.ogg', 100, 1)
+
 	user.visible_message(SPAN("notice", "[user] is repairing \the [src]..."), SPAN("notice", "You start repairing the damage to [src]..."))
-	if(do_after(user, 30, src) && W.isOn())
-		health = max_health
-		user.visible_message(SPAN("notice", "[user] repairs \the [src]."), SPAN("notice", "You repair \the [src]."))
-		set_broken(0)
+	if(!WT.use_tool(src, user, delay = 3 SECONDS, amount = 5))
+		return
+
+	if(QDELETED(src) || !user)
+		return
+
+	health = max_health
+	user.visible_message(SPAN("notice", "[user] repairs \the [src]."), SPAN("notice", "You repair \the [src]."))
+	set_broken(0)
 	return TRUE
 
 /obj/machinery/vending/MouseDrop_T(obj/item/I, mob/user)
@@ -691,7 +710,6 @@
 /obj/machinery/vending/proc/setup_icon_states()
 	if(use_alt_icons)
 		base_icon = pick(alt_icons)
-		update_icon()
 	else
 		base_icon = icon_state
 

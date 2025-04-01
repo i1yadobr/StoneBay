@@ -18,9 +18,9 @@
 	combustion = 0
 
 
-/obj/item/gun/energy/temperature/_examine_text(mob/user)
+/obj/item/gun/energy/temperature/examine(mob/user, infix)
 	. = ..()
-	. += "\nThe temperature sensor shows: [round(CONV_KELVIN_CELSIUS(temperature))]&deg;C"
+	. += "The temperature sensor shows: [round(CONV_KELVIN_CELSIUS(temperature))]&deg;C"
 
 /obj/item/gun/energy/temperature/Initialize()
 	. = ..()
@@ -79,7 +79,7 @@
 
 	set_next_think(world.time + 1 SECOND)
 
-/obj/item/gun/energy/temperature/Fire(atom/target, mob/living/user, clickparams, pointblank, reflex)
+/obj/item/gun/energy/temperature/Fire(atom/target, mob/living/user, clickparams, pointblank, reflex, target_zone = BP_CHEST)
 	if(temperature >= 450)
 		temperature -= rand(0,100)
 	. = ..()

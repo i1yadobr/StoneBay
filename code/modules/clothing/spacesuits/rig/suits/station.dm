@@ -52,7 +52,7 @@
 	boot_type = /obj/item/clothing/shoes/magboots/rig/industrial
 	glove_type = /obj/item/clothing/gloves/rig/industrial
 
-	allowed = list(/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit,/obj/item/stack/flag,/obj/item/storage/ore,/obj/item/device/t_scanner,/obj/item/pickaxe, /obj/item/rcd, /obj/item/gun/energy/kinetic_accelerator, /obj/item/shovel, /obj/item/ore_radar, /obj/item/resonator)
+	allowed = list(/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit,/obj/item/stack/flag,/obj/item/storage/ore,/obj/item/device/t_scanner,/obj/item/pickaxe, /obj/item/construction/rcd, /obj/item/gun/energy/kinetic_accelerator, /obj/item/shovel, /obj/item/ore_radar, /obj/item/resonator)
 
 	req_access = list()
 	req_one_access = list()
@@ -97,7 +97,7 @@
 	boot_type = /obj/item/clothing/shoes/magboots/rig/eva
 	glove_type = /obj/item/clothing/gloves/rig/eva
 
-	allowed = list(/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit,/obj/item/storage/toolbox,/obj/item/storage/briefcase/inflatable,/obj/item/inflatable_dispenser,/obj/item/device/t_scanner,/obj/item/rcd)
+	allowed = list(/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit,/obj/item/storage/toolbox,/obj/item/storage/briefcase/inflatable,/obj/item/inflatable_dispenser,/obj/item/device/t_scanner,/obj/item/construction/rcd)
 
 	req_access = list()
 	req_one_access = list()
@@ -144,7 +144,7 @@
 	boot_type =  /obj/item/clothing/shoes/magboots/rig/ce
 	glove_type = /obj/item/clothing/gloves/rig/ce
 
-	allowed = list(/obj/item/gun,/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit,/obj/item/storage/ore,/obj/item/storage/toolbox,/obj/item/storage/briefcase/inflatable,/obj/item/inflatable_dispenser,/obj/item/device/t_scanner,/obj/item/pickaxe,/obj/item/rcd)
+	allowed = list(/obj/item/gun,/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit,/obj/item/storage/ore,/obj/item/storage/toolbox,/obj/item/storage/briefcase/inflatable,/obj/item/inflatable_dispenser,/obj/item/device/t_scanner,/obj/item/pickaxe,/obj/item/construction/rcd)
 
 	req_access = list()
 	req_one_access = list()
@@ -164,34 +164,24 @@
 		)
 
 /obj/item/clothing/suit/space/rig/ce
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 533 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 400 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
+	rad_resist_type = /datum/rad_resist/rig_ce
 
 /obj/item/clothing/head/helmet/space/rig/ce
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 533 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 400 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
+	rad_resist_type = /datum/rad_resist/rig_ce
 	camera = /obj/machinery/camera/network/engineering
 
 /obj/item/clothing/gloves/rig/ce
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 533 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 400 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
+	rad_resist_type = /datum/rad_resist/rig_ce
 	siemens_coefficient = 0
 
 /obj/item/clothing/shoes/magboots/rig/ce
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 533 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 400 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
+	rad_resist_type = /datum/rad_resist/rig_ce
+
+/datum/rad_resist/rig_ce
+	alpha_particle_resist = 533 MEGA ELECTRONVOLT
+	beta_particle_resist = 400 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
+
 
 /obj/item/rig/hazmat
 	name = "AMI control module"
@@ -346,7 +336,7 @@
 				   /obj/item/storage/ore,
 				   /obj/item/device/t_scanner,
 				   /obj/item/pickaxe,
-				   /obj/item/rcd,
+				   /obj/item/construction/rcd,
 				   /obj/item/gun/energy/kinetic_accelerator,
 				   /obj/item/shovel,
 				   /obj/item/ore_radar,

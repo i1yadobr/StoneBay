@@ -60,12 +60,13 @@
 	else
 		set_light(0)
 
-/obj/item/melee/baton/_examine_text(mob/user)
+/obj/item/melee/baton/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 1)
 		return
-	. += "\n[examine_cell()]"
-	return
+
+	. += "[examine_cell()]"
 
 // Addition made by Techhead0, thanks for fullfilling the todo!
 /obj/item/melee/baton/proc/examine_cell()
@@ -102,7 +103,7 @@
 		if(status != newstatus)
 			change_status(newstatus)
 			to_chat(user, "<span class='notice'>[src] is now [status ? "on" : "off"].</span>")
-			playsound(loc, 'sound/effects/electric/spark2.ogg', 50, 1, -1)
+			playsound(loc, pick('sound/effects/electric/spark8.ogg', 'sound/effects/electric/spark9.ogg', 'sound/effects/electric/spark10.ogg'), 70, FALSE, -1)
 	else
 		change_status(0)
 		if(!bcell)
@@ -174,7 +175,7 @@
 			target.visible_message("<span class='danger'>[target] has been prodded in the [affecting.name] with [src] by [user]!</span>")
 		else
 			target.visible_message("<span class='danger'>[target] has been prodded with [src] by [user]!</span>")
-		playsound(loc, 'sound/weapons/Egloves.ogg', 50, 1, -1)
+		playsound(loc, SFX_STUNSTICK_HIT, 70, FALSE, -1)
 
 	//stun effects
 	if(status)
@@ -193,7 +194,7 @@
 	if(isliving(hit_atom) && status && prob(50))
 		var/mob/living/L = hit_atom
 		L.stun_effect_act(stun_amount = rand(2,5), agony_amount = rand(10, 90), def_zone = ran_zone(BP_CHEST, 75), used_weapon = src)
-		playsound(L.loc, 'sound/weapons/Egloves.ogg', 50, 1, -1)
+		playsound(L.loc, SFX_STUNSTICK_HIT, 70, FALSE, -1)
 		deductcharge(hitcost)
 
 /obj/item/melee/baton/emp_act(severity)

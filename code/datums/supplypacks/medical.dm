@@ -9,6 +9,7 @@
 					/obj/item/storage/firstaid/toxin,
 					/obj/item/storage/firstaid/o2,
 					/obj/item/storage/firstaid/adv,
+					/obj/item/storage/firstaid/antirad,
 					/obj/item/reagent_containers/vessel/bottle/chemical/antitoxin,
 					/obj/item/reagent_containers/vessel/bottle/chemical/inaprovaline,
 					/obj/item/reagent_containers/vessel/bottle/chemical/stoxin,
@@ -54,10 +55,14 @@
 					/obj/item/storage/pill_bottle/kelotane,
 					/obj/item/storage/pill_bottle/spaceacillin,
 					/obj/item/storage/pill_bottle/tramadol,
+					/obj/item/storage/pill_bottle/oxycodone,
 					/obj/item/storage/pill_bottle/antidexafen,
 					/obj/item/storage/pill_bottle/paracetamol,
 					/obj/item/storage/pill_bottle/hyronalin,
-					/obj/item/storage/pill_bottle/glucose)
+					/obj/item/storage/pill_bottle/glucose,
+					/obj/item/storage/pill_bottle/tricordrazine,
+					/obj/item/storage/pill_bottle/ryetalyn,
+					/obj/item/storage/pill_bottle/albumin)
 	name = "Surplus medical drugs"
 	cost = 30
 	containername = "\improper Medical drugs crate"
@@ -232,6 +237,7 @@
 					/obj/item/clothing/head/surgery/blue,
 					/obj/item/clothing/head/surgery/green,
 					/obj/item/storage/box/masks,
+					/obj/item/storage/box/compact_shoe_covers,
 					/obj/item/storage/box/gloves)
 	cost = 15
 	containertype = /obj/structure/closet/crate/secure
@@ -261,7 +267,6 @@
 					/obj/item/clothing/under/rank/virologist,
 					/obj/item/clothing/under/rank/nursesuit,
 					/obj/item/clothing/under/rank/nurse,
-					/obj/item/clothing/under/rank/orderly,
 					/obj/item/clothing/under/rank/medical = 3,
 					/obj/item/clothing/under/rank/medical/paramedic = 3,
 					/obj/item/clothing/suit/storage/toggle/labcoat = 3,
@@ -271,6 +276,7 @@
 					/obj/item/clothing/suit/storage/toggle/labcoat/virologist,
 					/obj/item/clothing/suit/storage/toggle/labcoat/chemist,
 					/obj/item/storage/box/masks,
+					/obj/item/storage/box/compact_shoe_covers,
 					/obj/item/storage/box/gloves)
 	cost = 15
 	containertype = /obj/structure/closet/crate/secure
@@ -331,7 +337,7 @@
 
 /decl/hierarchy/supply_pack/medical/rig
 	name = "Medical RIG"
-	contains = list(/obj/item/rig/medical)
+	contains = list(/obj/item/rig/medical/equipped)
 	cost = 360
 	containername = "\improper Medical RIG crate"
 	containertype = /obj/structure/closet/crate/secure

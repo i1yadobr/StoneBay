@@ -31,7 +31,7 @@
 	playsound(loc, 'sound/effects/grillehit.ogg', 80, 1)
 	user.do_attack_animation(src)
 
-	var/damage_dealt = 1
+	var/damage_dealt = 2
 	var/attack_message = "kicks"
 	if(istype(user,/mob/living/carbon/human))
 		var/mob/living/carbon/human/H = user
@@ -44,8 +44,9 @@
 
 	if(MUTATION_HULK in user.mutations)
 		damage_dealt += 5
-	else
-		damage_dealt += 1
+
+	if(MUTATION_STRONG in user.mutations)
+		damage_dealt += 5
 
 	attack_generic(user,damage_dealt,attack_message)
 
@@ -133,7 +134,7 @@
 				to_chat(user, "<span class='notice'>There is already a window facing this way there.</span>")
 				return
 		to_chat(user, "<span class='notice'>You start placing the window.</span>")
-		if(do_after(user,20,src))
+		if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 			for(var/obj/structure/window/WINDOW in loc)
 				if(WINDOW.dir == dir_to_set)//checking this for a 2nd time to check if a window was made while we were waiting.
 					to_chat(user, "<span class='notice'>There is already a window facing this way there.</span>")

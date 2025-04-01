@@ -38,16 +38,17 @@
 	var/pressure_alert = 0
 	var/temperature_alert = 0
 	var/heartbeat = 0
-	var/poise_pool = HUMAN_DEFAULT_POISE
-	var/poise = HUMAN_DEFAULT_POISE
-	var/blocking_hand = 0 //0 for main hand, 1 for offhand
-	var/last_block = 0
 
 /mob/living/carbon/human/Initialize()
 	. = ..()
 
 	add_movespeed_modifier(/datum/movespeed_modifier/human_delay)
 	AddElement(/datum/element/last_words)
+	add_think_ctx("remove_deaf", CALLBACK(src, nameof(.proc/remove_deaf)), 0)
+	add_think_ctx("remove_nearsighted", CALLBACK(src, nameof(.proc/remove_nearsighted)), 0)
+	add_think_ctx("delayed_hallucinations", CALLBACK(src, nameof(.proc/delayed_hallucinations)), 0)
+	add_think_ctx("host_pain_enable", CALLBACK(src, nameof(.proc/host_pain_enable)), 0)
+	add_think_ctx("host_pain_disable", CALLBACK(src, nameof(.proc/host_pain_disable)), 0)
 
 /mob/living/carbon/human/Life()
 	set invisibility = 0
@@ -213,14 +214,14 @@
 
 	// Okay, let's imagine that there is no radiation
 	if(radiation <= SAFE_RADIATION_DOSE)
-		if(species.appearance_flags & RADIATION_GLOWS)
+		if(species.species_appearance_flags & RADIATION_GLOWS)
 			set_light(0)
 	else
 		if(radiation >= (100 SIEVERT))
 			dust()
 			return
 
-		if(species.appearance_flags & RADIATION_GLOWS)
+		if(species.species_appearance_flags & RADIATION_GLOWS)
 			set_light(0.3, 0.1, max(1,min(20, radiation * 25)), 2, species.get_flesh_colour(src))
 
 		var/obj/item/organ/internal/diona/nutrients/rad_organ = locate() in internal_organs
@@ -254,6 +255,7 @@
 						h_style = species.default_h_style
 						f_style = species.default_f_style
 						update_hair()
+						update_facial_hair()
 
 		if(radiation > (2 SIEVERT))
 			if(!full_prosthetic && !isundead(src))
@@ -1031,19 +1033,43 @@
 		poise = poise_pool
 		poise_icon?.icon_state = "[round((poise/poise_pool) * 50)]"
 		return
-	var/pregen = 5
+	var/base_pregen = poise_pool * 0.1
+	var/pregen = base_pregen
 
 	for(var/obj/item/grab/G in list(get_active_hand(), get_inactive_hand()))
-		pregen -= 1.25
+		pregen -= base_pregen * 0.25
 
 	if(blocking)
-		pregen -= 2.5
+		pregen -= base_pregen * 0.5
 
-	poise = between(0, poise+pregen, poise_pool)
+	if(lying)
+		pregen += base_pregen * 0.5
+
+	poise = between(0, poise + pregen, poise_pool)
 
 	poise_icon?.icon_state = "[round((poise/poise_pool) * 50)]"
 
-/mob/living/carbon/human/proc/damage_poise(dmg = 1)
+/mob/living/carbon/human/proc/poise_immunity(duration = 0, restore_poise = TRUE)
+	if(restore_poise)
+		poise = poise_pool
+		poise_icon?.icon_state = "[round((poise/poise_pool) * 50)]"
+
+	poise_immune_until = max(poise_immune_until, world.time + (duration * 10))
+
+/// Returns TRUE if the human is immune to poise damage
+/mob/living/carbon/human/proc/check_poise_immunity()
+	return (poise_immune_until >= world.time) || !!stat
+
+/mob/living/carbon/human/proc/damage_poise(dmg = 1, force = FALSE)
+	if(stat) // A glimmer of hope for the knocked-out
+		return
+
+	if(!force && check_poise_immunity())
+		return
+
+	if(lying)
+		dmg *= 0.5
+
 	poise -= dmg
 	poise_icon?.icon_state = "[round((poise/poise_pool) * 50)]"
 
@@ -1087,12 +1113,6 @@
 			holder.icon_state = "hudxeno"
 		else if(foundVirus)
 			holder.icon_state = "hudill"
-		else if(has_brain_worms())
-			var/mob/living/simple_animal/borer/B = has_brain_worms()
-			if(B.controlling)
-				holder.icon_state = "hudbrainworm"
-			else
-				holder.icon_state = "hudhealthy"
 		else
 			holder.icon_state = "hudhealthy"
 

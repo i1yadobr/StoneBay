@@ -78,7 +78,6 @@
 	icon_state = "r-casing"
 	spent_icon = "r-casing-spent"
 
-
 /obj/item/ammo_casing/c45
 	desc = "A .45 bullet casing."
 	caliber = ".45"
@@ -206,6 +205,13 @@
 	desc = "A 7.62mm practice bullet casing."
 	projectile_type = /obj/item/projectile/bullet/rifle/a762/practice
 
+/obj/item/ammo_casing/a792
+	desc = "A 7.92mm bullet casing."
+	caliber = "7.92"
+	projectile_type = /obj/item/projectile/bullet/rifle/a792
+	icon_state = "rifle-casing"
+	spent_icon = "rifle-casing-spent"
+
 /obj/item/ammo_casing/rocket
 	name = "rocket shell"
 	desc = "A high explosive designed to be fired from a launcher."
@@ -225,6 +231,13 @@
 /obj/item/ammo_casing/c38/emp
 	name = ".38 haywire round"
 	desc = "A .38 bullet casing fitted with a single-use ion pulse generator."
+	icon_state = "empcasing"
+	projectile_type = /obj/item/projectile/ion/small
+	matter = list(MATERIAL_STEEL = 130, MATERIAL_URANIUM = 100)
+
+/obj/item/ammo_casing/c44/emp
+	name = ".44 haywire round"
+	desc = "A .44 bullet casing fitted with a single-use ion pulse generator."
 	icon_state = "empcasing"
 	projectile_type = /obj/item/projectile/ion/small
 	matter = list(MATERIAL_STEEL = 130, MATERIAL_URANIUM = 100)

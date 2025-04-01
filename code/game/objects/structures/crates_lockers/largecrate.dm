@@ -15,7 +15,10 @@
 /obj/structure/largecrate/LateInitialize(mapload, ...)
 	. = ..()
 	if(mapload) // if it's the map loading phase, relevant items at the crate's loc are put in the contents
-		addtimer(CALLBACK(src, nameof(.proc/store_contents)), 10, TIMER_UNIQUE|TIMER_OVERRIDE) // It's here for a raisin, trust me
+		add_think_ctx("store_contents_mapload", CALLBACK(src, nameof(.proc/store_contents)), world.time + 1 SECOND)
+
+/obj/structure/largecrate/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
 
 /obj/structure/largecrate/proc/store_contents()
 	for(var/obj/I in loc)
@@ -24,6 +27,7 @@
 		if(istype(I, /obj/effect) || istype(I, /obj/random))
 			continue
 		I.forceMove(src)
+	remove_think_ctx("store_contents_mapload")
 
 /obj/structure/largecrate/attack_hand(mob/user)
 	to_chat(user, "<span class='notice'>You need a crowbar to pry this open!</span>")
@@ -73,21 +77,35 @@
 	name = "Mulebot crate"
 	held_type = /mob/living/bot/mulebot
 
+
 /obj/structure/largecrate/animal/corgi
 	name = "corgi carrier"
 	held_type = /mob/living/simple_animal/corgi
+
+/obj/structure/largecrate/animal/corgi/ian
+	held_type = /mob/living/simple_animal/corgi/Ian
+
+/obj/structure/largecrate/animal/corgi/lisa
+	held_type = /mob/living/simple_animal/corgi/Lisa
+
+/obj/structure/largecrate/animal/corgi/puppy
+	held_type = /mob/living/simple_animal/corgi/puppy
+
 
 /obj/structure/largecrate/animal/cow
 	name = "cow crate"
 	held_type = /mob/living/simple_animal/cow
 
+
 /obj/structure/largecrate/animal/goat
 	name = "goat crate"
 	held_type = /mob/living/simple_animal/hostile/retaliate/goat
 
+
 /obj/structure/largecrate/animal/pig
 	name = "pig crate"
 	held_type = /mob/living/simple_animal/pig
+
 
 /obj/structure/largecrate/animal/cat
 	name = "cat carrier"
@@ -96,14 +114,23 @@
 /obj/structure/largecrate/animal/cat/bones
 	held_type = /mob/living/simple_animal/cat/fluff/bones
 
+/obj/structure/largecrate/animal/cat/runtime
+	held_type = /mob/living/simple_animal/cat/fluff/Runtime
+
+
 /obj/structure/largecrate/animal/chick
 	name = "chicken crate"
 	held_count = 5
 	held_type = /mob/living/simple_animal/chick
 
+
 /obj/structure/largecrate/animal/parrot
 	name = "parrot crate"
 	held_type = /mob/living/simple_animal/parrot
+
+/obj/structure/largecrate/animal/parrot/poly
+	held_type = /mob/living/simple_animal/parrot/Poly
+
 
 /obj/structure/largecrate/animal/vatgrownbody/male
 	name = "vat-grown body crate"

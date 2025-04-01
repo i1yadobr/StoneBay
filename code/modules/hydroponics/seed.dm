@@ -2,6 +2,15 @@
 	var/genetype    // Label used when applying trait.
 	var/list/values // Values to copy into the target seed datum.
 
+	var/source
+	var/source_short
+
+/datum/plantgene/New(datum/seed/sampled_from, gene_name)
+	src.genetype = gene_name
+
+	source = "[gene_name], sampled from [sampled_from.display_name]"
+	source_short = "[copytext(capitalize(gene_name), 1, 3)], #[sampled_from.uid]"
+
 /datum/seed
 	//Tracking.
 	var/uid                        // Unique identifier.
@@ -27,6 +36,7 @@
 	var/customsprite = 0		   // Set to 1 if you want to use a non-paintable harvest icon.
 	var/planter_ckey			   // ckey of player that plant seed.
 	var/fun_level = 1              // Disables this mutation if it's higher than config.misc.fun_hydroponics. 0 - regular plants, 1 - joke plants, 2 - somewhat OOC-related stuff.
+	var/canonical_icon             // If the plant's appearance hasn't been altered via mutations, it uses this state.
 
 /datum/seed/New()
 
@@ -652,8 +662,7 @@
 	if(!genetype) return 0
 
 	var/list/traits_to_copy
-	var/datum/plantgene/P = new()
-	P.genetype = genetype
+	var/datum/plantgene/P = new(src, genetype)
 	P.values = list()
 
 	switch(genetype)
@@ -791,7 +800,9 @@
 	return new_seed
 
 /datum/seed/proc/update_growth_stages()
-	if(get_trait(TRAIT_PLANT_ICON))
+	if(is_canonical())
+		growth_stages = SSplants.canonical_plant_sprites[canonical_icon]
+	else if(get_trait(TRAIT_PLANT_ICON))
 		growth_stages = SSplants.plant_sprites[get_trait(TRAIT_PLANT_ICON)]
 	else
 		growth_stages = 0
@@ -814,11 +825,9 @@
 	var/image/res = image('icons/obj/hydroponics_growing.dmi', "[plant_icon]-[growth_stage]")
 	if(get_growth_type())
 		res.icon_state = "[get_growth_type()]-[growth_stage]"
+		res.icon = 'icons/obj/hydroponics_vines.dmi'
 	else
 		res.icon_state = "[plant_icon]-[growth_stage]"
-
-	if(get_growth_type())
-		res.icon = 'icons/obj/hydroponics_vines.dmi'
 
 	res.color = get_trait(TRAIT_PLANT_COLOUR)
 
@@ -834,3 +843,18 @@
 		I.appearance_flags = DEFAULT_APPEARANCE_FLAGS | RESET_COLOR
 		res.AddOverlays(I)
 	return res
+
+/datum/seed/proc/get_canonical_key()
+	return canonical_icon ? "[get_trait(TRAIT_PLANT_ICON)]_[get_trait(TRAIT_PLANT_COLOUR)]_[get_trait(TRAIT_PRODUCT_ICON)]_[get_trait(TRAIT_PRODUCT_COLOUR)]" : null
+
+/datum/seed/proc/is_canonical()
+	return canonical_icon && (SSplants.canonical_plants[canonical_icon] == get_canonical_key())
+
+/// Checks whether this seed is unique and saves it if necessary.
+/datum/seed/proc/save_seed()
+	if(name != "new line" && isnull(SSplants.seeds[name]))
+		return
+
+	uid = sequential_id(/datum/seed/)
+	name = "[uid]"
+	SSplants.seeds[name] = src

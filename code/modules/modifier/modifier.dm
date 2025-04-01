@@ -71,6 +71,11 @@
 /datum/modifier/proc/expire(silent = FALSE)
 	if(on_expired_text && !silent)
 		to_chat(holder, on_expired_text)
+
+	if(pain_immunity && ishuman(holder))
+		var/mob/living/carbon/human/human_user = holder
+		human_user.no_pain = TRUE
+
 	on_expire()
 	holder.modifiers.Remove(src)
 	if(mob_overlay_state) // We do this after removing ourselves from the list so that the overlay won't remain.
@@ -91,7 +96,7 @@
 /datum/modifier/proc/tick()
 	return
 
-/datum/modifier/proc/_examine_text()
+/datum/modifier/proc/examine()
 	return
 
 /mob/living
@@ -140,6 +145,10 @@
 	if(mod.on_created_text)
 		to_chat(src, mod.on_created_text)
 	modifiers.Add(mod)
+	if(mod.pain_immunity && ishuman(src))
+		var/mob/living/carbon/human/human_user = src
+		human_user.no_pain = TRUE
+
 	mod.on_applied()
 	if(mod.mob_overlay_state)
 		update_modifier_visuals()

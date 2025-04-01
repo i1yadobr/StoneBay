@@ -24,14 +24,19 @@
 
 	var/forehead_graffiti
 	var/graffiti_style
+	var/list/forehead_stamps = list()
 
 	var/skull_path = /obj/item/skull
+
+/obj/item/organ/external/head/New()
+		. = ..()
+		forehead_stamps = list()
 
 /obj/item/organ/external/head/droplimb(clean, disintegrate = DROPLIMB_EDGE, ignore_children, silent)
 	if(BP_IS_ROBOTIC(src) && disintegrate == DROPLIMB_BURN)
 		var/obj/item/organ/internal/cerebrum/mmi/MMI = owner.internal_organs_by_name[BP_BRAIN]
 		if(istype(MMI))
-			MMI.visible_message(SPAN_DANGER("You see a bright flash as you get catapulted out of your body. You feel disoriented, which must be normal since you're just a brain in a can."), SPAN_NOTICE("[owner]'s head ejects an MMI!"))
+			MMI.visible_message(SPAN_NOTICE("[owner]'s head ejects an MMI!"), SPAN_DANGER("You see a bright flash as you get catapulted out of your body. You feel disoriented, which must be normal since you're just a brain in a can."))
 			MMI.removed()
 	return ..()
 
@@ -41,11 +46,11 @@
 	if(!isturf(loc))
 		user.put_in_active_hand(SK)
 
-/obj/item/organ/external/head/_examine_text(mob/user)
+/obj/item/organ/external/head/examine(mob/user, infix)
 	. = ..()
 
 	if(forehead_graffiti && graffiti_style)
-		. += "\n<span class='notice'>It has \"[forehead_graffiti]\" written on it in [graffiti_style]!</span>"
+		. += SPAN_NOTICE("It has \"[forehead_graffiti]\" written on it in [graffiti_style]!")
 
 /obj/item/organ/external/head/proc/write_on(mob/penman, style)
 	var/head_name = name
@@ -81,6 +86,37 @@
 			if(owner)
 				log_and_message_admins("has written something on [owner]'s ([owner.ckey]) head: \"[graffiti]\".", penman)
 
+/obj/item/organ/external/head/proc/apply_stamp(stamp_name, stamper)
+	if(owner && (owner.wear_mask || owner.head))
+		to_chat(stamper, "<span class='notice'>[owner]'s forehead is covered up.</span>")
+		return
+
+	if(!forehead_stamps)
+		forehead_stamps = list()
+
+	if(!(stamp_name in forehead_stamps))
+		forehead_stamps += stamp_name
+		if(owner == stamper)
+			to_chat(stamper, "<span class='notice'>You stamped yourself with '[stamp_name]'.</span>")
+		else
+			to_chat(stamper,"<span class='notice'>You stamp [owner]'s forehead with '[stamp_name]'!</span>")
+			to_chat(owner, "<span class='notice'>[stamper] stamped your forehead with '[stamp_name]'!</span>")
+			to_chat(stamper, "<span class = 'notice'>[stamper] stamps [owner]'s forehead with '[stamp_name]'.</span>", stamper, owner)
+
+/mob/living/carbon/human/proc/wash_forehead()
+	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
+	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
+		head.forehead_stamps.Cut()
+
+/mob/living/carbon/human/examine(mob/user, infix)
+	. = ..()
+	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
+	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
+		var/gender_pronoun = src.gender == "male" ? "He" : "She"
+		var/posessive_pronoun = src.gender == "male" ? "his" : "her"
+		for(var/stamp in head.forehead_stamps)
+			. += SPAN_NOTICE("[gender_pronoun] has a [stamp] stamped on [posessive_pronoun] forehead!")
+
 /obj/item/organ/external/head/get_agony_multiplier()
 	return (owner && owner.headcheck(organ_tag)) ? 1.50 : 1
 
@@ -101,7 +137,7 @@
 
 /obj/item/organ/external/head/get_icon_key()
 	. = ..()
-	if(owner?.lip_style && !BP_IS_ROBOTIC(src) && (species && (species.appearance_flags & HAS_LIPS)))
+	if(owner?.lip_style && !BP_IS_ROBOTIC(src) && (species && (species.species_appearance_flags & HAS_LIPS)))
 		. += "[owner.lip_style]"
 	else
 		. += "nolips"
@@ -111,7 +147,7 @@
 		var/has_eyes_overlay = S.has_eyes_icon
 		if(BP_IS_ROBOTIC(src)) // Robolimbs don't always have eye icon.
 			var/datum/robolimb/R = GLOB.all_robolimbs[model]
-			has_eyes_overlay = R.has_eyes_icon
+			has_eyes_overlay = R?.has_eyes_icon
 		if(has_eyes_overlay)
 			var/obj/item/organ/internal/eyes/eyes = owner.internal_organs_by_name[S.vision_organ ? S.vision_organ : BP_EYES]
 			if(!ishuman(loc))
@@ -131,7 +167,7 @@
 		var/has_eyes_overlay = S.has_eyes_icon
 		if(BP_IS_ROBOTIC(src)) // Robolimbs don't always have eye icon.
 			var/datum/robolimb/R = GLOB.all_robolimbs[model]
-			has_eyes_overlay = R.has_eyes_icon
+			has_eyes_overlay = R?.has_eyes_icon
 
 		var/datum/body_build/BB = owner.body_build
 		if(has_eyes_overlay)
@@ -146,29 +182,18 @@
 			else if(owner.should_have_organ(BP_EYES))
 				mob_overlays |= mutable_appearance(eye_icon_location, "eyeless[BB.index]", flags = DEFAULT_APPEARANCE_FLAGS)
 
-		if(owner.lip_style && !BP_IS_ROBOTIC(src) && species && (species.appearance_flags & HAS_LIPS))
+		if(owner.lip_style && !BP_IS_ROBOTIC(src) && species && (species.species_appearance_flags & HAS_LIPS))
 			mob_overlays |= mutable_appearance(S.icobase, "lips[BB.index]", color = owner.lip_style, flags = DEFAULT_APPEARANCE_FLAGS|RESET_COLOR|RESET_ALPHA)
 
 	SetOverlays(mob_overlays)
 
 	AddOverlays(get_hair_icon()) // Hair is handled separately for mob icon so we do not add it to mob_overlays Maybe this should change sometime
+	AddOverlays(get_facial_hair_icon()) // Hair is handled separately for mob icon so we do not add it to mob_overlays Maybe this should change sometime
 
 /obj/item/organ/external/head/proc/get_hair_icon()
 	var/image/res = image(species.icon_template,"")
 	if(!owner)
 		return res
-
-	if(owner.f_style)
-		var/datum/sprite_accessory/FH = GLOB.facial_hair_styles_list[owner.f_style]
-		if(FH?.species_allowed && species.facial_hair_key && (species.name in FH.species_allowed))
-			var/icon/FHI
-			if(istype(owner.body_build,/datum/body_build/slim))
-				FHI = icon(GLOB.facial_hair_icons["slim"][species.hair_key], FH.icon_state)
-			else
-				FHI = icon(GLOB.facial_hair_icons["default"][species.hair_key], FH.icon_state)
-			if(FH.do_coloration)
-				FHI.Blend(rgb(owner.r_facial, owner.g_facial, owner.b_facial), FH.blend)
-			res.AddOverlays(FHI)
 
 	if(owner.h_style)
 		var/icon/HI
@@ -191,8 +216,8 @@
 						HSI = icon(GLOB.hair_icons["slim"][species.hair_key], H.icon_state + "_s")
 					else
 						HSI = icon(GLOB.hair_icons["default"][species.hair_key], H.icon_state + "_s")
-					if(species.appearance_flags & SECONDARY_HAIR_IS_SKIN)
-						if(species.appearance_flags & HAS_A_SKIN_TONE)
+					if(species.species_appearance_flags & SECONDARY_HAIR_IS_SKIN)
+						if(species.species_appearance_flags & HAS_A_SKIN_TONE)
 							if(s_tone >= 0)
 								HSI.Blend(rgb(s_tone, s_tone, s_tone), ICON_ADD)
 							else
@@ -234,8 +259,29 @@
 			else
 				I.Blend(color, ICON_ADD)
 			ADD_SORTED(sorted_head_markings, list(list(M.draw_order, I)), /proc/cmp_marking_order)
+
 	for(var/entry in sorted_head_markings)
 		res.AddOverlays(entry[2])
+
+	return res
+
+/obj/item/organ/external/head/proc/get_facial_hair_icon()
+	var/image/res = image(species.icon_template, "")
+	if(!owner)
+		return res
+
+	if(owner.f_style)
+		var/datum/sprite_accessory/FH = GLOB.facial_hair_styles_list[owner.f_style]
+		if(FH?.species_allowed && species.facial_hair_key && (species.name in FH.species_allowed))
+			var/icon/FHI
+			if(istype(owner.body_build,/datum/body_build/slim))
+				FHI = icon(GLOB.facial_hair_icons["slim"][species.hair_key], FH.icon_state)
+			else
+				FHI = icon(GLOB.facial_hair_icons["default"][species.hair_key], FH.icon_state)
+			if(FH.do_coloration)
+				FHI.Blend(rgb(owner.r_facial, owner.g_facial, owner.b_facial), FH.blend)
+			res.AddOverlays(FHI)
+
 	return res
 
 /obj/item/organ/external/head/update_icon_drop(mob/living/carbon/human/powner)
@@ -243,6 +289,7 @@
 		return
 	owner = powner // This is kinda hackly ngl
 	get_hair_icon()
+	get_facial_hair_icon()
 	update_icon()
 	owner = null
 

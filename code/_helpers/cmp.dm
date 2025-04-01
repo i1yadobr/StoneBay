@@ -52,11 +52,11 @@
 	if (!.)
 		. = B.qdels - A.qdels
 
-/proc/cmp_timer(datum/timedevent/a, datum/timedevent/b)
-	return a.timeToRun - b.timeToRun
-
 /proc/cmp_program(datum/computer_file/program/A, datum/computer_file/program/B)
 	return cmp_text_asc(A.filedesc, B.filedesc)
 
 /proc/cmp_marking_order(list/A, list/B)
 	return A[1] - B[1][1]
+
+/proc/cmp_mob_health(mob/living/mob_a, mob/living/mob_b)
+	return mob_b.health - mob_a.health

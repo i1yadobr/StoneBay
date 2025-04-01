@@ -18,6 +18,8 @@
 	QDEL_NULL(skybox)
 	QDEL_NULL(ability_master)
 	QDEL_NULL(shadow)
+	QDEL_NULL(bugreporter)
+	QDEL_NULL(language_menu)
 
 	LAssailant = null
 	for(var/obj/item/grab/G in grabbed_by)
@@ -31,6 +33,10 @@
 	if(click_handlers)
 		click_handlers.QdelClear()
 		QDEL_NULL(click_handlers)
+
+	if(eyeobj)
+		eyeobj.release(src)
+		QDEL_NULL(eyeobj)
 
 	remove_screen_obj_references()
 	if(client)
@@ -80,9 +86,14 @@
 	. = ..()
 	if(species_language)
 		add_language(species_language)
+	language_menu = new (src)
 	update_move_intent_slowdown()
 	if(ignore_pull_slowdown)
 		add_movespeed_mod_immunities(src, /datum/movespeed_modifier/pull_slowdown)
+	add_think_ctx("dust", CALLBACK(src, nameof(.proc/dust)), 0)
+	add_think_ctx("dust_deletion", CALLBACK(src, nameof(.proc/dust_check_delete)), 0)
+	add_think_ctx("weaken_context", CALLBACK(src, nameof(.proc/Weaken)), 0)
+	add_think_ctx("post_close_winset", CALLBACK(src, nameof(.proc/post_close_winset)), 0)
 	register_signal(src, SIGNAL_SEE_IN_DARK_SET,	nameof(.proc/set_blackness))
 	register_signal(src, SIGNAL_SEE_INVISIBLE_SET,	nameof(.proc/set_blackness))
 	register_signal(src, SIGNAL_SIGHT_SET,			nameof(.proc/set_blackness))
@@ -224,7 +235,7 @@
 	if((incapacitation_flags & INCAPACITATION_STUNNED) && stunned)
 		return 1
 
-	if((incapacitation_flags & INCAPACITATION_FORCELYING) && (weakened || resting || pinned.len))
+	if((incapacitation_flags & INCAPACITATION_FORCELYING) && (weakened || resting || LAZYLEN(pinned)))
 		return 1
 
 	if((incapacitation_flags & INCAPACITATION_KNOCKOUT) && (stat || paralysis || sleeping || (status_flags & FAKEDEATH)))
@@ -264,29 +275,36 @@
 				client.eye = loc
 	return
 
+/**
+ * This proc creates content for nano inventory.
+ * Returns TRUE if there is content to show.
+ * In case there's nothing to show - returns FALSE.
+ * This is done to prevent UI from showing last opened inventory.
+ * Do not forget to check what this proc has returned before actually opening UI!
+ */
 /mob/proc/show_inv(mob/user)
-	return
+	return FALSE
 
-//mob verbs are faster than object verbs. See http://www.byond.com/forum/?post=1326139&page=2#comment8198716 for why this isn't atom/verb/_examine_text()
-/mob/verb/examinate(atom/A as mob|obj|turf in view(src.client.eye))
+// Mob verbs are faster than object verbs. See http://www.byond.com/forum/?post=1326139&page=2#comment8198716 for why this isn't atom/verb/examine()
+/mob/verb/examinate(atom/A as mob|obj|turf in view(client.eye))
 	set name = "Examine"
 	set category = "IC"
 
 	if((is_blind(src) || usr?.stat) && !isobserver(src))
-		to_chat(src, "<span class='notice'>Something is there but you can't see it.</span>")
-		return 1
+		to_chat(src, SPAN("notice", "Something is there but you can't see it."))
+		return
 
 	var/examine_result
 
 	face_atom(A)
-	if(istype(src, /mob/living/carbon))
+	if(iscarbon(src))
 		var/mob/living/carbon/C = src
 		var/mob/fake = C.get_fake_appearance(A)
 		if(fake)
-			examine_result = fake.examine(src)
+			examine_result = fake.baked_examine(src)
 
-	if (isnull(examine_result))
-		examine_result = A.examine(src)
+	if(isnull(examine_result))
+		examine_result = A.baked_examine(src)
 
 	to_chat(usr, examine_result)
 
@@ -433,80 +451,6 @@
 		prefs.lastchangelog = changelog_hash
 		SScharacter_setup.queue_preferences_save(prefs)
 
-/mob/new_player/verb/observe()
-	set name = "Observe"
-	set category = "OOC"
-
-	if(GAME_STATE < RUNLEVEL_LOBBY)
-		to_chat(src, "<span class='warning'>Please wait for server initialization to complete...</span>")
-		return
-
-	var/is_admin = 0
-
-	if(client.holder && (client.holder.rights & R_ADMIN))
-		is_admin = 1
-
-	if(is_admin && is_ooc_dead())
-		is_admin = 0
-
-	var/list/names = list()
-	var/list/namecounts = list()
-	var/list/creatures = list()
-
-	for(var/obj/O in world)				//EWWWWWWWWWWWWWWWWWWWWWWWW ~needs to be optimised
-		if(!O.loc)
-			continue
-		if(istype(O, /obj/item/disk/nuclear))
-			var/name = "Nuclear Disk"
-			if (names.Find(name))
-				namecounts[name]++
-				name = "[name] ([namecounts[name]])"
-			else
-				names.Add(name)
-				namecounts[name] = 1
-			creatures[name] = O
-
-		if(istype(O, /obj/singularity))
-			var/name = "Singularity"
-			if (names.Find(name))
-				namecounts[name]++
-				name = "[name] ([namecounts[name]])"
-			else
-				names.Add(name)
-				namecounts[name] = 1
-			creatures[name] = O
-
-	for(var/mob/M in sortAtom(SSmobs.mob_list))
-		var/name = M.name
-		if (names.Find(name))
-			namecounts[name]++
-			name = "[name] ([namecounts[name]])"
-		else
-			names.Add(name)
-			namecounts[name] = 1
-
-		creatures[name] = M
-
-
-	client.perspective = EYE_PERSPECTIVE
-
-	var/eye_name = null
-
-	var/ok = "[is_admin ? "Admin Observe" : "Observe"]"
-	eye_name = input("Please, select a player!", ok, null, null) as null|anything in creatures
-
-	if (!eye_name)
-		return
-
-	var/mob/mob_eye = creatures[eye_name]
-
-	if(client && mob_eye)
-		client.eye = mob_eye
-		if (is_admin)
-			client.adminobs = 1
-			if(mob_eye == client.mob || client.eye == client.mob)
-				client.adminobs = 0
-
 /mob/verb/cancel_camera()
 	set name = "Cancel Camera View"
 	set category = "OOC"
@@ -525,8 +469,7 @@
 	if(href_list["flavor_change"])
 		update_flavor_text()
 
-//	..()
-	return
+	return ..()
 
 /mob/proc/pull_damage()
 	return 0
@@ -554,7 +497,10 @@
 		return
 	if(istype(M,/mob/living/silicon/ai))
 		return
-	show_inv(usr)
+
+	if(!show_inv(usr))
+		return
+
 	usr.show_inventory?.open()
 
 /mob/verb/stop_pulling_verb()
@@ -565,9 +511,14 @@
 
 /mob/proc/stop_pulling()
 	if(pulling)
+		pulling.set_glide_size(8)
 		unregister_signal(pulling, SIGNAL_QDELETING)
 		pulling.pulledby = null
 		pulling = null
+
+		var/datum/movement_handler/mob/delay/delay = GetMovementHandler(/datum/movement_handler/mob/delay)
+		if(delay)
+			delay.InstantUpdateGlideSize()
 
 	if(pullin)
 		pullin.icon_state = "pull0"
@@ -628,6 +579,10 @@
 
 	register_signal(AM, SIGNAL_QDELETING, nameof(.proc/stop_pulling))
 	update_pull_slowdown(AM)
+	var/datum/movement_handler/mob/delay/delay = GetMovementHandler(/datum/movement_handler/mob/delay)
+	if(delay)
+		delay.InstantUpdateGlideSize()
+	AM.set_glide_size(glide_size)
 
 	if(ishuman(AM))
 		var/mob/living/carbon/human/H = AM
@@ -713,7 +668,6 @@
 					if(is_type_in_list(A, shouldnt_see))
 						continue
 					stat(A)
-
 
 // facing verbs
 /mob/proc/canface()
@@ -977,7 +931,7 @@
 	for(var/obj/item/O in pinned)
 		if(O == selection)
 			pinned -= O
-		if(!pinned.len)
+		if(!LAZYLEN(pinned))
 			anchored = 0
 
 	valid_objects = get_visible_implants(0)

@@ -3,7 +3,7 @@
 	desc = "A bag for storing multiple clothig items in a better and convenient way!"
 
 	icon = 'icons/obj/storage/misc.dmi'
-	icon_state = "garment0"
+	icon_state = "garment"
 
 	can_hold = list(
 		/obj/item/clothing
@@ -17,17 +17,7 @@
 	allow_quick_empty = TRUE
 	allow_quick_gather = TRUE
 
-/obj/item/storage/garment/Initialize()
-	. = ..()
-
-	register_signal(src, SIGNAL_STORAGE_OPENED, nameof(.proc/on_storage_opened))
-	register_signal(src, SIGNAL_STORAGE_CLOSED, nameof(.proc/on_storage_closed))
-
-/obj/item/storage/garment/proc/on_storage_opened(obj/item/storage/source, mob/user)
-	icon_state = "garment1"
-
-/obj/item/storage/garment/proc/on_storage_closed(obj/item/storage/source, mob/user)
-	icon_state = "garment0"
+	inspect_state = TRUE
 
 /obj/item/storage/garment/hos
 	name = "head of security's garment bag"
@@ -43,7 +33,6 @@
 		/obj/item/clothing/accessory/holster/waist,
 		/obj/item/clothing/accessory/storage/black_vest,
 		/obj/item/clothing/under/rank/head_of_security/jensen,
-		/obj/item/clothing/under/rank/head_of_security/corp,
 		/obj/item/clothing/suit/armor/vest/hos_heavy,
 		/obj/item/clothing/suit/armor/hos,
 		/obj/item/clothing/suit/armor/hos/jensen,
@@ -64,8 +53,7 @@
 		/obj/item/clothing/accessory/storage/black_vest,
 		/obj/item/clothing/suit/armor/vest/warden_heavy,
 		/obj/item/clothing/suit/armor/vest/warden,
-		/obj/item/clothing/under/rank/warden,
-		/obj/item/clothing/under/rank/warden/corp
+		/obj/item/clothing/under/rank/warden
 	)
 
 /obj/item/storage/garment/head_of_personnel
@@ -78,9 +66,9 @@
 		/obj/item/clothing/head/caphat/hop,
 		/obj/item/clothing/accessory/holster/waist,
 		/obj/item/clothing/under/dress/dress_hr,
-		/obj/item/clothing/under/dress/dress_hop,
 		/obj/item/clothing/under/rank/head_of_personnel,
-		/obj/item/clothing/under/rank/head_of_personnel_whimsy,
+		/obj/item/clothing/under/rank/head_of_personnel/skirt,
+		/obj/item/clothing/under/rank/head_of_personnel/whimsy,
 		/obj/item/clothing/suit/armor/vest,
 		/obj/item/clothing/shoes/black,
 		/obj/item/clothing/shoes/white
@@ -97,8 +85,8 @@
 		/obj/item/clothing/gloves/captain,
 		/obj/item/clothing/accessory/holster/thigh,
 		/obj/item/clothing/under/rank/captain,
+		/obj/item/clothing/under/rank/captain/skirt,
 		/obj/item/clothing/under/captainformal,
-		/obj/item/clothing/under/dress/dress_cap,
 		/obj/item/clothing/suit/captunic,
 		/obj/item/clothing/suit/captunic/formal,
 		/obj/item/clothing/suit/captunic/capjacket,
@@ -127,7 +115,7 @@
 		/obj/item/clothing/glasses/hud/standard/meson,
 		/obj/item/clothing/head/soft,
 		/obj/item/clothing/gloves/thick,
-		/obj/item/clothing/under/rank/cargo,
+		/obj/item/clothing/under/rank/qm,
 		/obj/item/clothing/shoes/brown
 	)
 
@@ -158,7 +146,7 @@
 		/obj/item/clothing/gloves/latex,
 		/obj/item/clothing/under/rank/research_director,
 		/obj/item/clothing/under/rank/research_director/rdalt,
-		/obj/item/clothing/under/rank/research_director/dress_rd,
+		/obj/item/clothing/under/rank/research_director/skirt,
 		/obj/item/clothing/suit/storage/toggle/labcoat/rd,
 		/obj/item/clothing/shoes/leather
 	)

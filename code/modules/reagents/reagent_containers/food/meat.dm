@@ -2,6 +2,7 @@
 	name = "meat"
 	desc = "A slab of meat."
 	icon_state = "meat"
+	item_state = "meat"
 	health = 180
 	filling_color = "#ff1c1c"
 	center_of_mass = "x=16;y=14"
@@ -17,6 +18,12 @@
 		new /obj/item/reagent_containers/food/rawcutlet(src)
 		new /obj/item/reagent_containers/food/rawcutlet(src)
 		to_chat(user, "You cut the meat into thin strips.")
+		playsound(src, pick(
+				'sound/effects/slice1.ogg',
+				'sound/effects/slice2.ogg',
+				'sound/effects/slice3.ogg',
+				'sound/effects/slice4.ogg',
+			), 50, FALSE)
 		qdel(src)
 	else
 		..()
@@ -52,6 +59,7 @@
 	name = "xenomeat"
 	desc = "A slab of green meat. Smells like acid."
 	icon_state = "xenomeat"
+	item_state = "xenomeat"
 	filling_color = "#43de18"
 	startswith = list(
 		/datum/reagent/nutriment/protein = 9,
@@ -69,6 +77,12 @@
 		new /obj/item/reagent_containers/food/bacon(src)
 		new /obj/item/reagent_containers/food/bacon(src)
 		to_chat(user, "You cut the meat into thin strips.")
+		playsound(src, pick(
+				'sound/effects/slice1.ogg',
+				'sound/effects/slice2.ogg',
+				'sound/effects/slice3.ogg',
+				'sound/effects/slice4.ogg',
+			), 50, FALSE)
 		qdel(src)
 		return
 	else

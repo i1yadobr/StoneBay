@@ -62,6 +62,7 @@
 	var/coagulation = COAGULATION_NORMAL      // Coagulation value when liver is healthy OR none is needed.
 	var/hunger_factor = DEFAULT_HUNGER_FACTOR // Multiplier for hunger.
 	var/taste_sensitivity = TASTE_NORMAL      // How sensitive the species is to minute tastes.
+	var/troublesome_sexual_dimorphism = FALSE // Do other species have hard time differentiating our biological genders?
 
 	var/min_age = 17
 	var/max_age = 70
@@ -155,10 +156,14 @@
 	var/darksight_range = 2            // Native darksight distance.
 	var/darksight_tint = DARKTINT_NONE // How shadows are tinted.
 	var/species_flags = 0              // Various specific features.
-	var/appearance_flags = 0           // Appearance/display related features.
+	var/species_appearance_flags = 0           // Appearance/display related features.
 	var/spawn_flags = 0                // Flags that specify who can spawn as this species
+
 	/// Movespeed modifier. Defined in movespeed_species.dm
 	var/movespeed_modifier = /datum/movespeed_modifier/species
+	/// Allows to calculate value representing `cached_slowdown` that can be interpreted as walking.
+	var/walk_speed_perc = 0.5
+
 	var/primitive_form                 // Lesser form, if any (ie. monkey for humans)
 	var/greater_form                   // Greater form, if any, ie. human for monkeys.
 	var/holder_type
@@ -203,9 +208,9 @@
 	var/list/genders = list(MALE, FEMALE)
 
 	// Bump vars
-	var/bump_flag = HUMAN	// What are we considered to be when bumped?
-	var/push_flags = ~HEAVY	// What can we push?
-	var/swap_flags = ~HEAVY	// What can we swap place with?
+	var/bump_flag  = HUMAN            // What are we considered to be when bumped?
+	var/push_flags = ~HEAVY           // What can we push?
+	var/swap_flags = (~HEAVY) ^ ROBOT // What can we swap place with?
 
 	var/pass_flags = 0
 	var/breathing_sound = 'sound/voice/monkey.ogg'
@@ -615,6 +620,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	H.h_style = H.species.default_h_style
 	H.f_style = H.species.default_f_style
 	H.update_hair()
+	H.update_facial_hair()
 
 /datum/species/proc/get_blood_name()
 	return "blood"
@@ -676,12 +682,12 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	//target.visible_message("Debug \[DISARM\]: [target] lost [round(4.0+4.0*((100-effective_armor)/100),0.1)] poise ([target.poise]/[target.poise_pool])") // Debug Message
 
 	//var/randn = rand(1, 100)
-	if(!(species_flags & SPECIES_FLAG_NO_SLIP) && target.poise <= 20 && !prob(target.poise*4.5) && !target.lying)
+	if(!(species_flags & SPECIES_FLAG_NO_SLIP) && target.poise <= 20 && !prob(target.poise*4.5) && !target.check_poise_immunity())
 		var/armor_check = target.run_armor_check(affecting, "melee")
 		playsound(target.loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
 		if(prob(100-target.poise*6.5))
 			target.visible_message("<span class='danger'>[attacker] has pushed [target]!</span>")
-			target.apply_effect(4, WEAKEN, armor_check)
+			target.apply_effect(5, WEAKEN, armor_check)
 		else
 			target.visible_message("<span class='warning'>[attacker] attempted to push [target]!</span>")
 		return
@@ -707,9 +713,9 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	return "<span class='danger'>[T.His] face is horribly mangled!</span>\n"
 
 /datum/species/proc/max_skin_tone()
-	if(appearance_flags & HAS_SKIN_TONE_GRAV)
+	if(species_appearance_flags & HAS_SKIN_TONE_GRAV)
 		return 100
-	if(appearance_flags & HAS_SKIN_TONE_SPCR)
+	if(species_appearance_flags & HAS_SKIN_TONE_SPCR)
 		return 165
 	return 220
 
@@ -754,7 +760,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	return TRUE
 
 /datum/species/proc/get_species_runechat_color(mob/living/carbon/human/H)
-	if(appearance_flags & HAS_SKIN_COLOR)
+	if(species_appearance_flags & HAS_SKIN_COLOR)
 		return H.s_base
 	else
 		var/list/A = list(max(64, H.r_hair), max(64, H.g_hair), max(64, H.b_hair))

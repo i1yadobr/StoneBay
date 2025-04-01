@@ -31,15 +31,15 @@
 		recentpump = world.time
 		pump(user)
 
-/obj/item/gun/projectile/shotgun/pump/proc/pump(mob/M as mob)
-	playsound(M, SFX_SHOTGUN_PUMP_IN, rand(45, 60), FALSE)
+/obj/item/gun/projectile/shotgun/pump/proc/pump(atom/movable/user)
+	playsound(user, SFX_SHOTGUN_PUMP_IN, rand(45, 60), FALSE)
 
 	if(chambered)//We have a shell in the chamber
 		ejectCasing()
 		chambered = null
 
 	sleep(5)
-	playsound(M, SFX_SHOTGUN_PUMP_OUT, rand(45, 60), FALSE)
+	playsound(user, SFX_SHOTGUN_PUMP_OUT, rand(45, 60), FALSE)
 
 	if(loaded.len)
 		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
@@ -63,6 +63,23 @@
 	name = "KS-40"
 	desc = "Built for close quarters combat, the Hephaestus Industries KS-40 is widely regarded as a weapon of choice for repelling boarders. This one emmits LAW."
 	ammo_type = /obj/item/ammo_casing/shotgun
+
+/obj/item/gun/projectile/shotgun/pump/compact
+	name = "compact shotgun"
+	desc = "The GA Protector: Compact, gripping, and decisively powerful weapon for face-to-face combat."
+	icon_state = "compact-shotgun"
+	item_state = "compact-shotgun"
+	wielded_item_state = "compact-shotgun-wielded"
+	slot_flags = SLOT_BELT|SLOT_BACK
+	w_class = ITEM_SIZE_NORMAL
+	origin_tech = list(TECH_COMBAT = 6, TECH_MATERIAL = 2) //more stylish than a combat shotgun
+	max_shells = 3
+	force = 9.5
+	mod_weight = 0.85
+	mod_reach = 0.8
+	mod_handy = 0.9
+	ammo_type = /obj/item/ammo_casing/shotgun
+	one_hand_penalty = 1
 
 /obj/item/gun/projectile/shotgun/pump/boomstick
 	name = "makeshift shotgun"
@@ -97,23 +114,26 @@
 /obj/item/boomstickframe/on_update_icon()
 	icon_state = "boomstick[buildstate]"
 
-/obj/item/boomstickframe/_examine_text(mob/user)
+/obj/item/boomstickframe/examine(mob/user, infix)
 	. = ..()
+
 	switch(buildstate)
-		if(0) . += "\nIt has a pipe loosely fitted to the welding tool."
-		if(1) . += "\nIt has a pipe welded to the welding tool."
-		if(2) . += "\nIt has a bent metal rod attached to it."
-		if(3) . += "\nIt has a spring inside."
-		if(4) . += "\nIt is all covered with duct tape."
+		if(0) . += "It has a pipe loosely fitted to the welding tool."
+		if(1) . += "It has a pipe welded to the welding tool."
+		if(2) . += "It has a bent metal rod attached to it."
+		if(3) . += "It has a spring inside."
+		if(4) . += "It is all covered with duct tape."
 
 /obj/item/boomstickframe/attackby(obj/item/W, mob/user)
 	if(isWelder(W) && buildstate == 0)
 		var/obj/item/weldingtool/WT = W
-		if(WT.remove_fuel(0, user))
-			user.visible_message("<span class='notice'>\The [user] secures \the [src]'s barrel.</span>")
-			add_fingerprint(user)
-			buildstate++
-			update_icon()
+		if(!WT.use_tool(src, user, amount = 1))
+			return
+
+		user.visible_message("<span class='notice'>\The [user] secures \the [src]'s barrel.</span>")
+		add_fingerprint(user)
+		buildstate++
+		update_icon()
 		return
 	else if(istype(W,/obj/item/stack/rods) && buildstate == 1)
 		var/obj/item/stack/rods/R = W
@@ -203,7 +223,7 @@
 				Fire(user, user)	//will this work? //it will. we call it twice, for twice the FUN
 			user.visible_message("<span class='danger'>The shotgun goes off!</span>", "<span class='danger'>The shotgun goes off in your face!</span>")
 			return
-		if(do_after(user, 30, src))	//SHIT IS STEALTHY EYYYYY
+		if(do_after(user, 30, src, luck_check_type = LUCK_CHECK_COMBAT))	//SHIT IS STEALTHY EYYYYY
 			icon_state = "sawnshotgun"
 			item_state = "sawnshotgun"
 			wielded_item_state = null

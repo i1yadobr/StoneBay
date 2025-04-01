@@ -13,6 +13,7 @@
 #define VERM_LIZARDS 1
 #define VERM_SPIDERS 2
 #define VERM_CRABS 3
+#define VERM_HAMSTERS 4
 
 /datum/event/infestation
 	id = "infestation"
@@ -71,6 +72,10 @@
 			spawn_types = list(/mob/living/simple_animal/crab)
 			max_number = 4
 			vermstring = "crabs"
+		if(VERM_HAMSTERS)
+			spawn_types = list(/mob/living/simple_animal/hamster)
+			max_number = 10
+			vermstring = "space hamsters"
 
 	spawn(0)
 		var/num = rand(2, max_number)

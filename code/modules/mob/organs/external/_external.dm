@@ -220,20 +220,22 @@
 		return //no eating the limb until everything's been removed
 	return ..()
 
-/obj/item/organ/external/_examine_text(mob/user)
+/obj/item/organ/external/examine(mob/user, infix)
 	. = ..()
+
 	if(in_range(user, src) || isghost(user))
 		for(var/obj/item/I in contents)
 			if(istype(I, /obj/item/organ))
 				continue
+
 			if(I == return_item())
 				continue
-			. += SPAN_DANGER("\nThere is \a [I] sticking out of it.")
+
+			. += SPAN_DANGER("There is \a [I] sticking out of it.")
+
 		var/ouchies = get_wounds_desc()
 		if(ouchies != "nothing")
-			. += SPAN_NOTICE("\nThere is [ouchies] visible on it.")
-
-	return
+			. += SPAN_NOTICE("There is [ouchies] visible on it.")
 
 /obj/item/organ/external/show_decay_status(mob/user)
 	..(user)
@@ -356,6 +358,7 @@
 		for(var/obj/item/organ/external/limb in owner.organs)
 			if(limb.dislocated == 1)
 				return
+
 		owner.verbs -= /mob/living/carbon/human/proc/undislocate
 
 /obj/item/organ/external/update_health()
@@ -374,6 +377,9 @@
 			owner.stance_limbs[src] = TRUE
 		owner.organs_by_name[organ_tag] = src
 		owner.organs |= src
+
+		if(owner.mind?.vampire)
+			limb_flags &= ~ORGAN_FLAG_CAN_BREAK
 
 		for(var/obj/item/organ/organ in internal_organs)
 			organ.replaced(owner, src)
@@ -1060,7 +1066,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	else if(status & ORGAN_BROKEN)
 		movement_tally += broken_tally * damage_multiplier
 
-	owner.update_organ_movespeed()
+	owner?.update_organ_movespeed()
 
 /obj/item/organ/external/proc/fracture()
 	if(!config.health.bones_can_break)
@@ -1145,15 +1151,17 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 	if(company)
 		var/datum/robolimb/R = GLOB.all_robolimbs[company]
+
 		if(!R || (species && (species.name in R.species_cannot_use)) || \
 		 (R.restricted_to.len && !(species.name in R.restricted_to)) || \
 		 (R.applies_to_part.len && !(organ_tag in R.applies_to_part)))
 			R = basic_robolimb
 		else
 			model = company
-			force_icon = R.icon
-			name = "robotic [initial(name)]"
 			desc = "[R.desc] It looks like it was produced by [R.company]."
+
+		name = "robotic [initial(name)]"
+		force_icon = (species && (species.name in R.racial_icons)) ? R.racial_icons[species.name] : R.icon
 
 	dislocated = -1
 	remove_splint()

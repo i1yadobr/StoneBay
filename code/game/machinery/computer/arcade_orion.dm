@@ -486,14 +486,18 @@
 	icon_state = "ship"
 	w_class = ITEM_SIZE_SMALL
 	var/active = 0 //if the ship is on
-/obj/item/orion_ship/_examine_text(mob/user)
+
+/obj/item/orion_ship/examine(mob/user, infix)
 	. = ..()
+
 	if(!(in_range(user, src)))
 		return
+
 	if(!active)
-		. += "\n<span class='notice'>There's a little switch on the bottom. It's flipped down.</span>"
+		. += SPAN_NOTICE("There's a little switch on the bottom. It's flipped down.")
 	else
-		. += "\n<span class='notice'>There's a little switch on the bottom. It's flipped up.</span>"
+		. += SPAN_NOTICE("There's a little switch on the bottom. It's flipped up.")
+
 /obj/item/orion_ship/attack_self(mob/user)
 	if(active)
 		return
@@ -502,12 +506,13 @@
 	to_chat(user, "<span class='warning'>You flip the switch on the underside of [src].</span>")
 	active = 1
 	src.visible_message("<span class='notice'>[src] softly beeps and whirs to life!</span>")
-	src.audible_message("<b>\The [src]</b> says, 'This is ship ID #[rand(1,1000)] to Orion Port Authority. We're coming in for landing, over.'")
+	var/rand_ship_id = rand(1,1000)
+	src.audible_message("<b>\The [src]</b> says, 'This is ship ID #[rand_ship_id] to Orion Port Authority. We're coming in for landing, over.'", splash_override = "This is ship ID #[rand_ship_id] to Orion Port Authority. We're coming in for landing, over.")
 	sleep(20)
 	src.visible_message("<span class='warning'>[src] begins to vibrate...</span>")
-	src.audible_message("<b>\The [src]</b> says, 'Uh, Port? Having some issues with our reactor, could you check it out? Over.'")
+	src.audible_message("<b>\The [src]</b> says, 'Uh, Port? Having some issues with our reactor, could you check it out? Over.'", splash_override = "Uh, Port? Having some issues with our reactor, could you check it out? Over.")
 	sleep(30)
-	src.audible_message("<b>\The [src]</b> says, 'Oh, God! Code Eight! CODE EIGHT! IT'S GONNA BL-'")
+	src.audible_message("<b>\The [src]</b> says, 'Oh, God! Code Eight! CODE EIGHT! IT'S GONNA BL-'", splash_override = "Oh, God! Code Eight! CODE EIGHT! IT'S GONNA BL-")
 	sleep(3.6)
 	src.visible_message("<span class='danger'>[src] explodes!</span>")
 	explosion(src.loc, 1,2,4)

@@ -6,7 +6,9 @@
 	anchored = 1.0
 	idle_power_usage = 300 WATTS
 	active_power_usage = 300 WATTS
-	var/circuit = null //The path to the circuit board type. If circuit==null, the computer can't be disassembled.
+
+	/// Typepath of the circuit board. If `null` computer can't be disassembled.
+	var/circuit = null
 	var/processing = 0
 
 	var/icon_keyboard = "generic_key"
@@ -105,7 +107,7 @@
 /obj/machinery/computer/attackby(obj/item/I, user)
 	if(isScrewdriver(I) && circuit)
 		playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
-		if(do_after(user, 20, src))
+		if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 			var/obj/structure/computerframe/A = new /obj/structure/computerframe( src.loc )
 			var/obj/item/circuitboard/M = new circuit( A )
 			A.circuit = M

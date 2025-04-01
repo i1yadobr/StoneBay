@@ -3,7 +3,9 @@
 	name = "Good Clean Fun"
 	desc = "Vends things that the CO and SEA are probably not going to appreciate you fiddling with instead of your job..."
 
+	icon = 'icons/obj/machines/vending/games.dmi'
 	icon_state = "games"
+	light_color = "#57FFE4"
 
 	vend_delay = 15
 	product_slogans = "Escape to a fantasy world!;Fuel your gambling addiction!;Ruin your friendships!"
@@ -26,7 +28,9 @@
 		/obj/item/storage/pill_bottle/dice = 5,
 		/obj/item/storage/box/checkers = 2,
 		/obj/item/storage/box/checkers/chess/red = 2,
-		/obj/item/storage/box/checkers/chess = 2
+		/obj/item/storage/box/checkers/chess = 2,
+		/obj/item/plant_pot = 5,
+		/obj/item/pottable_plant_gacha = 10
 		)
 
 	illegal = list(
@@ -50,7 +54,9 @@
 		/obj/item/storage/pill_bottle/dice = 6,
 		/obj/item/storage/box/checkers = 10,
 		/obj/item/storage/box/checkers/chess/red = 10,
-		/obj/item/storage/box/checkers/chess = 10
+		/obj/item/storage/box/checkers/chess = 10,
+		/obj/item/plant_pot = 10,
+		/obj/item/pottable_plant_gacha = 10
 		)
 
 /obj/item/vending_cartridge/games

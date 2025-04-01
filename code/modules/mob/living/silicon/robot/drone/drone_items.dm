@@ -246,12 +246,13 @@
 		/obj/item/stack/material
 		)
 
-/obj/item/gripper/_examine_text(mob/user)
+/obj/item/gripper/examine(mob/user, infix)
 	. = ..()
+
 	if(wrapped)
-		. += "\nIt is holding \a [wrapped]."
+		. += "It is holding \a [wrapped]."
 	else if (length(storage_type))
-		. += "\n[src] is currently can [mode == MODE_EMPTY ? "empty" : "open"] containers."
+		. += "[src] is currently can [mode == MODE_EMPTY ? "empty" : "open"] containers."
 
 /obj/item/gripper/attack_self(mob/user)
 	if(wrapped)
@@ -335,8 +336,9 @@
 
 
 		//If resolve_attackby forces waiting before taking wrapped, we need to let it finish before doing the rest.
-		addtimer(CALLBACK(src, nameof(.proc/finish_using), target, user, params, force_holder, resolved), 0)
+		INVOKE_ASYNC(src, nameof(.proc/finish_using), target, user, params, force_holder, resolved)
 		return
+
 	for(var/type in storage_type)//Check that we're pocketing a certain container.
 		if(istype(target,type))
 			var/obj/item/storage/S = target
@@ -506,7 +508,7 @@
 	var/grabbed_something = 0
 
 	for(var/mob/M in T)
-		if(istype(M,/mob/living/simple_animal/lizard) || istype(M,/mob/living/simple_animal/mouse))
+		if(istype(M,/mob/living/simple_animal/lizard) || istype(M,/mob/living/simple_animal/mouse) || istype(M, /mob/living/simple_animal/hamster))
 			src.loc.visible_message("<span class='danger'>[src.loc] sucks [M] into its decompiler. There's a horrible crunching noise.</span>","<span class='danger'>It's a bit of a struggle, but you manage to suck [M] into your decompiler. It makes a series of visceral crunching noises.</span>")
 			new /obj/effect/decal/cleanable/blood/splatter(get_turf(src))
 			qdel(M)

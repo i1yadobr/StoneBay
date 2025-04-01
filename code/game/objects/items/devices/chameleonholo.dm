@@ -32,7 +32,7 @@
 		deactivate()
 		return
 
-/obj/item/device/chameleonholo/_examine_text(mob/user)
+/obj/item/device/chameleonholo/examine(mob/user, infix)
 	if(!active)
 		return ..()
 	return saved_examine_result
@@ -64,7 +64,7 @@
 	saved_appearance = object.appearance
 	saved_dir = object.dir
 	saved_density = object.density
-	saved_examine_result = object._examine_text(user)
+	saved_examine_result = object.examine(user)
 
 /obj/item/device/chameleonholo/proc/activate(obj/saved_item)
 	if(active || !saved_appearance)

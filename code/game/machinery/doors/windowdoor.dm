@@ -20,16 +20,17 @@
 	air_properties_vary_with_direction = 1
 	var/timer = null
 	hitby_sound = SFX_GLASS_HIT
+	var/material_used = MATERIAL_REINFORCED_GLASS //For material windoors
+	var/assembly_used = /obj/structure/windoor_assembly //For various windoors
 
 /obj/machinery/door/window/Initialize()
 	. = ..()
 	update_nearby_tiles()
 	update_icon()
-	hitsound = pick(
-		'sound/effects/materials/glass/knock1.ogg',
-		'sound/effects/materials/glass/knock2.ogg',
-		'sound/effects/materials/glass/knock3.ogg',
-	)
+	hitsound = pick(SFX_GLASS_HIT)
+
+/obj/machinery/door/window/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_GLASS, -40, 5)
 
 /obj/machinery/door/window/on_update_icon()
 	if(density)
@@ -38,12 +39,13 @@
 		icon_state = "[base_state]open"
 
 /obj/machinery/door/window/proc/shatter(display_message = 1)
-	new /obj/item/material/shard(loc)
+	var/obj/item/material/shard/S = new /obj/item/material/shard(loc)
+	S.default_material = material_used
 	var/obj/item/stack/cable_coil/CC = new /obj/item/stack/cable_coil(loc)
 	CC.amount = 2
 	var/obj/item/airlock_electronics/ae
 	if(!electronics)
-		ae = new /obj/item/airlock_electronics( loc )
+		ae = new /obj/item/airlock_electronics(loc)
 		if(!req_access)
 			check_access()
 		if(req_access.len)
@@ -68,8 +70,6 @@
 	shatter()
 
 /obj/machinery/door/window/Destroy()
-	if(timer)
-		deltimer(timer)
 	set_density(0)
 	update_nearby_tiles()
 	return ..()
@@ -132,8 +132,9 @@
 	else
 		operating = TRUE
 
-	if(autoclose)
-		timer = addtimer(CALLBACK(src, nameof(.proc/close)), 10 SECONDS, TIMER_UNIQUE|TIMER_STOPPABLE)
+	if(autoclose && !thinking_about_closing)
+		thinking_about_closing = TRUE
+		set_next_think_ctx("close_context", world.time + 10 SECONDS)
 
 	flick("[base_state]opening", src)
 	set_density(0)
@@ -151,9 +152,8 @@
 	else
 		operating = TRUE
 
-	if(timer)
-		deltimer(timer)
-		timer = 0
+	thinking_about_closing = FALSE
+	set_next_think_ctx("close_context", 0)
 
 	flick(text("[]closing", base_state), src)
 	set_density(1)
@@ -189,8 +189,11 @@
 	if(density && operable())
 		operating = -1
 		flick("[base_state]spark", src)
-		addtimer(CALLBACK(src, nameof(.proc/open)), 10)
+		set_next_think(world.time + 1 SECOND)
 		return 1
+
+/obj/machinery/door/window/think()
+	open()
 
 /obj/machinery/door/emp_act(severity)
 	if(prob(60 / severity))
@@ -214,10 +217,10 @@
 	if(operating == -1 && isCrowbar(I))
 		playsound(loc, 'sound/items/Crowbar.ogg', 100, 1)
 		user.visible_message("[user] removes the electronics from the windoor.", "You start to remove electronics from the windoor.")
-		if(do_after(user,40,src))
+		if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 			to_chat(user, "<span class='notice'>You removed the windoor electronics!</span>")
 
-			var/obj/structure/windoor_assembly/wa = new /obj/structure/windoor_assembly(loc)
+			var/obj/structure/windoor_assembly/wa = new assembly_used(loc)
 			if(istype(src, /obj/machinery/door/window/brigdoor))
 				wa.secure = "secure_"
 				wa.SetName("Secure Wired Windoor Assembly")
@@ -264,15 +267,27 @@
 	add_fingerprint(user, 0, I)
 
 	if(allowed(user))
-		if(density)
-			open()
-		else
-			close()
+		density ? open() : close()
+		return
 
 	else if(density)
 		flick(text("[]deny", base_state), src)
 
-	return
+	return ..()
+
+/obj/machinery/door/window/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
+	switch(the_rcd.mode)
+		if(RCD_DECONSTRUCT)
+			return list("delay" = 5 SECONDS, "cost" = 32)
+
+	return FALSE
+
+/obj/machinery/door/window/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
+	if(rcd_data["[RCD_DESIGN_MODE]"] == RCD_DECONSTRUCT)
+		qdel_self()
+		return TRUE
+
+	return FALSE
 
 /obj/machinery/door/window/brigdoor
 	name = "secure door"
@@ -282,6 +297,30 @@
 	req_access = list(access_security)
 	maxhealth = 300
 	health = 300.0 //Stronger doors for prison (regular window door health is 150)
+
+/obj/machinery/door/window/plasma
+	icon = 'icons/obj/doors/plasmawindoor.dmi'
+	icon_state = "left"
+	base_state = "left"
+	material_used = MATERIAL_REINFORCED_PLASS
+	assembly_used = /obj/structure/windoor_assembly/plasma
+
+/obj/machinery/door/window/brigdoor/plasma
+	name = "secure door"
+	icon = 'icons/obj/doors/plasmawindoor.dmi'
+	icon_state = "leftsecure"
+	base_state = "leftsecure"
+	req_access = list(access_security)
+	maxhealth = 300
+	material_used = MATERIAL_REINFORCED_PLASS
+	assembly_used = /obj/structure/windoor_assembly/plasma
+	health = 300.0 //Stronger doors for prison (regular window door health is 150)
+
+/obj/machinery/door/window/brigdoor/pod
+	name = "secure door"
+	icon = 'icons/obj/doors/pwindow.dmi'
+	icon_state = "windoor"
+	base_state = "windoor"
 
 /obj/machinery/door/window/northleft
 	dir = NORTH
@@ -349,6 +388,70 @@
 	color = "#818181"
 
 /obj/machinery/door/window/brigdoor/southright
+	dir = SOUTH
+	icon_state = "rightsecure"
+	base_state = "rightsecure"
+
+/obj/machinery/door/window/plasma/northleft
+	dir = NORTH
+
+/obj/machinery/door/window/plasma/eastleft
+	dir = EAST
+
+/obj/machinery/door/window/plasma/westleft
+	dir = WEST
+
+/obj/machinery/door/window/plasma/southleft
+	dir = SOUTH
+
+/obj/machinery/door/window/plasma/northright
+	dir = NORTH
+	icon_state = "right"
+	base_state = "right"
+
+/obj/machinery/door/window/plasma/eastright
+	dir = EAST
+	icon_state = "right"
+	base_state = "right"
+
+/obj/machinery/door/window/plasma/westright
+	dir = WEST
+	icon_state = "right"
+	base_state = "right"
+
+/obj/machinery/door/window/plasma/southright
+	dir = SOUTH
+	icon_state = "right"
+	base_state = "right"
+
+/obj/machinery/door/window/brigdoor/plasma/northleft
+	dir = NORTH
+
+/obj/machinery/door/window/brigdoor/plasma/eastleft
+	dir = EAST
+
+/obj/machinery/door/window/brigdoor/plasma/westleft
+	dir = WEST
+
+/obj/machinery/door/window/brigdoor/plasma/southleft
+	dir = SOUTH
+
+/obj/machinery/door/window/brigdoor/plasma/northright
+	dir = NORTH
+	icon_state = "rightsecure"
+	base_state = "rightsecure"
+
+/obj/machinery/door/window/brigdoor/plasma/eastright
+	dir = EAST
+	icon_state = "rightsecure"
+	base_state = "rightsecure"
+
+/obj/machinery/door/window/brigdoor/plasma/westright
+	dir = WEST
+	icon_state = "rightsecure"
+	base_state = "rightsecure"
+
+/obj/machinery/door/window/brigdoor/plasma/southright
 	dir = SOUTH
 	icon_state = "rightsecure"
 	base_state = "rightsecure"

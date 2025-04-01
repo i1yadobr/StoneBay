@@ -8,7 +8,7 @@
 	if(is_ooc_dead() || paralysis || weakened || stunned || restrained())
 		return
 
-	if(istype(src.loc,/mob/living/carbon))
+	if(iscarbon(loc))
 		src.verbs -= /mob/living/carbon/alien/diona/proc/merge
 		return
 
@@ -49,7 +49,7 @@
 	if(is_ooc_dead() || paralysis || weakened || stunned || restrained())
 		return
 
-	if(!(istype(src.loc,/mob/living/carbon)))
+	if(!iscarbon(loc))
 		src.verbs -= /mob/living/carbon/alien/diona/proc/split
 		return
 
@@ -59,6 +59,7 @@
 	var/mob/living/M = src.loc
 
 	dropInto(loc)
+
 	src.verbs -= /mob/living/carbon/alien/diona/proc/split
 	src.verbs += /mob/living/carbon/alien/diona/proc/merge
 

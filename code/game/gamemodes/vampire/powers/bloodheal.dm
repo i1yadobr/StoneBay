@@ -11,13 +11,13 @@
 /datum/vampire_power/bloodheal/activate()
 	if(!..())
 		return
-	vampire.status |= VAMP_HEALING
+	vampire.vamp_status |= VAMP_HEALING
 
 	to_chat(my_mob, SPAN("notice", "You begin the process of blood healing. Do not move, and ensure that you are not interrupted."))
 	log_and_message_admins("activated blood heal.")
 
 	while(do_after(my_mob, 20, 0, incapacitation_flags = INCAPACITATION_DISABLED))
-		if(!(vampire.status & VAMP_HEALING))
+		if(!(vampire.vamp_status & VAMP_HEALING))
 			to_chat(my_mob, SPAN("warning", "Your concentration has been broken! You are no longer regenerating!"))
 			break
 
@@ -58,11 +58,19 @@
 			blood_used += 12
 			use_blood(12)
 
+		for(var/obj/item/organ/internal/I in my_mob.internal_organs)
+			if(!I.is_damaged())
+				continue
+
+			I.heal_damage(I.damage)
+			blood_used += 5
+			use_blood(5)
+
 		CHECK_HEAL_BREAK(12)
 
 		for(var/obj/item/organ/external/current_organ in organs)
 			for(var/datum/wound/wound in current_organ.wounds)
-				wound.embedded_objects.Cut()
+				LAZYCLEARLIST(wound.embedded_objects)
 
 			// remove embedded objects and drop them on the floor
 			for(var/obj/implanted_object in current_organ.implants)
@@ -138,13 +146,13 @@
 								   SPAN("notice", "[pick(emotes_self)]"))
 
 		if(!blood_used)
-			vampire.status &= ~VAMP_HEALING
+			vampire.vamp_status &= ~VAMP_HEALING
 			to_chat(my_mob, SPAN("notice", "Your body has finished healing. You are ready to go."))
 			return
 
 	// We broke out of the loop naturally. Gotta catch that.
-	if(vampire.status & VAMP_HEALING)
-		vampire.status &= ~VAMP_HEALING
+	if(vampire.vamp_status & VAMP_HEALING)
+		vampire.vamp_status &= ~VAMP_HEALING
 		to_chat(my_mob, SPAN("warning", "Your concentration is broken! You are no longer regenerating!"))
 	return
 #undef CHECK_HEAL_BREAK

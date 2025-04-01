@@ -12,9 +12,9 @@
 	var/obj/item/airlock_electronics/brace/electronics
 
 
-/obj/item/airlock_brace/_examine_text(mob/user)
+/obj/item/airlock_brace/examine(mob/user, infix)
 	. = ..()
-	. += "\n[examine_health()]"
+	. += "[examine_health()]"
 
 
 // This is also called from airlock's examine, so it's a different proc to prevent code copypaste.
@@ -70,7 +70,7 @@
 			update_access()
 			if(check_access(C))
 				to_chat(user, "You swipe \the [C] through \the [src].")
-				if(do_after(user, 10, airlock))
+				if(do_after(user, 10, airlock, luck_check_type = LUCK_CHECK_ENG))
 					to_chat(user, "\The [src] clicks a few times and detaches itself from \the [airlock]!")
 					unlock_brace(usr)
 			else
@@ -82,23 +82,26 @@
 			return
 		var/obj/item/crowbar/brace_jack/C = W
 		to_chat(user, "You begin forcibly removing \the [src] with \the [C].")
-		if(do_after(user, rand(150,300), airlock))
+		if(do_after(user, rand(150,300), airlock, luck_check_type = LUCK_CHECK_ENG))
 			to_chat(user, "You finish removing \the [src].")
 			unlock_brace(user)
 		return
 
 	if(isWelder(W))
-		var/obj/item/weldingtool/C = W
 		if(cur_health == max_health)
 			to_chat(user, "\The [src] does not require repairs.")
 			return
-		if(C.remove_fuel(0,user))
-			playsound(src, 'sound/items/Welder.ogg', 100, 1)
-			cur_health = min(cur_health + rand(80,120), max_health)
-			if(cur_health == max_health)
-				to_chat(user, "You repair some dents on \the [src]. It is in perfect condition now.")
-			else
-				to_chat(user, "You repair some dents on \the [src].")
+
+		var/obj/item/weldingtool/WT = W
+
+		if(!WT.use_tool(src, user, amount = 1))
+			return FALSE
+
+		cur_health = min(cur_health + rand(80,120), max_health)
+		if(cur_health == max_health)
+			to_chat(user, "You repair some dents on \the [src]. It is in perfect condition now.")
+		else
+			to_chat(user, "You repair some dents on \the [src].")
 
 
 /obj/item/airlock_brace/proc/take_damage(amount)

@@ -121,11 +121,54 @@
 
 /datum/hallucination/sound/spooky
 	min_power = 50
-	sounds = list('sound/effects/ghost.ogg', 'sound/effects/ghost2.ogg', 'sound/effects/Heart Beat.ogg', 'sound/effects/screech.ogg',\
-	'sound/hallucinations/behind_you1.ogg', 'sound/hallucinations/behind_you2.ogg', 'sound/hallucinations/far_noise.ogg', 'sound/hallucinations/growl1.ogg', 'sound/hallucinations/growl2.ogg',\
-	'sound/hallucinations/growl3.ogg', 'sound/hallucinations/im_here1.ogg', 'sound/hallucinations/im_here2.ogg', 'sound/hallucinations/i_see_you1.ogg', 'sound/hallucinations/i_see_you2.ogg',\
-	'sound/hallucinations/look_up1.ogg', 'sound/hallucinations/look_up2.ogg', 'sound/hallucinations/over_here1.ogg', 'sound/hallucinations/over_here2.ogg', 'sound/hallucinations/over_here3.ogg',\
-	'sound/hallucinations/turn_around1.ogg', 'sound/hallucinations/turn_around2.ogg', 'sound/hallucinations/veryfar_noise.ogg', 'sound/hallucinations/wail.ogg')
+	sounds = list(
+		'sound/effects/ghost.ogg',
+		'sound/effects/ghost2.ogg',
+		'sound/effects/Heart Beat.ogg',
+		'sound/effects/screech.ogg',
+		'sound/hallucinations/behind_you1.ogg',
+		'sound/hallucinations/behind_you2.ogg',
+		'sound/hallucinations/far_noise.ogg',
+		'sound/hallucinations/growl1.ogg',
+		'sound/hallucinations/growl2.ogg',
+		'sound/hallucinations/growl3.ogg',
+		'sound/hallucinations/im_here1.ogg',
+		'sound/hallucinations/im_here2.ogg',
+		'sound/hallucinations/i_see_you1.ogg',
+		'sound/hallucinations/i_see_you2.ogg',
+		'sound/hallucinations/look_up1.ogg',
+		'sound/hallucinations/look_up2.ogg',
+		'sound/hallucinations/over_here1.ogg',
+		'sound/hallucinations/over_here2.ogg',
+		'sound/hallucinations/over_here3.ogg',
+		'sound/hallucinations/turn_around1.ogg',
+		'sound/hallucinations/turn_around2.ogg',
+		'sound/hallucinations/veryfar_noise.ogg',
+		'sound/hallucinations/wail.ogg',
+		'sound/hallucinations/goblin_aggro0.ogg',
+		'sound/hallucinations/goblin_aggro1.ogg',
+		'sound/hallucinations/goblin_aggro2.ogg',
+		'sound/hallucinations/goblin_aggro3.ogg',
+		'sound/hallucinations/goblin_death0.ogg',
+		'sound/hallucinations/goblin_death1.ogg',
+		'sound/hallucinations/goblin_idle0.ogg',
+		'sound/hallucinations/goblin_idle1.ogg',
+		'sound/hallucinations/goblin_idle2.ogg',
+		'sound/hallucinations/goblin_idle3.ogg',
+		'sound/hallucinations/goblin_idle4.ogg',
+		'sound/hallucinations/goblin_laugh0.ogg',
+		'sound/hallucinations/goblin_laugh1.ogg',
+		'sound/hallucinations/goblin_pain0.ogg',
+		'sound/hallucinations/goblin_pain1.ogg',
+		'sound/hallucinations/goblin_pain2.ogg',
+		'sound/hallucinations/goblin_pain3.ogg',
+		'sound/hallucinations/goblin_pain4.ogg',
+		'sound/hallucinations/goblin_painscream0.ogg',
+		'sound/hallucinations/goblin_painscream1.ogg',
+		'sound/hallucinations/goblin_painscream2.ogg',
+		'sound/hallucinations/goblin_painscream3.ogg',
+		'sound/hallucinations/goblin_painscream4.ogg',
+	)
 
 //Hearing someone being shot twice
 /datum/hallucination/gunfire
@@ -171,7 +214,7 @@
 			to_chat(holder,"<B>[talker.name]</B> points at [holder.name]")
 			to_chat(holder,"<span class='game say'><span class='name'>[talker.name]</span> says something softly.</span>")
 
-		show_bubble_to_client(holder.bubble_icon, holder.say_test(message), talker, holder.client)
+		holder.show_bubble_to_client(holder.bubble_icon, holder.say_test(message), talker, holder.client)
 
 		sanity-- //don't spam them in very populated rooms.
 		if(!sanity)
@@ -420,6 +463,7 @@
 	if(fake.lying)
 		fake_look.SetTransform(others = fake.transform, rotation = -90)
 	holder.client.images |= fake_look
+
 	log_misc("[holder.name] is hallucinating that [origin.name] is the [fake.name]")
 
 /datum/hallucination/fake_appearance/proc/get_living_sublist(list/subtypes, list/exclude)
@@ -442,8 +486,10 @@
 	holder.hallucinations -= src
 	if(!fake_look)
 		return // No ASSERT is needed, ending is correct
+
 	if(holder.client)
 		holder.client.images -= fake_look
+
 	QDEL_NULL(fake_look)
 
 /datum/hallucination/fake_appearance/Destroy()

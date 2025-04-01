@@ -233,9 +233,9 @@
 	else
 		..()
 
-/obj/item/gun/projectile/automatic/z8/Fire(atom/target, mob/living/user, params, pointblank = 0, reflex = 0)
+/obj/item/gun/projectile/automatic/z8/Fire(atom/target, mob/living/user, params, pointblank = 0, reflex = 0, target_zone = BP_CHEST)
 	if(use_launcher)
-		launcher.Fire(target, user, params, pointblank, reflex)
+		launcher.Fire(target, user, params, pointblank, reflex, target_zone = user.zone_sel?.selecting)
 		if(!launcher.chambered)
 			switch_firemodes() //switch back automatically
 	else
@@ -251,12 +251,13 @@
 		icon_state = "carbine"
 	..()
 
-/obj/item/gun/projectile/automatic/z8/_examine_text(mob/user)
+/obj/item/gun/projectile/automatic/z8/examine(mob/user, infix)
 	. = ..()
+
 	if(launcher.chambered)
-		. += "\n\The [launcher] has \a [launcher.chambered] loaded."
+		. += "\The [launcher] has \a [launcher.chambered] loaded."
 	else
-		. += "\n\The [launcher] is empty."
+		. += "\The [launcher] is empty."
 
 
 /obj/item/gun/projectile/automatic/l6_saw

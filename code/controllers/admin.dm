@@ -42,6 +42,7 @@ INITIALIZE_IMMEDIATE(/obj/effect/statclick)
 
 	if(!holder)
 		return
+
 	switch(controller)
 		if("Master")
 			Recreate_MC()

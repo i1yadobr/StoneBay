@@ -19,6 +19,7 @@
 
 // Grab Types
 #define GRAB_NORMAL			"normal"
+#define GRAB_QUICKCHOKE     "choke"
 
 // Grab levels.
 #define NORM_PASSIVE    "normal passive"
@@ -229,6 +230,8 @@
 #define BP_ADAMANTINE_RESONATOR   "adamantine resonator"
 #define BP_ADAMANTINE_VOCAL_CORDS "adamantine vocal cords"
 
+#define BP_INTERNAL_ORGANS list(BP_BRAIN, BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS)
+
 // Robo Organs.
 #define BP_CELL       "cell"
 #define BP_POSIBRAIN  "posibrain"
@@ -257,6 +260,14 @@
 // Prosthetic helpers.
 #define BP_IS_ROBOTIC(org)  (org.status & ORGAN_ROBOTIC)
 #define BP_IS_ASSISTED(org) (org.status & ORGAN_ASSISTED)
+
+GLOBAL_LIST_INIT(organ_tag_to_name, list(
+	BP_HEAD  = "head", BP_CHEST = "full body",
+	BP_GROIN = "lower body", BP_L_LEG = "left leg",
+	BP_R_LEG  = "right leg", BP_L_ARM = "left arm",
+	BP_R_ARM = "right arm", BP_L_HAND = "left hand",
+	BP_R_HAND = "right hand", BP_L_FOOT = "left foot",
+	BP_R_FOOT = "right foot"))
 
 #define SYNTH_BLOOD_COLOUR "#030303"
 #define SYNTH_FLESH_COLOUR "#575757"
@@ -435,3 +446,44 @@
 		if(HUMAN_HEIGHT_LARGE) return "Tall"
 		if(HUMAN_HEIGHT_HUGE) return "Towering"
 	return "Unusual"
+
+// Human Overlays Indexes
+#define HO_L_HAND_LOW_LAYER         1
+#define HO_R_HAND_LOW_LAYER         2
+#define HO_BODY_LAYER               3
+#define HO_MUTATIONS_LAYER          4
+#define HO_SKIN_LAYER               5
+#define HO_DAMAGE_LAYER             6
+#define HO_SURGERY_LAYER            7
+#define HO_UNDERWEAR_LAYER          8
+#define HO_UNDERWEAR_PLUS_LAYER     9
+#define HO_UNIFORM_LAYER           10
+#define HO_BANDAGE_LAYER           11
+#define HO_ID_LAYER                12
+#define HO_SHOES_LAYER             13
+#define HO_GLOVES_LAYER            14
+#define HO_BELT_LAYER              15
+#define HO_UNDERWEAR_UNIFORM_LAYER 16
+#define HO_SUIT_LAYER              17
+#define HO_TAIL_LAYER              18
+#define HO_FACIAL_HAIR_LAYER       19
+#define HO_FACEMASK_ALT_LAYER      20
+#define HO_GLASSES_LAYER           21
+#define HO_BELT_LAYER_ALT          22
+#define HO_SUIT_STORE_LAYER        23
+#define HO_BACK_LAYER              24
+#define HO_DEFORM_LAYER            25
+#define HO_HAIR_LAYER              26
+#define HO_GOGGLES_LAYER           27
+#define HO_EARS_LAYER              28
+#define HO_FACEMASK_LAYER          29
+#define HO_HEAD_LAYER              30
+#define HO_COLLAR_LAYER            31
+#define HO_UNDERWEAR_SUIT_LAYER    32
+#define HO_HANDCUFF_LAYER          33
+#define HO_L_HAND_LAYER            34
+#define HO_R_HAND_LAYER            35
+#define HO_FIRE_LAYER              36
+#define HO_MODIFIER_EFFECTS_LAYER  37
+#define HO_TARGETED_LAYER          38
+#define HO_TOTAL_LAYERS            39

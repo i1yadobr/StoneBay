@@ -62,6 +62,16 @@
 	. = ..()
 	slowdown = config.movement.robot_delay
 
+/datum/movespeed_modifier/drone_movement
+	flags = MOVESPEED_FLAG_SPACEMOVEMENT
+
+/datum/movespeed_modifier/drone_movement/New()
+	. = ..()
+	slowdown = config.movement.drone_delay
+
 /datum/movespeed_modifier/vtec_speedup
 	flags = MOVESPEED_FLAG_SPACEMOVEMENT
 	slowdown = -1
+
+/datum/movespeed_modifier/hamstring_magic
+	slowdown = -1.0

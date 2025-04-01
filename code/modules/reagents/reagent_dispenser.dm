@@ -30,16 +30,18 @@
 
 	..()
 
-/obj/structure/reagent_dispensers/_examine_text(mob/user)
+/obj/structure/reagent_dispensers/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 2)
 		return
-	. += "\n<span class='notice'>It contains:</span>"
+
+	. += SPAN_NOTICE("It contains:")
 	if(reagents && reagents.reagent_list.len)
 		for(var/datum/reagent/R in reagents.reagent_list)
-			. += "\n<span class='notice'>[R.volume] units of [R.name]</span>"
+			. += SPAN_NOTICE("[R.volume] units of [R.name]")
 	else
-		. += "\n<span class='notice'>Nothing.</span>"
+		. += SPAN_NOTICE("Nothing.")
 
 /obj/structure/reagent_dispensers/verb/set_APTFT() //set amount_per_transfer_from_this
 	set name = "Set transfer amount"
@@ -117,14 +119,16 @@
 	QDEL_NULL(rig)
 	return ..()
 
-/obj/structure/reagent_dispensers/fueltank/_examine_text(mob/user)
+/obj/structure/reagent_dispensers/fueltank/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 2)
 		return
+
 	if(modded)
-		. += "\n" + SPAN("warning", "Fuel faucet is wrenched open, leaking the fuel!")
+		. += SPAN("warning", "Fuel faucet is wrenched open, leaking the fuel!")
 	if(rig)
-		. += "\n" + SPAN("notice", "There is some kind of device rigged to the tank.")
+		. += SPAN("notice", "There is some kind of device rigged to the tank.")
 
 /obj/structure/reagent_dispensers/fueltank/attack_hand(mob/user)
 	if(rig)
@@ -132,7 +136,7 @@
 		  SPAN("notice", "\The [user] begins to detach [rig] from \the [src]."),
 		  SPAN("notice", "You begin to detach [rig] from \the [src].")
 		)
-		if(do_after(user, 20, src))
+		if(do_after(user, 20, src, , luck_check_type = LUCK_CHECK_COMBAT))
 			user.visible_message(
 			  SPAN("notice", "\The [user] detaches \the [rig] from \the [src]."),
 			  SPAN("notice", "You detach [rig] from \the [src]")
@@ -177,7 +181,14 @@
 			  SPAN("notice", "You rig [W] to \the [src].")
 			)
 			update_icon()
+
 	else if(W.get_temperature_as_from_ignitor())
+		if (reagents.total_volume == 0)
+			user.visible_message(
+		 	 SPAN("danger", "[user] puts [W] to [src]."),
+		 	 SPAN("danger", "You put \the [W] to \the [src] and nothing happens.")
+			)
+			return
 		log_and_message_admins("triggered a fueltank explosion with [W].")
 		user.visible_message(
 		  SPAN("danger", "[user] puts [W] to [src]!"),
@@ -211,7 +222,19 @@
 		if(!istype(Proj ,/obj/item/projectile/beam/lasertag) && !istype(Proj ,/obj/item/projectile/beam/practice) )
 			explode()
 
-/obj/structure/reagent_dispensers/fueltank/ex_act()
+/obj/structure/reagent_dispensers/fueltank/ex_act(severity)
+	switch(severity)
+		if(1.0)
+			qdel(src)
+			return
+		if(2.0)
+			if (prob(50))
+				qdel(src)
+				return
+		if(3.0)
+			if (prob(5))
+				qdel(src)
+				return
 	explode()
 
 /obj/structure/reagent_dispensers/fueltank/proc/explode()
@@ -221,6 +244,8 @@
 		explosion(src.loc,0,1,3,sfx_to_play=SFX_EXPLOSION_FUEL)
 	else if (reagents.total_volume > 50)
 		explosion(src.loc,-1,1,2,sfx_to_play=SFX_EXPLOSION_FUEL)
+	else if (reagents.total_volume == 0)
+		return
 	if(src)
 		qdel(src)
 
@@ -278,6 +303,7 @@
 	name = "Water-Cooler"
 	desc = "A machine that dispenses water to drink."
 	amount_per_transfer_from_this = 5
+	icon = 'icons/obj/water_cooler.dmi'
 	icon_state = "water_cooler"
 	possible_transfer_amounts = null
 	anchored = 1

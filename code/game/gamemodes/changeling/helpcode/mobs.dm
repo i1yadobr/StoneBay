@@ -104,6 +104,7 @@
 /mob/living/simple_animal/hostile/little_changeling/New()
 	verbs += /mob/living/proc/ventcrawl
 	verbs += /mob/living/proc/hide
+
 	pixel_z = 6
 	..()
 

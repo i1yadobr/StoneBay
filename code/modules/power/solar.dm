@@ -68,7 +68,7 @@ var/list/solars_list = list()
 	if(isCrowbar(W))
 		playsound(src.loc, 'sound/machines/click.ogg', 50, 1)
 		user.visible_message("<span class='notice'>[user] begins to take the glass off the solar panel.</span>")
-		if(do_after(user, 50,src))
+		if(do_after(user, 50,src, luck_check_type = LUCK_CHECK_ENG))
 			var/obj/item/solar_assembly/S = locate() in src
 			if(S)
 				S.dropInto(loc)
@@ -225,7 +225,7 @@ var/list/solars_list = list()
 
 /obj/item/solar_assembly/attackby(obj/item/W, mob/user)
 	if(!tracker)
-		if(istype(W, /obj/item/tracker_electronics) && user.drop(W))
+		if(istype(W, /obj/item/tracker_electronics) && user.drop(W, src))
 			tracker = 1
 			user.visible_message("<span class='notice'>[user] inserts the electronics into the solar assembly.</span>")
 			return 1
@@ -347,12 +347,6 @@ var/list/solars_list = list()
 	set_panels(cdir)
 	updateDialog()
 
-
-/obj/machinery/power/solar_control/Initialize()
-	. = ..()
-	if(!connect_to_network()) return
-	set_panels(cdir)
-
 /obj/machinery/power/solar_control/on_update_icon()
 	ClearOverlays()
 	if(stat & NOPOWER)
@@ -418,7 +412,7 @@ var/list/solars_list = list()
 /obj/machinery/power/solar_control/attackby(obj/item/I, mob/user)
 	if(isScrewdriver(I))
 		playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
-		if(do_after(user, 20,src))
+		if(do_after(user, 20,src, luck_check_type = LUCK_CHECK_ENG))
 			if (src.stat & BROKEN)
 				to_chat(user, "<span class='notice'>The broken glass falls out.</span>")
 				var/obj/structure/computerframe/A = new /obj/structure/computerframe( src.loc )
@@ -531,9 +525,11 @@ var/list/solars_list = list()
 /obj/machinery/power/solar_control/autostart
 	track = 2 // Auto tracking mode
 
-/obj/machinery/power/solar_control/autostart/Initialize()
-	. = ..()
-	addtimer(CALLBACK(src, nameof(.proc/autoconnect)), 0)
+/obj/machinery/power/solar_control/autostart/connect_to_network()
+	return ..() == CONNECT_NETWORK_FAIL ? CONNECT_NETWORK_FAIL : CONNECT_NETWORK_DELAYED_PROC
+
+/obj/machinery/power/solar_control/autostart/after_connect_to_network()
+	autoconnect()
 
 /obj/machinery/power/solar_control/autostart/proc/autoconnect()
 	search_for_connected()

@@ -127,73 +127,6 @@
 	name = "\improper Swimming Pool"
 	icon_state = "fitness"
 
-/area/eclipse/civilian/dormitory/holodeck
-	name = "\improper Holodeck"
-	icon_state = "Holodeck"
-	dynamic_lighting = 0
-	sound_env = LARGE_ENCLOSED
-
-/area/eclipse/civilian/dormitory/holodeck/alphadeck
-	name = "\improper Holodeck Alpha"
-
-/area/eclipse/civilian/dormitory/holodeck/source_boxingcourt
-	name = "\improper Holodeck - Boxing Court"
-	sound_env = ARENA
-
-/area/eclipse/civilian/dormitory/holodeck/source_desert
-	name = "\improper Holodeck - Desert"
-	sound_env = PLAIN
-
-/area/eclipse/civilian/dormitory/holodeck/source_picnicarea
-	name = "\improper Holodeck - Picnic Area"
-	sound_env = PLAIN
-
-/area/eclipse/civilian/dormitory/holodeck/source_wildlife
-	name = "\improper Holodeck - Wildlife Simulation"
-
-/area/eclipse/civilian/dormitory/holodeck/source_courtroom
-	name = "\improper Holodeck - Courtroom"
-	sound_env = AUDITORIUM
-
-/area/eclipse/civilian/dormitory/holodeck/source_basketball
-	name = "\improper Holodeck - Basketball Court"
-	sound_env = ARENA
-
-/area/eclipse/civilian/dormitory/holodeck/source_plating
-	name = "\improper Holodeck - Off"
-
-/area/eclipse/civilian/dormitory/holodeck/source_emptycourt
-	name = "\improper Holodeck - Empty Court"
-	sound_env = ARENA
-
-/area/eclipse/civilian/dormitory/holodeck/source_theatre
-	name = "\improper Holodeck - Theatre"
-	sound_env = CONCERT_HALL
-
-/area/eclipse/civilian/dormitory/holodeck/source_thunderdomecourt
-	name = "\improper Holodeck - Thunderdome Court"
-	sound_env = ARENA
-
-/area/eclipse/civilian/dormitory/holodeck/source_beach
-	name = "\improper Holodeck - Beach"
-	sound_env = PLAIN
-
-/area/eclipse/civilian/dormitory/holodeck/source_snowfield
-	name = "\improper Holodeck - Snow Field"
-	sound_env = FOREST
-
-/area/eclipse/civilian/dormitory/holodeck/source_meetinghall
-	name = "\improper Holodeck - Meeting Hall"
-	sound_env = AUDITORIUM
-
-/area/eclipse/civilian/dormitory/holodeck/source_space
-	name = "\improper Holodeck - Space"
-	has_gravity = 0
-	sound_env = SPACE
-
-/area/eclipse/civilian/dormitory/holodeck/source_chess
-	name = "\improper Holodeck - Chess Field"
-
 
 // Cargo
 
@@ -834,6 +767,10 @@
 	name = "\improper Singularity Engine"
 	icon_state = "engine"
 
+/area/eclipse/engineering/tech/singularity
+	name = "\improper Singularity"
+	icon_state = "engine"
+
 /area/eclipse/engineering/tech/supermatter_engine
 	name = "\improper Engineering Supermatter Room"
 	icon_state = "engine"
@@ -907,7 +844,7 @@
 /area/eclipse/maintenance/tunnel
 	name = "Tunnel"
 	icon_state = "party"
-	area_flags = AREA_FLAG_RAD_SHIELDED
+	area_flags = AREA_FLAG_RAD_SHIELDED | AREA_FLAG_UNIQUE_AREA
 	sound_env = TUNNEL_ENCLOSED
 	turf_initializer = /decl/turf_initializer/maintenance
 	ambience_off = list(SFX_AMBIENT_OFF_GLOBAL, SFX_AMBIENT_OFF_MAINTENANCE)

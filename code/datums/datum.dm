@@ -9,6 +9,10 @@
 	var/list/comp_lookup = list()
 	/// Lazy associated list of signals that are run when the datum receives that signal
 	var/list/signal_procs = list()
+	/// Used to avoid unnecessary refstring creation in Destroy().
+	var/has_state_machine = FALSE
+	/// Status traits attached to this datum. associative list of the form: list(trait name (string) = list(source1, source2, source3,...))
+	var/list/_status_traits
 
 	// Thinking
 	var/list/_think_ctxs
@@ -35,23 +39,14 @@
 
 	tag = null
 	SSnano && SSnano.close_uis(src)
-	var/list/timers = active_timers
-	active_timers = null
-	for(var/thing in timers)
-		var/datum/timedevent/timer = thing
-		if (timer.spent)
-			continue
-		qdel(timer)
 
 	var/list/dc = datum_components
 	if(dc)
 		var/all_components = dc[/datum/component]
 		if(length(all_components))
-			for(var/datum/component/component as anything in all_components)
-				qdel(component, FALSE, TRUE)
+			QDEL_NULL_LIST(all_components)
 		else
-			var/datum/component/C = all_components
-			qdel(C, FALSE, TRUE)
+			QDEL_NULL(all_components)
 		dc.Cut()
 
 	if(extensions)
@@ -103,19 +98,21 @@
 /// Schedules the next call of the `/datum/proc/think`.
 ///
 /// * `time` - when to call the "think" proc. Falsy value stops from thinking.
-/datum/proc/set_next_think(time)
+/// * `...` - arguments to be passed to the "think" function.
+/datum/proc/set_next_think(time, ...)
 	if(!time)
 		_main_think_ctx?.stop()
 		return
 
 	if(QDELETED(_main_think_ctx))
-		_main_think_ctx = new(time, CALLBACK(src, nameof(.proc/think)))
+		_main_think_ctx = new(time, CALLBACK(src, nameof(.proc/think)), length(args) > 1 ? args.Copy(2) : null)
 		SSthink.contexts_groups[_main_think_ctx.group] += _main_think_ctx
 		CALC_NEXT_GROUP_RUN(_main_think_ctx)
 
 		return
 
 	_main_think_ctx.next_think = time
+	_main_think_ctx.arguments = args.Copy(2)
 
 	if(!_main_think_ctx.group)
 		ASSIGN_THINK_GROUP(_main_think_ctx.group, time)
@@ -136,24 +133,58 @@
 /// * `name` - name of the context.
 /// * `clbk` - a proc which should be called.
 /// * `time` - when to call the context.
-/datum/proc/add_think_ctx(name, datum/callback/clbk, time)
+/// * `...` - arguments to be passed to the "think" function.
+/datum/proc/add_think_ctx(name, datum/callback/clbk, time, ...)
 	LAZYINITLIST(_think_ctxs)
 
 	if(!QDELETED(_think_ctxs[name]))
-		CRASH("Thinking context [name] is exists")
+		CRASH("Thinking context [name] already exists")
 
-	_think_ctxs[name] = new /datum/think_context(time, clbk)
+	_think_ctxs[name] = new /datum/think_context(time, clbk, length(args) > 3 ? args.Copy(4) : null)
 	var/datum/think_context/ctx = _think_ctxs[name]
 
 	if(time > 0)
 		SSthink.contexts_groups[ctx.group] += ctx
 		CALC_NEXT_GROUP_RUN(ctx)
 
+/// Removes a thinking context.
+///
+/// * `name` - name of the context.
+/datum/proc/remove_think_ctx(name)
+	if(!islist(_think_ctxs))
+		return
+
+	if(QDELETED(_think_ctxs[name]))
+		return
+
+	set_next_think_ctx(name, 0)
+	var/datum/think_context/ctx = _think_ctxs[name]
+	_think_ctxs.Remove(name)
+	qdel(ctx)
+
+	if(!length(_think_ctxs))
+		_think_ctxs = null
+
+/// Tries to create a thinking context, updates its time if it already exists.
+///
+/// * `name` - name of the context.
+/// * `clbk` - a proc which should be called.
+/// * `time` - when to call the context.
+/// * `...` - arguments to be passed to the "think" function.
+/datum/proc/try_add_think_ctx(name, datum/callback/clbk, time, ...)
+	LAZYINITLIST(_think_ctxs)
+
+	if(!QDELETED(_think_ctxs[name]))
+		set_next_think_ctx(name, time)
+	else
+		add_think_ctx(arglist(args))
+
 /// Sets the next time for thinking in a context.
 ///
 /// * `name` - name of the context.
 /// * `time` - when to call the context. Falsy value removes the context.
-/datum/proc/set_next_think_ctx(name, time)
+/// * `...` - arguments to be passed to the "think" function.
+/datum/proc/set_next_think_ctx(name, time, ...)
 	if(!time)
 		_think_ctxs[name].stop()
 
@@ -161,6 +192,7 @@
 
 	var/datum/think_context/ctx = _think_ctxs[name]
 	ctx.next_think = time
+	ctx.arguments = length(args) > 2 ? args.Copy(3) : null
 
 	if(!ctx.group)
 		ASSIGN_THINK_GROUP(ctx.group, time)

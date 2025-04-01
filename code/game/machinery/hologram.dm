@@ -60,7 +60,7 @@ var/const/HOLOPAD_MODE = RANGE_BASED
 
 /obj/machinery/hologram/holopad/New()
 	..()
-	desc = "It's a floor-mounted device for projecting holographic images. Its ID is '[loc.loc]'"
+	desc += " Its ID is '[loc.loc]'"
 
 /obj/machinery/hologram/holopad/attack_hand(mob/living/carbon/human/user) //Carn: Hologram requests.
 	if(!istype(user))
@@ -122,7 +122,7 @@ var/const/HOLOPAD_MODE = RANGE_BASED
 	targetpad.incoming_connection = 1
 	playsound(targetpad.loc, 'sound/signals/processing19.ogg', 50)
 	targetpad.icon_state = "[targetpad.base_icon]1"
-	targetpad.audible_message("<b>\The [src]</b> announces, \"Incoming communications request from [targetpad.sourcepad.loc.loc].\"")
+	targetpad.audible_message("<b>\The [src]</b> announces, \"Incoming communications request from [targetpad.sourcepad.loc.loc].\"", splash_override = "Incoming communications request")
 	to_chat(user, "<span class='notice'>Trying to establish a connection to the holopad in [targetpad.loc.loc]... Please await confirmation from recipient.</span>")
 
 
@@ -202,7 +202,7 @@ For the other part of the code, check silicon say.dm. Particularly robot talk.*/
 	if(sourcepad) //If this is a pad receiving a call
 		if(name_used==caller_id||text==last_message||findtext(text, "Holopad received")) //prevent echoes
 			return
-		sourcepad.audible_message("<i><span class='game say'>Holopad received, <span class='name'>[name_used]</span> [speaking.format_message(text, verb)]</span></i>")
+		sourcepad.audible_message("<i><span class='game say'>Holopad received, <span class='name'>[name_used]</span> [speaking.format_message(text, verb)]</span></i>", splash_override = text)
 
 /obj/machinery/hologram/holopad/see_emote(mob/living/M, text)
 	if(M)
@@ -389,11 +389,13 @@ Holographic project of everything else.
 /*
  * Other Stuff: Is this even used?
  */
-/obj/machinery/hologram/projector
-	name = "hologram projector"
-	desc = "It makes a hologram appear...with magnets or something..."
-	icon = 'icons/obj/stationobjs.dmi'
-	icon_state = "hologram0"
+/obj/machinery/hologram/holopad/projector
+	name = "holopad projector"
+	desc = "It's a floor-mounted device for projecting holographic images. This one has hologram appear...with magnets or something..."
+	icon_state = "holopad0"
+	map_range = 1
+	holopadType = HOLOPAD_AVERAGE_RANGE
+	base_icon = "holopad"
 
 /obj/machinery/hologram/holopad/longrange
 	name = "long range holopad"

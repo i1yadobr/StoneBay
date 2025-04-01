@@ -13,8 +13,6 @@
 	var/max_fire_temperature_sustained = 0 //The max temperature of the fire which it was subjected to
 	var/dirt = 0
 
-	var/timer_id
-
 /turf/simulated/post_change()
 	..()
 	var/turf/T = GetAbove(src)
@@ -32,18 +30,20 @@
 		wet_overlay = image('icons/effects/water.dmi',src,"wet_floor")
 		AddOverlays(wet_overlay)
 
-	timer_id = addtimer(CALLBACK(src, nameof(.proc/unwet_floor)), 20 SECONDS, TIMER_STOPPABLE|TIMER_UNIQUE|TIMER_NO_HASH_WAIT|TIMER_OVERRIDE)
+	try_add_think_ctx("unwet_context", CALLBACK(src, nameof(.proc/unwet_floor)), world.time + 20 SECONDS)
 
 /turf/simulated/proc/unwet_floor(check_very_wet = TRUE)
 	if(check_very_wet && wet >= 2)
 		wet--
-		timer_id = addtimer(CALLBACK(src, nameof(.proc/unwet_floor)), 20 SECONDS, TIMER_STOPPABLE|TIMER_UNIQUE|TIMER_NO_HASH_WAIT|TIMER_OVERRIDE)
+		set_next_think_ctx("unwet_context", world.time + 20 SECONDS)
 		return
 
 	wet = 0
 	if(wet_overlay)
 		CutOverlays(wet_overlay)
 		wet_overlay = null
+
+	remove_think_ctx("unwet_context")
 
 /turf/simulated/clean_blood()
 	for(var/obj/effect/decal/cleanable/blood/B in contents)
@@ -55,16 +55,6 @@
 	if(istype(loc, /area/chapel))
 		holy = TRUE
 	levelupdate()
-
-/turf/simulated/Destroy()
-	if (zone && !zone.invalid)
-		// Try to remove it gracefully first.
-		if (can_safely_remove_from_zone())
-			c_copy_air()
-			zone.remove(src)
-		else	// Can't remove it safely, just rebuild the entire thing.
-			zone.rebuild()
-	return ..()
 
 /turf/simulated/proc/AddTracks(typepath,bloodDNA,comingdir,goingdir,bloodcolor=COLOR_BLOOD_HUMAN)
 	var/obj/effect/decal/cleanable/blood/tracks/tracks = locate(typepath) in src
@@ -88,8 +78,7 @@
 	if(isliving(A))
 		var/mob/living/M = A
 
-		// Dirt overlays.
-		update_dirt()
+		var/need_update_dirt = TRUE
 
 		if(M.buckled && !istype(M.buckled, /obj/structure/bed/chair/wheelchair)) // No bloody trails for rollerbedded dudes pls
 			return ..()
@@ -101,14 +90,21 @@
 			var/bloodcolor = ""
 
 			if(H.shoes)
-				var/obj/item/clothing/shoes/S = H.shoes
-				if(istype(S))
-					S.handle_movement(src,(H.m_intent == M_RUN ? 1 : 0))
-					if(S.track_blood)
-						if(S.blood_DNA)
-							bloodDNA = S.blood_DNA
-						bloodcolor = S.blood_color
-						S.track_blood--
+				var/obj/item/clothing/accessory/shoe_covers/SC = H.shoes
+				if(istype(SC))
+					SC.handle_movement(src, (H.m_intent == M_RUN ? 1 : 0), TRUE)
+					need_update_dirt = FALSE
+				else
+					var/obj/item/clothing/shoes/S = H.shoes
+					if(istype(S))
+						S.handle_movement(src, (H.m_intent == M_RUN ? 1 : 0))
+						if(S.get_accessory_cover())
+							need_update_dirt = FALSE
+						if(S.track_blood)
+							if(S.blood_DNA)
+								bloodDNA = S.blood_DNA
+							bloodcolor = S.blood_color
+							S.track_blood--
 
 			else if(H.track_blood)
 				if(H.feet_blood_DNA)
@@ -123,6 +119,10 @@
 					from.AddTracks(H.species.get_move_trail(H), bloodDNA, 0, H.dir, bloodcolor) // Going
 
 				bloodDNA = null
+
+		// Dirt overlays.
+		if(need_update_dirt)
+			update_dirt()
 
 		if(M.lying)
 			return ..()

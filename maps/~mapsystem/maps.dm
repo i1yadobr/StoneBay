@@ -60,20 +60,11 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 
 	var/list/station_networks = list() 		// Camera networks that will show up on the console.
 
-	var/list/holodeck_programs = list() // map of string ids to /datum/holodeck_program instances
-	var/list/holodeck_supported_programs = list() // map of maps - first level maps from list-of-programs string id (e.g. "BarPrograms") to another map
-												  // this is in order to support multiple holodeck program listings for different holodecks
-	                                              // second level maps from program friendly display names ("Picnic Area") to program string ids ("picnicarea")
-	                                              // as defined in holodeck_programs
-	var/list/holodeck_restricted_programs = list() // as above... but EVIL!
-
 	var/allowed_spawns = list("Arrivals Shuttle","Gateway", "Cryogenic Storage", "Cyborg Storage")
 	var/default_spawn = "Arrivals Shuttle"
 	var/flags = 0
 	var/evac_controller_type = /datum/evacuation_controller
 
-	var/lobby_icon									// The icon which contains the lobby image(s)
-	var/list/lobby_screens = list()                 // The list of lobby screen to pick() from. If left unset the first icon state is always selected.
 	var/lobby_music/lobby_music                     // The track that will play in the lobby screen. Handed in the /setup_map() proc.
 	var/welcome_sound = 'sound/signals/start1.ogg'	// Sound played on roundstart
 
@@ -167,9 +158,12 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 /datum/map/proc/send_welcome()
 	return
 
-/datum/map/proc/perform_map_generation()
+/datum/map/proc/perform_map_generation(lateloading = FALSE)
 	for(var/level = 1; level <= length(map_levels); level++)
 		var/datum/space_level/L = map_levels[level]
+		if(L.lateloading_level != lateloading)
+			continue
+
 		L.generate(level)
 
 // Used to apply various post-compile procedural effects to the map.

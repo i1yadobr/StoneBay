@@ -109,8 +109,7 @@
 	engage_string = "Configure RCD"
 	use_power_cost = 300
 	origin_tech = list(TECH_MATERIAL = 6, TECH_MAGNET = 5, TECH_ENGINEERING = 7)
-	device_type = /obj/item/rcd/mounted
-
+	device_type = /obj/item/construction/rcd/mounted
 
 /obj/item/rig_module/chem_dispenser
 	name = "mounted chemical dispenser"
@@ -190,11 +189,13 @@
 	return 1
 
 /obj/item/rig_module/chem_dispenser/engage(atom/target)
-
 	if(!..())
-		return 0
+		return FALSE
 
 	var/mob/living/carbon/human/H = holder.wearer
+
+	if(!Adjacent(H, target))
+		return FALSE
 
 	if(!charge_selected)
 		to_chat(H, "<span class='danger'>You have not selected a chemical type.</span>")

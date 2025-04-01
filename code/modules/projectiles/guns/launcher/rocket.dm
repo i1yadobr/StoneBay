@@ -23,11 +23,13 @@
 	var/max_rockets = 1
 	var/list/rockets = new /list()
 
-/obj/item/gun/launcher/rocket/_examine_text(mob/user)
+/obj/item/gun/launcher/rocket/examine(mob/user, infix)
 	. = ..()
+
 	if(get_dist(src, user) > 2)
 		return
-	. += "\n<span class='notice'>[rockets.len] / [max_rockets] rockets.</span>"
+
+	. += SPAN_NOTICE("[rockets.len] / [max_rockets] rockets.")
 
 /obj/item/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
@@ -73,7 +75,7 @@
 
 	weapon_in_mouth = TRUE
 	target.visible_message(SPAN_DANGER("[user] sticks their gun in [target]'s mouth, ready to pull the trigger..."))
-	if(!do_after(user, 2 SECONDS, progress=0))
+	if(!do_after(user, 2 SECONDS, progress=0, luck_check_type = LUCK_CHECK_COMBAT))
 		target.visible_message(SPAN_NOTICE("[user] decided [target]'s life was worth living."))
 		weapon_in_mouth = FALSE
 		return

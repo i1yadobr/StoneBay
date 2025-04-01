@@ -1,13 +1,18 @@
-/mob/living/carbon/human/_examine_text(mob/user)
-	var/skipgloves = 0
-	var/skipsuitstorage = 0
-	var/skipjumpsuit = 0
-	var/skipshoes = 0
-	var/skipmask = 0
-	var/skipears = 0
-	var/skipeyes = 0
-	var/skipface = 0
+/mob/living/carbon/human/examine(mob/user, infix)
+	. = ..()
+
+	var/skipgloves      = FALSE
+	var/skipsuitstorage = FALSE
+	var/skipjumpsuit    = FALSE
+	var/skipshoes       = FALSE
+	var/skipmask        = FALSE
+	var/skipears        = FALSE
+	var/skipeyes        = FALSE
+	var/skipface        = FALSE
 	var/skipjumpsuitaccessories = FALSE
+
+	var/visible_sexybits = FALSE // Can we get the gender right even w/ ambiguous bodybuilds?
+	var/examine_distance = isliving(user) ? get_dist(user, src) : 0 // Ghosts shall not be bothered by the eyesight issues
 
 	// exosuits and helmets obscure our view and stuff.
 	if(wear_suit)
@@ -16,6 +21,8 @@
 		skipjumpsuit = wear_suit.flags_inv & HIDEJUMPSUIT
 		skipshoes = wear_suit.flags_inv & HIDESHOES
 		skipjumpsuitaccessories = wear_suit.flags_inv & HIDEJUMPSUITACCESSORIES
+	else if(!w_uniform)
+		visible_sexybits = TRUE
 
 	if(head)
 		skipmask = head.flags_inv & HIDEMASK
@@ -26,16 +33,24 @@
 	if(wear_mask)
 		skipface |= wear_mask.flags_inv & HIDEFACE
 
-	// no accuately spotting headsets from across the room.
-	if(get_dist(user, src) > 3)
-		skipears = 1
+	// no accurately spotting headsets from across the room.
+	if(examine_distance > 3)
+		skipears = TRUE
 
 	var/list/msg = list("This is ")
 
 	var/datum/gender/T = gender_datums[get_gender()]
+
 	if(skipjumpsuit && skipface) // big suits/masks/helmets make it hard to tell their gender
 		T = gender_datums[PLURAL]
 	else
+		if(!visible_sexybits && body_build?.ambiguous_gender && (T.key != "male" || f_style == "Shaved"))
+			T = gender_datums[PLURAL]
+		else if(ishuman(user))
+			var/mob/living/carbon/human/HU = user
+			if(species.troublesome_sexual_dimorphism && (HU.species != species))
+				T = gender_datums[PLURAL]
+
 		if(icon)
 			msg += "[icon2html(icon, user)] " // fucking BYOND: this should stop dreamseeker crashing if we -somehow- examine somebody before their icon is generated
 		else
@@ -58,6 +73,9 @@
 
 	msg += "<br>"
 
+	if (isundead(src) && !isfakeliving(src) && (!skipface || (!skipgloves && !gloves) || (!skipjumpsuit && !w_uniform) || (!skipshoes && !shoes)))
+		msg += FONT_LARGE(SPAN_DANGER("[T.He] looks like a month-old corpse.\n"))
+
 	// uniform
 	if(w_uniform && !skipjumpsuit)
 		msg += "[T.He] [T.is] wearing [w_uniform.get_examine_line(!skipjumpsuitaccessories)].\n"
@@ -79,11 +97,11 @@
 
 	// left hand
 	if(l_hand)
-		msg += "[T.He] [T.is] holding [l_hand.get_examine_line()] in [T.his] left hand.\n"
+		msg += "[T.He] [T.is] holding [l_hand.get_examine_line(examine_distance)] in [T.his] left hand.\n"
 
 	// right hand
 	if(r_hand)
-		msg += "[T.He] [T.is] holding [r_hand.get_examine_line()] in [T.his] right hand.\n"
+		msg += "[T.He] [T.is] holding [r_hand.get_examine_line(examine_distance)] in [T.his] right hand.\n"
 
 	// gloves
 	if(gloves && !skipgloves)
@@ -93,7 +111,7 @@
 
 	// belt
 	if(belt)
-		msg += "[T.He] [T.has] [belt.get_examine_line()] about [T.his] waist.\n"
+		msg += "[T.He] [T.has] [belt.get_examine_line(examine_distance)] about [T.his] waist.\n"
 
 	// shoes
 	if(shoes && !skipshoes)
@@ -126,7 +144,7 @@
 
 	// ID
 	if(wear_id)
-		msg += "[T.He] [T.is] wearing [wear_id.get_examine_line()].\n"
+		msg += "[T.He] [T.is] wearing [wear_id.get_examine_line(examine_distance)].\n"
 
 	// handcuffed?
 	if(handcuffed)
@@ -189,7 +207,7 @@
 		msg += SPAN("warning", "[T.He] [T.is] on fire!.\n")
 
 	for(var/datum/modifier/M in modifiers)
-		var/modifier_txt = M._examine_text()
+		var/modifier_txt = M.examine()
 		if(!isnull(modifier_txt))
 			msg += "[]\n"
 
@@ -324,17 +342,14 @@
 
 	msg += applying_pressure
 
-	if (isundead(src) && !isfakeliving(src))
-		msg += SPAN("warning", "[T.He] looks unhealthy pale.\n")
-
 	if (pose)
 		if( findtext(pose,".",length(pose)) == 0 && findtext(pose,"!",length(pose)) == 0 && findtext(pose,"?",length(pose)) == 0 )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "[T.He] [pose]"
 
-	return jointext(msg, null)
+	. = list(jointext(msg, null))
 
-// Helper procedure. Called by /mob/living/carbon/human/_examine_text() and /mob/living/carbon/human/Topic() to determine HUD access to security and medical records.
+// Helper procedure. Called by /mob/living/carbon/human/examine() and /mob/living/carbon/human/Topic() to determine HUD access to security and medical records.
 /proc/hasHUD(mob/M as mob, hudtype)
 	if(istype(M, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M

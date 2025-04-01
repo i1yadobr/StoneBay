@@ -3,6 +3,7 @@
 	name = "void helmet"
 	desc = "A high-tech dark red space suit helmet. Used for AI satellite maintenance."
 	icon_state = "void"
+	item_state = "void"
 
 	heat_protection = HEAD
 	armor = list(melee = 40, bullet = 20, laser = 35,energy = 15, bomb = 35, bio = 100)
@@ -19,16 +20,12 @@
 	)
 
 	light_overlay = "helmet_light"
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 59.4 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 13.2 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
+	rad_resist_type = /datum/rad_resist/void
 
 /obj/item/clothing/suit/space/void
 	name = "voidsuit"
-	icon_state = "void"
-	//item_state = "syndie_hardsuit"
+	icon_state = "voidsuit"
+	item_state = "voidsuit"
 	w_class = ITEM_SIZE_HUGE//bulky item
 	desc = "A high-tech dark red space suit. Used for AI satellite maintenance."
 	armor = list(melee = 40, bullet = 20, laser = 35,energy = 15, bomb = 35, bio = 100)
@@ -45,11 +42,7 @@
 		SPECIES_SKRELL = 'icons/obj/clothing/species/skrell/suits.dmi'
 	)
 
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 59.4 MEGA ELECTRONVOLT,
-		RADIATION_BETA_PARTICLE = 13.2 MEGA ELECTRONVOLT,
-		RADIATION_HAWKING = 1 ELECTRONVOLT
-	)
+	rad_resist_type = /datum/rad_resist/void
 
 	//Breach thresholds, should ideally be inherited by most (if not all) voidsuits.
 	//With 0.2 resiliance, will reach 10 breach damage after 3 laser carbine blasts or 8 smg hits.
@@ -71,6 +64,11 @@ else if(##equipment_var) {\
 	CRASH("[log_info_line(src)] has an invalid [#equipment_var] type: [log_info_line(##equipment_var)]");\
 }
 
+/datum/rad_resist/void
+	alpha_particle_resist = 59.4 MEGA ELECTRONVOLT
+	beta_particle_resist = 13.2 MEGA ELECTRONVOLT
+	hawking_resist = 1 ELECTRONVOLT
+
 /obj/item/clothing/suit/space/void/Initialize()
 	. = ..()
 	VOIDSUIT_INIT_EQUIPMENT(boots,  /obj/item/clothing/shoes/magboots)
@@ -89,14 +87,17 @@ else if(##equipment_var) {\
 	..()
 	slowdown_per_slot[slot_wear_suit] = 1
 
-/obj/item/clothing/suit/space/void/_examine_text(user)
+/obj/item/clothing/suit/space/void/examine(mob/user, infix)
 	. = ..()
+
 	var/list/part_list = new
 	for(var/obj/item/I in list(helmet,boots,tank))
 		part_list += "\a [I]"
-	. += "\n\The [src] has [english_list(part_list)] installed."
+
+	. += "\The [src] has [english_list(part_list)] installed."
+
 	if(tank && in_range(src,user))
-		. += "\n<span class='notice'>The wrist-mounted pressure gauge reads [max(round(tank.air_contents.return_pressure()),0)] kPa remaining in \the [tank].</span>"
+		. += SPAN_NOTICE("The wrist-mounted pressure gauge reads [max(round(tank.air_contents.return_pressure()),0)] kPa remaining in \the [tank].")
 
 /obj/item/clothing/suit/space/void/refit_for_species(target_species)
 	..()

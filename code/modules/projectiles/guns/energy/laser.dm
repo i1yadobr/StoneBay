@@ -3,6 +3,7 @@
 	desc = "A NanoTrasen G40E rifle, designed to kill with concentrated energy blasts."
 	icon_state = "laser"
 	item_state = "laserrifle"
+	improper_held_icon = TRUE
 	slot_flags = SLOT_BACK
 	w_class = ITEM_SIZE_HUGE
 	force = 12.5
@@ -15,13 +16,8 @@
 	fire_delay = 9
 	origin_tech = list(TECH_COMBAT = 3, TECH_MAGNET = 2)
 	matter = list(MATERIAL_STEEL = 2000)
-	projectile_type = /obj/item/projectile/energy/laser/mid
+	projectile_type = /obj/item/projectile/beam/laser/mid
 	wielded_item_state = "laserrifle-wielded"
-
-	firemodes = list(
-		list(mode_name = "bolt", projectile_type = /obj/item/projectile/energy/laser/mid),
-		list(mode_name = "beam", projectile_type = /obj/item/projectile/beam/laser/mid)
-	)
 
 /obj/item/gun/energy/laser/mounted
 	desc = "A modification of NanoTrasen G40E rifle, designed to be mounted on cyborgs and other battle machinery. It's designed to kill with concentrated energy blasts."
@@ -54,23 +50,19 @@
 	desc = "A NanoTrasen LP \"Arclight\", a combat laser pistol. Not as powerful as a laser rifle, it is much smaller and capable of shooting much more rapidly."
 	icon_state = "laser_pistol"
 	item_state = "laser"
+	improper_held_icon = FALSE
 	w_class = ITEM_SIZE_NORMAL
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
 	one_hand_penalty = 0
 	accuracy = 1.0
 	max_shots = 12
 	fire_delay = 5.5
-	projectile_type = /obj/item/projectile/energy/laser/small
+	projectile_type = /obj/item/projectile/beam/laser/lesser
 	wielded_item_state = null
 	force = 8.5
 	mod_weight = 0.7
 	mod_reach = 0.5
 	mod_handy = 1.0
-
-	firemodes = list(
-		list(mode_name = "bolt", projectile_type = /obj/item/projectile/energy/laser/small),
-		list(mode_name = "beam", projectile_type = /obj/item/projectile/beam/laser/small)
-	)
 
 /obj/item/gun/energy/laser/practice
 	name = "practice laser rifle"
@@ -111,7 +103,7 @@
 	desc = "An older model of the basic lasergun. Nevertheless, it is still quite deadly and easy to maintain, making it a favorite amongst pirates and other outlaws."
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
 	w_class = ITEM_SIZE_NORMAL
-	projectile_type = /obj/item/projectile/energy/laser/lesser // Old but gold
+	projectile_type = /obj/item/projectile/beam/laser/lesser // Old but gold
 	fire_delay = 15 //old technology, and a pistol
 	force = 9.0
 	mod_weight = 0.7
@@ -129,7 +121,7 @@
 	mod_handy = 1.1
 	slot_flags = SLOT_BELT //too unusually shaped to fit in a holster
 	w_class = ITEM_SIZE_NORMAL
-	projectile_type = /obj/item/projectile/energy/laser/small
+	projectile_type = /obj/item/projectile/beam/laser/lesser
 	fire_delay = 6
 	origin_tech = null
 	max_shots = 5 //to compensate a bit for self-recharging
@@ -141,11 +133,12 @@
 	desc = "With the laser cannon, the lasing medium is enclosed in a tube lined with uranium-235 and subjected to high neutron flux in a nuclear reactor core. This incredible technology may help YOU achieve high excitation rates with small laser volumes!"
 	icon_state = "lasercannon"
 	item_state = null
+	improper_held_icon = TRUE
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 3, TECH_POWER = 3)
 	slot_flags = SLOT_BACK
 	one_hand_penalty = 6 //large and heavy
 	w_class = ITEM_SIZE_HUGE
-	projectile_type = /obj/item/projectile/energy/laser/heavy
+	projectile_type = /obj/item/projectile/beam/laser/heavy
 	charge_cost = 40
 	max_shots = 8
 	accuracy = 2
@@ -155,11 +148,6 @@
 	mod_weight = 1.25
 	mod_reach = 1.0
 	mod_handy = 1.0
-
-	firemodes = list(
-		list(mode_name = "bolt", projectile_type = /obj/item/projectile/energy/laser/heavy),
-		list(mode_name = "beam", projectile_type = /obj/item/projectile/beam/laser/heavy)
-	)
 
 /obj/item/gun/energy/lasercannon/mounted
 	name = "mounted laser cannon"
@@ -175,6 +163,7 @@
 	desc = "A high-power laser gun capable of emitting concentrated x-ray blasts, that are able to penetrate laser-resistant armor much more readily than standard photonic beams."
 	icon_state = "xray"
 	item_state = "xray"
+	improper_held_icon = TRUE
 	slot_flags = SLOT_BACK
 	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 3, TECH_MAGNET = 2, TECH_ILLEGAL = 2)
 	projectile_type = /obj/item/projectile/beam/xray/midlaser
@@ -193,6 +182,7 @@
 	name = "x-ray laser gun"
 	icon_state = "oldxray"
 	item_state = "oldxray"
+	improper_held_icon = FALSE
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 3, TECH_MAGNET = 2, TECH_ILLEGAL = 2)
 	projectile_type = /obj/item/projectile/beam/xray
@@ -210,6 +200,7 @@
 	desc = "The HI DMR 9E is an older design of Hephaestus Industries. A designated marksman rifle capable of shooting powerful ionized beams, this is a weapon to kill from a distance."
 	icon_state = "sniper"
 	item_state = "laser"
+	improper_held_icon = TRUE
 	origin_tech = list(TECH_COMBAT = 6, TECH_MATERIAL = 5, TECH_POWER = 4)
 	projectile_type = /obj/item/projectile/beam/sniper
 	one_hand_penalty = 5 // The weapon itself is heavy, and the long barrel makes it hard to hold steady with just one hand.

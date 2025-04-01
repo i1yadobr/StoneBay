@@ -10,11 +10,7 @@
 	throwpass = 1
 	turf_height_offset = 12
 
-	rad_resist = list(
-		RADIATION_ALPHA_PARTICLE = 0,
-		RADIATION_BETA_PARTICLE = 0,
-		RADIATION_HAWKING = 0
-	)
+	rad_resist_type = /datum/rad_resist/none
 
 	var/flipped = 0
 	var/maxhealth = 10
@@ -52,6 +48,13 @@
 			maxhealth += reinforced.integrity / 2
 
 	health += maxhealth - old_maxhealth
+	add_debris_element()
+
+/obj/structure/table/add_debris_element()
+	if(material?.name == MATERIAL_WOOD || material?.name == MATERIAL_DARKWOOD)
+		AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
+	else
+		AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 5)
 
 /obj/structure/table/proc/take_damage(amount)
 	// If the table is made of a brittle material, and is *not* reinforced with a non-brittle material, damage is multiplied by TABLE_BRITTLE_MATERIAL_MULTIPLIER
@@ -96,18 +99,21 @@
 		T.update_icon()
 	return ..()
 
-/obj/structure/table/_examine_text(mob/user)
+/obj/structure/table/examine(mob/user, infix)
 	. = ..()
+
 	if(health < maxhealth)
 		switch(health / maxhealth)
 			if(0.0 to 0.5)
-				. += "\n<span class='warning'>It looks severely damaged!</span>"
+				. += SPAN_WARNING("It looks severely damaged!")
 			if(0.25 to 0.5)
-				. += "\n<span class='warning'>It looks damaged!</span>"
+				. += SPAN_WARNING("It looks damaged!")
 			if(0.5 to 1.0)
-				. += "\n<span class='notice'>It has a few scrapes and dents.</span>"
+				. += SPAN_WARNING("It has a few scrapes and dents.")
 
 /obj/structure/table/attackby(obj/item/W, mob/user)
+	if(atom_flags & ATOM_FLAG_NO_DECONSTRUCTION)
+		return ..()
 
 	if(reinforced && isScrewdriver(W))
 		remove_reinforced(W, user)
@@ -152,15 +158,17 @@
 
 	if(health < maxhealth && isWelder(W))
 		var/obj/item/weldingtool/F = W
-		if(F.welding)
-			to_chat(user, "<span class='notice'>You begin reparing damage to \the [src].</span>")
-			playsound(src.loc, 'sound/items/Welder.ogg', 50, 1)
-			if(!do_after(user, 20, src) || !F.remove_fuel(1, user))
-				return
-			user.visible_message("<span class='notice'>\The [user] repairs some damage to \the [src].</span>",
-			                              "<span class='notice'>You repair some damage to \the [src].</span>")
-			health = max(health+(maxhealth/5), maxhealth) // 20% repair per application
-			return 1
+		to_chat(user, SPAN_NOTICE("You begin reparing damage to \the [src]."))
+		if(!F.use_tool(src, user, delay = 2 SECONDS, amount = 1))
+			return FALSE
+
+		if(QDELETED(src) || !user)
+			return
+
+		user.visible_message(SPAN_NOTICE("\The [user] repairs some damage to \the [src]"),
+										SPAN_NOTICE("You repair some damage to \the [src]."))
+		health = max(health + (maxhealth / 5), maxhealth) // 20% repair per application
+		return TRUE
 
 	if(!material && can_plate && istype(W, /obj/item/stack/material))
 		material = common_material_add(W, user, "plat")
@@ -224,7 +232,7 @@
 	if(manipulating) return M
 	manipulating = 1
 	to_chat(user, "<span class='notice'>You begin [verb]ing \the [src] with [M.display_name].</span>")
-	if(!do_after(user, 20, src) || !S.use(1))
+	if(!do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG) || !S.use(1))
 		manipulating = 0
 		return null
 	user.visible_message("<span class='notice'>\The [user] [verb]es \the [src] with [M.display_name].</span>", "<span class='notice'>You finish [verb]ing \the [src].</span>")
@@ -243,7 +251,7 @@
 	                              "<span class='notice'>You begin removing the [type_holding] holding \the [src]'s [M.display_name] [what] in place.</span>")
 	if(sound)
 		playsound(src.loc, sound, 50, 1)
-	if(!do_after(user, 40, src))
+	if(!do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
 		manipulating = 0
 		return M
 	user.visible_message("<span class='notice'>\The [user] removes the [M.display_name] [what] from \the [src].</span>",
@@ -259,12 +267,17 @@
 	material = common_material_remove(user, material, 20, "plating", "bolts", 'sound/items/Ratchet.ogg')
 
 /obj/structure/table/proc/dismantle(obj/item/wrench/W, mob/user)
-	if(manipulating) return
+	if(atom_flags & ATOM_FLAG_NO_DECONSTRUCTION)
+		return
+
+	if(manipulating)
+		return
+
 	manipulating = 1
 	user.visible_message("<span class='notice'>\The [user] begins dismantling \the [src].</span>",
 	                              "<span class='notice'>You begin dismantling \the [src].</span>")
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
-	if(!do_after(user, 20, src))
+	if(!do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG))
 		manipulating = 0
 		return
 	user.visible_message("<span class='notice'>\The [user] dismantles \the [src].</span>",
@@ -296,6 +309,9 @@
 // is to avoid filling the list with nulls, as place_shard won't place shards of certain materials (holo-wood, holo-steel)
 
 /obj/structure/table/proc/break_to_parts(full_return = 0)
+	if(atom_flags & ATOM_FLAG_HOLOGRAM)
+		return
+
 	var/list/shards = list()
 	var/obj/item/material/shard/S = null
 	if(reinforced)

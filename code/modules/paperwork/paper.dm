@@ -26,7 +26,7 @@
 	var/photocopied = FALSE
 	var/free_space = MAX_PAPER_MESSAGE_LEN
 	var/stamps_generated = TRUE
-	var/list/stamped
+	var/list/stamped = list()
 	var/list/ico[0]      //Icons and
 	var/list/offset_x[0] //offsets stored for later
 	var/list/offset_y[0] //usage by the photocopier
@@ -204,11 +204,11 @@
 			break
 	return !length(strip_html_properly(info)) && !is_visible_html_tag
 
-/obj/item/paper/_examine_text(mob/user)
+/obj/item/paper/examine(mob/user, infix)
 	. = ..()
+
 	if(name != "sheet of paper")
-		. += "\nIt's titled '[name]'."
-		. += stamps
+		. += "It's titled '[name]'."
 
 	if(length(stamped))
 		if(is_type_in_list(/obj/item/stamp/void, stamped))
@@ -222,7 +222,7 @@
 	if(user && (in_range(user, src) || isghost(user)))
 		show_content(user)
 	else
-		. += "\n[SPAN_NOTICE("You have to go closer if you want to read it.")]"
+		. += SPAN_NOTICE("You have to go closer if you want to read it.")
 
 /obj/item/paper/proc/show_content(mob/user, forceshow)
 	var/can_read = (istype(user, /mob/living/carbon/human) || isghost(user) || istype(user, /mob/living/silicon)) || forceshow

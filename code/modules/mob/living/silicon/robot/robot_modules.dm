@@ -16,7 +16,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 /obj/item/robot_module
 	name = "robot module"
 	icon = 'icons/obj/module.dmi'
-	icon_state = "std_module"
+	icon_state = "std_mod"
 	w_class = ITEM_SIZE_NO_CONTAINER
 	item_state = "electronic"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
@@ -1061,7 +1061,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 	languages = list()
 
 /obj/item/robot_module/drone/construction/New()
-	src.modules += new /obj/item/rcd/borg(src)
+	src.modules += new /obj/item/construction/rcd/borg(src)
 	..()
 
 /obj/item/robot_module/drone/respawn_consumable(mob/living/silicon/robot/R, amount)

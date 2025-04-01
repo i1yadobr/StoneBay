@@ -36,6 +36,11 @@
 	icon_state = "R38"
 	ammo_type = /obj/item/ammo_casing/c38/rubber
 
+/obj/item/ammo_magazine/c38/emp
+	name = "speed loader (.38 haywire)"
+	icon_state = "E38"
+	ammo_type = /obj/item/ammo_casing/c38/emp
+
 /obj/item/ammo_magazine/c38/spec
 	name = "speed loader (.38 SPEC)"
 	desc = "A five-round speed loader for M2019."
@@ -66,6 +71,11 @@
 	name = "speed loader (.44 magnum, rubber)"
 	icon_state = "R38"
 	ammo_type = /obj/item/ammo_casing/c44/rubber
+
+/obj/item/ammo_magazine/c44/emp
+	name = "speed loader (.44 magnum, haywire)"
+	icon_state = "E38"
+	ammo_type = /obj/item/ammo_casing/c44/emp
 
 /obj/item/ammo_magazine/c45m
 	name = "magazine (.45)"
@@ -325,7 +335,7 @@
         dat += "It has [ammo_left] [mode["mode_name"]] charge[ammo_left != 1 ? "s" : ""] left.\n"
     return SPAN("info", dat)
 
-/obj/item/ammo_magazine/lawgiver/_examine_text(mob/user)
+/obj/item/ammo_magazine/lawgiver/examine(mob/user, infix)
 	. = ..()
 	. += generate_description()
 
@@ -334,3 +344,13 @@
 		if(ammo_counters[mode] != LAWGIVER_MAX_AMMO)
 			return FALSE
 	return TRUE
+
+/obj/item/ammo_magazine/c792
+	name = "clip (7.92mm)"
+	icon_state = "c792"
+	mag_type = SPEEDLOADER
+	caliber = "7.92"
+	matter = list(MATERIAL_STEEL = 2000)
+	ammo_type = /obj/item/ammo_casing/a792
+	max_ammo = 5
+	multiple_sprites = TRUE

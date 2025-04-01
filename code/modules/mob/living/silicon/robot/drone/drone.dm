@@ -67,6 +67,7 @@ var/list/mob_hat_cache = list()
 /mob/living/silicon/robot/drone/New()
 	..()
 
+	add_movespeed_modifier(/datum/movespeed_modifier/drone_movement)
 	register_signal(src, SIGNAL_MOVED, nameof(.proc/on_moved))
 
 /mob/living/silicon/robot/drone/Destroy()
@@ -134,6 +135,7 @@ var/list/mob_hat_cache = list()
 	..()
 
 	verbs += /mob/living/proc/hide
+
 	remove_language(LANGUAGE_ROBOT)
 	add_language(LANGUAGE_ROBOT, FALSE)
 	add_language(LANGUAGE_DRONE, TRUE)

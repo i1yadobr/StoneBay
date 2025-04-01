@@ -6,7 +6,7 @@
 /area
 	var/global/global_uid = 0
 	var/uid
-	var/area_flags
+	var/area_flags = AREA_FLAG_UNIQUE_AREA
 	var/used_equip = 0
 	var/used_light = 0
 	var/used_environ = 0
@@ -19,6 +19,11 @@
 	var/is_station         = FALSE
 	var/importance         = 1
 	var/loyalty            = 0
+
+	/// The base turf type of the area, which can be used to override the z-level's base turf
+	var/base_turf
+	/// The base turf of the area if it has a turf below it in multizi. Overrides turf-specific open type
+	var/open_turf
 
 /area/New()
 	icon_state = ""
@@ -34,6 +39,9 @@
 		luminosity = 0
 	else
 		luminosity = 1
+
+	if(area_flags & AREA_FLAG_UNIQUE_AREA)
+		GLOB.areas_by_type[type] = src
 
 	..()
 
@@ -57,6 +65,8 @@
 		GLOB.station_areas.Add(src)
 
 /area/Destroy()
+	if(GLOB.areas_by_type[type] == src)
+		GLOB.areas_by_type[type] = null
 	if(is_station)
 		GLOB.station_areas.Remove(src)
 	. = ..()
