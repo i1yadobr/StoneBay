@@ -28,7 +28,7 @@
     set desc = "Toggles mode of connected devices."
 
     if(usr.incapacitated())
-		return
+        return
 
     var/new_index = modes.Find(cur_mode)
     if(!new_index)
@@ -44,7 +44,7 @@
     set desc = "Clears the memory of the controller."
 
     if(usr.incapacitated())
-		return
+        return
 
     for(var/datum/wifi/receiver/button/emitter/B in wifi_sender.connected_devices)
         if(!isnull(B.parent))
