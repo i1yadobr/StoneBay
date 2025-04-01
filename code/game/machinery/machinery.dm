@@ -268,11 +268,11 @@ Class Procs:
 
 /obj/machinery/proc/can_use(mob/user)
 	if(user.stat || user.restrained() || user.paralysis || user.stunned || user.weakened)
-		return 0
+		return FALSE
 	if(issilicon(user) || Adjacent(user))
-		return 1
+		return TRUE
 	else
-		return 0
+		return FALSE
 
 /obj/machinery/CanUseTopic(mob/user)
 	if(stat & BROKEN)
