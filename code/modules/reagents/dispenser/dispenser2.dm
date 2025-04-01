@@ -76,33 +76,7 @@
 	SSnano.update_uis(src)
 
 /obj/machinery/chemical_dispenser/AltClick(mob/user)
-	if(!issilicon(user))
-		if(!user.Adjacent(get_turf(src)))
-			return
-
-		if(!can_use(user))
-			to_chat(user, SPAN("notice", "You cannot remove [container.name]."))
-			return
-
-	if(container)
-		grab_container(user)
-	else
-		to_chat(user, SPAN("notice", "\The [src] does not have a container in it."))
-
-/obj/machinery/chemical_dispenser/proc/grab_container(mob/user)
-	if(!container)
-		return
-
-	if(issilicon(user))
-		container.dropInto(loc)
-	else
-		user.pick_or_drop(container, get_turf(src))
-
-	to_chat(user, SPAN("notice", "You remove the [container.name] from the [name]."))
-	container = null
-	update_icon()
-	if(!(stat & (BROKEN|NOPOWER)))
-		playsound(src, clicksound, clickvol)
+	grab_container(user, &container)
 
 /obj/machinery/chemical_dispenser/attackby(obj/item/W, mob/user)
 	if(default_deconstruction_crowbar(user, W))

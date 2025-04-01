@@ -82,34 +82,8 @@
 				return
 
 /obj/machinery/chem_master/AltClick(mob/user)
-	if(!issilicon(user))
-		if(!user.Adjacent(get_turf(src)))
-			return
-
-		if(!can_use(user))
-			to_chat(user, SPAN("notice", "You cannot remove [beaker.name]."))
-			return
-
-	if(beaker)
-		grab_beaker(user)
-	else
-		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
-
-/obj/machinery/chem_master/proc/grab_beaker(mob/user)
-	if(!beaker)
-		return
-
-	if(issilicon(user))
-		beaker.dropInto(loc)
-	else
-		user.pick_or_drop(beaker, get_turf(src))
-
-	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
-	beaker = null
-	reagents.clear_reagents()
-	update_icon()
-	if(!(stat & (BROKEN|NOPOWER)))
-		playsound(src, clicksound, clickvol)
+	if(grab_container(user, &beaker))
+		reagents.clear_reagents()
 
 /obj/machinery/chem_master/attackby(obj/item/W, mob/user)
 	if(default_deconstruction_screwdriver(user, W))
@@ -555,29 +529,7 @@
 	if(!user.Adjacent(get_turf(src)))
 		return
 		
-	if(!can_use(user))
-		to_chat(user, SPAN("notice", "You cannot remove [beaker.name]."))
-		return
-
-	if(beaker)
-		grab_beaker(user)
-	else
-		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
-
-/obj/machinery/reagentgrinder/proc/grab_beaker(mob/user)
-	if(!beaker)
-		return
-
-	if(issilicon(user))
-		beaker.dropInto(loc)
-	else
-		user.pick_or_drop(beaker, get_turf(src))
-
-	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
-	beaker = null
-	update_icon()
-	if(!(stat & (BROKEN|NOPOWER)))
-		playsound(src, clicksound, clickvol)
+	grab_container(user, &beaker)
 
 /obj/machinery/reagentgrinder/proc/show_choices(mob/user)
 	if(!length(choices))

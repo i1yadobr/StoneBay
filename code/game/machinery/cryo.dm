@@ -265,32 +265,7 @@
 	return
 
 /obj/machinery/atmospherics/unary/cryo_cell/AltClick(mob/user)
-	if(!issilicon(user))
-		if(!user.Adjacent(get_turf(src)))
-			return
-
-		if(!can_use(user))
-			to_chat(user, SPAN("notice", "You cannot remove [beaker.name]."))
-			return
-
-	if(beaker)
-		grab_beaker(user)
-	else
-		to_chat(user, SPAN("notice", "\The [src] does not have a beaker in it."))
-
-/obj/machinery/atmospherics/unary/cryo_cell/proc/grab_beaker(mob/user)
-	if(!beaker)
-		return
-
-	if(issilicon(user))
-		beaker.dropInto(get_step(loc, SOUTH))
-	else
-		user.pick_or_drop(beaker, get_step(loc, SOUTH))
-
-	to_chat(user, SPAN("notice", "You remove the [beaker.name] from the [name]."))
-	beaker = null
-	if(!(stat & (BROKEN|NOPOWER)))
-		playsound(src, clicksound, clickvol)
+	grab_container(user, &beaker, get_step(loc, SOUTH))
 
 /obj/machinery/atmospherics/unary/cryo_cell/on_update_icon()
 	ClearOverlays()
