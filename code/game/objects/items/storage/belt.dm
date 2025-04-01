@@ -173,7 +173,7 @@
 		/obj/item/gun/projectile/pistol/vp78,
 		/obj/item/taperoll,
 		/obj/item/device/holowarrant,
-		/obj/item/magnetic_ammo,
+		/obj/item/rcd_ammo/magnetic_ammo,
 		/obj/item/device/radio,
 		/obj/item/material/knife,
 		/obj/item/material/butterfly,
