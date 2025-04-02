@@ -11,7 +11,9 @@
 	relative_size = 40
 	var/datum/reagents/metabolism/ingested
 	var/next_cramp = 0
-	var/stored_w_class = 0 // Sum of ingested items' w_classes
+	var/volume_softcap = 120 // Above this point we'll start feeling bad.
+	var/volume_hardcap = 240 // At this point our only option is vomiting left and right.
+	var/list/ingesting = list()
 
 /obj/item/organ/internal/stomach/Destroy()
 	QDEL_NULL(ingested)
@@ -19,7 +21,7 @@
 
 /obj/item/organ/internal/stomach/New()
 	..()
-	ingested = new /datum/reagents/metabolism(240, owner, CHEM_INGEST)
+	ingested = new /datum/reagents/metabolism(contents_hardcap, owner, CHEM_INGEST)
 	if(!ingested.my_atom)
 		ingested.my_atom = src
 
@@ -39,8 +41,14 @@
 	ingested.my_atom = owner
 	ingested.parent = owner
 
+// 0 is empty, 100 is softcap, 200 is hardcap
 /obj/item/organ/internal/stomach/proc/get_fullness()
+	var/ret = 0
+	for(obj/item/I in ingesting)
+		ret += get_storage_cost()
+	ret += ingested.total_volume
 
+	return (ret / volume_softcap) * 100
 
 // This call needs to be split out to make sure that all the ingested things are metabolised
 // before the process call is made on any of the other organs

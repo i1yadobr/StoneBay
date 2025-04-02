@@ -759,6 +759,25 @@
 		return 0
 	return 1
 
+/mob/living/carbon/human/proc/taste(datum/reagents/R, amount = 1, multiplier = 1, force = FALSE)
+	if(!force && last_taste_time + 50 >= world.time)
+		return FALSE
+
+	if(should_have_organ(BP_TONGUE))
+		var/obj/item/organ/internal/tongue/L = internal_organs_by_name[BP_TONGUE]
+		if(!L || L.is_broken())
+			return FALSE
+
+	var/datum/reagents/temp = new(amount, GLOB.temp_reagents_holder) //temporary holder used to analyse what gets transfered.
+	R.trans_to_holder(temp, amount, multiplier, 1)
+
+	var/text_output = temp.generate_taste_message(src)
+	if(text_output != last_taste_text || last_taste_time + 100 < world.time) //We dont want to spam the same message over and over again at the person. Give it a bit of a buffer.
+		to_chat(src, "<span class='notice'>You can taste [text_output].</span>")//no taste means there are too many tastes and not enough flavor.
+
+		last_taste_time = world.time
+		last_taste_text = text_output
+
 /mob/living/carbon/human/proc/ingest_reagents(datum/reagents/R, amount = 0)
 	if(!R || !amount)
 		return FALSE

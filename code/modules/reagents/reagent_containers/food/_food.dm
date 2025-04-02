@@ -77,6 +77,7 @@
 		var/mob/living/carbon/C = M
 		var/fullness = C.get_fullness()
 		if(C == user)								//If you're eating it yourself
+			var/complex_fullness = FALSE
 			if(ishuman(C))
 				var/mob/living/carbon/human/H = M
 				if(!H.check_has_mouth())
@@ -87,30 +88,65 @@
 					to_chat(user, SPAN("warning", "\The [blocked] is in the way!"))
 					return
 				fullness /= H.body_build.stomach_capacity // Here we take body build into consideration
+				if(H.SHOULD_HAVE_ORGAN(BP_STOMACH))
+					var/obj/item/organ/internal/stomach/S = H.internal_organs_by_name[BP_STOMACH]
+					if(S)
+						complex_fullness = TRUE
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
-			if(fullness <= STOMACH_FULLNESS_SUPER_LOW)
-				to_chat(C, SPAN("danger", "You hungrily chew out a piece of [src] and gobble it!"))
-			if(fullness > STOMACH_FULLNESS_SUPER_LOW && fullness <= STOMACH_FULLNESS_LOW)
-				to_chat(C, SPAN("notice", "You hungrily begin to eat [src]."))
-			if(fullness > STOMACH_FULLNESS_LOW && fullness <= STOMACH_FULLNESS_MEDIUM)
-				to_chat(C, SPAN("notice", "You take a bite of [src]."))
-			if(fullness > STOMACH_FULLNESS_MEDIUM && fullness <= STOMACH_FULLNESS_HIGH)
-				to_chat(C, SPAN("notice", "You unwillingly chew a bit of [src]."))
-			if(fullness > STOMACH_FULLNESS_HIGH && fullness <= STOMACH_FULLNESS_SUPER_HIGH)
-				to_chat(C, SPAN("danger", "You force yourself to swallow some [src]."))
-			if(fullness > STOMACH_FULLNESS_SUPER_HIGH)
-				to_chat(C, SPAN("danger", "You cannot force any more of [src] to go down your throat."))
-				return FALSE
+
+			if(complex_fullness)
+				var/obj/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+				var/stomach_fullness = S.get_fullness()
+				if(stomach_fullness >= S.volume_hardcap)
+					to_chat(C, SPAN("danger", "You cannot force any more of [src] to go down your throat."))
+					return FALSE
+				else if(stomach_fullness >= (S.volume_softcap + S.volume_hardcap) / 2)
+					to_chat(C, SPAN("danger", "You force yourself to swallow some [src]."))
+				else if(stomach_fullness >= S.volume_softcap)
+					to_chat(C, SPAN("notice", "You unwillingly chew a bit of [src]."))
+				else if(fullness <= STOMACH_FULLNESS_SUPER_LOW)
+					to_chat(C, SPAN("danger", "You hungrily chew out a piece of [src] and gobble it!"))
+				else if(fullness <= STOMACH_FULLNESS_LOW)
+					to_chat(C, SPAN("notice", "You hungrily begin to eat [src]."))
+				else
+					to_chat(C, SPAN("notice", "You take a bite of [src]."))
+			else
+				if(fullness <= STOMACH_FULLNESS_SUPER_LOW)
+					to_chat(C, SPAN("danger", "You hungrily chew out a piece of [src] and gobble it!"))
+				if(fullness > STOMACH_FULLNESS_SUPER_LOW && fullness <= STOMACH_FULLNESS_LOW)
+					to_chat(C, SPAN("notice", "You hungrily begin to eat [src]."))
+				if(fullness > STOMACH_FULLNESS_LOW && fullness <= STOMACH_FULLNESS_MEDIUM)
+					to_chat(C, SPAN("notice", "You take a bite of [src]."))
+				if(fullness > STOMACH_FULLNESS_MEDIUM && fullness <= STOMACH_FULLNESS_HIGH)
+					to_chat(C, SPAN("notice", "You unwillingly chew a bit of [src]."))
+				if(fullness > STOMACH_FULLNESS_HIGH && fullness <= STOMACH_FULLNESS_SUPER_HIGH)
+					to_chat(C, SPAN("danger", "You force yourself to swallow some [src]."))
+				if(fullness > STOMACH_FULLNESS_SUPER_HIGH)
+					to_chat(C, SPAN("danger", "You cannot force any more of [src] to go down your throat."))
+					return FALSE
 		else
 			if(!M.can_force_feed(user, src))
 				return
 
-			if(fullness <= STOMACH_FULLNESS_SUPER_HIGH)
-				user.visible_message(SPAN("danger", "[user] attempts to feed [M] [src]."))
+			var/obj/item/organ/internal/stomach/S
+			if(ishuman(C))
+				var/mob/living/carbon/human/H = M
+				if(H.SHOULD_HAVE_ORGAN(BP_STOMACH))
+					S = H.internal_organs_by_name[BP_STOMACH]
+
+			if(S)
+				if(stomach_fullness >= S.volume_hardcap)
+					user.visible_message(SPAN("danger", "[user] cannot force anymore of [src] down [M]'s throat."))
+					return FALSE
+				else
+					user.visible_message(SPAN("danger", "[user] attempts to feed [M] [src]."))
 			else
-				user.visible_message(SPAN("danger", "[user] cannot force anymore of [src] down [M]'s throat."))
-				return FALSE
+				if(fullness <= STOMACH_FULLNESS_SUPER_HIGH)
+					user.visible_message(SPAN("danger", "[user] attempts to feed [M] [src]."))
+				else
+					user.visible_message(SPAN("danger", "[user] cannot force anymore of [src] down [M]'s throat."))
+					return FALSE
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			if(!do_mob(user, M))
