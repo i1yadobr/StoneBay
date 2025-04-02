@@ -449,6 +449,9 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 		if(type == CHEM_TOUCH)
 			var/datum/reagents/R = C.touching
 			return trans_to_holder(R, amount, multiplier, copy)
+		if(type == CHEM_DIGEST)
+			var/datum/reagents/R = C.get_digested_reagents()
+			return trans_to_holder(R, amount, multiplier, copy)
 	else
 		var/datum/reagents/R = new /datum/reagents(amount, GLOB.temp_reagents_holder)
 		. = trans_to_holder(R, amount, multiplier, copy)

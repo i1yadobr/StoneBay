@@ -13,10 +13,14 @@
 	var/next_cramp = 0
 	var/volume_softcap = 120 // Above this point we'll start feeling bad.
 	var/volume_hardcap = 240 // At this point our only option is vomiting left and right.
-	var/list/ingesting = list()
+	var/list/processing = list()
+	var/obj/item/currently_processing = null
+	var/next_processing = 0
 
 /obj/item/organ/internal/stomach/Destroy()
 	QDEL_NULL(ingested)
+	QDEL_NULL(currently_processing)
+	QDEL_NULL_LIST(processing)
 	. = ..()
 
 /obj/item/organ/internal/stomach/New()
@@ -41,13 +45,18 @@
 	ingested.my_atom = owner
 	ingested.parent = owner
 
+/obj/item/organ/internal/stomach/proc/ingest(obj/item/I)
+	if(QDELETED(I))
+		return
+	I.forceMove(src)
+	processing.Add(I)
+
 // 0 is empty, 100 is softcap, 200 is hardcap
 /obj/item/organ/internal/stomach/proc/get_fullness()
 	var/ret = 0
-	for(obj/item/I in ingesting)
-		ret += get_storage_cost()
+	for(obj/item/I in processing)
+		ret += get_storage_cost() * 15
 	ret += ingested.total_volume
-
 	return (ret / volume_softcap) * 100
 
 // This call needs to be split out to make sure that all the ingested things are metabolised
@@ -55,8 +64,6 @@
 /obj/item/organ/internal/stomach/proc/metabolize()
 	if(is_usable())
 		ingested.metabolize()
-
-#define STOMACH_VOLUME 65
 
 /obj/item/organ/internal/stomach/think()
 	..()
@@ -68,9 +75,10 @@
 		return
 
 	if(is_usable())
-		for(var/mob/living/M in contents)
+		for(var/mob/living/M in processing)
 			if(M.is_ooc_dead())
 				qdel(M)
+				processing.Remove(M)
 				continue
 
 			M.adjustBruteLoss(3)
@@ -78,21 +86,45 @@
 			M.adjustToxLoss(3)
 
 	else if(world.time >= next_cramp)
-		next_cramp = world.time + rand(200,800)
+		next_cramp = world.time + rand(200, 800)
 		owner.custom_pain("Your stomach cramps agonizingly!", 1)
 
-	var/alcohol_volume = ingested.get_reagent_amount(/datum/reagent/ethanol)
-
-	var/alcohol_threshold_met = alcohol_volume > STOMACH_VOLUME / 2
-	if(alcohol_threshold_met && (owner.disabilities & EPILEPSY) && prob(20))
-		owner.seizure()
-
 	// Alcohol counts as double volume for the purposes of vomit probability
-	var/effective_volume = ingested.total_volume + alcohol_volume
+	var/effective_volume = ingested.total_volume + ingested.get_reagent_amount(/datum/reagent/ethanol)
 
-	// Just over the limit, the probability will be low. It rises a lot such that at double ingested it's 64% chance.
-	var/vomit_probability = (effective_volume / STOMACH_VOLUME) ** 6
-	if(prob(vomit_probability))
+	// Just over the limit, the probability will be low. It rises a lot such that at double ingested it's 16% chance per tick.
+	if(effective_volume > 1.5 && (effective_volume / volume_softcap) ** 4)
 		owner.vomit()
 
-#undef STOMACH_VOLUME
+	if(QDELETED(currently_processing))
+		currently_processing = null
+		next_processing = 0
+
+	if(next_processing < world.time)
+		return
+
+	if(currently_processing)
+		var/obj/item/organ/internal/intestines/I = owner.internal_organs_by_name[BP_INTESTINES]
+		if(!I)
+			// Abdominal cavity here.
+		else
+			if(istype(currently_processing, /obj/item/reagent_containers))
+				currently_processing.reagents.trans_to_mob(owner, currently_processing.reagents.total_volume, CHEM_DIGEST)
+				processing.Remove(currently_processing)
+				qdel(currently_processing)
+				currently_processing = null
+			else
+				processing.Remove(currently_processing)
+				currently_processing.forceMove(I)
+				currently_processing = null
+
+	var/processing_time = 1.0
+	if(is_broken())
+		processing_time = 2.5
+	else if(is_bruised())
+		processing_time = 1.5
+
+	if(processing.len)
+		currently_processing = processing[1]
+		processing_time *= (currently_processing.get_storage_cost() * 10)
+		next_processing = world.time + (processing_time * 1 SECOND)

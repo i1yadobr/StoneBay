@@ -571,6 +571,9 @@
 /mob/living/carbon/proc/get_ingested_reagents()
 	return reagents
 
+/mob/living/carbon/proc/get_digested_reagents()
+	return reagents
+
 /mob/living/carbon/rejuvenate(ignore_prosthetic_prefs = FALSE)
 	. = ..()
 

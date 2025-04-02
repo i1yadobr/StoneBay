@@ -28,10 +28,11 @@
 
 /obj/item/reagent_containers/food/ingested_chunk
 	name = "chewed mess"
-	desc = "Disguisting chunk of something that was chewed and swallowed."
+	desc = "Disguisting, half-digested chunk of some sort of food."
 	icon_state = "ingested_chunk"
 	nutriment_amt = 0
 	bitesize = 10
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/reagent_containers/food/ingested_chunk/proc/split_from(obj/item/reagent_containers/food/RC, mob/M)
 	if(!RC)
@@ -42,7 +43,10 @@
 	else
 		RC.reagents.trans_to(src, RC.reagents.total_volume)
 	color = reagents.get_color()
-	desc += " It appears to still have tiny bits of [RC] in it... Gross."
+	if(prob(50))
+		desc += " It appears to still have tiny bits of [RC] in it... Gross."
+	else
+		desc += " It's impossible to tell what it was prior to getting chewed and swallowed... Gross."
 	RC.bitecount++
 	RC.update_icon()
 	RC.On_Consume(M)

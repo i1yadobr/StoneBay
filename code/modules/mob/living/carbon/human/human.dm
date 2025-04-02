@@ -92,11 +92,24 @@
 			return stomach.ingested
 	return touching // Kind of a shitty hack, but makes more sense to me than digesting them.
 
+/mob/living/carbon/human/get_digested_reagents()
+	if(should_have_organ(BP_INTESTINES))
+		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		if(I)
+			return I.digested
+	return touching
+
 /mob/living/carbon/human/proc/metabolize_ingested_reagents()
 	if(should_have_organ(BP_STOMACH))
 		var/obj/item/organ/internal/stomach/stomach = internal_organs_by_name[BP_STOMACH]
 		if(stomach)
 			stomach.metabolize()
+
+/mob/living/carbon/human/proc/metabolize_digested_reagents()
+	if(should_have_organ(BP_INTESTINES))
+		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		if(I)
+			I.metabolize()
 
 /mob/living/carbon/human/Stat()
 	. = ..()
@@ -782,6 +795,8 @@
 	if(!R || !amount)
 		return FALSE
 
+	taste(R, amount)
+
 	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
 	if(should_have_organ(BP_STOMACH))
 		if(S.is_broken())
@@ -817,6 +832,8 @@
 	if(QDELETED(AM))
 		return FALSE
 
+	taste(AM.reagents, AM.reagents.total_volume)
+
 	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
 	if(should_have_organ(BP_STOMACH))
 		if(S.is_broken())
@@ -829,10 +846,10 @@
 		else if(S.is_bruised())
 			if(prob(25))
 				custom_pain("Your stomach cramps a little.", 3)
-			AM.forceMove(S)
+			S.ingest(AM)
 			return TRUE
 		else if(S)
-			AM.forceMove(S)
+			S.ingest(AM)
 			return TRUE
 	else
 		return FALSE // Whatever fallback we rely on.

@@ -37,6 +37,12 @@
 	digested.my_atom = owner
 	digested.parent = owner
 
+// This call needs to be split out to make sure that all the ingested things are metabolised
+// before the process call is made on any of the other organs
+/obj/item/organ/internal/stomach/proc/metabolize()
+	if(is_usable())
+		digested.metabolize()
+
 /obj/item/organ/internal/intestines/think()
 	..()
 
@@ -45,3 +51,5 @@
 
 	if(isundead(owner))
 		return
+
+
