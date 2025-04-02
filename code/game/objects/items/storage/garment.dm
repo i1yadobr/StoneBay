@@ -32,12 +32,14 @@
 		/obj/item/clothing/head/beret/sec/corporate/hos,
 		/obj/item/clothing/accessory/holster/waist,
 		/obj/item/clothing/accessory/storage/black_vest,
-		/obj/item/clothing/under/rank/head_of_security/jensen,
+		/obj/item/clothing/under/rank/head_of_security,
+		/obj/item/clothing/under/rank/head_of_security/dress,
+		/obj/item/clothing/under/rank/head_of_security/jensen
+		/obj/item/clothing/under/rank/head_of_security/jensen/dress,
 		/obj/item/clothing/suit/armor/vest/hos_heavy,
 		/obj/item/clothing/suit/armor/hos,
 		/obj/item/clothing/suit/armor/hos/jensen,
 		/obj/item/clothing/shoes/swat
-
 	)
 
 /obj/item/storage/garment/warden
@@ -53,7 +55,8 @@
 		/obj/item/clothing/accessory/storage/black_vest,
 		/obj/item/clothing/suit/armor/vest/warden_heavy,
 		/obj/item/clothing/suit/armor/vest/warden,
-		/obj/item/clothing/under/rank/warden
+		/obj/item/clothing/under/rank/warden,
+		/obj/item/clothing/under/rank/warden/dress
 	)
 
 /obj/item/storage/garment/head_of_personnel
@@ -67,7 +70,7 @@
 		/obj/item/clothing/accessory/holster/waist,
 		/obj/item/clothing/under/dress/dress_hr,
 		/obj/item/clothing/under/rank/head_of_personnel,
-		/obj/item/clothing/under/rank/head_of_personnel/skirt,
+		/obj/item/clothing/under/rank/head_of_personnel/dress,
 		/obj/item/clothing/under/rank/head_of_personnel/whimsy,
 		/obj/item/clothing/suit/armor/vest,
 		/obj/item/clothing/shoes/black,
@@ -85,7 +88,7 @@
 		/obj/item/clothing/gloves/captain,
 		/obj/item/clothing/accessory/holster/thigh,
 		/obj/item/clothing/under/rank/captain,
-		/obj/item/clothing/under/rank/captain/skirt,
+		/obj/item/clothing/under/rank/captain/dress,
 		/obj/item/clothing/under/captainformal,
 		/obj/item/clothing/suit/captunic,
 		/obj/item/clothing/suit/captunic/formal,
@@ -104,6 +107,7 @@
 		/obj/item/clothing/gloves/insulated,
 		/obj/item/clothing/suit/storage/hazardvest,
 		/obj/item/clothing/under/rank/chief_engineer,
+		/obj/item/clothing/under/rank/chief_engineer/dress,
 		/obj/item/clothing/shoes/brown
 	)
 
@@ -116,6 +120,7 @@
 		/obj/item/clothing/head/soft,
 		/obj/item/clothing/gloves/thick,
 		/obj/item/clothing/under/rank/qm,
+		/obj/item/clothing/under/rank/qm/dress,
 		/obj/item/clothing/shoes/brown
 	)
 
@@ -128,6 +133,7 @@
 		/obj/item/clothing/glasses/hud/standard/medical,
 		/obj/item/clothing/accessory/stethoscope,
 		/obj/item/clothing/under/rank/chief_medical_officer,
+		/obj/item/clothing/under/rank/chief_medical_officer/dress,
 		/obj/item/clothing/suit/storage/toggle/labcoat/cmo,
 		/obj/item/clothing/suit/storage/toggle/labcoat/cmoalt,
 		/obj/item/clothing/accessory/storage/white_vest,
@@ -146,7 +152,7 @@
 		/obj/item/clothing/gloves/latex,
 		/obj/item/clothing/under/rank/research_director,
 		/obj/item/clothing/under/rank/research_director/rdalt,
-		/obj/item/clothing/under/rank/research_director/skirt,
+		/obj/item/clothing/under/rank/research_director/dress,
 		/obj/item/clothing/suit/storage/toggle/labcoat/rd,
 		/obj/item/clothing/shoes/leather
 	)

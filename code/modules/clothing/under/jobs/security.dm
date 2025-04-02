@@ -23,6 +23,13 @@
 	item_state = "officer_red_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/security/dress
+	name = "security officer's jumpdress"
+	desc = "It's made of a slightly sturdier material than standard jumpdress, to allow for robust protection."
+	icon_state = "officer_red_dress"
+	item_state = "officer_red_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/warden
 	name = "warden's jumpsuit"
 	desc = "It's made of a slightly sturdier material than standard jumpsuits, to allow for more robust protection. It has the word \"Warden\" written on the shoulders."
@@ -36,6 +43,13 @@
 	desc = "It's made of a slightly sturdier material than standard jumpskirt, to allow for more robust protection. It has the word \"Warden\" written on the shoulders."
 	icon_state = "warden_red_skirt"
 	item_state = "warden_red_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/warden/dress
+	name = "warden's jumpdress"
+	desc = "It's made of a slightly sturdier material than standard jumpdress, to allow for more robust protection. It has the word \"Warden\" written on the shoulders."
+	icon_state = "warden_red_dress"
+	item_state = "warden_red_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/tactical
@@ -78,6 +92,18 @@
 	item_state = "detective_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/det/dress
+	name = "detective's dress"
+	desc = "A rumpled white dress shirt paired with well-worn grey dress."
+	icon_state = "detective_dress"
+	item_state = "detective_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/det/brown
+	desc = "A rumpled white dress shirt paired with old brown jeans."
+	icon_state = "detective_brown"
+	item_state = "detective_brown"
+
 /obj/item/clothing/under/rank/det/grey
 	desc = "A serious-looking tan dress shirt paired with freshly-pressed black slacks."
 	icon_state = "det_grey"
@@ -108,13 +134,25 @@
 	item_state = "hos_red_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/head_of_security/dress
+	name = "head of security's jumpdress"
+	desc = "It's a jumpdress worn by those few with the dedication to achieve the position of \"Head of Security\". It has additional armor to protect the wearer."
+	icon_state = "hos_red_dress"
+	item_state = "hos_red_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/head_of_security/jensen
 	desc = "You never asked for anything that stylish."
-	icon_state = "jensen"
-	item_state = "jensen"
+	icon_state = "hos_jensen"
+	item_state = "hos_jensen"
 	siemens_coefficient = 0.6
 
 /obj/item/clothing/under/rank/head_of_security/jensen/skirt
-	icon_state = "jensen_skirt"
-	item_state = "jensen_skirt"
+	icon_state = "hos_jensen_skirt"
+	item_state = "hos_jensen_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/head_of_security/jensen/dress
+	icon_state = "hos_jensen_dress"
+	item_state = "hos_jensen_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS

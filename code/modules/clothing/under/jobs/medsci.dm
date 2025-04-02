@@ -21,6 +21,13 @@
 	item_state = "director_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/research_director/dress
+	name = "research director's jumpdress"
+	desc = "Feminine fashion for the style concious RD. Its fabric provides minor protection from biological contaminants."
+	icon_state = "director_dress"
+	item_state = "director_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/scientist
 	name = "scientist's jumpsuit"
 	desc = "It's made of a special fiber that provides minor protection against biohazards. It has markings that denote the wearer as a scientist."
@@ -35,6 +42,13 @@
 	item_state = "science_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/scientist/dress
+	name = "scientist's jumpdress"
+	icon_state = "science_dress"
+	item_state = "science_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+
 /obj/item/clothing/under/rank/roboticist
 	name = "roboticist's jumpsuit"
 	desc = "It's a slimming black jumpsuit with reinforced seams; great for industrial work."
@@ -48,6 +62,14 @@
 	icon_state = "robotics_skirt"
 	item_state = "robotics_skirt"
 	worn_state = "robotics_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/roboticist/dress
+	name = "roboticist's jumpdress"
+	desc = "It's a slimming black jumpdress with reinforced seams; great for industrial work."
+	icon_state = "robotics_dress"
+	item_state = "robotics_dress"
+	worn_state = "robotics_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /*
@@ -68,6 +90,13 @@
 	item_state = "cmo_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/chief_medical_officer/dress
+	name = "chief medical officer's jumpdress"
+	desc = "It's a jumpdress worn by those with the experience to be \"Chief Medical Officer\". It provides minor biological protection."
+	icon_state = "cmo_dress"
+	item_state = "cmo_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/geneticist
 	name = "geneticist's jumpsuit"
 	desc = "It's made of a special fiber that gives special protection against biohazards. It has a genetics rank stripe on it."
@@ -80,6 +109,12 @@
 	name = "geneticist's jumpskirt"
 	icon_state = "genetics_skirt"
 	item_state = "genetics_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/geneticist/dress
+	name = "geneticist's jumpdress"
+	icon_state = "genetics_dress"
+	item_state = "genetics_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/virologist
@@ -96,6 +131,12 @@
 	item_state = "virology_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/virologist/dress
+	name = "virologist's jumpdress"
+	icon_state = "virology_dress"
+	item_state = "virology_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/chemist
 	name = "chemist's jumpsuit"
 	desc = "It's made of a special fiber that gives special protection against biohazards. It has a chemist rank stripe on it."
@@ -108,6 +149,12 @@
 	name = "chemist's jumpskirt"
 	icon_state = "chemistry_skirt"
 	item_state = "chemistry_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/chemist/dress
+	name = "chemist's jumpdress"
+	icon_state = "chemistry_dress"
+	item_state = "chemistry_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/nursesuit
@@ -142,18 +189,29 @@
 	item_state = "medical_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/medical/dress
+	name = "medical doctor's jumpdress"
+	icon_state = "medical_skirt"
+	item_state = "medical_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/medical/paramedic
 	name = "paramedic jumpsuit"
 	desc = "It's made of a special fiber that provides minor protection against biohazards. This one has a cross on the chest denoting that the wearer is trained medical personnel."
 	icon_state = "paramedic"
 	item_state = "paramedic"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/rank/medical/paramedic/skirt
 	name = "paramedic jumpskirt"
 	icon_state = "paramedic_skirt"
 	item_state = "paramedic_skirt"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/medical/paramedic/dress
+	name = "paramedic jumpdress"
+	icon_state = "paramedic_dress"
+	item_state = "paramedic_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/medical/scrubs
 	name = "scrubs"
@@ -197,6 +255,13 @@
 	desc = "A basic white jumpskirt. It has turqouise markings that denote the wearer as a psychiatrist."
 	icon_state = "psych_skirt"
 	item_state = "psych_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/psych/dress
+	name = "psychiatrist's jumpdress"
+	desc = "A basic white jumpdress. It has turqouise markings that denote the wearer as a psychiatrist."
+	icon_state = "psych_dress"
+	item_state = "psych_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/psych/turtleneck
