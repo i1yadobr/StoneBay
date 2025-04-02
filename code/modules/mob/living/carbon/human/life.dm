@@ -691,7 +691,7 @@
 					if(K)
 						K.process_hydration()
 					else
-						remove_hydration(DEFAULT_THIRST_FACTOR) // It just goes nowhere. I can't invent anything better, yet we can't let kidney-less things maintain hydration forever.
+						remove_hydration(DEFAULT_THIRST_FACTOR) // It just goes to nowhere. I can't invent anything better, yet we can't let kidney-less people maintain hydration forever.
 				else
 					set_hydration(HYDRATION_NORMAL) // Xenomorphs and shit don't have to deal with such mundane needs.
 
@@ -974,22 +974,23 @@
 		to_chat(src,"<span class='notice'>You feel like you're [pick("moving","flying","floating","falling","hovering")].</span>")
 
 /mob/living/carbon/human/handle_stomach()
-	spawn(0)
-		for(var/a in stomach_contents)
-			if(!(a in contents) || isnull(a))
-				stomach_contents.Remove(a)
+	set waitfor = 0
+
+	for(var/a in stomach_contents)
+		if(!(a in contents) || isnull(a))
+			stomach_contents.Remove(a)
+			continue
+		if(iscarbon(a)|| isanimal(a))
+			var/mob/living/M = a
+			if(M.is_ic_dead())
+				M.death(1)
+				stomach_contents.Remove(M)
+				qdel(M)
 				continue
-			if(iscarbon(a)|| isanimal(a))
-				var/mob/living/M = a
-				if(M.is_ic_dead())
-					M.death(1)
-					stomach_contents.Remove(M)
-					qdel(M)
-					continue
-				if(life_tick % 3 == 1)
-					if(!(M.status_flags & GODMODE))
-						M.adjustBruteLoss(5)
-					add_nutrition(10)
+			if(life_tick % 3 == 1)
+				if(!(M.status_flags & GODMODE))
+					M.adjustBruteLoss(5)
+				add_nutrition(10)
 
 /mob/living/carbon/human/proc/handle_shock()
 	if(!can_feel_pain())

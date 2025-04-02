@@ -32,12 +32,18 @@
 			return
 
 		to_chat(M, "<span class='notice'>You swallow \the [src].</span>")
+
+		if(ishuman(M))
+			var/mob/living/carbon/human/H = M
+			if(H.ingest(src))
+				return 1
+
 		if(reagents.total_volume)
 			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
 		qdel(src)
 		return 1
 
-	else if(istype(M, /mob/living/carbon/human))
+	else if(ishuman(M))
 		if(!M.can_force_feed(user, src))
 			return
 
@@ -52,6 +58,11 @@
 		user.visible_message("<span class='warning'>[user] forces [M] to swallow \the [src].</span>")
 		var/contained = reagentlist()
 		admin_attack_log(user, M, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
+
+		var/mob/living/carbon/human/H = M
+		if(H.ingest(src))
+			return 1
+
 		if(reagents.total_volume)
 			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
 		qdel(src)

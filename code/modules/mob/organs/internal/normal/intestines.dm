@@ -9,34 +9,35 @@
 	min_broken_damage = 60
 	max_damage = 90
 	relative_size = 60
-	var/datum/reagents/metabolism/ingested
+	var/datum/reagents/metabolism/digested
 
-/obj/item/organ/internal/bladder/Destroy()
-	QDEL_NULL(stored)
+/obj/item/organ/internal/intestines/Destroy()
+	QDEL_NULL(digested)
 	. = ..()
 
-/obj/item/organ/internal/bladder/New()
+/obj/item/organ/internal/intestines/New()
 	..()
-	stored = new /datum/reagents/metabolism(240, owner, CHEM_INGEST)
-	if(!ingested.my_atom) ingested.my_atom = src
+	digested = new /datum/reagents/metabolism(240, owner, CHEM_DIGEST)
+	if(!digested.my_atom)
+		digested.my_atom = src
 
-/obj/item/organ/internal/bladder/robotize()
+/obj/item/organ/internal/intestines/robotize()
 	..()
-	SetName("liquid waste storage")
-	icon_state = "bladder-prosthetic"
-	dead_icon = "bladder-prosthetic-br"
+	SetName("digestion unit")
+	icon_state = "intestines-prosthetic"
+	dead_icon = "intestines-prosthetic-br"
 
-/obj/item/organ/internal/bladder/removed(mob/living/user, drop_organ = TRUE, detach = TRUE)
+/obj/item/organ/internal/intestines/removed(mob/living/user, drop_organ = TRUE, detach = TRUE)
 	. = ..()
-	ingested.my_atom = src
-	ingested.parent = null
+	digested.my_atom = src
+	digested.parent = null
 
-/obj/item/organ/internal/bladder/replaced()
+/obj/item/organ/internal/intestines/replaced()
 	. = ..()
-	ingested.my_atom = owner
-	ingested.parent = owner
+	digested.my_atom = owner
+	digested.parent = owner
 
-/obj/item/organ/internal/bladder/think()
+/obj/item/organ/internal/intestines/think()
 	..()
 
 	if(!owner)

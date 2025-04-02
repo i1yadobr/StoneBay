@@ -126,13 +126,21 @@
 		if(reagents && !(atom_flags & ATOM_FLAG_HOLOGRAM))								//Handle ingestion of the reagent.
 			playsound(M.loc, SFX_EAT, rand(45, 60), FALSE)
 			if(reagents.total_volume)
-				if(reagents.total_volume > bitesize)
-					reagents.trans_to_mob(M, bitesize, CHEM_INGEST)
-				else
-					reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
-				bitecount++
-				update_icon()
-				On_Consume(M)
+				if(!ishuman(C))
+					reagents.trans_to_mob(C, transfer_size, CHEM_INGEST)
+					bitecount++
+					update_icon()
+					On_Consume(C)
+					return TRUE
+
+				var/mob/living/carbon/human/H = C
+				var/obj/item/reagent_containers/food/ingested_chunk/IC = new (src)
+				IC.split_from(src, H)
+
+				if(!H.ingest(IC)) // We ingest it normally or fallback to the old way if something goes wrong.
+					IC.reagents.trans_to_mob(H, transfer_size, CHEM_INGEST)
+					qdel(IC)
+
 			return TRUE
 
 	return FALSE

@@ -759,6 +759,85 @@
 		return 0
 	return 1
 
+/mob/living/carbon/human/proc/ingest_reagents(datum/reagents/R, amount = 0)
+	if(!R || !amount)
+		return FALSE
+
+	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+	if(should_have_organ(BP_STOMACH))
+		if(S.is_broken())
+			if(prob(5))
+				// Abdominal cavity here
+				custom_pain("Your stomach cramps agonizingly!", 20)
+			else
+				R.trans_to_mob(src, amount, CHEM_INGEST)
+				return TRUE
+		else if(S)
+			R.trans_to_mob(src, amount, CHEM_INGEST)
+			return TRUE
+	else
+		R.trans_to_mob(src, amount, CHEM_INGEST)
+		return TRUE
+
+	var/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+	if(should_have_organ(BP_INTESTINES))
+		if(!I)
+			// Abdominal cavity here
+			custom_pain("Your abdomen aches!", 10)
+			return TRUE
+		else if(I.is_broken())
+			// Abdominal cavity here
+			custom_pain("Your abdomen aches agonizingly!", 20)
+			return TRUE
+		else
+			R.trans_to_mob(src, amount, CHEM_DIGEST)
+			return TRUE
+	return FALSE
+
+/mob/living/carbon/human/proc/ingest(atom/movable/AM)
+	if(QDELETED(AM))
+		return FALSE
+
+	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+	if(should_have_organ(BP_STOMACH))
+		if(S.is_broken())
+			if(prob(10)) // To the cavity
+				// Abdominal cavity here
+				custom_pain("Your stomach cramps agonizingly!", 20)
+				return TRUE
+			else // To the intestines
+				custom_pain("Your stomach cramps!", 10)
+		else if(S.is_bruised())
+			if(prob(25))
+				custom_pain("Your stomach cramps a little.", 3)
+			AM.forceMove(S)
+			return TRUE
+		else if(S)
+			AM.forceMove(S)
+			return TRUE
+	else
+		return FALSE // Whatever fallback we rely on.
+
+	var/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+	if(should_have_organ(BP_INTESTINES))
+		if(!I)
+			// Abdominal cavity here
+			custom_pain("Your abdomen aches!", 10)
+			return TRUE
+		else if(I.is_broken())
+			// Abdominal cavity here
+			custom_pain("Your abdomen aches agonizingly!", 20)
+			return TRUE
+		else if(I.is_bruised())
+			if(prob(25))
+				custom_pain("Your abdomen aches a little.", 3)
+			AM.forceMove(I)
+			return TRUE
+		else
+			AM.forceMove(I)
+			return TRUE
+	return FALSE
+
 /mob/living/carbon/human/proc/vomit(toxvomit = 0, timevomit = 1, level = 3, silent = FALSE)
 	set waitfor = 0
 	if(!check_has_mouth() || isSynthetic() || !timevomit || !level)

@@ -26,6 +26,27 @@
 //		reagents.add_reagent(/datum/reagent/nutriment, 2)							//	this line of code for all the contents.
 //		bitesize = 3													//This is the amount each bite consumes.
 
+/obj/item/reagent_containers/food/ingested_chunk
+	name = "chewed mess"
+	desc = "Disguisting chunk of something that was chewed and swallowed."
+	icon_state = "ingested_chunk"
+	nutriment_amt = 0
+	bitesize = 10
+
+/obj/item/reagent_containers/food/ingested_chunk/proc/split_from(obj/item/reagent_containers/food/RC, mob/M)
+	if(!RC)
+		qdel(src)
+		return
+	if(RC.reagents.total_volume > RC.bitesize)
+		RC.reagents.trans_to(src, RC.bitesize)
+	else
+		RC.reagents.trans_to(src, RC.reagents.total_volume)
+	color = reagents.get_color()
+	desc += " It appears to still have tiny bits of [RC] in it... Gross."
+	RC.bitecount++
+	RC.update_icon()
+	RC.On_Consume(M)
+
 /obj/item/reagent_containers/food/aesirsalad
 	name = "Aesir salad"
 	desc = "Probably too incredible for mortal men to fully enjoy."

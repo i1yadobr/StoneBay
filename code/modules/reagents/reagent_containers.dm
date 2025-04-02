@@ -138,10 +138,13 @@
 				if(blocked)
 					to_chat(user, "<span class='warning'>\The [blocked] is in the way!</span>")
 					return
+				if(!H.ingest_reagents(reagents, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this))
+					reagents.trans_to_mob(user, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
+			else
+				reagents.trans_to_mob(user, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 			self_feed_message(user)
-			reagents.trans_to_mob(user, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
 			feed_sound(user)
 			return 1
 
@@ -167,7 +170,13 @@
 			var/contained = reagentlist()
 			admin_attack_log(user, target, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
 
-			reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
+			if(ishuman(H))
+				var/mob/living/carbon/human/HU = H
+				if(!H.ingest_reagents(reagents, amount_per_transfer_from_this))
+					reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
+			else
+				reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
+
 			feed_sound(user)
 			return 1
 

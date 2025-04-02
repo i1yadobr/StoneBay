@@ -11,6 +11,7 @@
 	relative_size = 40
 	var/datum/reagents/metabolism/ingested
 	var/next_cramp = 0
+	var/stored_w_class = 0 // Sum of ingested items' w_classes
 
 /obj/item/organ/internal/stomach/Destroy()
 	QDEL_NULL(ingested)
@@ -19,7 +20,8 @@
 /obj/item/organ/internal/stomach/New()
 	..()
 	ingested = new /datum/reagents/metabolism(240, owner, CHEM_INGEST)
-	if(!ingested.my_atom) ingested.my_atom = src
+	if(!ingested.my_atom)
+		ingested.my_atom = src
 
 /obj/item/organ/internal/stomach/robotize()
 	..()
@@ -37,6 +39,9 @@
 	ingested.my_atom = owner
 	ingested.parent = owner
 
+/obj/item/organ/internal/stomach/proc/get_fullness()
+
+
 // This call needs to be split out to make sure that all the ingested things are metabolised
 // before the process call is made on any of the other organs
 /obj/item/organ/internal/stomach/proc/metabolize()
@@ -50,37 +55,36 @@
 
 	if(!owner)
 		return
-	if(!isundead(owner))
-		var/functioning = is_usable()
-		if(damage >= min_bruised_damage && prob((damage / max_damage) * 100))
-			functioning = FALSE
 
-		if(functioning)
-			for(var/mob/living/M in contents)
-				if(M.is_ooc_dead())
-					qdel(M)
-					continue
+	if(isundead(owner))
+		return
 
-				M.adjustBruteLoss(3)
-				M.adjustFireLoss(3)
-				M.adjustToxLoss(3)
+	if(is_usable())
+		for(var/mob/living/M in contents)
+			if(M.is_ooc_dead())
+				qdel(M)
+				continue
 
-		else if(world.time >= next_cramp)
-			next_cramp = world.time + rand(200,800)
-			owner.custom_pain("Your stomach cramps agonizingly!",1)
+			M.adjustBruteLoss(3)
+			M.adjustFireLoss(3)
+			M.adjustToxLoss(3)
 
-		var/alcohol_volume = ingested.get_reagent_amount(/datum/reagent/ethanol)
+	else if(world.time >= next_cramp)
+		next_cramp = world.time + rand(200,800)
+		owner.custom_pain("Your stomach cramps agonizingly!", 1)
 
-		var/alcohol_threshold_met = alcohol_volume > STOMACH_VOLUME / 2
-		if(alcohol_threshold_met && (owner.disabilities & EPILEPSY) && prob(20))
-			owner.seizure()
+	var/alcohol_volume = ingested.get_reagent_amount(/datum/reagent/ethanol)
 
-		// Alcohol counts as double volume for the purposes of vomit probability
-		var/effective_volume = ingested.total_volume + alcohol_volume
+	var/alcohol_threshold_met = alcohol_volume > STOMACH_VOLUME / 2
+	if(alcohol_threshold_met && (owner.disabilities & EPILEPSY) && prob(20))
+		owner.seizure()
 
-		// Just over the limit, the probability will be low. It rises a lot such that at double ingested it's 64% chance.
-		var/vomit_probability = (effective_volume / STOMACH_VOLUME) ** 6
-		if(prob(vomit_probability))
-			owner.vomit()
+	// Alcohol counts as double volume for the purposes of vomit probability
+	var/effective_volume = ingested.total_volume + alcohol_volume
+
+	// Just over the limit, the probability will be low. It rises a lot such that at double ingested it's 64% chance.
+	var/vomit_probability = (effective_volume / STOMACH_VOLUME) ** 6
+	if(prob(vomit_probability))
+		owner.vomit()
 
 #undef STOMACH_VOLUME
