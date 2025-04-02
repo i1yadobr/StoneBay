@@ -37,9 +37,14 @@
 	digested.my_atom = owner
 	digested.parent = owner
 
+/obj/item/organ/internal/intestines/proc/store_item(obj/item/I)
+	if(QDELETED(I))
+		return
+	I.forceMove(src)
+
 // This call needs to be split out to make sure that all the ingested things are metabolised
 // before the process call is made on any of the other organs
-/obj/item/organ/internal/stomach/proc/metabolize()
+/obj/item/organ/internal/intestines/proc/metabolize()
 	if(is_usable())
 		digested.metabolize()
 
@@ -52,4 +57,11 @@
 	if(isundead(owner))
 		return
 
+	if(is_bruised() && prob(damage - min_broken_damage))
+		var/messaged_already = FALSE
+		for(var/obj/item/I in contents)
+			if(I == food_organ)
+				continue
+			// Abdominal cavity here
+			custom_pain("Your guts cramp agonizingly!", 20)
 

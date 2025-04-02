@@ -817,15 +817,11 @@
 	if(should_have_organ(BP_INTESTINES))
 		if(!I)
 			// Abdominal cavity here
-			custom_pain("Your abdomen aches!", 10)
-			return TRUE
-		else if(I.is_broken())
-			// Abdominal cavity here
-			custom_pain("Your abdomen aches agonizingly!", 20)
+			custom_pain("Your guts cramp!", 10)
 			return TRUE
 		else
 			R.trans_to_mob(src, amount, CHEM_DIGEST)
-			return TRUE
+		return TRUE
 	return FALSE
 
 /mob/living/carbon/human/proc/ingest(atom/movable/AM)
@@ -858,20 +854,10 @@
 	if(should_have_organ(BP_INTESTINES))
 		if(!I)
 			// Abdominal cavity here
-			custom_pain("Your abdomen aches!", 10)
-			return TRUE
-		else if(I.is_broken())
-			// Abdominal cavity here
-			custom_pain("Your abdomen aches agonizingly!", 20)
-			return TRUE
-		else if(I.is_bruised())
-			if(prob(25))
-				custom_pain("Your abdomen aches a little.", 3)
-			AM.forceMove(I)
-			return TRUE
+			custom_pain("Your guts cramp!", 10)
 		else
 			AM.forceMove(I)
-			return TRUE
+		return TRUE
 	return FALSE
 
 /mob/living/carbon/human/proc/vomit(toxvomit = 0, timevomit = 1, level = 3, silent = FALSE)

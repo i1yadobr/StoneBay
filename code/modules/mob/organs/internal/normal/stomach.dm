@@ -54,7 +54,7 @@
 // 0 is empty, 100 is softcap, 200 is hardcap
 /obj/item/organ/internal/stomach/proc/get_fullness()
 	var/ret = 0
-	for(obj/item/I in processing)
+	for(var/obj/item/I in processing)
 		ret += get_storage_cost() * 15
 	ret += ingested.total_volume
 	return (ret / volume_softcap) * 100
@@ -100,6 +100,17 @@
 		currently_processing = null
 		next_processing = 0
 
+	var/reagents_processing = 1
+	var/processing_time = 1.0
+	if(is_broken())
+		reagents_processing = 0.5
+		processing_time = 2.5
+	else if(is_bruised())
+		reagents_processing = 0.75
+		processing_time = 1.5
+
+	ingested.trans_to_mob(owner, reagents_processing, CHEM_DIGEST)
+
 	if(next_processing < world.time)
 		return
 
@@ -117,12 +128,6 @@
 				processing.Remove(currently_processing)
 				currently_processing.forceMove(I)
 				currently_processing = null
-
-	var/processing_time = 1.0
-	if(is_broken())
-		processing_time = 2.5
-	else if(is_bruised())
-		processing_time = 1.5
 
 	if(processing.len)
 		currently_processing = processing[1]
