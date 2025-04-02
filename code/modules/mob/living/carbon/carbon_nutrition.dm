@@ -9,6 +9,15 @@
 	if(amount >= 1 || world.time >= last_nutrition_speed_update + UPDATE_DELAY) // This proc is often called with extremely small amounts
 		update_nutrition_movespeed_if_necessary()
 
+/mob/living/carbon/human/add_nutrition(amount)
+	if(isSynthetic())
+		return
+
+	nutrition = clamp(nutrition + amount, 0, STOMACH_FULLNESS_CAP * body_build.stomach_capacity)
+	if(amount >= 1 || world.time >= last_nutrition_speed_update + UPDATE_DELAY) // This proc is often called with extremely small amounts
+		update_nutrition_movespeed_if_necessary()
+
+
 /// Helper for subtracting nutrition. Automatically updates movespeed. Use this instead of subtracting nutrition manually.
 /mob/living/carbon/proc/remove_nutrition(amount)
 	if(isSynthetic())
@@ -18,6 +27,15 @@
 	if(amount >= 1  || world.time >= last_nutrition_speed_update + UPDATE_DELAY) // This proc is often called with extremely small amounts
 		update_nutrition_movespeed_if_necessary()
 
+/mob/living/carbon/human/remove_nutrition(amount)
+	if(isSynthetic())
+		return
+
+	nutrition = clamp(nutrition - amount, 0, STOMACH_FULLNESS_CAP * body_build.stomach_capacity)
+	if(amount >= 1  || world.time >= last_nutrition_speed_update + UPDATE_DELAY) // This proc is often called with extremely small amounts
+		update_nutrition_movespeed_if_necessary()
+
+
 /// Helper for setting nutrition. Automatically updates movespeed. Use this instead of subtracting nutrition manually.
 /mob/living/carbon/proc/set_nutrition(amount)
 	var/nut_old = nutrition
@@ -25,6 +43,7 @@
 
 	if(nut_old != nutrition)
 		update_nutrition_movespeed_if_necessary()
+
 
 /mob/living/carbon/proc/update_nutrition_movespeed_if_necessary()
 	return

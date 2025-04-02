@@ -2,6 +2,9 @@
 
 /// Helper for adding hydration. Automatically updates movespeed. Use this instead of adding hydration manually.
 /mob/living/carbon/proc/add_hydration(amount)
+	return
+
+/mob/living/carbon/human/add_hydration(amount)
 	if(isSynthetic())
 		return
 
@@ -9,14 +12,19 @@
 	if(amount >= 1 || world.time >= last_hydration_speed_update + UPDATE_DELAY) // This proc is often called with extremely small amounts
 		update_hydration_movespeed_if_necessary()
 
+
 /// Helper for subtracting hydration. Automatically updates movespeed. Use this instead of subtracting hydration manually.
 /mob/living/carbon/proc/remove_hydration(amount)
+	return
+
+/mob/living/carbon/human/remove_hydration(amount)
 	if(isSynthetic())
 		return
 
 	hydration = clamp(hydration - amount, HYDRATION_NONE, HYDRATION_LIMIT)
 	if(amount >= 1  || world.time >= last_hydration_speed_update + UPDATE_DELAY) // This proc is often called with extremely small amounts
 		update_hydration_movespeed_if_necessary()
+
 
 /// Helper for setting hydration. Automatically updates movespeed. Use this instead of subtracting hydration manually.
 /mob/living/carbon/proc/set_hydration(amount)
@@ -25,6 +33,7 @@
 
 	if(hyd_old != hydration)
 		update_hydration_movespeed_if_necessary()
+
 
 /mob/living/carbon/proc/update_hydration_movespeed_if_necessary()
 	return

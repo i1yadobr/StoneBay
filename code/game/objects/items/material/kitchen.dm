@@ -61,7 +61,7 @@
 			if(!(M.can_force_feed(user, loaded) && do_mob(user, M, 5 SECONDS)))
 				return
 			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")
-		reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
+		reagents.trans_to_mob(M, reagents.total_volume, CHEM_SWALLOW)
 		playsound(M.loc, 'sound/items/eatfood.ogg', rand(10, 40), 1)
 		ClearOverlays()
 		return

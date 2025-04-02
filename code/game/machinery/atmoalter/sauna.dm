@@ -375,7 +375,7 @@
 				if(affected.wear_mask && (affected.wear_mask.item_flags & ITEM_FLAG_BLOCK_GAS_SMOKE_EFFECT))
 					continue
 
-				reagents.trans_to_mob(affected, 5, CHEM_INGEST)
+				reagents.trans_to_mob(affected, 5, CHEM_SWALLOW)
 				reagents.trans_to_mob(affected, 5, CHEM_BLOOD)
 			else if(isobj(A) && !A.simulated)
 				reagents.touch_obj(A)

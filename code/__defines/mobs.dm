@@ -401,6 +401,7 @@ GLOBAL_LIST_INIT(organ_tag_to_name, list(
 #define STOMACH_FULLNESS_MEDIUM     250
 #define STOMACH_FULLNESS_HIGH       425
 #define STOMACH_FULLNESS_SUPER_HIGH 550
+#define STOMACH_FULLNESS_CAP        800
 
 // Slim people
 #define STOMACH_CAPACITY_LOW    0.75

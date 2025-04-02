@@ -8,7 +8,7 @@
 	min_bruised_damage = 25
 	min_broken_damage = 45 // Also the amount of toxic damage it can store
 	max_damage = 70
-	relative_size = 60
+	relative_size = 40
 	var/stored_tox = 0
 	var/coagulation = COAGULATION_NORMAL
 	var/filtering_efficiency = 3.0
