@@ -285,6 +285,10 @@
 	armor = list(melee = 25, bullet = 30, laser = 65, energy = 30, bomb = 20, bio = 100)
 	var/cloak = FALSE
 
+/obj/item/clothing/suit/space/vox/stealth/New()
+	..()
+	slowdown_per_slot[slot_wear_suit] = NO_SLOWDOWN
+
 /obj/item/clothing/suit/space/vox/stealth/attack_self(mob/user)
 	var/mob/living/carbon/human/H = user
 	if(!istype(H))
