@@ -111,8 +111,19 @@
 /mob/living/carbon/human/proc/handle_blood()
 	// No longer tied to liver. Bone marrow goes brr.
 	if(should_have_organ(BP_HEART))
-		regenerate_blood(0.1 + owner.chem_effects[CE_BLOODRESTORE])
+		var/regen_value = 0
+		if(hydration >= HYDRATION_SUPER_HIGH)
+			regen_value = 2.0
+		else if(hydration >= HYDRATION_HIGH)
+			regen_value = 1.5
+		else if(hydration >= HYDRATION_LOW)
+			regen_value = 1.0
+		else if(hydration > 1)
+			regen_value = 0.5
 
+		if(regen_value)
+			regenerate_blood(0.1 * regen_value + owner.chem_effects[CE_BLOODRESTORE])
+			remove_hydration(DEFAULT_THIRST_FACTOR * regen_value) // Regenerating blood dehydrates ya.
 
 /****************************************************
 				BLOOD TRANSFERS

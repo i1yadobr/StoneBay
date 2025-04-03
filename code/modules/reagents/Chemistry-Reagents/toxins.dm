@@ -148,7 +148,7 @@
 	strength = 10
 	overdose = 20
 	metabolism = REM * 0.5
-	absorbability = 0.75
+	digest_absorbability = 0.75
 
 /datum/reagent/toxin/potassium_chlorophoride/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	..()
@@ -300,7 +300,7 @@
 	if(prob(33))
 		affect_blood(M, alien, removed)
 
-/datum/reagent/mutagen/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/mutagen/affect_digest(mob/living/carbon/M, alien, removed)
 	if(prob(67))
 		affect_blood(M, alien, removed)
 
@@ -351,7 +351,7 @@
 	color = "#009ca8"
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE
-	absorbability = 0.75
+	digest_absorbability = 0.75
 
 /datum/reagent/soporific/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	if(alien == IS_DIONA)
@@ -383,7 +383,7 @@
 	color = "#000067"
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE * 0.5
-	absorbability = 0.75
+	digest_absorbability = 0.75
 
 /datum/reagent/chloralhydrate/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	if(alien == IS_DIONA)
@@ -411,7 +411,7 @@
 	taste_description = "shitty piss water"
 	reagent_state = LIQUID
 	color = "#ffd300"
-	absorbability = 1.0 // SpEcIaL ingestible chloralhydrate
+	digest_absorbability = 1.0 // SpEcIaL ingestible chloralhydrate
 
 	glass_name = "beer"
 	glass_desc = "A freezing pint of beer"
@@ -522,7 +522,7 @@
 	color = "#e700e7"
 	overdose = REAGENTS_OVERDOSE
 	metabolism = REM * 0.5
-	absorbability = 0.75
+	digest_absorbability = 0.75
 
 /datum/reagent/psilocybin/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	if(alien == IS_DIONA)
@@ -644,14 +644,14 @@
 	reagent_state = LIQUID
 	color = "#535e66"
 	overdose = 5
+	ingest_met = REM
+	ingest_absorbability = 1.0
+	digest_absorbability = 1.0
 
 /datum/reagent/nanites/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien != IS_DIONA)
 		M.heal_organ_damage(15 * removed, 15 * removed)
 		M.add_chemical_effect(CE_OXYGENATED, 2)
-
-/datum/reagent/nanites/affect_ingest(mob/living/carbon/M, alien, removed)
-	affect_blood(M, alien, removed)
 
 /datum/reagent/nanites/overdose(mob/living/carbon/M, alien)
 	if(prob(80))

@@ -8,6 +8,7 @@
 	taste_description = "water"
 	glass_name = "water"
 	glass_desc = "The father of all refreshments."
+	hydration_value = 1.0
 	var/slippery = 1
 
 /datum/reagent/water/affect_blood(mob/living/carbon/M, alien, removed)
@@ -18,6 +19,11 @@
 /datum/reagent/water/affect_ingest(mob/living/carbon/M, alien, removed)
 	if(!istype(M, /mob/living/carbon/metroid) && alien != IS_METROID)
 		return
+	M.adjustToxLoss(2 * removed)
+
+/datum/reagent/water/affect_digest(mob/living/carbon/M, alien, removed)
+	if(!istype(M, /mob/living/carbon/metroid) && alien != IS_METROID)
+		return ..()
 	M.adjustToxLoss(2 * removed)
 
 /datum/reagent/water/touch_turf(turf/simulated/T)
@@ -161,6 +167,7 @@
 	reagent_state = SOLID
 	color = "#1c1300"
 	ingest_met = REM * 5
+	digest_met = REM * 3
 
 /datum/reagent/carbon/affect_ingest(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
@@ -172,6 +179,17 @@
 			if(R == src)
 				continue
 			ingested.remove_reagent(R.type, removed * effect)
+
+/datum/reagent/carbon/affect_digest(mob/living/carbon/M, alien, removed)
+	if(alien == IS_DIONA)
+		return
+	var/datum/reagents/ingested = M.get_digested_reagents()
+	if(digested?.reagent_list.len > 1) // Need to have at least 2 reagents - cabon and something to remove
+		var/effect = 1 / (digested.reagent_list.len - 1)
+		for(var/datum/reagent/R in digested.reagent_list)
+			if(R == src)
+				continue
+			digested.remove_reagent(R.type, removed * effect)
 
 /datum/reagent/carbon/touch_turf(turf/T)
 	if(!istype(T, /turf/space))
@@ -216,7 +234,7 @@
 	reagent_state = SOLID
 	color = "#353535"
 	metabolism = REM * 0.3
-	absorbability = 0.75
+	digest_absorbability = 0.75
 	overdose = REAGENTS_OVERDOSE
 
 /datum/reagent/iron/affect_blood(mob/living/carbon/M, alien, removed)

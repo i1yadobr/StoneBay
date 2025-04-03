@@ -124,7 +124,9 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = 1
 	flags = IGNORE_MOB_SIZE
-	absorbability = 1.0 // Just sip your oxygen cocktail and stay cool
+	ingest_absorbability = 0.25
+	digest_absorbability = 1.0 // Just sip your oxygen cocktail and stay cool
+	hydration_value = -1.0
 
 /datum/reagent/dexalin/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien == IS_VOX)
@@ -142,7 +144,8 @@
 	overdose = REAGENTS_OVERDOSE * 0.5
 	scannable = 1
 	flags = IGNORE_MOB_SIZE
-	absorbability = 1.0
+	digest_absorbability = 1.0
+	hydration_value = -2.0
 
 /datum/reagent/dexalinp/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien == IS_VOX)
@@ -173,6 +176,7 @@
 	metabolism = REM * 0.25
 	scannable = 1
 	flags = IGNORE_MOB_SIZE
+	hydration_value = 2.5
 
 /datum/reagent/cryoxadone/affect_blood(mob/living/carbon/M, alien, removed)
 	M.add_chemical_effect(CE_CRYO, 1)
@@ -212,6 +216,7 @@
 	metabolism = REM * 0.25
 	scannable = 1
 	flags = IGNORE_MOB_SIZE
+	hydration_value = 2.5
 
 /datum/reagent/clonexadone/affect_blood(mob/living/carbon/M, alien, removed)
 	M.add_chemical_effect(CE_CRYO, 1)
@@ -280,7 +285,7 @@
 	reagent_state = LIQUID
 	color = "#ffff66"
 	metabolism = REM * 0.25
-	absorbability = 1.0 // TODO: Redo CE_BRAIN_REGEN some day to make orally-taken alkysine weaker
+	digest_absorbability = 1.0 // TODO: Redo CE_BRAIN_REGEN some day to make orally-taken alkysine weaker
 	overdose = REAGENTS_OVERDOSE
 	scannable = 1
 	flags = IGNORE_MOB_SIZE
@@ -406,10 +411,11 @@
 	reagent_state = LIQUID
 	color = "#ff3300"
 	metabolism = REM * 0.5
-	ingest_met = REM * 0.25 // True speed requires shots, you weakling
-	absorbability = 1.0 // But at least some speed is still achievable even thru oral intake
+	digest_met = REM * 0.25 // True speed requires shots, you weakling
+	digest_absorbability = 1.0 // But at least some speed is still achievable even thru oral intake
 	excretion = 0.5
 	overdose = REAGENTS_OVERDOSE * 0.5
+	hydration_value = -0.5 // Sweaty-sweaty
 	var/tolerance_threshold = 15.0 // Having more than this value in chem_traces will cause pain
 	var/tolerance_mult = 2.0 // Amount of pain for each unit over tolerance_threshold
 
@@ -811,6 +817,7 @@
 	scannable = 1
 	overdose = 5
 	metabolism = REM * 5
+	hydration_value = -2.5
 
 /datum/reagent/nanoblood/affect_blood(mob/living/carbon/human/M, alien, removed)
 	if(!M.should_have_organ(BP_HEART)) //We want the var for safety but we can do without the actual blood.
@@ -819,12 +826,6 @@
 		M.immunity = max(M.immunity - 0.1, 0)
 		if(M.chem_traces[type] > M.species.blood_volume/8) //half of blood was replaced with us, rip white bodies
 			M.immunity = max(M.immunity - 0.5, 0)
-
-/* Cannabis Stuff ~TobyThorne */
-/*							  */
-/* THC - done				  */
-/* CBD - to be done			  */
-/* cannabis oil - to be done  */
 
 /datum/reagent/thc   // -SECURITY OPEN UP!!! - Ha-ha. No. c:
 	name = "Tetrahydrocannabinol"
@@ -835,9 +836,10 @@
 	scannable = 1
 	overdose = 50
 	metabolism = REM * 0.25
-	ingest_met = REM * 0.15
-	absorbability = 0.75
+	digest_met = REM * 0.15
+	digest_absorbability = 0.75
 	data = 0
+	hydration_value = -0.75
 	var/thcdata = 0
 
 /datum/reagent/thc/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
@@ -944,8 +946,8 @@
 	scannable = 1
 	overdose = 25
 	metabolism = REM
-	ingest_met = REM * 0.5
-	absorbability = 1.0
+	digest_met = REM * 0.5
+	digest_absorbability = 1.0
 
 /datum/reagent/albumin/affect_blood(mob/living/carbon/human/M, alien, removed)
 	if(!M.should_have_organ(BP_HEART)) //We want the var for safety but we can do without the actual blood.

@@ -178,11 +178,16 @@
 	name = "Holy Water"
 	description = "An ashen-obsidian-water mix, this solution will alter certain sections of the brain's rationality."
 	color = "#e0e8ef"
+	ingest_met = REM // It's HOLY, let it work straight from the stomach.
 
 	glass_name = "holy water"
 	glass_desc = "An ashen-obsidian-water mix, this solution will alter certain sections of the brain's rationality."
 
 /datum/reagent/water/holywater/affect_ingest(mob/living/carbon/M, alien, removed)
+	..()
+	affect_digest(M, alien, removed)
+
+/datum/reagent/water/holywater/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	if(ishuman(M)) // Any location
 		if(iscultist(M) || is_species(M, /datum/species/golem/runic))
@@ -429,7 +434,7 @@
 	reagent_state = LIQUID
 	color = "#660000"
 	touch_met = 5
-	absorbability = 1.0
+	digest_absorbability = 1.0
 
 	glass_name = "welder fuel"
 	glass_desc = "Unless you are an industrial tool, this is probably not safe for consumption."
@@ -460,7 +465,7 @@
 	desc = "Products of metabolism, a normal component of urine."
 	taste_description = "acrid saltness"
 	reagent_state = SOLID
-	taste_mult = 0.75
+	taste_mult = 2.0
 	color = "#e0e254"
 
 	glass_name = "apple juice"
@@ -470,7 +475,7 @@
 	name = "Bodily Waste"
 	desc = "Waste products of the digestive system."
 	taste_description = "most literal shit"
-	taste_mult = 1.0
+	taste_mult = 2.5
 	color = "#7f4323"
 
 	glass_name = "shit"

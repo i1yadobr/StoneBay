@@ -100,13 +100,13 @@
 		next_processing = 0
 
 	// Damaged stomach works slower.
-	var/reagents_processing = 1
+	var/reagents_processing = 1.5
 	var/processing_time = 1.0
 	if(is_broken())
-		reagents_processing = 0.5
+		reagents_processing = 1.0
 		processing_time = 2.5
 	else if(is_bruised())
-		reagents_processing = 0.75
+		reagents_processing = 1.25
 		processing_time = 1.5
 
 	// Reagents flow down evenly, as a mixture.

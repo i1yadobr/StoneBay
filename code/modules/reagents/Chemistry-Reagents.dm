@@ -10,10 +10,13 @@
 
 	var/datum/radiation/radiation
 	var/metabolism = REM // This would be 0.2 normally
-	var/ingest_met = 0 // Speeds up/slows down actual metabolism speed, not to be confused with absorbability. When set to default (0), uses metabolism instead.
+	var/ingest_met = 0 // Speeds up/slows down actual metabolism speed, not to be confused with absorbability. When set to default (0), doesn't metabolize in stomach.
 	var/touch_met = 0 // When set to default (0), uses metabolism instead.
+	var/digest_met = 0 // When set to default (0), uses metabolism instead.
 	var/excretion = 1.0 // Rate at which metabolism products (chem_traces) reduce, relative to metabolism
-	var/absorbability = 0.5 // How well the reagent affects blood when ingested
+	var/ingest_absorbability = 0.5 // How well the reagent affects blood when ingested
+	var/digest_absorbability = 0.5 // How well the reagent affects blood when digested
+	var/hydration_value = 0 // How well the reagent replenishes hydration per unit
 	var/overdose = INFINITY
 	var/scannable = 0 // Shows up on health analyzers.
 	var/color = "#000000"
@@ -58,15 +61,16 @@
 
 	//determine the metabolism rate
 	var/removed = metabolism
-	if(ingest_met && (location == CHEM_INGEST))
+	if(location == CHEM_INGEST)
 		removed = ingest_met
 	if(touch_met && (location == CHEM_TOUCH))
 		removed = touch_met
+	if(digest_met && (location == CHEM_DIGEST))
+		removed = digest_met
 	for(var/datum/modifier/mod in M.modifiers)
 		if(!isnull(mod.metabolism_percent))
 			removed *= mod.metabolism_percent
 	removed = M.get_adjusted_metabolism(removed)
-
 
 	//adjust effective amounts - removed, dose, and max_dose - for mob size
 	var/effective = removed
@@ -84,6 +88,8 @@
 				affect_ingest(M, alien, effective, affecting_dose)
 			if(CHEM_TOUCH)
 				affect_touch(M, alien, effective, affecting_dose)
+			if(CHEM_DIGEST)
+				affect_digest(M, alien, effective, affecting_dose)
 
 	if(volume)
 		remove_self(removed)
@@ -93,10 +99,20 @@
 	return
 
 /datum/reagent/proc/affect_ingest(mob/living/carbon/M, alien, removed, affecting_dose)
-	affect_blood(M, alien, removed * absorbability, affecting_dose)
+	if(ingest_absorbability)
+		affect_blood(M, alien, removed * ingest_absorbability, affecting_dose)
 	return
 
 /datum/reagent/proc/affect_touch(mob/living/carbon/M, alien, removed, affecting_dose)
+	return
+
+/datum/reagent/proc/affect_digest(mob/living/carbon/M, alien, removed, affecting_dose)
+	if(digest_absorbability)
+		affect_blood(M, alien, removed * digest_absorbability, affecting_dose)
+	if(hydration_value > 0)
+		M.add_hydration(removed * hydration_value)
+	else if(hydration_value < 0)
+		M.remove_hydration(removed * hydration_value)
 	return
 
 /datum/reagent/proc/overdose(mob/living/carbon/M, alien) // Overdose effect. Doesn't happen instantly.

@@ -1,5 +1,5 @@
 /datum/reagents/metabolism
-	var/metabolism_class //CHEM_TOUCH, CHEM_INGEST, or CHEM_BLOOD
+	var/metabolism_class //CHEM_TOUCH, CHEM_INGEST, CHEM_BLOOD, or CHEM_DIGEST
 	var/mob/living/carbon/parent
 
 /datum/reagents/metabolism/New(max = 100, mob/living/carbon/parent_mob, met_class)

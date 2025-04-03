@@ -4,6 +4,8 @@
 	taste_mult = 0
 	reagent_state = SOLID
 	color = "#ffffff"
+	hydration_value = 0.65
+	ingest_met = REM * 0.25
 
 	glass_icon = DRINK_ICON_NOISY
 
@@ -20,14 +22,21 @@
 
 	. = ..()
 
-	M.add_nutrition(nutrition * removed)
-	M.dizziness = max(0, M.dizziness + adj_dizzy)
-	M.drowsyness = max(0, M.drowsyness + adj_drowsy)
-	M.sleeping = max(0, M.sleeping + adj_sleepy)
 	if(adj_temp > 0 && M.bodytemperature < 310) // 310 is the normal bodytemp. 310.055
 		M.bodytemperature = min(310, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
 	if(adj_temp < 0 && M.bodytemperature > 310)
 		M.bodytemperature = min(310, M.bodytemperature - (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
+
+/datum/reagent/caffeine/affect_digest(mob/living/carbon/M, alien, removed)
+	if(alien == IS_DIONA)
+		return
+
+	. = ..()
+
+	M.add_nutrition(nutrition * removed)
+	M.dizziness = max(0, M.dizziness + adj_dizzy)
+	M.drowsyness = max(0, M.drowsyness + adj_drowsy)
+	M.sleeping = max(0, M.sleeping + adj_sleepy)
 	if(adj_speed)
 		M.add_up_to_chemical_effect(adj_speed < 0 ? CE_SLOWDOWN : CE_SPEEDBOOST, adj_speed)
 
@@ -92,7 +101,7 @@
 	glass_name = "cafe latte"
 	glass_desc = "A nice, strong and refreshing beverage while you are reading."
 
-/datum/reagent/caffeine/coffee/cafe_latte/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/caffeine/coffee/cafe_latte/affect_digest(mob/living/carbon/M, alien, removed)
 	. = ..()
 	M.heal_organ_damage(0.5 * removed, 0)
 
@@ -102,6 +111,7 @@
 	taste_description = "bitter coldness"
 	color = "#888179"
 	adj_temp = -5
+	hydration_value = 0.8
 
 	glass_required = "square"
 	glass_icon_state = "coffeelatte"
@@ -121,7 +131,7 @@
 	glass_name = "soy latte"
 	glass_desc = "A nice and refrshing beverage while you are reading."
 
-/datum/reagent/caffeine/coffee/soy_latte/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/caffeine/coffee/soy_latte/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	M.heal_organ_damage(0.5 * removed, 0)
 
@@ -137,6 +147,6 @@
 	glass_name = "cappuccino"
 	glass_desc = "A nice, light coffee beverage made of espresso and steamed milk."
 
-/datum/reagent/caffeine/coffee/cappuccino/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/caffeine/coffee/cappuccino/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	M.heal_organ_damage(0.5 * removed, 0)

@@ -555,6 +555,8 @@
 			bloodstr.metabolize()
 		if(ingested && handle_ingested)
 			metabolize_ingested_reagents()
+		if(digested && handle_digested)
+			metabolize_digested_reagents()
 
 	for(var/T in chem_doses)
 		if(bloodstr.has_reagent(T) || ingested.has_reagent(T) || touching.has_reagent(T))

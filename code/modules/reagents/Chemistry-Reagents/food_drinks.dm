@@ -38,7 +38,7 @@
 		return
 	affect_ingest(M, alien, removed)
 
-/datum/reagent/nutriment/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/nutriment/affect_digest(mob/living/carbon/M, alien, removed)
 	M.heal_organ_damage(0.5 * removed, 0) //what
 
 	adjust_nutrition(M, alien, removed)
@@ -60,7 +60,7 @@
 	taste_description = "some sort of protein"
 	color = "#440000"
 
-/datum/reagent/nutriment/protein/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/nutriment/protein/affect_digest(mob/living/carbon/M, alien, removed)
 	switch(alien)
 		if(IS_SKRELL)
 			M.adjustToxLoss(0.5 * removed)
@@ -90,7 +90,7 @@
 	nutriment_factor = 10
 	color = "#ffff00"
 
-/datum/reagent/honey/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/honey/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	M.heal_organ_damage(0.5 * removed, 0)
 	M.add_chemical_effect(CE_PAINKILLER, 1)
@@ -141,6 +141,7 @@
 	reagent_state = LIQUID
 	nutriment_factor = 2
 	color = "#792300"
+	hydration_value = 0.7
 
 /datum/reagent/nutriment/ketchup
 	name = "Ketchup"
@@ -149,6 +150,7 @@
 	reagent_state = LIQUID
 	nutriment_factor = 5
 	color = "#731008"
+	hydration_value = 0.5
 
 /datum/reagent/nutriment/barbecue
 	name = "Barbecue Sauce"
@@ -157,6 +159,7 @@
 	reagent_state = LIQUID
 	nutriment_factor = 5
 	color = "#4f330f"
+	hydration_value = 0.4
 
 /datum/reagent/nutriment/garlicsauce
 	name = "Garlic Sauce"
@@ -165,6 +168,7 @@
 	reagent_state = LIQUID
 	nutriment_factor = 4
 	color = "#d8c045"
+	hydration_value = 0.4
 
 /datum/reagent/nutriment/rice
 	name = "Rice"
@@ -183,6 +187,7 @@
 	reagent_state = LIQUID
 	nutriment_factor = 1
 	color = "#801e28"
+	hydration_value = 0.4
 
 /datum/reagent/nutriment/cornoil
 	name = "Corn Oil"
@@ -216,6 +221,7 @@
 	reagent_state = LIQUID
 	nutriment_factor = 2
 	color = "#899613"
+	hydration_value = 0.7
 
 /datum/reagent/nutriment/sprinkles
 	name = "Sprinkles"
@@ -275,6 +281,7 @@
 	taste_mult = 1.5
 	reagent_state = LIQUID
 	color = "#b31008"
+	ingest_met = REM
 
 /datum/reagent/frostoil/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
@@ -293,6 +300,7 @@
 	taste_mult = 1.5
 	reagent_state = LIQUID
 	color = "#b31008"
+	ingest_met = REM
 	var/agony_dose = 5
 	var/agony_amount = 2
 	var/discomfort_message = "<span class='danger'>Your insides feel uncomfortably hot!</span>"
@@ -334,6 +342,7 @@
 	agony_amount = 4
 	discomfort_message = "<span class='danger'>You feel like your insides are burning!</span>"
 	metroid_temp_adj = 15
+	ingest_met = REM
 
 /datum/reagent/capsaicin/condensed/affect_touch(mob/living/carbon/M, alien, removed)
 	var/eyes_covered = 0
@@ -410,6 +419,8 @@
 	description = "Uh, some kind of drink."
 	reagent_state = LIQUID
 	color = "#e78108"
+	ingest_met = REM * 0.25
+	hydration_value = 1.0
 	var/nutrition = 0 // Per unit
 	var/adj_dizzy = 0 // Per tick
 	var/adj_drowsy = 0
@@ -422,19 +433,27 @@
 	return
 
 /datum/reagent/drink/affect_ingest(mob/living/carbon/M, alien, removed)
-	M.add_nutrition(nutrition * removed)
-	M.dizziness = max(0, M.dizziness + adj_dizzy)
-	M.drowsyness = max(0, M.drowsyness + adj_drowsy)
-	M.sleeping = max(0, M.sleeping + adj_sleepy)
 	if(adj_temp > 0 && M.bodytemperature < 310) // 310 is the normal bodytemp. 310.055
 		M.bodytemperature = min(310, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
 	if(adj_temp < 0 && M.bodytemperature > 310)
 		M.bodytemperature = min(310, M.bodytemperature - (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
+
+/datum/reagent/drink/affect_digest(mob/living/carbon/M, alien, removed)
+	if(hydration_value > 0)
+		M.add_hydration(removed * hydration_value)
+	else if(hydration_value < 0)
+		M.remove_hydration(removed * hydration_value)
+
+	M.add_nutrition(nutrition * removed)
+	M.dizziness = max(0, M.dizziness + adj_dizzy)
+	M.drowsyness = max(0, M.drowsyness + adj_drowsy)
+	M.sleeping = max(0, M.sleeping + adj_sleepy)
+
 	if(adj_speed)
 		M.add_up_to_chemical_effect(adj_speed < 0 ? CE_SLOWDOWN : CE_SPEEDBOOST, adj_speed)
 
 // Juices
-/datum/reagent/drink/juice/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/juice/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	M.immunity = min(M.immunity + 0.25, M.immunity_norm*1.5)
 	var/effective_dose = M.chem_doses[type]/2
@@ -479,7 +498,7 @@
 	glass_name = "carrot juice"
 	glass_desc = "It is just like a carrot but without crunching."
 
-/datum/reagent/drink/juice/carrot/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/juice/carrot/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	M.reagents.add_reagent(/datum/reagent/imidazoline, removed * 0.2)
 
@@ -512,7 +531,7 @@
 	glass_name = "lime juice"
 	glass_desc = "A glass of sweet-sour lime juice"
 
-/datum/reagent/drink/juice/lime/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/juice/lime/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	if(alien == IS_DIONA)
 		return
@@ -527,7 +546,7 @@
 	glass_name = "orange juice"
 	glass_desc = "Vitamins! Yay!"
 
-/datum/reagent/drink/juice/orange/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/juice/orange/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	if(alien == IS_DIONA)
 		return
@@ -587,7 +606,7 @@
 	glass_name = "tomato juice"
 	glass_desc = "Are you sure this is tomato juice?"
 
-/datum/reagent/drink/juice/tomato/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/juice/tomato/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	if(alien == IS_DIONA)
 		return
@@ -611,7 +630,7 @@
 	glass_name = "apple juice"
 	glass_desc = "Two cups a day keep the doctor away!"
 
-/datum/reagent/drink/juice/apple/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/juice/apple/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	if(alien == IS_DIONA)
 		return
@@ -633,6 +652,7 @@
 	description = "An opaque white liquid produced by the mammary glands of mammals."
 	taste_description = "milk"
 	color = "#dfdfdf"
+	hydration_value = 0.9
 
 	glass_name = "milk"
 	glass_desc = "White and nutritious goodness!"
@@ -646,7 +666,7 @@
 	glass_name = "chocolate milk"
 	glass_desc = "Deliciously fattening!"
 
-/datum/reagent/drink/milk/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/milk/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	if(alien == IS_DIONA)
 		return
@@ -658,6 +678,7 @@
 	description = "The fatty, still liquid part of milk. Why don't you mix this with sum scotch, eh?"
 	taste_description = "creamy milk"
 	color = "#dfd7af"
+	hydration_value = 0.6
 
 	glass_name = "cream"
 	glass_desc = "Ewwww..."
@@ -667,6 +688,7 @@
 	description = "An opaque white liquid made from soybeans."
 	taste_description = "soy milk"
 	color = "#dfdfc7"
+	hydration_value = 0.9
 
 	glass_name = "soy milk"
 	glass_desc = "White and nutritious soy goodness!"
@@ -685,7 +707,7 @@
 	glass_desc = "Tasty black tea, it has antioxidants, it's good for you!"
 	glass_special = list(DRINK_VAPOR)
 
-/datum/reagent/drink/tea/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/tea/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	if(alien == IS_DIONA)
 		return
@@ -712,6 +734,7 @@
 	color = "#5B250C"
 	nutrition = 2
 	adj_temp = 30
+	hydration_value = 0.9
 
 	glass_required = "square"
 	glass_name = "hot chocolate"
@@ -799,13 +822,14 @@
 	taste_description = "creamy vanilla"
 	color = "#aee5e4"
 	adj_temp = -9
+	hydration_value = 0.7
 
 	glass_required = "shake"
 	glass_icon_state = "milkshake"
 	glass_name = "milkshake"
 	glass_desc = "Glorious brainfreezing mixture."
 
-/datum/reagent/milkshake/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/milkshake/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 
 	var/effective_dose = M.chem_doses[type]/2
@@ -834,7 +858,7 @@
 	glass_name = "Rewriter"
 	glass_desc = "The secret of the sanctuary of the Libarian..."
 
-/datum/reagent/drink/rewriter/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/rewriter/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	M.make_jittery(5)
 
@@ -851,7 +875,7 @@
 	glass_desc = "Don't cry, Don't raise your eye, It's only nuclear wasteland"
 	glass_special = list(DRINK_FIZZ)
 
-/datum/reagent/drink/nuka_cola/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/nuka_cola/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
 	M.make_jittery(20)
 	M.druggy = max(M.druggy, 30)
@@ -863,6 +887,7 @@
 	description = "Made in the modern day with proper pomegranate substitute. Who uses real fruit, anyways?"
 	taste_description = "100% pure pomegranate"
 	color = "#ff004f"
+	hydration_value = 0.4
 
 	glass_required = "shake"
 	glass_icon_state = "grenadinesyrup"
@@ -949,7 +974,7 @@
 	glass_desc = "Looks like a liquid power cell."
 	glass_special = list(DRINK_FIZZ)
 
-/datum/reagent/drink/energy/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/drink/energy/affect_digest(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
 		return
 	..()
@@ -976,6 +1001,7 @@
 	reagent_state = SOLID
 	nutrition = 1
 	color = "#302000"
+	hydration_value = -0.75 // Dry, you see
 
 /datum/reagent/drink/hot_ramen
 	name = "Hot Ramen"
@@ -985,6 +1011,7 @@
 	color = "#302000"
 	nutrition = 5
 	adj_temp = 5
+	hydration_value = 0.5
 
 /datum/reagent/drink/hell_ramen
 	name = "Hell Ramen"
@@ -993,6 +1020,7 @@
 	reagent_state = LIQUID
 	color = "#302000"
 	nutrition = 5
+	hydration_value = 0.5
 
 /datum/reagent/drink/hell_ramen/affect_ingest(mob/living/carbon/M, alien, removed)
 	..()
@@ -1007,6 +1035,7 @@
 	reagent_state = SOLID
 	nutrition = 1
 	color = "#302000"
+	hydration_value = -0.75
 
 /datum/reagent/drink/chicken_soup
 	name = "Chicken Soup"
@@ -1016,6 +1045,7 @@
 	color = "#c9b042"
 	nutrition = 5
 	adj_temp = 5
+	hydration_value = 0.8
 
 	glass_name = "chicken soup"
 	glass_desc = "A hot cup'o'soup."
@@ -1058,7 +1088,7 @@
 	scannable = TRUE
 	flags = IGNORE_MOB_SIZE
 
-/datum/reagent/magical_custard/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/magical_custard/affect_digest(mob/living/carbon/M, alien, removed)
 	M.heal_organ_damage(5 * removed, 5 * removed)
 
 /datum/reagent/astrotame

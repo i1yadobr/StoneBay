@@ -14,6 +14,7 @@
 	name = "Blood"
 	reagent_state = LIQUID
 	metabolism = REM * 5
+	hydration_value = 0.51 // Scientific
 	color = "#c80000"
 	taste_description = "iron"
 	taste_mult = 1.3
@@ -95,7 +96,9 @@
 		if(B)
 			B.blood_DNA["UNKNOWN DNA STRUCTURE"] = "X*"
 
-/datum/reagent/blood/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/blood/affect_digest(mob/living/carbon/M, alien, removed)
+	M.add_hydration(removed * hydration_value)
+
 	if(M.chem_doses[type] > 5)
 		M.adjustToxLoss(removed)
 	if(M.chem_doses[type] > 15)
