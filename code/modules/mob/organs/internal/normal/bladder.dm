@@ -27,6 +27,9 @@
 	icon_state = "bladder-prosthetic"
 	dead_icon = "bladder-prosthetic-br"
 
+/obj/item/organ/internal/bladder/proc/get_fullness()
+	return stored.total_volume + waste_to_spawn
+
 /obj/item/organ/internal/bladder/proc/rupture()
 	// Abdominal cavity here
 	return

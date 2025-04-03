@@ -54,8 +54,19 @@
 		return
 
 	var/normalized_nutrition = nutrition / body_build.stomach_capacity
+
+	var/res_slowdown = 0.0
+
 	if(normalized_nutrition < STOMACH_FULLNESS_LOW)
-		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown, slowdown = (1.25 - (normalized_nutrition / 100)))
+		res_slowdown = 1.25 - (normalized_nutrition / 100)
+
+	if(SHOULD_HAVE_ORGAN(BP_STOMACH))
+		var/obj/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+		if(S)
+			res_slowdown = max(res_slowdown, (S.get_fullness() - 100) / 50)
+
+	if(res_slowdown)
+		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown, slowdown = res_slowdown)
 	else if(has_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown))
 		remove_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown)
 

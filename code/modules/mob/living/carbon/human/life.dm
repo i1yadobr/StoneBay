@@ -833,10 +833,46 @@
 						nutrition_icon.icon_state = "hydration5"
 
 		if(bladder_icon)
-			/// TODO
+			if(!config.health.simulate_digestion || !SHOULD_HAVE_ORGAN(BP_BLADDER))
+				bladder_icon.icon_state = "temp0"
+			else
+				var/obj/item/organ/internal/bladder/B = internal_organs_by_name[BP_BLADDER]
+				var/bladder_fullness = B ? B.get_fullness() : INFINITY
+
+				switch(bladder_fullness)
+					if(95 to INFINITY)
+						bladder_icon.icon_state = "bladder0"
+					if(80 to 95)
+						bladder_icon.icon_state = "bladder1"
+					if(60 to 80)
+						bladder_icon.icon_state = "bladder2"
+					if(40 to 60)
+						bladder_icon.icon_state = "bladder3"
+					if(20 to 40)
+						bladder_icon.icon_state = "bladder4"
+					else
+						bladder_icon.icon_state = "bladder5"
 
 		if(bowels_icon)
-			/// TODO
+			if(!config.health.simulate_digestion || !SHOULD_HAVE_ORGAN(BP_INTESTINES))
+				bowels_icon.icon_state = "temp0"
+			else
+				var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+				var/bowels_fullness = I ? I.get_fullness() : INFINITY
+
+				switch(bowels_fullness)
+					if(95 to INFINITY)
+						bowels_icon.icon_state = "bowels0"
+					if(80 to 95)
+						bowels_icon.icon_state = "bowels1"
+					if(60 to 80)
+						bowels_icon.icon_state = "bowels2"
+					if(40 to 60)
+						bowels_icon.icon_state = "bowels3"
+					if(20 to 40)
+						bowels_icon.icon_state = "bowels4"
+					else
+						bowels_icon.icon_state = "bowels5"
 
 		if(full_prosthetic)
 			var/obj/item/organ/internal/cell/C = internal_organs_by_name[BP_CELL]
