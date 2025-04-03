@@ -183,7 +183,7 @@
 /datum/reagent/carbon/affect_digest(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
 		return
-	var/datum/reagents/ingested = M.get_digested_reagents()
+	var/datum/reagents/digested = M.get_digested_reagents()
 	if(digested?.reagent_list.len > 1) // Need to have at least 2 reagents - cabon and something to remove
 		var/effect = 1 / (digested.reagent_list.len - 1)
 		for(var/datum/reagent/R in digested.reagent_list)

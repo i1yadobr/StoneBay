@@ -88,7 +88,7 @@
 					to_chat(user, SPAN("warning", "\The [blocked] is in the way!"))
 					return
 				fullness /= H.body_build.stomach_capacity // Here we take body build into consideration
-				if(H.SHOULD_HAVE_ORGAN(BP_STOMACH))
+				if(H.should_have_organ(BP_STOMACH))
 					var/obj/item/organ/internal/stomach/S = H.internal_organs_by_name[BP_STOMACH]
 					if(S)
 						complex_fullness = TRUE
@@ -96,7 +96,7 @@
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 
 			if(complex_fullness)
-				var/obj/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+				var/obj/item/organ/internal/stomach/S = C.internal_organs_by_name[BP_STOMACH]
 				var/stomach_fullness = S.get_fullness()
 				if(stomach_fullness >= S.volume_hardcap)
 					to_chat(C, SPAN("danger", "You cannot force any more of [src] to go down your throat."))
@@ -129,11 +129,13 @@
 			if(!M.can_force_feed(user, src))
 				return
 
+			var/stomach_fullness
 			var/obj/item/organ/internal/stomach/S
 			if(ishuman(C))
 				var/mob/living/carbon/human/H = M
-				if(H.SHOULD_HAVE_ORGAN(BP_STOMACH))
+				if(H.should_have_organ(BP_STOMACH))
 					S = H.internal_organs_by_name[BP_STOMACH]
+					stomach_fullness = S.get_fullness()
 
 			if(S)
 				if(stomach_fullness >= S.volume_hardcap)
@@ -163,7 +165,7 @@
 			playsound(M.loc, SFX_EAT, rand(45, 60), FALSE)
 			if(reagents.total_volume)
 				if(!ishuman(C))
-					reagents.trans_to_mob(C, transfer_size, CHEM_INGEST)
+					reagents.trans_to_mob(C, bitesize, CHEM_INGEST)
 					bitecount++
 					update_icon()
 					On_Consume(C)
@@ -174,7 +176,7 @@
 				IC.split_from(src, H)
 
 				if(!H.ingest(IC)) // We ingest it normally or fallback to the old way if something goes wrong.
-					IC.reagents.trans_to_mob(H, transfer_size, CHEM_INGEST)
+					IC.reagents.trans_to_mob(H, bitesize, CHEM_INGEST)
 					qdel(IC)
 
 			return TRUE

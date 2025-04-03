@@ -444,13 +444,13 @@
 		if(HYDRATION_NONE to HYDRATION_LOW)
 			detox_efficiency -= 0.1
 		if(HYDRATION_HIGH to HYDRATION_SUPER)
-			if(hydration_efficiency >= 0) // No effect if kidneys are broken
+			if(detox_efficiency >= 0) // No effect if kidneys are broken
 				detox_efficiency += 0.1
 		if(HYDRATION_SUPER to INFINITY)
-			if(hydration_efficiency >= 0) // No effect if kidneys are broken
+			if(detox_efficiency >= 0) // No effect if kidneys are broken
 				detox_efficiency += 0.25
 
-	adjustToxLoss(detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
+	adjustToxLoss(-1 * detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
 
 	// For simplicity, let's assume that quarter the blood volume equals the amount of toxins that's enough to completely wreck the body.
 	// The actual volume of toxins we can extract via dyalisis is x0.1 of toxLoss.
@@ -461,22 +461,22 @@
 		adjustBrainLoss(1.0)
 		Weaken(30)
 		Paralyse(20)
-		adjustInternalDamage(5.0, TRUE)
+		adjustInternalLoss(5.0, TRUE)
 
 	if(toxic_severity >= 75) // tb 105+, we're in immediate danger, critical poisoning
 		if(prob(10))
 			losebreath++
-			adjustInternalDamage(5.0, TRUE)
+			adjustInternalLoss(5.0, TRUE)
 
 		make_dizzy(6)
-		slurring = max(M.slurring, 30)
+		slurring = max(slurring, 30)
 		eye_blurry = max(eye_blurry, 10)
 
 		if(prob(5))
 			Weaken(3)
-			to_chat(src, SPAN("danger", "<b>You feel extremely [pick("nauseous", "sick", "weak"]!</b>"))
+			to_chat(src, SPAN("danger", "<b>You feel extremely [pick("nauseous", "sick", "weak")]!</b>"))
 			vomit(timevomit = 3, silent = TRUE)
-			adjustInternalDamage(3.0)
+			adjustInternalLoss(3.0)
 
 		kidney_strain = 2.5
 
@@ -485,13 +485,13 @@
 		eye_blurry = max(eye_blurry, 5)
 
 		if(prob(10))
-			slurring = max(M.slurring, 10)
-			adjustInternalDamage(3.0, TRUE)
+			slurring = max(slurring, 10)
+			adjustInternalLoss(3.0, TRUE)
 
 		if(prob(5))
-			to_chat(src, SPAN("danger", "You feel really [pick("nauseous", "sick", "weak"]!"))
+			to_chat(src, SPAN("danger", "You feel really [pick("nauseous", "sick", "weak")]!"))
 			vomit(timevomit = 2, silent = TRUE)
-			adjustInternalDamage(2.0) // Things start to become dangerous.
+			adjustInternalLoss(2.0) // Things start to become dangerous.
 
 		kidney_strain = 2.0
 
@@ -500,22 +500,22 @@
 
 		if(prob(10))
 			eye_blurry = max(eye_blurry, 5)
-			adjustInternalDamage(1.5, TRUE)
+			adjustInternalLoss(1.5, TRUE)
 
 		if(prob(3))
-			to_chat(src, SPAN("danger", "You feel [pick("nauseous", "sick", "weak"]..."))
+			to_chat(src, SPAN("danger", "You feel [pick("nauseous", "sick", "weak")]..."))
 			vomit(timevomit = 1, silent = TRUE)
-			adjustInternalDamage(1.0) // Generalized organ damage in addition to the above. Still not lethal, but nasty.
+			adjustInternalLoss(1.0) // Generalized organ damage in addition to the above. Still not lethal, but nasty.
 
 		kidney_strain = 1.5
 
 	else if(toxic_severity >= 5) // tb 7+, we start to notice that something's off, casual poisoning
 		if(prob(10))
 			make_dizzy(6)
-			adjustInternalDamage(1.0, TRUE) // Not enough to be life-threatening, but may cause trouble if we have ongoing health issues.
+			adjustInternalLoss(1.0, TRUE) // Not enough to be life-threatening, but may cause trouble if we have ongoing health issues.
 
 		if(prob(1))
-			to_chat(src, "<i>You feel a bit [pick("nauseous", "sick", "weak"]...</i>")
+			to_chat(src, "<i>You feel a bit [pick("nauseous", "sick", "weak")]...</i>")
 			vomit(timevomit = 1, level = 2, silent = TRUE)
 
 	else if(toxic_severity)

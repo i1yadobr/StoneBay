@@ -356,6 +356,15 @@
 /mob/living/proc/adjustCloneLoss(amount)
 	return
 
+/mob/living/proc/getInternalLoss()
+	return 0
+
+/mob/living/proc/setInternalLoss(amount)
+	return
+
+/mob/living/proc/adjustInternalLoss(amount)
+	return
+
 /mob/living/proc/getMaxHealth()
 	var/result = maxHealth
 	for(var/datum/modifier/M in modifiers)

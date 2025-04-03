@@ -536,7 +536,7 @@
 			. += THERMAL_PROTECTION_HAND_RIGHT
 	return min(1, .)
 
-/mob/living/carbon/human/handle_chemicals_in_body(handle_touching = TRUE, handle_bloodstr = TRUE, handle_ingested = TRUE)
+/mob/living/carbon/human/handle_chemicals_in_body(handle_touching = TRUE, handle_bloodstr = TRUE, handle_ingested = TRUE, handle_digested = TRUE)
 	chem_effects.Cut()
 	update_chem_slowdown(null) // This can not be optimized unless chem effects are cached properly.
 
@@ -547,6 +547,7 @@
 		return
 
 	var/datum/reagents/metabolism/ingested = get_ingested_reagents()
+	var/datum/reagents/metabolism/digested = get_digested_reagents()
 
 	if(reagents)
 		if(touching && handle_touching)
@@ -833,7 +834,7 @@
 						nutrition_icon.icon_state = "hydration5"
 
 		if(bladder_icon)
-			if(!config.health.simulate_digestion || !SHOULD_HAVE_ORGAN(BP_BLADDER))
+			if(!config.health.simulate_digestion || !should_have_organ(BP_BLADDER))
 				bladder_icon.icon_state = "temp0"
 			else
 				var/obj/item/organ/internal/bladder/B = internal_organs_by_name[BP_BLADDER]
@@ -854,7 +855,7 @@
 						bladder_icon.icon_state = "bladder5"
 
 		if(bowels_icon)
-			if(!config.health.simulate_digestion || !SHOULD_HAVE_ORGAN(BP_INTESTINES))
+			if(!config.health.simulate_digestion || !should_have_organ(BP_INTESTINES))
 				bowels_icon.icon_state = "temp0"
 			else
 				var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]

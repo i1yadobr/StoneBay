@@ -462,7 +462,7 @@
 
 /datum/reagent/urates
 	name = "Urates"
-	desc = "Products of metabolism, a normal component of urine."
+	description = "Products of metabolism, a normal component of urine."
 	taste_description = "acrid saltness"
 	reagent_state = SOLID
 	taste_mult = 2.0
@@ -473,7 +473,7 @@
 
 /datum/reagent/bodily_waste
 	name = "Bodily Waste"
-	desc = "Waste products of the digestive system."
+	description = "Waste products of the digestive system."
 	taste_description = "most literal shit"
 	taste_mult = 2.5
 	color = "#7f4323"

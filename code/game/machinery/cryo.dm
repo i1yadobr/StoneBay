@@ -310,7 +310,7 @@
 		if(beaker && !has_cryo_medicine && !emagged)
 			beaker.reagents.trans_to_mob(occupant, REM, CHEM_BLOOD)
 		if(occupant.InStasis() && !biochemical_stasis)
-			occupant.handle_chemicals_in_body(handle_ingested = FALSE)
+			occupant.handle_chemicals_in_body(handle_ingested = FALSE, handle_digested = FALSE)
 		if(emagged)
 			if(prob(5))
 				to_chat(occupant, SPAN("notice", "You feel strange."))

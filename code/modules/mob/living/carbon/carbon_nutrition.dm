@@ -60,7 +60,7 @@
 	if(normalized_nutrition < STOMACH_FULLNESS_LOW)
 		res_slowdown = 1.25 - (normalized_nutrition / 100)
 
-	if(SHOULD_HAVE_ORGAN(BP_STOMACH))
+	if(should_have_organ(BP_STOMACH))
 		var/obj/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
 		if(S)
 			res_slowdown = max(res_slowdown, (S.get_fullness() - 100) / 50)

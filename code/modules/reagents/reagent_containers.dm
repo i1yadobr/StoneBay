@@ -172,7 +172,7 @@
 
 			if(ishuman(H))
 				var/mob/living/carbon/human/HU = H
-				if(!H.ingest_reagents(reagents, amount_per_transfer_from_this))
+				if(!HU.ingest_reagents(reagents, amount_per_transfer_from_this))
 					reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
 			else
 				reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)

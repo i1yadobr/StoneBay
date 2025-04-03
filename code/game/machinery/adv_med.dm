@@ -430,9 +430,9 @@
 
 	if(H.nutrition < 150)
 		data["warnings"] += list("Warning: Very low nutrition value detected")
-	if(H.hydration < <= HYDRATION_LOW)
+	if(H.hydration <= HYDRATION_LOW)
 		data["warnings"] += list("Warning: Mild dehydration detected.")
-	else(H.hydration <= HYDRATION_NONE)
+	else if(H.hydration <= HYDRATION_NONE)
 		data["warnings"] += list("Warning: Severe dehydration detected.")
 
 	data["brute_severity"] = capitalize(get_severity(H.getBruteLoss()))
@@ -582,9 +582,9 @@
 	dat += "<b>Body temperature:</b> [CONV_KELVIN_CELSIUS(H.get_body_temperature())]&deg;C ([H.get_body_temperature()*1.8-459.67]&deg;F)"
 	if(H.nutrition < 150)
 		dat += SPAN("warning", "Warning: Very low nutrition value detected.")
-	if(H.hydration < <= HYDRATION_LOW)
+	if(H.hydration <= HYDRATION_LOW)
 		dat += SPAN("warning", "Warning: Mild dehydration detected.")
-	else(H.hydration <= HYDRATION_NONE)
+	else if(H.hydration <= HYDRATION_NONE)
 		dat += SPAN("warning", "Warning: Severe dehydration detected.")
 
 	dat += "<b>Physical Trauma:</b>\t[get_severity(H.getBruteLoss())]"

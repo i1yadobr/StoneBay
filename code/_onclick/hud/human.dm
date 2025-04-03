@@ -284,7 +284,6 @@
 		mymob.hydration_icon.screen_loc = ui_nutrition
 		infodisplay |= mymob.hydration_icon
 
-
 	else if(hud_data.has_bladder)
 		mymob.bladder_icon = new /atom/movable/screen()
 		mymob.bladder_icon.icon = ui_style
@@ -293,7 +292,6 @@
 		mymob.bladder_icon.screen_loc = ui_bladder
 		infodisplay |= mymob.bladder_icon
 
-
 	else if(hud_data.has_bowels)
 		mymob.bowels_icon = new /atom/movable/screen()
 		mymob.bowels_icon.icon = ui_style
@@ -301,7 +299,6 @@
 		mymob.bowels_icon.SetName("bowels")
 		mymob.bowels_icon.screen_loc = ui_bladder
 		infodisplay |= mymob.bowels_icon
-
 
 	if(hud_data.has_poise)
 		mymob.poise_icon = new /atom/movable/screen()

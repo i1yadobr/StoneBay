@@ -25,7 +25,7 @@
 
 /obj/item/organ/internal/stomach/New()
 	..()
-	ingested = new /datum/reagents/metabolism(contents_hardcap, owner, CHEM_INGEST)
+	ingested = new /datum/reagents/metabolism(volume_hardcap, owner, CHEM_INGEST)
 	if(!ingested.my_atom)
 		ingested.my_atom = src
 
@@ -120,7 +120,7 @@
 	ingested.trans_to_mob(owner, reagents_processing, CHEM_DIGEST)
 
 	// Meanwhile, items get processed one by one, starting with the oldest.
-	if(next_processing < world.time)
+	if(next_processing < world.time && currently_processing)
 		return
 
 	if(currently_processing)

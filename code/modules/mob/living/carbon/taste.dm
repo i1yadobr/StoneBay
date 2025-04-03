@@ -10,7 +10,7 @@ calculate text size per text.
 
 		var/dull_taste = FALSE
 		if(H.should_have_organ(BP_TONGUE))
-			var/obj/item/organ/internal/tongue/L = internal_organs_by_name[BP_TONGUE]
+			var/obj/item/organ/internal/tongue/L = taster.internal_organs_by_name[BP_TONGUE]
 			if(L?.is_bruised())
 				dull_taste = TRUE
 		if(H.isSynthetic())

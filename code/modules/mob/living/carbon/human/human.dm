@@ -801,7 +801,7 @@
 		R.trans_to_mob(src, amount, CHEM_INGEST)
 		return TRUE
 
-	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+	var/obj/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
 	if(S)
 		if(S.is_broken() && prob(15))
 			custom_pain("Your stomach cramps!", 10)
@@ -809,7 +809,7 @@
 		return TRUE
 
 	if(should_have_organ(BP_INTESTINES))
-		var/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
 		if(!I)
 			// Abdominal cavity here
 			custom_pain("Your guts cramp!", 10)
@@ -829,7 +829,7 @@
 	if(!should_have_organ(BP_STOMACH))
 		return FALSE // Whatever fallback we rely on.
 
-	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+	var/obj/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
 	if(S)
 		S.ingest(AM)
 
@@ -844,7 +844,7 @@
 		return TRUE
 
 	if(should_have_organ(BP_INTESTINES))
-		var/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
 		if(!I) // No stomach nor intestines, tough time to have a supper.
 			// Abdominal cavity here
 			custom_pain("Your guts cramp!", 10)

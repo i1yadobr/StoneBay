@@ -84,7 +84,6 @@
 		next_processing = world.time + 5 SECONDS
 		// Ruptured intestines, chance to send stuff into the abdominal cavity.
 		if(is_broken() && prob(damage - min_broken_damage))
-			var/messaged_already = FALSE
 			for(var/obj/item/I in contents)
 				if(I == food_organ)
 					continue

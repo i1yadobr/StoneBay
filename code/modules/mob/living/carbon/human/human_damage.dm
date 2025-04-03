@@ -263,7 +263,7 @@
 	else
 		toxic_buildup += amount
 
-/mob/living/carbon/human/proc/getInternalLoss() // In the year 2025, we finally have separate toxLoss and internalLoss. Awe.
+/mob/living/carbon/human/getInternalLoss() // In the year 2025, we finally have separate toxLoss and internalLoss. Awe.
 	if(isSynthetic() || isundead(src))
 		return 0
 	var/amount = 0
@@ -271,11 +271,11 @@
 		amount += I.damage
 	return amount
 
-/mob/living/carbon/human/proc/setInternalLoss(amount)
+/mob/living/carbon/human/setInternalLoss(amount)
 	if(!isSynthetic() && !isundead(src))
 		adjustInternalLoss(getInternalLoss() - amount)
 
-/mob/living/carbon/human/proc/adjustInternalLoss(amount, toxic = FALSE)
+/mob/living/carbon/human/adjustInternalLoss(amount, toxic = FALSE)
 	if(isSynthetic() || isundead(src))
 		return
 

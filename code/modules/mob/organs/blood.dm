@@ -112,7 +112,7 @@
 	// No longer tied to liver. Bone marrow goes brr.
 	if(should_have_organ(BP_HEART))
 		var/regen_value = 0
-		if(hydration >= HYDRATION_SUPER_HIGH)
+		if(hydration >= HYDRATION_SUPER)
 			regen_value = 2.0
 		else if(hydration >= HYDRATION_HIGH)
 			regen_value = 1.5
@@ -122,7 +122,7 @@
 			regen_value = 0.5
 
 		if(regen_value)
-			regenerate_blood(0.1 * regen_value + owner.chem_effects[CE_BLOODRESTORE])
+			regenerate_blood(0.1 * regen_value + chem_effects[CE_BLOODRESTORE])
 			remove_hydration(DEFAULT_THIRST_FACTOR * regen_value) // Regenerating blood dehydrates ya.
 
 /****************************************************

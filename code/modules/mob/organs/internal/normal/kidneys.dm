@@ -55,8 +55,8 @@
 
 	owner.remove_hydration(dynamic_hydration_consumption)
 
-	if(owner.SHOULD_HAVE_ORGAN(BP_BLADDER))
-		var/obj/item/organ/internal/bladder/L = internal_organs_by_name[BP_BLADDER]
+	if(owner.should_have_organ(BP_BLADDER))
+		var/obj/item/organ/internal/bladder/L = owner.internal_organs_by_name[BP_BLADDER]
 		if(!L)
 			// Abdominal cavity here.
 			return

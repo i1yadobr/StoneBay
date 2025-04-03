@@ -4,19 +4,15 @@
 	icon_state = "tongue"
 	dead_icon = "tongue"
 	organ_tag = BP_TONGUE
-	parent_organ = BP_HEADTRUE
+	parent_organ = BP_HEAD
 	relative_size = 10
 	max_damage = 45
-
-/obj/item/organ/internal/tongue/Destroy()
-	QDEL_NULL(stored)
-	. = ..()
 
 /obj/item/organ/internal/tongue/robotize()
 	..()
 	SetName("lingual implant")
-	icon_state = "tongue-prosthetic"
-	dead_icon = "tongue-prosthetic-br"
+	icon_state = "voicebox"
+	dead_icon = "voicebox"
 
 /obj/item/organ/internal/tongue/take_internal_damage(amount, silent = FALSE)
 	var/oldbroken = is_broken()

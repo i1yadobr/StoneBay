@@ -217,7 +217,7 @@ english_only - whether to use traditional english letters only (for use in NanoU
 		if(letter == "р")
 			letter = pick("л", "pл", "'л", "p'л")
 		else if(letter == "Р")
-			letter = pick("Л", "Pл", "'Л", "P'л"))
+			letter = pick("Л", "Pл", "'Л", "P'л")
 		else if(lowertext(letter) in hissing)
 			if(lowertext(letter) == letter)
 				letter = "ф"
