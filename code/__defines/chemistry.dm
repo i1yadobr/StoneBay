@@ -1,5 +1,5 @@
 // Factor of how fast mob nutrition decreases
-#define DEFAULT_HUNGER_FACTOR 0.09
+#define DEFAULT_HUNGER_FACTOR 0.075
 #define DEFAULT_THIRST_FACTOR 0.025
 
 // Means 'Reagent Effect Multiplier'. This is how many units of reagent are consumed per tick

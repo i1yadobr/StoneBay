@@ -454,3 +454,24 @@
 	taste_description = "foamy dryness"
 	color = "#e2e2e2"
 	slippery = 0
+
+/datum/reagent/urates
+	name = "Urates"
+	desc = "Products of metabolism, a normal component of urine."
+	taste_description = "acrid saltness"
+	reagent_state = SOLID
+	taste_mult = 0.75
+	color = "#e0e254"
+
+	glass_name = "apple juice"
+	glass_desc = "Two cups a day keeps... Wait, is it?.."
+
+/datum/reagent/bodily_waste
+	name = "Bodily Waste"
+	desc = "Waste products of the digestive system."
+	taste_description = "most literal shit"
+	taste_mult = 1.0
+	color = "#7f4323"
+
+	glass_name = "shit"
+	glass_desc = "You should probably keep at least half the station away from this."

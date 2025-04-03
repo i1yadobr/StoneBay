@@ -797,24 +797,19 @@
 
 	taste(R, amount)
 
-	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
-	if(should_have_organ(BP_STOMACH))
-		if(S.is_broken())
-			if(prob(5))
-				// Abdominal cavity here
-				custom_pain("Your stomach cramps agonizingly!", 20)
-			else
-				R.trans_to_mob(src, amount, CHEM_INGEST)
-				return TRUE
-		else if(S)
-			R.trans_to_mob(src, amount, CHEM_INGEST)
-			return TRUE
-	else
+	if(!should_have_organ(BP_STOMACH))
 		R.trans_to_mob(src, amount, CHEM_INGEST)
 		return TRUE
 
-	var/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+	if(S)
+		if(S.is_broken() && prob(15))
+			custom_pain("Your stomach cramps!", 10)
+		R.trans_to_mob(src, amount, CHEM_INGEST)
+		return TRUE
+
 	if(should_have_organ(BP_INTESTINES))
+		var/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
 		if(!I)
 			// Abdominal cavity here
 			custom_pain("Your guts cramp!", 10)
@@ -822,6 +817,7 @@
 		else
 			R.trans_to_mob(src, amount, CHEM_DIGEST)
 		return TRUE
+
 	return FALSE
 
 /mob/living/carbon/human/proc/ingest(atom/movable/AM)
@@ -830,34 +826,32 @@
 
 	taste(AM.reagents, AM.reagents.total_volume)
 
-	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
-	if(should_have_organ(BP_STOMACH))
-		if(S.is_broken())
-			if(prob(10)) // To the cavity
-				// Abdominal cavity here
-				custom_pain("Your stomach cramps agonizingly!", 20)
-				return TRUE
-			else // To the intestines
-				custom_pain("Your stomach cramps!", 10)
-		else if(S.is_bruised())
-			if(prob(25))
-				custom_pain("Your stomach cramps a little.", 3)
-			S.ingest(AM)
-			return TRUE
-		else if(S)
-			S.ingest(AM)
-			return TRUE
-	else
+	if(!should_have_organ(BP_STOMACH))
 		return FALSE // Whatever fallback we rely on.
 
-	var/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+	var/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+	if(S)
+		S.ingest(AM)
+
+		if(S.is_broken())
+			if(prob(25))
+				custom_pain("Your stomach cramps agonizingly!", 20)
+			else
+				custom_pain("Your stomach cramps!", 10)
+		else if(S.is_bruised() && prob(25))
+			custom_pain("Your stomach cramps a little.", 3)
+
+		return TRUE
+
 	if(should_have_organ(BP_INTESTINES))
-		if(!I)
+		var/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		if(!I) // No stomach nor intestines, tough time to have a supper.
 			// Abdominal cavity here
 			custom_pain("Your guts cramp!", 10)
 		else
 			AM.forceMove(I)
 		return TRUE
+
 	return FALSE
 
 /mob/living/carbon/human/proc/vomit(toxvomit = 0, timevomit = 1, level = 3, silent = FALSE)

@@ -1,3 +1,7 @@
+
+//
+#define REALISTIC_METABOLISM 0
+
 // /mob/var/stat things.
 #define CONSCIOUS   0
 #define UNCONSCIOUS 1
@@ -414,7 +418,7 @@ GLOBAL_LIST_INIT(organ_tag_to_name, list(
 #define HYDRATION_LOW 45
 #define HYDRATION_NORMAL 90
 #define HYDRATION_HIGH 135
-#definy HYDRATION_SUPER 180
+#define HYDRATION_SUPER 180
 #define HYDRATION_LIMIT 240
 
 #define HUMAN_POWER_NONE    "None"

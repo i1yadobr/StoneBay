@@ -53,10 +53,9 @@
 
 // 0 is empty, 100 is softcap, 200 is hardcap
 /obj/item/organ/internal/stomach/proc/get_fullness()
-	var/ret = 0
+	var/ret = ingested.total_volume
 	for(var/obj/item/I in processing)
 		ret += get_storage_cost() * 15
-	ret += ingested.total_volume
 	return (ret / volume_softcap) * 100
 
 // This call needs to be split out to make sure that all the ingested things are metabolised
@@ -100,6 +99,7 @@
 		currently_processing = null
 		next_processing = 0
 
+	// Damaged stomach works slower.
 	var/reagents_processing = 1
 	var/processing_time = 1.0
 	if(is_broken())
@@ -109,8 +109,10 @@
 		reagents_processing = 0.75
 		processing_time = 1.5
 
+	// Reagents flow down evenly, as a mixture.
 	ingested.trans_to_mob(owner, reagents_processing, CHEM_DIGEST)
 
+	// Meanwhile, items get processed one by one, starting with the oldest.
 	if(next_processing < world.time)
 		return
 
@@ -119,16 +121,19 @@
 		if(!I)
 			// Abdominal cavity here.
 		else
-			if(istype(currently_processing, /obj/item/reagent_containers))
+			if(!is_broken() && istype(currently_processing, /obj/item/reagent_containers))
+				// Food, breaking down to reagents.
 				currently_processing.reagents.trans_to_mob(owner, currently_processing.reagents.total_volume, CHEM_DIGEST)
 				processing.Remove(currently_processing)
 				qdel(currently_processing)
 				currently_processing = null
 			else
+				// Not food, going down as it is.
 				processing.Remove(currently_processing)
 				currently_processing.forceMove(I)
 				currently_processing = null
 
+	// Choosing the next item to be digested.
 	if(processing.len)
 		currently_processing = processing[1]
 		processing_time *= (currently_processing.get_storage_cost() * 10)
