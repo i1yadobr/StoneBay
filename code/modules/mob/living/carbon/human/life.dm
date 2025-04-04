@@ -817,21 +817,21 @@
 
 		if(hydration_icon)
 			if(isundead(src))
-				nutrition_icon.icon_state = "hydration2"
+				hydration_icon.icon_state = "hydration2"
 			else
 				switch(hydration)
 					if(HYDRATION_SUPER to INFINITY)
-						nutrition_icon.icon_state = "hydration0"
+						hydration_icon.icon_state = "hydration0"
 					if(HYDRATION_HIGH to HYDRATION_SUPER)
-						nutrition_icon.icon_state = "hydration1"
+						hydration_icon.icon_state = "hydration1"
 					if(HYDRATION_NORMAL to HYDRATION_HIGH)
-						nutrition_icon.icon_state = "hydration2"
+						hydration_icon.icon_state = "hydration2"
 					if(HYDRATION_LOW to HYDRATION_NORMAL)
-						nutrition_icon.icon_state = "hydration3"
+						hydration_icon.icon_state = "hydration3"
 					if(HYDRATION_NONE + 0.1 to HYDRATION_LOW)
-						nutrition_icon.icon_state = "hydration4"
+						hydration_icon.icon_state = "hydration4"
 					else
-						nutrition_icon.icon_state = "hydration5"
+						hydration_icon.icon_state = "hydration5"
 
 		if(bladder_icon)
 			if(!config.health.simulate_digestion || !should_have_organ(BP_BLADDER))

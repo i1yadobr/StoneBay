@@ -4,7 +4,7 @@
 	description = "A ubiquitous chemical substance that is composed of hydrogen and oxygen."
 	reagent_state = LIQUID
 	color = "#3073b6"
-	metabolism = REM * 10
+	metabolism = REM
 	taste_description = "water"
 	glass_name = "water"
 	glass_desc = "The father of all refreshments."
@@ -23,7 +23,8 @@
 
 /datum/reagent/water/affect_digest(mob/living/carbon/M, alien, removed)
 	if(!istype(M, /mob/living/carbon/metroid) && alien != IS_METROID)
-		return ..()
+		..()
+		return
 	M.adjustToxLoss(2 * removed)
 
 /datum/reagent/water/touch_turf(turf/simulated/T)

@@ -21,5 +21,5 @@
 	if(owner && !owner.stat)
 		if(!oldbroken && is_broken())
 			to_chat(owner, SPAN("danger", "You can't feel your tongue!"))
-		else(!oldbruised && is_bruised())
+		else if(!oldbruised && is_bruised())
 			to_chat(owner, SPAN("danger", "Your tongue feels numb and bruised."))

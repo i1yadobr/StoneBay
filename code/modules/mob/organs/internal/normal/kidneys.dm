@@ -61,3 +61,5 @@
 			// Abdominal cavity here.
 			return
 		L.waste_to_spawn += dynamic_hydration_consumption
+
+	to_chat(owner, "KIDNEYS REPORT: [world.time SECONDS] | [owner.hydration]")

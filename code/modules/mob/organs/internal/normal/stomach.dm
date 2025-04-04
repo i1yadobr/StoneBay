@@ -99,7 +99,7 @@
 	var/effective_volume = ingested.total_volume + ingested.get_reagent_amount(/datum/reagent/ethanol)
 
 	// Just over the limit, the probability will be low. It rises a lot such that at double ingested it's 16% chance per tick.
-	if(effective_volume > 1.5 && (effective_volume / volume_softcap) ** 4)
+	if(effective_volume > (1.5 * volume_softcap) && prob((effective_volume / volume_softcap) ** 4))
 		owner.vomit()
 
 	if(QDELETED(currently_processing))
@@ -120,7 +120,7 @@
 	ingested.trans_to_mob(owner, reagents_processing, CHEM_DIGEST)
 
 	// Meanwhile, items get processed one by one, starting with the oldest.
-	if(next_processing < world.time && currently_processing)
+	if(world.time < next_processing)
 		return
 
 	if(currently_processing)
@@ -144,4 +144,4 @@
 	if(processing.len)
 		currently_processing = processing[1]
 		processing_time *= (currently_processing.get_storage_cost() * 10)
-		next_processing = world.time + (processing_time * 1 SECOND)
+		next_processing = world.time + (processing_time SECONDS)
