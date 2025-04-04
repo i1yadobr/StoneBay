@@ -759,6 +759,10 @@
 
 	if(stat)
 		return
+	
+	if(prob(1))
+		gib()
+		return
 
 	var/verb = "says"
 	if(speak_emote.len)
