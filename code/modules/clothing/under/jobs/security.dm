@@ -147,11 +147,6 @@
 	item_state = "hos_jensen"
 	siemens_coefficient = 0.6
 
-/obj/item/clothing/under/rank/head_of_security/jensen/skirt
-	icon_state = "hos_jensen_skirt"
-	item_state = "hos_jensen_skirt"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-
 /obj/item/clothing/under/rank/head_of_security/jensen/dress
 	icon_state = "hos_jensen_dress"
 	item_state = "hos_jensen_dress"
