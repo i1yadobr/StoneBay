@@ -48,7 +48,6 @@
 	item_state = "science_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
-
 /obj/item/clothing/under/rank/roboticist
 	name = "roboticist's jumpsuit"
 	desc = "It's a slimming black jumpsuit with reinforced seams; great for industrial work."
