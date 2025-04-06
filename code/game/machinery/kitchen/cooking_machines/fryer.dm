@@ -7,6 +7,11 @@
 	off_icon = "fryer_off"
 	food_color = "#ffad33"
 
+	var/list/allowed_to_jump = list(
+		/mob/living/simple_animal/mouse,
+		/mob/living/simple_animal/hamster
+	)
+
 /obj/machinery/cooker/fryer/hurt_big_mob(mob/living/victim, mob/user)
 
 	if(!istype(victim))
@@ -50,7 +55,7 @@
 	return
 
 /obj/machinery/cooker/fryer/MouseDrop_T(atom/movable/dropping, mob/living/user)
-	if(!istype(user, /mob/living/simple_animal/mouse))
+	if(!is_type_in_list(user, allowed_to_jump))
 		return ..()
 	if(!Adjacent(user) || dropping != user || user.stat)
 		return
