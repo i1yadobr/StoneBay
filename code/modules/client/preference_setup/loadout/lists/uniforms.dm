@@ -17,11 +17,11 @@
 	path = /obj/item/clothing/under/jumpdress
 	flags = GEAR_HAS_COLOR_SELECTION
 
-/datum/gear/uniform/department_jumpdress
+/datum/gear/uniform/department_dress
 	display_name = "departmental dress & skirts selection"
 	path = /obj/item/clothing/under/jumpdress
 
-/datum/gear/uniform/department_jumpdress/New()
+/datum/gear/uniform/department_dress/New()
 	..()
 	var/list/paths_to_jobs = list(
 	/datum/job = list(/obj/item/clothing/under/jumpdress),

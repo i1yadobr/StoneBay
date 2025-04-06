@@ -34,7 +34,7 @@
 		/obj/item/clothing/accessory/storage/black_vest,
 		/obj/item/clothing/under/rank/head_of_security,
 		/obj/item/clothing/under/rank/head_of_security/dress,
-		/obj/item/clothing/under/rank/head_of_security/jensen
+		/obj/item/clothing/under/rank/head_of_security/jensen,
 		/obj/item/clothing/under/rank/head_of_security/jensen/dress,
 		/obj/item/clothing/suit/armor/vest/hos_heavy,
 		/obj/item/clothing/suit/armor/hos,
