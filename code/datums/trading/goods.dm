@@ -82,7 +82,7 @@
 								/obj/item/circuitboard/mecha/durand 							= TRADER_BLACKLIST,
 								/obj/item/circuitboard/mecha/gygax 								= TRADER_BLACKLIST,
 								/obj/item/circuitboard/mecha/ripley 							= TRADER_BLACKLIST,
-								/obj/item/circuitboard/broken 									= TRADER_BLACKLIST,
+								/obj/item/circuitboard/broken 									= TRADER_BLACKLIST_ALL,
 								/obj/item/stack/cable_coil 										= TRADER_SUBTYPES_ONLY,
 								/obj/item/stack/cable_coil/cyborg 								= TRADER_BLACKLIST,
 								/obj/item/stack/cable_coil/random 								= TRADER_BLACKLIST,
