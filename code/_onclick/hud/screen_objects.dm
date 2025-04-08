@@ -90,15 +90,12 @@
 		var/list/screen_loc_params = splittext(PM["screen-loc"], ",")
 		var/list/screen_loc_X = splittext(screen_loc_params[1], ":")
 		var/list/screen_loc_Y = splittext(screen_loc_params[2], ":")
-		var/click_x = text2num(screen_loc_X[1]) * WORLD_ICON_SIZE + text2num(screen_loc_X[2]) - 144
-		var/click_y = text2num(screen_loc_Y[1]) * WORLD_ICON_SIZE + text2num(screen_loc_Y[2]) - 144
-		var/rows = round((S.contents.len-1)/7)
-		if(!rows)
-			click_y += WORLD_ICON_SIZE
+		var/click_x = text2num(screen_loc_X[1])*WORLD_ICON_SIZE + text2num(screen_loc_X[2]) - 4.5*WORLD_ICON_SIZE
+		var/click_y = text2num(screen_loc_Y[1])*WORLD_ICON_SIZE + text2num(screen_loc_Y[2]) - 2.5*WORLD_ICON_SIZE
 
 		for(var/i = 1, i <= S.contents.len, i++)
 			if(S.storage_ui.click_border["x"]["start"][i] <= click_x && click_x <= S.storage_ui.click_border["x"]["end"][i])
-				if(S.storage_ui.click_border["y"]["start"][i] >= click_y && click_y >= S.storage_ui.click_border["y"]["end"][i])
+				if(S.storage_ui.click_border["y"]["start"][i] <= click_y && click_y <= S.storage_ui.click_border["y"]["end"][i])
 					I = S.contents[i]
 					I?.Click(location, control, params)
 					return

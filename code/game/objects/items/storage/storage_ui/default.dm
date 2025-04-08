@@ -215,11 +215,11 @@
 		O.maptext = ""
 		O.hud_layerise()
 
-		click_border["x"]["start"] += (cx - 4) * 32
-		click_border["x"]["end"] += (cx - 4) * 32 + 32
+		click_border["x"]["start"] += (cx - 4) * WORLD_ICON_SIZE
+		click_border["x"]["end"] += (cx - 4) * WORLD_ICON_SIZE + WORLD_ICON_SIZE
 
-		click_border["y"]["start"] += (cy - 2-rows) * 32
-		click_border["y"]["end"] += (cy - 2-rows) * 32 - 32
+		click_border["y"]["start"] += (cy - 2) * WORLD_ICON_SIZE
+		click_border["y"]["end"] += (cy - 2) * WORLD_ICON_SIZE + WORLD_ICON_SIZE
 
 		cx++
 		if (cx > (4+cols))
@@ -259,7 +259,7 @@
 		click_border["x"]["end"].Add(endpoint)
 
 		click_border["y"]["start"].Add(0)
-		click_border["y"]["end"].Add(-WORLD_ICON_SIZE)
+		click_border["y"]["end"].Add(WORLD_ICON_SIZE)
 
 		stored_start.SetTransform(offset_x = startpoint)
 		stored_end.SetTransform(offset_x = endpoint - stored_cap_width)
