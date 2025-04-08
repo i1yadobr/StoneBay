@@ -16,7 +16,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 /obj/item/robot_module
 	name = "robot module"
 	icon = 'icons/obj/module.dmi'
-	icon_state = "std_mod"
+	icon_state = "robot_mod"
 	w_class = ITEM_SIZE_NO_CONTAINER
 	item_state = "electronic"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
@@ -233,6 +233,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/medical
 	name = "medical robot module"
+	icon_state = "robot_mod_cyan"
 	channels = list("Medical" = 1)
 	networks = list(NETWORK_MEDICAL)
 	subsystems = list(/datum/nano_module/crew_monitor)
@@ -405,6 +406,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/engineering
 	name = "engineering robot module"
+	icon_state = "robot_mod_orange"
 	channels = list("Engineering" = 1)
 	networks = list(NETWORK_ENGINEERING)
 	subsystems = list(/datum/nano_module/power_monitor, /datum/nano_module/supermatter_monitor)
@@ -605,6 +607,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/security
 	name = "security robot module"
+	icon_state = "robot_mod_red"
 	channels = list("Security" = 1)
 	networks = list(NETWORK_SECURITY)
 	subsystems = list(/datum/nano_module/crew_monitor, /datum/nano_module/digitalwarrant)
@@ -675,6 +678,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/janitor
 	name = "janitorial robot module"
+	icon_state = "robot_mod_yellow"
 	channels = list("Service" = 1)
 	hulls = list(
 		"Default" = new /datum/robot_hull/spider/robot_janitor,
@@ -720,6 +724,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/service
 	name = "service robot module"
+	icon_state = "robot_mod_yellow"
 	channels = list("Service" = 1)
 	languages = list(
 					LANGUAGE_SOL_COMMON	= 1,
@@ -794,6 +799,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/miner
 	name = "miner robot module"
+	icon_state = "robot_mod_brown"
 	subsystems = list(/datum/nano_module/supply)
 	channels = list("Supply" = 1, "Science" = 1)
 	networks = list(NETWORK_MINE)
@@ -844,7 +850,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/research
 	name = "research robot module"
-
+	icon_state = "robot_mod_purple"
 	channels = list("Science" = 1)
 	networks = list(NETWORK_RESEARCH)
 	hulls = list(
@@ -911,6 +917,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/syndicate
 	name = "illegal robot module"
+	icon_state = "robot_mod_black"
 	hide_on_manifest = 1
 	hulls = list(
 					"Dread" = new /datum/robot_hull/legs/securityrobot,
@@ -959,6 +966,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/drone
 	name = "drone module"
+	icon_state = "robot_mod_orange"
 	hide_on_manifest = 1
 	no_slip = 1
 	networks = list(NETWORK_ENGINEERING)

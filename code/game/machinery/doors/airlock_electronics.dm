@@ -131,12 +131,14 @@
 
 /obj/item/airlock_electronics/secure
 	name = "secure airlock electronics"
+	icon_state = "door_electronics_secure"
 	desc = "designed to be somewhat more resistant to hacking than standard electronics."
 	origin_tech = list(TECH_DATA = 2)
 	secure = 1
 
 /obj/item/airlock_electronics/brace
 	name = "airlock brace access circuit"
+	icon_state = "door_electronics_brace"
 	req_access = list()
 	locked = 0
 	lockable = 0
