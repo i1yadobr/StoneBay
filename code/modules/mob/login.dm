@@ -11,10 +11,10 @@
 			if( M.key && (M.key != key) )
 				var/matches
 				if( (M.lastKnownIP == client.address) )
-					matches += "IP ([client.address])"
+					matches += "IP ([MARK_IP(client.address)])"
 				if( (client.connection != "web") && (M.computer_id == client.computer_id) )
 					if(matches)	matches += " and "
-					matches += "ID ([client.computer_id])"
+					matches += "ID ([MARK_COMPUTER_ID(client.computer_id)])"
 					is_multikeying = 1
 				if(matches)
 					if(M.client)
