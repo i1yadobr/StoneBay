@@ -89,13 +89,16 @@
 		var/list/PM = params2list(params)
 		var/list/screen_loc_params = splittext(PM["screen-loc"], ",")
 		var/list/screen_loc_X = splittext(screen_loc_params[1], ":")
-		var/click_x = text2num(screen_loc_X[1]) * WORLD_ICON_SIZE + text2num(screen_loc_X[2]) - 144
+		var/list/screen_loc_Y = splittext(screen_loc_params[2], ":")
+		var/click_x = text2num(screen_loc_X[1])*WORLD_ICON_SIZE + text2num(screen_loc_X[2]) - 4.5*WORLD_ICON_SIZE
+		var/click_y = text2num(screen_loc_Y[1])*WORLD_ICON_SIZE + text2num(screen_loc_Y[2]) - 2.5*WORLD_ICON_SIZE
 
-		for(var/i = 1, i <= S.storage_ui.click_border_start.len, i++)
-			if(S.storage_ui.click_border_start[i] <= click_x && click_x <= S.storage_ui.click_border_end[i] && i <= S.contents.len)
-				I = S.contents[i]
-				I?.Click(location, control, params)
-				return
+		for(var/i = 1, i <= S.contents.len, i++)
+			if(S.storage_ui.click_border["x"]["start"][i] <= click_x && click_x <= S.storage_ui.click_border["x"]["end"][i])
+				if(S.storage_ui.click_border["y"]["start"][i] <= click_y && click_y <= S.storage_ui.click_border["y"]["end"][i])
+					I = S.contents[i]
+					I?.Click(location, control, params)
+					return
 
 	return TRUE
 
