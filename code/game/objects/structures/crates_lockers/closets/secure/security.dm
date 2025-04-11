@@ -162,6 +162,7 @@
 		/obj/item/clothing/under/rank/det,
 		/obj/item/clothing/under/rank/det/grey,
 		/obj/item/clothing/under/rank/det/black,
+		/obj/item/clothing/under/rank/det/brown,
 		/obj/item/clothing/suit/storage/toggle/det_trench,
 		/obj/item/clothing/suit/storage/toggle/det_trench/grey,
 		/obj/item/clothing/suit/storage/toggle/forensics/blue,

@@ -101,8 +101,8 @@
 
 /obj/item/clothing/under/rank/det/brown
 	desc = "A rumpled white dress shirt paired with old brown jeans."
-	icon_state = "detective_brown"
-	item_state = "detective_brown"
+	icon_state = "det_brown"
+	item_state = "det_brown"
 
 /obj/item/clothing/under/rank/det/grey
 	desc = "A serious-looking tan dress shirt paired with freshly-pressed black slacks."
