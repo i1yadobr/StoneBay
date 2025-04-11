@@ -5,6 +5,7 @@
 	real_name = "Cyborg"
 	icon = 'icons/mob/robots.dmi'
 	icon_state = "robot"
+	var/icon_panel = "ov" //Technical part of the code for correct operation of /mob/living/silicon/robot/proc/apply_hull
 	maxHealth = 200
 	health = 200
 	ignore_pull_slowdown = TRUE // Steel be strong
@@ -281,6 +282,7 @@
 	icontype = new_icontype
 	icon = new_hull.icon
 	icon_state = new_hull.icon_state
+	icon_panel = new_hull.icon_panel
 	footstep_sound = new_hull.footstep_sound
 
 	update_icon()
@@ -837,7 +839,7 @@
 			AddOverlays("[eye_icon_state]+ea")
 
 	if(opened)
-		var/panelprefix = custom_sprite ? module_hulls[icontype] : "ov"
+		var/panelprefix = custom_sprite ? module_hulls[icontype] : module_hulls[icontype].icon_panel
 		if(wiresexposed)
 			AddOverlays("[panelprefix]-openpanel +w")
 		else if(cell)

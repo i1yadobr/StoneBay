@@ -366,6 +366,7 @@
 #define SFX_FOOTSTEP_BLANK          "footstep_blank"
 #define SFX_FOOTSTEP_ROBOT_LEGS     "footstep_robot_legs"
 #define SFX_FOOTSTEP_ROBOT_SPIDER   "footstep_robot_spider"
+#define SFX_FOOTSTEP_ROBOT_SPHERE   "footstep_robot_sphere"
 #define SFX_FOOTSTEP_STAIRS         "footstep_stairs"
 #define SFX_FOOTSTEP_SWAMP          "footstep_swamp"
 

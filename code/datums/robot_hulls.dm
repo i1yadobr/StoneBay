@@ -1,11 +1,13 @@
 /datum/robot_hull
 	var/icon = 'icons/mob/robots.dmi'
 	var/icon_state = "robot"
+	var/icon_panel = "ov"
 	var/footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
 
-/datum/robot_hull/New(icon, icon_state, footstep_sound)
+/datum/robot_hull/New(icon, icon_state, icon_panel, footstep_sound)
 	src.icon = icon ? icon : initial(src.icon)
 	src.icon_state = icon_state ? icon_state : initial(src.icon_state)
+	src.icon_panel = icon_panel ? icon_panel : initial(src.icon_panel)
 	src.footstep_sound = footstep_sound ? footstep_sound : initial(src.footstep_sound)
 
 /datum/robot_hull/spider
@@ -121,6 +123,7 @@
 	icon_state = "engiborg+tread"
 
 /datum/robot_hull/flying
+	icon_panel = "drone"
 	footstep_sound = null
 
 /datum/robot_hull/flying/drone_standard
@@ -186,3 +189,31 @@
 
 /datum/robot_hull/drone/construction
 	icon_state = "constructiondrone"
+
+/datum/robot_hull/sphere
+	icon_panel = "kerfur"
+	footstep_sound = SFX_FOOTSTEP_ROBOT_SPHERE
+
+/datum/robot_hull/sphere/kerfur
+	icon_state = "kerfur"
+
+/datum/robot_hull/sphere/kerfur_service
+	icon_state = "kerfur-service"
+
+/datum/robot_hull/sphere/kerfur_janitor
+	icon_state = "kerfur-janitor"
+
+/datum/robot_hull/sphere/kerfur_security
+	icon_state = "kerfur-security"
+
+/datum/robot_hull/sphere/kerfur_miner
+	icon_state = "kerfur-miner"
+
+/datum/robot_hull/sphere/kerfur_science
+	icon_state = "kerfur-science"
+
+/datum/robot_hull/sphere/kerfur_medical
+	icon_state = "kerfur-medical"
+
+/datum/robot_hull/sphere/kerfur_engineering
+	icon_state = "kerfur-engineer"
