@@ -296,7 +296,7 @@
 				user.visible_message("<i><b>[user]</b> has done \his <b>[P.times]</b> push-up!</i>",
 									 "<i>You've done your <b>[P.times]</b> push-up!</i>", checkghosts = FALSE)
 			user.remove_nutrition(1)
-			user.remove_hydration(0.25)
+			user.remove_hydration(5.0)
 
 		P.down = !P.down
 		sleep(12 * mult)

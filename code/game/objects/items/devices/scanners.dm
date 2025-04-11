@@ -532,7 +532,7 @@ REAGENT SCANNER
 
 /obj/item/device/mass_spectrometer/New()
 	..()
-	create_reagents(5)
+	create_reagents(50)
 
 /obj/item/device/mass_spectrometer/on_reagent_change()
 	update_icon()

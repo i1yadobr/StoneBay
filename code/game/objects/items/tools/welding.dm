@@ -419,7 +419,7 @@
 	icon_state = "fuel_m"
 	w_class = ITEM_SIZE_SMALL
 	center_of_mass = "x=13;y=9"
-	var/max_fuel = 20
+	var/max_fuel = 0.2 LITERS
 	var/can_remove = 1
 
 /obj/item/welder_tank/Initialize()

@@ -33,7 +33,7 @@
 
 /obj/machinery/microwave/Initialize()
 	. = ..()
-	create_reagents(100)
+	create_reagents(1 LITER)
 	if (!available_recipes)
 		available_recipes = new
 		for (var/type in (typesof(/datum/recipe)-/datum/recipe))
@@ -396,7 +396,7 @@
 	src.reagents.clear_reagents()
 	var/obj/item/reagent_containers/food/badrecipe/ffuu = new(src)
 	ffuu.reagents.add_reagent(/datum/reagent/carbon, amount)
-	ffuu.reagents.add_reagent(/datum/reagent/toxin, amount/10)
+	ffuu.reagents.add_reagent(/datum/reagent/toxin, amount / 100)
 	return ffuu
 
 /obj/machinery/microwave/Topic(href, href_list)

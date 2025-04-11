@@ -16,7 +16,7 @@
 	strength = STR_HIGH
 	movespeed_modifier = /datum/movespeed_modifier/unathi
 	brute_mod = 0.8
-	blood_volume = 800
+	blood_volume = 8 LITERS
 	num_alternate_languages = 2
 	secondary_langs = list(LANGUAGE_UNATHI)
 	name_language = LANGUAGE_UNATHI

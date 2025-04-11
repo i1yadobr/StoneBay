@@ -45,7 +45,7 @@
 
 /obj/machinery/radiocarbon_spectrometer/New()
 	..()
-	create_reagents(500)
+	create_reagents(5 LITERS)
 	coolant_reagents_purity[/datum/reagent/water] = 0.5
 	coolant_reagents_purity[/datum/reagent/caffeine/coffee/icecoffee] = 0.6
 	coolant_reagents_purity[/datum/reagent/drink/tea/icetea] = 0.6

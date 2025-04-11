@@ -11,7 +11,7 @@
 	species_language = LANGUAGE_GALCOM // galcom is default for sapient life in game.
 
 /mob/living/carbon/brain/New()
-	create_reagents(1000)
+	create_reagents(1 LITER)
 	..()
 
 /mob/living/carbon/brain/Destroy()

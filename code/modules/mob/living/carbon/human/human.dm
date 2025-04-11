@@ -873,9 +873,12 @@
 				sleep(100 / timevomit)	//and you have 10 more for mad dash to the bucket
 				Stun(3)
 				var/obj/item/organ/internal/stomach/stomach = internal_organs_by_name[BP_STOMACH]
-				if(nutrition <= STOMACH_FULLNESS_SUPER_LOW || !istype(stomach))
+				if(!istype(stomach))
+					custom_emote(VISIBLE_MESSAGE, "dry heaves.", "AUTO_EMOTE")
+				else if(!(nutrition > STOMACH_FULLNESS_SUPER_LOW || stomach.get_fullness() > 5))
 					custom_emote(VISIBLE_MESSAGE, "dry heaves.", "AUTO_EMOTE")
 				else
+					// Legacy stomach_contents (mostly used by mobs by now)
 					for(var/a in stomach_contents)
 						var/atom/movable/A = a
 						A.forceMove(get_turf(src))
@@ -883,14 +886,29 @@
 						if(src.species.gluttonous & GLUT_PROJECTILE_VOMIT)
 							A.throw_at(get_edge_target_turf(src, dir), 7, 1, src)
 
+					// Actual stomach contents
+					for(var/a in stomach.processing)
+						if(prob(20))
+							continue // Something may remain
+						var/atom/movable/A = a
+						if(A == stomach.currently_processing)
+							continue // Gripping tight on whatever we're processing right now
+						A.forceMove(get_turf(src))
+						stomach.processing.Remove(a)
+					stomach.recalc_items_volume()
+
+					// Getting rid of reagents in stomach, randoming from 30 ml to the whole contents
+					stomach.ingested.remove_any(rand(30, stomach.ingested.total_volume))
+
 					src.visible_message("<span class='warning'>[src] throws up!</span>","<span class='warning'>You throw up!</span>")
 					playsound(loc, 'sound/effects/splat.ogg', 50, 1)
 
 					var/turf/location = loc
 					if(istype(location, /turf/simulated))
 						location.add_vomit_floor(src, toxvomit, stomach.ingested)
-					remove_nutrition(30)
-					remove_hydration(20)
+
+					remove_nutrition(10.0)
+					remove_hydration(rand(50, 200))
 		sleep(350)	//wait 35 seconds before next volley
 		lastpuke = 0
 
@@ -1628,7 +1646,11 @@
 			return 0
 
 /mob/living/carbon/human/get_adjusted_metabolism(metabolism)
-	return ..() * (species ? species.metabolism_mod : 1)
+	. = ..(metabolism)
+	for(var/datum/modifier/mod in modifiers)
+		if(!isnull(mod.metabolism_percent))
+			. *= mod.metabolism_percent
+	. *= (species ? species.metabolism_mod : 1)
 
 /mob/living/carbon/human/is_invisible_to(mob/viewer)
 	return (is_cloaked() || ..())

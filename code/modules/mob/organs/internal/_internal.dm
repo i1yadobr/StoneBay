@@ -185,6 +185,9 @@
 	if(status & ORGAN_DEAD)
 		return
 
+	if(damage >= max_damage)
+		return
+
 	var/heal_value = autoheal_value * owner.coagulation
 
 	if(damage >= min_broken_damage)

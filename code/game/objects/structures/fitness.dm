@@ -25,7 +25,7 @@
 			playsound(src.loc, 'sound/effects/woodhit.ogg', 25, 1, -1)
 			user.do_attack_animation(src)
 			user.remove_nutrition(3.5)
-			user.remove_hydration(0.75)
+			user.remove_hydration(10.0)
 			to_chat(user, "<span class='warning'>You [pick(hit_message)] \the [src].</span>")
 
 /obj/structure/fitness/weightlifter
@@ -71,7 +71,7 @@
 		if(do_after(user, usetime))
 			playsound(src.loc, 'sound/effects/weightdrop.ogg', 25, 1)
 			user.remove_nutrition(weight * 5.0)
-			user.remove_hydration(0.5 * weight)
+			user.remove_hydration(7.5 * weight)
 			if((MUTATION_HULK in user.mutations) || (MUTATION_STRONG in user.mutations))
 				to_chat(user, SPAN("notice", "You shred the weights without barely noticing it."))
 			else

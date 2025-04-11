@@ -20,7 +20,7 @@
 
 /obj/item/organ/internal/intestines/New()
 	..()
-	digested = new /datum/reagents/metabolism(240, owner, CHEM_DIGEST)
+	digested = new /datum/reagents/metabolism(2.4 LITERS, owner ? owner : null, CHEM_DIGEST)
 	if(!digested.my_atom)
 		digested.my_atom = src
 
@@ -62,6 +62,8 @@
 /obj/item/organ/internal/intestines/proc/metabolize()
 	if(is_usable())
 		digested.metabolize()
+	else
+		digested.metabolize(TRUE)
 
 /obj/item/organ/internal/intestines/take_internal_damage(amount, silent = FALSE)
 	var/oldbroken = is_broken()

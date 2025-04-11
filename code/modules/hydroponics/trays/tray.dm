@@ -167,9 +167,9 @@
 /obj/machinery/portable_atmospherics/hydroponics/Initialize()
 	. = ..()
 	temp_chem_holder = new()
-	temp_chem_holder.create_reagents(10)
+	temp_chem_holder.create_reagents(100)
 	temp_chem_holder.atom_flags |= ATOM_FLAG_OPEN_CONTAINER
-	create_reagents(200)
+	create_reagents(2 LITERS)
 	if(mechanical)
 		connect()
 	update_icon()

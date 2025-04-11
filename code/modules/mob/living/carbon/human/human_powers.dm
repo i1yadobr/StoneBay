@@ -375,8 +375,8 @@
 
 	var/turf/T = get_turf(src)
 	var/obj/effect/effect/water/chempuff/chem = new(T)
-	chem.create_reagents(10)
-	chem.reagents.add_reagent(/datum/reagent/toxin/zombie, 2)
+	chem.create_reagents(100)
+	chem.reagents.add_reagent(/datum/reagent/toxin/zombie, 20)
 	chem.set_up(get_step(T, dir), 2, 10)
 	playsound(T, 'sound/hallucinations/wail.ogg', 20, 1)
 

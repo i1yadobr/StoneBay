@@ -92,7 +92,7 @@ var/list/organ_cache = list()
 			blood_DNA = list()
 		blood_DNA[dna.unique_enzymes] = dna.b_type
 
-	create_reagents(5 * (w_class-1)**2)
+	create_reagents(50 * (w_class-1)**2)
 	reagents.add_reagent(/datum/reagent/nutriment/protein, reagents.maximum_volume)
 
 /obj/item/organ/proc/set_dna(datum/dna/new_dna)

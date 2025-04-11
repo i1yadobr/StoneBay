@@ -58,7 +58,7 @@
 	var/virus_immune
 	var/short_sighted                         // Permanent weldervision.
 	var/light_sensitive                       // Ditto, but requires sunglasses to fix
-	var/blood_volume = 560                    // Initial blood volume.
+	var/blood_volume = 5.6 LITERS             // Initial blood volume.
 	var/coagulation = COAGULATION_NORMAL      // Coagulation value when liver is healthy OR none is needed.
 	var/hunger_factor = DEFAULT_HUNGER_FACTOR // Multiplier for hunger.
 	var/taste_sensitivity = TASTE_NORMAL      // How sensitive the species is to minute tastes.

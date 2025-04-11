@@ -13,9 +13,10 @@
 	icon_state = "emptycondiment"
 	item_state = "emptycondiment"
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
-	possible_transfer_amounts = "1;5;10"
 	center_of_mass = "x=16;y=6"
-	volume = 50
+	volume = 0.3 LITERS
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = "5;10;15;25;30;50;60;100;150;250;300"
 	lid_type = null
 	can_flip = TRUE
 
@@ -171,9 +172,9 @@
 	startswith = list(/datum/reagent/sugar)
 
 /obj/item/reagent_containers/vessel/condiment/small
-	possible_transfer_amounts = "1;20"
+	volume = 0.1 LITERS
 	amount_per_transfer_from_this = 1
-	volume = 20
+	possible_transfer_amounts = "1;5;10;15;25;30;50;60;100"
 
 /obj/item/reagent_containers/vessel/condiment/small/on_reagent_change()
 	return
@@ -205,6 +206,9 @@
 	icon_state = "flour"
 	item_state = "flour"
 	randpixel = 10
+	volume = 1.0 LITER
+	amount_per_transfer_from_this = 50
+	possible_transfer_amounts = "50;60;100;150;250;300;1000"
 	startswith = list(/datum/reagent/nutriment/flour)
 
 /obj/item/reagent_containers/vessel/condiment/flour/on_reagent_change()

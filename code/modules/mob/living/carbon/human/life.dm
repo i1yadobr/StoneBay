@@ -562,7 +562,7 @@
 	for(var/T in chem_doses)
 		if(bloodstr.has_reagent(T) || ingested.has_reagent(T) || touching.has_reagent(T))
 			continue
-		chem_doses -= T
+		chem_doses.Remove(T)
 
 	// Trace chemicals
 	for(var/T in chem_traces)
@@ -571,7 +571,7 @@
 		var/datum/reagent/R = T
 		chem_traces[T] -= initial(R.metabolism) * initial(R.excretion)
 		if(chem_traces[T] <= 0)
-			chem_traces -= T
+			chem_traces.Remove(T)
 
 	updatehealth()
 
@@ -690,7 +690,7 @@
 
 			if(!isSynthetic(src))
 				if(should_have_organ(BP_KIDNEYS))
-					var/obj/item/organ/internal/kidneys/K
+					var/obj/item/organ/internal/kidneys/K = internal_organs_by_name[BP_KIDNEYS]
 					if(K)
 						K.process_hydration()
 					else
@@ -715,7 +715,7 @@
 							if(HYDRATION_NONE to HYDRATION_LOW)
 								to_chat(src, SPAN("notice", "[pick("It'd be nice to have a drink", "Your mouth is getting dry", "Some water wouldn't hurt")]..."))
 
-		//Undead does not eat.nor drink.
+		//Undead does not eat nor drink.
 		else
 			set_nutrition(300)
 			set_hydration(HYDRATION_NORMAL)
@@ -828,7 +828,7 @@
 						hydration_icon.icon_state = "hydration2"
 					if(HYDRATION_LOW to HYDRATION_NORMAL)
 						hydration_icon.icon_state = "hydration3"
-					if(HYDRATION_NONE + 0.1 to HYDRATION_LOW)
+					if(HYDRATION_NONE + 10 to HYDRATION_LOW)
 						hydration_icon.icon_state = "hydration4"
 					else
 						hydration_icon.icon_state = "hydration5"

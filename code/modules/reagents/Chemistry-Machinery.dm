@@ -23,7 +23,7 @@
 	var/pillsprite = "1"
 	var/client/has_sprites = list()
 	var/max_pill_count = 20
-	var/capacity = 120
+	var/capacity = 1.5 LITERS
 	component_types = list(
 		/obj/item/circuitboard/chemmaster,
 		/obj/item/device/healthanalyzer,
@@ -247,17 +247,17 @@
 				create_bottle(usr)
 			else
 				var/obj/item/reagent_containers/vessel/condiment/P = new /obj/item/reagent_containers/vessel/condiment(src.loc)
-				reagents.trans_to_obj(P, 50)
+				reagents.trans_to_obj(P, 300)
 
 		else if(href_list["createbottle_small"])
 			if(!spend_material(1000, usr))
 				return
-			create_bottle(usr, 30, "small")
+			create_bottle(usr, 100, "small")
 
 		else if(href_list["createbottle_big"])
 			if(!spend_material(3000, usr))
 				return
-			create_bottle(usr, 90, "big")
+			create_bottle(usr, 500, "big")
 
 		else if(href_list["change_pill"])
 			#define MAX_PILL_SPRITE 25 //max icon state of the pill sprites
@@ -294,7 +294,7 @@
 	src.updateUsrDialog()
 	return
 
-/obj/machinery/chem_master/proc/create_bottle(mob/user = null, reagent_amount = 60, bottle_type = null)
+/obj/machinery/chem_master/proc/create_bottle(mob/user = null, reagent_amount = 250, bottle_type = null)
 	var/bottle_name
 	if(user)
 		bottle_name = sanitizeSafe(input(user, "Name:", "Name your bottle!", reagents.get_master_reagent_name()), MAX_NAME_LEN)
@@ -378,14 +378,14 @@
 			dat += "Empty<BR>"
 		dat += "<HR>Stored glass amount: [matter_storage]/[matter_storage_max]<BR>"
 		if(!condi)
-			dat += "<HR><BR><A href='?src=\ref[src];createpill=1'>Create pill (30 units max)</A><a href=\"?src=\ref[src]&change_pill=1\"><img src=\"pill[pillsprite].png\" /></a><BR>"
+			dat += "<HR><BR><A href='?src=\ref[src];createpill=1'>Create pill (30 ml max)</A><a href=\"?src=\ref[src]&change_pill=1\"><img src=\"pill[pillsprite].png\" /></a><BR>"
 			dat += "<A href='?src=\ref[src];createpill_multiple=1'>Create multiple pills</A><BR>"
-			dat +=  "<A href='?src=\ref[src];createbottle_small=1'>Create small bottle  | 30 units max | Glass: 1000</A><BR>"
-			dat +=        "<A href='?src=\ref[src];createbottle=1'>Create normal bottle | 60 units max | Glass: 2000</A><BR>"
-			dat +=    "<A href='?src=\ref[src];createbottle_big=1'>Create big bottle    | 90 units max | Glass: 3000</A>"
+			dat +=  "<A href='?src=\ref[src];createbottle_small=1'>Create small bottle  | 100 ml max | Glass: 1000</A><BR>"
+			dat +=        "<A href='?src=\ref[src];createbottle=1'>Create normal bottle | 250 ml max | Glass: 2000</A><BR>"
+			dat +=    "<A href='?src=\ref[src];createbottle_big=1'>Create big bottle    | 500 ml max | Glass: 3000</A>"
 		else
-			dat += "<A href='?src=\ref[src];createbottle=1'>Create bottle | 50 units max | Glass: 2000</A><BR>"
-			dat += "<A href='?src=\ref[src];condiment_pack=1'>Create condiment pack | 10 units max | Glass: 50</A>"
+			dat += "<A href='?src=\ref[src];createbottle=1'>Create bottle | 300 ml max | Glass: 2000</A><BR>"
+			dat += "<A href='?src=\ref[src];condiment_pack=1'>Create condiment pack | 10 ml max | Glass: 50</A>"
 	if(!condi)
 		show_browser(user, "<meta charset=\"utf-8\"><TITLE>Chemmaster 3000</TITLE>Chemmaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
 	else

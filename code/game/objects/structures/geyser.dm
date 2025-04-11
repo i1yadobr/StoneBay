@@ -11,8 +11,8 @@
 	var/reagent_id = /datum/reagent/fuel
 	/// How much reagents we add every think() (5 seconds wait)
 	var/potency = 2
-	var/max_volume = 500
-	var/start_volume = 50
+	var/max_volume = 5 LITERS
+	var/start_volume = 0.5 LITERS
 
 /obj/structure/geyser/proc/start_chemming()
 	activated = TRUE
@@ -49,7 +49,7 @@
 
 /obj/structure/geyser/random
 	erupting_state = null
-	var/list/options = list(/datum/reagent/toxin/plasma = 10, /datum/reagent/water = 10, /datum/reagent/toxin/chlorine = 6)
+	var/list/options = list(/datum/reagent/toxin/plasma = 100, /datum/reagent/water = 100, /datum/reagent/toxin/chlorine = 60)
 
 /obj/structure/geyser/random/Initialize()
 	. = ..()

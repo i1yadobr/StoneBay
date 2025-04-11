@@ -35,9 +35,9 @@
 	trash = /obj/item/trash/tweakers
 	filling_color = "#7d5f46"
 	nutriment_desc = list("nougat-n-nuts" = 6)
-	nutriment_amt = 6
-	startswith = list(/datum/reagent/sugar = 3)
-	bitesize = 3
+	nutriment_amt = 45
+	startswith = list(/datum/reagent/sugar = 15)
+	bitesize = 15
 
 /obj/item/reagent_containers/food/packaged/sweetroid
 	name = "Sweetroid bar"
@@ -46,9 +46,9 @@
 	trash = /obj/item/trash/sweetroid
 	filling_color = "#5ba652"
 	nutriment_desc = list("chewy sourness" = 6)
-	nutriment_amt = 6
-	startswith = list(/datum/reagent/sugar = 3)
-	bitesize = 3
+	nutriment_amt = 45
+	startswith = list(/datum/reagent/sugar = 15)
+	bitesize = 15
 
 /obj/item/reagent_containers/food/packaged/sugarmatter
 	name = "SugarMatter bar"
@@ -56,10 +56,10 @@
 	icon_state = "sugarmatter"
 	trash = /obj/item/trash/sugarmatter
 	filling_color = "#5ba652"
-	nutriment_desc = list("extreme sweetness" = 6)
-	nutriment_amt = 6
-	startswith = list(/datum/reagent/sugar = 6)
-	bitesize = 4
+	nutriment_desc = list("extreme sweetness" = 9)
+	nutriment_amt = 30
+	startswith = list(/datum/reagent/sugar = 30)
+	bitesize = 15
 
 /obj/item/reagent_containers/food/packaged/jellaws
 	name = "Jellaw's Jellybaton"

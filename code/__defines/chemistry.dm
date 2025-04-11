@@ -1,7 +1,9 @@
 // Factor of how fast mob nutrition decreases
 #define DEFAULT_HUNGER_FACTOR 0.075
-#define DEFAULT_THIRST_FACTOR 0.025
+#define DEFAULT_THIRST_FACTOR 0.25
 
+#define METABOLISM_FALLBACK -1
+#define METABOLISM_NONE      0
 // Means 'Reagent Effect Multiplier'. This is how many units of reagent are consumed per tick
 #define REM 0.2
 
@@ -12,7 +14,8 @@
 
 #define MINIMUM_CHEMICAL_VOLUME 0.01
 
-#define REAGENTS_PER_MATERIAL_SHEET 20
+// 200ml per sheet
+#define REAGENTS_PER_MATERIAL_SHEET 200
 
 #define SOLID 1
 #define LIQUID 2
@@ -20,7 +23,7 @@
 
 #define REAGENTS_OVERDOSE 30
 
-#define CHEM_SYNTH_ENERGY 500 // How much energy does it take to synthesize 1 unit of chemical, in Joules.
+#define CHEM_SYNTH_ENERGY 50 // How much energy does it take to synthesize 1 unit of chemical, in Joules.
 
 // Some on_mob_life() procs check for alien races.
 #define IS_DIONA   1

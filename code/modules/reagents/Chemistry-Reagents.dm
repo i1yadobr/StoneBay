@@ -9,13 +9,19 @@
 	var/volume = 0
 
 	var/datum/radiation/radiation
+
 	var/metabolism = REM // This would be 0.2 normally
-	var/ingest_met = 0 // Speeds up/slows down actual metabolism speed, not to be confused with absorbability. When set to default (0), doesn't metabolize in stomach.
-	var/touch_met = 0 // When set to default (0), uses metabolism instead.
-	var/digest_met = 0 // When set to default (0), uses metabolism instead.
+
+	var/ingest_met = REM * 0.25           // Ingested metabolism speed multiplier, not to be confused with absorbability.
+	var/touch_met  = METABOLISM_FALLBACK  // Touch met-
+	var/digest_met = METABOLISM_FALLBACK  // Digest met-
+
 	var/excretion = 1.0 // Rate at which metabolism products (chem_traces) reduce, relative to metabolism
-	var/ingest_absorbability = 0.5 // How well the reagent affects blood when ingested
-	var/digest_absorbability = 0.5 // How well the reagent affects blood when digested
+
+	var/ingest_absorbability = 0.5 // Ratio of the volume that affects the blood from the stomach. The rest is discarded. Has no effect if there's no ingest_met.
+	var/digest_absorbability = 0.5 // Ratio of the volume that affects the blood from the intestines. The rest is discarded. Has no effect if there's no digest_met.
+
+	var/forced_metabolism = FALSE // Should we force metabolism (i.e. acid affecting a broken stomach).
 	var/hydration_value = 0 // How well the reagent replenishes hydration per unit
 	var/overdose = INFINITY
 	var/scannable = 0 // Shows up on health analyzers.
@@ -52,8 +58,10 @@
 /datum/reagent/proc/on_mob_life(mob/living/carbon/M, alien, location) // Currently, on_mob_life is called on carbons. Any interaction with non-carbon mobs (lube) will need to be done in touch_mob.
 	if(!istype(M))
 		return
+
 	if(!(flags & AFFECTS_DEAD) && M.is_ic_dead() && (world.time - M.timeofdeath > 150))
 		return
+
 	if(overdose && (location != CHEM_TOUCH))
 		var/overdose_threshold = overdose * (flags & IGNORE_MOB_SIZE? 1 : MOB_MEDIUM/M.mob_size)
 		if(volume > overdose_threshold)
@@ -61,35 +69,43 @@
 
 	//determine the metabolism rate
 	var/removed = metabolism
-	if(location == CHEM_INGEST)
-		removed = ingest_met
-	if(touch_met && (location == CHEM_TOUCH))
-		removed = touch_met
-	if(digest_met && (location == CHEM_DIGEST))
-		removed = digest_met
-	for(var/datum/modifier/mod in M.modifiers)
-		if(!isnull(mod.metabolism_percent))
-			removed *= mod.metabolism_percent
+	switch(location)
+		if(CHEM_INGEST)
+			if(ingest_met != METABOLISM_FALLBACK)
+				removed = ingest_met
+		if(CHEM_DIGEST)
+			if(digest_met != METABOLISM_FALLBACK)
+				removed = digest_met
+		if(CHEM_TOUCH)
+			if(touch_met != METABOLISM_FALLBACK)
+				removed = touch_met
+
+	// Adjusted metabolism (modifiers, species, etc.)
 	removed = M.get_adjusted_metabolism(removed)
 
-	//adjust effective amounts - removed, dose, and max_dose - for mob size
+	// No metabolism, aborting.
+	if(!removed)
+		return
+
+	// Adjust effective amounts - removed, dose, and max_dose - for mob size
 	var/effective = removed
 	if(!(flags & IGNORE_MOB_SIZE) && location != CHEM_TOUCH)
 		effective *= (MOB_MEDIUM/M.mob_size)
+	effective = min(effective, volume)
 
 	M.chem_doses[type] += effective
 	M.chem_traces[type] += effective
+
 	var/affecting_dose = min(volume, M.chem_doses[type])
-	if((effective >= metabolism * 0.1) || (effective >= 0.1)) // If there's too little chemical, don't affect the mob, just remove it
-		switch(location)
-			if(CHEM_BLOOD)
-				affect_blood(M, alien, effective, affecting_dose)
-			if(CHEM_INGEST)
-				affect_ingest(M, alien, effective, affecting_dose)
-			if(CHEM_TOUCH)
-				affect_touch(M, alien, effective, affecting_dose)
-			if(CHEM_DIGEST)
-				affect_digest(M, alien, effective, affecting_dose)
+	switch(location)
+		if(CHEM_BLOOD)
+			affect_blood(M, alien, effective, affecting_dose)
+		if(CHEM_INGEST)
+			affect_ingest(M, alien, effective, affecting_dose)
+		if(CHEM_DIGEST)
+			affect_digest(M, alien, effective, affecting_dose)
+		if(CHEM_TOUCH)
+			affect_touch(M, alien, effective, affecting_dose)
 
 	if(volume)
 		remove_self(removed)
@@ -99,15 +115,19 @@
 	return
 
 /datum/reagent/proc/affect_ingest(mob/living/carbon/M, alien, removed, affecting_dose)
-	if(ingest_absorbability)
+	if(ingest_absorbability > 0)
 		affect_blood(M, alien, removed * ingest_absorbability, affecting_dose)
+	if(hydration_value > 0)
+		M.add_hydration(removed * hydration_value)
+	else if(hydration_value < 0)
+		M.remove_hydration(removed * hydration_value)
 	return
 
 /datum/reagent/proc/affect_touch(mob/living/carbon/M, alien, removed, affecting_dose)
 	return
 
 /datum/reagent/proc/affect_digest(mob/living/carbon/M, alien, removed, affecting_dose)
-	if(digest_absorbability)
+	if(digest_absorbability > 0)
 		affect_blood(M, alien, removed * digest_absorbability, affecting_dose)
 	if(hydration_value > 0)
 		M.add_hydration(removed * hydration_value)

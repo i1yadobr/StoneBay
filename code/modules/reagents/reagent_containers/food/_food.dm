@@ -11,10 +11,10 @@
 	randpixel = 6
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
 	possible_transfer_amounts = null
-	volume = 50 // Sets the default container amount for all food items.
+	volume = 1.0 LITERS // Sets the default container amount for all food items.
 
-	var/bitesize = 1 // Size (reagent-wise) of a single bite.
-	var/bitecount = 0 // Number of possible bites.
+	var/bitesize = 30 // Size (reagent-wise) of a single bite.
+	var/bitecount = 0 // Number of bites taken.
 
 	var/slice_path // Type of slices
 	var/slices_num // Number of slices
@@ -36,25 +36,28 @@
 
 
 /obj/item/reagent_containers/food/proc/On_Consume(mob/M)
-	if(!reagents.total_volume)
-		M.visible_message(SPAN("notice", "[M] finishes eating \the [src]."), SPAN("notice", "You finish eating \the [src]."))
-		if(trash)
-			var/obj/item/trash_item
-			if(ispath(trash, /obj/item))
-				trash_item = new trash(get_turf(src))
-			else if(istype(trash, /obj/item))
-				trash_item = trash
+	if(reagents.total_volume)
+		return
 
-			if(trash_item)
-				trash_item.forceMove(get_turf(src))
-				if(M.is_equipped(src))
-					M.replace_item(src, trash_item, force = TRUE)
+	M.visible_message(SPAN("notice", "[M] finishes eating \the [src]."), SPAN("notice", "You finish eating \the [src]."))
 
-		if(istype(loc, /obj/item/organ))
-			var/obj/item/organ/O = loc
-			O.organ_eaten(M)
+	if(trash)
+		var/obj/item/trash_item
+		if(ispath(trash, /obj/item))
+			trash_item = new trash(get_turf(src))
+		else if(istype(trash, /obj/item))
+			trash_item = trash
 
-		qdel(src)
+		if(trash_item)
+			trash_item.forceMove(get_turf(src))
+			if(M.is_equipped(src))
+				M.replace_item(src, trash_item, force = TRUE)
+
+	if(istype(loc, /obj/item/organ))
+		var/obj/item/organ/O = loc
+		O.organ_eaten(M)
+
+	qdel(src)
 	return
 
 
@@ -166,7 +169,10 @@
 			if(reagents.total_volume)
 				if(!ishuman(C))
 					reagents.trans_to_mob(C, bitesize, CHEM_INGEST)
-					bitecount++
+
+					if(bitecount != -1)
+						bitecount++
+
 					update_icon()
 					On_Consume(C)
 					return TRUE
@@ -213,7 +219,10 @@
 		reagents.trans_to_mob(H, bitesize * 2, CHEM_INGEST)
 	else
 		reagents.trans_to_mob(H, reagents.total_volume, CHEM_INGEST)
-	bitecount++
+
+	if(bitecount != -1)
+		bitecount++
+
 	throwing = FALSE
 	update_icon()
 	On_Consume(H)
@@ -232,7 +241,7 @@
 		var/obj/item/material/kitchen/utensil/U = W
 		if(U.scoop_food)
 			if(!U.reagents)
-				U.create_reagents(5)
+				U.create_reagents(50)
 
 			if (U.reagents.total_volume > 0)
 				to_chat(user, SPAN("warning", "You already have something on your [U]."))
@@ -243,7 +252,9 @@
 				"<span class='notice'>You scoop up some [src] with \the [U]!</span>" \
 			)
 
-			bitecount++
+			if(bitecount != -1)
+				bitecount++
+
 			// TODO: Replace with U.update_icon()
 			U.ClearOverlays()
 			U.loaded = "[src]"
@@ -303,7 +314,10 @@
 	if(!isanimal(user) && !isalien(user))
 		return ..()
 	user.visible_message("<b>[user]</b> nibbles away at \the [src].", "You nibble away at \the [src].")
-	bitecount++
+
+	if(bitecount != -1)
+		bitecount++
+
 	if(reagents && user.reagents)
 		reagents.trans_to_mob(user, bitesize, CHEM_INGEST)
 	spawn(5)

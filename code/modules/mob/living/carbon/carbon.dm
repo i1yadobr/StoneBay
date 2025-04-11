@@ -1,11 +1,11 @@
 /mob/living/carbon/New()
 	//setup reagent holders
 	if(!bloodstr)
-		bloodstr = new /datum/reagents/metabolism(120, src, CHEM_BLOOD)
+		bloodstr = new /datum/reagents/metabolism(1.2 LITERS, src, CHEM_BLOOD)
 	if(!reagents)
 		reagents = bloodstr
 	if(!touching)
-		touching = new /datum/reagents/metabolism(1000, src, CHEM_TOUCH)
+		touching = new /datum/reagents/metabolism(10.0 LITERS, src, CHEM_TOUCH)
 
 	if (!default_language && species_language)
 		default_language = all_languages[species_language]
@@ -52,19 +52,19 @@
 	if(!.)
 		return
 
-	if(stat != 2)
+	if(!stat)
 		if(nutrition)
 			if(m_intent == M_RUN)
-				remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 5))
+				remove_nutrition(DEFAULT_HUNGER_FACTOR / 5)
 			else
-				remove_nutrition(min(nutrition, DEFAULT_HUNGER_FACTOR / 10))
+				remove_nutrition(DEFAULT_HUNGER_FACTOR / 10)
 		if(hydration)
 			if(m_intent == M_RUN)
-				remove_hydration(min(hydration, DEFAULT_THIRST_FACTOR / 5))
+				remove_hydration(DEFAULT_THIRST_FACTOR / 5)
 			else
-				remove_nutrition(min(nutrition, DEFAULT_THIRST_FACTOR / 10))
+				remove_nutrition(DEFAULT_THIRST_FACTOR / 10)
 
-	if((MUTATION_FAT in mutations) && m_intent == M_RUN && bodytemperature <= 360)
+	if(m_intent == M_RUN && bodytemperature <= 360 && (MUTATION_FAT in mutations))
 		bodytemperature += 2
 
 	// Moving around increases germ_level faster

@@ -16,8 +16,8 @@
 		slot_r_hand_str = 'icons/mob/onmob/items/righthand_vessels.dmi',
 		)
 
-	volume = 60
-	amount_per_transfer_from_this = 10
+	volume = 0.5 LITERS
+	amount_per_transfer_from_this = 100
 	possible_transfer_amounts = "5;10;15;25;30;60"
 	w_class = ITEM_SIZE_SMALL
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
@@ -178,14 +178,14 @@
 /obj/item/reagent_containers/vessel/examine(mob/user, infix)
 	. = ..()
 
-	. += "Can hold up to <b>[volume]</b> units."
+	. += "Can hold up to <b>[volume]</b>ml."
 
 	if(get_dist(src, user) > 2)
 		return
 
 	if(precise_measurement)
 		if(reagents?.reagent_list.len)
-			. += SPAN_NOTICE("It contains <b>[reagents.total_volume]</b> units of liquid.")
+			. += SPAN_NOTICE("It contains <b>[reagents.total_volume]</b>ml of liquid.")
 		else
 			. += SPAN_NOTICE("It is empty.")
 	else

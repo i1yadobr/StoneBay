@@ -18,7 +18,7 @@
 
 /obj/structure/janitorialcart/New()
 	..()
-	create_reagents(180)
+	create_reagents(1.8 LITERS)
 
 
 /obj/structure/janitorialcart/examine(mob/user, infix)
@@ -186,7 +186,7 @@
 
 /obj/structure/bed/chair/janicart/New()
 	..()
-	create_reagents(100)
+	create_reagents(1 LITER)
 
 
 /obj/structure/bed/chair/janicart/examine(mob/user, infix)

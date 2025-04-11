@@ -3,12 +3,19 @@
 /datum/reagent/nutriment
 	name = "Nutriment"
 	description = "All the vitamins, minerals, and carbohydrates the body needs in pure form."
+
 	taste_mult = 4
+
 	reagent_state = SOLID
+	color = "#664330"
+
 	metabolism = REM * 4
+	metabolism = 10.0
+	ingest_met = 2.5
+	digest_met = 10.0
+
 	var/nutriment_factor = 10 // Per unit
 	var/injectable = 0
-	color = "#664330"
 
 /datum/reagent/nutriment/mix_data(list/newdata, newamount)
 

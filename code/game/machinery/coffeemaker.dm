@@ -478,8 +478,8 @@
 		return
 
 	operate_for(brew_time)
-	coffeepot.reagents.add_reagent(/datum/reagent/caffeine/coffee, 120)
-	coffee.Cut(1,2) //remove the first item from the list
+	coffeepot.reagents.add_reagent(/datum/reagent/caffeine/coffee, 1.2 LITERS)
+	coffee.Cut(1, 2) //remove the first item from the list
 	coffee_amount--
 	update_icon()
 

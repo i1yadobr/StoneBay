@@ -16,7 +16,7 @@
 
 /obj/structure/mopbucket/Initialize()
 	. = ..()
-	create_reagents(180)
+	create_reagents(1.8 LITERS)
 
 /obj/structure/mopbucket/examine(mob/user, infix)
 	. = ..()

@@ -6,9 +6,9 @@
 	w_class = ITEM_SIZE_NORMAL
 
 	volume = CARTRIDGE_VOLUME_LARGE
-	amount_per_transfer_from_this = 50
+	amount_per_transfer_from_this = 250
 	// Large, but inaccurate. Use a chem dispenser or beaker for accuracy.
-	possible_transfer_amounts = "50;100"
+	possible_transfer_amounts = "250;500"
 	unacidable = 1
 	atom_flags = ATOM_FLAG_IGNORE_RADIATION
 

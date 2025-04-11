@@ -32,7 +32,7 @@
 	icon_state = "ingested_chunk"
 	nutriment_amt = 0
 	bitesize = 10
-	w_class = ITEM_SIZE_SMALL
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/reagent_containers/food/ingested_chunk/proc/split_from(obj/item/reagent_containers/food/RC, mob/M)
 	if(!RC)
@@ -132,7 +132,7 @@
 		src.icon_state = "donut2"
 		src.overlay_state = "box-donut2"
 		src.SetName("frosted donut")
-		reagents.add_reagent(/datum/reagent/nutriment/sprinkles, 2)
+		reagents.add_reagent(/datum/reagent/nutriment/sprinkles, 20)
 		center_of_mass = "x=19;y=16"
 
 /obj/item/reagent_containers/food/donut/chaos
@@ -149,30 +149,30 @@
 	var/chaosselect = pick(1,2,3,4,5,6,7,8,9,10)
 	switch(chaosselect)
 		if(1)
-			reagents.add_reagent(/datum/reagent/nutriment, 3)
+			reagents.add_reagent(/datum/reagent/nutriment, 30)
 		if(2)
-			reagents.add_reagent(/datum/reagent/capsaicin, 3)
+			reagents.add_reagent(/datum/reagent/capsaicin, 30)
 		if(3)
-			reagents.add_reagent(/datum/reagent/frostoil, 3)
+			reagents.add_reagent(/datum/reagent/frostoil, 30)
 		if(4)
-			reagents.add_reagent(/datum/reagent/nutriment/sprinkles, 3)
+			reagents.add_reagent(/datum/reagent/nutriment/sprinkles, 30)
 		if(5)
-			reagents.add_reagent(/datum/reagent/toxin/plasma, 3)
+			reagents.add_reagent(/datum/reagent/toxin/plasma, 30)
 		if(6)
-			reagents.add_reagent(/datum/reagent/nutriment/coco, 3)
+			reagents.add_reagent(/datum/reagent/nutriment/coco, 30)
 		if(7)
-			reagents.add_reagent(/datum/reagent/metroidjelly, 3)
+			reagents.add_reagent(/datum/reagent/metroidjelly, 30)
 		if(8)
-			reagents.add_reagent(/datum/reagent/drink/juice/banana, 3)
+			reagents.add_reagent(/datum/reagent/drink/juice/banana, 30)
 		if(9)
-			reagents.add_reagent(/datum/reagent/drink/juice/berry, 3)
+			reagents.add_reagent(/datum/reagent/drink/juice/berry, 30)
 		if(10)
 			reagents.add_reagent(/datum/reagent/tricordrazine, 3)
 	if(prob(30))
 		src.icon_state = "donut2"
 		src.overlay_state = "box-donut2"
 		src.SetName("Frosted Chaos Donut")
-		reagents.add_reagent(/datum/reagent/nutriment/sprinkles, 2)
+		reagents.add_reagent(/datum/reagent/nutriment/sprinkles, 20)
 
 
 /obj/item/reagent_containers/food/donut/jelly

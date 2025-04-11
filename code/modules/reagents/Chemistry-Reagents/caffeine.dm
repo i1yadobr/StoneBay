@@ -1,10 +1,12 @@
 /datum/reagent/caffeine
 	name = "Caffeine"
 	description = "Central nervous system stimulant."
+
 	taste_mult = 0
+
 	reagent_state = SOLID
 	color = "#ffffff"
-	hydration_value = 0.65
+
 	ingest_met = REM * 0.25
 
 	glass_icon = DRINK_ICON_NOISY
@@ -75,15 +77,20 @@
 /datum/reagent/caffeine/coffee
 	name = "Coffee"
 	description = "Coffee is a brewed drink prepared from roasted seeds, commonly called coffee beans, of the coffee plant."
+
 	taste_description = "bitterness"
-	taste_mult = 1.3
+	taste_mult = 2.5
+
 	color = "#482000"
+
+	hydration_value = 0.65
+	overdose = 45
+
 	adj_dizzy = -5
 	adj_drowsy = -3
 	adj_sleepy = -2
 	adj_temp = 25
 	adj_speed = 0.3
-	overdose = 45
 
 	glass_name = "coffee"
 	glass_desc = "Don't drop it, or you'll send scalding liquid and glass shards everywhere."

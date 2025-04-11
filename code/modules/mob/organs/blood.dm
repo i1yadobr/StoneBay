@@ -16,7 +16,7 @@
 	if(!should_have_organ(BP_HEART)) //We want the var for safety but we can do without the actual blood.
 		return
 
-	vessel.add_reagent(/datum/reagent/blood,species.blood_volume)
+	vessel.add_reagent(/datum/reagent/blood, species.blood_volume)
 	fixblood()
 
 //Resets blood data
@@ -109,21 +109,23 @@
 
 
 /mob/living/carbon/human/proc/handle_blood()
+	if(!should_have_organ(BP_HEART))
+		return
+
 	// No longer tied to liver. Bone marrow goes brr.
-	if(should_have_organ(BP_HEART))
-		var/regen_value = 0
-		if(hydration >= HYDRATION_SUPER)
+	var/regen_value = 0
+	switch(hydration)
+		if(HYDRATION_SUPER to INFINITY)
 			regen_value = 2.0
-		else if(hydration >= HYDRATION_HIGH)
+		if(HYDRATION_HIGH to HYDRATION_SUPER)
 			regen_value = 1.5
-		else if(hydration >= HYDRATION_LOW)
+		if(HYDRATION_LOW to HYDRATION_HIGH)
 			regen_value = 1.0
-		else if(hydration > 1)
+		if(1 to HYDRATION_LOW)
 			regen_value = 0.5
 
-		if(regen_value)
-			regenerate_blood(0.1 * regen_value + chem_effects[CE_BLOODRESTORE])
-			remove_hydration(DEFAULT_THIRST_FACTOR * regen_value) // Regenerating blood dehydrates ya.
+	if(regen_value && regenerate_blood(regen_value + chem_effects[CE_BLOODRESTORE]))
+		remove_hydration(DEFAULT_THIRST_FACTOR * regen_value) // Regenerating blood dehydrates ya.
 
 /****************************************************
 				BLOOD TRANSFERS
@@ -170,7 +172,7 @@
 	var/list/chems = list()
 	chems = params2list(injected.data["trace_chem"])
 	for(var/C in chems)
-		src.reagents.add_reagent(C, (text2num(chems[C]) / species.blood_volume) * amount)//adds trace chemicals to owner's blood
+		src.reagents.add_reagent(C, (text2num(chems[C]) / species.blood_volume) * amount) // adds trace chemicals to owner's blood
 	reagents.update_total()
 
 //Transfers blood from reagents to vessel, respecting blood types compatability.
@@ -222,9 +224,11 @@
 
 /mob/living/carbon/human/proc/restore_blood()
 	if(!should_have_organ(BP_HEART))
-		return
+		return FALSE
 	if(vessel.total_volume < species.blood_volume)
 		vessel.add_reagent(/datum/reagent/blood, species.blood_volume - vessel.total_volume)
+		return TRUE
+	return FALSE
 
 /mob/living/carbon/human/proc/regenerate_blood(amount)
 	var/blood_volume_raw = vessel.get_reagent_amount(/datum/reagent/blood)

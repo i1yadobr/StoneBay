@@ -10,14 +10,14 @@
 	throwforce = 3
 	w_class = ITEM_SIZE_SMALL
 	throw_range = 10
-	amount_per_transfer_from_this = 10
+	amount_per_transfer_from_this = 100
 	unacidable = 1 //plastic
-	possible_transfer_amounts = "5;10" //Set to null instead of list, if there is only one.
+	possible_transfer_amounts = "50;100" //Set to null instead of list, if there is only one.
 	var/spray_size = 3
 	var/list/spray_sizes = list(1,3)
 	var/step_delay = 10 // lower is faster
 	var/widespray = FALSE
-	volume = 250
+	volume = 2.5 LITERS
 	var/obj/item/reagent_containers/external_container = null // Using an external reagent container (i.e. backwear spray)
 
 /obj/item/reagent_containers/spray/Initialize()
@@ -164,7 +164,7 @@
 	icon_state = "pepperspray"
 	item_state = "pepperspray"
 	possible_transfer_amounts = null
-	volume = 60
+	volume = 0.6 LITERS
 	var/safety = 1
 	step_delay = 1
 	startswith = list(/datum/reagent/capsaicin/condensed)
@@ -193,7 +193,7 @@
 	item_state = "sunflower"
 	amount_per_transfer_from_this = 1
 	possible_transfer_amounts = null
-	volume = 10
+	volume = 0.1 LITERS
 	startswith = list(/datum/reagent/water)
 
 	drop_sound = SFX_DROP_HERB
@@ -208,7 +208,7 @@
 	throwforce = 3
 	w_class = ITEM_SIZE_LARGE
 	possible_transfer_amounts = null
-	volume = 600
+	volume = 0.6 LITERS
 	origin_tech = list(TECH_COMBAT = 3, TECH_MATERIAL = 3, TECH_ENGINEERING = 3)
 	step_delay = 8
 	widespray = TRUE
@@ -219,7 +219,7 @@
 	icon = 'icons/obj/hydroponics_items.dmi'
 	icon_state = "plantbgone"
 	item_state = "plantbgone"
-	volume = 100
+	volume = 1 LITER
 	startswith = list(/datum/reagent/toxin/plantbgone)
 
 /obj/item/reagent_containers/spray/plantbgone/afterattack(atom/A, mob/user, proximity)
@@ -234,4 +234,4 @@
 	A disclaimer towards the bottom states <span class = 'warning'>Warning: Do not use around the house, or in proximity of dogs|children|clowns</span>"
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER|ATOM_FLAG_NO_REACT
 	origin_tech = list(TECH_BLUESPACE = 3, TECH_MATERIAL = 5)
-	possible_transfer_amounts = "5;10;25"
+	possible_transfer_amounts = "50;100;250"
