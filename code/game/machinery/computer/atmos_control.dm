@@ -1,5 +1,6 @@
 /obj/item/circuitboard/atmoscontrol
 	name = "\improper Central Atmospherics Computer Circuitboard"
+	icon_state = "id_mod_orange"
 	build_path = /obj/machinery/computer/atmoscontrol
 
 /obj/machinery/computer/atmoscontrol

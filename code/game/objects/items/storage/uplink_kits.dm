@@ -56,6 +56,15 @@
 		/obj/item/reagent_containers/hypospray/autoinjector/mindbreaker
 		)
 
+/obj/item/storage/box/syndie_kit/empty_grenades
+	desc = "A sleek, sturdy box. That one has an explosion warning on it."
+	startswith = list(/obj/item/grenade/chem_grenade = 5)
+
+/obj/item/storage/box/syndie_kit/strange_seeds 
+	startswith = list(/obj/item/seeds/maneaterseed = 3)
+
+/obj/item/storage/box/syndie_kit/applenades
+	startswith = list(/obj/item/grenade/chem_grenade/apple = 4)
 // Space suit uplink kit
 /obj/item/storage/backpack/satchel/syndie_kit/space
 	//name = "\improper EVA gear pack"

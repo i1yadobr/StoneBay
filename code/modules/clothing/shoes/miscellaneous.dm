@@ -161,6 +161,20 @@
 	else
 		playsound(src, SFX_CLOWN, 20, 1)
 
+/obj/item/clothing/shoes/clown_shoes/traitorshoes
+	desc = "The prankster's standard-issue clowning shoes. Damn they're huge! Also, it seems like they have extra hole for something."
+	var/can_wet_floor = TRUE
+
+/obj/item/clothing/shoes/clown_shoes/traitorshoes/handle_movement(turf/walking, running)
+	..()
+	if(can_wet_floor)
+		can_wet_floor = FALSE
+		spawn(1) // Small delay to prevent slipping on the tile you just walked on.
+			var/turf/simulated/loc = get_turf(usr)
+			loc.wet_floor(2) // Lubbing floor for unlucky officers to slip on.
+		spawn(51) // So at max there will be 4 lubbed tiles.
+			can_wet_floor = TRUE
+
 /obj/item/clothing/shoes/cult
 	name = "boots"
 	desc = "A pair of boots worn by the followers of Nar-Sie."

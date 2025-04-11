@@ -162,7 +162,7 @@
 		/obj/item/clothing/mask/smokable,
 		/obj/item/screwdriver,
 		/obj/item/device/multitool,
-		/obj/item/magnetic_ammo,
+		/obj/item/rcd_ammo/magnetic_ammo,
 		/obj/item/ammo_magazine,
 		/obj/item/net_shell,
 		/obj/item/reagent_containers/vessel/beaker/vial

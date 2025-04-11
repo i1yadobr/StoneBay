@@ -99,6 +99,10 @@
 	icon_state = "centcom_official_skirt"
 	item_state = "centcom_official_skirt"
 
+/obj/item/clothing/under/rank/centcom/official/dress
+	icon_state = "centcom_official_dress"
+	item_state = "centcom_official_dress"
+
 /obj/item/clothing/under/ert
 	name = "ERT tactical uniform"
 	desc = "A short-sleeved black uniform, paired with grey digital-camo cargo pants. It looks very tactical."

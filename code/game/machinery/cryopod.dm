@@ -167,11 +167,13 @@
 
 /obj/item/circuitboard/cryopodcontrol
 	name = "Circuit board (Cryogenic Oversight Console)"
+	icon_state = "id_mod_cyan"
 	build_path = /obj/machinery/computer/cryopod
 	origin_tech = list(TECH_DATA = 3)
 
 /obj/item/circuitboard/robotstoragecontrol
 	name = "Circuit board (Robotic Storage Console)"
+	icon_state = "id_mod_purple"
 	build_path = /obj/machinery/computer/cryopod/robot
 	origin_tech = list(TECH_DATA = 3)
 

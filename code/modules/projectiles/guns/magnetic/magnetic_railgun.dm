@@ -97,9 +97,9 @@
 	slowdown_held = 0
 	slowdown_worn = 0
 	power_cost = 100
-	load_type = /obj/item/magnetic_ammo
+	load_type = /obj/item/rcd_ammo/magnetic_ammo
 	projectile_type = /obj/item/projectile/bullet/magnetic/flechette
-	loaded = /obj/item/magnetic_ammo
+	loaded = /obj/item/rcd_ammo/magnetic_ammo
 	wielded_item_state = "z8carbine-wielded"
 
 	firemodes = list(

@@ -212,6 +212,24 @@
 		return ..()
 
 /obj/item/reagent_containers/AltClick(mob/user)
+	if(!CanPhysicallyInteract(user))
+		return
+	if(!possible_transfer_amounts)
+		return
+
+	var/list/modes = list()
+	for(var/mode in params2list(possible_transfer_amounts))
+		modes += text2num(mode)
+
+	var/current_index = modes.Find(amount_per_transfer_from_this)
+	if(current_index == modes.len)
+		amount_per_transfer_from_this = modes[1]
+	else
+		amount_per_transfer_from_this = modes[current_index + 1]
+
+	to_chat(user, SPAN("notice", "You set the next amount per tranfser from \the [name]: <b>[amount_per_transfer_from_this]<b>"))
+
+/obj/item/reagent_containers/CtrlAltClick(mob/user)
 	if(possible_transfer_amounts)
 		if(CanPhysicallyInteract(user))
 			set_APTFT()
