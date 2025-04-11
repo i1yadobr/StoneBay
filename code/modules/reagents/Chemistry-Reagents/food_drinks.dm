@@ -9,12 +9,13 @@
 	reagent_state = SOLID
 	color = "#664330"
 
-	metabolism = REM * 4
-	metabolism = 10.0
-	ingest_met = 2.5
-	digest_met = 10.0
+	metabolism = 2.5
+	ingest_met = 0.5
+	digest_met = 2.5
+	ingest_absorbability = 0.5
+	digest_absorbability = 1.0
 
-	var/nutriment_factor = 10 // Per unit
+	var/nutriment_factor = 1.0 // Per unit
 	var/injectable = 0
 
 /datum/reagent/nutriment/mix_data(list/newdata, newamount)
@@ -43,13 +44,14 @@
 	if(!injectable)
 		M.adjustToxLoss(0.2 * removed)
 		return
-	affect_ingest(M, alien, removed)
+	affect_digest(M, alien, removed)
+
+/datum/reagent/nutriment/affect_ingest(mob/living/carbon/M, alien, removed)
+	adjust_nutrition(M, alien, removed * ingest_absorbability)
 
 /datum/reagent/nutriment/affect_digest(mob/living/carbon/M, alien, removed)
-	M.heal_organ_damage(0.5 * removed, 0) //what
-
-	adjust_nutrition(M, alien, removed)
-	M.add_chemical_effect(CE_BLOODRESTORE, 4 * removed)
+	M.heal_organ_damage(0.1 * removed, 0) //what
+	adjust_nutrition(M, alien, removed * digest_absorbability)
 
 /datum/reagent/nutriment/proc/adjust_nutrition(mob/living/carbon/M, alien, removed)
 	switch(alien)
@@ -66,12 +68,16 @@
 	name = "animal protein"
 	taste_description = "some sort of protein"
 	color = "#440000"
+	nutriment_factor = 2.5
+	ingest_absorbability = 0.1
+	digest_absorbability = 0.5
 
 /datum/reagent/nutriment/protein/affect_digest(mob/living/carbon/M, alien, removed)
 	switch(alien)
 		if(IS_SKRELL)
 			M.adjustToxLoss(0.5 * removed)
 			return
+	M.add_chemical_effect(CE_BLOODRESTORE, removed * 2.5)
 	..()
 
 /datum/reagent/nutriment/protein/adjust_nutrition(mob/living/carbon/M, alien, removed)
@@ -85,10 +91,19 @@
 		return
 	..()
 
+// Cooking proteins make them more available.
+/datum/reagent/nutriment/protein/cooked
+	name = "denatured protein"
+	taste_description = "some sort of protein"
+	ingest_absorbability = 0.2
+	digest_absorbability = 1.0
+
 /datum/reagent/nutriment/protein/egg // Also bad for skrell.
 	name = "egg yolk"
 	taste_description = "egg"
 	color = "#ffffaa"
+	ingest_absorbability = 0.2
+	digest_absorbability = 1.0
 
 /datum/reagent/nutriment/honey
 	name = "Honey"
@@ -137,7 +152,7 @@
 	taste_description = "bitterness"
 	taste_mult = 1.3
 	reagent_state = SOLID
-	nutriment_factor = 5
+	nutriment_factor = 2.5
 	color = "#302000"
 
 /datum/reagent/nutriment/soysauce
@@ -146,7 +161,7 @@
 	taste_description = "umami"
 	taste_mult = 1.1
 	reagent_state = LIQUID
-	nutriment_factor = 2
+	nutriment_factor = 1.0
 	color = "#792300"
 	hydration_value = 0.7
 
@@ -155,7 +170,7 @@
 	description = "Ketchup, catsup, whatever. It's tomato paste."
 	taste_description = "ketchup"
 	reagent_state = LIQUID
-	nutriment_factor = 5
+	nutriment_factor = 2.0
 	color = "#731008"
 	hydration_value = 0.5
 
@@ -164,7 +179,7 @@
 	description = "Barbecue sauce for barbecues and long shifts."
 	taste_description = "barbecue"
 	reagent_state = LIQUID
-	nutriment_factor = 5
+	nutriment_factor = 2.0
 	color = "#4f330f"
 	hydration_value = 0.4
 
@@ -173,7 +188,7 @@
 	description = "Garlic sauce, perfect for spicing up a plate of garlic."
 	taste_description = "garlic"
 	reagent_state = LIQUID
-	nutriment_factor = 4
+	nutriment_factor = 2.5
 	color = "#d8c045"
 	hydration_value = 0.4
 
@@ -183,7 +198,7 @@
 	taste_description = "rice"
 	taste_mult = 0.4
 	reagent_state = SOLID
-	nutriment_factor = 1
+	nutriment_factor = 1.0
 	color = "#ffffff"
 
 /datum/reagent/nutriment/cherryjelly
@@ -192,20 +207,23 @@
 	taste_description = "cherry"
 	taste_mult = 1.3
 	reagent_state = LIQUID
-	nutriment_factor = 1
+	nutriment_factor = 1.5
 	color = "#801e28"
 	hydration_value = 0.4
 
-/datum/reagent/nutriment/cornoil
-	name = "Corn Oil"
-	description = "An oil derived from various types of corn."
-	taste_description = "slime"
-	taste_mult = 0.1
-	reagent_state = LIQUID
-	nutriment_factor = 20
-	color = "#302000"
+/datum/reagent/nutriment/oil
+	name = "Cooking Oil"
+	description = "Liquid fat usually used for cooking. Refined and deodorized."
 
-/datum/reagent/nutriment/cornoil/touch_turf(turf/simulated/T)
+	taste_description = "oil"
+	taste_mult = 0.1
+
+	reagent_state = LIQUID
+	color = "#f7eaaf"
+
+	nutriment_factor = 3.0
+
+/datum/reagent/nutriment/oil/touch_turf(turf/simulated/T)
 	if(!istype(T))
 		return
 
@@ -220,13 +238,31 @@
 	if(volume >= 3)
 		T.wet_floor()
 
+/datum/reagent/nutriment/oil/corn
+	name = "Corn Oil"
+	description = "An oil derived from various types of corn."
+
+	taste_description = "oil"
+	taste_mult = 0.5
+
+	color = "#dbc559"
+
+/datum/reagent/nutriment/oil/burned
+	name = "Burnt Oil"
+	description = "Cooking fat that's been overheated, contains burned particles of unidentifiable origin."
+
+	taste_description = "burned oil"
+	taste_mult = 2.5
+
+	color = "#9f7726"
+
 /datum/reagent/nutriment/virus_food
 	name = "Virus Food"
 	description = "A mixture of water, milk, and oxygen. Virus cells can use this mixture to reproduce."
 	taste_description = "vomit"
 	taste_mult = 2
 	reagent_state = LIQUID
-	nutriment_factor = 2
+	nutriment_factor = 1.5
 	color = "#899613"
 	hydration_value = 0.7
 
@@ -234,7 +270,7 @@
 	name = "Sprinkles"
 	description = "Multi-colored little bits of sugar, commonly found on donuts. Loved by cops."
 	taste_description = "childhood whimsy"
-	nutriment_factor = 1
+	nutriment_factor = 2.5
 	color = "#ff00ff"
 
 /datum/reagent/nutriment/mint
@@ -243,17 +279,6 @@
 	taste_description = "mint"
 	reagent_state = LIQUID
 	color = "#cf3600"
-
-/datum/reagent/lipozine // The anti-nutriment.
-	name = "Lipozine"
-	description = "A chemical compound that causes a powerful fat-burning reaction."
-	taste_description = "mothballs"
-	reagent_state = LIQUID
-	color = "#bbeda4"
-	overdose = REAGENTS_OVERDOSE
-
-/datum/reagent/lipozine/affect_blood(mob/living/carbon/M, alien, removed)
-	M.nutrition = max(M.nutrition - 10 * removed, 0)
 
 /* Non-food stuff like condiments */
 

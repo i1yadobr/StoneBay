@@ -125,9 +125,15 @@
 				icon_state = "peppermillsmall"
 				item_state = "peppermillsmall"
 				center_of_mass = "x=16;y=10"
-			if(/datum/reagent/nutriment/cornoil)
+			if(/datum/reagent/nutriment/oil/corn)
 				name = "Corn Oil"
 				desc = "A delicious oil used in cooking. Made from corn."
+				icon_state = "oliveoil"
+				item_state = "oliveoil"
+				center_of_mass = "x=16;y=6"
+			if(/datum/reagent/nutriment/oil)
+				name = "Cooking Oil"
+				desc = "A practically tasteless oil used in cooking."
 				icon_state = "oliveoil"
 				item_state = "oliveoil"
 				center_of_mass = "x=16;y=6"
@@ -283,9 +289,15 @@
 				icon_state = "condi_pepper"
 				item_state = "condi_pepper"
 				center_of_mass = "x=16;y=10"
-			if(/datum/reagent/nutriment/cornoil)
+			if(/datum/reagent/nutriment/oil/corn)
 				name = "Corn Oil"
 				desc = "A delicious oil used in cooking. Made from corn."
+				icon_state = "condi_cornoil"
+				item_state = "condi_cornoil"
+				center_of_mass = "x=16;y=6"
+			if(/datum/reagent/nutriment/oil)
+				name = "Cooking Oil"
+				desc = "A practically tasteless oil used in cooking."
 				icon_state = "condi_cornoil"
 				item_state = "condi_cornoil"
 				center_of_mass = "x=16;y=6"

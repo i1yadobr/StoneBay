@@ -53,7 +53,7 @@
 
 	// Simulation disabled. We still kinda keep track of fullness just for ruptures and abdominal leaks.
 	if(!config.health.simulate_digestion)
-		waste_to_spawn = max(0, waste_to_spawn - DEFAULT_THIRST_FACTOR)
+		waste_to_spawn = max(0, waste_to_spawn - (DEFAULT_THIRST_FACTOR * 2.0))
 	// Simulation enabled. Only spawning things once in a while for performance reasons.
 	else if(waste_to_spawn >= 2.5)
 		stored.add_reagent(/datum/reagent/water, waste_to_spawn * 0.8)

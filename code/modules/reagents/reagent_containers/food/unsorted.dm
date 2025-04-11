@@ -31,7 +31,7 @@
 	desc = "Disguisting, half-digested chunk of some sort of food."
 	icon_state = "ingested_chunk"
 	nutriment_amt = 0
-	bitesize = 10
+	bitesize = 30
 	w_class = ITEM_SIZE_TINY
 
 /obj/item/reagent_containers/food/ingested_chunk/proc/split_from(obj/item/reagent_containers/food/RC, mob/M)

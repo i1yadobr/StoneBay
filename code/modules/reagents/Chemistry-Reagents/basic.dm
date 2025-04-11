@@ -576,12 +576,16 @@
 	reagent_state = SOLID
 	color = "#ffffff"
 
+	metabolism = REM * 2.0
+	digest_met = REM * 5.0
+	digest_absorbability = 0.5
+
 	glass_name = "sugar"
 	glass_desc = "The organic compound commonly known as table sugar and sometimes called saccharose. This white, odorless, crystalline powder has a pleasing, sweet taste."
 	glass_icon = DRINK_ICON_NOISY
 
 /datum/reagent/sugar/affect_blood(mob/living/carbon/M, alien, removed)
-	M.add_nutrition(removed * 3)
+	M.add_nutrition(removed * 10.0)
 
 	if(alien == IS_UNATHI)
 		if(M.chem_doses[type] < 2)

@@ -1097,3 +1097,14 @@
 	. = ..()
 	M.reagents.add_reagent(/datum/reagent/metroidtoxin, max(0, volume-REAGENTS_OVERDOSE))
 	volume = volume - REAGENTS_OVERDOSE
+
+/datum/reagent/lipozine // The anti-nutriment.
+	name = "Lipozine"
+	description = "A chemical compound that causes a powerful fat-burning reaction."
+	taste_description = "mothballs"
+	reagent_state = LIQUID
+	color = "#bbeda4"
+	overdose = REAGENTS_OVERDOSE
+
+/datum/reagent/lipozine/affect_blood(mob/living/carbon/M, alien, removed)
+	M.nutrition = max(M.nutrition - 10 * removed, 0)

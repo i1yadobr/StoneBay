@@ -84,6 +84,7 @@
 
 	if(world.time > next_processing)
 		next_processing = world.time + 5 SECONDS
+
 		// Ruptured intestines, chance to send stuff into the abdominal cavity.
 		if(is_broken() && prob(damage - min_broken_damage))
 			for(var/obj/item/I in contents)
@@ -102,6 +103,7 @@
 					continue
 				qdel(I)
 			waste_stored = clamp(waste_stored - 1, 0, waste_capacity)
+
 		// Simulation enabled, warning the owner if needed.
 		else if(!owner.stat)
 			var/fullness = get_fullness()

@@ -57,7 +57,7 @@
 	items_volume = 0
 	if(!length(processing))
 		return
-	for(var/obj/I in processing)
+	for(var/obj/item/I in processing)
 		items_volume += I.get_storage_cost() * 100
 
 // 0 is empty, 100 is softcap, 200 is hardcap

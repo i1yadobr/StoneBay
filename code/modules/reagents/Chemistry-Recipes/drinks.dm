@@ -82,7 +82,7 @@
 /datum/chemical_reaction/spacebeer
 	name = "Space Beer"
 	result = /datum/reagent/ethanol/beer
-	required_reagents = list(/datum/reagent/nutriment/cornoil = 10)
+	required_reagents = list(/datum/reagent/nutriment/oil/corn = 10)
 	catalysts = list(/datum/reagent/enzyme = 5)
 	result_amount = 10
 

@@ -35,9 +35,9 @@
 	trash = /obj/item/trash/tweakers
 	filling_color = "#7d5f46"
 	nutriment_desc = list("nougat-n-nuts" = 6)
-	nutriment_amt = 45
-	startswith = list(/datum/reagent/sugar = 15)
-	bitesize = 15
+	nutriment_amt = 40
+	startswith = list(/datum/reagent/sugar = 20)
+	bitesize = 15 // 140 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/sweetroid
 	name = "Sweetroid bar"
@@ -46,9 +46,9 @@
 	trash = /obj/item/trash/sweetroid
 	filling_color = "#5ba652"
 	nutriment_desc = list("chewy sourness" = 6)
-	nutriment_amt = 45
-	startswith = list(/datum/reagent/sugar = 15)
-	bitesize = 15
+	nutriment_amt = 40
+	startswith = list(/datum/reagent/sugar = 20)
+	bitesize = 15 // 140 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/sugarmatter
 	name = "SugarMatter bar"
@@ -59,7 +59,7 @@
 	nutriment_desc = list("extreme sweetness" = 9)
 	nutriment_amt = 30
 	startswith = list(/datum/reagent/sugar = 30)
-	bitesize = 15
+	bitesize = 15 // 180 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/jellaws
 	name = "Jellaw's Jellybaton"
@@ -80,13 +80,13 @@
 	desc = "SwoleMAX brand nutrition protein bars, guaranteed to get you feeling perfectly overconfident (and overweight)."
 	icon_state = "nutribar"
 	trash = /obj/item/trash/nutribar
-	nutriment_amt = 7
+	nutriment_amt = 30
 	filling_color = "#e5bf00"
-	nutriment_desc = list("packaging foam" = 1)
+	nutriment_desc = list("packaging foam" = 5)
 	startswith = list(
-		/datum/reagent/nutriment/protein = 7,
-		/datum/reagent/sugar = 2)
-	bitesize = 4
+		/datum/reagent/nutriment/protein/cooked = 40,
+		/datum/reagent/sugar = 20)
+	bitesize = 20 // 230 nutrition, 5 bites
 
 /obj/item/reagent_containers/food/packaged/chips
 	name = "chips"
@@ -94,10 +94,13 @@
 	icon_state = "chips"
 	trash = /obj/item/trash/chips
 	filling_color = "#e8c31e"
-	nutriment_amt = 6
-	nutriment_desc = list("salt" = 1, "chips" = 2)
-	startswith = list(/datum/reagent/sodiumchloride = 2)
-	bitesize = 1
+	nutriment_amt = 100
+	nutriment_desc = list("salt" = 1, "potato" = 1, "chips" = 3)
+	startswith = list(
+		/datum/reagent/sodiumchloride = 10,
+		/datum/reagent/nutriment/oil/burned = 40
+		)
+	bitesize = 15 // 220 nutrition, 10 bites
 
 /obj/item/reagent_containers/food/packaged/sosjerky
 	name = "Scaredy's Private Reserve Beef Jerky"
@@ -106,11 +109,11 @@
 	trash = /obj/item/trash/sosjerky
 	filling_color = "#631212"
 	nutriment_desc = list("cured meat" = 5, "salt" = 2)
-	nutriment_amt = 2
+	nutriment_amt = 40
 	startswith = list(
-		/datum/reagent/nutriment/protein = 7,
-		/datum/reagent/sodiumchloride = 1)
-	bitesize = 2
+		/datum/reagent/nutriment/protein/cooked = 70,
+		/datum/reagent/sodiumchloride = 10)
+	bitesize = 20 // 215 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/no_raisin
 	name = "4no Raisins"
@@ -129,10 +132,13 @@
 	desc = "Bite sized cheesie snacks that will honk all over your mouth."
 	trash = /obj/item/trash/cheesie
 	filling_color = "#ffa305"
+	nutriment_amt = 100
 	nutriment_desc = list("cheese" = 5, "chips" = 2)
-	nutriment_amt = 6
-	startswith = list(/datum/reagent/sodiumchloride = 2)
-	bitesize = 1
+	startswith = list(
+		/datum/reagent/sodiumchloride = 10,
+		/datum/reagent/nutriment/oil/burned = 40
+		)
+	bitesize = 15 // 220 nutrition, 10 bites
 
 /obj/item/reagent_containers/food/packaged/hematogen
 	name = "Hema-2-Gen"

@@ -62,7 +62,7 @@
 /datum/chemical_reaction/garlicsauce
 	name = "Garlic Sauce"
 	result = /datum/reagent/nutriment/garlicsauce
-	required_reagents = list(/datum/reagent/drink/juice/garlic = 1, /datum/reagent/nutriment/cornoil = 1)
+	required_reagents = list(/datum/reagent/drink/juice/garlic = 1, /datum/reagent/nutriment/oil = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/cheesewheel

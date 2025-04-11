@@ -404,7 +404,13 @@
 /datum/chemical_reaction/glycerol
 	name = "Glycerol"
 	result = /datum/reagent/glycerol
-	required_reagents = list(/datum/reagent/nutriment/cornoil = 3, /datum/reagent/acid = 1)
+	required_reagents = list(/datum/reagent/nutriment/oil = 3, /datum/reagent/acid = 1)
+	result_amount = 1
+
+/datum/chemical_reaction/cornglycerol
+	name = "Corn Glycerol"
+	result = /datum/reagent/glycerol
+	required_reagents = list(/datum/reagent/nutriment/oil/corn = 3, /datum/reagent/acid = 1)
 	result_amount = 1
 
 /datum/chemical_reaction/sodiumchloride
