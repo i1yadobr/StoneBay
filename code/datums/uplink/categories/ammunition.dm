@@ -99,4 +99,4 @@
 	name = "Flechette Magazine"
 	item_cost = 3
 	antag_roles = list(MODE_NUKE)
-	path = /obj/item/magnetic_ammo
+	path = /obj/item/rcd_ammo/magnetic_ammo
