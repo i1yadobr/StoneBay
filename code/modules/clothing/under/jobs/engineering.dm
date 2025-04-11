@@ -18,6 +18,14 @@
 	worn_state = "chiefengineer_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/chief_engineer/dress
+	name = "chief engineer's jumpdress"
+	desc = "It's a high visibility jumpdress given to those engineers insane enough to achieve the rank of \"Chief engineer\". It has minor radiation shielding."
+	icon_state = "chiefengineer_dress"
+	item_state = "chiefengineer_dress"
+	worn_state = "chiefengineer_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/engineer
 	name = "engineer's jumpsuit"
 	desc = "It's an orange high visibility jumpsuit worn by engineers. It has minor radiation shielding."
@@ -37,6 +45,14 @@
 	worn_state = "engine_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+/obj/item/clothing/under/rank/engineer/dress
+	name = "engineer's jumpdress"
+	desc = "It's an orange high visibility jumpdress worn by engineers. It has minor radiation shielding."
+	icon_state = "engine_dress"
+	item_state = "engine_dress"
+	worn_state = "engine_dress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
 /obj/item/clothing/under/rank/atmospheric_technician
 	name = "atmospheric technician's jumpsuit"
 	desc = "It's a jumpsuit worn by atmospheric technicians."
@@ -53,6 +69,14 @@
 	icon_state = "atmos_skirt"
 	item_state = "atmos_skirt"
 	worn_state = "atmos_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/atmospheric_technician/dress
+	name = "atmospheric technician's jumpdress"
+	desc = "It's a jumpdress worn by atmospheric technicians."
+	icon_state = "atmos_dress"
+	item_state = "atmos_dress"
+	worn_state = "atmos_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /datum/rad_resist/under_engineer
