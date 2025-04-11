@@ -119,7 +119,7 @@
 	description = "A colorless liquid solvent used in chemical synthesis."
 
 	taste_description = "paint stripper" // "nail polish remover" appears to be a bit too long.
-	taste_mult = 10.0
+	taste_mult = 25.0
 
 	reagent_state = LIQUID
 	color = "#808080"
@@ -170,8 +170,8 @@
 /// Ammonia
 /datum/reagent/ammonia
 	name = "Ammonia"
-	taste_description = "mordant"
-	taste_mult = 10.0
+	taste_description = "ammonia"
+	taste_mult = 25.0
 	description = "A caustic substance commonly used in fertilizer or household cleaners."
 	reagent_state = LIQUID
 	color = "#404030"
@@ -404,7 +404,7 @@
 	description = "A very corrosive mineral acid with the molecular formula H2SO4."
 
 	taste_description = "acid"
-	taste_mult = 15.0 // It's hard not to notice your tongue melting down.
+	taste_mult = 25.0 // It's hard not to notice your tongue melting down.
 
 	reagent_state = LIQUID
 	color = "#db5008"
@@ -535,7 +535,7 @@
 	description = "A very corrosive mineral acid with the molecular formula HCl."
 
 	taste_description = "stomach acid"
-	taste_mult = 10.0
+	taste_mult = 25.0
 
 	reagent_state = LIQUID
 	color = "#808080"
@@ -571,7 +571,7 @@
 	description = "The organic compound commonly known as table sugar and sometimes called saccharose. This white, odorless, crystalline powder has a pleasing, sweet taste."
 
 	taste_description = "sugar"
-	taste_mult = 2.5
+	taste_mult = 10.0
 
 	reagent_state = SOLID
 	color = "#ffffff"
