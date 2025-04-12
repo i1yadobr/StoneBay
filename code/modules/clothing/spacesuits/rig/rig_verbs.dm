@@ -189,7 +189,6 @@
 	speech.engage()
 
 /obj/item/rig/verb/select_module()
-
 	set name = "Select Module"
 	set desc = "Selects a module as your primary system."
 	set category = "Powersuit"
@@ -211,18 +210,31 @@
 
 	var/list/selectable = list()
 	for(var/obj/item/rig_module/module in installed_modules)
-		if(module.selectable)
-			selectable |= module
+		selectable |= module
 
-	var/obj/item/rig_module/module = input("Which module do you wish to select?") as null|anything in selectable
+	var/list/module_choices = list()
+	for(var/obj/item/rig_module/M in selectable)
+		module_choices[M] = make_item_radial_menu_button(M)
 
-	if(!istype(module))
-		selected_module = null
-		to_chat(usr, "<span class='info'><b>Primary system is now: deselected.</b></span>")
-		return
 
-	selected_module = module
-	to_chat(usr, "<span class='info'><b>Primary system is now: [selected_module.interface_name].</b></span>")
+	var/obj/item/rig_module/chosen_module = show_radial_menu(usr, src, module_choices, "rig_module_selection")
+
+	if(chosen_module)
+		if(chosen_module == selected_module && chosen_module.usable) // if you choose module again engage it (e.g. stun lethal for egun module)
+			selected_module.engage()
+			to_chat(usr, "<span class='info'><b>Engaging selected system: [selected_module.interface_name].</b></span>")
+		if(chosen_module.toggleable)
+			if(chosen_module.active)
+				to_chat(usr, "<span class='info'><b>You attempt to deactivate \the [chosen_module.interface_name].</b></span>")
+				chosen_module.deactivate()
+			else
+				to_chat(usr, "<span class='info'><b>You attempt to activate \the [chosen_module.interface_name].</b></span>")
+				chosen_module.activate()	
+		else
+			selected_module = chosen_module
+			to_chat(usr, "<span class='info'><b>Primary system is now: [selected_module.interface_name].</b></span>")
+	else
+		to_chat(usr, "<span class='info'><b>No module selected.</b></span>")
 
 /obj/item/rig/verb/toggle_module()
 
