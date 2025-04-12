@@ -274,6 +274,7 @@
 	description = "Pure iron is a metal."
 
 	taste_description = "rust"
+	taste_mult = 5.0
 
 	reagent_state = SOLID
 	color = "#353535"
@@ -404,7 +405,7 @@
 	description = "A very corrosive mineral acid with the molecular formula H2SO4."
 
 	taste_description = "acid"
-	taste_mult = 25.0 // It's hard not to notice your tongue melting down.
+	taste_mult = 50.0 // It's hard not to notice your tongue melting down.
 
 	reagent_state = LIQUID
 	color = "#db5008"
@@ -535,13 +536,38 @@
 	description = "A very corrosive mineral acid with the molecular formula HCl."
 
 	taste_description = "stomach acid"
-	taste_mult = 25.0
+	taste_mult = 50.0
 
 	reagent_state = LIQUID
 	color = "#808080"
 
 	power = 3
 	meltdose = 8
+
+// Polytrinic Acid
+/datum/reagent/acid/polyacid
+	name = "Polytrinic Acid"
+	description = "Polytrinic acid is a an extremely corrosive chemical substance."
+
+	taste_description = "your tongue melting"
+	taste_mult = 50.0
+
+	reagent_state = LIQUID
+	color = "#8e18a9"
+
+	power = 10
+	meltdose = 4
+
+// Stomach Acid
+/datum/reagent/acid/stomach
+	name = "Stomach Acid"
+
+	taste_description = "coppery foulness"
+
+	color = "#d8ff00"
+
+	power = 1
+	meltdose = 100
 
 /// Silicon
 /datum/reagent/silicon
@@ -570,8 +596,8 @@
 	name = "Sugar"
 	description = "The organic compound commonly known as table sugar and sometimes called saccharose. This white, odorless, crystalline powder has a pleasing, sweet taste."
 
-	taste_description = "sugar"
-	taste_mult = 10.0
+	taste_description = "sweetness"
+	taste_mult = 7.5
 
 	reagent_state = SOLID
 	color = "#ffffff"

@@ -4,10 +4,20 @@
 /datum/reagent/drink
 	name = "Drink"
 	description = "Uh, some kind of drink."
+
+	taste_mult = 2.5
+
 	reagent_state = LIQUID
 	color = "#e78108"
-	ingest_met = REM * 0.25
+
+	metabolism = 2.5
+	ingest_met = 0.5
+	digest_met = 2.5
+	ingest_absorbability = 0.5
+	digest_absorbability = 1.0
 	hydration_value = 1.0
+	ingest_met = REM * 0.25
+
 	var/nutrition = 0 // Per unit
 	var/adj_dizzy = 0 // Per tick
 	var/adj_drowsy = 0
@@ -16,14 +26,22 @@
 	var/adj_speed = 0
 
 /datum/reagent/drink/affect_blood(mob/living/carbon/M, alien, removed)
-	M.adjustToxLoss(removed) // Probably not a good idea; not very deadly though
+	M.adjustToxLoss(removed * 0.25) // Probably not a good idea; not very deadly though
 	return
 
 /datum/reagent/drink/affect_ingest(mob/living/carbon/M, alien, removed)
+	if(hydration_value > 0)
+		M.add_hydration(removed * hydration_value)
+	else if(hydration_value < 0)
+		M.remove_hydration(removed * hydration_value)
+
+	M.add_nutrition(nutriment_factor * removed * ingest_absorbability) // For hunger and fatness
+
 	if(adj_temp > 0 && M.bodytemperature < 310) // 310 is the normal bodytemp. 310.055
 		M.bodytemperature = min(310, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
 	if(adj_temp < 0 && M.bodytemperature > 310)
 		M.bodytemperature = min(310, M.bodytemperature - (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
+	return
 
 /datum/reagent/drink/affect_digest(mob/living/carbon/M, alien, removed)
 	if(hydration_value > 0)
@@ -31,19 +49,32 @@
 	else if(hydration_value < 0)
 		M.remove_hydration(removed * hydration_value)
 
-	M.add_nutrition(nutrition * removed)
+	M.add_nutrition(nutrition * removed * digest_absorbability)
+
 	M.dizziness = max(0, M.dizziness + adj_dizzy)
 	M.drowsyness = max(0, M.drowsyness + adj_drowsy)
 	M.sleeping = max(0, M.sleeping + adj_sleepy)
 
 	if(adj_speed)
 		M.add_up_to_chemical_effect(adj_speed < 0 ? CE_SLOWDOWN : CE_SPEEDBOOST, adj_speed)
+	return
 
 // Juices
+/datum/reagent/drink/juice
+	name = "Juice"
+	description = "Some sort of juice."
+
+	taste_mult = 2.5
+
+	nutrition = 0.5
+
 /datum/reagent/drink/juice/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
+
 	M.immunity = min(M.immunity + 0.25, M.immunity_norm*1.5)
+
 	var/effective_dose = M.chem_doses[type]/2
+
 	if(alien == IS_UNATHI)
 		if(effective_dose < 2)
 			if(effective_dose == metabolism * 2 || prob(5))
@@ -61,8 +92,16 @@
 /datum/reagent/drink/juice/banana
 	name = "Banana Juice"
 	description = "The raw essence of a banana."
+
 	taste_description = "bananas"
+
 	color = "#c3af00"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/banana = 0.1
+		)
 
 	glass_name = "banana juice"
 	glass_desc = "The raw essence of a banana. HONK!"
@@ -70,8 +109,16 @@
 /datum/reagent/drink/juice/berry
 	name = "Berry Juice"
 	description = "A delicious blend of several different kinds of berries."
+
 	taste_description = "berries"
+
 	color = "#990066"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/berry = 0.1
+		)
 
 	glass_name = "berry juice"
 	glass_desc = "Berry juice. Or maybe it's jam. Who cares?"
@@ -79,21 +126,38 @@
 /datum/reagent/drink/juice/carrot
 	name = "Carrot Juice"
 	description = "It is just like a carrot but without crunching."
+
 	taste_description = "carrots"
+
 	color = "#ff8c00" // rgb: 255, 140, 0
+
+	decompile_results = list(
+		/datum/reagent/water = 0.75,
+		/datum/reagent/imidazoline = 0.1,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/carrot = 0.1
+		)
 
 	glass_name = "carrot juice"
 	glass_desc = "It is just like a carrot but without crunching."
 
 /datum/reagent/drink/juice/carrot/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
-	M.reagents.add_reagent(/datum/reagent/imidazoline, removed * 0.2)
+	M.reagents.add_reagent(/datum/reagent/imidazoline, removed * 0.02)
 
 /datum/reagent/drink/juice/grape
 	name = "Grape Juice"
 	description = "It's grrrrrape!"
+
 	taste_description = "grapes"
+
 	color = "#863333"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/grape = 0.1
+		)
 
 	glass_name = "grape juice"
 	glass_desc = "It's grrrrrape!"
@@ -101,9 +165,17 @@
 /datum/reagent/drink/juice/lemon
 	name = "Lemon Juice"
 	description = "This juice is VERY sour."
+
 	taste_description = "sourness"
-	taste_mult = 1.1
+	taste_mult = 5.0
+
 	color = "#afaf00"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/lemon = 0.1
+		)
 
 	glass_name = "lemon juice"
 	glass_desc = "Sour..."
@@ -111,9 +183,17 @@
 /datum/reagent/drink/juice/lime
 	name = "Lime Juice"
 	description = "The sweet-sour juice of limes."
-	taste_description = "unbearable sourness"
-	taste_mult = 1.1
+
+	taste_description = "sourness"
+	taste_mult = 5.0
+
 	color = "#365e30"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/lime = 0.1
+		)
 
 	glass_name = "lime juice"
 	glass_desc = "A glass of sweet-sour lime juice"
@@ -127,8 +207,16 @@
 /datum/reagent/drink/juice/orange
 	name = "Orange juice"
 	description = "Both delicious AND rich in Vitamin C, what more do you need?"
+
 	taste_description = "oranges"
+
 	color = "#e78108"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/orange = 0.1
+		)
 
 	glass_name = "orange juice"
 	glass_desc = "Vitamins! Yay!"
@@ -142,8 +230,19 @@
 /datum/reagent/toxin/poisonberryjuice // It has more in common with toxins than drinks... but it's a juice
 	name = "Poison Berry Juice"
 	description = "A tasty juice blended from various kinds of very deadly and toxic berries."
+
 	taste_description = "berries"
+
 	color = "#863353"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.4,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/toxin = 0.2,
+		/datum/reagent/toxin/cyanide = 0.2,
+		/datum/reagent/flavoring/berry = 0.1
+		)
+
 	strength = 5
 
 	glass_name = "poison berry juice"
@@ -157,9 +256,18 @@
 /datum/reagent/drink/juice/potato
 	name = "Potato Juice"
 	description = "Juice of the potato. Bleh."
-	taste_description = "irish sadness"
-	nutrition = 2
+
+	taste_description = "belarusian water"
+
 	color = "#302000"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.7,
+		/datum/reagent/nutriment/flour = 0.2, // Since we don't have starch yet
+		/datum/reagent/flavoring/potato = 0.1
+		)
+
+	nutrition = 1.0
 
 	glass_name = "potato juice"
 	glass_desc = "Juice from a potato. Bleh."
@@ -167,9 +275,16 @@
 /datum/reagent/drink/juice/garlic
 	name = "Garlic Juice"
 	description = "Who would even drink this?"
+
 	taste_description = "bad breath"
-	nutrition = 1
+	taste_mult = 5.0
+
 	color = "#eeddcc"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/flavoring/garlic = 0.2
+		)
 
 	glass_name = "garlic juice"
 	glass_desc = "Who would even drink juice from garlic?"
@@ -177,9 +292,17 @@
 /datum/reagent/drink/juice/onion
 	name = "Onion Juice"
 	description = "Juice from an onion, for when you need to cry."
+
 	taste_description = "stinging tears"
-	nutrition = 1
+	taste_mult = 5.0
+
 	color = "#ffeedd"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/onion = 0.1
+		)
 
 	glass_name = "onion juice"
 	glass_desc = "Juice from an onion, for when you need to cry."
@@ -187,8 +310,17 @@
 /datum/reagent/drink/juice/tomato
 	name = "Tomato Juice"
 	description = "Tomatoes made into juice. What a waste of big, juicy tomatoes, huh?"
+
 	taste_description = "tomatoes"
+	taste_mult = 3.5
+
 	color = "#731008"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/flavoring = 0.1,
+		/datum/reagent/flavoring/tomato = 0.1
+		)
 
 	glass_name = "tomato juice"
 	glass_desc = "Are you sure this is tomato juice?"
@@ -202,8 +334,16 @@
 /datum/reagent/drink/juice/watermelon
 	name = "Watermelon Juice"
 	description = "Delicious juice made from watermelon."
+
 	taste_description = "watermelon"
+
 	color = "#b83333"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/watermelon = 0.1
+		)
 
 	glass_name = "watermelon juice"
 	glass_desc = "Delicious juice made from watermelon."
@@ -211,8 +351,16 @@
 /datum/reagent/drink/juice/apple
 	name = "Apple Juice"
 	description = "Apples! Apples! Apples!"
+
 	taste_description = "apples"
+
 	color = "#e59C40"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.8,
+		/datum/reagent/sugar = 0.1,
+		/datum/reagent/flavoring/apple = 0.1
+		)
 
 	glass_name = "apple juice"
 	glass_desc = "Two cups a day keep the doctor away!"
@@ -226,8 +374,15 @@
 /datum/reagent/drink/juice/coconut
 	name = "Coconut Milk"
 	description = "It's white and smells like your granny's rice pudding."
+
 	taste_description = "coconut"
+
 	color = "#ffffff"
+
+	decompile_results = list(
+		/datum/reagent/water = 0.9,
+		/datum/reagent/flavoring/coconut = 0.1
+		)
 
 	glass_name = "coconut milk"
 	glass_desc = "How do they milk coconuts?"
@@ -237,21 +392,21 @@
 /datum/reagent/drink/milk
 	name = "Milk"
 	description = "An opaque white liquid produced by the mammary glands of mammals."
+
 	taste_description = "milk"
+
 	color = "#dfdfdf"
+
 	hydration_value = 0.9
+	nutrition = 0.75
+
+	decompile_results = list(
+		/datum/reagent/water = 0.5,
+		/datum/reagent/drink/milk/cream = 0.5
+		)
 
 	glass_name = "milk"
 	glass_desc = "White and nutritious goodness!"
-
-/datum/reagent/drink/milk/chocolate
-	name =  "Chocolate Milk"
-	description = "A mixture of perfectly healthy milk and delicious chocolate."
-	taste_description = "chocolate milk"
-	color = "#74533b"
-
-	glass_name = "chocolate milk"
-	glass_desc = "Deliciously fattening!"
 
 /datum/reagent/drink/milk/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
@@ -260,12 +415,39 @@
 	M.heal_organ_damage(0.5 * removed, 0)
 	holder.remove_reagent(/datum/reagent/capsaicin, 10 * removed)
 
+/datum/reagent/drink/milk/chocolate
+	name =  "Chocolate Milk"
+	description = "A mixture of perfectly healthy milk and delicious chocolate."
+
+	taste_description = "chocolate milk"
+
+	color = "#74533b"
+
+	nutrition = 1.25
+
+	decompile_results = list(
+		/datum/reagent/drink/milk = 0.75,
+		/datum/reagent/nutriment/coco = 0.25
+		)
+
+	glass_name = "chocolate milk"
+	glass_desc = "Deliciously fattening!"
+
 /datum/reagent/drink/milk/cream
 	name = "Cream"
 	description = "The fatty, still liquid part of milk. Why don't you mix this with sum scotch, eh?"
+
 	taste_description = "creamy milk"
+
 	color = "#dfd7af"
+
 	hydration_value = 0.6
+	nutrition = 1.5
+
+	decompile_results = list(
+		/datum/reagent/water = 0.5,
+		/datum/reagent/nutriment/oil = 0.5
+		)
 
 	glass_name = "cream"
 	glass_desc = "Ewwww..."
@@ -273,9 +455,18 @@
 /datum/reagent/drink/milk/soymilk
 	name = "Soy Milk"
 	description = "An opaque white liquid made from soybeans."
+
 	taste_description = "soy milk"
+
 	color = "#dfdfc7"
+
 	hydration_value = 0.9
+
+	decompile_results = list(
+		/datum/reagent/water = 0.5,
+		/datum/reagent/nutriment/protein = 0.25,
+		/datum/reagent/nutriment/flour = 0.25
+		)
 
 	glass_name = "soy milk"
 	glass_desc = "White and nutritious soy goodness!"
@@ -283,8 +474,11 @@
 /datum/reagent/drink/tea
 	name = "Tea"
 	description = "Tasty black tea, it has antioxidants, it's good for you!"
+
 	taste_description = "tart black tea"
+
 	color = "#101000"
+
 	adj_dizzy = -2
 	adj_drowsy = -1
 	adj_sleepy = -3
@@ -298,13 +492,16 @@
 	..()
 	if(alien == IS_DIONA)
 		return
-	M.adjustToxLoss(-0.5 * removed)
+	M.adjustToxLoss(-0.1 * removed)
 
 /datum/reagent/drink/tea/icetea
 	name = "Iced Tea"
 	description = "No relation to a certain rap artist/ actor."
+
 	taste_description = "sweet tea"
+
 	color = "#104038" // rgb: 16, 64, 56
+
 	adj_temp = -5
 
 	glass_required = "square"
@@ -316,9 +513,12 @@
 /datum/reagent/drink/hot_coco
 	name = "Hot Chocolate"
 	description = "Made with love! And cocoa beans."
+
 	taste_description = "creamy chocolate"
+
 	reagent_state = LIQUID
 	color = "#5B250C"
+
 	nutrition = 2
 	adj_temp = 30
 	hydration_value = 0.9

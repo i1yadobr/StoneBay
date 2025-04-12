@@ -760,11 +760,19 @@
 /datum/reagent/tobacco
 	name = "Tobacco"
 	description = "Cut and processed tobacco leaves."
+
 	taste_description = "tobacco"
+	taste_mult = 5.0
+
 	reagent_state = SOLID
 	color = "#684b3c"
+
 	scannable = 1
-	taste_mult = 2.0
+
+	decompile_results = list(
+		/datum/reagent/nicotine = 0.1
+		)
+
 	var/nicotine = REM * 0.1
 
 /datum/reagent/tobacco/affect_blood(mob/living/carbon/M, alien, removed)
@@ -773,33 +781,59 @@
 
 /datum/reagent/tobacco/fine
 	name = "Fine Tobacco"
+
 	taste_description = "fine tobacco"
+	taste_mult = 5.0
+
+	decompile_results = list(
+		/datum/reagent/nicotine = 0.075
+		)
+
 	nicotine = REM * 0.075
 
 /datum/reagent/tobacco/bad
 	name = "Terrible Tobacco"
+
 	taste_description = "acrid smoke"
+	taste_mult = 7.5
+
+	decompile_results = list(
+		/datum/reagent/nicotine = 0.2
+		)
+
 	nicotine = REM * 0.2
 
 /datum/reagent/tobacco/liquid
 	name = "Nicotine Solution"
 	description = "A diluted nicotine solution."
-	reagent_state = LIQUID
+
 	taste_mult = 0
+
+	reagent_state = LIQUID
 	color = "#fcfcfc"
-	nicotine = REM * 0.02
+
+	decompile_results = list(
+		/datum/reagent/glycerol = 0.95
+		/datum/reagent/nicotine = 0.05
+		)
+
+	nicotine = REM * 0.035
 
 /datum/reagent/menthol
 	name = "Menthol"
 	description = "Tastes naturally minty, and imparts a very mild numbing sensation."
+
 	taste_description = "mint"
+	taste_mult = 25.0
+
 	reagent_state = LIQUID
 	color = "#80af9c"
+
 	metabolism = REM * 0.002
+	ingest_met = METABOLISM_FALLBACK
 	overdose = REAGENTS_OVERDOSE * 0.25
 	scannable = 1
 	data = 0
-	taste_mult = 1.5
 
 /datum/reagent/menthol/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)

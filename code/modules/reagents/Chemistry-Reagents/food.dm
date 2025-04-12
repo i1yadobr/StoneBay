@@ -5,7 +5,7 @@
 	name = "Nutriment"
 	description = "All the vitamins, minerals, and carbohydrates the body needs in pure form."
 
-	taste_mult = 4
+	taste_mult = 1.0
 
 	reagent_state = SOLID
 	color = "#664330"
@@ -13,7 +13,7 @@
 	metabolism = 2.5
 	ingest_met = 0.5
 	digest_met = 2.5
-	ingest_absorbability = 0.5
+	ingest_absorbability = 0.25
 	digest_absorbability = 1.0
 
 	var/nutriment_factor = 1.0 // Per unit
@@ -43,7 +43,7 @@
 
 /datum/reagent/nutriment/affect_blood(mob/living/carbon/M, alien, removed)
 	if(!injectable)
-		M.adjustToxLoss(0.2 * removed)
+		M.adjustToxLoss(0.25 * removed)
 		return
 	affect_digest(M, alien, removed)
 
@@ -61,17 +61,32 @@
 
 /datum/reagent/nutriment/glucose
 	name = "Glucose"
+
+	taste_description = "sweetness"
+	taste_mult = 3.0
+
 	color = "#ffffff"
 
+	metabolism = 5.0
+	ingest_met = 0.5
+	digest_met = 5.0
+	ingest_absorbability = 0.1
+	digest_absorbability = 0.5
+
+	nutriment_factor = 5.0
 	injectable = 1
 
 /datum/reagent/nutriment/protein // Bad for Skrell!
 	name = "animal protein"
+
 	taste_description = "some sort of protein"
+
 	color = "#440000"
-	nutriment_factor = 2.5
+
 	ingest_absorbability = 0.1
 	digest_absorbability = 0.5
+
+	nutriment_factor = 2.5
 
 /datum/reagent/nutriment/protein/affect_digest(mob/living/carbon/M, alien, removed)
 	switch(alien)
@@ -95,23 +110,33 @@
 // Cooking proteins make them more available.
 /datum/reagent/nutriment/protein/cooked
 	name = "denatured protein"
+
 	taste_description = "some sort of protein"
+
 	ingest_absorbability = 0.2
 	digest_absorbability = 1.0
 
 /datum/reagent/nutriment/protein/egg // Also bad for skrell.
 	name = "egg yolk"
+
 	taste_description = "egg"
+
+	reagent_state = LIQUID
 	color = "#ffffaa"
+
 	ingest_absorbability = 0.2
 	digest_absorbability = 1.0
 
 /datum/reagent/nutriment/honey
 	name = "Honey"
 	description = "A golden yellow syrup, loaded with sugary sweetness."
+
 	taste_description = "sweetness"
-	nutriment_factor = 10
+	taste_mult = 5.0
+
 	color = "#ffff00"
+
+	nutriment_factor = 5.0
 
 /datum/reagent/honey/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
@@ -134,10 +159,13 @@
 /datum/reagent/nutriment/flour
 	name = "flour"
 	description = "This is what you rub all over yourself to pretend to be a ghost."
+
 	taste_description = "chalky wheat"
+
 	reagent_state = SOLID
-	nutriment_factor = 1
 	color = "#ffffff"
+
+	nutriment_factor = 1.0
 
 /datum/reagent/nutriment/flour/touch_turf(turf/simulated/T)
 	if(!istype(T, /turf/space))
@@ -150,67 +178,97 @@
 /datum/reagent/nutriment/coco
 	name = "Coco Powder"
 	description = "A fatty, bitter paste made from coco beans."
+
 	taste_description = "bitterness"
-	taste_mult = 1.3
+	taste_mult = 5.0
+
 	reagent_state = SOLID
-	nutriment_factor = 2.5
 	color = "#302000"
+
+	nutriment_factor = 2.5
 
 /datum/reagent/nutriment/soysauce
 	name = "Soysauce"
 	description = "A salty sauce made from the soy plant."
+
 	taste_description = "umami"
-	taste_mult = 1.1
+	taste_mult = 5.0
+
 	reagent_state = LIQUID
-	nutriment_factor = 1.0
 	color = "#792300"
+
+	nutriment_factor = 1.0
 	hydration_value = 0.7
 
 /datum/reagent/nutriment/ketchup
 	name = "Ketchup"
 	description = "Ketchup, catsup, whatever. It's tomato paste."
+
 	taste_description = "ketchup"
+	taste_mult = 5.0
+
 	reagent_state = LIQUID
-	nutriment_factor = 2.0
 	color = "#731008"
+
+	nutriment_factor = 2.0
 	hydration_value = 0.5
 
 /datum/reagent/nutriment/barbecue
 	name = "Barbecue Sauce"
 	description = "Barbecue sauce for barbecues and long shifts."
+
 	taste_description = "barbecue"
+	taste_mult = 5.0
+
 	reagent_state = LIQUID
-	nutriment_factor = 2.0
 	color = "#4f330f"
+
+	nutriment_factor = 2.0
 	hydration_value = 0.4
 
 /datum/reagent/nutriment/garlicsauce
 	name = "Garlic Sauce"
 	description = "Garlic sauce, perfect for spicing up a plate of garlic."
+
 	taste_description = "garlic"
+	taste_mult = 5.0
+
 	reagent_state = LIQUID
-	nutriment_factor = 2.5
 	color = "#d8c045"
+
+	nutriment_factor = 3.0
 	hydration_value = 0.4
 
 /datum/reagent/nutriment/rice
 	name = "Rice"
 	description = "Enjoy the great taste of nothing."
+
 	taste_description = "rice"
 	taste_mult = 0.4
+
 	reagent_state = SOLID
-	nutriment_factor = 1.0
 	color = "#ffffff"
+
+	nutriment_factor = 1.0
 
 /datum/reagent/nutriment/cherryjelly
 	name = "Cherry Jelly"
 	description = "Totally the best. Only to be spread on foods with excellent lateral symmetry."
+
 	taste_description = "cherry"
-	taste_mult = 1.3
+	taste_mult = 5.0
+
 	reagent_state = LIQUID
-	nutriment_factor = 1.5
 	color = "#801e28"
+
+	nutriment_factor = 2.5
 	hydration_value = 0.4
+
+	decompile_results = list(
+		/datum/reagent/flavoring/cherry = 0.1,
+		/datum/reagent/water = 0.75,
+		/datum/reagent/sugar = 0.15
+		)
 
 /datum/reagent/nutriment/oil
 	name = "Cooking Oil"
@@ -244,7 +302,7 @@
 	description = "An oil derived from various types of corn."
 
 	taste_description = "oil"
-	taste_mult = 0.5
+	taste_mult = 1.0
 
 	color = "#dbc559"
 
@@ -273,7 +331,7 @@
 	description = "A mixture of water, milk, and oxygen. Virus cells can use this mixture to reproduce."
 
 	taste_description = "vomit"
-	taste_mult = 2
+	taste_mult = 2.0
 
 	reagent_state = LIQUID
 	color = "#899613"
@@ -288,25 +346,44 @@
 /datum/reagent/nutriment/sprinkles
 	name = "Sprinkles"
 	description = "Multi-colored little bits of sugar, commonly found on donuts. Loved by cops."
+
 	taste_description = "childhood whimsy"
-	nutriment_factor = 2.5
+
 	color = "#ff00ff"
+
+	nutriment_factor = 2.5
+
+	decompile_results = list(
+		/datum/reagent/sugar = 1.0
+		)
 
 /datum/reagent/nutriment/mint
 	name = "Mint"
 	description = "Also known as Mentha."
+
 	taste_description = "mint"
+	taste_mult = 5.0
+
 	reagent_state = LIQUID
 	color = "#cf3600"
+
+	decompile_results = list(
+		/datum/reagent/nutriment/menthol = 0.25
+		)
+
 
 /* Non-food stuff like condiments */
 
 /datum/reagent/sodiumchloride
 	name = "Table Salt"
 	description = "A salt made of sodium chloride. Commonly used to season food."
+
 	taste_description = "salt"
+	taste_mult = 7.5
+
 	reagent_state = SOLID
 	color = "#ffffff"
+
 	overdose = REAGENTS_OVERDOSE
 
 /datum/reagent/blackpepper
@@ -319,20 +396,31 @@
 /datum/reagent/enzyme
 	name = "Universal Enzyme"
 	description = "A universal enzyme used in the preperation of certain chemicals and foods."
+
 	taste_description = "sweetness"
 	taste_mult = 0.7
+
 	reagent_state = LIQUID
 	color = "#365e30"
+
 	overdose = REAGENTS_OVERDOSE
 
 /datum/reagent/frostoil
 	name = "Frost Oil"
 	description = "A special oil that noticably chills the body. Extracted from Ice Peppers."
+
 	taste_description = "mint"
-	taste_mult = 1.5
+	taste_mult = 10.0
+
 	reagent_state = LIQUID
 	color = "#b31008"
-	ingest_met = REM
+
+	ingest_met = METABOLISM_FALLBACK
+
+	decompile_results = list(
+		/datum/reagent/nutriment/oil = 0.75,
+		/datum/reagent/nutriment/menthol = 0.25
+		)
 
 /datum/reagent/frostoil/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
@@ -349,14 +437,16 @@
 	description = "This is what makes chilis hot."
 
 	taste_description = "hot peppers"
-	taste_mult = 1.5
+	taste_mult = 10.0
 
 	reagent_state = LIQUID
 	color = "#b31008"
 
-	ingest_met = REM
+	ingest_met = METABOLISM_FALLBACK
+	ingest_absorbability = 1.0
 
 	decompile_results = list(
+		/datum/reagent/nutriment/oil = 0.75,
 		/datum/reagent/capsaicin/condensed = 0.25 // Two times less effective than using plasma.
 		)
 
@@ -392,16 +482,23 @@
 /datum/reagent/capsaicin/condensed
 	name = "Condensed Capsaicin"
 	description = "A chemical agent used for self-defense and in police work."
+
 	taste_description = "scorching agony"
-	taste_mult = 10
+	taste_mult = 50.0
+
 	reagent_state = LIQUID
-	touch_met = 50 // Get rid of it quickly
 	color = "#b31008"
+
+	touch_met = 50 // Get rid of it quickly
+	ingest_met = METABOLISM_FALLBACK
+	ingest_absorbability = 1.0
+
+	decompile_results = null
+
 	agony_dose = 0.5
 	agony_amount = 4
 	discomfort_message = "<span class='danger'>You feel like your insides are burning!</span>"
 	metroid_temp_adj = 15
-	ingest_met = REM
 
 /datum/reagent/capsaicin/condensed/affect_touch(mob/living/carbon/M, alien, removed)
 	var/eyes_covered = 0
@@ -474,9 +571,16 @@
 /datum/reagent/nutriment/magical_custard
 	name = "Magical Custard"
 	description = "It's both tasty and healthy. Must be magic."
+
 	taste_description = "sweet pleasure"
+	taste_mult = 5.0
+
 	reagent_state = LIQUID
 	color = "#FFE6A3"
+
+	ingest_met = METABOLISM_FALLBACK
+	ingest_absorbability = 1.0
+	digest_absorbability = 1.0
 	scannable = TRUE
 	flags = IGNORE_MOB_SIZE
 
@@ -486,16 +590,20 @@
 /datum/reagent/astrotame
 	name = "Astrotame"
 	description = "A space age artifical sweetener."
+
+	taste_description = "sweetness"
+	taste_mult = 15.0
+
 	reagent_state = SOLID
 	color = "#FFFFFF" // rgb: 255, 255, 255
-	taste_mult = 8
-	taste_description = "sweetness"
 
 /datum/reagent/sugar/caramel
 	name = "Caramel"
 	description = "Who would have guessed that heating sugar is so delicious?"
+
 	taste_description = "bitter sweetness"
-	taste_mult = 2
+	taste_mult = 5.0
+
 	reagent_state = SOLID
 	color = "#ffffff"
 
@@ -509,6 +617,12 @@
 
 	reagent_state = SOLID
 	color = "#ffffff"
+
+/datum/reagent/flavoring/cherry
+	name = "Cherry Extract"
+	desc = "The concentrated essence of several different kinds of berries."
+	taste_description = "cherry"
+	color = "#801e28"
 
 /datum/reagent/flavoring/banana
 	name = "Banana Extract"
