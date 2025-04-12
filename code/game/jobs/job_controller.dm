@@ -79,6 +79,9 @@ var/global/datum/controller/occupations/job_master
 			if(lowertext(J.title) == rank)
 				return J
 
+			if(lowertext(J.title_ru) == rank)
+				return J
+
 		return null
 
 	proc/ShouldCreateRecords(rank)

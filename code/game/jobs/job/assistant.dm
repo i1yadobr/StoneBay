@@ -1,6 +1,8 @@
 /datum/job/assistant
 	title = "Assistant"
 	department = "Civilian"
+	title_ru = "Младший сотрудник станции"
+	department_ru = "Общественный отдел"
 	department_flag = CIV
 
 	total_positions = -1
@@ -10,7 +12,7 @@
 	economic_modifier = 1
 	access = list()			//See /datum/job/assistant/get_access()
 	minimal_access = list()	//See /datum/job/assistant/get_access()
-	alt_titles = list("Technical Assistant","Medical Intern","Research Assistant")
+	alt_titles = list("Техник-стажёр","Практикант медсанчасти","Лаборант научного отдела")
 	outfit_type = /decl/hierarchy/outfit/job/assistant
 	can_be_hired = FALSE
 

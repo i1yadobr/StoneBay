@@ -1,7 +1,9 @@
 /datum/job/cmo
 	title = "Chief Medical Officer"
+	title_ru = "Главврач"
 	head_position = 1
 	department = "Medical"
+	department_ru = "Медико-санитарный отдел"
 	department_flag = MED|COM
 
 	total_positions = 1
@@ -26,6 +28,8 @@
 /datum/job/doctor
 	title = "Medical Doctor"
 	department = "Medical"
+	title_ru = "Врач общего профиля"
+	department_ru = "Медико-санитарный отдел"
 	department_flag = MED
 
 	minimal_player_age = 7
@@ -37,15 +41,17 @@
 	access = list(access_medical, access_medical_equip, access_morgue, access_surgery, access_chemistry)
 	minimal_access = list(access_medical, access_medical_equip, access_morgue, access_surgery)
 	alt_titles = list(
-		"Surgeon" = /decl/hierarchy/outfit/job/medical/doctor/surgeon,
-		"Emergency Physician" = /decl/hierarchy/outfit/job/medical/doctor/emergency_physician,
-		"Nurse" = /decl/hierarchy/outfit/job/medical/doctor/nurse,
+		"Хирург" = /decl/hierarchy/outfit/job/medical/doctor/surgeon,
+		"Дежурный врач" = /decl/hierarchy/outfit/job/medical/doctor/emergency_physician,
+		"Медицинская сестра" = /decl/hierarchy/outfit/job/medical/doctor/nurse,
 		)
 	outfit_type = /decl/hierarchy/outfit/job/medical/doctor
 
 /datum/job/virologist
 	title = "Virologist"
 	department = "Medical"
+	title_ru = "Специалист по инфекционным заболеваниям"
+	department_ru = "Медико-санитарный отдел"
 	department_flag = MED
 
 	minimal_player_age = 7
@@ -62,6 +68,8 @@
 /datum/job/chemist
 	title = "Chemist"
 	department = "Medical"
+	title_ru = "Лаборант-химик"
+	department_ru = "Медико-санитарный отдел"
 	department_flag = MED
 
 	minimal_player_age = 7
@@ -72,12 +80,14 @@
 	economic_modifier = 5
 	access = list(access_medical, access_medical_equip, access_morgue, access_surgery, access_chemistry, access_virology)
 	minimal_access = list(access_medical, access_medical_equip, access_chemistry)
-	alt_titles = list("Pharmacist")
+	alt_titles = list("Аптекарь")
 	outfit_type = /decl/hierarchy/outfit/job/medical/chemist
 
 /datum/job/psychiatrist
 	title = "Psychiatrist"
 	department = "Medical"
+	title_ru = "Врач по душевным расстройствам"
+	department_ru = "Медико-санитарный отдел"
 	department_flag = MED
 
 	total_positions = 1
@@ -88,12 +98,14 @@
 	selection_color = "#013d3b"
 	access = list(access_medical, access_medical_equip, access_morgue, access_surgery, access_chemistry, access_virology, access_psychiatrist)
 	minimal_access = list(access_medical, access_medical_equip, access_psychiatrist)
-	alt_titles = list("Psychologist" = /decl/hierarchy/outfit/job/medical/psychiatrist/psychologist)
+	alt_titles = list(" Специалист по психическому состоянию" = /decl/hierarchy/outfit/job/medical/psychiatrist/psychologist)
 	outfit_type = /decl/hierarchy/outfit/job/medical/psychiatrist
 
 /datum/job/paramedic
 	title = "Paramedic"
 	department = "Medical"
+	title_ru = "Фельдшер выездной бригады"
+	department_ru = "Медико-санитарный отдел"
 	department_flag = MED
 
 	total_positions = 2
@@ -104,5 +116,5 @@
 	minimal_player_age = 7
 	access = list(access_medical, access_medical_equip, access_morgue, access_surgery, access_chemistry, access_virology, access_eva, access_maint_tunnels, access_external_airlocks, access_psychiatrist)
 	minimal_access = list(access_medical, access_medical_equip, access_morgue, access_eva, access_maint_tunnels, access_external_airlocks)
-	alt_titles = list("Emergency Medical Technician" = /decl/hierarchy/outfit/job/medical/paramedic/emt)
+	alt_titles = list("Санитар скорой помощи" = /decl/hierarchy/outfit/job/medical/paramedic/emt)
 	outfit_type = /decl/hierarchy/outfit/job/medical/paramedic

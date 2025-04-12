@@ -2,6 +2,8 @@
 /datum/job/chaplain
 	title = "Chaplain"
 	department = "Civilian"
+	title_ru = "Культурный организатор"
+	department_ru = "Общественный отдел"
 	department_flag = CIV
 
 	total_positions = 1
@@ -10,7 +12,7 @@
 	selection_color = "#515151"
 	access = list(access_morgue, access_chapel_office, access_crematorium, access_maint_tunnels)
 	minimal_access = list(access_morgue, access_chapel_office, access_crematorium)
-	alt_titles = list("Counselor")
+	alt_titles = list("Консультант по воспитательной работе")
 	outfit_type = /decl/hierarchy/outfit/job/chaplain
 
 	equip(mob/living/carbon/human/H, alt_title, ask_questions = TRUE)

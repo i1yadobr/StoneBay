@@ -54,9 +54,9 @@
 		return
 
 	for(var/datum/job/job in job_master.occupations)
-		var/alt_title = pref.player_alt_titles[job.title]
+		var/alt_title = pref.player_alt_titles[job.title_ru]
 		if(alt_title && !(alt_title in job.alt_titles))
-			pref.player_alt_titles -= job.title
+			pref.player_alt_titles -= job.title_ru
 
 /datum/category_item/player_setup_item/occupation/content(mob/user, limit = 16, list/splitJobs, splitLimit = 1)
 	if(!job_master)
@@ -94,52 +94,53 @@
 
 		. += "<tr bgcolor='[job.selection_color]'><td width='60%' align='right'>"
 		var/rank = job.title
+		var/rank_ru = job.title_ru
 		lastJob = job
 		if(job.total_positions == 0 && job.spawn_positions == 0)
-			. += "<del>[rank]</del></td><td><b> \[UNAVAILABLE]</b></td></tr>"
+			. += "<del>[rank_ru]</del></td><td><b> \[UNAVAILABLE]</b></td></tr>"
 			continue
 		var/bannedReason = jobban_isbanned(user, rank)
 		if(bannedReason == "Whitelisted Job")
-			. += "<del>[rank]</del></td><td><b> \[WHITELIST]</b></td></tr>"
+			. += "<del>[rank_ru]</del></td><td><b> \[WHITELIST]</b></td></tr>"
 			continue
 		else if (bannedReason == IAA_ban_reason)
-			. += "<del>[rank]</del></td><td><b> \[FIRED BY NT]</b></td></tr>"
+			. += "<del>[rank_ru]</del></td><td><b> \[FIRED BY NT]</b></td></tr>"
 			continue
 		else if(bannedReason)
-			. += "<del>[rank]</del></td><td><b> \[BANNED]</b></td></tr>"
+			. += "<del>[rank_ru]</del></td><td><b> \[BANNED]</b></td></tr>"
 			continue
 
 		if(job.faction_restricted)
 			if(user.client?.prefs.background != GLOB.using_map.company_name)
-				. += "<del>[rank]</del></td><td><b> \[FOR [uppertext(GLOB.using_map.company_name)] EMPLOYESS ONLY]</b></td></tr>"
+				. += "<del>[rank_ru]</del></td><td><b> \[FOR [uppertext(GLOB.using_map.company_name)] EMPLOYESS ONLY]</b></td></tr>"
 				continue
 			if(user.client?.prefs.nanotrasen_relation in COMPANY_OPPOSING)
-				. += "<del>[rank]</del></td><td><b> \[LOW LOYALTY IS FORBIDDEN]</b></td></tr>"
+				. += "<del>[rank_ru]</del></td><td><b> \[LOW LOYALTY IS FORBIDDEN]</b></td></tr>"
 				continue
 
 		if(!job.player_old_enough(user.client))
 			var/available_in_days = job.available_in_days(user.client)
-			. += "<del>[rank]</del></td><td> \[IN [(available_in_days)] DAYS]</td></tr>"
+			. += "<del>[rank_ru]</del></td><td> \[IN [(available_in_days)] DAYS]</td></tr>"
 			continue
 		if(job.minimum_character_age && user.client && (user.client.prefs.age < job.minimum_character_age))
-			. += "<del>[rank]</del></td><td> \[MINIMUM CHARACTER AGE: [job.minimum_character_age]]</td></tr>"
+			. += "<del>[rank_ru]</del></td><td> \[MINIMUM CHARACTER AGE: [job.minimum_character_age]]</td></tr>"
 			continue
 
 		if(!job.is_species_allowed(S))
-			. += "<del>[rank]</del></td><td><b> \[SPECIES RESTRICTED]</b></td></tr>"
+			. += "<del>[rank_ru]</del></td><td><b> \[SPECIES RESTRICTED]</b></td></tr>"
 			continue
 
 		if(("Assistant" in pref.job_low) && (rank != "Assistant"))
-			. += "<font color=grey>[rank]</font></td><td></td></tr>"
+			. += "<font color=grey>[rank_ru]</font></td><td></td></tr>"
 			continue
 		if((rank in GLOB.command_positions) || (rank == "AI"))//Bold head jobs
-			. += "<b>[rank]</b>"
+			. += "<b>[rank_ru]</b>"
 		else
-			. += "[rank]"
+			. += "[rank_ru]"
 
 		. += "</td><td width='40%'>"
 
-		. += "<a href='?src=\ref[src];switch_job=[rank]'>"
+		. += "<a href='?src=\ref[src];switch_job=[rank_ru]'>"
 
 		if(rank == "Assistant")//Assistant is special
 			if("Assistant" in pref.job_low)
@@ -193,8 +194,8 @@
 	else if(href_list["select_alt_title"])
 		var/datum/job/job = locate(href_list["select_alt_title"])
 		if (job)
-			var/choices = list(job.title) + job.alt_titles
-			var/choice = input("Choose an title for [job.title].", "Choose Title", pref.GetPlayerAltTitle(job)) as anything in choices|null
+			var/choices = list(job.title_ru) + job.alt_titles
+			var/choice = input("Choose an title for [job.title_ru].", "Choose Title", pref.GetPlayerAltTitle(job)) as anything in choices|null
 			if(choice && CanUseTopic(user))
 				SetPlayerAltTitle(job, choice)
 				return (pref.equip_preview_mob ? TOPIC_REFRESH_UPDATE_PREVIEW : TOPIC_REFRESH)
@@ -206,10 +207,10 @@
 
 /datum/category_item/player_setup_item/occupation/proc/SetPlayerAltTitle(datum/job/job, new_title)
 	// remove existing entry
-	pref.player_alt_titles -= job.title
+	pref.player_alt_titles -= job.title_ru
 	// add one if it's not default
 	if(job.title != new_title)
-		pref.player_alt_titles[job.title] = new_title
+		pref.player_alt_titles[job.title_ru] = new_title
 
 /datum/category_item/player_setup_item/occupation/proc/SwitchJobPriority(mob/user, role)
 	var/datum/job/job = job_master.GetJob(role)
@@ -306,4 +307,4 @@
 	pref.player_alt_titles.Cut()
 
 /datum/preferences/proc/GetPlayerAltTitle(datum/job/job)
-	return (job.title in player_alt_titles) ? player_alt_titles[job.title] : job.title
+	return (job.title_ru in player_alt_titles) ? player_alt_titles[job.title_ru] : job.title_ru

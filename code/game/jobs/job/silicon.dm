@@ -1,5 +1,6 @@
 /datum/job/ai
 	title = "AI"
+	title_ru = "Автоматическая система управления"
 	department_flag = MSC
 
 	total_positions = 0 // Not used for AI, see is_position_available below and modules/mob/living/silicon/ai/latejoin.dm
@@ -28,6 +29,7 @@
 
 /datum/job/cyborg
 	title = "Cyborg"
+	title_ru = " Кибернетический ассистент"
 	department_flag = MSC
 
 	total_positions = 3
@@ -35,7 +37,8 @@
 	supervisors = "your laws and the AI"	//Nodrak
 	selection_color = "#254c25"
 	minimal_player_age = 14
-	alt_titles = list("Android")
+
+	alt_titles = list("Автономный рабочий аппарат")
 	account_allowed = 0
 	economic_modifier = 0
 	loadout_allowed = FALSE

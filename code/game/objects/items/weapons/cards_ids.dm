@@ -134,7 +134,9 @@ var/const/NO_EMAG_ACT = -50
 
 	//alt titles are handled a bit weirdly in order to unobtrusively integrate into existing ID system
 	var/assignment = null	//can be alt title or the actual job
+	var/assignment_ru = null
 	var/rank = null			//actual job
+	var/rank_ru
 	var/dorm = 0			// determines if this ID has claimed a dorm already
 
 	var/job_access_type     // Job type to acquire access rights from, if any
@@ -146,6 +148,8 @@ var/const/NO_EMAG_ACT = -50
 		if(j)
 			rank = j.title
 			assignment = rank
+			rank_ru = j.title_ru
+			assignment_ru = rank_ru
 			access |= j.get_access()
 
 /obj/item/card/id/examine(mob/user, infix)

@@ -1,7 +1,9 @@
 /datum/job/rd
 	title = "Research Director"
+	title_ru = "Научный Руководитель"
 	head_position = 1
 	department = "Science"
+	department_ru = "Научно-исследовательский отдел"
 	department_flag = COM|SCI
 
 	total_positions = 1
@@ -27,6 +29,8 @@
 /datum/job/scientist
 	title = "Scientist"
 	department = "Science"
+	title_ru = "Научный сотрудник"
+	department_ru = "Научно-исследовательский отдел"
 	department_flag = SCI
 
 	total_positions = 5
@@ -36,13 +40,15 @@
 	economic_modifier = 7
 	access = list(access_robotics, access_tox, access_tox_storage, access_research, access_xenobiology, access_xenoarch)
 	minimal_access = list(access_tox, access_tox_storage, access_research, access_xenoarch)
-	alt_titles = list("Xenoarcheologist", "Anomalist", "Plasma Researcher")
+	alt_titles = list("Археолог", "Специалист по аномалиям", "Исследователь плазмы")
 	minimal_player_age = 7
 	outfit_type = /decl/hierarchy/outfit/job/science/scientist
 
 /datum/job/xenobiologist
 	title = "Xenobiologist"
 	department = "Science"
+	title_ru = "Биолог по внеземным формам жизни"
+	department_ru = "Научно-исследовательский отдел"
 	department_flag = SCI
 
 	total_positions = 3
@@ -58,6 +64,8 @@
 /datum/job/roboticist
 	title = "Roboticist"
 	department = "Science"
+	title_ru = "Инженер по робототехнике"
+	department_ru = "Научно-исследовательский отдел"
 	department_flag = SCI
 
 	total_positions = 2
@@ -67,6 +75,6 @@
 	economic_modifier = 5
 	access = list(access_robotics, access_tox, access_tox_storage, access_tech_storage, access_morgue, access_research) //As a job that handles so many corpses, it makes sense for them to have morgue access.
 	minimal_access = list(access_robotics, access_tech_storage, access_morgue, access_research) //As a job that handles so many corpses, it makes sense for them to have morgue access.
-	alt_titles = list("Biomechanical Engineer","Mechatronic Engineer")
+	alt_titles = list("Специалист по кибернетическим системам","Механик-конструктор роботов")
 	minimal_player_age = 3
 	outfit_type = /decl/hierarchy/outfit/job/science/roboticist

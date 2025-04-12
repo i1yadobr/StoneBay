@@ -1,6 +1,8 @@
 /datum/job/captain
 	title = "Captain"
 	department = "Command"
+	title_ru = "Командир станции"
+	department_ru = "Отдел управления"
 	head_position = 1
 	department_flag = COM
 
@@ -30,6 +32,8 @@
 /datum/job/hop
 	title = "Head of Personnel"
 	department = "Civilian"
+	title_ru = "Начальник отдела кадров"
+	department_ru = "Общественный отдел"
 	head_position = 1
 	department_flag = COM|CIV|SRV
 

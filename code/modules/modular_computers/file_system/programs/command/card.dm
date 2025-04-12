@@ -277,6 +277,7 @@
 					//let custom jobs function as an impromptu alt title, mainly for sechuds
 					if(temp_t)
 						id_card.assignment = temp_t
+						id_card.assignment_ru = temp_t
 				else
 					var/list/access = list()
 					if(module.is_centcom)
@@ -287,6 +288,7 @@
 					remove_nt_access(id_card)
 					apply_access(id_card, access)
 					id_card.assignment = t1
+					id_card.assignment_ru = t1
 					id_card.rank = t1
 
 				callHook("reassign_employee", list(id_card))
@@ -299,7 +301,7 @@
 					if(!access_allowed)
 						id_card.access += access_type
 	if(id_card)
-		id_card.SetName(text("[id_card.registered_name]'s ID Card ([id_card.assignment])"))
+		id_card.SetName(text("[id_card.registered_name]'s ID Card ([id_card.assignment_ru])"))
 
 	SSnano.update_uis(NM)
 	return 1

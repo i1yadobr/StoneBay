@@ -2,6 +2,8 @@
 /datum/job/bartender
 	title = "Bartender"
 	department = "Service"
+	title_ru = "Буфетчик"
+	department_ru = "Хозяйственно-бытовой отдел"
 	department_flag = SRV
 	total_positions = 1
 	spawn_positions = 1
@@ -19,6 +21,8 @@
 /datum/job/chef
 	title = "Chef"
 	department = "Service"
+	title_ru = "Заведующий столовой"
+	department_ru = "Хозяйственно-бытовой отдел"
 	department_flag = SRV
 	total_positions = 2
 	spawn_positions = 2
@@ -26,12 +30,14 @@
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
 	minimal_access = list(access_kitchen)
-	alt_titles = list("Cook")
+	alt_titles = list("Повар")
 	outfit_type = /decl/hierarchy/outfit/job/service/chef
 
 /datum/job/barmonkey
 	title = "Waiter"
 	department = "Service"
+	title_ru = "Официант"
+	department_ru = "Хозяйственно-бытовой отдел"
 	department_flag = SRV
 	total_positions = 1
 	spawn_positions = 1
@@ -58,6 +64,8 @@
 /datum/job/hydro
 	title = "Gardener"
 	department = "Service"
+	title_ru = "Садовод"
+	department_ru = "Хозяйственно-бытовой отдел"
 	department_flag = SRV
 	total_positions = 2
 	spawn_positions = 1
@@ -65,13 +73,15 @@
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
 	minimal_access = list(access_hydroponics)
-	alt_titles = list("Hydroponicist")
+	alt_titles = list("Агроном-овощевод")
 	outfit_type = /decl/hierarchy/outfit/job/service/gardener
 
 //Cargo
 /datum/job/qm
 	title = "Quartermaster"
 	department = "Supply"
+	title_ru = "Заведующий хозяйством"
+	department_ru = "Отдел снабжения"
 	department_flag = SUP
 	total_positions = 1
 	spawn_positions = 1
@@ -87,6 +97,8 @@
 /datum/job/cargo_tech
 	title = "Cargo Technician"
 	department = "Supply"
+	title_ru = "Грузчик-комплектовщик"
+	department_ru = "Отдел снабжения"
 	department_flag = SUP
 	total_positions = 2
 	spawn_positions = 2
@@ -99,6 +111,8 @@
 /datum/job/mining
 	title = "Shaft Miner"
 	department = "Supply"
+	title_ru = "Работник горного участка"
+	department_ru = "Отдел снабжения"
 	department_flag = SUP
 	total_positions = 3
 	spawn_positions = 3
@@ -107,12 +121,14 @@
 	economic_modifier = 5
 	access = list(access_maint_tunnels, access_mailsorting, access_cargo, access_cargo_bot, access_qm, access_mining, access_mining_station)
 	minimal_access = list(access_mining, access_mining_station, access_mailsorting)
-	alt_titles = list("Drill Technician","Prospector")
+	alt_titles = list("Техник-бурильщик","Разведчик ресурсов")
 	outfit_type = /decl/hierarchy/outfit/job/cargo/mining
 
 /datum/job/janitor
 	title = "Janitor"
 	department = "Service"
+	title_ru = "Уборщик"
+	department_ru = "Хозяйственно-бытовой отдел"
 	department_flag = SRV
 	total_positions = 1
 	spawn_positions = 1
@@ -120,13 +136,15 @@
 	selection_color = "#515151"
 	access = list(access_janitor, access_maint_tunnels, access_engine, access_research, access_sec_doors, access_medical)
 	minimal_access = list(access_janitor, access_maint_tunnels, access_engine, access_research, access_sec_doors, access_medical)
-	alt_titles = list("Custodian","Sanitation Technician")
+	alt_titles = list("Дежурный по хозяйственной части","Дежурный по санитарии")
 	outfit_type = /decl/hierarchy/outfit/job/service/janitor
 
 //More or less assistants
 /datum/job/librarian
 	title = "Librarian"
 	department = "Civilian"
+	title_ru = "Библиотекарь"
+	department_ru = "Общественный отдел"
 	department_flag = CIV
 	total_positions = 1
 	spawn_positions = 1
@@ -134,12 +152,14 @@
 	selection_color = "#515151"
 	access = list(access_library, access_maint_tunnels)
 	minimal_access = list(access_library)
-	alt_titles = list("Journalist")
+	alt_titles = list("Корреспондент")
 	outfit_type = /decl/hierarchy/outfit/job/librarian
 
 /datum/job/iaa
 	title = "Internal Affairs Agent"
 	department = "Support"
+	title_ru = "Сотрудник нанотрейзен комитета внутренних дел"
+	department_ru = "Отдел поддержки"
 	department_flag = SPT
 	total_positions = 2
 	spawn_positions = 2
@@ -160,6 +180,8 @@
 /datum/job/lawyer
 	title = "Lawyer"
 	department = "Civilian"
+	title_ru = "Юрисконсульт"
+	department_ru = "Общественный отдел"
 	department_flag = CIV
 	total_positions = 2
 	spawn_positions = 2
@@ -174,6 +196,8 @@
 /datum/job/clown
 	title = "Clown"
 	department = "Civilian"
+	title_ru = "Народный артист"
+	department_ru = "Общественный отдел"
 	department_flag = CIV
 	total_positions = 1
 	spawn_positions = 1
@@ -193,6 +217,8 @@
 /datum/job/mime
 	title = "Mime"
 	department = "Civilian"
+	title_ru = "Артист мим"
+	department_ru = "Общественный отдел"
 	department_flag = CIV
 	total_positions = 1
 	spawn_positions = 1
@@ -216,6 +242,8 @@
 /datum/job/merchant
 	title = "Merchant"
 	department = "Civilian"
+	title_ru = "Фарцовщик"
+	department_ru = "Общественный отдел"
 	department_flag = CIV
 	total_positions = 2
 	spawn_positions = 2

@@ -1,7 +1,9 @@
 /datum/job/hos
 	title = "Head of Security"
+	title_ru = "Начальник отдела правопорядка"
 	head_position = 1
 	department = "Security"
+	department_ru = "Отдел охраны правопорядка"
 	department_flag = SEC|COM
 
 	total_positions = 1
@@ -31,6 +33,8 @@
 /datum/job/warden
 	title = "Warden"
 	department = "Security"
+	title_ru = "Начальник изолятора"
+	department_ru = "Отдел охраны правопорядка"
 	department_flag = SEC
 
 	total_positions = 1
@@ -46,13 +50,15 @@
 /datum/job/detective
 	title = "Detective"
 	department = "Security"
+	title_ru = "Следователь"
+	department_ru = "Отдел охраны правопорядка"
 	department_flag = SEC
 
 	total_positions = 1
 	spawn_positions = 1
 	supervisors = "the head of security"
 	selection_color = "#601c1c"
-	alt_titles = list("Forensic Technician" = /decl/hierarchy/outfit/job/security/detective/forensic)
+	alt_titles = list("Криминалист" = /decl/hierarchy/outfit/job/security/detective/forensic)
 	economic_modifier = 5
 	access = list(access_security, access_sec_doors, access_forensics_lockers, access_morgue, access_maint_tunnels)
 	minimal_access = list(access_security, access_sec_doors, access_forensics_lockers, access_morgue, access_maint_tunnels)
@@ -62,13 +68,15 @@
 /datum/job/officer
 	title = "Security Officer"
 	department = "Security"
+	title_ru = "Милиционер"
+	department_ru = "Отдел охраны правопорядка"
 	department_flag = SEC
 
 	total_positions = 4
 	spawn_positions = 4
 	supervisors = "the head of security"
 	selection_color = "#601c1c"
-	alt_titles = list("Junior Officer")
+	alt_titles = list("Оперуполномоченный")
 	economic_modifier = 4
 	access = list(access_security, access_eva, access_sec_doors, access_brig, access_maint_tunnels, access_morgue, access_external_airlocks)
 	minimal_access = list(access_security, access_eva, access_sec_doors, access_brig, access_maint_tunnels, access_external_airlocks)

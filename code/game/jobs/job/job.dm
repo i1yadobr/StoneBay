@@ -44,6 +44,9 @@
 	var/hud_icon						  //icon used for Sec HUD overlay
 	var/show_in_setup = TRUE
 
+	var/title_ru
+	var/department_ru
+
 /datum/job/New()
 	..()
 	if(prob(100-availablity_chance))	//Close positions, blah blah.

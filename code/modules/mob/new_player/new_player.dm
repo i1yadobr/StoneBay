@@ -484,9 +484,9 @@
 
 			if(job.is_restricted(client.prefs))
 				if(show_invalid_jobs)
-					dat += "<tr><td><a style='text-decoration: line-through' href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title]</a></td><td>[job.current_positions]</td><td>(Active: [active])</td>[active_vacancies ? "<td><font color='[COLOR_CYAN_BLUE]'>(Vacancies: [active_vacancies])</font></td>" : null]</tr>"
+					dat += "<tr><td><a style='text-decoration: line-through' href='byond://?src=\ref[src];SelectedJob=[job.title_ru]'>[job.title_ru]</a></td><td>[job.current_positions]</td><td>(Active: [active])</td>[active_vacancies ? "<td><font color='[COLOR_CYAN_BLUE]'>(Vacancies: [active_vacancies])</font></td>" : null]</tr>"
 			else
-				dat += "<tr><td><a href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title]</a></td><td>[job.current_positions]</td><td>(Active: [active])</td>[active_vacancies ? "<td><font color='[COLOR_CYAN_BLUE]'>(Vacancies: [active_vacancies])</font></td>" : null]</tr>"
+				dat += "<tr><td><a href='byond://?src=\ref[src];SelectedJob=[job.title_ru]'>[job.title_ru]</a></td><td>[job.current_positions]</td><td>(Active: [active])</td>[active_vacancies ? "<td><font color='[COLOR_CYAN_BLUE]'>(Vacancies: [active_vacancies])</font></td>" : null]</tr>"
 
 	dat += "</table></center>"
 	var/datum/browser/popup = new(src, "latechoices", "Late Join", 450, 640, src)
@@ -671,7 +671,7 @@
 /mob/new_player/proc/show_game_tip()
 	if(!config.game_tips.enable)
 		return
-	
+
 	var/atom/movable/screen/text = new()
 
 	text.screen_loc = "CENTER,SOUTH+1%"

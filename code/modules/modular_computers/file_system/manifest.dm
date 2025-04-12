@@ -4,18 +4,18 @@ GLOBAL_LIST_EMPTY(dept_data)
 	var/key = prediction ? "all_jobs_in_dept" : "names"
 
 	GLOB.dept_data = list(
-		list("[key]" = list(), "header" = "Heads of Staff", "flag" = COM),
-		list("[key]" = list(), "header" = "Command Support", "flag" = SPT),
-		list("[key]" = list(), "header" = "Research", "flag" = SCI),
-		list("[key]" = list(), "header" = "Security", "flag" = SEC),
-		list("[key]" = list(), "header" = "Medical", "flag" = MED),
-		list("[key]" = list(), "header" = "Engineering", "flag" = ENG),
-		list("[key]" = list(), "header" = "Supply", "flag" = SUP),
-		list("[key]" = list(), "header" = "Exploration", "flag" = EXP),
-		list("[key]" = list(), "header" = "Service", "flag" = SRV),
-		list("[key]" = list(), "header" = "Civilian", "flag" = CIV),
-		list("[key]" = list(), "header" = "Miscellaneous", "flag" = MSC),
-		list("[key]" = list(), "header" = "Silicon")
+		list("[key]" = list(), "header" = "Отдел управления", "flag" = COM),
+		list("[key]" = list(), "header" = "Отдел поддержки управления", "flag" = SPT),
+		list("[key]" = list(), "header" = "Научно-исследовательский отдел", "flag" = SCI),
+		list("[key]" = list(), "header" = "Отдел охраны правопорядка", "flag" = SEC),
+		list("[key]" = list(), "header" = "Медико-санитарный отдел", "flag" = MED),
+		list("[key]" = list(), "header" = "Технический отдел", "flag" = ENG),
+		list("[key]" = list(), "header" = "Отдел снабжения", "flag" = SUP),
+		list("[key]" = list(), "header" = "Отдел расширений и распространений", "flag" = EXP),
+		list("[key]" = list(), "header" = "Хозяйственно-бытовой отдел", "flag" = SRV),
+		list("[key]" = list(), "header" = "Общественный отдел", "flag" = CIV),
+		list("[key]" = list(), "header" = "Гражданский отдел", "flag" = MSC),
+		list("[key]" = list(), "header" = "Отдел неуглеродистых форм жизни")
 	)
 
 	var/dat = {"
@@ -46,7 +46,7 @@ GLOBAL_LIST_EMPTY(dept_data)
 			bot = department["names"]
 
 	var/list/isactive = list()
-	
+
 	// sort mobs
 	for(var/datum/computer_file/crew_record/CR in GLOB.all_crew_records)
 		var/name = CR.get_name()
@@ -137,7 +137,7 @@ GLOBAL_LIST_EMPTY(dept_data)
 							JOB_PRIORITY_HIGH = list(),
 							JOB_PRIORITY_MIDDLE = list(),
 							JOB_PRIORITY_LOW = list()
-							), 
+							),
 						"player_name" = "[candidate]"
 						)
 				command_positions_by_ckey[ckey]["positions"][priority] += command_position
@@ -177,7 +177,7 @@ GLOBAL_LIST_EMPTY(dept_data)
 				player_prefs.job_medium,
 				player_prefs.job_low
 				)
-				
+
 		//inserting non-head positions in GLOB.dept_data
 		for(var/list/J in preferenced_jobs)
 			var/list/jobs = J - GLOB.command_positions
@@ -185,7 +185,7 @@ GLOBAL_LIST_EMPTY(dept_data)
 				continue
 
 			var/job = pick(jobs)
-			
+
 			if(job in list("AI", "Cyborg"))
 				silicon = TRUE
 
