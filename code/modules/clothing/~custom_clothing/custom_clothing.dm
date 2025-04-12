@@ -184,7 +184,7 @@
 	)
 
 /obj/item/clothing/suit/space/void/syndi/clown_syndie
-	name = "Syndicate �Honk� voidsuit"
+	name = "Syndicate “Honk” voidsuit"
 	desc = "A suit that protects you against the void. It has a clown face on it."
 	icon_state = "rig-syndie-clown"
 	item_state = "rig-syndie-clown"
