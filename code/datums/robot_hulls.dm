@@ -1,7 +1,7 @@
 /datum/robot_hull
 	var/icon = 'icons/mob/robots.dmi'
 	var/icon_state = "robot"
-	var/icon_state_ea = "robot"
+	var/icon_state_ea = "robot-ea"
 	var/icon_panel = "ov"
 	var/footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
 
@@ -20,7 +20,7 @@
 
 /datum/robot_hull/spider/droid
 	icon_state = "droid"
-	icon_state_ea = "droid"
+	icon_state_ea = "droid-ea"
 
 /datum/robot_hull/spider/robot_service
 	icon_state = "robot-service"
@@ -33,6 +33,7 @@
 
 /datum/robot_hull/spider/bloodhound
 	icon_state = "bloodhound"
+	icon_state_ea = "bloodhound-ea"
 
 /datum/robot_hull/spider/robot_mining
 	icon_state = "robot-mining"
@@ -42,7 +43,7 @@
 
 /datum/robot_hull/spider/droid_combat
 	icon_state = "droid-combat"
-	icon_state_ea = "droid-combat"
+	icon_state_ea = "droid-combat-ea"
 
 /datum/robot_hull/spider/robot_medical
 	icon_state = "robot-medical"
@@ -55,7 +56,7 @@
 	icon_state_ea = "landmate"
 
 /datum/robot_hull/legs
-	icon_state_ea = "legs"
+	icon_state_ea = "android-ea"
 	footstep_sound = SFX_FOOTSTEP_ROBOT_LEGS
 
 /datum/robot_hull/legs/robot_old
@@ -90,6 +91,7 @@
 
 /datum/robot_hull/legs/securityrobot
 	icon_state = "securityrobot"
+	icon_state_ea = "securityrobot-ea"
 
 /datum/robot_hull/legs/miner_old
 	icon_state = "miner_old"
@@ -118,23 +120,23 @@
 
 /datum/robot_hull/truck/mopgearrex
 	icon_state = "mopgearrex"
-	icon_state_ea = "mopgearrex"
+	icon_state_ea = "mopgearrex-ea"
 
 /datum/robot_hull/truck/secborg_tread
 	icon_state = "secborg+tread"
-	icon_state_ea = "secborg+tread"
+	icon_state_ea = "secborg+tread-ea"
 
 /datum/robot_hull/truck/miner
 	icon_state = "miner"
-	icon_state_ea = "miner"
+	icon_state_ea = "miner-ea"
 
 /datum/robot_hull/truck/engiborg_tread
 	icon_state = "engiborg+tread"
-	icon_state_ea = "engiborg+tread"
+	icon_state_ea = "engiborg+tread-ea"
 
 /datum/robot_hull/flying
 	icon_panel = "drone"
-	icon_state_ea = "drone"
+	icon_state_ea = "drone-ea"
 	footstep_sound = null
 
 /datum/robot_hull/flying/drone_standard
@@ -142,7 +144,7 @@
 
 /datum/robot_hull/flying/eyebot_standard
 	icon_state = "eyebot-standard"
-	icon_state_ea = "drone"
+	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/toiletbot
 	icon_state = "toiletbot"
@@ -159,61 +161,62 @@
 
 /datum/robot_hull/flying/eyebot_janitor
 	icon_state = "eyebot-janitor"
-	icon_state_ea = "eyebot"
+	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/drone_sec
 	icon_state = "drone-sec"
 
 /datum/robot_hull/flying/eyebot_security
 	icon_state = "eyebot-security"
-	icon_state_ea = "eyebot"
+	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/orb_security
 	icon_state = "orb-security"
+	icon_state_ea = "orb-security-ea"
 
 /datum/robot_hull/flying/drone_miner
 	icon_state = "drone-miner"
 
 /datum/robot_hull/flying/eyebot_miner
 	icon_state = "eyebot-miner"
-	icon_state_ea = "eyebot"
+	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/drone_science
 	icon_state = "drone-science"
 
 /datum/robot_hull/flying/eyebot_science
 	icon_state = "eyebot-science"
-	icon_state_ea = "eyebot"
+	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/surgeon
 	icon_state = "surgeon"
-	icon_state_ea = "surgeon"
+	icon_state_ea = "surgeon-ea"
 
 /datum/robot_hull/flying/drone_medical
 	icon_state = "drone-medical"
 
 /datum/robot_hull/flying/eyebot_medical
 	icon_state = "eyebot-medical"
-	icon_state_ea = "eyebot"
+	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/drone_engineer
 	icon_state = "drone-engineer"
 
 /datum/robot_hull/flying/eyebot_engineering
 	icon_state = "eyebot-engineering"
-	icon_state_ea = "eyebot"
+	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/drone
 	icon_state = "repairbot"
-	icon_state_ea = "landmate"
+	icon_state_ea = "repairbot-ea"
 	footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
 
 /datum/robot_hull/drone/construction
 	icon_state = "constructiondrone"
-	icon_state_ea = "landmate"
+	icon_state_ea = "constructiondrone-ea"
 
 /datum/robot_hull/sphere
-	icon_state_ea = "landmate"
+	icon_state_ea = "kerfur"
 	icon_panel = "kerfur"
 	footstep_sound = SFX_FOOTSTEP_ROBOT_SPHERE
 
