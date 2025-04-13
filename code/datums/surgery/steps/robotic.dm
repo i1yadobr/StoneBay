@@ -173,7 +173,7 @@
 
 	if(isWelder(tool))
 		var/obj/item/weldingtool/WT = tool
-		if(!WT.use_tool(target, user, amount = 1))
+		if(!WT.use_tool(target, user, amount = 10))
 			return FALSE
 
 	if(parent_organ.hatch_state != HATCH_OPENED)

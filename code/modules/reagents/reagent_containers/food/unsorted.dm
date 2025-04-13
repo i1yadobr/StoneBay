@@ -425,26 +425,6 @@
 	startswith = list(/datum/reagent/drink/juice/tomato = 3)
 	bitesize = 6
 
-/obj/item/reagent_containers/food/bearmeat
-	name = "bear meat"
-	desc = "A very manly slab of meat."
-	icon_state = "bearmeat"
-	filling_color = "#db0000"
-	center_of_mass = "x=16;y=10"
-	startswith = list(
-		/datum/reagent/nutriment/protein = 12,
-		/datum/reagent/hyperzine = 5)
-	bitesize = 3
-
-/obj/item/reagent_containers/food/faggot
-	name = "faggot"
-	desc = "A great meal all round."
-	icon_state = "faggot"
-	filling_color = "#db0000"
-	center_of_mass = "x=16;y=16"
-	startswith = list(/datum/reagent/nutriment/protein = 3)
-	bitesize = 2
-
 /obj/item/reagent_containers/food/sausage
 	name = "Sausage"
 	desc = "A piece of mixed, long meat."
@@ -460,9 +440,15 @@
 	icon_state = "donkpocket"
 	filling_color = "#dedeab"
 	center_of_mass = "x=16;y=10"
-	nutriment_desc = list("heartiness" = 1, "dough" = 2)
-	nutriment_amt = 2
-	startswith = list(/datum/reagent/nutriment/protein = 2)
+
+	nutriment_desc = list("heartiness" = 3)
+	nutriment_amt = 90
+	startswith = list(
+		/datum/reagent/nutriment/gluten/cooked = 30,
+		/datum/reagent/nutriment/protein/cooked = 25
+		)
+	bitesize = 30 // 227.5 nutrition, 5 bites
+
 	var/warm = FALSE
 	var/list/heated_reagents = list(/datum/reagent/tricordrazine = 5)
 
@@ -1842,10 +1828,12 @@
 	icon = 'icons/obj/food_ingredients.dmi'
 	icon_state = "dough"
 	center_of_mass = "x=16;y=13"
-	nutriment_desc = list("dough" = 3)
-	nutriment_amt = 3
-	startswith = list(/datum/reagent/nutriment/protein = 1)
-	bitesize = 2
+	nutriment_amt = 120
+	nutriment_desc = list("dough" = 1)
+	startswith = list(
+		/datum/reagent/nutriment/gluten = 30
+		)
+	bitesize = 25 // 157.5 nutrition, 6 bites
 
 // Dough + rolling pin = flat dough
 /obj/item/reagent_containers/food/dough/attackby(obj/item/W, mob/user)
@@ -1853,11 +1841,8 @@
 		new /obj/item/reagent_containers/food/sliceable/flatdough(src)
 		to_chat(user, "You flatten the dough.")
 		qdel(src)
-	else if(istype(W, /obj/item/reagent_containers/food/faggot))
-		new /obj/item/reagent_containers/food/pelmeni(src)
-		to_chat(user, "You make some pelmeni.")
-		qdel(src)
-		qdel(W)
+		return
+	return ..()
 
 /obj/item/reagent_containers/food/bun
 	name = "bun"
@@ -1865,9 +1850,12 @@
 	icon = 'icons/obj/food_ingredients.dmi'
 	icon_state = "bun"
 	center_of_mass = "x=16;y=12"
-	nutriment_desc = list("bun" = 4)
-	nutriment_amt = 4
-	bitesize = 2
+	nutriment_desc = list("bread" = 3)
+	nutriment_amt = 120
+	startswith = list(
+		/datum/reagent/nutriment/gluten/cooked = 30
+		)
+	bitesize = 25 // 195 nutrition, 6 bites
 
 /obj/item/reagent_containers/food/bun/attackby(obj/item/W, mob/user)
 	// Bun + faggot = burger
@@ -1918,9 +1906,12 @@
 	desc = "A small bread monkey fashioned from two burger buns."
 	icon_state = "bunbun"
 	center_of_mass = "x=16;y=8"
-	nutriment_desc = list("bun" = 8)
-	nutriment_amt = 8
-	bitesize = 2
+	nutriment_desc = list("bread" = 3)
+	nutriment_amt = 240
+	startswith = list(
+		/datum/reagent/nutriment/gluten/cooked = 60
+		)
+	bitesize = 25 // 390 nutrition, 12 bites. On other words, exactly two buns.
 
 /obj/item/reagent_containers/food/taco
 	name = "taco"
@@ -1938,8 +1929,8 @@
 	icon = 'icons/obj/food_ingredients.dmi'
 	icon_state = "rawcutlet"
 	center_of_mass = "x=17;y=20"
-	startswith = list(/datum/reagent/nutriment/protein = 1)
-	bitesize = 1
+	startswith = list(/datum/reagent/nutriment/protein = 50)
+	bitesize = 25 // 62.5 nutrition, 2 bites
 
 /obj/item/reagent_containers/food/cutlet
 	name = "cutlet"
@@ -1947,8 +1938,8 @@
 	icon = 'icons/obj/food_ingredients.dmi'
 	icon_state = "cutlet"
 	center_of_mass = "x=17;y=20"
-	startswith = list(/datum/reagent/nutriment/protein = 2)
-	bitesize = 2
+	startswith = list(/datum/reagent/nutriment/protein/cooked = 50)
+	bitesize = 25 // 125 nutrition, 2 bites
 
 /obj/item/reagent_containers/food/bacon
 	name = "bacon"
@@ -1956,8 +1947,8 @@
 	icon = 'icons/obj/food.dmi'
 	icon_state = "bacon"
 	center_of_mass = "x=17;y=20"
-	startswith = list(/datum/reagent/nutriment/protein = 2)
-	bitesize = 1
+	startswith = list(/datum/reagent/nutriment/protein = 50)
+	bitesize = 25 // 62.5 nutrition, 2 bites
 
 /obj/item/reagent_containers/food/rawfaggot
 	name = "raw faggot"
@@ -1965,8 +1956,17 @@
 	icon = 'icons/obj/food_ingredients.dmi'
 	icon_state = "rawfaggot"
 	center_of_mass = "x=16;y=15"
-	startswith = list(/datum/reagent/nutriment/protein = 2)
-	bitesize = 2
+	startswith = list(/datum/reagent/nutriment/protein = 25)
+	bitesize = 25 // 31.25 nutrition, 1 bite
+
+/obj/item/reagent_containers/food/faggot
+	name = "faggot"
+	desc = "A great meal all round."
+	icon_state = "faggot"
+	filling_color = "#db0000"
+	center_of_mass = "x=16;y=16"
+	startswith = list(/datum/reagent/nutriment/protein/cooked = 25)
+	bitesize = 25 // 62.5 nutrition, 1 bite
 
 /obj/item/reagent_containers/food/hotdog
 	name = "hotdog"
@@ -1991,8 +1991,11 @@
 	icon_state = "flatbread"
 	center_of_mass = "x=16;y=16"
 	nutriment_desc = list("bread" = 3)
-	nutriment_amt = 3
-	bitesize = 2
+	nutriment_amt = 120
+	startswith = list(
+		/datum/reagent/nutriment/gluten/cooked = 30
+		)
+	bitesize = 25 // 195 nutrition, 6 bites
 
 // potato + knife = raw sticks
 /obj/item/reagent_containers/food/grown/potato/attackby(obj/item/W, mob/user)

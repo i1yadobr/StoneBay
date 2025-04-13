@@ -103,7 +103,7 @@
 		return
 	locked = !locked
 	to_chat(user, "The controls are now [locked ? "locked." : "unlocked."]")
-	
+
 /obj/machinery/power/emitter/Process()
 	if(stat & (BROKEN))
 		return
@@ -187,7 +187,7 @@
 				user.visible_message("[user.name] starts to weld [src] to the floor.", \
 						"You start to weld [src] to the floor.", \
 						"You hear welding")
-				if(WT.use_tool(src, user, delay = 2 SECONDS, amount = 1))
+				if(WT.use_tool(src, user, delay = 2 SECONDS, amount = 10))
 					if(QDELETED(src) || !user)
 						return
 
@@ -198,7 +198,7 @@
 				user.visible_message("[user.name] starts to cut [src] free from the floor.", \
 						"You start to cut [src] free from the floor.", \
 						"You hear welding")
-				if(WT.use_tool(src, user, delay = 2 SECONDS, amount = 1))
+				if(WT.use_tool(src, user, delay = 2 SECONDS, amount = 10))
 					if(QDELETED(src) || !user)
 						return
 

@@ -89,6 +89,7 @@
 	nutriment_factor = 2.5
 
 	var/skrell_safe = FALSE
+	var/cooked_path = /datum/reagent/nutriment/protein/cooked
 
 /datum/reagent/nutriment/protein/affect_digest(mob/living/carbon/M, alien, removed)
 	if(alien == IS_SKRELL && !skrell_safe)
@@ -123,12 +124,32 @@
 	ingest_absorbability = 0.2
 	digest_absorbability = 1.0
 
+	cooked_path = null
+
+/datum/reagent/nutriment/gluten
+	name = "gluten"
+
+	taste_description = "dough"
+
+	skrell_safe = TRUE
+	cooked_path = /datum/reagent/nutriment/gluten/cooked
+
+/datum/reagent/nutriment/gluten/cooked
+	name = "denatured gluten"
+
+	taste_description = "bread"
+
+	ingest_absorbability = 0.2
+	digest_absorbability = 1.0
+	cooked_path = null
+
 /datum/reagent/nutriment/protein/fungal
 	name = "fungal protein"
 
 	taste_description = "mushrooms"
 
 	skrell_safe = TRUE
+	cooked_path = null
 
 /datum/reagent/nutriment/protein/fungal/adjust_nutrition(mob/living/carbon/M, alien, removed)
 	if(alien == IS_SKRELL) // More nutrition for skrells, no bonus for unathi. Simple as that.
@@ -145,6 +166,8 @@
 
 	ingest_absorbability = 0.2
 	digest_absorbability = 1.0
+
+	cooked_path = null
 
 /datum/reagent/nutriment/honey
 	name = "Honey"

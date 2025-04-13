@@ -43,8 +43,21 @@
 	slice_path = /obj/item/reagent_containers/food/doughslice
 	slices_num = 3
 	center_of_mass = "x=16;y=16"
-	nutriment_amt = 3
-	startswith = list(/datum/reagent/nutriment/protein = 1)
+	nutriment_amt = 120
+	nutriment_desc = list("dough" = 1)
+	startswith = list(
+		/datum/reagent/nutriment/gluten = 30
+		)
+	bitesize = 25 // 157.5 nutrition, 6 bites
+
+/obj/item/reagent_containers/food/sliceable/flatdough/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/reagent_containers/food/faggot) || istype(W, /obj/item/reagent_containers/food/rawfaggot))
+		new /obj/item/reagent_containers/food/pelmeni(src)
+		to_chat(user, "You make some pelmeni.")
+		qdel(src)
+		qdel(W)
+		return
+	return ..()
 
 /obj/item/reagent_containers/food/doughslice
 	name = "dough slice"
@@ -55,8 +68,11 @@
 	slices_num = 1
 	center_of_mass = "x=17;y=19"
 	nutriment_desc = list("dough" = 1)
-	nutriment_amt = 1
-	bitesize = 2
+	nutriment_amt = 40
+	startswith = list(
+		/datum/reagent/nutriment/gluten = 10
+		)
+	bitesize = 25 // 52.5 nutrition, 2 bites
 
 ////////////////////////
 /obj/item/reagent_containers/food/sliceable/salami
@@ -67,7 +83,9 @@
 	slices_num = 6
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 2
-	startswith = list(/datum/reagent/nutriment/protein = 12)
+	startswith = list(
+		/datum/reagent/nutriment/protein/cooked = 12
+		)
 
 /obj/item/reagent_containers/food/slice/salami
 	name = "Salami's slice"

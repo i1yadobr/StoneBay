@@ -80,13 +80,13 @@
 /datum/chemical_reaction/faggot
 	name = "Faggot"
 	result = null
-	required_reagents = list(/datum/reagent/nutriment/protein = 3, /datum/reagent/nutriment/flour = 5)
-	result_amount = 3
+	required_reagents = list(/datum/reagent/nutriment/protein = 25, /datum/reagent/nutriment/flour = 25)
+	result_amount = 1
 
 /datum/chemical_reaction/faggot/on_reaction(datum/reagents/holder, created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/faggot(location)
+		new /obj/item/reagent_containers/food/rawfaggot(location)
 
 /datum/chemical_reaction/dough
 	name = "Dough"

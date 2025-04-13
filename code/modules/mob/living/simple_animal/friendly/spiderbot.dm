@@ -99,7 +99,7 @@
 
 	if(isWelder(O))
 		var/obj/item/weldingtool/WT = O
-		if(!WT.use_tool(src, user, amount = 1))
+		if(!WT.use_tool(src, user, amount = 10))
 			return
 
 		if(health < maxHealth)

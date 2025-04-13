@@ -24,7 +24,7 @@
 					src.state = 1
 			if(isWelder(P))
 				var/obj/item/weldingtool/WT = P
-				if(!WT.use_tool(src, user, delay = 4 SECONDS, amount = 5))
+				if(!WT.use_tool(src, user, delay = 4 SECONDS, amount = 50))
 					return
 
 				if(QDELETED(src) || !user)

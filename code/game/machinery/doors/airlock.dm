@@ -590,7 +590,7 @@ About the new airlock wires panel:
 		if(!isnull(cut_sound))
 			playsound(src, cut_sound, 100, 1)
 		var/obj/item/weldingtool/WT = item
-		if((!istype(WT) && do_after(user, cut_delay, src)) || (istype(WT) && WT.use_tool(src, user, delay = cut_delay, amount = 5)))
+		if((!istype(WT) && do_after(user, cut_delay, src)) || (istype(WT) && WT.use_tool(src, user, delay = cut_delay, amount = 50)))
 			if(QDELETED(src))
 				return
 
@@ -609,7 +609,7 @@ About the new airlock wires panel:
 		if(!isnull(cut_sound))
 			playsound(src, cut_sound, 100, 1)
 		var/obj/item/weldingtool/WT = item
-		if((!istype(WT) && do_after(user, cut_delay, src)) || (istype(WT) && WT.use_tool(src, user, delay = cut_delay, amount = 5)))
+		if((!istype(WT) && do_after(user, cut_delay, src)) || (istype(WT) && WT.use_tool(src, user, delay = cut_delay, amount = 50)))
 			user.visible_message(
 				"<span class='notice'>\The [user] severs the door bolts, unlocking [src].</span>",
 				"<span class='notice'>You sever the door bolts, unlocking the door.</span>"
@@ -657,7 +657,7 @@ About the new airlock wires panel:
 
 	if(!repairing && isWelder(C) && !(operating > 0) && density)
 		var/obj/item/weldingtool/W = C
-		if(!W.use_tool(src, user, amount = 1))
+		if(!W.use_tool(src, user, amount = 10))
 			return
 
 		if(!welded)
