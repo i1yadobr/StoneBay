@@ -4,8 +4,8 @@
 
 // HentaiStorm
 /obj/item/clothing/suit/storage/toggle/det_trench/gilded
-	name = "detective gilded trenchcoat"
-	desc = "A gilded trenchcoat sewn for especially distinguished detectives."
+	name = "veteran detective trenchcoat"
+	desc = "A badged detective trenchoat given out for long service."
 	icon_state  = "detectivegold_open"
 	item_state  = "detectivegold_open"
 	icon_open   = "detectivegold_open"
@@ -184,7 +184,7 @@
 	)
 
 /obj/item/clothing/suit/space/void/syndi/clown_syndie
-	name = "Syndicate “Honk” voidsuit"
+	name = "Syndicate \"Honk\" voidsuit"
 	desc = "A suit that protects you against the void. It has a clown face on it."
 	icon_state = "rig-syndie-clown"
 	item_state = "rig-syndie-clown"
