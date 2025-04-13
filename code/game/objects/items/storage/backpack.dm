@@ -508,8 +508,3 @@
 	desc = "A metal base with numerous straps designed to hold whatever and be attached to the back. Quite uncomfortable to wear."
 	icon_state = "carryrig"
 
-/obj/item/storage/backpack/attackby(obj/item/W, mob/user)
-    if(istype(W, /obj/item/device/modkit/carry_rig))
-        return
-
-    . = ..()

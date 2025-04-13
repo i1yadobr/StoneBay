@@ -91,17 +91,3 @@
     parts[1] = 1
     original[1] = /obj/item/shield/riot
     finished[1] = /obj/item/shield/riot/assault
-
-/obj/item/device/modkit/carry_rig
-	name = "carry rig modkit"
-	desc = "A kit containing all the needed tools and parts to modify a backpack into a carry rig."
-	icon_state = "modkit"
-
-/obj/item/device/modkit/carry_rig/New()
-    ..()
-    parts = new /list(1)
-    original = new /list(1)
-    finished = new /list(1)
-    parts[1] = 1
-    original[1] = /obj/item/storage/backpack
-    finished[1] = /obj/item/storage/backpack/carry_rig
