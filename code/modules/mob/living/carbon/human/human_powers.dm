@@ -259,7 +259,7 @@
 			return
 		if(prob(75))
 			to_chat(H, "<span class='warning'>Your nose begins to bleed...</span>")
-			H.drip(1)
+			H.drip(5)
 
 /mob/living/carbon/human/proc/regurgitate()
 	set name = "Regurgitate"
