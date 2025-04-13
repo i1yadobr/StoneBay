@@ -283,6 +283,7 @@
 	icontype = new_icontype
 	icon = new_hull.icon
 	icon_state = new_hull.icon_state
+	icon_state_ea = new_hull.icon_state_ea
 	icon_panel = new_hull.icon_panel
 	footstep_sound = new_hull.footstep_sound
 
@@ -832,15 +833,16 @@
 	else
 		icon_state = module_hulls[icontype].icon_state
 		var/eye_icon_state = "eyes-[module_hulls[icontype].icon_state]"
+		var/eye_icon_state_ea = module_hulls[icontype].icon_state_ea
 		if(eye_icon_state in icon_states(icon))
 			if(!eye_overlays)
 				eye_overlays = list()
 			var/image/eye_overlay = eye_overlays[eye_icon_state]
 			if(!eye_overlay)
 				eye_overlays[eye_icon_state] = image(icon, eye_icon_state)
-				eye_overlays["[eye_icon_state]-ea"] = emissive_appearance(icon, eye_icon_state)
+				eye_overlays["[eye_icon_state]-ea"] = emissive_appearance(icon, eye_icon_state_ea)
 			AddOverlays(eye_overlay)
-			AddOverlays(emissive_appearance(icon, "[eye_icon_state]-ea"))
+			AddOverlays(emissive_appearance(icon, eye_icon_state_ea))
 
 	if(opened)
 		var/panelprefix = custom_sprite ? module_hulls[icontype] : module_hulls[icontype].icon_panel
