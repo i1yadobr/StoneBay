@@ -4,7 +4,7 @@
 	var/icon_panel = "ov"
 	var/footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
 
-/datum/robot_hull/New(icon, icon_state, icon_panel, footstep_sound)
+/datum/robot_hull/New(icon, icon_state, icon_panel, light_color, footstep_sound)
 	src.icon = icon ? icon : initial(src.icon)
 	src.icon_state = icon_state ? icon_state : initial(src.icon_state)
 	src.icon_panel = icon_panel ? icon_panel : initial(src.icon_panel)
