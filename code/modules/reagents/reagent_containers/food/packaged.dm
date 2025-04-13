@@ -35,9 +35,13 @@
 	trash = /obj/item/trash/tweakers
 	filling_color = "#7d5f46"
 	nutriment_desc = list("nougat-n-nuts" = 6)
-	nutriment_amt = 40
-	startswith = list(/datum/reagent/sugar = 20)
-	bitesize = 15 // 140 nutrition, 4 bites
+	nutriment_amt = 30
+	startswith = list(
+		/datum/reagent/sugar = 10,
+		/datum/reagent/sugar/caramel = 10,
+		/datum/reagent/nutriment/coco = 10
+		)
+	bitesize = 15 // 155 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/sweetroid
 	name = "Sweetroid bar"
@@ -47,7 +51,9 @@
 	filling_color = "#5ba652"
 	nutriment_desc = list("chewy sourness" = 6)
 	nutriment_amt = 40
-	startswith = list(/datum/reagent/sugar = 20)
+	startswith = list(
+		/datum/reagent/sugar = 20
+		)
 	bitesize = 15 // 140 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/sugarmatter
@@ -58,7 +64,9 @@
 	filling_color = "#5ba652"
 	nutriment_desc = list("extreme sweetness" = 9)
 	nutriment_amt = 30
-	startswith = list(/datum/reagent/sugar = 30)
+	startswith = list(
+		/datum/reagent/sugar = 30
+		)
 	bitesize = 15 // 180 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/jellaws
@@ -68,12 +76,13 @@
 	trash = /obj/item/trash/jellaws
 	filling_color = "#5ba652"
 	nutriment_desc = list("spicy cherry" = 3)
-	nutriment_amt = 3
+	nutriment_amt = 35
 	startswith = list(
-		/datum/reagent/sugar = 3,
-		/datum/reagent/capsaicin = 1,
-		/datum/reagent/nutriment/cherryjelly = 2)
-	bitesize = 3
+		/datum/reagent/sugar = 20,
+		/datum/reagent/capsaicin = 2.5,
+		/datum/reagent/flavoring/cherry = 2.5
+		)
+	bitesize = 15 // 135 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/nutribar
 	name = "protein nutrition bar"
@@ -85,7 +94,8 @@
 	nutriment_desc = list("packaging foam" = 5)
 	startswith = list(
 		/datum/reagent/nutriment/protein/cooked = 40,
-		/datum/reagent/sugar = 20)
+		/datum/reagent/sugar = 20
+		)
 	bitesize = 20 // 230 nutrition, 5 bites
 
 /obj/item/reagent_containers/food/packaged/chips
@@ -112,8 +122,9 @@
 	nutriment_amt = 40
 	startswith = list(
 		/datum/reagent/nutriment/protein/cooked = 70,
-		/datum/reagent/sodiumchloride = 10)
-	bitesize = 20 // 215 nutrition, 4 bites
+		/datum/reagent/sodiumchloride = 10
+		)
+	bitesize = 15 // 215 nutrition, 8 bites
 
 /obj/item/reagent_containers/food/packaged/no_raisin
 	name = "4no Raisins"
@@ -122,9 +133,12 @@
 	trash = /obj/item/trash/raisins
 	filling_color = "#542342"
 	nutriment_desc = list("raisins" = 6)
-	nutriment_amt = 6
-	startswith = list(/datum/reagent/drink/juice/grape = 4)
-	bitesize = 1
+	nutriment_amt = 72.5
+	startswith = list(
+		/datum/reagent/flavoring/grape = 2.5,
+		/datum/reagent/sugar = 15
+		)
+	bitesize = 7.5 // 147.5 nutrition, 12 bites
 
 /obj/item/reagent_containers/food/packaged/cheesiehonkers
 	name = "Cheesie Honkers"
@@ -146,13 +160,14 @@
 	icon_state = "hema2gen"
 	trash = /obj/item/trash/hematogen
 	filling_color = "#7d5f46"
-	nutriment_amt = 2
-	nutriment_desc = list("candy" = 1)
+	nutriment_amt = 15
+	nutriment_desc = list("candy" = 5)
 	startswith = list(
-		/datum/reagent/nutriment/protein = 1,
-		/datum/reagent/sugar = 2,
-		/datum/reagent/albumin = 10)
-	bitesize = 5
+		/datum/reagent/nutriment/protein/cooked = 20,
+		/datum/reagent/sugar = 15,
+		/datum/reagent/albumin = 10
+		)
+	bitesize = 15 // 140 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/hemptogen
 	name = "Hemp-2-Gen"
@@ -163,9 +178,11 @@
 	nutriment_amt = 2
 	nutriment_desc = list("candy" = 1, "hemp" = 1)
 	startswith = list(
-		/datum/reagent/sugar = 3,
-		/datum/reagent/thc = 10)
-	bitesize = 5
+		/datum/reagent/nutriment/protein/cooked = 20,
+		/datum/reagent/sugar = 15,
+		/datum/reagent/thc = 10
+		)
+	bitesize = 5 // 140 nutrition, 4 bites
 
 /obj/item/reagent_containers/food/packaged/tastybread
 	name = "bread tube"
@@ -174,8 +191,8 @@
 	trash = /obj/item/trash/tastybread
 	filling_color = "#a66829"
 	nutriment_desc = list("bread" = 2, "sweetness" = 3)
-	nutriment_amt = 6
-	bitesize = 2
+	nutriment_amt = 150
+	bitesize = 25 // 150 nutrition, 6 bites
 
 /obj/item/reagent_containers/food/packaged/skrellsnacks
 	name = "\improper SkrellSnax"
@@ -184,9 +201,12 @@
 	filling_color = "#a66829"
 	trash = /obj/item/trash/skrellsnacks
 	nutriment_desc = list("mushroom" = 5, "salt" = 2)
-	nutriment_amt = 9
-	startswith = list(/datum/reagent/sodiumchloride = 1)
-	bitesize = 2
+	nutriment_amt = 30
+	startswith = list(
+		/datum/reagent/nutriment/protein/fungal = 80,
+		/datum/reagent/sodiumchloride = 10
+		)
+	bitesize = 15 // 130 nutrition (230 for skrells), 8 bites
 
 /obj/item/reagent_containers/food/packaged/syndicake
 	name = "Syndi-Cakes"
@@ -195,9 +215,12 @@
 	filling_color = "#ff5d05"
 	trash = /obj/item/trash/syndi_cakes
 	nutriment_desc = list("sweetness" = 3, "cake" = 1)
-	nutriment_amt = 4
-	startswith = list(/datum/reagent/drink/doctor_delight = 5)
-	bitesize = 3
+	nutriment_amt = 100
+	startswith = list(
+		/datum/reagent/sugar = 15,
+		/datum/reagent/drink/doctor_delight = 5
+		)
+	bitesize = 20 // 175 nutrition, 6 bites
 
 /obj/item/reagent_containers/food/packaged/surstromming
 	name = "\improper old canned food"
@@ -206,12 +229,13 @@
 	filling_color = "#cc8880"
 	trash = /obj/item/trash/surstromming
 	nutriment_desc = list("roting meat" = 3, "salt" = 4)
-	nutriment_amt = 4
+	nutriment_amt = 50
 	startswith = list(
-		/datum/reagent/sodiumchloride = 1,
-		/datum/reagent/nutriment/protein = 2,
-		/datum/reagent/ethylredoxrazine = 1)
-	bitesize = 0.5
+		/datum/reagent/sodiumchloride = 10,
+		/datum/reagent/nutriment/protein/cooked = 100,
+		/datum/reagent/ethylredoxrazine = 1,
+		/datum/reagent/sulfur = 10)
+	bitesize = 30 // 300 nutrition, 6 bites
 
 /obj/item/reagent_containers/food/packaged/surstromming/attack_self(mob/user)
 	if(!is_open_container())

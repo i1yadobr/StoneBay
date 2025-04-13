@@ -88,24 +88,31 @@
 
 	nutriment_factor = 2.5
 
+	var/skrell_safe = FALSE
+
 /datum/reagent/nutriment/protein/affect_digest(mob/living/carbon/M, alien, removed)
-	switch(alien)
-		if(IS_SKRELL)
-			M.adjustToxLoss(0.5 * removed)
-			return
+	if(alien == IS_SKRELL && !skrell_safe)
+		M.adjustToxLoss(0.5 * removed)
+		return
 	M.add_chemical_effect(CE_BLOODRESTORE, removed * 2.5)
+	..()
+
+/datum/reagent/nutriment/protein/affect_ingest(mob/living/carbon/M, alien, removed)
+	if(alien == IS_SKRELL && !skrell_safe)
+		M.adjustToxLoss(0.5 * removed)
+		return
+	..()
+
+/datum/reagent/nutriment/protein/affect_blood(mob/living/carbon/M, alien, removed)
+	if(alien == IS_SKRELL && !skrell_safe)
+		M.adjustToxLoss(2 * removed)
+		return
 	..()
 
 /datum/reagent/nutriment/protein/adjust_nutrition(mob/living/carbon/M, alien, removed)
 	switch(alien)
 		if(IS_UNATHI) removed *= 2.25
 	M.add_nutrition(nutriment_factor * removed) // For hunger and fatness
-
-/datum/reagent/nutriment/protein/affect_blood(mob/living/carbon/M, alien, removed)
-	if(alien && alien == IS_SKRELL)
-		M.adjustToxLoss(2 * removed)
-		return
-	..()
 
 // Cooking proteins make them more available.
 /datum/reagent/nutriment/protein/cooked
@@ -115,6 +122,18 @@
 
 	ingest_absorbability = 0.2
 	digest_absorbability = 1.0
+
+/datum/reagent/nutriment/protein/fungal
+	name = "fungal protein"
+
+	taste_description = "mushrooms"
+
+	skrell_safe = TRUE
+
+/datum/reagent/nutriment/protein/fungal/adjust_nutrition(mob/living/carbon/M, alien, removed)
+	if(alien == IS_SKRELL) // More nutrition for skrells, no bonus for unathi. Simple as that.
+		removed *= 2.0
+	M.add_nutrition(nutriment_factor * removed)
 
 /datum/reagent/nutriment/protein/egg // Also bad for skrell.
 	name = "egg yolk"
@@ -478,6 +497,9 @@
 	if(istype(M, /mob/living/carbon/metroid))
 		M.bodytemperature += rand(0, 15) + metroid_temp_adj
 	holder.remove_reagent(/datum/reagent/frostoil, 5)
+
+/datum/reagent/capsaicin/affect_digest(mob/living/carbon/M, alien, removed)
+	affect_ingest(M, alien, removed * 0.25)
 
 /datum/reagent/capsaicin/condensed
 	name = "Condensed Capsaicin"
