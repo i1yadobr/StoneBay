@@ -321,3 +321,12 @@
 		to_chat(usr, "You roll down the sleeves of your [H].")
 
 	update_clothing_icon()
+
+/obj/item/clothing/accessory/security_shirt/detective
+	name = "detective's shirt"
+	desc = "A rumpled white dress shirt."
+	icon_state = "detshirt"
+
+/obj/item/clothing/accessory/security_shirt/detective/grey
+	desc = "A serious-looking tan dress shirt."
+	icon_state = "detshirt_grey"

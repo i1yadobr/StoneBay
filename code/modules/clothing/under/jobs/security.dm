@@ -78,43 +78,45 @@
  */
 /obj/item/clothing/under/rank/det
 	name = "detective's suit"
-	desc = "A rumpled white dress shirt paired with well-worn grey slacks."
+	desc = "A well-worn grey slacks."
 	icon_state = "detective"
 	item_state = "detective"
+	gender = PLURAL
+	body_parts_covered = LOWER_TORSO|LEGS
 	armor = list(melee = 10, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 0)
 	siemens_coefficient = 0.9
-	starting_accessories = list(/obj/item/clothing/accessory/blue_clip)
+	starting_accessories = list(/obj/item/clothing/accessory/security_shirt/detective, /obj/item/clothing/accessory/blue_clip)
 
 /obj/item/clothing/under/rank/det/skirt
 	name = "detective's skirt"
-	desc = "A rumpled white dress shirt paired with well-worn grey skirt."
+	desc = "A well-worn grey skirt."
 	icon_state = "detective_skirt"
 	item_state = "detective_skirt"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	body_parts_covered = LOWER_TORSO
 
 /obj/item/clothing/under/rank/det/dress
 	name = "detective's dress"
-	desc = "A rumpled white dress shirt paired with well-worn grey dress."
+	desc = "A well-worn grey dress."
 	icon_state = "detective_dress"
 	item_state = "detective_dress"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	body_parts_covered = LOWER_TORSO
 
 /obj/item/clothing/under/rank/det/brown
-	desc = "A rumpled white dress shirt paired with old brown jeans."
+	desc = "An old brown jeans."
 	icon_state = "det_brown"
 	item_state = "det_brown"
 
 /obj/item/clothing/under/rank/det/grey
-	desc = "A serious-looking tan dress shirt paired with freshly-pressed black slacks."
+	desc = "A freshly-pressed black slacks."
 	icon_state = "det_grey"
 	item_state = "det_grey"
-	starting_accessories = list(/obj/item/clothing/accessory/red_long)
+	starting_accessories = list(/obj/item/clothing/accessory/security_shirt/detective/grey, /obj/item/clothing/accessory/red_long)
 
 /obj/item/clothing/under/rank/det/black
-	desc = "An immaculate white dress shirt, paired with a pair of dark grey dress pants, a red tie, and a charcoal vest."
+	desc = "An dark grey dress pants."
 	icon_state = "det_black"
 	item_state = "det_black"
-	starting_accessories = list(/obj/item/clothing/accessory/red_long, /obj/item/clothing/accessory/toggleable/vest)
+	starting_accessories = list(/obj/item/clothing/accessory/security_shirt/detective, /obj/item/clothing/accessory/red_long, /obj/item/clothing/accessory/toggleable/vest)
 
 /*
  * Head of Security
