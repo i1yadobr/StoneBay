@@ -35,7 +35,7 @@
 	else if(hydration_value < 0)
 		M.remove_hydration(removed * hydration_value)
 
-	M.add_nutrition(nutriment_factor * removed * ingest_absorbability) // For hunger and fatness
+	M.add_nutrition(nutrition * removed * ingest_absorbability) // For hunger and fatness
 
 	if(adj_temp > 0 && M.bodytemperature < 310) // 310 is the normal bodytemp. 310.055
 		M.bodytemperature = min(310, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))

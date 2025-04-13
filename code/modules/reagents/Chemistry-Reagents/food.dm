@@ -126,21 +126,22 @@
 
 	cooked_path = null
 
-/datum/reagent/nutriment/gluten
+/datum/reagent/nutriment/protein/gluten
 	name = "gluten"
 
 	taste_description = "dough"
 
 	skrell_safe = TRUE
-	cooked_path = /datum/reagent/nutriment/gluten/cooked
+	cooked_path = /datum/reagent/nutriment/protein/gluten/cooked
 
-/datum/reagent/nutriment/gluten/cooked
+/datum/reagent/nutriment/protein/gluten/cooked
 	name = "denatured gluten"
 
 	taste_description = "bread"
 
 	ingest_absorbability = 0.2
 	digest_absorbability = 1.0
+
 	cooked_path = null
 
 /datum/reagent/nutriment/protein/fungal
@@ -410,7 +411,7 @@
 	color = "#cf3600"
 
 	decompile_results = list(
-		/datum/reagent/nutriment/menthol = 0.25
+		/datum/reagent/menthol = 0.25
 		)
 
 
@@ -461,7 +462,7 @@
 
 	decompile_results = list(
 		/datum/reagent/nutriment/oil = 0.75,
-		/datum/reagent/nutriment/menthol = 0.25
+		/datum/reagent/menthol = 0.25
 		)
 
 /datum/reagent/frostoil/affect_blood(mob/living/carbon/M, alien, removed)
@@ -655,7 +656,7 @@
 /* Flavorings */
 /datum/reagent/flavoring
 	name = "Monosodium Glutamate"
-	desc = "Sodium salt of glutamic acid. Commonly used as a flavor enhancer and mentally retarded people detector."
+	description = "Sodium salt of glutamic acid. Commonly used as a flavor enhancer and mentally retarded people detector."
 
 	taste_mult = 25.0
 	taste_description = "tastiness"
@@ -665,102 +666,102 @@
 
 /datum/reagent/flavoring/cherry
 	name = "Cherry Extract"
-	desc = "The concentrated essence of several different kinds of berries."
+	description = "The concentrated essence of several different kinds of berries."
 	taste_description = "cherry"
 	color = "#801e28"
 
 /datum/reagent/flavoring/banana
 	name = "Banana Extract"
-	desc = "The concentrated essence of a banana."
+	description = "The concentrated essence of a banana."
 	taste_description = "bananas"
 	color = "#c3af00"
 
 /datum/reagent/flavoring/berry
 	name = "Berry Extract"
-	desc = "The concentrated essence of several different kinds of berries."
+	description = "The concentrated essence of several different kinds of berries."
 	taste_description = "berries"
 	color = "#990066"
 
 /datum/reagent/flavoring/carrot
 	name = "Carrot Extract"
-	desc = "The concentrated essence of a carrot."
+	description = "The concentrated essence of a carrot."
 	taste_description = "carrots"
 	color = "#ff8c00"
 
 /datum/reagent/flavoring/grape
 	name = "Grape Extract"
-	desc = "The concentrated essence of grapes."
+	description = "The concentrated essence of grapes."
 	taste_description = "grapes"
 	color = "#863333"
 
 /datum/reagent/flavoring/lemon
 	name = "Lemon Extract"
-	desc = "The concentrated essence of a lemon."
+	description = "The concentrated essence of a lemon."
 	taste_description = "lemons"
 	color = "#afaf00"
 
 /datum/reagent/flavoring/lime
 	name = "Lime Extract"
-	desc = "The concentrated essence of a lime."
+	description = "The concentrated essence of a lime."
 	taste_description = "limes"
 	color = "#365e30"
 
 /datum/reagent/flavoring/orange
 	name = "Orange Extract"
-	desc = "The concentrated essence of an orange."
+	description = "The concentrated essence of an orange."
 	taste_description = "oranges"
 	color = "#e78108"
 
 /datum/reagent/flavoring/potato
 	name = "Potato Extract"
-	desc = "The concentrated essence of a potato."
+	description = "The concentrated essence of a potato."
 	taste_description = "potatoes"
 	color = "#302000"
 
 /datum/reagent/flavoring/garlic
 	name = "Garlic Extract"
-	desc = "The concentrated essence of a garlic."
+	description = "The concentrated essence of a garlic."
 	taste_description = "garlic"
 	color = "#eeddcc"
 
 /datum/reagent/flavoring/onion
 	name = "Onion Extract"
-	desc = "The concentrated essence of an onion."
+	description = "The concentrated essence of an onion."
 	taste_description = "onions"
 	color = "#ffeedd"
 
 /datum/reagent/flavoring/tomato
 	name = "Tomato Extract"
-	desc = "The concentrated essence of a tomato."
+	description = "The concentrated essence of a tomato."
 	taste_description = "tomatoes"
 	color = "#731008"
 
 /datum/reagent/flavoring/watermelon
 	name = "Watermelon Extract"
-	desc = "The concentrated essence of a watermelon."
+	description = "The concentrated essence of a watermelon."
 	taste_description = "watermelon"
 	color = "#b83333"
 
 /datum/reagent/flavoring/apple
 	name = "Apple Extract"
-	desc = "The concentrated essence of an apple."
+	description = "The concentrated essence of an apple."
 	taste_description = "apples"
 	color = "#e59C40"
 
 /datum/reagent/flavoring/coconut
 	name = "Coconut Extract"
-	desc = "The concentrated essence of a coconut."
+	description = "The concentrated essence of a coconut."
 	taste_description = "coconut"
 	color = "#ffffff"
 
 /datum/reagent/flavoring/chocolate
 	name = "Chocolate Flavoring"
-	desc = "It tastes pretty much like chocolate, yet it's safe for dogs and yields less happiness."
+	description = "It tastes pretty much like chocolate, yet it's safe for dogs and yields less happiness."
 	taste_description = "chocolate flavoring"
 	color = "#302000"
 
 /datum/reagent/flavoring/coffee
 	name = "Coffee Flavoring"
-	desc = "Artificial coffee flavoring. It's much like your regular coffee, but concentrated and pretty much soulless."
+	description = "Artificial coffee flavoring. It's much like your regular coffee, but concentrated and pretty much soulless."
 	taste_description = "coffee flavoring"
 	color = "#482000"

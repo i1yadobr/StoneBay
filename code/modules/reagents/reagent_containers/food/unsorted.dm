@@ -444,7 +444,7 @@
 	nutriment_desc = list("heartiness" = 3)
 	nutriment_amt = 90
 	startswith = list(
-		/datum/reagent/nutriment/gluten/cooked = 30,
+		/datum/reagent/nutriment/protein/gluten/cooked = 30,
 		/datum/reagent/nutriment/protein/cooked = 25
 		)
 	bitesize = 30 // 227.5 nutrition, 5 bites
@@ -1831,7 +1831,7 @@
 	nutriment_amt = 120
 	nutriment_desc = list("dough" = 1)
 	startswith = list(
-		/datum/reagent/nutriment/gluten = 30
+		/datum/reagent/nutriment/protein/gluten = 30
 		)
 	bitesize = 25 // 157.5 nutrition, 6 bites
 
@@ -1853,7 +1853,7 @@
 	nutriment_desc = list("bread" = 3)
 	nutriment_amt = 120
 	startswith = list(
-		/datum/reagent/nutriment/gluten/cooked = 30
+		/datum/reagent/nutriment/protein/gluten/cooked = 30
 		)
 	bitesize = 25 // 195 nutrition, 6 bites
 
@@ -1909,7 +1909,7 @@
 	nutriment_desc = list("bread" = 3)
 	nutriment_amt = 240
 	startswith = list(
-		/datum/reagent/nutriment/gluten/cooked = 60
+		/datum/reagent/nutriment/protein/gluten/cooked = 60
 		)
 	bitesize = 25 // 390 nutrition, 12 bites. On other words, exactly two buns.
 
@@ -1993,7 +1993,7 @@
 	nutriment_desc = list("bread" = 3)
 	nutriment_amt = 120
 	startswith = list(
-		/datum/reagent/nutriment/gluten/cooked = 30
+		/datum/reagent/nutriment/protein/gluten/cooked = 30
 		)
 	bitesize = 25 // 195 nutrition, 6 bites
 

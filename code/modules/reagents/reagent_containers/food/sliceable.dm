@@ -46,7 +46,7 @@
 	nutriment_amt = 120
 	nutriment_desc = list("dough" = 1)
 	startswith = list(
-		/datum/reagent/nutriment/gluten = 30
+		/datum/reagent/nutriment/protein/gluten = 30
 		)
 	bitesize = 25 // 157.5 nutrition, 6 bites
 
@@ -70,7 +70,7 @@
 	nutriment_desc = list("dough" = 1)
 	nutriment_amt = 40
 	startswith = list(
-		/datum/reagent/nutriment/gluten = 10
+		/datum/reagent/nutriment/protein/gluten = 10
 		)
 	bitesize = 25 // 52.5 nutrition, 2 bites
 

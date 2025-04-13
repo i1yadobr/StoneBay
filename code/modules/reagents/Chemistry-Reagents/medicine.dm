@@ -813,7 +813,7 @@
 	color = "#fcfcfc"
 
 	decompile_results = list(
-		/datum/reagent/glycerol = 0.95
+		/datum/reagent/glycerol = 0.95,
 		/datum/reagent/nicotine = 0.05
 		)
 
