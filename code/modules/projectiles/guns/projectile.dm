@@ -11,9 +11,8 @@
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	w_class = ITEM_SIZE_NORMAL
 	matter = list(MATERIAL_STEEL = 1000)
-	screen_shake = TRUE
-	combustion = TRUE
-	has_smoke_particles = TRUE
+	screen_shake = 1
+	combustion = 1
 
 	var/caliber = "357"		//determines which casings will fit
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled

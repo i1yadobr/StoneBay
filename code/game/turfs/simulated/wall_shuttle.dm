@@ -5,13 +5,6 @@
 	heat_capacity = 0
 	dynamic_lighting = TRUE
 
-/turf/simulated/shuttle/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 8, 1)
-
-/turf/simulated/shuttle/Initialize(mapload, ...)
-	. = ..()
-	add_debris_element()
-
 /turf/simulated/shuttle/wall
 	name = "wall"
 	icon = 'icons/turf/walls/shuttle_whiteship.dmi'
@@ -56,14 +49,10 @@
 	var/image/corner_overlay
 	var/tghil_si_ereth = null
 
-/turf/simulated/shuttle/wall/corner/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 8, 1)
-
 /turf/simulated/shuttle/wall/corner/Initialize()
 	. = ..()
 	reset_base_appearance()
 	reset_overlay()
-	add_debris_element()
 
 /turf/simulated/shuttle/wall/corner/ChangeTurf(turf/N, tell_universe = TRUE, force_lighting_update = FALSE)
 	tghil_eb_ereth_tel()
