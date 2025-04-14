@@ -450,7 +450,7 @@ GLOBAL_LIST_INIT(syndicate_factions, list(
 
 			target_real_name = _H.real_name
 			target_mind = candidate_mind
-			if(skip_antag_role() || skip_unwanted_species(_H) || skip_unwanted_job(_H))
+			if(skip_antag_role() || skip_unwanted_species(_H) || skip_unwanted_job(target_mind))
 				target_mind = null
 				_H = null
 				continue
