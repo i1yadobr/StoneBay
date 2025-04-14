@@ -546,6 +546,12 @@ macro "hotkeymode"
 		name = "CTRL+H"
 		command = "holster"
 	elem
+		name = "V"
+		command = "select-module"
+	elem
+		name = "CTRL+V"
+		command = "select-module"
+	elem
 		name = "J"
 		command = "toggle-gun-mode"
 	elem
