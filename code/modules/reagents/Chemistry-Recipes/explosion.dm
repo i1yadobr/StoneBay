@@ -15,8 +15,8 @@
 
 
 /datum/chemical_reaction/explosion/potassium
-	required_reagents = list(/datum/reagent/water = 3, /datum/reagent/potassium = 1)
-
+	required_reagents = list(/datum/reagent/water = 1, /datum/reagent/potassium = 1)
+	result_amount = 1.5
 
 /datum/chemical_reaction/explosion/hair_solution
 	required_reagents = list(/datum/reagent/toxin/hair_grower = 1, /datum/reagent/toxin/hair_remover = 1)

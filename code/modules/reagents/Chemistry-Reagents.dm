@@ -156,6 +156,22 @@
 		return data
 	return null
 
+/datum/reagent/proc/decompile_into(datum/reagents/target)
+	if(!target)
+		return FALSE
+
+	if(!islist(decompile_results))
+		return FALSE
+
+	var/datum/reagents/R = new /datum/reagents(100 LITERS, GLOB.temp_reagents_holder)
+	for(var/newpath in decompile_results)
+		R.add_reagent(newpath, decompile_results[newpath] * volume)
+
+	holder.del_reagent(type)
+	R.trans_to_holder(target, R.total_volume)
+	qdel(R)
+	return TRUE
+
 /datum/reagent/Destroy() // This should only be called by the holder, so it's already handled clearing its references
 	holder = null
 	. = ..()

@@ -10,13 +10,12 @@
 	reagent_state = LIQUID
 	color = "#e78108"
 
-	metabolism = 2.5
-	ingest_met = 0.5
-	digest_met = 2.5
+	metabolism = 5.0
+	ingest_met = 1.0
+	digest_met = 5.0
 	ingest_absorbability = 0.5
 	digest_absorbability = 1.0
 	hydration_value = 1.0
-	ingest_met = REM * 0.25
 
 	var/nutrition = 0 // Per unit
 	var/adj_dizzy = 0 // Per tick

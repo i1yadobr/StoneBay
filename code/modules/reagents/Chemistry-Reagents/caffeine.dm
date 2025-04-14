@@ -8,22 +8,21 @@
 	color = "#ffffff"
 
 	ingest_met = REM * 0.25
+	overdose = REAGENTS_OVERDOSE
 
 	glass_icon = DRINK_ICON_NOISY
 
-	var/nutrition = 0 // Per unit
-	var/adj_dizzy = 0 // Per tick
-	var/adj_drowsy = 0
-	var/adj_sleepy = 0
-	var/adj_temp = 0
-	var/adj_speed = 0
 	var/strength = 10.0
+	var/nutrition = 0 // Per unit
+	var/adj_dizzy = -10 // Per tick
+	var/adj_drowsy = -10
+	var/adj_sleepy = -5
+	var/adj_temp = 0
+	var/adj_speed = 0.3
 
 /datum/reagent/caffeine/affect_ingest(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
 		return
-
-	. = ..()
 
 	if(adj_temp > 0 && M.bodytemperature < 310) // 310 is the normal bodytemp. 310.055
 		M.bodytemperature = min(310, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
@@ -33,8 +32,6 @@
 /datum/reagent/caffeine/affect_digest(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
 		return
-
-	. = ..()
 
 	M.add_nutrition(nutrition * removed)
 	M.dizziness = max(0, M.dizziness + adj_dizzy)
@@ -50,18 +47,17 @@
 	if(adj_temp > 0)
 		holder.remove_reagent(/datum/reagent/frostoil, 10 * removed)
 
-	if(volume > 15)
+	if(volume > 15 / strength)
 		M.add_chemical_effect(CE_PULSE, 1)
 
 /datum/reagent/caffeine/affect_blood(mob/living/carbon/M, alien, removed)
 	. = ..()
 	if(alien == IS_TAJARA)
-		M.adjustToxLoss(2 * removed)
+		M.adjustToxLoss(2 * removed * strength)
 		M.make_jittery(4)
 		return
 
 	M.add_chemical_effect(CE_PULSE, 2)
-	M.adjustToxLoss(removed) // Probably not a good idea; not very deadly though
 
 /datum/reagent/caffeine/overdose(mob/living/carbon/M, alien)
 	if(alien == IS_DIONA)
@@ -94,6 +90,12 @@
 	hydration_value = 1.0
 	ingest_met = REM * 0.25
 
+	decompile_results = list(
+		/datum/reagent/water = 1.0,
+		/datum/reagent/caffeine = 0.1
+		)
+
+	strength = 1.0
 	adj_dizzy = -5
 	adj_drowsy = -3
 	adj_sleepy = -2
@@ -103,6 +105,13 @@
 	glass_name = "coffee"
 	glass_desc = "Don't drop it, or you'll send scalding liquid and glass shards everywhere."
 	glass_special = list(DRINK_VAPOR)
+
+/datum/reagent/caffeine/coffee/affect_blood(mob/living/carbon/M, alien, removed)
+	. = ..()
+	if(alien == IS_TAJARA)
+		return
+
+	M.adjustToxLoss(removed * 0.5) // Probably not a good idea; not very deadly though
 
 /datum/reagent/caffeine/coffee/cafe_latte
 	name = "Cafe Latte"

@@ -11,7 +11,7 @@
 	color = "#3073b6"
 
 	metabolism = 7.5
-	ingest_met = 2.5
+	ingest_met = 1.5
 	digest_met = 7.5
 	hydration_value = 1.0
 
@@ -449,10 +449,13 @@
 	// Burn the intestines
 	var/obj/item/organ/internal/intestines/I = H.internal_organs_by_name[BP_INTESTINES]
 	if(I && I.damage < I.max_damage)
-		I.take_internal_damage(removed * power * 0.5)
+		I.take_internal_damage(removed * power * 0.75)
 		return
 
-	// Intestines are done, melting the groin
+	// Intestines are done, melting the groin and chest
+	var/obj/item/organ/external/chest = H.get_organ(BP_CHEST)
+	if(chest)
+		chest.take_external_damage(0, removed * power * 0.25)
 	var/obj/item/organ/external/groin = H.get_organ(BP_GROIN)
 	if(groin)
 		groin.take_external_damage(0, removed * power * 0.5)

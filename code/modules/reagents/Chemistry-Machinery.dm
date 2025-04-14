@@ -23,7 +23,7 @@
 	var/pillsprite = "1"
 	var/client/has_sprites = list()
 	var/max_pill_count = 20
-	var/capacity = 1.5 LITERS
+	var/capacity = 3.0 LITERS
 	component_types = list(
 		/obj/item/circuitboard/chemmaster,
 		/obj/item/device/healthanalyzer,
@@ -31,7 +31,7 @@
 		/obj/item/stock_parts/manipulator = 4,
 		/obj/item/stock_parts/console_screen,
 	)
-	atom_flags = ATOM_FLAG_OPEN_CONTAINER
+	atom_flags = ATOM_FLAG_OPEN_CONTAINER | ATOM_FLAG_NO_REACT
 	var/matter_amount_per_sheet = SHEET_MATERIAL_AMOUNT
 	var/matter_type = MATERIAL_GLASS
 	var/matter_storage = SHEET_MATERIAL_AMOUNT * 25
@@ -175,6 +175,14 @@
 				if(useramount)
 					useramount = Clamp(useramount, 0, capacity)
 					src.Topic(href, list("amount" = "[useramount]", "add" = href_list["addcustom"]), state)
+
+		else if (href_list["decompile"])
+			var/datum/reagent/their_reagent = locate(href_list["decompile"]) in R.reagent_list
+			if(their_reagent)
+				if(their_reagent.decompile_into(reagents))
+					playsound(loc, 'sound/signals/ping13.ogg', 50, 1, -3)
+				else
+					playsound(loc, 'sound/signals/error31.ogg', 50, 1, -3)
 
 		else if (href_list["remove"])
 			if(href_list["amount"])
@@ -358,9 +366,12 @@
 			for(var/datum/reagent/G in R.reagent_list)
 				dat += "[G.name] , [G.volume] Units - "
 				dat += "<A href='?src=\ref[src];analyze=1;desc=[G.description];name=[G.name]'>(Analyze)</A> "
+				dat += "<A href='?src=\ref[src];decompile=\ref[G]'>(Decompile)</A>"
 				dat += "<A href='?src=\ref[src];add=\ref[G];amount=1'>(1)</A> "
 				dat += "<A href='?src=\ref[src];add=\ref[G];amount=5'>(5)</A> "
 				dat += "<A href='?src=\ref[src];add=\ref[G];amount=10'>(10)</A> "
+				dat += "<A href='?src=\ref[src];add=\ref[G];amount=50'>(50)</A> "
+				dat += "<A href='?src=\ref[src];add=\ref[G];amount=100'>(100)</A> "
 				dat += "<A href='?src=\ref[src];add=\ref[G];amount=[G.volume]'>(All)</A> "
 				dat += "<A href='?src=\ref[src];addcustom=\ref[G]'>(Custom)</A><BR>"
 

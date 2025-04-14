@@ -496,7 +496,7 @@ steam.start() -- spawns the effect
 	trail_type = /obj/effect/effect/steam
 
 /datum/effect/effect/system/reagents_explosion
-	var/amount 					// units based on "1 potassium + 1 water = 2-amount explosion"
+	var/amount 					// units based on "1 potassium + 1 water = 1.5-amount explosion"
 	var/mob/living/living_holder = null
 
 	// doesn't used in build now
