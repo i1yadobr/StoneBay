@@ -35,12 +35,6 @@
 	for(var/i = 1, i <= created_volume, i++)
 		new /obj/item/reagent_containers/food/chocolatebar(location)
 
-/datum/chemical_reaction/hot_coco
-	name = "Hot Coco"
-	result = /datum/reagent/drink/hot_coco
-	required_reagents = list(/datum/reagent/water = 5, /datum/reagent/nutriment/coco = 1)
-	result_amount = 5
-
 /datum/chemical_reaction/soysauce
 	name = "Soy Sauce"
 	result = /datum/reagent/nutriment/soysauce
@@ -91,7 +85,7 @@
 /datum/chemical_reaction/dough
 	name = "Dough"
 	result = null
-	required_reagents = list(/datum/reagent/nutriment/protein/egg = 3, /datum/reagent/nutriment/flour = 10, /datum/reagent/water = 5)
+	required_reagents = list(/datum/reagent/nutriment/protein/egg = 15, /datum/reagent/nutriment/flour = 50, /datum/reagent/water = 50)
 	result_amount = 1
 
 /datum/chemical_reaction/dough/on_reaction(datum/reagents/holder, created_volume)
@@ -102,7 +96,7 @@
 /datum/chemical_reaction/syntiflesh
 	name = "Syntiflesh"
 	result = null
-	required_reagents = list(/datum/reagent/blood = 5, /datum/reagent/clonexadone = 1)
+	required_reagents = list(/datum/reagent/blood = 50, /datum/reagent/clonexadone = 1)
 	result_amount = 1
 
 /datum/chemical_reaction/syntiflesh/on_reaction(datum/reagents/holder, created_volume)
@@ -113,17 +107,17 @@
 /datum/chemical_reaction/hot_ramen
 	name = "Hot Ramen"
 	result = /datum/reagent/drink/hot_ramen
-	required_reagents = list(/datum/reagent/water = 1, /datum/reagent/drink/dry_ramen = 3)
-	result_amount = 3
+	required_reagents = list(/datum/reagent/water = 5, /datum/reagent/drink/dry_ramen = 1)
+	result_amount = 2
 
 /datum/chemical_reaction/hell_ramen
 	name = "Hell Ramen"
 	result = /datum/reagent/drink/hell_ramen
-	required_reagents = list(/datum/reagent/capsaicin = 1, /datum/reagent/drink/hot_ramen = 6)
+	required_reagents = list(/datum/reagent/capsaicin = 1, /datum/reagent/drink/hot_ramen = 50)
 	result_amount = 6
 
 /datum/chemical_reaction/chicken_soup
-	name = "Hot Ramen"
+	name = "Chicken Soup"
 	result = /datum/reagent/drink/chicken_soup
-	required_reagents = list(/datum/reagent/water = 1, /datum/reagent/drink/chicken_powder = 3)
+	required_reagents = list(/datum/reagent/water = 5, /datum/reagent/drink/chicken_powder = 1)
 	result_amount = 3

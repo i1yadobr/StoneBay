@@ -247,9 +247,10 @@
 	desc = "An egg!"
 	icon_state = "egg"
 	filling_color = "#fdffd1"
-	volume = 10
+	volume = 60
 	center_of_mass = "x=16;y=13"
-	startswith = list(/datum/reagent/nutriment/protein/egg = 3)
+	startswith = list(/datum/reagent/nutriment/protein/egg = 45)
+	bitesize = 25
 
 /obj/item/reagent_containers/food/egg/afterattack(obj/O, mob/user, proximity)
 	if(istype(O,/obj/machinery/microwave))
@@ -316,22 +317,22 @@
 	name = "robot egg"
 	icon_state = "egg-robot"
 	startswith = list(
-		/datum/reagent/nutriment/protein/egg = 3,
+		/datum/reagent/nutriment/protein/egg = 45,
 		/datum/reagent/nanites = 1)
 
 /obj/item/reagent_containers/food/egg/golden
 	name = "golden egg"
 	icon_state = "egg-golden"
 	startswith = list(
-		/datum/reagent/nutriment/protein/egg = 3,
-		/datum/reagent/gold = 3)
+		/datum/reagent/nutriment/protein/egg = 45,
+		/datum/reagent/gold = 15)
 
 /obj/item/reagent_containers/food/egg/plasma
 	name = "plasma egg"
 	icon_state = "egg-plasma"
 	startswith = list(
-		/datum/reagent/nutriment/protein/egg = 3,
-		/datum/reagent/toxin/plasma = 3)
+		/datum/reagent/nutriment/protein/egg = 45,
+		/datum/reagent/toxin/plasma = 15)
 
 /obj/item/reagent_containers/food/friedegg
 	name = "Fried egg"
@@ -340,18 +341,18 @@
 	filling_color = "#ffdf78"
 	center_of_mass = "x=16;y=14"
 	startswith = list(
-		/datum/reagent/nutriment/protein = 3,
+		/datum/reagent/nutriment/protein/cooked = 45,
 		/datum/reagent/sodiumchloride = 1,
 		/datum/reagent/blackpepper = 1)
-	bitesize = 1
+	bitesize = 15
 
 /obj/item/reagent_containers/food/boiledegg
 	name = "Boiled egg"
 	desc = "A hard boiled egg."
 	icon_state = "egg"
 	filling_color = "#ffffff"
-	startswith = list(/datum/reagent/nutriment/protein = 3)
-	bitesize = 1
+	startswith = list(/datum/reagent/nutriment/protein/cooked = 45)
+	bitesize = 25
 
 /obj/item/reagent_containers/food/tofu
 	name = "Tofu"

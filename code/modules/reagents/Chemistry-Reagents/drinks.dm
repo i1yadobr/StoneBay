@@ -519,9 +519,14 @@
 	reagent_state = LIQUID
 	color = "#5B250C"
 
-	nutrition = 2
+	nutrition = 0.5
 	adj_temp = 30
 	hydration_value = 0.9
+
+	decompile_results = list(
+		/datum/reagent/water = 1.0,
+		/datum/reagent/nutriment/coco = 0.2
+		)
 
 	glass_required = "square"
 	glass_name = "hot chocolate"
@@ -531,11 +536,18 @@
 /datum/reagent/drink/sodawater
 	name = "Soda Water"
 	description = "A can of club soda. Why not make a scotch and soda?"
+
 	taste_description = "carbonated water"
+
 	color = "#619494"
+
 	adj_dizzy = -5
 	adj_drowsy = -3
 	adj_temp = -5
+
+	decompile_results = list(
+		/datum/reagent/water = 1.0
+		)
 
 	glass_name = "soda water"
 	glass_desc = "Soda water. Why not make a scotch and soda?"
@@ -544,10 +556,18 @@
 /datum/reagent/drink/grapesoda
 	name = "Grape Soda"
 	description = "Grapes made into a fine drank."
+
 	taste_description = "grape soda"
+
 	color = "#421c52"
+
 	adj_drowsy = -3
 	adj_speed = 0.3
+
+	decompile_results = list(
+		/datum/reagent/water = 1.0,
+		/datum/reagent/flavoring/grape = 0.1
+		)
 
 	glass_name = "grape soda"
 	glass_desc = "Looks like a delicious drink!"
@@ -556,13 +576,20 @@
 /datum/reagent/drink/tonic
 	name = "Tonic Water"
 	description = "It tastes strange but at least the quinine keeps the Space Malaria at bay."
+
 	taste_description = "tart and fresh"
+
 	color = "#619494"
+
 	adj_dizzy = -5
 	adj_drowsy = -3
 	adj_sleepy = -2
 	adj_temp = -5
 	adj_speed = 0.3
+
+	decompile_results = list(
+		/datum/reagent/water = 1.0
+		)
 
 	glass_name = "tonic water"
 	glass_desc = "Quinine tastes funny, but at least it'll keep that Space Malaria away."
@@ -570,9 +597,17 @@
 /datum/reagent/drink/lemonade
 	name = "Lemonade"
 	description = "Oh the nostalgia..."
+
 	taste_description = "tartness"
+
 	color = "#ffff00"
 	adj_temp = -5
+
+	decompile_results = list(
+		/datum/reagent/water = 0.5,
+		/datum/reagent/sugar = 0.5,
+		/datum/reagent/flavoring/lemon = 0.1
+		)
 
 	glass_name = "lemonade"
 	glass_desc = "Oh the nostalgia..."
@@ -581,8 +616,11 @@
 /datum/reagent/drink/kiraspecial
 	name = "Kira Special"
 	description = "Long live the guy who everyone had mistaken for a girl. Baka!"
+
 	taste_description = "fruity sweetness"
+
 	color = "#cccc99"
+
 	adj_temp = -5
 
 	glass_required = "rocks"
@@ -594,8 +632,11 @@
 /datum/reagent/drink/brownstar
 	name = "Brown Star"
 	description = "It's not what it sounds like..."
+
 	taste_description = "orange and cola soda"
+
 	color = "#9f3400"
+
 	adj_temp = -2
 	adj_speed = 0.3
 
@@ -606,10 +647,20 @@
 /datum/reagent/drink/milkshake
 	name = "Milkshake"
 	description = "Glorious brainfreezing mixture."
+
 	taste_description = "creamy vanilla"
+
 	color = "#aee5e4"
+
 	adj_temp = -9
 	hydration_value = 0.7
+	nutrition = 0.9
+
+	decompile_results = list(
+		/datum/reagent/water = 0.4,
+		/datum/reagent/drink/milk = 0.4,
+		/datum/reagent/drink/milk/cream = 0.2
+		)
 
 	glass_required = "shake"
 	glass_icon_state = "milkshake"
@@ -637,8 +688,11 @@
 /datum/reagent/drink/rewriter
 	name = "Rewriter"
 	description = "The secret of the sanctuary of the Libarian..."
+
 	taste_description = "a bad night out"
+
 	color = "#485000"
+
 	adj_temp = -5
 
 	glass_required = "mug"
@@ -652,8 +706,12 @@
 /datum/reagent/drink/nuka_cola
 	name = "Nuka Cola"
 	description = "Cola, cola never changes."
+
 	taste_description = "the future"
+
 	color = "#006600"
+
+	nutrition = 0.25
 	adj_temp = -5
 	adj_sleepy = -2
 	adj_speed = 0.8
@@ -672,8 +730,11 @@
 /datum/reagent/drink/grenadine
 	name = "Grenadine Syrup"
 	description = "Made in the modern day with proper pomegranate substitute. Who uses real fruit, anyways?"
+
 	taste_description = "100% pure pomegranate"
+
 	color = "#ff004f"
+
 	hydration_value = 0.4
 
 	glass_required = "shake"
@@ -684,9 +745,13 @@
 /datum/reagent/drink/space_cola
 	name = "Space Cola"
 	description = "A refreshing beverage."
+
 	taste_description = "cola"
+
 	reagent_state = LIQUID
 	color = "#100800"
+
+	nutrition = 0.25
 	adj_drowsy = -3
 	adj_temp = -5
 	adj_speed = 0.3
@@ -698,8 +763,12 @@
 /datum/reagent/drink/spacemountainwind
 	name = "Mountain Wind"
 	description = "Blows right through you like a space wind."
+
 	taste_description = "sweet citrus soda"
+
 	color = "#66ff66"
+
+	nutrition = 0.25
 	adj_drowsy = -7
 	adj_sleepy = -1
 	adj_temp = -5
@@ -712,8 +781,12 @@
 /datum/reagent/drink/dr_gibb
 	name = "Dr. Gibb"
 	description = "A delicious blend of 42 different flavours"
+
 	taste_description = "cherry soda"
+
 	color = "#800000"
+
+	nutrition = 0.25
 	adj_drowsy = -6
 	adj_temp = -5
 	adj_speed = 0.3
@@ -724,8 +797,12 @@
 /datum/reagent/drink/space_up
 	name = "Space-Up"
 	description = "Tastes like a hull breach in your mouth."
+
 	taste_description = "a hull breach"
+
 	color = "#202800"
+
+	nutrition = 0.25
 	adj_temp = -8
 	adj_speed = 0.3
 
@@ -736,8 +813,12 @@
 /datum/reagent/drink/lemon_lime
 	name = "Lemon Lime"
 	description = "A tangy substance made of 0.5% natural citrus!"
+
 	taste_description = "tangy lime and lemon soda"
+
 	color = "#878f00"
+
+	nutrition = 0.25
 	adj_temp = -8
 	adj_speed = 0.3
 
@@ -748,14 +829,18 @@
 /datum/reagent/drink/energy
 	name = "energy drink"
 	description = "Contains high levels of caffeine. Prohibited for use by children, pregnant women, people sensitive to caffeine, people not sensitive to caffeine, tajaran, animals and medical bots."
+
 	taste_description = "energy"
 	taste_mult = 1.3
+
 	color = "#67ff00"
+
+	nutrition = 0.25
 	adj_drowsy = -6
 	adj_sleepy = -2
 	adj_temp = -8
 	adj_speed = 0.4
-	overdose = 45
+	overdose = 0.4 LITERS
 
 	glass_name = "energy drink"
 	glass_desc = "Looks like a liquid power cell."
@@ -768,7 +853,7 @@
 	if(alien == IS_TAJARA)
 		M.adjustToxLoss(0.5 * removed)
 		M.make_jittery(4) //extra sensitive to caffine, taurine, and all the kinds of shit in nrg drinks
-	if(volume > 15)
+	if(volume > 100)
 		M.add_chemical_effect(CE_PULSE, 1)
 
 /datum/reagent/drink/energy/overdose(mob/living/carbon/M, alien)
@@ -784,29 +869,38 @@
 /datum/reagent/drink/dry_ramen
 	name = "Dry Ramen"
 	description = "Space age food, since August 25, 1958. Contains dried noodles, vegetables, and chemicals that boil in contact with water."
+
 	taste_description = "dry and cheap noodles"
+
 	reagent_state = SOLID
-	nutrition = 1
 	color = "#302000"
-	hydration_value = -0.75 // Dry, you see
+
+	nutrition = 4.0
+	hydration_value = -2.5 // Dry, you see
 
 /datum/reagent/drink/hot_ramen
 	name = "Hot Ramen"
 	description = "The noodles are boiled, the flavors are artificial, just like being back in school."
+
 	taste_description = "wet and cheap noodles"
+
 	reagent_state = LIQUID
 	color = "#302000"
-	nutrition = 5
+
+	nutrition = 1.0
 	adj_temp = 5
 	hydration_value = 0.5
 
 /datum/reagent/drink/hell_ramen
 	name = "Hell Ramen"
 	description = "The noodles are boiled, the flavors are artificial, just like being back in school."
+
 	taste_description = "wet and cheap noodles on fire"
+
 	reagent_state = LIQUID
 	color = "#302000"
-	nutrition = 5
+
+	nutrition = 1.0
 	hydration_value = 0.5
 
 /datum/reagent/drink/hell_ramen/affect_ingest(mob/living/carbon/M, alien, removed)
@@ -818,19 +912,24 @@
 /datum/reagent/drink/chicken_powder
 	name = "Chicken Powder"
 	description = "Space age food AND cold medicine. Contains Chicken Powder ^t^m and chemicals that boil in contact with water."
+
 	taste_description = "chicked-flavored powder"
+
 	reagent_state = SOLID
-	nutrition = 1
 	color = "#302000"
-	hydration_value = -0.75
+
+	nutrition = 4.0
+	hydration_value = -2.5
 
 /datum/reagent/drink/chicken_soup
 	name = "Chicken Soup"
 	description = "No chickens were harmed in the making of this soup."
+
 	taste_description = "somewhat tasteless chicken broth"
 	reagent_state = LIQUID
+
 	color = "#c9b042"
-	nutrition = 5
+	nutrition = 0.75
 	adj_temp = 5
 	hydration_value = 0.8
 
@@ -848,11 +947,15 @@
 /datum/reagent/drink/ice
 	name = "Ice"
 	description = "Frozen water, your dentist wouldn't like you chewing this."
+
 	taste_description = "ice"
-	taste_mult = 1.5
+	taste_mult = 2.5
+
 	reagent_state = SOLID
 	color = "#619494"
+
 	adj_temp = -5
+	hydration_value = 1.0
 
 	glass_name = "ice"
 	glass_desc = "Generally, you're supposed to put something else in there too..."
@@ -865,6 +968,7 @@
 /datum/reagent/drink/nothing
 	name = "Nothing"
 	description = "Absolutely nothing."
+
 	taste_description = "nothing"
 
 	glass_name = "nothing"

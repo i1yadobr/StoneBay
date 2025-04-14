@@ -352,8 +352,8 @@
 /datum/chemical_reaction/grapesoda
 	name = "Grape Soda"
 	result = /datum/reagent/drink/grapesoda
-	required_reagents = list(/datum/reagent/drink/juice/grape = 2, /datum/reagent/drink/space_cola = 1)
-	result_amount = 3
+	required_reagents = list(/datum/reagent/drink/sodawater = 10, /datum/reagent/flavoring/grape = 1)
+	result_amount = 10
 
 /datum/chemical_reaction/sbiten
 	name = "Sbiten"
@@ -505,6 +505,12 @@
 	result = /datum/reagent/drink/lemonade
 	required_reagents = list(/datum/reagent/drink/juice/lemon = 1, /datum/reagent/sugar = 1, /datum/reagent/water = 1)
 	result_amount = 3
+
+/datum/chemical_reaction/lemonade2
+	name = "Lemonade from Extract"
+	result = /datum/reagent/drink/lemonade
+	required_reagents = list(/datum/reagent/flavoring/lemon = 1, /datum/reagent/sugar = 10, /datum/reagent/water = 10)
+	result_amount = 20
 
 /datum/chemical_reaction/kiraspecial
 	name = "Kira Special"
@@ -694,3 +700,9 @@
 	result = /datum/reagent/ethanol/quas
 	required_reagents = list(/datum/reagent/ethanol/kvass = 3, /datum/reagent/frostoil = 1, /datum/reagent/drink/ice = 1)
 	result_amount = 3
+
+/datum/chemical_reaction/hot_coco
+	name = "Hot Coco"
+	result = /datum/reagent/drink/hot_coco
+	required_reagents = list(/datum/reagent/water = 5, /datum/reagent/nutriment/coco = 1)
+	result_amount = 5

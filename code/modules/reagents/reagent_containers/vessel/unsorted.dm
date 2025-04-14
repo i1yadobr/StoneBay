@@ -226,7 +226,7 @@
 /obj/item/reagent_containers/vessel/dry_ramen
 	name = "cup ramen"
 	gender = PLURAL
-	desc = "Just add 200ml water, self heats! A taste that reminds you of your school years."
+	desc = "Just add 250ml water, self heats! A taste that reminds you of your school years."
 	icon_state = "ramen"
 	item_state = "ramen"
 	center_of_mass = "x=16;y=11"
@@ -235,13 +235,13 @@
 	amount_per_transfer_from_this = 25
 	possible_transfer_amounts = "25;30;50;100;150;200;300"
 
-	startswith = list(/datum/reagent/drink/dry_ramen = 100)
+	startswith = list(/datum/reagent/drink/dry_ramen = 50)
 	lid_type = /datum/vessel_lid/paper
 	unacidable = FALSE
 
 /obj/item/reagent_containers/vessel/chickensoup
 	name = "cup of chicken soup"
-	desc = "Just add 200ml water, self heats! Keep yourself warm!"
+	desc = "Just add 250ml water, self heats! Keep yourself warm!"
 	icon_state = "chickensoup"
 	item_state = "ramen"
 	center_of_mass = "x=16;y=11"
