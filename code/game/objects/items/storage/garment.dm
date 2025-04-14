@@ -59,6 +59,28 @@
 		/obj/item/clothing/under/rank/warden/dress
 	)
 
+/obj/item/storage/garment/detective
+	name = "detective's garment bag"
+	desc = "A bag for storing multiple clothig items in a better and convenient way! This one belongs to the detective."
+
+	startswith = list(
+		/obj/item/clothing/glasses/hud/standard/thermal,
+		/obj/item/clothing/head/det,
+		/obj/item/clothing/head/det/grey,
+		/obj/item/clothing/under/rank/det,
+		/obj/item/clothing/under/rank/det/grey,
+		/obj/item/clothing/under/rank/det/black,
+		/obj/item/clothing/under/rank/det/brown,
+		/obj/item/clothing/suit/storage/toggle/det_trench,
+		/obj/item/clothing/suit/storage/toggle/det_trench/grey,
+		/obj/item/clothing/suit/storage/toggle/forensics/blue,
+		/obj/item/clothing/suit/storage/toggle/forensics/red,
+		/obj/item/clothing/suit/armor/vest/detective,
+		/obj/item/clothing/accessory/holster/armpit,
+		/obj/item/clothing/gloves/thick,
+		/obj/item/clothing/shoes/laceup
+	)
+
 /obj/item/storage/garment/head_of_personnel
 	name = "head of personnel's garment bag"
 	desc = "A bag for storing multiple clothig items in a better and convenient way! This one belongs to the head of personnel."
