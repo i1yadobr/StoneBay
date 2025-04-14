@@ -3,18 +3,23 @@
 /datum/reagent/toxin
 	name = "Toxin"
 	description = "A toxic chemical."
+
 	taste_description = "bitterness"
 	taste_mult = 1.2
+
 	reagent_state = LIQUID
 	color = "#cf3600"
-	metabolism = REM * 0.25 // 0.05 by default. They last a while and slowly kill you.
+
+	metabolism = REM
+	digest_met = REM * 0.5 // 0.1 by default. They last a while and slowly kill you.
+	digest_absorbability = 1.0 // Eaten toxins last twice as long and deal half the damage per tick.
 
 	var/target_organ
-	var/strength = 4 // How much damage it deals per unit
+	var/strength = 5 // How much damage it deals per unit
 
 /datum/reagent/toxin/affect_blood(mob/living/carbon/M, alien, removed)
 	if(strength && alien != IS_DIONA)
-		M.add_chemical_effect(CE_TOXIN, strength)
+		M.add_up_to_chemical_effect(CE_TOXIN, strength)
 		var/dam = (strength * removed)
 		if(target_organ && ishuman(M))
 			var/mob/living/carbon/human/H = M
@@ -201,7 +206,7 @@
 	taste_description = "plant food"
 	taste_mult = 0.5
 	reagent_state = LIQUID
-	strength = 0.5 // It's not THAT poisonous.
+	strength = 4.0 // It's not THAT poisonous.
 	color = "#664330"
 
 /datum/reagent/toxin/fertilizer/eznutrient

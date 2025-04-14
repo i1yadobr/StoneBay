@@ -26,13 +26,13 @@
 	if(isundead(owner))
 		return
 
-	detox_efficiency = 0.25
+	detox_efficiency = 0.5
 	// Technically, ceases toxloss healing function. Lore-wise, still filters out the body's natural toxic buildup, but can't handle anything beyond that.
 	if(is_bruised())
-		detox_efficiency -= 0.25
+		detox_efficiency -= 0.5
 	// Causes the body's natural toxic buildup to... build up.
 	if(is_broken())
-		detox_efficiency -= 0.5
+		detox_efficiency -= 1.0
 
 /obj/item/organ/internal/kidneys/proc/process_hydration()
 	if(!owner)

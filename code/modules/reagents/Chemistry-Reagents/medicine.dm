@@ -901,7 +901,7 @@
 	M.add_chemical_effect(CE_ANTIVIRAL, 1)
 
 /datum/reagent/antidexafen/overdose(mob/living/carbon/M, alien)
-	M.add_chemical_effect(CE_TOXIN, 1)
+	M.add_chemical_effect(CE_TOXIN, 5)
 	M.hallucination(60, 20)
 	M.druggy = max(M.druggy, 2)
 
@@ -1104,7 +1104,7 @@
 	if(volume < REAGENTS_OVERDOSE && !M.chem_effects[CE_ANTIVIRAL])
 		M.immunity = min(M.immunity_norm * 0.5, removed + M.immunity) // Rapidly brings someone up to half immunity.
 	if(M.chem_effects[CE_ANTIVIRAL]) //don't take with 'cillin
-		M.add_chemical_effect(CE_TOXIN, 4) // as strong as taking vanilla 'toxin'
+		M.add_chemical_effect(CE_TOXIN, 5) // as strong as taking vanilla 'toxin'
 
 
 /datum/reagent/immunobooster/overdose(mob/living/carbon/M, alien)

@@ -85,7 +85,7 @@
 		filtering_efficiency -= 1
 
 	// If the liver's not too busy, the body slowly regains its "anti-toxic shield".
-	if(filtering_efficiency >= 2)
+	if(filtering_efficiency >= 2 && !owner.chem_effects[CE_TOXIN])
 		stored_tox = max(damage, (stored_tox - filtering_efficiency * 0.1))
 
 /obj/item/organ/internal/liver/autoheal()
@@ -99,7 +99,7 @@
 
 	// Boost healing a bit if we're not busy. Livers regenerate well, after all.
 	if(!(owner.chem_effects[CE_ALCOHOL] || owner.chem_effects[CE_TOXIN] || owner.radiation > SAFE_RADIATION_DOSE))
-		heal_value *= 2
+		heal_value *= 1.5
 
 	if(damage >= min_bruised_damage)
 		damage = max(min_bruised_damage, damage - heal_value)

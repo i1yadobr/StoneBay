@@ -137,8 +137,8 @@
 	return
 
 /datum/reagent/proc/overdose(mob/living/carbon/M, alien) // Overdose effect. Doesn't happen instantly.
-	M.add_chemical_effect(CE_TOXIN, 1)
-	M.adjustToxLoss(REM)
+	M.add_chemical_effect(CE_TOXIN, 5)
+	M.adjustToxLoss(0.5)
 	return
 
 /datum/reagent/proc/initialize_data(newdata) // Called when the reagent is created.

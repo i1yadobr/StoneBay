@@ -429,41 +429,44 @@
 			adjustToxLoss((2 - filtering_efficiency) * 0.5, TRUE)
 
 	// Kidney-less species still get some passive detox as a placeholder. Xenomorphs and golems are immune to toxins anyway, but we can't be sure.
-	var/detox_efficiency = 0.25
+	var/detox_efficiency = 0.5
 	var/obj/item/organ/internal/kidneys/K
 	if(should_have_organ(BP_KIDNEYS))
 		K = internal_organs_by_name[BP_KIDNEYS]
 		if(K)
 			detox_efficiency = K.detox_efficiency
 		else
-			detox_efficiency = -0.5
+			detox_efficiency = -1.0
 
+	// High hydratation boosts detox efficiency (if applicible), low hydration slows it down or halts it completely.
 	switch(hydration)
 		if(HYDRATION_NONE)
-			detox_efficiency -= 0.25
+			detox_efficiency -= 0.5
 		if(HYDRATION_NONE to HYDRATION_LOW)
-			detox_efficiency -= 0.1
+			detox_efficiency -= 0.2
 		if(HYDRATION_HIGH to HYDRATION_SUPER)
 			if(detox_efficiency >= 0) // No effect if kidneys are broken
-				detox_efficiency += 0.1
+				detox_efficiency += 0.2
 		if(HYDRATION_SUPER to INFINITY)
 			if(detox_efficiency >= 0) // No effect if kidneys are broken
-				detox_efficiency += 0.25
+				detox_efficiency += 0.5
+
+	if(chem_effects[CE_TOXIN])
+		detox_efficiency -= chem_effects[CE_TOXIN] * 0.1
 
 	adjustToxLoss(-1 * detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
 
-	// For simplicity, let's assume that quarter the blood volume equals the amount of toxins that's enough to completely wreck the body.
-	// The actual volume of toxins we can extract via dyalisis is x0.1 of toxLoss.
-	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.25) : 140) * 100)
+	// For simplicity, let's assume that 5% the blood volume equals the amount of toxins that's enough to completely wreck the body.
+	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.05) : 280) * 100)
 
 	var/kidney_strain = 0.0
-	if(toxic_severity >= 100) // tb 140+, we're wrecked, lethal poisoning
+	if(toxic_severity >= 100) // tb 280+, we're wrecked, lethal poisoning
 		adjustBrainLoss(1.0)
 		Weaken(30)
 		Paralyse(20)
 		adjustInternalLoss(5.0, TRUE)
 
-	if(toxic_severity >= 75) // tb 105+, we're in immediate danger, critical poisoning
+	if(toxic_severity >= 75) // tb 210+, we're in immediate danger, critical poisoning
 		if(prob(10))
 			losebreath++
 			adjustInternalLoss(5.0, TRUE)
@@ -480,7 +483,7 @@
 
 		kidney_strain = 2.5
 
-	else if(toxic_severity >= 50) // tb 70+, we're in danger, severe poisoning
+	else if(toxic_severity >= 50) // tb 140+, we're in danger, severe poisoning
 		make_dizzy(6)
 		eye_blurry = max(eye_blurry, 5)
 
@@ -495,7 +498,7 @@
 
 		kidney_strain = 2.0
 
-	else if(toxic_severity >= 25) // tb 35+, we're not feeling well, mild poisoning
+	else if(toxic_severity >= 25) // tb 70+, we're not feeling well, mild poisoning
 		make_dizzy(6)
 
 		if(prob(10))
@@ -509,7 +512,7 @@
 
 		kidney_strain = 1.5
 
-	else if(toxic_severity >= 5) // tb 7+, we start to notice that something's off, casual poisoning
+	else if(toxic_severity >= 5) // tb 14+, we start to notice that something's off, casual poisoning
 		if(prob(10))
 			make_dizzy(6)
 			adjustInternalLoss(1.0, TRUE) // Not enough to be life-threatening, but may cause trouble if we have ongoing health issues.
