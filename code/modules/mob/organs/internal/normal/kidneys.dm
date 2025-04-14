@@ -32,7 +32,7 @@
 		detox_efficiency -= 0.5
 	// Causes the body's natural toxic buildup to... build up.
 	if(is_broken())
-		detox_efficiency -= 1.0
+		detox_efficiency -= 0.5
 
 /obj/item/organ/internal/kidneys/proc/process_hydration()
 	if(!owner)

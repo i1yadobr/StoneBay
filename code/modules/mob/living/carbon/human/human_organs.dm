@@ -454,6 +454,9 @@
 	if(chem_effects[CE_TOXIN])
 		detox_efficiency -= chem_effects[CE_TOXIN] * 0.1
 
+	if(chem_effects[CE_ANTITOX])
+		detox_efficiency += chem_effects[CE_ANTITOX] * 0.1
+
 	adjustToxLoss(-1 * detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
 
 	// For simplicity, let's assume that 5% the blood volume equals the amount of toxins that's enough to completely wreck the body.

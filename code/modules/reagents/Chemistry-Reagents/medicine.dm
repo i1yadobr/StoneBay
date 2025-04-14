@@ -105,11 +105,17 @@
 
 	scannable = 1
 	flags = IGNORE_MOB_SIZE
+	overdose = REAGENTS_OVERDOSE
 
 	var/remove_generic = 1
 	var/static/list/remove_toxins = list(
 		/datum/reagent/toxin/zombiepowder
 	)
+
+/datum/reagent/dylovene/overdose(mob/living/carbon/M, alien) // Works even better, but dehydrates the body quickly.
+	M.remove_hydration(volume / 15)
+	M.add_chemical_effect(CE_ANTITOX, 5)
+	return
 
 /datum/reagent/dylovene/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
@@ -118,7 +124,7 @@
 	if(remove_generic)
 		M.drowsyness = max(0, M.drowsyness - 6 * removed)
 		M.adjust_hallucination(-9 * removed)
-		M.add_up_to_chemical_effect(CE_ANTITOX, 1)
+		M.add_chemical_effect(CE_ANTITOX, 5)
 
 	var/removing = (4 * removed)
 	var/datum/reagents/ingested = M.get_ingested_reagents()
