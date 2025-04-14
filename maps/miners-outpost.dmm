@@ -153,7 +153,6 @@
 "vl" = (/obj/effect/floor_decal/industrial/warning{dir = 10},/turf/simulated/floor/tiled/dark/airless,/area/outpost/mining_north)
 "vt" = (/obj/structure/railing{dir = 4},/obj/effect/floor_decal/corner/brown/diagonal,/obj/structure/window/reinforced{dir = 4},/obj/item/device/radio/intercom{pixel_y = -22; dir = 1},/turf/simulated/floor/tiled,/area/outpost/mining_main/west_hall)
 "vw" = (/obj/effect/decal/cleanable/dirt,/obj/structure/disposalpipe/junction/yjunction{dir = 4},/turf/simulated/floor/tiled,/area/outpost/main_outpost/dorms)
-"vx" = (/obj/structure/catwalk,/obj/structure/catwalk,/turf/space,/area/outpost/mining_west)
 "vI" = (/turf/simulated/floor/trim/lino,/area/outpost/main_outpost/dorms/proom2)
 "vQ" = (/obj/effect/floor_decal/corner/green,/obj/effect/floor_decal/corner/green{dir = 1},/obj/machinery/atmospherics/unary/vent_scrubber/on{dir = 1},/turf/simulated/floor/tiled/dark,/area/outpost/main_outpost/dorms)
 "wa" = (/obj/effect/floor_decal/oldflood,/obj/effect/decal/cleanable/dirt,/obj/machinery/vending/snack/medbay,/obj/machinery/camera/network/mining{c_tag = "Outpost Living Quarters"},/obj/machinery/alarm{pixel_y = 24},/obj/machinery/light/small/he{dir = 1},/turf/simulated/floor/tiled/white,/area/outpost/main_outpost/dorms)
@@ -386,11 +385,11 @@ ElElElElElElElElElVRkEoIxvyBYpyBaNyBxgsdAUyBAKAKycRREtVFVFVF
 VFVFVFVFlulululuxXxXymbryByBeemRnJOQqxcRHpyBoJXuNBRREtVFVFVF
 tRrUrUrUrUrUtRluxXXRwFebvjIqCKbAKxyByByByByBKRXGXGEdEtEtVFVF
 HIERERERERERHIluxXAWsgtuvjIqFfUdTlKNyBTXJVSETvTvTvaLEtEtVFVF
-rUERERERERERvxluxXnaplRoyByByByByByByBqoxXxXsYiRiRBUEtVFVFVF
+rUERERERERERrUluxXnaplRoyByByByByByByBqoxXxXsYiRiRBUEtVFVFVF
 rUERERERERERMkxXoRhfAcfzLpKPtHJCSJSJKZVexXTvaLTvTvTvVFVFVFVF
 rUERERYSERERONIRZPBeKrphxXxXxXpVdVIdxXJexXTvaLEtVFVFVFVFVFVF
 rUERERERERERxXxXxXpuqXLSdRTWzwhrEGxIfdDZxXTvaLVFVFVFVFVFVFVF
-rUERERERERERvxUWJApgSHuFuFDcuSPLJTcWkfLkxXTvVOEtVFVFVFVFVFVF
+rUERERERERERrUUWJApgSHuFuFDcuSPLJTcWkfLkxXTvVOEtVFVFVFVFVFVF
 HIERERERERERHIluCQiXJdIvrxJaiHusesnOvtOrxXoSWwoSVFVFVFVFVFVF
 JhrUrUrUrUrUJhluCQJWfWbfxXxXxXZwyuZIxXJexXgcgcoSEtVFVFVFVFVF
 VFVFVFVFVFVFVFVFCQjsxFHdATewFOgChepCIwzkxXgcoSlHEtVFVFVFVFVF
