@@ -99,8 +99,8 @@
 	burn_mod =  1.15
 	gluttonous = GLUT_TINY
 	num_alternate_languages = 2
-	secondary_langs = list(LANGUAGE_SIIK_TAJR)
-	additional_langs = list(LANGUAGE_SIIK_MAAS)
+	secondary_langs = list(LANGUAGE_SIIK_MAAS)
+	additional_langs = list(LANGUAGE_SIIK_TAJR)
 	name_language = LANGUAGE_SIIK_MAAS
 	health_hud_intensity = 1.75
 
