@@ -342,7 +342,7 @@
 	center_of_mass = "x=16;y=14"
 	startswith = list(
 		/datum/reagent/nutriment/protein/cooked = 45,
-		/datum/reagent/sodiumchloride = 1,
+		/datum/reagent/salt = 1,
 		/datum/reagent/blackpepper = 1)
 	bitesize = 15
 
@@ -967,7 +967,7 @@
 	center_of_mass = "x=16;y=13"
 	startswith = list(
 		/datum/reagent/nutriment/protein = 4,
-		/datum/reagent/sodiumchloride = 1,
+		/datum/reagent/salt = 1,
 		/datum/reagent/blackpepper = 1)
 	bitesize = 3
 
@@ -994,7 +994,7 @@
 	center_of_mass = "x=16;y=13"
 	startswith = list(
 		/datum/reagent/nutriment/protein = 4,
-		/datum/reagent/sodiumchloride = 1,
+		/datum/reagent/salt = 1,
 		/datum/reagent/blackpepper = 1)
 	bitesize = 3
 
@@ -1358,7 +1358,7 @@
 		/datum/reagent/nutriment/protein = 10,
 		/datum/reagent/drink/juice/banana = 5,
 		/datum/reagent/blackpepper = 1,
-		/datum/reagent/sodiumchloride = 1)
+		/datum/reagent/salt = 1)
 	bitesize = 6
 
 /obj/item/reagent_containers/food/baguette
@@ -1371,7 +1371,7 @@
 	nutriment_amt = 6
 	startswith = list(
 		/datum/reagent/blackpepper = 1,
-		/datum/reagent/sodiumchloride = 1)
+		/datum/reagent/salt = 1)
 	bitesize = 3
 
 /obj/item/reagent_containers/food/fishandchips
@@ -2168,7 +2168,7 @@
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 5
 	startswith = list(
-		/datum/reagent/sodiumchloride = 1)
+		/datum/reagent/salt = 1)
 	bitesize = 3
 
 /obj/item/reagent_containers/food/cheesenachos
@@ -2178,7 +2178,7 @@
 	trash = /obj/item/trash/dish/plate
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 7
-	startswith = list(/datum/reagent/sodiumchloride = 1)
+	startswith = list(/datum/reagent/salt = 1)
 	bitesize = 4
 
 /obj/item/reagent_containers/food/cubannachos
@@ -2189,7 +2189,7 @@
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 7
 	startswith = list(
-		/datum/reagent/sodiumchloride = 1,
+		/datum/reagent/salt = 1,
 		/datum/reagent/capsaicin = 3)
 	bitesize = 4
 
@@ -2270,7 +2270,7 @@
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 6
 	startswith = list(
-		/datum/reagent/sodiumchloride = 2,
+		/datum/reagent/salt = 2,
 		/datum/reagent/drink/juice/tomato = 2,
 		/datum/reagent/drink/juice/garlic = 1)
 	bitesize = 4

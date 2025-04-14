@@ -22,7 +22,7 @@
 
 /datum/reagent/ethanol/touch_mob(mob/living/L, amount)
 	if(istype(L))
-		L.adjust_fire_stacks(amount / 15)
+		L.adjust_fire_stacks(amount / 100)
 
 /datum/reagent/ethanol/affect_blood(mob/living/carbon/M, alien, removed)
 	M.adjustToxLoss(removed * 2 * toxicity)
@@ -37,7 +37,7 @@
 		strength_mod = 0
 
 	M.add_chemical_effect(CE_ALCOHOL, 1)
-	var/effective_dose = M.chem_traces[type] * strength_mod * (1 + volume/60) //drinking a LOT will make you go down faster
+	var/effective_dose = M.chem_traces[type] * strength_mod * (1 + volume / 600) //drinking a LOT will make you go down faster
 
 	if(effective_dose >= strength) // Early warning
 		M.make_dizzy(6) // It is decreased at the speed of 3 per tick

@@ -336,7 +336,7 @@
 /datum/chemical_reaction/potassium_chloride
 	name = "Potassium Chloride"
 	result = /datum/reagent/toxin/potassium_chloride
-	required_reagents = list(/datum/reagent/sodiumchloride = 1, /datum/reagent/potassium = 1)
+	required_reagents = list(/datum/reagent/salt = 1, /datum/reagent/potassium = 1)
 	result_amount = 2
 	log_is_important = 1
 
@@ -362,7 +362,7 @@
 /datum/chemical_reaction/lipozine
 	name = "Lipozine"
 	result = /datum/reagent/lipozine
-	required_reagents = list(/datum/reagent/sodiumchloride = 1, /datum/reagent/ethanol = 1, /datum/reagent/radium = 1)
+	required_reagents = list(/datum/reagent/salt = 1, /datum/reagent/ethanol = 1, /datum/reagent/radium = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/surfactant
@@ -415,7 +415,7 @@
 
 /datum/chemical_reaction/sodiumchloride
 	name = "Sodium Chloride"
-	result = /datum/reagent/sodiumchloride
+	result = /datum/reagent/salt
 	required_reagents = list(/datum/reagent/sodium = 1, /datum/reagent/acid/hydrochloric = 1)
 	result_amount = 2
 

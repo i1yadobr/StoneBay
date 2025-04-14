@@ -50,7 +50,7 @@
 /datum/chemical_reaction/barbecue
 	name = "Barbecue Sauce"
 	result = /datum/reagent/nutriment/barbecue
-	required_reagents = list(/datum/reagent/nutriment/ketchup = 2, /datum/reagent/blackpepper = 1, /datum/reagent/sodiumchloride = 1)
+	required_reagents = list(/datum/reagent/nutriment/ketchup = 2, /datum/reagent/blackpepper = 1, /datum/reagent/salt = 1)
 	result_amount = 4
 
 /datum/chemical_reaction/garlicsauce

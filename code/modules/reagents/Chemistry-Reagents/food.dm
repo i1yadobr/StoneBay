@@ -417,7 +417,7 @@
 
 /* Non-food stuff like condiments */
 
-/datum/reagent/sodiumchloride
+/datum/reagent/salt // Aka Sodium Chloride
 	name = "Table Salt"
 	description = "A salt made of sodium chloride. Commonly used to season food."
 
@@ -427,6 +427,7 @@
 	reagent_state = SOLID
 	color = "#ffffff"
 
+	hydration_value = -7.5
 	overdose = REAGENTS_OVERDOSE
 
 /datum/reagent/blackpepper

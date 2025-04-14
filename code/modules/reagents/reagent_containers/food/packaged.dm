@@ -107,7 +107,7 @@
 	nutriment_amt = 100
 	nutriment_desc = list("salt" = 1, "potato" = 1, "chips" = 3)
 	startswith = list(
-		/datum/reagent/sodiumchloride = 10,
+		/datum/reagent/salt = 10,
 		/datum/reagent/nutriment/oil/burned = 40
 		)
 	bitesize = 15 // 220 nutrition, 10 bites
@@ -122,7 +122,7 @@
 	nutriment_amt = 40
 	startswith = list(
 		/datum/reagent/nutriment/protein/cooked = 70,
-		/datum/reagent/sodiumchloride = 10
+		/datum/reagent/salt = 10
 		)
 	bitesize = 15 // 215 nutrition, 8 bites
 
@@ -149,7 +149,7 @@
 	nutriment_amt = 100
 	nutriment_desc = list("cheese" = 5, "chips" = 2)
 	startswith = list(
-		/datum/reagent/sodiumchloride = 10,
+		/datum/reagent/salt = 10,
 		/datum/reagent/nutriment/oil/burned = 40
 		)
 	bitesize = 15 // 220 nutrition, 10 bites
@@ -204,7 +204,7 @@
 	nutriment_amt = 30
 	startswith = list(
 		/datum/reagent/nutriment/protein/fungal = 80,
-		/datum/reagent/sodiumchloride = 10
+		/datum/reagent/salt = 10
 		)
 	bitesize = 15 // 130 nutrition (230 for skrells), 8 bites
 
@@ -231,7 +231,7 @@
 	nutriment_desc = list("roting meat" = 3, "salt" = 4)
 	nutriment_amt = 50
 	startswith = list(
-		/datum/reagent/sodiumchloride = 10,
+		/datum/reagent/salt = 10,
 		/datum/reagent/nutriment/protein/cooked = 100,
 		/datum/reagent/ethylredoxrazine = 1,
 		/datum/reagent/sulfur = 10)

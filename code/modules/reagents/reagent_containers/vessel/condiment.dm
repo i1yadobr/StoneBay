@@ -113,7 +113,7 @@
 				icon_state = "coldsauce"
 				item_state = "coldsauce"
 				center_of_mass = "x=16;y=6"
-			if(/datum/reagent/sodiumchloride)
+			if(/datum/reagent/salt)
 				name = "Salt Shaker"
 				desc = "Salt. From space oceans, presumably."
 				icon_state = "saltshaker"
@@ -190,7 +190,7 @@
 	desc = "Salt. From space oceans, presumably."
 	icon_state = "saltshakersmall"
 	center_of_mass = "x=16;y=9"
-	startswith = list(/datum/reagent/sodiumchloride)
+	startswith = list(/datum/reagent/salt)
 
 /obj/item/reagent_containers/vessel/condiment/small/peppermill
 	name = "pepper mill"
@@ -277,7 +277,7 @@
 				icon_state = "condi_frostoil"
 				item_state = "condi_frostoil"
 				center_of_mass = "x=16;y=6"
-			if(/datum/reagent/sodiumchloride)
+			if(/datum/reagent/salt)
 				name = "Salt Shaker"
 				desc = "Salt. From space oceans, presumably."
 				icon_state = "condi_salt"

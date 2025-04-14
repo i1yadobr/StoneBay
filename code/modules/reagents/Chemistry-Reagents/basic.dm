@@ -37,7 +37,6 @@
 		M.adjustToxLoss(removed)
 		return
 	..()
-	to_chat(M, "WATER REPORT: [world.time SECONDS] | [M.hydration] | [removed]")
 	return
 
 /datum/reagent/water/touch_turf(turf/simulated/T)
@@ -429,15 +428,15 @@
 	var/mob/living/carbon/human/H = M
 
 	// Burn the stomach if it's present and not broken
-	var/obj/item/organ/internal/intestines/I = H.internal_organs_by_name[BP_INTESTINES]
-	if(I && I.damage < I.max_damage)
-		I.take_internal_damage(removed * power * 2)
+	var/obj/item/organ/internal/stomach/S = H.internal_organs_by_name[BP_STOMACH]
+	if(S && S.damage < S.max_damage)
+		S.take_internal_damage(removed * power * 0.5)
 		return
 
 	// Stomach is either missing or peforated, burning the chest
 	var/obj/item/organ/external/chest = H.get_organ(BP_CHEST)
 	if(chest)
-		chest.take_external_damage(0, removed * power * 2)
+		chest.take_external_damage(0, removed * power * 0.5)
 	return
 
 /datum/reagent/acid/affect_digest(mob/living/carbon/M, alien, removed, affecting_dose)
@@ -450,13 +449,13 @@
 	// Burn the intestines
 	var/obj/item/organ/internal/intestines/I = H.internal_organs_by_name[BP_INTESTINES]
 	if(I && I.damage < I.max_damage)
-		I.take_internal_damage(removed * power * 2)
+		I.take_internal_damage(removed * power * 0.5)
 		return
 
 	// Intestines are done, melting the groin
 	var/obj/item/organ/external/groin = H.get_organ(BP_GROIN)
 	if(groin)
-		groin.take_external_damage(0, removed * power * 2)
+		groin.take_external_damage(0, removed * power * 0.5)
 	return
 
 /datum/reagent/acid/affect_touch(mob/living/carbon/M, alien, removed) // This is the most interesting

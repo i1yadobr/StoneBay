@@ -20,7 +20,7 @@ I said no!
 */
 
 /datum/recipe/friedegg
-	reagents = list(/datum/reagent/sodiumchloride = 1, /datum/reagent/blackpepper = 1)
+	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1)
 	items = list(
 		/obj/item/reagent_containers/food/egg
 	)
@@ -388,7 +388,7 @@ I said no!
 	result = /obj/item/reagent_containers/food/cubancarp
 
 /datum/recipe/popcorn
-	reagents = list(/datum/reagent/sodiumchloride = 5)
+	reagents = list(/datum/reagent/salt = 5)
 	fruit = list("corn" = 1)
 	result = /obj/item/reagent_containers/food/popcorn
 
@@ -425,7 +425,7 @@ I said no!
 	return .
 
 /datum/recipe/meatsteak
-	reagents = list(/datum/reagent/sodiumchloride = 1, /datum/reagent/blackpepper = 1)
+	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1)
 	items = list(/obj/item/reagent_containers/food/meat)
 	result = /obj/item/reagent_containers/food/meatsteak
 
@@ -436,12 +436,12 @@ I said no!
 	result = /obj/item/reagent_containers/food/loadedsteak
 
 /datum/recipe/syntisteak
-	reagents = list(/datum/reagent/sodiumchloride = 1, /datum/reagent/blackpepper = 1)
+	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1)
 	items = list(/obj/item/reagent_containers/food/meat/syntiflesh)
 	result = /obj/item/reagent_containers/food/meatsteak
 
 /datum/recipe/porkchop
-	reagents = list(/datum/reagent/sodiumchloride = 1, /datum/reagent/blackpepper = 1)
+	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1)
 	items = list(/obj/item/reagent_containers/food/meat/pork)
 	result = /obj/item/reagent_containers/food/porkchop
 
@@ -595,12 +595,12 @@ I said no!
 
 /datum/recipe/monkeysdelight
 	fruit = list("banana" = 1)
-	reagents = list(/datum/reagent/sodiumchloride = 1, /datum/reagent/blackpepper = 1, /datum/reagent/nutriment/flour = 10)
+	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1, /datum/reagent/nutriment/flour = 10)
 	items = list(/obj/item/reagent_containers/food/monkeycube)
 	result = /obj/item/reagent_containers/food/monkeysdelight
 
 /datum/recipe/baguette
-	reagents = list(/datum/reagent/sodiumchloride = 1, /datum/reagent/blackpepper = 1)
+	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1)
 	items = list(
 		/obj/item/reagent_containers/food/dough,
 		/obj/item/reagent_containers/food/dough,
@@ -756,7 +756,7 @@ I said no!
 
 /datum/recipe/superbiteburger
 	fruit = list("tomato" = 1)
-	reagents = list(/datum/reagent/sodiumchloride = 5, /datum/reagent/blackpepper = 5)
+	reagents = list(/datum/reagent/salt = 5, /datum/reagent/blackpepper = 5)
 	items = list(
 		/obj/item/reagent_containers/food/bigbiteburger,
 		/obj/item/reagent_containers/food/dough,
@@ -929,14 +929,14 @@ I said no!
 		return being_cooked
 
 /datum/recipe/cracker
-	reagents = list(/datum/reagent/sodiumchloride = 1)
+	reagents = list(/datum/reagent/salt = 1)
 	items = list(
 		/obj/item/reagent_containers/food/doughslice
 	)
 	result = /obj/item/reagent_containers/food/cracker
 
 /datum/recipe/stuffing
-	reagents = list(/datum/reagent/water = 5, /datum/reagent/sodiumchloride = 1, /datum/reagent/blackpepper = 1)
+	reagents = list(/datum/reagent/water = 5, /datum/reagent/salt = 1, /datum/reagent/blackpepper = 1)
 	items = list(
 		/obj/item/reagent_containers/food/sliceable/bread,
 	)
@@ -1121,7 +1121,7 @@ I said no!
 
 /datum/recipe/smokedsausage
 	items = list(/obj/item/reagent_containers/food/sausage)
-	reagents = list(/datum/reagent/sodiumchloride = 5, /datum/reagent/blackpepper = 5)
+	reagents = list(/datum/reagent/salt = 5, /datum/reagent/blackpepper = 5)
 	result = /obj/item/reagent_containers/food/smokedsausage
 
 /datum/recipe/julienne
@@ -1190,12 +1190,12 @@ I said no!
 
 /datum/recipe/nachos
 	items = list(/obj/item/reagent_containers/food/tortilla)
-	reagents = list(/datum/reagent/sodiumchloride = 1)
+	reagents = list(/datum/reagent/salt = 1)
 	result = /obj/item/reagent_containers/food/nachos
 
 /datum/recipe/cheesenachos
 	items = list(/obj/item/reagent_containers/food/tortilla,/obj/item/reagent_containers/food/cheesewedge)
-	reagents = list(/datum/reagent/sodiumchloride = 1)
+	reagents = list(/datum/reagent/salt = 1)
 	result = /obj/item/reagent_containers/food/cheesenachos
 
 /datum/recipe/cubannachos
@@ -1244,7 +1244,7 @@ I said no!
 /datum/recipe/bruschetta
 	items = list(/obj/item/reagent_containers/food/cheesewedge)
 	fruit = list("tomato" = 1, "garlic" = 1)
-	reagents = list(/datum/reagent/nutriment/flour = 10, /datum/reagent/sodiumchloride = 2)
+	reagents = list(/datum/reagent/nutriment/flour = 10, /datum/reagent/salt = 2)
 	result = /obj/item/reagent_containers/food/bruschetta
 
 /datum/recipe/quiche

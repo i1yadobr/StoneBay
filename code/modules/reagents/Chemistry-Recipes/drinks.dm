@@ -612,7 +612,7 @@
 /datum/chemical_reaction/georgerrmartini
 	name = "George R.R. Martini"
 	result = /datum/reagent/ethanol/georgerrmartini
-	required_reagents = list(/datum/reagent/blood = 2, /datum/reagent/sodiumchloride = 1, /datum/reagent/ethanol/absinthe = 2)
+	required_reagents = list(/datum/reagent/blood = 2, /datum/reagent/salt = 1, /datum/reagent/ethanol/absinthe = 2)
 	result_amount = 5
 
 /datum/chemical_reaction/siegbrau

@@ -17,6 +17,7 @@
 	var/adj_sleepy = 0
 	var/adj_temp = 0
 	var/adj_speed = 0
+	var/strength = 10.0
 
 /datum/reagent/caffeine/affect_ingest(mob/living/carbon/M, alien, removed)
 	if(alien == IS_DIONA)
@@ -84,7 +85,14 @@
 	color = "#482000"
 
 	hydration_value = 0.65
-	overdose = 45
+	overdose = 0.5 LITERS
+	metabolism = 2.5
+	ingest_met = 0.5
+	digest_met = 2.5
+	ingest_absorbability = 0.5
+	digest_absorbability = 1.0
+	hydration_value = 1.0
+	ingest_met = REM * 0.25
 
 	adj_dizzy = -5
 	adj_drowsy = -3

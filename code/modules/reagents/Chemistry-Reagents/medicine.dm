@@ -152,7 +152,7 @@
 	flags = IGNORE_MOB_SIZE
 	ingest_absorbability = REM
 	digest_absorbability = REM * 5.0 // Just sip your oxygen cocktail and stay cool
-	hydration_value = -1.0
+	hydration_value = -2.5
 
 /datum/reagent/dexalin/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien == IS_VOX)
@@ -175,7 +175,7 @@
 	flags = IGNORE_MOB_SIZE
 	ingest_absorbability = REM
 	digest_absorbability = REM * 5.0
-	hydration_value = -2.0
+	hydration_value = -5.0
 
 /datum/reagent/dexalinp/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien == IS_VOX)
@@ -499,6 +499,7 @@
 
 	M.add_up_to_chemical_effect(CE_SPEEDBOOST, 2 * effectiveness)
 	M.add_chemical_effect(CE_PULSE, 2)
+	M.remove_hydration(effectiveness * hydration_value)
 
 /datum/reagent/ethylredoxrazine
 	name = "Ethylredoxrazine"
@@ -947,7 +948,7 @@
 	color = "#c10158"
 	scannable = 1
 	overdose = 5
-	metabolism = REM * 5
+	metabolism = 10.0
 	hydration_value = -2.5
 
 /datum/reagent/nanoblood/affect_blood(mob/living/carbon/human/M, alien, removed)
@@ -955,8 +956,9 @@
 		return
 	if(M.regenerate_blood(4 * removed))
 		M.immunity = max(M.immunity - 0.1, 0)
-		if(M.chem_traces[type] > M.species.blood_volume/8) //half of blood was replaced with us, rip white bodies
+		if(M.chem_traces[type] > M.species.blood_volume / 8) //half of blood was replaced with us, rip white bodies
 			M.immunity = max(M.immunity - 0.5, 0)
+		M.remove_hydration(removed * hydration_value)
 
 /datum/reagent/thc   // -SECURITY OPEN UP!!! - Ha-ha. No. c:
 	name = "Tetrahydrocannabinol"
