@@ -222,20 +222,20 @@
 	if(chosen_module)
 		if(chosen_module == selected_module && chosen_module.usable) // if you choose module again engage it (e.g. stun lethal for egun module)
 			selected_module.engage()
-			show_splash_text(usr, SPAN_INFO("<b>Engaging: [selected_module.interface_name].</b>") ,SPAN_INFO("<b>Engaging selected system: [selected_module.interface_name].</b>"))
+			show_splash_text(usr, "engaging [selected_module.interface_name].", SPAN_INFO("<b>Engaging selected system: [selected_module.interface_name].</b>"))
 			return
 		if(chosen_module.toggleable)
 			if(chosen_module.active)
-				show_splash_text(usr, SPAN_INFO("<b>Deactivating: \the [chosen_module.interface_name].</b>"), SPAN_INFO("<b>You attempt to deactivate \the [chosen_module.interface_name].</b>"))
+				show_splash_text(usr, "deactivating \the [chosen_module.interface_name].", SPAN_INFO("<b>You attempt to deactivate \the [chosen_module.interface_name].</b>"))
 				chosen_module.deactivate()
 			else
-				show_splash_text(usr, SPAN_INFO("<b>Activating: \the [chosen_module.interface_name].</b>"), SPAN_INFO("<b>You attempt to activate \the [chosen_module.interface_name].</b>"))
+				show_splash_text(usr, "activating \the [chosen_module.interface_name].", SPAN_INFO("<b>You attempt to activate \the [chosen_module.interface_name].</b>"))
 				chosen_module.activate()	
 		else
 			selected_module = chosen_module
-			show_splash_text(usr, SPAN_INFO("<b>Primary system: [selected_module.interface_name].</b>"), SPAN_INFO("<b>Primary system is now: [selected_module.interface_name].</b>"))
+			show_splash_text(usr, "primary system [selected_module.interface_name].", SPAN_INFO("<b>Primary system is now: [selected_module.interface_name].</b>"))
 	else
-		show_splash_text(usr, SPAN_INFO("<b>No module selected.</b>"), SPAN_INFO("<b>No module selected.</b>"))
+		show_splash_text(usr, "no module selected.", SPAN_INFO("<b>No module selected.</b>"))
 
 /obj/item/rig/verb/toggle_module()
 
