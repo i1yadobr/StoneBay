@@ -7,6 +7,8 @@ var/global/datum/body_build/default_body_build = new
 	var/genders      = list(MALE, FEMALE)
 	var/index        = ""
 	var/roboindex    = ""  // for slim and slim_alt BBs prothesis
+	var/next_body_build = "Fat"
+	var/previous_body_build ="Slim"
 	var/misk_icon    = 'icons/mob/mob.dmi'
 	var/list/clothing_icons = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob.dmi',
@@ -66,6 +68,10 @@ var/global/datum/body_build/default_body_build = new
 
 	index                = "_slim"
 	roboindex            = "_slim"
+
+	next_body_build = "Default"
+	previous_body_build ="Slim Alt"
+
 	genders              = list(FEMALE)
 	clothing_icons       = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_slim.dmi',
@@ -112,6 +118,10 @@ var/global/datum/body_build/default_body_build = new
 	name                 = "Slim Alt"
 	index                = "_slim_alt"
 	roboindex            = "_slim_alt"
+
+	next_body_build = "Slim"
+	previous_body_build = "Slim Flat"
+
 	genders              = list(FEMALE)
 	clothing_icons       = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_slimalt.dmi',
@@ -140,6 +150,10 @@ var/global/datum/body_build/default_body_build = new
 	name                 = "Slim"
 	index                = "_slim"
 	roboindex            = "_slim"
+
+	next_body_build = "Default"
+	previous_body_build = null
+
 	genders              = list(MALE)
 	clothing_icons       = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_slim_m.dmi',
@@ -169,6 +183,10 @@ var/global/datum/body_build/default_body_build = new
 	name                 = "Slim Flat"
 	index                = "_slim_flat"
 	roboindex            = "_slim_flat"
+
+	next_body_build = "Slim Alt"
+	previous_body_build = null
+
 	genders              = list(FEMALE)
 	clothing_icons       = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_slim_m.dmi',
@@ -198,6 +216,10 @@ var/global/datum/body_build/default_body_build = new
 	name                 = "Fat"
 	index                = "_fat"
 	roboindex            = "_fat"
+
+	next_body_build = null
+	previous_body_build = "Default"
+
 	genders              = list(MALE, FEMALE)
 	clothing_icons       = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_fat.dmi',
@@ -230,9 +252,11 @@ var/global/datum/body_build/default_body_build = new
 	ambiguous_gender   = TRUE
 	melee_modifier     = 1.15 // Force is acceleration times MASS, so...
 
-
 /datum/body_build/slim/alt/tajaran //*sigh. I regret of doing this.
 	name                 = "Slim Tajaran"
+
+	next_body_build = "Tajaran"
+	previous_body_build = null
 
 	clothing_icons       = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_slimalt.dmi',
@@ -263,6 +287,9 @@ var/global/datum/body_build/default_body_build = new
 /datum/body_build/tajaran
 	name                 = "Tajaran"
 
+	next_body_build = "Fat Tajaran"
+	previous_body_build = "Slim Tajaran"
+
 	clothing_icons       = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob.dmi',
 		"slot_suit"      = 'icons/inv_slots/suits/mob_tajaran.dmi',
@@ -288,6 +315,10 @@ var/global/datum/body_build/default_body_build = new
 	name                 = "Fat Tajaran"
 	index                = "_fat"
 	roboindex            = "_fat"
+
+	next_body_build = null
+	previous_body_build = "Tajaran"
+
 	clothing_icons       = list(
 		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_fat.dmi',
 		"slot_suit"      = 'icons/inv_slots/suits/mob_fat.dmi',

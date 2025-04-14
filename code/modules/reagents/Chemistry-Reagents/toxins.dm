@@ -746,6 +746,64 @@
 	M.update_facial_hair()
 	to_chat(M, SPAN_WARNING("You feel a chill, your skin feels heavier..."))
 
+/datum/reagent/toxin/mass_gainer
+	name = "Mass Gainer"
+	description = "An extremely effective mass gainer cocktail."
+	taste_description = "sugar"
+	reagent_state = LIQUID
+	color = "#e7e3d8"
+	strength = 1
+	overdose = REAGENTS_OVERDOSE
+
+/datum/reagent/toxin/mass_gainer/affect_touch(mob/living/carbon/human/M, alien, removed)
+	if(prob(33))
+		affect_blood(M, alien, removed)
+
+/datum/reagent/toxin/mass_gainer/affect_ingest(mob/living/carbon/human/M, alien, removed)
+	if(prob(67))
+		affect_blood(M, alien, removed)
+
+/datum/reagent/toxin/mass_gainer/affect_blood(mob/living/carbon/human/M, alien, removed)
+	if(volume < overdose)
+		return
+		
+	var/BB = M.body_build.next_body_build
+	if(BB)
+		var/datum/body_build/new_body_build = M.species.get_body_build(M.gender, BB)
+		if(new_body_build)
+			M.change_body_build(new_body_build)
+			to_chat(M, SPAN("warning", "You feel heavier..."))
+	remove_self(volume)
+
+/datum/reagent/toxin/fat_burner
+	name = "Fat Burner"
+	description = "An extremely effective weight loss drug."
+	taste_description = "acid"
+	reagent_state = LIQUID
+	color = "#82c238"
+	strength = 1
+	overdose = REAGENTS_OVERDOSE
+
+/datum/reagent/toxin/fat_burner/affect_touch(mob/living/carbon/human/M, alien, removed)
+	if(prob(33))
+		affect_blood(M, alien, removed)
+
+/datum/reagent/toxin/fat_burner/affect_ingest(mob/living/carbon/human/M, alien, removed)
+	if(prob(67))
+		affect_blood(M, alien, removed)
+
+/datum/reagent/toxin/fat_burner/overdose(mob/living/carbon/human/M, alien, removed)
+	if(volume < overdose)
+		return
+
+	var/BB = M.body_build.previous_body_build
+	if(BB)
+		var/datum/body_build/new_body_build = M.species.get_body_build(M.gender, BB)
+		if(new_body_build)
+			M.change_body_build(new_body_build)
+			to_chat(M, SPAN("warning", "You feel like a feather..."))
+	remove_self(volume)
+
 /datum/reagent/toxin/zombie
 	name = "Liquid Corruption"
 	description = "A filthy, oily substance which slowly churns of its own accord."

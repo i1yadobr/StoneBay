@@ -37,6 +37,9 @@
 	var/datum/body_build/body_build = null
 	var/body_height = HUMAN_HEIGHT_NORMAL
 
+	var/nutrition_problem = FALSE
+	var/nutrition_problem_start = 0
+
 	var/lip_style = null	//no lipstick by default- arguably misleading, as it could be used for general makeup
 
 	var/age = 30		//Player's age (pure fluff)
