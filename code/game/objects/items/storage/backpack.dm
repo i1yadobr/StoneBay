@@ -502,3 +502,9 @@
 		slot_l_hand_str = "shipack",
 		slot_r_hand_str = "shipack",
 		)
+
+/obj/item/storage/backpack/carry_rig
+	name = "Carry rig"
+	desc = "A metal base with numerous straps designed to hold whatever and be attached to the back. Quite uncomfortable to wear."
+	icon_state = "carryrig"
+
