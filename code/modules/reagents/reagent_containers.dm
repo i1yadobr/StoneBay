@@ -118,7 +118,7 @@
 /obj/item/reagent_containers/proc/feed_sound(mob/user)
 	playsound(user, SFX_DRINK, rand(45, 60), TRUE)
 
-/obj/item/reagent_containers/proc/standard_feed_mob(mob/user, mob/target) // This goes into attack
+/obj/item/reagent_containers/proc/standard_feed_mob(mob/user, mob/target, bypass_resist = FALSE) // This goes into attack
 	if(!istype(target))
 		return 0
 
@@ -131,17 +131,12 @@
 		if(target == user)
 			if(istype(user, /mob/living/carbon/human))
 				var/mob/living/carbon/human/H = user
-				if(!H.check_has_mouth())
-					to_chat(user, "Where do you intend to put \the [src]? You don't have a mouth!")
+				if(!H.can_eat(src))
 					return
-				var/obj/item/blocked = H.check_mouth_coverage()
-				if(blocked)
-					to_chat(user, "<span class='warning'>\The [blocked] is in the way!</span>")
-					return
-				if(!H.ingest_reagents(reagents, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this))
-					reagents.trans_to_mob(user, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
+				if(!H.ingest_reagents(reagents, min(MOUTH_CAPACITY, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this)))
+					reagents.trans_to_mob(user, min(MOUTH_CAPACITY, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this), CHEM_INGEST)
 			else
-				reagents.trans_to_mob(user, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
+				reagents.trans_to_mob(user, min(MOUTH_CAPACITY, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this), CHEM_INGEST)
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 			self_feed_message(user)
@@ -151,18 +146,17 @@
 
 		else
 			var/mob/living/carbon/H = target
-			if(!H.check_has_mouth())
-				to_chat(user, "Where do you intend to put \the [src]? \The [H] doesn't have a mouth!")
-				return
-			var/obj/item/blocked = H.check_mouth_coverage()
-			if(blocked)
-				to_chat(user, "<span class='warning'>\The [blocked] is in the way!</span>")
+			if(!H.can_force_feed(user, src))
 				return
 
 			other_feed_message_start(user, target)
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if(!do_mob(user, target))
+			var/feed_amount = min(MOUTH_CAPACITY, amount_per_transfer_from_this)
+			if(!do_mob(user, target, time = max(1.5 SECONDS, round(feed_amount / 2)))) // 1.5 to 3 seconds
+				return
+
+			if(!H.can_force_feed(user, src, check_resist = !bypass_resist)) // Secondary check since things could change during do_mob
 				return
 
 			other_feed_message_finish(user, target)
@@ -172,10 +166,10 @@
 
 			if(ishuman(H))
 				var/mob/living/carbon/human/HU = H
-				if(!HU.ingest_reagents(reagents, amount_per_transfer_from_this))
-					reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
+				if(!HU.ingest_reagents(reagents, feed_amount))
+					reagents.trans_to_mob(target, feed_amount, CHEM_INGEST)
 			else
-				reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
+				reagents.trans_to_mob(target, feed_amount, CHEM_INGEST)
 
 			feed_sound(user)
 			return 1

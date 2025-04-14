@@ -106,6 +106,7 @@
 	taste_description = "hearty barley ale"
 	color = "#4c3100"
 	strength = 50
+	nutriment_factor = 0.5
 	hydration_value = 0.9
 
 	glass_name = "ale"
@@ -117,7 +118,7 @@
 	taste_description = "piss water"
 	color = "#ffd300"
 	strength = 50
-	nutriment_factor = 1
+	nutriment_factor = 0.5
 	hydration_value = 0.9
 
 	glass_name = "beer"
@@ -136,7 +137,7 @@
 	taste_description = "bittersweet roasted flavor"
 	color = "#5b3500"
 	strength = 50
-	nutriment_factor = 1
+	nutriment_factor = 0.5
 
 	glass_name = "dark beer"
 	glass_desc = "A freezing pint of dark beer"
@@ -148,7 +149,7 @@
 	taste_description = "fairly sweet malty flavor"
 	color = "#5b3500"
 	strength = 50
-	nutriment_factor = 1
+	nutriment_factor = 0.5
 
 	glass_name = "dark beer"
 	glass_desc = "A freezing pint of Machpella Dark Beer"
@@ -1735,6 +1736,7 @@
 	strength = 90
 	adj_temp = 10
 	hydration_value = 0.95
+	nutriment_factor = 0.5
 
 	glass_required = "mug"
 	glass_icon_state = "kvass"

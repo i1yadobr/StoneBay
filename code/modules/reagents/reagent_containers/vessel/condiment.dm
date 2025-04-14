@@ -48,8 +48,8 @@
 		return
 
 /obj/item/reagent_containers/vessel/condiment/afterattack(obj/target, mob/user, proximity)
-	if(!proximity)
-		return
+	if(!is_open_container() || !proximity) //Is the container open & are they next to whatever they're clicking?
+		return //If not, do nothing.
 
 	if(standard_dispenser_refill(user, target))
 		return

@@ -99,6 +99,10 @@
 			spam_flag = FALSE
 			return FALSE
 
+		if(!M.can_force_feed(user, "pills", check_resist = TRUE))
+			spam_flag = FALSE
+			return FALSE
+
 		if(pill?.loc != src)
 			spam_flag = FALSE
 			return FALSE

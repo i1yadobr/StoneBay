@@ -83,12 +83,7 @@
 			var/complex_fullness = FALSE
 			if(ishuman(C))
 				var/mob/living/carbon/human/H = M
-				if(!H.check_has_mouth())
-					to_chat(user, "Where do you intend to put \the [src]? You don't have a mouth!")
-					return
-				var/obj/item/blocked = H.check_mouth_coverage()
-				if(blocked)
-					to_chat(user, SPAN("warning", "\The [blocked] is in the way!"))
+				if(!H.can_eat(src))
 					return
 				fullness /= H.body_build.stomach_capacity // Here we take body build into consideration
 				if(H.should_have_organ(BP_STOMACH))
@@ -154,10 +149,13 @@
 					return FALSE
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if(!do_mob(user, M))
+			if(!do_mob(user, M, time = 2 SECONDS))
 				return
 
 			if(user.get_active_hand() != src)
+				return
+
+			if(!M.can_force_feed(user, src, check_resist = TRUE))
 				return
 
 			var/contained = reagentlist()

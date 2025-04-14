@@ -421,6 +421,8 @@ GLOBAL_LIST_INIT(organ_tag_to_name, list(
 #define HYDRATION_SUPER 1400
 #define HYDRATION_LIMIT 2000
 
+#define MOUTH_CAPACITY 60
+
 #define HUMAN_POWER_NONE    "None"
 #define HUMAN_POWER_SPIT    "Spit"
 #define HUMAN_POWER_LEAP    "Leap"

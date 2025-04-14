@@ -224,7 +224,7 @@
 
 	return FALSE
 
-/obj/item/reagent_containers/vessel/standard_feed_mob(mob/user, mob/target)
+/obj/item/reagent_containers/vessel/standard_feed_mob(mob/user, mob/target, bypass_resist = FALSE)
 	if(!is_open_container())
 		to_chat(user, SPAN("notice", "You need to open \the [src] first."))
 		return TRUE
@@ -365,18 +365,18 @@
 			to_chat(C, SPAN("warning", "\The [blocked] is in the way!"))
 			return
 
-		if(reagents.total_volume > 30) // 30 equates to 3 SECONDS.
+		if(reagents.total_volume > MOUTH_CAPACITY)
 			C.visible_message(\
 				SPAN("notice", "[C] prepares to drink down [src]."),\
 				SPAN("notice", "You prepare to drink down [src]."))
 			playsound(C, 'sound/items/drinking.ogg', reagents.total_volume, 1)
 
-		if(!do_after(C, reagents.total_volume))
+		if(!do_after(C, max(1 SECOND, reagents.total_volume * 0.05)))
 			if(!Adjacent(C))
 				return
 			standard_splash_mob(src, src)
 			C.visible_message(\
-				SPAN("danger", "[C] splashed \the [src]'s contents on self while trying drink it down."),\
+				SPAN("danger", "[C] splashes \the [src]'s contents all over themself while trying drink it down."),\
 				SPAN("danger", "You splash \the [src]'s contents on yourself!"))
 			return
 
@@ -384,7 +384,7 @@
 			if(!Adjacent(C))
 				return
 			C.visible_message(\
-				SPAN("notice", "[C] drinked down the whole [src]!"),\
+				SPAN("notice", "[C] drinks down the whole [src]!"),\
 				SPAN("notice", "You drink down the whole [src]!"))
 			playsound(C, 'sound/items/drinking_after.ogg', reagents.total_volume, 1)
 			reagents.trans_to_mob(C, reagents.total_volume, CHEM_INGEST)
