@@ -78,7 +78,7 @@
 	full_pain_lasttick = full_pain
 
 /mob/living/carbon/human/proc/recheck_bad_external_organs()
-	var/damage_this_tick = getToxLoss()
+	var/damage_this_tick = getInternalLoss()
 	for(var/obj/item/organ/external/O in organs)
 		damage_this_tick += O.burn_dam + O.brute_dam
 
@@ -462,7 +462,7 @@
 	// For simplicity, let's assume that 5% the blood volume equals the amount of toxins that's enough to completely wreck the body.
 	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.05) : 280) * 100)
 
-	var/kidney_strain = 0.0
+	var/kidney_strain = 1.0
 	if(toxic_severity >= 100) // tb 280+, we're wrecked, lethal poisoning
 		adjustBrainLoss(1.0)
 		Weaken(30)

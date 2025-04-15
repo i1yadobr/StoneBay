@@ -1071,7 +1071,7 @@
 	organ.take_external_damage(rand(1,3), 0, 0)
 	if(!BP_IS_ROBOTIC(organ) && (should_have_organ(BP_HEART))) //There is no blood in protheses.
 		organ.status |= ORGAN_BLEEDING
-		src.adjustToxLoss(rand(1,3))
+		adjustInternalLoss(rand(1,3))
 
 /mob/living/carbon/human/verb/check_pulse()
 	set category = "Object"

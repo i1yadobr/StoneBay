@@ -308,6 +308,11 @@
 /mob/living/proc/getToxLoss()
 	return 0
 
+/mob/living/proc/adjustToxPercent(amount)
+	if(status_flags & GODMODE)
+		return 0
+	adjustToxLoss(amount)
+
 /mob/living/proc/adjustToxLoss(amount)
 	if(status_flags & GODMODE)
 		return 0
@@ -501,6 +506,7 @@
 	setOxyLoss(0)
 	setCloneLoss(0)
 	setBrainLoss(0)
+	setInternalLoss(0)
 	SetParalysis(0)
 	SetStunned(0)
 	SetWeakened(0)

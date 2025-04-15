@@ -85,7 +85,7 @@
 		return
 	if(H.nutrition < 50)
 		H.adjustInternalLoss(2.0)
-		H.adjustToxLoss(2.0, TRUE)
+		H.adjustToxLoss(1.0, TRUE)
 		return
 	if(!H.innate_heal)
 		return

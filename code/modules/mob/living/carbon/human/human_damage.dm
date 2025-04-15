@@ -242,7 +242,14 @@
 /mob/living/carbon/human/setToxLoss(amount)
 	if(isSynthetic() || isundead(src))
 		return
-	adjustToxLoss(getToxLoss() - amount)
+	toxic_buildup = 0
+	toxic_severity = 0
+
+/mob/living/carbon/human/adjustToxPercent(amount)
+	if(status_flags & GODMODE)
+		return 0
+	var/abs_amount = amount * (species ? (species.blood_volume * 0.05) : 280) / 100)
+	adjustToxLoss(abs_amount)
 
 /mob/living/carbon/human/adjustToxLoss(amount, bypass_liver = FALSE)
 	if(isSynthetic() || isundead(src))
