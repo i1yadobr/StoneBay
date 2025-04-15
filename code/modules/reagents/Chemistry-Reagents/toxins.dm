@@ -792,7 +792,7 @@
 	if(prob(67))
 		affect_blood(M, alien, removed)
 
-/datum/reagent/toxin/fat_burner/overdose(mob/living/carbon/human/M, alien, removed)
+/datum/reagent/toxin/fat_burner/affect_blood(mob/living/carbon/human/M, alien, removed)
 	if(volume < overdose)
 		return
 
