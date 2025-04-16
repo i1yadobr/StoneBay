@@ -265,7 +265,7 @@ Regenerative extracts:
 		D.update_icon = FALSE
 		D.adjustBruteLoss(target.getBruteLoss())
 		D.adjustFireLoss(target.getFireLoss())
-		D.adjustToxLoss(target.getToxLoss())
+		D.adjustToxPercent(target.getToxLoss())
 		D.death()
 		D.set_next_think_ctx("dust", world.time + 30 SECONDS)
 		return

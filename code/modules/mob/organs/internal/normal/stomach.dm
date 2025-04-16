@@ -5,7 +5,7 @@
 	dead_icon = "stomach"
 	organ_tag = BP_STOMACH
 	parent_organ = BP_CHEST
-	min_bruised_damage = 25
+	min_bruised_damage = 20
 	min_broken_damage = 45
 	max_damage = 70
 	relative_size = 40

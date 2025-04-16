@@ -438,6 +438,7 @@
 	data["brute_severity"] = capitalize(get_severity(H.getBruteLoss()))
 	data["burn_severity"] = capitalize(get_severity(H.getFireLoss()))
 	data["tox_severity"] = capitalize(get_severity(H.getToxLoss()))
+	data["internal_severity"] = capitalize(get_severity(H.getInternalLoss()))
 	data["oxy_severity"] = capitalize(get_severity(H.getOxyLoss()))
 	data["clone_severity"] = capitalize(get_severity(H.getCloneLoss()))
 	data["rad_dose"] = H.radiation
@@ -485,6 +486,9 @@
 
 	if (H.chem_effects[CE_ALCOHOL_TOXIC])
 		data["warnings"] += list("Warning: Subject suffering from alcohol intoxication.")
+
+	if (H.chem_effects[CE_TOXIN] && H.chem_effects[CE_TOXIN] >= 10)
+		data["warnings"] += list("Warning: Highly lethal toxic agents detected in subject's system.")
 
 	data["external_organs"] = list()
 
@@ -589,7 +593,8 @@
 
 	dat += "<b>Physical Trauma:</b>\t[get_severity(H.getBruteLoss())]"
 	dat += "<b>Burn Severity:</b>\t[get_severity(H.getFireLoss())]"
-	dat += "<b>Systematic Organ Failure:</b>\t[get_severity(H.getToxLoss())]"
+	dat += "<b>Toxic Buildup:</b>\t[get_severity(H.getToxLoss())]"
+	dat += "<b>Systematic Organ Failure:</b>\t[get_severity(H.getInternalLoss())]"
 	dat += "<b>Oxygen Deprivation:</b>\t[get_severity(H.getOxyLoss())]"
 
 	dat += "<b>Radiation dose:</b>\t[fmt_siunit(H.radiation, "Sv", 3)]"

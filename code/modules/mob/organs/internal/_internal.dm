@@ -3,14 +3,14 @@
 ****************************************************/
 /obj/item/organ/internal
 	food_organ_type = /obj/item/reagent_containers/food/organ
-	throwforce = 0.1 // Enough to upset you, not enough to crack your ribcage open
-	var/dead_icon // Icon to use when the organ has died.
+	throwforce = 0.1                // Enough to upset you, not enough to crack your ribcage open
+	var/dead_icon                   // Icon to use when the organ has died.
 	var/surface_accessible = FALSE
-	var/relative_size = 25   // Relative size of the organ. Roughly % of space they take in the target projection :D
+	var/relative_size = 25          // Relative size of the organ. Roughly % of space they take in the target projection :D
 	var/list/will_assist_languages = list()
 	var/list/datum/language/assists_languages = list()
-	var/min_bruised_damage = 10       // Damage before considered bruised
-	var/foreign = FALSE 			  // foreign organs shouldn't be removed or recreated on revive
+	var/min_bruised_damage = 0        // Damage before considered bruised
+	var/foreign = FALSE               // foreign organs shouldn't be removed or recreated on revive
 	var/override_species_icon = FALSE // Should we ignore species-specific icons?
 	/// Should this organs icon changed to prosthetic?
 	var/override_organic_icon = TRUE
@@ -19,7 +19,7 @@
 	var/autoheal_value = 0.1
 
 /obj/item/organ/internal/New(mob/living/carbon/holder)
-	if(max_damage)
+	if(!min_bruised_damage)
 		min_bruised_damage = Floor(max_damage / 4)
 
 	..(holder)

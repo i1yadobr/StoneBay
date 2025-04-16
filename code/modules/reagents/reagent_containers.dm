@@ -106,13 +106,13 @@
 	reagents.splash(target, reagents.total_volume)
 	return 1
 
-/obj/item/reagent_containers/proc/self_feed_message(mob/user)
+/obj/item/reagent_containers/proc/self_feed_message(mob/user, feed_volume = 0)
 	to_chat(user, "<span class='notice'>You eat \the [src]</span>")
 
 /obj/item/reagent_containers/proc/other_feed_message_start(mob/user, mob/target)
 	user.visible_message("<span class='warning'>[user] is trying to feed [target] \the [src]!</span>")
 
-/obj/item/reagent_containers/proc/other_feed_message_finish(mob/user, mob/target)
+/obj/item/reagent_containers/proc/other_feed_message_finish(mob/user, mob/target, feed_volume = 0)
 	user.visible_message("<span class='warning'>[user] has fed [target] \the [src]!</span>")
 
 /obj/item/reagent_containers/proc/feed_sound(mob/user)
@@ -129,17 +129,18 @@
 	// only carbons can eat
 	if(istype(target, /mob/living/carbon) && user.a_intent != I_HURT)
 		if(target == user)
+			var/feed_amount = min(MOUTH_CAPACITY, issmall(user) ? ceil(amount_per_transfer_from_this * 0.5) : amount_per_transfer_from_this)
 			if(istype(user, /mob/living/carbon/human))
 				var/mob/living/carbon/human/H = user
 				if(!H.can_eat(src))
 					return
-				if(!H.ingest_reagents(reagents, min(MOUTH_CAPACITY, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this)))
-					reagents.trans_to_mob(user, min(MOUTH_CAPACITY, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this), CHEM_INGEST)
+				if(!H.ingest_reagents(reagents, feed_amount))
+					reagents.trans_to_mob(user, feed_amount, CHEM_INGEST)
 			else
-				reagents.trans_to_mob(user, min(MOUTH_CAPACITY, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this), CHEM_INGEST)
+				reagents.trans_to_mob(user, feed_amount, CHEM_INGEST)
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
-			self_feed_message(user)
+			self_feed_message(user, feed_amount)
 			feed_sound(user)
 			return 1
 
@@ -159,7 +160,7 @@
 			if(!H.can_force_feed(user, src, check_resist = !bypass_resist)) // Secondary check since things could change during do_mob
 				return
 
-			other_feed_message_finish(user, target)
+			other_feed_message_finish(user, target, feed_amount)
 
 			var/contained = reagentlist()
 			admin_attack_log(user, target, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")

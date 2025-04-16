@@ -730,6 +730,7 @@
 		M.adjustOxyLoss(-10 * removed)
 		M.heal_organ_damage(5 * removed, 5 * removed)
 		M.adjustToxLoss(-5 * removed)
+		M.adjustInternalLoss(-5 * removed)
 	else
 		M.fire_stacks = max(2, M.fire_stacks)
 		M.IgniteMob()

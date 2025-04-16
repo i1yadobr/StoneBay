@@ -22,8 +22,8 @@ var/list/organ_cache = list()
 
 	// Damage vars.
 	var/damage = 0                    // Current damage to the organ
-	var/min_broken_damage = 30     	  // Damage before becoming broken
-	var/max_damage             	  // Damage cap
+	var/min_broken_damage = 0         // Damage before becoming broken
+	var/max_damage = 60               // Damage cap
 	var/rejecting                     // Is this organ already being rejected?
 
 	var/death_time
@@ -71,10 +71,8 @@ var/list/organ_cache = list()
 	if(food_organ_type && !disable_food_organ)
 		food_organ = new food_organ_type(src)
 
-	if(max_damage)
+	if(!min_broken_damage)
 		min_broken_damage = Floor(max_damage / 2)
-	else
-		max_damage = min_broken_damage * 2
 
 	if(istype(holder))
 		owner = holder

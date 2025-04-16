@@ -155,12 +155,24 @@ REAGENT SCANNER
 	// Other general warnings.
 	if(H.getOxyLoss() > 50)
 		status_data += "<span class='info'><b>Severe oxygen deprivation detected.</b></span>"
-	if(H.getToxLoss() > 50)
+
+	var/toxLoss = H.getToxLoss()
+	if(toxLoss > 80)
+		status_data += "<font color='green'><b>Extreme toxic buildup detected.</b></font>"
+	else if(toxLoss > 50)
 		status_data += "<font color='green'><b>Severe toxic buildup detected.</b></font>"
-	if(H.getInternalLoss() > 50)
+	else if(toxLoss > 20)
+		status_data += "<font color='green'><b>Mild toxic buildup detected.</b></font>"
+
+	var/internalLoss = H.getInternalLoss()
+	if(internalLoss > 100)
 		status_data += "<font color='black'><b>Major systemic organ failure detected.</b></font>"
+	else if(internalLoss > 50)
+		status_data += "<font color='black'><b>Systemic organ failure detected.</b></font>"
+
 	if(H.getFireLoss() > 50)
 		status_data += "<font color='#ffa500'><b>Severe burn damage detected.</b></font>"
+
 	if(H.getBruteLoss() > 50)
 		status_data += "<font color='red'><b>Severe anatomical damage detected.</b></font>"
 

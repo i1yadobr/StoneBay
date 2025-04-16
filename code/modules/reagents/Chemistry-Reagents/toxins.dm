@@ -67,7 +67,7 @@
 	taste_mult = 1.5
 	reagent_state = LIQUID
 	color = "#e90eb8"
-	strength = 30
+	strength = 15
 	touch_met = 5
 	var/fire_mult = 5
 

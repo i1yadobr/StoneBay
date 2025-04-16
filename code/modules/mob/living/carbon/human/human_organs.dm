@@ -464,10 +464,10 @@
 
 	var/kidney_strain = 1.0
 	if(toxic_severity >= 100) // tb 280+, we're wrecked, lethal poisoning
-		adjustBrainLoss(1.0)
+		adjustBrainLoss(0.5)
 		Weaken(30)
 		Paralyse(20)
-		adjustInternalLoss(5.0, TRUE)
+		adjustInternalLoss(2.5, TRUE)
 
 	if(toxic_severity >= 75) // tb 210+, we're in immediate danger, critical poisoning
 		if(prob(10))

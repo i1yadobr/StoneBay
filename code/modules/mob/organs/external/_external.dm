@@ -4,8 +4,8 @@
 
 /obj/item/organ/external
 	name = "external"
-	min_broken_damage = 30
-	max_damage = 0
+	min_broken_damage = 0
+	max_damage = 60
 	dir = SOUTH
 	organ_tag = "limb"
 	appearance_flags = DEFAULT_APPEARANCE_FLAGS | LONG_GLIDE
