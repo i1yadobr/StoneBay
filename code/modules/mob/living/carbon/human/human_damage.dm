@@ -247,8 +247,8 @@
 /mob/living/carbon/human/adjustToxPercent(amount)
 	if(status_flags & GODMODE)
 		return 0
-	var/abs_amount = amount * ((species ? (species.blood_volume * 0.05) : 280) / 100)
-	adjustToxLoss(abs_amount)
+	amount = round(amount * ((species ? (species.blood_volume * 0.05) : 280) / 100))
+	adjustToxLoss(amount)
 	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.05) : 280) * 100)
 
 /mob/living/carbon/human/adjustToxLoss(amount, bypass_liver = FALSE)
@@ -261,7 +261,7 @@
 	// Liver is buffering some toxic damage, unless it's too busy. And unless the damage bypasses the liver (i.e. damage caused by liver failure).
 	var/obj/item/organ/internal/liver/liver = internal_organs_by_name[BP_LIVER]
 	if(liver && !bypass_liver && !heal)
-		amount -= liver.store_tox(amount)
+		amount = liver.store_tox(amount)
 		if(amount <= 0)
 			return // Try to store toxins in the liver; stop right here if it sponges all the damage
 
@@ -286,7 +286,7 @@
 	if(isSynthetic() || isundead(src))
 		return
 
-	var/heal = amount < 0 || HAS_TRAIT(src, TRAIT_TOXINLOVER)
+	var/heal = amount < 0 || (toxic && HAS_TRAIT(src, TRAIT_TOXINLOVER))
 	amount = abs(amount)
 
 	var/list/pick_organs = shuffle(internal_organs.Copy())

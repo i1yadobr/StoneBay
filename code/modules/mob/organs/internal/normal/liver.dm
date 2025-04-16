@@ -46,8 +46,8 @@
 	return coagulation
 
 /obj/item/organ/internal/liver/proc/store_tox(amount) // Store toxins up to min_broken_damage, return excessive toxins
-	var/cap_toxins = max(0, min_broken_damage - stored_tox)
-	. = max(0, amount - cap_toxins)
+	var/store_left = max(0, min_broken_damage - stored_tox)
+	. = max(0, amount - store_left)
 	stored_tox += amount - .
 
 /obj/item/organ/internal/liver/think()
