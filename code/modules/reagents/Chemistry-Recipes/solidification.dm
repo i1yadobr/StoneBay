@@ -14,7 +14,7 @@
 /datum/chemical_reaction/plastication
 	name = "Plastic"
 	result = null
-	required_reagents = list(/datum/reagent/acid/polyacid = 1, /datum/reagent/toxin/plasticide = REAGENTS_PER_MATERIAL_SHEET)
+	required_reagents = list(/datum/reagent/acid/polyacid = 5, /datum/reagent/toxin/plasticide = REAGENTS_PER_MATERIAL_SHEET)
 	result_amount = 1
 
 /datum/chemical_reaction/plastication/on_reaction(datum/reagents/holder, created_volume)

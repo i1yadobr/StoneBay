@@ -5,7 +5,7 @@
 	density = 1
 	anchored = 1
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
-	volume = 100
+	volume = 2.5 LITERS
 
 	var/mechanical = 1         // Set to 0 to stop it from drawing the alert lights.
 	var/vertical_shift = 0     // As we want plants to grow from the visual center of soil trays
@@ -87,22 +87,23 @@
 		/datum/reagent/adminordrazine = -5
 		)
 	var/global/list/water_reagents = list(
-		/datum/reagent/water =            1,
-		/datum/reagent/adminordrazine =   1,
-		/datum/reagent/drink/milk =       0.9,
-		/datum/reagent/ethanol/beer =     0.7,
-		/datum/reagent/hydrazine =       -2,
+		/datum/reagent/water =            0.1,
+		/datum/reagent/adminordrazine =   1.0,
+		/datum/reagent/drink/milk =       0.09,
+		/datum/reagent/ethanol/beer =     0.07,
+		/datum/reagent/hydrazine =       -2.0,
 		/datum/reagent/phosphorus =      -0.5,
-		/datum/reagent/water =            1,
-		/datum/reagent/drink/sodawater =  1,
+		/datum/reagent/drink/sodawater =  0.1,
+		/datum/reagent/drink/tonic =      0.1
 		)
 
 	// Beneficial reagents also have values for modifying health, yield_mod and mutation_mod (in that order).
 	var/global/list/beneficial_reagents = list(
-		/datum/reagent/ethanol/beer =                    list( -0.05, 0,   0  ),
+		/datum/reagent/ethanol/beer =                    list( -0.01, 0,   0  ),
 		/datum/reagent/hydrazine =                       list( -2,    0,   0  ),
 		/datum/reagent/phosphorus =                      list( -0.75, 0,   0  ),
-		/datum/reagent/drink/sodawater =                 list(  0.1,  0,   0  ),
+		/datum/reagent/drink/sodawater =                 list(  0.01, 0,   0  ),
+		/datum/reagent/drink/tonic =                     list(  0.01, 0,   0  ),
 		/datum/reagent/acid =                            list( -1,    0,   0  ),
 		/datum/reagent/acid/hydrochloric =               list( -1,    0,   0  ),
 		/datum/reagent/acid/polyacid =                   list( -2,    0,   0  ),

@@ -26,11 +26,12 @@ calculate text size per text.
 				continue
 			if(R.type == /datum/reagent/nutriment) //this is ugly but apparently only nutriment (not subtypes) has taste data TODO figure out why
 				var/list/taste_data = R.get_data()
+				var/nutriment_amount = get_reagent_amount(R.type)
 				for(var/taste in taste_data)
 					if(taste in tastes)
-						tastes[taste] += taste_data[taste]
+						tastes[taste] += nutriment_amount * taste_data[taste]
 					else
-						tastes[taste] = taste_data[taste]
+						tastes[taste] = nutriment_amount * taste_data[taste]
 			else
 				var/taste_desc = R.taste_description
 				var/taste_amount = get_reagent_amount(R.type) * R.taste_mult

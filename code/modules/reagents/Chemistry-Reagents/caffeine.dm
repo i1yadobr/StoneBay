@@ -7,8 +7,10 @@
 	reagent_state = SOLID
 	color = "#ffffff"
 
-	ingest_met = REM * 0.25
-	overdose = REAGENTS_OVERDOSE
+	metabolism = REM * 0.5
+	ingest_met = REM * 0.1
+	digest_met = REM * 0.5
+	overdose = REAGENTS_OVERDOSE * 0.5
 
 	glass_icon = DRINK_ICON_NOISY
 
@@ -88,7 +90,6 @@
 	ingest_absorbability = 0.5
 	digest_absorbability = 1.0
 	hydration_value = 1.0
-	ingest_met = REM * 0.25
 
 	decompile_results = list(
 		/datum/reagent/water = 1.0,

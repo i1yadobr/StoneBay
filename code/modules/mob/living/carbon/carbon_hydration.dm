@@ -43,8 +43,10 @@
 	if(full_prosthetic)
 		return
 
-	if(hydration < HYDRATION_LOW)
+	if(hydration <= HYDRATION_NONE)
 		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/hydration_slowdown, slowdown = 1.0)
+	else if(hydration <= HYDRATION_LOW)
+		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/hydration_slowdown, slowdown = 0.5)
 	else if(has_movespeed_modifier(/datum/movespeed_modifier/hydration_slowdown))
 		remove_movespeed_modifier(/datum/movespeed_modifier/hydration_slowdown)
 

@@ -248,32 +248,32 @@
 	var/feed_desc = ""
 	switch(feed_volume)
 		if(50.01 to INFINITY)
-			feed_desc = " a mouth full"
+			feed_desc = "swallow a mouth full"
 		if(30.01 to 50)
-			feed_desc = " a gulp"
+			feed_desc = "take a gulp"
 		if(15.01 to 30)
-			feed_desc = ""
+			feed_desc = "drink"
 		if(5.01 to 15)
-			feed_desc = " a sip"
+			feed_desc = "take a sip"
 		if(0 to 5)
-			feed_desc = " a bit"
-	to_chat(user, SPAN("notice", "You drink[feed_desc] from \the [src]."))
+			feed_desc = "take a tiny sip"
+	to_chat(user, SPAN("notice", "You [feed_desc] from \the [src]."))
 
 /obj/item/reagent_containers/vessel/other_feed_message_finish(mob/user, mob/target, feed_volume = 0)
 	user.visible_message("<span class='warning'>[user] has fed [target] \the [src]!</span>")
-	var/feed_desc = ""
+	var/feed_desc = "drink"
 	switch(feed_volume)
 		if(50.01 to INFINITY)
-			feed_desc = " a mouth full"
+			feed_desc = "swallow a mouth full"
 		if(30.01 to 50)
-			feed_desc = " a gulp"
+			feed_desc = "take a gulp"
 		if(15.01 to 30)
-			feed_desc = ""
+			feed_desc = "drink"
 		if(5.01 to 15)
-			feed_desc = " a sip"
+			feed_desc = "take a sip"
 		if(0 to 5)
-			feed_desc = " a bit"
-	target.visible_message(SPAN("warning", "[user] has fed [target] from \the [src]!"), SPAN("warning", "[user] has made you drink[feed_desc] from \the [src]!"))
+			feed_desc = "take a tiny sip"
+	target.visible_message(SPAN("warning", "[user] has fed [target] from \the [src]!"), SPAN("warning", "[user] has made you [feed_desc] from \the [src]!"))
 
 /obj/item/reagent_containers/vessel/afterattack(obj/target, mob/user, proximity)
 	if(!is_open_container() || !proximity) //Is the container open & are they next to whatever they're clicking?
