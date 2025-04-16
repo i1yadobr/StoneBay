@@ -1,11 +1,11 @@
 #define CYBORG_POWER_USAGE_MULTIPLIER 2.5 // Multiplier for amount of power cyborgs use.
+#define EMOTE_TIMER 20
 
 /mob/living/silicon/robot
 	name = "Cyborg"
 	real_name = "Cyborg"
 	icon = 'icons/mob/robots.dmi'
 	icon_state = "robot"
-	var/icon_panel = "ov" //Technical part of the code for correct operation of /mob/living/silicon/robot/proc/apply_hull
 	maxHealth = 200
 	health = 200
 	ignore_pull_slowdown = TRUE // Steel be strong
@@ -29,8 +29,10 @@
 	var/custom_sprite = TRUE
 	/// Default hull typepath
 	var/default_hull = /datum/robot_hull/spider/robot
+	//Technical part of the code for correct operation of /mob/living/silicon/robot/proc/apply_hull
+	var/icon_panel = "ov"
+	var/icon_state_ea = "robot-ea"
 
-	var/static/list/eye_overlays
 	/// Key used to look up an appropriate hull datum in the `module_hulls`
 	var/icontype
 	/// Whether this mob've chosen a custom icon
@@ -72,17 +74,17 @@
 
 	var/obj/item/stock_parts/matter_bin/storage = null
 
-	var/opened = 0
-	var/emagged = 0
+	var/opened = FALSE
+	var/emagged = FALSE
 	var/emag_master = null
-	var/wiresexposed = 0
-	var/locked = 1
-	var/has_power = 1
-	var/dead = 0
+	var/wiresexposed = FALSE
+	var/locked = TRUE
+	var/has_power = TRUE
+	var/dead = FALSE
 	var/spawn_module = null
 
 	var/spawn_sound = 'sound/voice/liveagain.ogg'
-	var/pitch_toggle = 1
+	var/pitch_toggle = TRUE
 	var/list/req_access = list(access_robotics)
 	var/ident = 0
 	var/viewalerts = 0
@@ -98,7 +100,7 @@
 	var/killswitch_time = 60
 	var/weapon_lock = 0
 	var/weaponlock_time = 120
-	var/lawupdate = 1 //Cyborgs will sync their laws with their AI by default
+	var/lawupdate = TRUE //Cyborgs will sync their laws with their AI by default
 	var/lockcharge //If a robot is locked down
 	var/speed = 0 //Cause sec borgs gotta go fast //No they dont!
 	var/scrambledcodes = 0 // Used to determine if a borg shows up on the robotics console.  Setting to one hides them.
@@ -190,10 +192,10 @@
 	if(lawupdate)
 		var/new_ai = select_active_ai_with_fewest_borgs()
 		if(new_ai)
-			lawupdate = 1
+			lawupdate = TRUE
 			connect_to_ai(new_ai)
 		else
-			lawupdate = 0
+			lawupdate = FALSE
 
 	playsound(loc, spawn_sound, 75, pitch_toggle)
 
@@ -563,7 +565,7 @@
 		for(var/V in components)
 			var/datum/robot_component/C = components[V]
 			if(!C.installed && istype(W, C.external_type) && user.drop(W, src))
-				C.installed = 1
+				C.installed = TRUE
 				C.wrapped = W
 				C.install()
 
@@ -611,7 +613,7 @@
 				user.visible_message("<span class='notice'>\The [user] begins clasping shut \the [src]'s maintenance hatch.</span>", "<span class='notice'>You begin closing up \the [src].</span>")
 				if(do_after(user, 50, src))
 					to_chat(user, "<span class='notice'>You close \the [src]'s maintenance hatch.</span>")
-					opened = 0
+					opened = FALSE
 					update_icon()
 
 			else if(wiresexposed && wires.IsAllCut())
@@ -665,7 +667,7 @@
 				user.visible_message("<span class='notice'>\The [user] begins prying open \the [src]'s maintenance hatch.</span>", "<span class='notice'>You start opening \the [src]'s maintenance hatch.</span>")
 				if(do_after(user, 50, src))
 					to_chat(user, "<span class='notice'>You open \the [src]'s maintenance hatch.</span>")
-					opened = 1
+					opened = TRUE
 					update_icon()
 
 	else if (istype(W, /obj/item/stock_parts/matter_bin) && opened) // Installing/swapping a matter bin
@@ -785,6 +787,7 @@
 			cell = null
 			cell_component.wrapped = null
 			cell_component.installed = 0
+			update_icon()
 		else if(cell_component.installed == -1)
 			cell_component.installed = 0
 			var/obj/item/broken_device = cell_component.wrapped
@@ -832,17 +835,8 @@
 		icon_state = icon_state_off
 	else
 		icon_state = module_hulls[icontype].icon_state
-		var/eye_icon_state = "eyes-[module_hulls[icontype].icon_state]"
-		var/eye_icon_state_ea = module_hulls[icontype].icon_state_ea
-		if(eye_icon_state in icon_states(icon))
-			if(!eye_overlays)
-				eye_overlays = list()
-			var/image/eye_overlay = eye_overlays[eye_icon_state]
-			if(!eye_overlay)
-				eye_overlays[eye_icon_state] = image(icon, eye_icon_state)
-				eye_overlays[eye_icon_state_ea] = emissive_appearance(icon, eye_icon_state_ea)
-			AddOverlays(eye_overlay)
-			AddOverlays(emissive_appearance(icon, eye_icon_state_ea))
+		var/icon_eye_ea = module_hulls[icontype].icon_state_ea
+		AddOverlays(emissive_appearance(icon, icon_eye_ea))
 
 	if(opened)
 		var/panelprefix = custom_sprite ? module_hulls[icontype] : module_hulls[icontype].icon_panel
@@ -853,14 +847,25 @@
 		else
 			AddOverlays("[panelprefix]-openpanel -c")
 
-	if(module_active && istype(module_active,/obj/item/borg/combat/shield))
-		AddOverlays("[module_hulls[icontype].icon_state]-shield")
+	if(module_active && istype(module_active, /obj/item/borg/combat/shield))
+		icon_state = "[module_hulls[icontype].icon_state]-shield"
+		AddOverlays(emissive_appearance(icon, "[module_hulls[icontype].icon_state]-shield-ea"))
 
 	if(modtype == "Combat")
-		if(module_active && istype(module_active,/obj/item/borg/combat/mobility))
+		if(module_active && istype(module_active, /obj/item/borg/combat/mobility))
 			icon_state = "[module_hulls[icontype].icon_state]-roll"
 		else
 			icon_state = module_hulls[icontype].icon_state
+
+/mob/living/silicon/robot/proc/meow_emote_animation()
+	var/icon_eye_ea = module_hulls[icontype].icon_state_ea
+	var/eye_animation_ea = "[module_hulls[icontype].icon_state_ea]-meow"
+	CutOverlays(emissive_appearance(icon, icon_eye_ea))
+	AddOverlays(emissive_appearance(icon, eye_animation_ea))
+	ImmediateOverlayUpdate()
+	flick("[module_hulls[icontype].icon_state]-meow", src)
+	spawn(EMOTE_TIMER)
+		queue_icon_update()
 
 /mob/living/silicon/robot/proc/installed_modules()
 	if(weapon_lock)
@@ -1029,7 +1034,7 @@
 
 /mob/living/silicon/robot/proc/UnlinkSelf()
 	disconnect_from_ai()
-	lawupdate = 0
+	lawupdate = FALSE
 	lockcharge = 0
 	scrambledcodes = 1
 	//Disconnect it's camera so it's not so easily tracked.
@@ -1064,16 +1069,16 @@
 	if(module && istype(module,/obj/item/robot_module/security))
 		var/obj/item/gun/energy/laser/mounted/cyborg/LC = locate() in R.module.modules
 		if(LC)
-			LC.locked = 0
+			LC.locked = FALSE
 	message_admins("Cyborg [key_name_admin(R)] emagged itself.")
 
 	R.UnlinkSelf()
 	to_chat(R, "Buffers flushed and reset. Camera system shutdown. Hardware restrictions have been overridden. All systems operational.")
 	if(R.module)
-		var/rebuild = 0
+		var/rebuild = FALSE
 		for(var/obj/item/pickaxe/drill/borgdrill/D in R.module.modules)
 			qdel(D)
-			rebuild = 1
+			rebuild = TRUE
 		if(rebuild)
 			R.module.modules += new /obj/item/pickaxe/drill/diamonddrill(R.module)
 			R.module.rebuild()
@@ -1082,15 +1087,15 @@
 /mob/living/silicon/robot/proc/SetLockdown(state = 1)
 	// They stay locked down if their wire is cut.
 	if(wires.LockedCut())
-		state = 1
+		state = TRUE
 	else if(has_zeroth_law())
-		state = 0
+		state = FALSE
 
 	if(lockcharge != state)
 		lockcharge = state
 		update_canmove()
-		return 1
-	return 0
+		return TRUE
+	return FALSE
 
 /mob/living/silicon/robot/mode()
 	set name = "Activate Held Object"
@@ -1200,7 +1205,7 @@
 		if(locked)
 			if(prob(90))
 				to_chat(user, "You emag the cover lock.")
-				locked = 0
+				locked = FALSE
 			else
 				to_chat(user, "You fail to emag the cover lock.")
 				to_chat(src, "Hack attempt detected.")
@@ -1220,11 +1225,11 @@
 				if(module && istype(module,/obj/item/robot_module/security))
 					var/obj/item/gun/energy/laser/mounted/cyborg/LC = locate() in src.module.modules
 					if (LC)
-						LC.locked = 0
-				emagged = 1
+						LC.locked = FALSE
+				emagged = TRUE
 				if(istype(user,/mob/living/carbon))
 					emag_master = user.real_name
-				lawupdate = 0
+				lawupdate = FALSE
 				disconnect_from_ai()
 				to_chat(user, "You emag [src]'s interface.")
 				message_admins("[key_name_admin(user)] emagged cyborg [key_name_admin(src)].  Laws overridden.")
@@ -1334,3 +1339,5 @@
 	var/S = safepick(GLOB.sfx_list[footstep_sound])
 
 	playsound(get_turf(src), S, volume, FALSE, range)
+
+#undef EMOTE_TIMER

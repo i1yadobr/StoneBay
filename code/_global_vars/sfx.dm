@@ -1600,6 +1600,11 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/coversstep2.ogg',
 		'sound/effects/coversstep3.ogg'
 	),
+	SFX_KERFUR_MEOW = list(
+		'sound/voice/kerfurmeow1.ogg',
+		'sound/voice/kerfurmeow2.ogg',
+		'sound/voice/kerfurmeow3.ogg'
+	),
 	SFX_HISS = list(
 		'sound/voice/hiss1.ogg',
 		'sound/voice/hiss2.ogg',

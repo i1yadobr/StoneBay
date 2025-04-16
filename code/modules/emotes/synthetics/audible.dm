@@ -178,3 +178,34 @@
 	set name = "Halt"
 	set category = "Emotes"
 	emote("halt", intentional = TRUE)
+
+/datum/emote/synth/meow
+	key = "meow"
+
+	message_1p = "You meowed happily."
+	message_3p = "meowed happily."
+
+	message_impaired_production = "makes a noise."
+	message_impaired_reception = "flickers."
+
+	message_miming = "makes synth noises."
+	message_muzzled = "makes a noise."
+
+	message_type = AUDIBLE_MESSAGE
+
+	sound = SFX_KERFUR_MEOW
+
+	cooldown = 3 SECONDS
+
+	state_checks = EMOTE_CHECK_CONSCIOUS | EMOTE_CHECK_ROBOT_KERFUR_MODULE
+
+	statpanel_proc = /mob/living/proc/meow_emote
+
+/datum/emote/synth/meow/do_emote(mob/living/silicon/robot/user)
+	. = ..()
+	user.meow_emote_animation()
+
+/mob/living/proc/meow_emote()
+	set name = "Meow"
+	set category = "Emotes"
+	emote("meow", intentional = TRUE)

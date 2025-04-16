@@ -352,6 +352,7 @@
 #define SFX_THUNDER                 "thunder"
 #define SFX_SHOE_COVERS             "shoe_covers"
 #define SFX_GLASSES_CLINK           "glasses_clink"
+#define SFX_KERFUR_MEOW             "meow"
 
 // FOOTSTEPS
 #define SFX_DISTANT_MOVEMENT        "distant_movement"

@@ -102,6 +102,7 @@
 
 		else // Not stunned.
 			set_stat(CONSCIOUS)
+			queue_icon_update()
 
 		confused = max(0, confused - 1)
 

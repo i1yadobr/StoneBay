@@ -133,6 +133,9 @@ GLOBAL_LIST_INIT(all_emotes, list(); for(var/emotepath in subtypesof(/datum/emot
 	if((state_checks & EMOTE_CHECK_CONSCIOUS_OR_NOT_INTENTIONAL) && !conscious_or_not_intentional(CONSCIOUS, user, intentional))
 		return FALSE
 
+	if((state_checks & EMOTE_CHECK_ROBOT_KERFUR_MODULE) && !has_robot_module_hull("Kerfur", user, intentional))
+		return FALSE
+
 	return TRUE
 
 /datum/emote/proc/do_emote(mob/user, emote_key, intentional, target, additional_params)

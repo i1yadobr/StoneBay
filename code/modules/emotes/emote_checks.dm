@@ -57,3 +57,15 @@
 		return FALSE
 
 	return TRUE
+
+/proc/has_robot_module_hull(hullname, mob/M, intentional)
+	if(!isrobot(M))
+		return FALSE
+
+	var/mob/living/silicon/robot/R = M
+	if(R.icontype != hullname)
+		if(intentional)
+			to_chat(R, SPAN_NOTICE("You do not have the required module for this emote."))
+		return FALSE
+
+	return TRUE

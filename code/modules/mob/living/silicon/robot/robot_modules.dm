@@ -960,6 +960,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 
 /obj/item/robot_module/security/combat
 	name = "combat robot module"
+	icon_state = "robot_mod_black"
 	hide_on_manifest = 1
 	hulls = list(
 		"Combat Android" = new /datum/robot_hull/spider/droid_combat

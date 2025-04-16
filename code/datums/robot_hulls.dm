@@ -53,7 +53,7 @@
 
 /datum/robot_hull/spider/landmate
 	icon_state = "landmate"
-	icon_state_ea = "landmate"
+	icon_state_ea = "landmate-ea"
 
 /datum/robot_hull/legs
 	icon_state_ea = "android-ea"
@@ -73,21 +73,25 @@
 
 /datum/robot_hull/legs/maximillion
 	icon_state = "maximillion"
+	icon_state_ea = "maximillion-ea"
 
 /datum/robot_hull/legs/maidbot
 	icon_state = "maidbot"
+	icon_state_ea = "maidbot-ea"
 
 /datum/robot_hull/legs/janbot2
-	icon_state = "JanBot2"
+	icon_state = "janbot2"
 
 /datum/robot_hull/legs/janitorrobot
 	icon_state = "janitorrobot"
+	icon_state_ea = "janitorrobot-ea"
 
 /datum/robot_hull/legs/secborg
 	icon_state = "secborg"
 
 /datum/robot_hull/legs/security
 	icon_state = "security"
+	icon_state_ea = "security-ea"
 
 /datum/robot_hull/legs/securityrobot
 	icon_state = "securityrobot"
@@ -98,6 +102,7 @@
 
 /datum/robot_hull/legs/droid_miner
 	icon_state = "droid-miner"
+	icon_state_ea = "droid-miner-ea"
 
 /datum/robot_hull/legs/droid_science
 	icon_state = "droid-science"
@@ -216,7 +221,7 @@
 	icon_state_ea = "constructiondrone-ea"
 
 /datum/robot_hull/sphere
-	icon_state_ea = "kerfur"
+	icon_state_ea = "kerfur-ea"
 	icon_panel = "kerfur"
 	footstep_sound = SFX_FOOTSTEP_ROBOT_SPHERE
 
