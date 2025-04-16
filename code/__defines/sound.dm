@@ -279,6 +279,10 @@
 #define SFX_DRINK                   "drink"
 #define SFX_EAT                     "eat"
 
+// BODYBUILD CHANGE
+#define SFX_GAINING_WEIGHT          "gaining_weight"
+#define SFX_LOOSING_WEIGHT          "loosing_weight"
+
 // OPEN & CLOSE
 #define SFX_OPEN_CLOSET             "open_closet"
 #define SFX_CLOSE_CLOSET            "close_closet"

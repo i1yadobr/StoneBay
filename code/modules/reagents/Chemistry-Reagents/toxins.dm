@@ -772,6 +772,7 @@
 		var/datum/body_build/new_body_build = M.species.get_body_build(M.gender, BB)
 		if(new_body_build)
 			M.change_body_build(new_body_build)
+			playsound(M.loc, SFX_GAINING_WEIGHT, 50, 1)
 			to_chat(M, SPAN("warning", "You feel heavier..."))
 	remove_self(volume)
 
@@ -801,6 +802,7 @@
 		var/datum/body_build/new_body_build = M.species.get_body_build(M.gender, BB)
 		if(new_body_build)
 			M.change_body_build(new_body_build)
+			playsound(M.loc, SFX_LOOSING_WEIGHT, 50, 1)
 			to_chat(M, SPAN("warning", "You feel like a feather..."))
 	remove_self(volume)
 

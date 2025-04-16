@@ -1212,6 +1212,13 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/eating/eat4.ogg',
 		'sound/effects/eating/eat5.ogg'
 	),
+	// BODYBUILD CHANGE
+	SFX_GAINING_WEIGHT = list(
+		'sound/effects/weight_gaining.ogg'
+	),
+	SFX_LOOSING_WEIGHT = list(
+		'sound/effects/weight_loosing.ogg'
+	),
 	// OPEN & CLOSE
 	SFX_OPEN_CLOSET = list(
 		'sound/effects/using/closets/open1.ogg',
