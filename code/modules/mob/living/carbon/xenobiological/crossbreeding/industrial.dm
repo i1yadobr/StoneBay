@@ -7,14 +7,14 @@ Industrial extracts:
 	desc = "A gel-like, sturdy extract, fond of plasma and industry."
 	effect = "industrial"
 	icon_state = "industrial_still"
-	var/plasmarequired = 2 //Units of plasma required to be consumed to produce item.
+	var/plasmarequired = 2 //Volume of plasma required to be consumed to produce item.
 	var/itempath = null //The item produced by the extract.
-	var/plasmaabsorbed = 0 //Units of plasma aborbed by the extract already. Absorbs at a rate of 2u/obj per every 3 seconds.
+	var/plasmaabsorbed = 0 //Volume of plasma aborbed by the extract already. Absorbs at a rate of 2u/obj per every 3 seconds.
 	var/itemamount = 1 //How many items to spawn
 
 /obj/item/metroidcross/industrial/examine(mob/user, infix)
 	. = ..()
-	. += "It currently has [plasmaabsorbed] units of plasma floating inside the outer shell, out of [plasmarequired] units."
+	. += "It currently has [plasmaabsorbed] ml of plasma floating inside the outer shell, out of [plasmarequired] ml."
 
 /obj/item/metroidcross/industrial/proc/do_after_spawn(obj/item/spawned)
 	return

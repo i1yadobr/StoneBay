@@ -14,10 +14,10 @@
 	flags = IGNORE_MOB_SIZE
 
 	var/pain_power = 200 // Magnitide of painkilling effect
-	var/effective_dose = 0.5 // How many units it need to process to reach max power
+	var/effective_dose = 0.5 // How many ml it need to process to reach max power
 	var/soft_overdose = 7.5 // Determines when it starts causing negative effects w/out actually causing OD
 	var/tolerance_threshold = 7.5 // Having more than this value in chem_traces will reduce effectiveness
-	var/tolerance_mult = 0.1 // Percentage of effect weakening by each unit over tolerance_threshold
+	var/tolerance_mult = 0.1 // Percentage of effect weakening by each ml over tolerance_threshold
 
 /datum/reagent/painkiller/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	var/effectiveness = removed / metabolism

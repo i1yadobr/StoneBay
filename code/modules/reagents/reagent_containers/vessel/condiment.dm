@@ -67,7 +67,7 @@
 			return
 
 		var/trans = reagents.trans_to_obj(target, amount_per_transfer_from_this)
-		to_chat(user, "<span class='notice'>You add [trans] units of the condiment to \the [target].</span>")
+		to_chat(user, "<span class='notice'>You add [trans] ml of the condiment to \the [target].</span>")
 	else
 		..()
 

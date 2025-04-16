@@ -22,7 +22,7 @@
 	var/digest_absorbability = 0.5 // Ratio of the volume that affects the blood from the intestines. The rest is discarded. Has no effect if there's no digest_met.
 
 	var/forced_metabolism = FALSE // Should we force metabolism (i.e. acid affecting a broken stomach).
-	var/hydration_value = 0 // How well the reagent replenishes hydration per unit
+	var/hydration_value = 0 // How well the reagent replenishes hydration per ml
 	var/overdose = INFINITY
 	var/scannable = 0 // Shows up on health analyzers.
 	var/color = "#000000"

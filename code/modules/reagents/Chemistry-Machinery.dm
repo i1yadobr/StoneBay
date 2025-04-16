@@ -364,7 +364,7 @@
 		else
 			dat += "Add to buffer:<BR>"
 			for(var/datum/reagent/G in R.reagent_list)
-				dat += "[G.name] , [G.volume] Units - "
+				dat += "[G.name] , [G.volume] ml - "
 				dat += "<A href='?src=\ref[src];analyze=1;desc=[G.description];name=[G.name]'>(Analyze)</A> "
 				dat += "<A href='?src=\ref[src];decompile=\ref[G]'>(Decompile)</A>"
 				dat += "<A href='?src=\ref[src];add=\ref[G];amount=1'>(1)</A> "
@@ -378,7 +378,7 @@
 		dat += "<HR>Transfer to <A href='?src=\ref[src];toggle=1'>[(!mode ? "disposal" : "beaker")]:</A><BR>"
 		if(reagents.total_volume)
 			for(var/datum/reagent/N in reagents.reagent_list)
-				dat += "[N.name] , [N.volume] Units - "
+				dat += "[N.name] , [N.volume] ml - "
 				dat += "<A href='?src=\ref[src];analyze=1;desc=[N.description];name=[N.name]'>(Analyze)</A> "
 				dat += "<A href='?src=\ref[src];remove=\ref[N];amount=1'>(1)</A> "
 				dat += "<A href='?src=\ref[src];remove=\ref[N];amount=5'>(5)</A> "

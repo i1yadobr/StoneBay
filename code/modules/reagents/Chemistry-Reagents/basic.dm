@@ -1,4 +1,4 @@
-#define WATER_LATENT_HEAT 1900 // How much heat is removed when applied to a hot turf, in J/unit (1900 makes 1200 u of water roughly equivalent to 4L)
+#define WATER_LATENT_HEAT 1900 // How much heat is removed when applied to a hot turf, in J/ml (1900 makes 1200 u of water roughly equivalent to 4L)
 
 /// Water
 /datum/reagent/water
@@ -530,7 +530,7 @@
 		for(var/mob/M in viewers(5, O))
 			to_chat(M, "<span class='warning'>\The [O] melts.</span>")
 		qdel(O)
-		remove_self(meltdose) // 10 units of acid will not melt EVERYTHING on the tile
+		remove_self(meltdose) // 10 ml of acid will not melt EVERYTHING on the tile
 
 /// Hydrochloric Acid
 /datum/reagent/acid/hydrochloric //Like sulfuric, but less toxic and more acidic.

@@ -17,7 +17,7 @@
 	digest_absorbability = 1.0
 	hydration_value = 1.0
 
-	var/nutrition = 0 // Per unit
+	var/nutrition = 0 // Per ml
 	var/adj_dizzy = 0 // Per tick
 	var/adj_drowsy = 0
 	var/adj_sleepy = 0

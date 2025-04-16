@@ -15,7 +15,7 @@
 	digest_absorbability = 1.0 // Eaten toxins last twice as long and deal half the damage per tick.
 
 	var/target_organ
-	var/strength = 5 // How much damage it deals per unit
+	var/strength = 5 // How much damage it deals per ml
 
 /datum/reagent/toxin/affect_blood(mob/living/carbon/M, alien, removed)
 	if(strength && alien != IS_DIONA)
@@ -304,7 +304,7 @@
 		return
 
 	if(M.dna)
-		if(prob(removed * mutation_potency)) // Approx. one mutation per 10 injected/20 ingested/30 touching units
+		if(prob(removed * mutation_potency)) // Approx. one mutation per 10 injected/20 ingested/30 touching ml
 			randmuti(M)
 			M.UpdateAppearance()
 	M.radiation += (0.05 SIEVERT) * removed

@@ -16,7 +16,7 @@
 	ingest_absorbability = 0.25
 	digest_absorbability = 1.0
 
-	var/nutriment_factor = 1.0 // Per unit
+	var/nutriment_factor = 1.0 // Per ml
 	var/injectable = 0
 
 /datum/reagent/nutriment/mix_data(list/newdata, newamount)

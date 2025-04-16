@@ -485,7 +485,7 @@
 	overdose = REAGENTS_OVERDOSE * 0.5
 	hydration_value = -0.5 // Sweaty-sweaty
 	var/tolerance_threshold = 15.0 // Having more than this value in chem_traces will cause pain
-	var/tolerance_mult = 2.0 // Amount of pain for each unit over tolerance_threshold
+	var/tolerance_mult = 2.0 // Amount of pain for each ml over tolerance_threshold
 
 /datum/reagent/hyperzine/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	if(alien == IS_DIONA)
@@ -867,7 +867,7 @@
 	if(M.chem_doses[type] > 3 && ishuman(M))
 		var/mob/living/carbon/human/H = M
 		for(var/obj/item/organ/external/head/h in H.organs)
-			h.status |= ORGAN_DISFIGURED //currently only matters for the head, but might as well disfigure them all. // ONLY HEAD JESUS CHRIST ONLY HEAD, IF IT'S NOT HEAD IT CAN'T BE HEALED AND IT WILL DESTROY handle_stance() WITH SANITY OF ALL PLAYERS WHO TOUCHED 0.00001337 UNITS OF ANY SHIT PLEASE GOD NO
+			h.status |= ORGAN_DISFIGURED //currently only matters for the head, but might as well disfigure them all. // ONLY HEAD JESUS CHRIST ONLY HEAD, IF IT'S NOT HEAD IT CAN'T BE HEALED AND IT WILL DESTROY handle_stance() WITH SANITY OF ALL PLAYERS WHO TOUCHED 0.00001337 ML OF ANY SHIT PLEASE GOD NO
 	if(M.chem_doses[type] > 10)
 		M.make_dizzy(5)
 		M.make_jittery(5)

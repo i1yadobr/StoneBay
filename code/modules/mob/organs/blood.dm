@@ -35,7 +35,7 @@
 			)
 			B.color = B.data["blood_colour"]
 
-//Makes a blood drop, leaking amt units of blood from the mob
+//Makes a blood drop, leaking amt ml of blood from the mob
 /mob/living/carbon/human/proc/drip(amt, tar = src, ddir)
 	if(remove_blood(amt))
 		if(bloodstr.total_volume && vessel.total_volume)

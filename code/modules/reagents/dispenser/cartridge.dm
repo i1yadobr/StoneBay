@@ -25,12 +25,12 @@
 /obj/item/reagent_containers/chem_disp_cartridge/examine(mob/user, infix)
 	. = ..()
 
-	. += "It has a capacity of [volume] units."
+	. += "It has a capacity of [volume] ml."
 
 	if(reagents.total_volume <= 0)
 		. += "It is empty."
 	else
-		. += "It contains [reagents.total_volume] units of liquid."
+		. += "It contains [reagents.total_volume] ml of liquid."
 
 	if(!is_open_container())
 		. += "The cap is sealed."
@@ -82,7 +82,7 @@
 			return
 
 		var/trans = target.reagents.trans_to(src, target:amount_per_transfer_from_this)
-		to_chat(user, "<span class='notice'>You fill \the [src] with [trans] units of the contents of \the [target].</span>")
+		to_chat(user, "<span class='notice'>You fill \the [src] with [trans] ml of the contents of \the [target].</span>")
 
 	else if(target.is_open_container() && target.reagents) //Something like a glass. Player probably wants to transfer TO it.
 
@@ -95,7 +95,7 @@
 			return
 
 		var/trans = src.reagents.trans_to(target, amount_per_transfer_from_this)
-		to_chat(user, "<span class='notice'>You transfer [trans] units of the solution to \the [target].</span>")
+		to_chat(user, "<span class='notice'>You transfer [trans] ml of the solution to \the [target].</span>")
 
 	else
 		return ..()

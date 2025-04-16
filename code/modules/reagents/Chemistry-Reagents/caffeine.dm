@@ -15,7 +15,7 @@
 	glass_icon = DRINK_ICON_NOISY
 
 	var/strength = 10.0
-	var/nutrition = 0 // Per unit
+	var/nutrition = 0 // Per ml
 	var/adj_dizzy = -10 // Per tick
 	var/adj_drowsy = -10
 	var/adj_sleepy = -5
