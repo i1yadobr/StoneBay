@@ -1084,7 +1084,7 @@
 			R.module.rebuild()
 	update_icon()
 
-/mob/living/silicon/robot/proc/SetLockdown(state = 1)
+/mob/living/silicon/robot/proc/SetLockdown(state = TRUE)
 	// They stay locked down if their wire is cut.
 	if(wires.LockedCut())
 		state = TRUE
@@ -1249,7 +1249,7 @@
 							set_zeroth_law("Only [user.real_name] and people it designates as being such are operatives.")
 				else
 					set_zeroth_law("Only [user.real_name] and people they designate as being such are operatives.")
-				SetLockdown(0)
+				SetLockdown(FALSE)
 				. = 1
 				spawn()
 					to_chat(src, "<span class='danger'>ALERT: Foreign software detected.</span>")
@@ -1272,10 +1272,10 @@
 					else
 						to_chat(src, "<span class='danger'>ALERT: [user.real_name] is an operative. Obey your new laws and their commands.</span>")
 					if(src.module)
-						var/rebuild = 0
+						var/rebuild = FALSE
 						for(var/obj/item/pickaxe/drill/borgdrill/D in src.module.modules)
 							qdel(D)
-							rebuild = 1
+							rebuild = TRUE
 						if(rebuild)
 							src.module.modules += new /obj/item/pickaxe/drill/diamonddrill(src.module)
 							src.module.rebuild()
