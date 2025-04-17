@@ -694,13 +694,13 @@
 		else if(user.drop(W, src))
 			cell = W
 			handle_selfinsert(W, user) //Just in case.
+			to_chat(user, "You insert [W].")
 			C.installed = 1
 			C.wrapped = W
 			C.install()
 			//This will mean that removing and replacing a power cell will repair the mount, but I don't care at this point. ~Z
 			C.brute_damage = 0
 			C.electronics_damage = 0
-			to_chat(user, "You insert [W].")
 			update_icon()
 
 	else if(isWirecutter(W) || isMultitool(W))
