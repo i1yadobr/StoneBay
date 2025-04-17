@@ -1,4 +1,4 @@
-#define FAKE_ARRIVAL_ANNONCE_CHANCE_PROCENT 5
+#define FAKE_ARRIVAL_ANNOUNCE_CHANCE 5
 
 /datum/shuttle/autodock/multi
 	var/list/destination_tags
