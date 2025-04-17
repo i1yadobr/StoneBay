@@ -471,18 +471,25 @@
 	slices_num = 5
 	filling_color = "#fff700"
 	center_of_mass = "x=16;y=10"
-	nutriment_desc = list("cheese" = 10)
-	nutriment_amt = 10
-	startswith = list(/datum/reagent/nutriment/protein = 10)
-	bitesize = 2
+	nutriment_desc = list("cheese" = 5)
+	nutriment_amt = 200
+	startswith = list(
+		/datum/reagent/nutriment/protein/cooked = 50
+		)
+	bitesize = 25 // 325 nutrition, 10 bites
 
 /obj/item/reagent_containers/food/cheesewedge
 	name = "Cheese wedge"
 	desc = "A wedge of delicious Cheddar. The cheese wheel it was cut from can't have gone far."
 	icon_state = "cheesewedge"
 	filling_color = "#fff700"
-	bitesize = 2
 	center_of_mass = "x=16;y=10"
+	nutriment_desc = list("cheese" = 5)
+	nutriment_amt = 40
+	startswith = list(
+		/datum/reagent/nutriment/protein/cooked = 10
+		)
+	bitesize = 25 // 65 nutrition, 2 bites
 
 ////////////////////////
 /obj/item/reagent_containers/food/sliceable/birthdaycake

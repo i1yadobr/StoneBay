@@ -4,7 +4,7 @@
 /datum/chemical_reaction/tofu
 	name = "Tofu"
 	result = null
-	required_reagents = list(/datum/reagent/drink/milk/soymilk = 10)
+	required_reagents = list(/datum/reagent/drink/milk/soymilk = 100)
 	catalysts = list(/datum/reagent/enzyme = 5)
 	result_amount = 1
 
@@ -16,7 +16,7 @@
 /datum/chemical_reaction/chocolate_bar
 	name = "Chocolate Bar"
 	result = null
-	required_reagents = list(/datum/reagent/drink/milk/soymilk = 2, /datum/reagent/nutriment/coco = 2, /datum/reagent/sugar = 2)
+	required_reagents = list(/datum/reagent/drink/milk/soymilk = 50, /datum/reagent/nutriment/coco = 20, /datum/reagent/sugar = 10)
 	result_amount = 1
 
 /datum/chemical_reaction/chocolate_bar/on_reaction(datum/reagents/holder, created_volume)
@@ -27,7 +27,7 @@
 /datum/chemical_reaction/chocolate_bar2
 	name = "Chocolate Bar"
 	result = null
-	required_reagents = list(/datum/reagent/drink/milk = 2, /datum/reagent/nutriment/coco = 2, /datum/reagent/sugar = 2)
+	required_reagents = list(/datum/reagent/drink/milk = 50, /datum/reagent/nutriment/coco = 20, /datum/reagent/sugar = 10)
 	result_amount = 1
 
 /datum/chemical_reaction/chocolate_bar2/on_reaction(datum/reagents/holder, created_volume)
@@ -62,7 +62,7 @@
 /datum/chemical_reaction/cheesewheel
 	name = "Cheesewheel"
 	result = null
-	required_reagents = list(/datum/reagent/drink/milk = 40)
+	required_reagents = list(/datum/reagent/drink/milk = 500)
 	catalysts = list(/datum/reagent/enzyme = 5)
 	result_amount = 1
 
@@ -85,7 +85,7 @@
 /datum/chemical_reaction/dough
 	name = "Dough"
 	result = null
-	required_reagents = list(/datum/reagent/nutriment/protein/egg = 15, /datum/reagent/nutriment/flour = 50, /datum/reagent/water = 50)
+	required_reagents = list(/datum/reagent/nutriment/protein/egg = 15, /datum/reagent/nutriment/flour = 100, /datum/reagent/water = 50)
 	result_amount = 1
 
 /datum/chemical_reaction/dough/on_reaction(datum/reagents/holder, created_volume)

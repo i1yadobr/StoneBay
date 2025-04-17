@@ -20,7 +20,14 @@ I said no!
 */
 
 /datum/recipe/friedegg
-	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1)
+	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1, /datum/reagent/nutriment/oil = 15)
+	items = list(
+		/obj/item/reagent_containers/food/egg
+	)
+	result = /obj/item/reagent_containers/food/friedegg
+
+/datum/recipe/friedegg2
+	reagents = list(/datum/reagent/salt = 1, /datum/reagent/blackpepper = 1, /datum/reagent/nutriment/oil/corn = 15)
 	items = list(
 		/obj/item/reagent_containers/food/egg
 	)
@@ -47,32 +54,36 @@ I said no!
 	result = /obj/item/reagent_containers/food/classichotdog
 
 /datum/recipe/jellydonut
-	reagents = list(/datum/reagent/drink/juice/berry = 5, /datum/reagent/sugar = 5)
+	reagents = list(/datum/reagent/drink/juice/berry = 90, /datum/reagent/sugar = 30)
 	items = list(
 		/obj/item/reagent_containers/food/dough
 	)
 	result = /obj/item/reagent_containers/food/donut/jelly
+	amount = 3
 
 /datum/recipe/jellydonut/metroid
-	reagents = list(/datum/reagent/metroidjelly = 5, /datum/reagent/sugar = 5)
+	reagents = list(/datum/reagent/metroidjelly = 30, /datum/reagent/sugar = 30)
 	items = list(
 		/obj/item/reagent_containers/food/dough
 	)
 	result = /obj/item/reagent_containers/food/donut/metroidjelly
+	amount = 3
 
 /datum/recipe/jellydonut/cherry
-	reagents = list(/datum/reagent/nutriment/cherryjelly = 5, /datum/reagent/sugar = 5)
+	reagents = list(/datum/reagent/nutriment/cherryjelly = 90, /datum/reagent/sugar = 30)
 	items = list(
 		/obj/item/reagent_containers/food/dough
 	)
 	result = /obj/item/reagent_containers/food/donut/cherryjelly
+	amount = 3
 
 /datum/recipe/donut
-	reagents = list(/datum/reagent/sugar = 5)
+	reagents = list(/datum/reagent/sugar = 30)
 	items = list(
 		/obj/item/reagent_containers/food/dough
 	)
 	result = /obj/item/reagent_containers/food/donut/normal
+	amount = 3
 
 /datum/recipe/plainburger
 	items = list(
@@ -151,14 +162,6 @@ I said no!
 	)
 	result = /obj/item/reagent_containers/food/hotdog
 
-/datum/recipe/waffles
-	reagents = list(/datum/reagent/sugar = 10)
-	items = list(
-		/obj/item/reagent_containers/food/dough,
-		/obj/item/reagent_containers/food/dough
-	)
-	result = /obj/item/reagent_containers/food/waffles
-
 /datum/recipe/pancakes
 	fruit = list("blueberries" = 2)
 	items = list(
@@ -166,6 +169,7 @@ I said no!
 		/obj/item/reagent_containers/food/sliceable/flatdough
 	)
 	result = /obj/item/reagent_containers/food/pancakes
+	amount = 3
 
 /datum/recipe/donkpocket
 	items = list(
@@ -254,11 +258,12 @@ I said no!
 	result = /obj/item/reagent_containers/food/omelette
 
 /datum/recipe/muffin
-	reagents = list(/datum/reagent/drink/milk = 5, /datum/reagent/sugar = 5)
+	reagents = list(/datum/reagent/drink/milk = 100, /datum/reagent/sugar = 30)
 	items = list(
 		/obj/item/reagent_containers/food/dough,
 	)
 	result = /obj/item/reagent_containers/food/muffin
+	amount = 3
 
 /datum/recipe/eggplantparm
 	fruit = list("eggplant" = 1)
@@ -268,18 +273,72 @@ I said no!
 		)
 	result = /obj/item/reagent_containers/food/eggplantparm
 
+/datum/recipe/waffles
+	reagents = list(/datum/reagent/sugar = 30)
+	items = list(
+		/obj/item/reagent_containers/food/dough,
+		/obj/item/reagent_containers/food/dough
+	)
+	result = /obj/item/reagent_containers/food/waffles
+	amount = 3
+
+/datum/recipe/rofflewaffles
+	reagents = list(/datum/reagent/psilocybin = 5, /datum/reagent/sugar = 30)
+	items = list(
+		/obj/item/reagent_containers/food/dough,
+		/obj/item/reagent_containers/food/dough,
+	)
+	result = /obj/item/reagent_containers/food/rofflewaffles
+	amount = 3
+
 /datum/recipe/soylenviridians
-	fruit = list("soybeans" = 1)
-	reagents = list(/datum/reagent/nutriment/flour = 10)
+	fruit = list("soybeans" = 2)
+	reagents = list(/datum/reagent/nutriment/flour = 150)
 	result = /obj/item/reagent_containers/food/soylenviridians
+	amount = 3
 
 /datum/recipe/soylentgreen
-	reagents = list(/datum/reagent/nutriment/flour = 10)
+	reagents = list(/datum/reagent/nutriment/flour = 150)
 	items = list(
 		/obj/item/reagent_containers/food/meat/human,
 		/obj/item/reagent_containers/food/meat/human
-	)
+		)
 	result = /obj/item/reagent_containers/food/soylentgreen
+	amount = 3
+
+/datum/recipe/pie
+	fruit = list("banana" = 1)
+	reagents = list(/datum/reagent/sugar = 20)
+	items = list(
+		/obj/item/reagent_containers/food/sliceable/flatdough
+		)
+	result = /obj/item/reagent_containers/food/pie
+
+/datum/recipe/applepie
+	fruit = list("apple" = 1)
+	reagents = list(/datum/reagent/sugar = 20)
+	items = list(
+		/obj/item/reagent_containers/food/sliceable/flatdough
+		)
+	result = /obj/item/reagent_containers/food/applepie
+
+/datum/recipe/cherrypie
+	fruit = list("cherries" = 1)
+	reagents = list(/datum/reagent/sugar = 20)
+	items = list(
+		/obj/item/reagent_containers/food/sliceable/flatdough,
+		)
+	result = /obj/item/reagent_containers/food/cherrypie
+
+/datum/recipe/amanita_pie
+	fruit = list("amanita" = 1)
+	items = list(/obj/item/reagent_containers/food/sliceable/flatdough)
+	result = /obj/item/reagent_containers/food/amanita_pie
+
+/datum/recipe/plump_pie
+	fruit = list("plumphelmet" = 1)
+	items = list(/obj/item/reagent_containers/food/sliceable/flatdough)
+	result = /obj/item/reagent_containers/food/plump_pie
 
 /datum/recipe/meatpie
 	items = list(
@@ -302,22 +361,9 @@ I said no!
 	)
 	result = /obj/item/reagent_containers/food/xemeatpie
 
-/datum/recipe/pie
-	fruit = list("banana" = 1)
-	reagents = list(/datum/reagent/sugar = 5)
-	items = list(/obj/item/reagent_containers/food/sliceable/flatdough)
-	result = /obj/item/reagent_containers/food/pie
-
-/datum/recipe/cherrypie
-	fruit = list("cherries" = 1)
-	reagents = list(/datum/reagent/sugar = 10)
-	items = list(
-		/obj/item/reagent_containers/food/sliceable/flatdough,
-	)
-	result = /obj/item/reagent_containers/food/cherrypie
-
 /datum/recipe/berryclafoutis
 	fruit = list("berries" = 1)
+	reagents = list(/datum/reagent/sugar = 10)
 	items = list(
 		/obj/item/reagent_containers/food/sliceable/flatdough,
 	)
@@ -331,11 +377,12 @@ I said no!
 	result = /obj/item/reagent_containers/food/wingfangchu
 
 /datum/recipe/chaosdonut
-	reagents = list(/datum/reagent/frostoil = 5, /datum/reagent/capsaicin = 5, /datum/reagent/sugar = 5)
+	reagents = list(/datum/reagent/frostoil = 10, /datum/reagent/capsaicin = 10, /datum/reagent/sugar = 30)
 	items = list(
 		/obj/item/reagent_containers/food/dough
 	)
 	result = /obj/item/reagent_containers/food/donut/chaos
+	amount = 3
 
 /datum/recipe/meatkabob
 	items = list(
@@ -344,6 +391,7 @@ I said no!
 		/obj/item/reagent_containers/food/meat,
 	)
 	result = /obj/item/reagent_containers/food/meatkabob
+	amount = 3
 
 /datum/recipe/tofukabob
 	items = list(
@@ -388,17 +436,23 @@ I said no!
 	result = /obj/item/reagent_containers/food/cubancarp
 
 /datum/recipe/popcorn
-	reagents = list(/datum/reagent/salt = 5)
+	reagents = list(/datum/reagent/salt = 10, /datum/reagent/nutriment/oil = 30)
+	fruit = list("corn" = 1)
+	result = /obj/item/reagent_containers/food/popcorn
+
+/datum/recipe/popcorn2
+	reagents = list(/datum/reagent/salt = 10, /datum/reagent/nutriment/oil/corn = 30)
 	fruit = list("corn" = 1)
 	result = /obj/item/reagent_containers/food/popcorn
 
 /datum/recipe/cookie
-	reagents = list(/datum/reagent/drink/milk = 5, /datum/reagent/sugar = 5)
+	reagents = list(/datum/reagent/drink/milk = 100, /datum/reagent/sugar = 30)
 	items = list(
 		/obj/item/reagent_containers/food/dough,
 		/obj/item/reagent_containers/food/chocolatebar,
 	)
 	result = /obj/item/reagent_containers/food/cookie
+	amount = 6
 
 /datum/recipe/fortunecookie
 	reagents = list(/datum/reagent/sugar = 5)
@@ -495,11 +549,12 @@ I said no!
 	result = /obj/item/reagent_containers/food/sliceable/pizza/vegetablepizza
 
 /datum/recipe/spacylibertyduff
-	reagents = list(/datum/reagent/water = 5, /datum/reagent/ethanol/vodka = 5, /datum/reagent/psilocybin = 5)
+	reagents = list(/datum/reagent/water = 50, /datum/reagent/ethanol/vodka = 50, /datum/reagent/psilocybin = 5)
 	result = /obj/item/reagent_containers/food/spacylibertyduff
 
 /datum/recipe/amanitajelly
-	reagents = list(/datum/reagent/water = 5, /datum/reagent/ethanol/vodka = 5, /datum/reagent/toxin/amatoxin = 5)
+	fruit = list("amanita" = 1)
+	reagents = list(/datum/reagent/water = 50, /datum/reagent/ethanol/vodka = 50)
 	result = /obj/item/reagent_containers/food/amanitajelly
 	make_food(obj/container as obj)
 		var/obj/item/reagent_containers/food/amanitajelly/being_cooked = ..(container)
@@ -508,31 +563,31 @@ I said no!
 
 /datum/recipe/faggotsoup
 	fruit = list("carrot" = 1, "potato" = 1)
-	reagents = list(/datum/reagent/water = 10)
+	reagents = list(/datum/reagent/water = 300)
 	items = list(/obj/item/reagent_containers/food/faggot)
 	result = /obj/item/reagent_containers/food/faggotsoup
 
 /datum/recipe/fathersoup
 	fruit = list("garlic" = 1, "flamechili" = 1, "tomato" = 1)
-	reagents = list(/datum/reagent/nutriment/flour = 10, /datum/reagent/blackpepper = 5)
+	reagents = list(/datum/reagent/nutriment/flour = 30, /datum/reagent/blackpepper = 5)
 	items = list(/obj/item/reagent_containers/food/tomatosoup)
 	result = /obj/item/reagent_containers/food/fathersoup
 
 /datum/recipe/vegetablesoup
 	fruit = list("carrot" = 1, "potato" = 1, "corn" = 1, "eggplant" = 1)
-	reagents = list(/datum/reagent/water = 10)
+	reagents = list(/datum/reagent/water = 300)
 	result = /obj/item/reagent_containers/food/vegetablesoup
 
 /datum/recipe/nettlesoup
 	fruit = list("nettle" = 1, "potato" = 1)
-	reagents = list(/datum/reagent/water = 10)
+	reagents = list(/datum/reagent/water = 300)
 	items = list(
 		/obj/item/reagent_containers/food/egg
 	)
 	result = /obj/item/reagent_containers/food/nettlesoup
 
 /datum/recipe/wishsoup
-	reagents = list(/datum/reagent/water = 20)
+	reagents = list(/datum/reagent/water = 300)
 	result= /obj/item/reagent_containers/food/wishsoup
 
 /datum/recipe/hotchili
@@ -544,16 +599,6 @@ I said no!
 	fruit = list("icechili" = 1, "tomato" = 1)
 	items = list(/obj/item/reagent_containers/food/meat)
 	result = /obj/item/reagent_containers/food/coldchili
-
-/datum/recipe/amanita_pie
-	reagents = list(/datum/reagent/toxin/amatoxin = 5)
-	items = list(/obj/item/reagent_containers/food/sliceable/flatdough)
-	result = /obj/item/reagent_containers/food/amanita_pie
-
-/datum/recipe/plump_pie
-	fruit = list("plumphelmet" = 1)
-	items = list(/obj/item/reagent_containers/food/sliceable/flatdough)
-	result = /obj/item/reagent_containers/food/plump_pie
 
 /datum/recipe/spellburger
 	items = list(
@@ -653,20 +698,12 @@ I said no!
 
 /datum/recipe/tomatosoup
 	fruit = list("tomato" = 2)
-	reagents = list(/datum/reagent/water = 10)
+	reagents = list(/datum/reagent/water = 300)
 	result = /obj/item/reagent_containers/food/tomatosoup
-
-/datum/recipe/rofflewaffles
-	reagents = list(/datum/reagent/psilocybin = 5, /datum/reagent/sugar = 10)
-	items = list(
-		/obj/item/reagent_containers/food/dough,
-		/obj/item/reagent_containers/food/dough,
-	)
-	result = /obj/item/reagent_containers/food/rofflewaffles
 
 /datum/recipe/stew
 	fruit = list("potato" = 1, "tomato" = 1, "carrot" = 1, "eggplant" = 1, "mushroom" = 1)
-	reagents = list(/datum/reagent/water = 10)
+	reagents = list(/datum/reagent/water = 200)
 	items = list(/obj/item/reagent_containers/food/meat)
 	result = /obj/item/reagent_containers/food/stew
 
@@ -685,7 +722,7 @@ I said no!
 	result = /obj/item/reagent_containers/food/jelliedtoast/cherry
 
 /datum/recipe/milosoup
-	reagents = list(/datum/reagent/water = 10)
+	reagents = list(/datum/reagent/water = 200)
 	items = list(
 		/obj/item/reagent_containers/food/soydope,
 		/obj/item/reagent_containers/food/soydope,
@@ -708,34 +745,45 @@ I said no!
 	)
 	result= /obj/item/reagent_containers/food/spagetti*/
 
+/datum/recipe/poppypretzel
+	fruit = list("poppy" = 1)
+	items = list(/obj/item/reagent_containers/food/dough)
+	result = /obj/item/reagent_containers/food/poppypretzel
+	amount = 6
+
 /datum/recipe/boiledspagetti
-	reagents = list(/datum/reagent/water = 5)
+	reagents = list(/datum/reagent/water = 200)
 	items = list(
 		/obj/item/reagent_containers/food/spagetti,
 	)
 	result = /obj/item/reagent_containers/food/boiledspagetti
 
 /datum/recipe/boiledrice
-	reagents = list(/datum/reagent/water = 5, /datum/reagent/nutriment/rice = 10)
+	reagents = list(/datum/reagent/water = 100, /datum/reagent/nutriment/rice = 50)
 	result = /obj/item/reagent_containers/food/boiledrice
 
+/datum/recipe/risotto
+	items = list(/obj/item/reagent_containers/food/cheesewedge)
+	reagents = list(/datum/reagent/nutriment/rice = 50, /datum/reagent/ethanol/wine = 100)
+	result = /obj/item/reagent_containers/food/risotto
+
 /datum/recipe/ricepudding
-	reagents = list(/datum/reagent/drink/milk = 5, /datum/reagent/nutriment/rice = 10)
+	reagents = list(/datum/reagent/drink/milk = 100, /datum/reagent/nutriment/rice = 50)
 	result = /obj/item/reagent_containers/food/ricepudding
 
 /datum/recipe/pastatomato
 	fruit = list("tomato" = 2)
-	reagents = list(/datum/reagent/water = 5)
+	reagents = list(/datum/reagent/water = 200)
 	items = list(/obj/item/reagent_containers/food/spagetti)
 	result = /obj/item/reagent_containers/food/pastatomato
 
-/datum/recipe/poppypretzel
-	fruit = list("poppy" = 1)
-	items = list(/obj/item/reagent_containers/food/dough)
-	result = /obj/item/reagent_containers/food/poppypretzel
+/datum/recipe/pastatomato2
+	fruit = list("tomato" = 2)
+	items = list(/obj/item/reagent_containers/food/boiledspagetti)
+	result = /obj/item/reagent_containers/food/pastatomato
 
 /datum/recipe/faggotspagetti
-	reagents = list(/datum/reagent/water = 5)
+	reagents = list(/datum/reagent/water = 200)
 	items = list(
 		/obj/item/reagent_containers/food/spagetti,
 		/obj/item/reagent_containers/food/faggot,
@@ -743,10 +791,28 @@ I said no!
 	)
 	result = /obj/item/reagent_containers/food/faggotspagetti
 
+/datum/recipe/faggotspagetti2
+	items = list(
+		/obj/item/reagent_containers/food/boiledspagetti,
+		/obj/item/reagent_containers/food/faggot,
+		/obj/item/reagent_containers/food/faggot,
+	)
+	result = /obj/item/reagent_containers/food/faggotspagetti
+
 /datum/recipe/spesslaw
-	reagents = list(/datum/reagent/water = 5)
+	reagents = list(/datum/reagent/water = 200)
 	items = list(
 		/obj/item/reagent_containers/food/spagetti,
+		/obj/item/reagent_containers/food/faggot,
+		/obj/item/reagent_containers/food/faggot,
+		/obj/item/reagent_containers/food/faggot,
+		/obj/item/reagent_containers/food/faggot,
+	)
+	result = /obj/item/reagent_containers/food/spesslaw
+
+/datum/recipe/spesslaw2
+	items = list(
+		/obj/item/reagent_containers/food/boiledspagetti,
 		/obj/item/reagent_containers/food/faggot,
 		/obj/item/reagent_containers/food/faggot,
 		/obj/item/reagent_containers/food/faggot,
@@ -768,13 +834,8 @@ I said no!
 
 /datum/recipe/candiedapple
 	fruit = list("apple" = 1)
-	reagents = list(/datum/reagent/water = 5, /datum/reagent/sugar = 5)
+	reagents = list(/datum/reagent/water = 25, /datum/reagent/sugar = 25)
 	result = /obj/item/reagent_containers/food/candiedapple
-
-/datum/recipe/applepie
-	fruit = list("apple" = 1)
-	items = list(/obj/item/reagent_containers/food/sliceable/flatdough)
-	result = /obj/item/reagent_containers/food/applepie
 
 /datum/recipe/metroidburger
 	reagents = list(/datum/reagent/metroidjelly = 5)
@@ -822,16 +883,16 @@ I said no!
 	result = /obj/item/reagent_containers/food/jellysandwich/cherry
 
 /datum/recipe/bloodsoup
-	reagents = list(/datum/reagent/blood = 30)
+	reagents = list(/datum/reagent/blood = 300)
 	result = /obj/item/reagent_containers/food/bloodsoup
 
 /datum/recipe/metroidsoup
-	reagents = list(/datum/reagent/water = 10, /datum/reagent/metroidjelly = 5)
+	reagents = list(/datum/reagent/water = 300, /datum/reagent/metroidjelly = 10)
 	items = list()
 	result = /obj/item/reagent_containers/food/metroidsoup
 
 /datum/recipe/boiledmetroidextract
-	reagents = list(/datum/reagent/water = 5)
+	reagents = list(/datum/reagent/water = 200)
 	items = list(
 		/obj/item/metroid_extract,
 	)
@@ -852,15 +913,16 @@ I said no!
 	result = /obj/item/reagent_containers/food/sausage
 
 /datum/recipe/fishfingers
-	reagents = list(/datum/reagent/nutriment/flour = 10)
+	reagents = list(/datum/reagent/nutriment/flour = 50)
 	items = list(
 		/obj/item/reagent_containers/food/egg,
 		/obj/item/reagent_containers/food/carpmeat,
 	)
 	result = /obj/item/reagent_containers/food/fishfingers
+	amount = 3
 
 /datum/recipe/mysterysoup
-	reagents = list(/datum/reagent/water = 10)
+	reagents = list(/datum/reagent/water = 300)
 	items = list(
 		/obj/item/reagent_containers/food/badrecipe,
 		/obj/item/reagent_containers/food/tofu,
@@ -881,17 +943,17 @@ I said no!
 
 /datum/recipe/plumphelmetbiscuit
 	fruit = list("plumphelmet" = 1)
-	reagents = list(/datum/reagent/water = 5, /datum/reagent/nutriment/flour = 5)
+	reagents = list(/datum/reagent/water = 50, /datum/reagent/nutriment/flour = 50)
 	result = /obj/item/reagent_containers/food/plumphelmetbiscuit
 
 /datum/recipe/mushroomsoup
 	fruit = list("mushroom" = 1)
-	reagents = list(/datum/reagent/drink/milk = 10)
+	reagents = list(/datum/reagent/water = 100, /datum/reagent/drink/milk = 200)
 	result = /obj/item/reagent_containers/food/mushroomsoup
 
 /datum/recipe/chawanmushi
 	fruit = list("mushroom" = 1)
-	reagents = list(/datum/reagent/water = 5, /datum/reagent/nutriment/soysauce = 5)
+	reagents = list(/datum/reagent/water = 50, /datum/reagent/nutriment/soysauce = 5)
 	items = list(
 		/obj/item/reagent_containers/food/egg,
 		/obj/item/reagent_containers/food/egg
@@ -900,7 +962,7 @@ I said no!
 
 /datum/recipe/beetsoup
 	fruit = list("whitebeet" = 1, "cabbage" = 1)
-	reagents = list(/datum/reagent/water = 10)
+	reagents = list(/datum/reagent/water = 300)
 	result = /obj/item/reagent_containers/food/beetsoup
 
 /datum/recipe/appletart
@@ -929,11 +991,12 @@ I said no!
 		return being_cooked
 
 /datum/recipe/cracker
-	reagents = list(/datum/reagent/salt = 1)
+	reagents = list(/datum/reagent/salt = 3)
 	items = list(
 		/obj/item/reagent_containers/food/doughslice
 	)
 	result = /obj/item/reagent_containers/food/cracker
+	amount = 3
 
 /datum/recipe/stuffing
 	reagents = list(/datum/reagent/water = 5, /datum/reagent/salt = 1, /datum/reagent/blackpepper = 1)
@@ -994,12 +1057,29 @@ I said no!
 	result = /obj/item/reagent_containers/food/cutlet
 
 /datum/recipe/fries
+	reagents = list(/datum/reagent/nutriment/oil = 30)
+	items = list(
+		/obj/item/reagent_containers/food/rawsticks
+	)
+	result = /obj/item/reagent_containers/food/fries
+
+/datum/recipe/fries2
+	reagents = list(/datum/reagent/nutriment/oil/corn = 30)
 	items = list(
 		/obj/item/reagent_containers/food/rawsticks
 	)
 	result = /obj/item/reagent_containers/food/fries
 
 /datum/recipe/onionrings
+	reagents = list(/datum/reagent/nutriment/oil = 15)
+	fruit = list("onion" = 1)
+	items = list(
+		/obj/item/reagent_containers/food/doughslice
+	)
+	result = /obj/item/reagent_containers/food/onionrings
+
+/datum/recipe/onionrings2
+	reagents = list(/datum/reagent/nutriment/oil/corn = 15)
 	fruit = list("onion" = 1)
 	items = list(
 		/obj/item/reagent_containers/food/doughslice
@@ -1007,7 +1087,7 @@ I said no!
 	result = /obj/item/reagent_containers/food/onionrings
 
 /datum/recipe/mint
-	reagents = list(/datum/reagent/sugar = 5, /datum/reagent/frostoil = 5)
+	reagents = list(/datum/reagent/sugar = 1, /datum/reagent/frostoil = 1)
 	result = /obj/item/reagent_containers/food/mint
 
 
@@ -1235,16 +1315,10 @@ I said no!
 	fruit = list("soybeans" = 1, "chili" = 2)
 	result = /obj/item/reagent_containers/food/plasmaburrito
 
-/datum/recipe/risotto
-	items = list(/obj/item/reagent_containers/food/cheesewedge)
-	reagents = list(/datum/reagent/nutriment/rice = 10, /datum/reagent/ethanol/wine = 5)
-	result = /obj/item/reagent_containers/food/risotto
-
-
 /datum/recipe/bruschetta
 	items = list(/obj/item/reagent_containers/food/cheesewedge)
 	fruit = list("tomato" = 1, "garlic" = 1)
-	reagents = list(/datum/reagent/nutriment/flour = 10, /datum/reagent/salt = 2)
+	reagents = list(/datum/reagent/water = 50, /datum/reagent/nutriment/flour = 100, /datum/reagent/salt = 5)
 	result = /obj/item/reagent_containers/food/bruschetta
 
 /datum/recipe/quiche
@@ -1262,6 +1336,7 @@ I said no!
 	)
 	fruit = list("tomato" = 3, "eggplant" = 1)
 	result = /obj/item/reagent_containers/food/lasagna
+	amount = 4
 
 /datum/recipe/noel
 	items = list(

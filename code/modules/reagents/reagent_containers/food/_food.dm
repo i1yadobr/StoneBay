@@ -29,9 +29,9 @@
 	var/trash = null // Type that spawns upon finishing the src.
 
 
-/obj/item/reagent_containers/food/Initialize()
+/obj/item/reagent_containers/food/Initialize(mapload, spawn_empty = FALSE)
 	. = ..()
-	if(nutriment_amt)
+	if(nutriment_amt && !spawn_empty)
 		reagents.add_reagent(/datum/reagent/nutriment, nutriment_amt, nutriment_desc)
 
 
@@ -301,7 +301,7 @@
 
 			var/reagents_per_slice = reagents.total_volume / slices_num
 			for(var/i = 1 to (slices_num - slices_lost))
-				var/obj/slice = new slice_path(src.loc)
+				var/obj/slice = new slice_path(loc, TRUE)
 				reagents.trans_to_obj(slice, reagents_per_slice)
 			qdel(src)
 			return

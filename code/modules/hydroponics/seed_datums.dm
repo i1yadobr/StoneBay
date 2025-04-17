@@ -669,6 +669,7 @@
 		/datum/reagent/psilocybin = list(0, 0.75),
 		/datum/reagent/toxin/amatoxin = list(0, 0.5)
 		)
+	kitchen_tag = "amanita"
 	canonical_icon = "amanita"
 
 /datum/seed/mushroom/poison/New()
@@ -692,6 +693,7 @@
 		/datum/reagent/psilocybin = list(0, 0.5),
 		/datum/reagent/toxin/amatoxin = list(2.5, 0.75)
 		)
+	kitchen_tag = ""
 	canonical_icon = "angel"
 
 /datum/seed/mushroom/poison/death/New()

@@ -144,6 +144,14 @@
 
 	cooked_path = null
 
+/datum/reagent/nutriment/protein/compressed
+	name = "compressed protein"
+
+	nutriment_factor = 25.0
+
+	ingest_absorbability = 0.05
+	digest_absorbability = 0.25
+
 /datum/reagent/nutriment/protein/fungal
 	name = "fungal protein"
 
@@ -166,7 +174,7 @@
 	color = "#ffffaa"
 
 	ingest_absorbability = 0.2
-	digest_absorbability = 1.0
+	digest_absorbability = 0.75
 
 	cooked_path = null
 
@@ -294,6 +302,10 @@
 
 	nutriment_factor = 1.0
 
+	decompile_results = list(
+		/datum/reagent/nutriment/flour = 1.0
+		)
+
 /datum/reagent/nutriment/cherryjelly
 	name = "Cherry Jelly"
 	description = "Totally the best. Only to be spread on foods with excellent lateral symmetry."
@@ -394,7 +406,7 @@
 
 	color = "#ff00ff"
 
-	nutriment_factor = 2.5
+	nutriment_factor = 5.0
 
 	decompile_results = list(
 		/datum/reagent/sugar = 1.0
@@ -625,6 +637,7 @@
 	reagent_state = LIQUID
 	color = "#FFE6A3"
 
+	nutriment_factor = 5.0
 	ingest_met = METABOLISM_FALLBACK
 	ingest_absorbability = 1.0
 	digest_absorbability = 1.0
@@ -632,7 +645,8 @@
 	flags = IGNORE_MOB_SIZE
 
 /datum/reagent/magical_custard/affect_digest(mob/living/carbon/M, alien, removed)
-	M.heal_organ_damage(5 * removed, 5 * removed)
+	M.heal_organ_damage(2.5 * removed, 2.5 * removed)
+	H.adjustToxLoss(-2.5 * removed)
 
 /datum/reagent/astrotame
 	name = "Astrotame"

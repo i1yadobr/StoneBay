@@ -36,6 +36,7 @@
 	var/list/fruit    // example: = list("fruit" = 3)
 	var/result        // example: = /obj/item/reagent_containers/food/donut/normal
 	var/time = 100    // 1/10 part of second
+	var/amount = 1    // number of 'result' instances to spawn
 
 /datum/recipe/proc/check_reagents(datum/reagents/avail_reagents)
 	. = 1
@@ -91,7 +92,7 @@
 	return .
 
 //general version
-/datum/recipe/proc/make(obj/container as obj)
+/datum/recipe/proc/make(obj/container)
 	var/obj/result_obj = new result(container)
 	for(var/obj/item/I in (container.InsertedContents() - result_obj))
 		I.return_item().reagents.trans_to_obj(result_obj, I.return_item().reagents.total_volume)
@@ -99,8 +100,8 @@
 	container.reagents.clear_reagents()
 	return result_obj
 
-// food-related
-/datum/recipe/proc/make_food(obj/container as obj)
+// Old version of the proc, adds up all the reagents (except nutriments) from the ingredients to the resulting food item.
+/datum/recipe/proc/make_food_legacy(obj/container)
 	if(!result)
 		log_error("<span class='danger'>Recipe [type] is defined without a result, please bug this.</span>")
 
@@ -118,6 +119,45 @@
 		qdel(I)
 	container.reagents.clear_reagents()
 	return result_obj
+
+// New version, only adds up "extra" reagents.
+/datum/recipe/proc/make_food(obj/container)
+	if(!result)
+		log_error(SPAN("danger", "Recipe [type] is defined without a result, please bug this."))
+		return
+
+	var/list/result_reagents = list()
+	var/list/result_objs = list()
+	for(var/i = 1; i <= amount; i++)
+		result_objs.Add(new result(container))
+
+	if(!result_objs[i].reagents?.reagent_list)
+		for(var/datum/reagent/R in result_objs[1].reagents.reagent_list)
+			result_reagents[R.type] = R.volume * amount
+
+	var/datum/reagents/add_up_reagents = new /datum/reagents(100 LITERS, GLOB.temp_reagents_holder)
+	for(var/obj/item/I in (container.InsertedContents() ^ result_objs))
+		var/obj/item/O = I.return_item()
+		if(O.reagents)
+			for(var/datum/reagent/R in O.reagents.reagent_list)
+				if(istype(R, datum/reagent/nutriment/protein))
+					var/datum/reagent/nutriment/protein/P = R
+					add_up_reagents.add_reagent((P.cooked_path ? P.cooked_path : P.type), P.volume)
+				else if(R.type != /datum/reagent/nutriment) // Fuck basic nutriments, child types are okay.
+					add_up_reagents.add_reagent(R.type, R.volume)
+		if(istype(I, /obj/item/holder))
+			var/obj/item/holder/H = I
+			H.destroy_all()
+		qdel(I)
+
+	for(var/datum/reagent/R in add_up_reagents.reagent_list)
+		if(!result_reagents[R.type] || !result_reagents[R.type] > R.volume)
+			continue
+		for(var/obj/result_obj in result_objs)
+			add_up_reagents.trans_to_obj(result_obj, round((R.volume - result_reagents[R.type]) / amount, 0.1))
+
+	container.reagents.clear_reagents()
+	return result_objs
 
 /proc/select_recipe(list/datum/recipe/avaiable_recipes, obj/obj as obj, exact)
 	var/list/datum/recipe/possible_recipes = new

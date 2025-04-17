@@ -20,12 +20,12 @@
 	if(N)
 		amount_per_transfer_from_this = N
 
-/obj/item/reagent_containers/Initialize()
-	. = ..()
+/obj/item/reagent_containers/Initialize(mapload, spawn_empty = FALSE)
+	. = ..(mapload)
 	if(!possible_transfer_amounts)
 		src.verbs -= /obj/item/reagent_containers/verb/set_APTFT
 	create_reagents(volume)
-	if(startswith)
+	if(startswith && !spawn_empty)
 		for(var/thing in startswith)
 			reagents.add_reagent(thing, startswith[thing] ? startswith[thing] : volume)
 		startswith = null // Unnecessary lists bad
