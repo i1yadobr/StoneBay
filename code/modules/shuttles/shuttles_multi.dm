@@ -61,7 +61,7 @@
 /datum/shuttle/autodock/multi/antag/proc/announce_arrival()
 	if(cloaked)
 		return
-	if(!isnull(fake_arrival_announce) && prob(FAKE_ARRIVAL_ANNONCE_CHANCE_PROCENT))
+	if(!isnull(fake_arrival_announce) && prob(FAKE_ARRIVAL_ANNOUNCE_CHANCE))
 		SSannounce.play_station_announce(fake_arrival_announce)
 		return
 	if(!isnull(arrival_announce))
