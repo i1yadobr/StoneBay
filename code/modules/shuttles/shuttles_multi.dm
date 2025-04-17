@@ -66,7 +66,6 @@
 		return
 	if(!isnull(arrival_announce))
 		SSannounce.play_station_announce(arrival_announce)
-	return
 
 /datum/shuttle/autodock/multi/antag/set_destination(destination_key, mob/user)
 	if(!return_warning && destination_key == home_waypoint.name)
