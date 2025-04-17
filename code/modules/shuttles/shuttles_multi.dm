@@ -1,4 +1,4 @@
-#define FAKE_ARRIVAL_ANNOUNCE_CHANCE 5
+#define FAKE_ARRIVAL_ANNOUNCE_PROB 5
 
 /datum/shuttle/autodock/multi
 	var/list/destination_tags
@@ -61,7 +61,7 @@
 /datum/shuttle/autodock/multi/antag/proc/announce_arrival()
 	if(cloaked)
 		return
-	if(!isnull(fake_arrival_announce) && prob(FAKE_ARRIVAL_ANNOUNCE_CHANCE))
+	if(!isnull(fake_arrival_announce) && prob(FAKE_ARRIVAL_ANNOUNCE_PROB))
 		SSannounce.play_station_announce(fake_arrival_announce)
 		return
 	if(!isnull(arrival_announce))
