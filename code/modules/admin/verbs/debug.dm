@@ -164,11 +164,11 @@
 			if(istype(H.wear_id, /obj/item/device/pda))
 				var/obj/item/device/pda/pda = H.wear_id
 				id = pda.id
-			id.icon_state = "gold"
+			id.icon_state = "card_gold"
 			id.access = get_all_accesses()
 		else
 			var/obj/item/card/id/id = new /obj/item/card/id(M);
-			id.icon_state = "gold"
+			id.icon_state = "card_gold"
 			id.access = get_all_accesses()
 			id.registered_name = H.real_name
 			id.assignment = "Captain"

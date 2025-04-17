@@ -62,7 +62,7 @@ GLOBAL_DATUM_INIT(deathsquad, /datum/antagonist/deathsquad, new)
 	var/obj/item/card/id/id = create_id("Death Commando", player)
 	if(id)
 		id.access |= get_all_station_access()
-		id.icon_state = "centcom"
+		id.icon_state = "card_centcom"
 	create_radio(DTH_FREQ, player)
 
 /datum/antagonist/deathsquad/update_antag_mob(datum/mind/player)
