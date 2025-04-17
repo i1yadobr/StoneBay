@@ -599,7 +599,7 @@
 
 /datum/shuttle/autodock/multi/antag/merchant
 	name = "Merchant"
-	warmup_time = 1 //10
+	warmup_time = 10
 	destination_tags = list(
 		"nav_merchant_start",
 		"nav_merchant_out",
