@@ -133,8 +133,11 @@ GLOBAL_LIST_INIT(all_emotes, list(); for(var/emotepath in subtypesof(/datum/emot
 	if((state_checks & EMOTE_CHECK_CONSCIOUS_OR_NOT_INTENTIONAL) && !conscious_or_not_intentional(CONSCIOUS, user, intentional))
 		return FALSE
 
-	if((state_checks & EMOTE_CHECK_ROBOT_KERFUR_MODULE) && !has_robot_module_hull("Kerfur", user, intentional))
-		return FALSE
+	if(state_checks & EMOTE_CHECK_ROBOT_KERFUR_MODULE)
+		if(!has_robot_module_hull("Kerfur", user, intentional) && !has_robot_module_hull("Kerfur-O", user, intentional))
+			if(intentional)
+				to_chat(user, SPAN_NOTICE("You do not have the required module for this emote."))
+			return FALSE
 
 	return TRUE
 

@@ -119,6 +119,38 @@
 /datum/robot_hull/legs/engineerrobot
 	icon_state = "engineerrobot"
 
+/datum/robot_hull/legs/kerfur_o_medical
+	icon_state = "kerfur-o-medical"
+	icon_state_ea = "kerfur-o-ea"
+	icon_panel = "kerfur-o"
+
+/datum/robot_hull/legs/kerfur_o_engineering
+	icon_state = "kerfur-o-engineering"
+	icon_state_ea = "kerfur-o-ea"
+	icon_panel = "kerfur-o"
+
+/datum/robot_hull/legs/kerfur_o_miner
+	icon_state = "kerfur-o-miner"
+	icon_state_ea = "kerfur-o-ea"
+	icon_panel = "kerfur-o"
+
+//I haven't found a use for these yet, but I've already drawn sprites for them, so...
+
+/datum/robot_hull/legs/kerfur_o
+	icon_state = "kerfur-o"
+	icon_state_ea = "kerfur-o-ea"
+	icon_panel = "kerfur-o"
+
+/datum/robot_hull/legs/kerfur_o_science
+	icon_state = "kerfur-o-science"
+	icon_state_ea = "kerfur-o-ea"
+	icon_panel = "kerfur-o"
+
+/datum/robot_hull/legs/kerfur_o_security
+	icon_state = "kerfur-o-security"
+	icon_state_ea = "kerfur-o-ea"
+	icon_panel = "kerfur-o"
+
 /datum/robot_hull/truck
 	// TODO: Add truck sound
 	footstep_sound = null
