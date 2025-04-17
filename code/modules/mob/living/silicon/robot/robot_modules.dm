@@ -334,9 +334,9 @@ GLOBAL_LIST_INIT(robot_modules, list(
 	)
 
 /obj/item/robot_module/medical/crisis_adv/New()
-	src.hulls["Kerfur-O"] = new /datum/robot_hull/legs/kerfur_o_medical
 	supported_upgrades += list(/obj/item/borg/upgrade/blood_printer)
 	supported_upgrades += list(/obj/item/borg/upgrade/organ_printer)
+	src.hulls["Kerfur-O"] = new /datum/robot_hull/legs/kerfur_o_medical
 	src.modules += new /obj/item/device/flash(src)
 	src.modules += new /obj/item/crowbar(src)
 	src.modules += new /obj/item/extinguisher/mini(src)
