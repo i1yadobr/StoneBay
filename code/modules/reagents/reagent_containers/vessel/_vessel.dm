@@ -254,7 +254,7 @@
 	user.visible_message(SPAN_NOTICE("[user] reaches out to clink glasses with [target]..."),
 						 SPAN_NOTICE("You reach out to clink glasses with [target]..."))
 
-	if(!do_after(user, 25, target) || !(target_vessel in target))
+	if(!do_after(user, 2.5 SECONDS, target) || !(target_vessel in target))
 		return FALSE
 
 	if(target.a_intent != I_HELP)
