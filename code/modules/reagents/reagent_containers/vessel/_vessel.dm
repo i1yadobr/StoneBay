@@ -219,10 +219,70 @@
 	if(force && !(item_flags & ITEM_FLAG_NO_BLUDGEON) && user.a_intent == I_HURT)
 		return ..()
 
+	if(user.a_intent == I_HELP && (def_zone == BP_R_HAND || def_zone == BP_L_HAND) && clink(user, M, def_zone))
+		return
+
 	if(standard_feed_mob(user, M))
 		return
 
 	return FALSE
+
+/// Clinking glasses with your drinking buds. Also mixes up the vessels' contents a little. ~TimErmolt (TheUnknownOne)
+/obj/item/reagent_containers/vessel/proc/clink(mob/user, mob/target, zone)
+	if(user == target)
+		return FALSE
+
+	var/obj/item/reagent_containers/vessel/target_vessel
+
+	// Try to prioritize the vessel in the hand we're targeting.
+	if(ishuman(target))
+		var/mob/living/carbon/human/H = target
+		if(zone == BP_R_HAND && istype(H.r_hand, /obj/item/reagent_containers/vessel))
+			target_vessel = H.r_hand
+		else if(istype(H.l_hand, /obj/item/reagent_containers/vessel))
+			target_vessel = H.l_hand
+
+	// If that doesn't work, just pick whatever we can find.
+	if(!target_vessel)
+		for(var/obj/item/reagent_containers/vessel/V in target)
+			target_vessel = V
+			break
+
+	if(!target_vessel)
+		return FALSE
+
+	user.visible_message(SPAN_NOTICE("[user] reaches out to clink glasses with [target]..."),
+						 SPAN_NOTICE("You reach out to clink glasses with [target]..."))
+
+	if(!do_after(user, 25, target) || !(target_vessel in target))
+		return FALSE
+
+	if(target.a_intent != I_HELP)
+		user.visible_message(SPAN_WARNING("[target] refuses to clink glasses with [user]!"),
+						 	 SPAN_WARNING("[target] refuses to clink glasses with you!"))
+		return FALSE
+
+	user.visible_message(SPAN_NOTICE("[user] and [target] clink glasses!"),
+						 SPAN_NOTICE("You clink glasses with [target]! Cheers!"))
+	playsound(user.loc, 'sound/items/glasses_clink.ogg', 50, 1)
+
+	if(!is_open_container() || !target_vessel.is_open_container())
+		return TRUE // Can't mix contents if it ain't open
+
+	if(!reagents.total_volume || !target_vessel.reagents.total_volume)
+		return TRUE // No duping liquids here!
+
+	var/transfer_amount = rand(1, 4)
+
+	reagents.remove_any(transfer_amount)
+	target_vessel.reagents.remove_any(transfer_amount)
+
+	reagents.trans_to_holder(target_vessel.reagents, 1, transfer_amount, TRUE)
+	target_vessel.reagents.trans_to_holder(reagents, 1, transfer_amount, TRUE)
+
+	// It isn't exactly precise, but what do you expect when you're vigorously smashing two glasses together?
+
+	return TRUE
 
 /obj/item/reagent_containers/vessel/standard_feed_mob(mob/user, mob/target)
 	if(!is_open_container())
