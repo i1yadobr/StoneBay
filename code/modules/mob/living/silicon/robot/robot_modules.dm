@@ -1,16 +1,16 @@
 GLOBAL_LIST_INIT(robot_modules, list(
-	"Standard"				= /obj/item/robot_module/standard,
-	"Service" 				= /obj/item/robot_module/service/butler,
-	"Research" 				= /obj/item/robot_module/research/general,
-	"Miner" 				= /obj/item/robot_module/miner/general,
-	"Medical" 				= /obj/item/robot_module/medical/crisis,
-	"Security" 				= /obj/item/robot_module/security/general,
-	"Combat" 				= /obj/item/robot_module/security/combat,
-	"Engineering"			= /obj/item/robot_module/engineering/general,
-	"Janitor" 				= /obj/item/robot_module/janitor/general,
-	"Advanced Medical"		= /obj/item/robot_module/medical/crisis_adv,
-	"Advanced Engineering"	= /obj/item/robot_module/engineering/adv,
-	"Advanced Miner"		= /obj/item/robot_module/miner/adv
+	"Standard" = 				/obj/item/robot_module/standard,
+	"Service" = 				/obj/item/robot_module/service/butler,
+	"Research" = 				/obj/item/robot_module/research/general,
+	"Miner" = 					/obj/item/robot_module/miner/general,
+	"Medical" = 				/obj/item/robot_module/medical/crisis,
+	"Security" = 				/obj/item/robot_module/security/general,
+	"Combat" = 					/obj/item/robot_module/security/combat,
+	"Engineering" = 			/obj/item/robot_module/engineering/general,
+	"Janitor" = 				/obj/item/robot_module/janitor/general,
+	"Advanced Medical" = 		/obj/item/robot_module/medical/crisis_adv,
+	"Advanced Engineering" = 	/obj/item/robot_module/engineering/adv,
+	"Advanced Miner" = 			/obj/item/robot_module/miner/adv
 ))
 
 /obj/item/robot_module
