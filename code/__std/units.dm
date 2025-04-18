@@ -10,7 +10,7 @@
 
 #define WATT         *1
 #define METER        *1
-#define GRAM         *1
+#define GRAM         *0.001
 #define AMPERE       *1
 #define KELVIN       *1
 #define MOLE         *1
