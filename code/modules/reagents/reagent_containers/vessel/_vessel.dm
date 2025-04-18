@@ -219,7 +219,7 @@
 	if(force && !(item_flags & ITEM_FLAG_NO_BLUDGEON) && user.a_intent == I_HURT)
 		return ..()
 
-	if(user.a_intent == I_HELP && (def_zone == BP_R_HAND || def_zone == BP_L_HAND) && clink(user, M, def_zone))
+	if(user.a_intent == I_HELP && (def_zone == BP_R_HAND || def_zone == BP_L_HAND) && clink_glasses(user, M, def_zone))
 		return
 
 	if(standard_feed_mob(user, M))
@@ -227,19 +227,18 @@
 
 	return FALSE
 
-/// Clinking glasses with your drinking buds. Also mixes up the vessels' contents a little. ~TimErmolt (TheUnknownOne)
-/obj/item/reagent_containers/vessel/proc/clink(mob/user, mob/target, zone)
+/obj/item/reagent_containers/vessel/proc/clink_glasses(mob/user, mob/target, zone)
 	if(user == target)
 		return FALSE
 
 	var/obj/item/reagent_containers/vessel/target_vessel
 
 	if(ishuman(target))
-		var/mob/living/carbon/human/H = target
-		if(zone == BP_R_HAND && isvessel(H.r_hand))
-			target_vessel = H.r_hand
-		else if(isvessel(H.l_hand))
-			target_vessel = H.l_hand
+		var/mob/living/carbon/human/human_target = target
+		if(zone == BP_R_HAND && isvessel(human_target.r_hand))
+			target_vessel = human_target.r_hand
+		else if(isvessel(human_target.l_hand))
+			target_vessel = human_target.l_hand
 
 	if(!target_vessel)
 		for(var/obj/item/reagent_containers/vessel/V in target)
@@ -249,20 +248,24 @@
 	if(!target_vessel)
 		return FALSE
 
-	user.visible_message(SPAN_NOTICE("[user] reaches out to clink glasses with [target]..."),
-						 SPAN_NOTICE("You reach out to clink glasses with [target]..."))
+	user.visible_message(SPAN_NOTICE("[user] reaches out to clink glasses with [target]."),
+						 SPAN_NOTICE("You offer to clink glasses to [target]."))
 
-	if(!do_after(user, 2.5 SECONDS, target) || !(target_vessel in target))
-		return FALSE
+	user.show_splash_text(target, "offers to clink!", SPAN_NOTICE("[user] is offering to clink glasses."))
+	var/choice = show_radial_menu(target, user, list("accept" = image('icons/hud/radial.dmi', "radial_accept"), "decline" = image('icons/hud/radial.dmi', "radial_decline")), require_near = TRUE)
 
-	if(target.a_intent != I_HELP)
+	if(!choice || choice == "decline")
+		target.show_splash_text(user, "declined!", force_skip_chat = TRUE)
 		user.visible_message(SPAN_WARNING("[target] refuses to clink glasses with [user]!"),
-						 	 SPAN_WARNING("[target] refuses to clink glasses with you!"))
-		return FALSE
+							 SPAN_WARNING("[target] refuses to clink glasses with you!"))
+		return TRUE
 
-	user.visible_message(SPAN_NOTICE("[user] and [target] clink glasses!"),
-						 SPAN_NOTICE("You clink glasses with [target]! Cheers!"))
-	playsound(user.loc, 'sound/items/glasses_clink.ogg', 50, 1)
+	if(choice == "accept")
+		target.show_splash_text(user, "accepted!", force_skip_chat = TRUE)
+		user.visible_message(SPAN_NOTICE("[user] and [target] clink glasses!"),
+						 	 SPAN_NOTICE("You clink glasses with [target]! Cheers!"),
+						 	 SPAN_NOTICE("You hear glasses clinking."))
+		playsound(user.loc, 'sound/items/glasses_clink.ogg', 50, 1)
 
 	if(!is_open_container() || !target_vessel.is_open_container())
 		return TRUE
