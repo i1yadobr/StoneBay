@@ -234,7 +234,6 @@
 
 	var/obj/item/reagent_containers/vessel/target_vessel
 
-	// Try to prioritize the vessel in the hand we're targeting.
 	if(ishuman(target))
 		var/mob/living/carbon/human/H = target
 		if(zone == BP_R_HAND && istype(H.r_hand, /obj/item/reagent_containers/vessel))
@@ -242,7 +241,6 @@
 		else if(istype(H.l_hand, /obj/item/reagent_containers/vessel))
 			target_vessel = H.l_hand
 
-	// If that doesn't work, just pick whatever we can find.
 	if(!target_vessel)
 		for(var/obj/item/reagent_containers/vessel/V in target)
 			target_vessel = V
@@ -267,7 +265,7 @@
 	playsound(user.loc, 'sound/items/glasses_clink.ogg', 50, 1)
 
 	if(!is_open_container() || !target_vessel.is_open_container())
-		return TRUE // Can't mix contents if it ain't open
+		return TRUE
 
 	if(!reagents.total_volume || !target_vessel.reagents.total_volume)
 		return TRUE // No duping liquids here!
