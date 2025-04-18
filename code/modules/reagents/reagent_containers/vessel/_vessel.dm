@@ -236,9 +236,9 @@
 
 	if(ishuman(target))
 		var/mob/living/carbon/human/H = target
-		if(zone == BP_R_HAND && istype(H.r_hand, /obj/item/reagent_containers/vessel))
+		if(zone == BP_R_HAND && isvessel(H.r_hand))
 			target_vessel = H.r_hand
-		else if(istype(H.l_hand, /obj/item/reagent_containers/vessel))
+		else if(isvessel(H.l_hand))
 			target_vessel = H.l_hand
 
 	if(!target_vessel)
