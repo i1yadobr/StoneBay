@@ -265,7 +265,7 @@
 		user.visible_message(SPAN_NOTICE("[user] and [target] clink glasses!"),
 						 	 SPAN_NOTICE("You clink glasses with [target]! Cheers!"),
 						 	 SPAN_NOTICE("You hear glasses clinking."))
-		playsound(user.loc, 'sound/items/glasses_clink.ogg', 50, 1)
+		playsound(user.loc, GET_SFX(SFX_GLASSES_CLINK), 50, 1)
 
 	if(!is_open_container() || !target_vessel.is_open_container())
 		return TRUE
