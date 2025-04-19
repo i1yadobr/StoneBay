@@ -62,7 +62,7 @@
 			if(m_intent == M_RUN)
 				remove_hydration(DEFAULT_THIRST_FACTOR / 5)
 			else
-				remove_nutrition(DEFAULT_THIRST_FACTOR / 10)
+				remove_hydration(DEFAULT_THIRST_FACTOR / 10)
 
 	if(m_intent == M_RUN && bodytemperature <= 360 && (MUTATION_FAT in mutations))
 		bodytemperature += 2
