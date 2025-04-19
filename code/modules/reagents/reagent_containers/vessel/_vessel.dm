@@ -243,18 +243,29 @@
 			target_vessel = human_target.r_hand
 		else if(isvessel(human_target.l_hand))
 			target_vessel = human_target.l_hand
+		else if(isvessel(human_target.r_hand))
+			target_vessel = human_target.r_hand
 
-	if(!target_vessel)
+	else if(isrobot(target))
+		var/mob/living/silicon/robot/robot_target = target
+		if(isvessel(robot_target.module_active))
+			target_vessel = robot_target.module_active
+
+	else if(isliving(target))
 		for(var/obj/item/reagent_containers/vessel/V in target)
 			target_vessel = V
 			break
-		if(!target_vessel)
-			return FALSE
+
+	else
+		return FALSE
+
+	if(!target_vessel)
+		return FALSE
 
 	user.visible_message(SPAN_NOTICE("[user] reaches out to clink glasses with [target]."),
 						 SPAN_NOTICE("You offer to clink glasses to [target]."))
+	user.show_splash_text(target, "offers to clink!", force_skip_chat = TRUE)
 
-	user.show_splash_text(target, "offers to clink!", SPAN_NOTICE("[user] is offering to clink glasses."))
 	var/choice = show_radial_menu(target, user, list("accept" = image('icons/hud/radial.dmi', "radial_accept"), "decline" = image('icons/hud/radial.dmi', "radial_decline")), require_near = TRUE)
 
 	if(!choice || choice == "decline")
@@ -283,8 +294,6 @@
 
 	reagents.trans_to_holder(target_vessel.reagents, 1, transfer_amount, TRUE)
 	target_vessel.reagents.trans_to_holder(reagents, 1, transfer_amount, TRUE)
-
-	// It isn't exactly precise, but what do you expect when you're vigorously smashing two glasses together?
 
 	return TRUE
 
