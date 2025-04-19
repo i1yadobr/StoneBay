@@ -5,9 +5,9 @@
 	icon_state = "luminol"
 	item_state = "cleaner"
 	amount_per_transfer_from_this = 10
-	possible_transfer_amounts = "50;100"
-	volume = 2.5 LITERS
+	possible_transfer_amounts = "10;25"
+	volume = 0.5 LITERS
 
 /obj/item/reagent_containers/spray/luminol/Initialize()
 	. = ..()
-	reagents.add_reagent(/datum/reagent/luminol, 2.5 LITERS)
+	reagents.add_reagent(/datum/reagent/luminol, 0.5 LITERS)

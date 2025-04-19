@@ -36,7 +36,7 @@
 
 /obj/item/metroid_extract/New()
 	..()
-	create_reagents(0.1 LITERS)
+	create_reagents(0.15 LITERS)
 
 /obj/item/metroid_extract/proc/activate(mob/living/carbon/human/user, datum/component/extract_eater/extract_eater_comp, activation_type)
 	show_splash_text(user, SPAN_WARNING("Nothing happened... This metroid extract cannot be activated this way."))

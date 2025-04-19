@@ -273,7 +273,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 	src.modules += new /obj/item/robot_rack/medical(src)
 	src.modules += new /obj/item/inflatable_dispenser/robot(src) // Allows usage of inflatables. Since they are basically robotic alternative to EMTs, they should probably have them.
 	src.emag = new /obj/item/reagent_containers/spray(src)
-	src.emag.reagents.add_reagent(/datum/reagent/acid/polyacid, 2.5 LITERS)
+	src.emag.reagents.add_reagent(/datum/reagent/acid/polyacid, 1 LITER)
 	src.emag.SetName("Polyacid spray")
 
 	var/datum/matter_synth/medicine = new /datum/matter_synth/medicine(15000)
@@ -352,10 +352,10 @@ GLOBAL_LIST_INIT(robot_modules, list(
 	src.modules += new /obj/item/robot_rack/medical(src)
 	src.modules += new /obj/item/inflatable_dispenser/robot(src) // Allows usage of inflatables. Since they are basically robotic alternative to EMTs, they should probably have them.
 	var/obj/item/reagent_containers/spray/cleaner/drone/SC = new /obj/item/reagent_containers/spray/cleaner/drone(src)
-	SC.reagents.add_reagent(/datum/reagent/space_cleaner, 1.5 LITERS)
+	SC.reagents.add_reagent(/datum/reagent/space_cleaner, 1 LITER)
 	src.emag = new /obj/item/reagent_containers/spray(src)
 	src.modules += SC
-	src.emag.reagents.add_reagent(/datum/reagent/acid/polyacid, 2.5 LITERS)
+	src.emag.reagents.add_reagent(/datum/reagent/acid/polyacid, 1 LITER)
 	src.emag.SetName("Polyacid spray")
 
 	var/datum/matter_synth/medicine = new /datum/matter_synth/medicine(25000)
@@ -706,7 +706,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 	src.modules += new /obj/item/robot_item_dispenser/janitor(src)
 
 	src.emag = new /obj/item/reagent_containers/spray(src)
-	src.emag.reagents.add_reagent(/datum/reagent/lube, 2.5 LITERS)
+	src.emag.reagents.add_reagent(/datum/reagent/lube, 1 LITER)
 	src.emag.SetName("Lube spray")
 	..()
 

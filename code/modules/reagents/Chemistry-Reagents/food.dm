@@ -168,7 +168,7 @@
 /datum/reagent/nutriment/protein/egg // Also bad for skrell.
 	name = "egg yolk"
 
-	taste_description = "egg"
+	taste_description = "slime"
 
 	reagent_state = LIQUID
 	color = "#ffffaa"
@@ -176,7 +176,7 @@
 	ingest_absorbability = 0.2
 	digest_absorbability = 0.75
 
-	cooked_path = null
+	cooked_path = /datum/reagent/nutriment/protein/cooked
 
 /datum/reagent/nutriment/honey
 	name = "Honey"

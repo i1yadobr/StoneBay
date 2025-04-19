@@ -3,11 +3,11 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 /datum/reagents
 	var/list/datum/reagent/reagent_list = list()
 	var/total_volume = 0
-	var/maximum_volume = 1200 MILLI LITERS
+	var/maximum_volume = 1 LITER
 	var/atom/my_atom = null
 	var/list/rad_sources = list()
 
-/datum/reagents/New(maximum_volume = 1200, atom/my_atom)
+/datum/reagents/New(maximum_volume = 1 LITER, atom/my_atom)
 	if(!istype(my_atom))
 		CRASH("Invalid reagents holder: [log_info_line(my_atom)]")
 	..()
