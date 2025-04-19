@@ -219,7 +219,7 @@
 	if(force && !(item_flags & ITEM_FLAG_NO_BLUDGEON) && user.a_intent == I_HURT)
 		return ..()
 
-	if(user.a_intent == I_HELP && (def_zone == BP_R_HAND || def_zone == BP_L_HAND) && clink_glasses(user, M, def_zone))
+	if(clink_glasses(user, M, def_zone))
 		return
 
 	if(standard_feed_mob(user, M))
@@ -229,6 +229,10 @@
 
 /obj/item/reagent_containers/vessel/proc/clink_glasses(mob/user, mob/target, zone)
 	if(user == target)
+		return FALSE
+	if(user.a_intent != I_HELP)
+		return FALSE
+	if(zone != BP_R_HAND && zone != BP_L_HAND)
 		return FALSE
 
 	var/obj/item/reagent_containers/vessel/target_vessel
@@ -244,9 +248,8 @@
 		for(var/obj/item/reagent_containers/vessel/V in target)
 			target_vessel = V
 			break
-
-	if(!target_vessel)
-		return FALSE
+		if(!target_vessel)
+			return FALSE
 
 	user.visible_message(SPAN_NOTICE("[user] reaches out to clink glasses with [target]."),
 						 SPAN_NOTICE("You offer to clink glasses to [target]."))
