@@ -1,5 +1,4 @@
 #define CYBORG_POWER_USAGE_MULTIPLIER 2.5 // Multiplier for amount of power cyborgs use.
-#define EMOTE_TIMER 20
 
 /mob/living/silicon/robot
 	name = "Cyborg"
@@ -29,9 +28,10 @@
 	var/custom_sprite = TRUE
 	/// Default hull typepath
 	var/default_hull = /datum/robot_hull/spider/robot
-	//Technical part of the code for correct operation of /mob/living/silicon/robot/proc/apply_hull
-	var/icon_panel = "ov"
-	var/icon_state_ea = "robot-ea"
+	///Technical part of the code for correct operation of /mob/living/silicon/robot/proc/apply_hull
+	var/icon_state_panel
+	var/icon_state_ea
+	var/hull_flags
 
 	/// Key used to look up an appropriate hull datum in the `module_hulls`
 	var/icontype
@@ -175,6 +175,7 @@
 /mob/living/silicon/robot/Initialize()
 	. = ..()
 	AddMovementHandler(/datum/movement_handler/robot/use_power, /datum/movement_handler/mob/space)
+	add_think_ctx("meow", CALLBACK(src, .proc/icon_update_think), world.time)
 	update_icon()
 
 /mob/living/silicon/robot/proc/recalculate_synth_capacities()
@@ -286,7 +287,8 @@
 	icon = new_hull.icon
 	icon_state = new_hull.icon_state
 	icon_state_ea = new_hull.icon_state_ea
-	icon_panel = new_hull.icon_panel
+	icon_state_panel = new_hull.icon_state_panel
+	hull_flags = new_hull.hull_flags
 	footstep_sound = new_hull.footstep_sound
 
 	update_icon()
@@ -304,12 +306,14 @@
 			var/list/valid_states = icon_states(CUSTOM_ITEM_ROBOTS)
 			for(var/list/custom_data in customs)
 				var/sprite_state = custom_data["item_state"]
+				var/sprite_state_ea = custom_data["icon_state_ea"]
+				var/sprite_state_panel = custom_data["icon_state_panel"]
 				var/footstep = custom_data["footstep"]
 				if(sprite_state && (sprite_state in valid_states))
 					if(module_hulls[sprite_state])
 						qdel(module_hulls[sprite_state])
 						module_hulls[sprite_state] = null
-					module_hulls[sprite_state] = new /datum/robot_hull(CUSTOM_ITEM_ROBOTS, sprite_state, footstep)
+					module_hulls[sprite_state] = new /datum/robot_hull(CUSTOM_ITEM_ROBOTS, sprite_state, sprite_state_ea, sprite_state_panel, footstep)
 	return module_hulls
 
 /mob/living/silicon/robot/proc/choose_module()
@@ -830,16 +834,20 @@
 
 /mob/living/silicon/robot/on_update_icon()
 	ClearOverlays()
-	if(stat != CONSCIOUS)
+	if(is_ic_dead())
 		var/icon_state_off = "[module_hulls[icontype].icon_state]-off"
 		icon_state = icon_state_off
 	else
 		icon_state = module_hulls[icontype].icon_state
-		var/icon_eye_ea = module_hulls[icontype].icon_state_ea
-		AddOverlays(emissive_appearance(icon, icon_eye_ea))
+		var/icon_state_ea = custom_sprite ? "[module_hulls[icontype]]-ea" : "robot-ea"
+		if(module_hulls[icontype].hull_flags & ROBOT_HULL_FLAG_EMISSIVE)
+			icon_state_ea = module_hulls[icontype].icon_state_ea
+		AddOverlays(emissive_appearance(icon, icon_state_ea))
 
 	if(opened)
-		var/panelprefix = custom_sprite ? module_hulls[icontype] : module_hulls[icontype].icon_panel
+		var/panelprefix = custom_sprite ? module_hulls[icontype] : "ov"
+		if(module_hulls[icontype].hull_flags & ROBOT_HULL_FLAG_PANEL)
+			panelprefix = module_hulls[icontype].icon_state_panel
 		if(wiresexposed)
 			AddOverlays("[panelprefix]-openpanel +w")
 		else if(cell)
@@ -857,15 +865,8 @@
 		else
 			icon_state = module_hulls[icontype].icon_state
 
-/mob/living/silicon/robot/proc/meow_emote_animation()
-	var/icon_eye_ea = module_hulls[icontype].icon_state_ea
-	var/eye_animation_ea = "[module_hulls[icontype].icon_state_ea]-meow"
-	CutOverlays(emissive_appearance(icon, icon_eye_ea))
-	AddOverlays(emissive_appearance(icon, eye_animation_ea))
-	ImmediateOverlayUpdate()
-	flick("[module_hulls[icontype].icon_state]-meow", src)
-	spawn(EMOTE_TIMER)
-		queue_icon_update()
+/mob/living/silicon/robot/proc/icon_update_think()
+	queue_icon_update()
 
 /mob/living/silicon/robot/proc/installed_modules()
 	if(weapon_lock)
@@ -1339,5 +1340,3 @@
 	var/S = safepick(GLOB.sfx_list[footstep_sound])
 
 	playsound(get_turf(src), S, volume, FALSE, range)
-
-#undef EMOTE_TIMER

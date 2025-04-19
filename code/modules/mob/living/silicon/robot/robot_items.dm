@@ -394,10 +394,6 @@
 	if (N)
 		shield_level = text2num(N)/100
 
-//This module was broken during the “movement delay” refactor (#11484)
-//Should actually just multiply the current Borg speed by 2-3 times if activated
-//In the current realities, I don't know how best to implement this, so I'll leave a comment for those who will be doing it
-// - i1yadobr
 /obj/item/borg/combat/mobility
 	name = "mobility module"
 	desc = "By retracting limbs and tucking in its head, a combat android can roll at high speeds."

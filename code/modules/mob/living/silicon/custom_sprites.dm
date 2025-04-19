@@ -78,9 +78,11 @@ GLOBAL_LIST_EMPTY(ai_custom_icons)
 
 	var/list/custom_data = GLOB.robot_custom_icons[ckey][1]
 	var/custom_state = custom_data["item_state"]
+	var/custom_state_ea = custom_data["icon_state_ea"]
+	var/custom_state_panel = custom_data["icon_state_panel"]
 	var/custom_step = custom_data["footstep"]
 
-	module_hulls[custom_state] = new /datum/robot_hull(CUSTOM_ITEM_ROBOTS, custom_state, custom_step)
+	module_hulls[custom_state] = new /datum/robot_hull(CUSTOM_ITEM_ROBOTS, custom_state, custom_state_ea, custom_state_panel, custom_step)
 	apply_hull(custom_state)
 
 	return TRUE

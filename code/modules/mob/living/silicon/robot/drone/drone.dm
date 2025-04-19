@@ -173,7 +173,7 @@ var/list/mob_hat_cache = list()
 
 /mob/living/silicon/robot/drone/on_update_icon()
 	ClearOverlays()
-	if(stat != CONSCIOUS)
+	if(is_ic_dead())
 		var/icon_state_off = "[module_hulls[icontype].icon_state]-off"
 		icon_state = icon_state_off
 	else
@@ -184,8 +184,9 @@ var/list/mob_hat_cache = list()
 		else
 			icon_state = module_hulls[icontype].icon_state
 
-		var/eye_icon_state_ea = module_hulls[icontype].icon_state_ea
-		AddOverlays(emissive_appearance(icon, eye_icon_state_ea))
+		if(module_hulls[icontype].hull_flags & ROBOT_HULL_FLAG_EMISSIVE)
+			var/eye_icon_state_ea = module_hulls[icontype].icon_state_ea
+			AddOverlays(emissive_appearance(icon, eye_icon_state_ea))
 
 	if(hat) // Let the drones wear hats.
 		AddOverlays(get_hat_icon(hat, hat_x_offset, hat_y_offset))

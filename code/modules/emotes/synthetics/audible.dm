@@ -197,13 +197,36 @@
 
 	cooldown = 3 SECONDS
 
-	state_checks = EMOTE_CHECK_CONSCIOUS | EMOTE_CHECK_ROBOT_KERFUR_MODULE
+	state_checks = EMOTE_CHECK_CONSCIOUS
 
 	statpanel_proc = /mob/living/proc/meow_emote
 
-/datum/emote/synth/meow/do_emote(mob/living/silicon/robot/user)
+/datum/emote/synth/meow/can_emote(mob/user, intentional)
+	if(!has_robot_module_hull("Kerfur", user, intentional) && !has_robot_module_hull("Kerfur-O", user, intentional))
+		if(intentional)
+			to_chat(user, SPAN_NOTICE("You do not have the required hull for this emote."))
+		return FALSE
+
+	return ..()
+
+/datum/emote/synth/meow/do_emote(mob/user, emote_key, intentional)
 	. = ..()
-	user.meow_emote_animation()
+	INVOKE_ASYNC(src, nameof(.proc/meow_emote_animation), user)
+
+#define EMOTE_TIMER 20
+
+/datum/emote/synth/meow/proc/meow_emote_animation(mob/user)
+	var/mob/living/silicon/robot/R = user
+	var/icon_state_ea = R.module_hulls[R.icontype].icon_state_ea
+	var/animation_ea = "[R.module_hulls[R.icontype].icon_state_ea]-meow"
+
+	R.CutOverlays(emissive_appearance(R.icon, R.module_hulls[R.icontype].icon_state_ea))
+	R.AddOverlays(emissive_appearance(R.icon, "[R.module_hulls[R.icontype].icon_state_ea]-meow"))
+	R.ImmediateOverlayUpdate()
+	flick("[R.module_hulls[R.icontype].icon_state]-meow", R)
+	R.set_next_think_ctx("meow", world.time + EMOTE_TIMER)
+
+#undef EMOTE_TIMER
 
 /mob/living/proc/meow_emote()
 	set name = "Meow"
