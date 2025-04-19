@@ -118,7 +118,7 @@
 	startswith = list(
 		/datum/reagent/nutriment/protein/cooked = 75,
 		/datum/reagent/salt = 5,
-		/datum/reagent/blackpepper = 5
+		/datum/reagent/blackpepper = 5,
 		/datum/reagent/nutriment/garlicsauce = 15
 		)
 	bitesize = 12.5 // 257.5 nutrition, 10 bites

@@ -260,7 +260,7 @@
 	nutriment_desc = list("bread" = 3)
 	nutriment_amt = 120
 	startswith = list(
-		/datum/reagent/nutriment/protein/cooked = 75
+		/datum/reagent/nutriment/protein/cooked = 75,
 		/datum/reagent/nutriment/protein/gluten/cooked = 30
 		)
 	bitesize = 30 // 382.5 nutrition, 8 bites

@@ -120,7 +120,7 @@
 	nutriment_desc = list("bread" = 3)
 	nutriment_amt = 120
 	startswith = list(
-		/datum/reagent/nutriment/protein/gluten/cooked = 30
+		/datum/reagent/nutriment/protein/gluten/cooked = 30,
 		/datum/reagent/salt = 5,
 		/datum/reagent/drink/juice/tomato = 10,
 		/datum/reagent/drink/juice/garlic = 5
@@ -133,9 +133,12 @@
 	icon_state = "twobread"
 	filling_color = "#dbcc9a"
 	center_of_mass = "x=15;y=12"
-	nutriment_desc = list("sourness" = 2, "bread" = 2)
-	nutriment_amt = 2
-	bitesize = 3
+	nutriment_desc = list("sourness" = 2, "bread" = 3)
+	nutriment_amt = 72
+	startswith = list(
+		/datum/reagent/nutriment/protein/gluten/cooked = 18
+		)
+	bitesize = 30 // 100 nutrition, 3 bites
 
 /obj/item/reagent_containers/food/threebread
 	name = "Three Bread"
@@ -144,12 +147,15 @@
 	filling_color = "#dbcc9a"
 	center_of_mass = "x=15;y=12"
 	nutriment_desc = list("sourness" = 2, "bread" = 3)
-	nutriment_amt = 3
-	bitesize = 4
+	nutriment_amt = 108
+	startswith = list(
+		/datum/reagent/nutriment/protein/gluten/cooked = 27
+		)
+	bitesize = 30 // 100 nutrition, 5 bites
 
 /obj/item/reagent_containers/food/pizzarim
-	name = "pizza rim"'
-	desc = "Causes more conflicts than pineapples themselves."
+	name = "pizza rim"
+	desc = "Even pineapples can't cause such violent conflicts."
 	icon_state = "pizzarim"
 	center_of_mass = "x=15;y=13"
 	nutriment_desc = list("bread" = 3)

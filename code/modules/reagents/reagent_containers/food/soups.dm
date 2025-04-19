@@ -10,7 +10,8 @@
 	nutriment_amt = 150
 	startswith = list(
 		/datum/reagent/nutriment/protein = 25,
-		/datum/reagent/water = 125)
+		/datum/reagent/water = 125
+		)
 	bitesize = 40 // 212.5 nutrition, 8 bites
 
 /obj/item/reagent_containers/food/fathersoup
@@ -37,7 +38,8 @@
 	nutriment_amt = 150
 	startswith = list(
 		/datum/reagent/metroidjelly = 10,
-		/datum/reagent/water = 40)
+		/datum/reagent/water = 40
+		)
 	bitesize = 28 // 100 nutrition, 8 bites
 
 /obj/item/reagent_containers/food/bloodsoup
@@ -49,7 +51,8 @@
 	startswith = list(
 		/datum/reagent/nutriment/protein/cooked = 40,
 		/datum/reagent/blood = 100,
-		/datum/reagent/water = 100)
+		/datum/reagent/water = 100
+		)
 	bitesize = 40 // 200 nutrition, 6 bites
 
 /obj/item/reagent_containers/food/clownstears
@@ -62,7 +65,8 @@
 	nutriment_amt = 100
 	startswith = list(
 		/datum/reagent/drink/juice/banana = 50,
-		/datum/reagent/water = 50)
+		/datum/reagent/water = 50
+		)
 	bitesize = 25 // 125 nutrition, 8 bites
 
 /obj/item/reagent_containers/food/vegetablesoup
@@ -89,9 +93,10 @@
 	nutriment_desc = list("salad" = 4, "egg" = 2, "potato" = 2)
 	nutriment_amt = 125
 	startswith = list(
-		/datum/reagent/nutriment/protein/cooked = 45
+		/datum/reagent/nutriment/protein/cooked = 45,
 		/datum/reagent/water = 70,
-		/datum/reagent/tricordrazine = 10)
+		/datum/reagent/tricordrazine = 10
+		)
 	bitesize = 40 // 237.5 nutrition, 7+ bites
 
 /obj/item/reagent_containers/food/mysterysoup

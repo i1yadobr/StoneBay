@@ -595,7 +595,9 @@
 	center_of_mass = "x=16;y=7"
 	nutriment_desc = list("a chorus of flavor" = 6)
 	nutriment_amt = 298
-	startswith = list(/datum/reagent/radium = 2)
+	startswith = list(
+		/datum/reagent/radium = 2
+	)
 	bitesize = 30 // 298 nutrition, 10 bites
 
 /obj/item/reagent_containers/food/monkeysdelight
@@ -609,7 +611,8 @@
 		/datum/reagent/nutriment/protein = 10,
 		/datum/reagent/drink/juice/banana = 5,
 		/datum/reagent/blackpepper = 1,
-		/datum/reagent/salt = 1)
+		/datum/reagent/salt = 1
+		)
 	bitesize = 30
 
 /obj/item/reagent_containers/food/julienne
@@ -620,7 +623,8 @@
 	nutriment_amt = 10
 	startswith = list(
 		/datum/reagent/nutriment/protein = 5,
-		/datum/reagent/drink/juice/onion = 2)
+		/datum/reagent/drink/juice/onion = 2
+		)
 	bitesize = 3
 
 /obj/item/reagent_containers/food/quiche
@@ -632,9 +636,10 @@
 	nutriment_amt = 30
 	nutriment_desc = list("intelligence" = 3)
 	startswith = list(
-		/datum/reagent/nutriment/protein/cooked = 55
+		/datum/reagent/nutriment/protein/cooked = 55,
 		/datum/reagent/drink/juice/tomato = 10,
-		/datum/reagent/drink/juice/garlic = 5)
+		/datum/reagent/drink/juice/garlic = 5
+		)
 	bitesize = 30 // 175 nutrition, 4 bites
 
 // Mexican
@@ -684,7 +689,9 @@
 	trash = /obj/item/trash/dish/plate
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 7
-	startswith = list(/datum/reagent/salt = 1)
+	startswith = list(
+		/datum/reagent/salt = 1
+		)
 	bitesize = 4
 
 /obj/item/reagent_containers/food/cubannachos
@@ -696,7 +703,8 @@
 	nutriment_amt = 7
 	startswith = list(
 		/datum/reagent/salt = 1,
-		/datum/reagent/capsaicin = 3)
+		/datum/reagent/capsaicin = 3
+		)
 	bitesize = 4
 
 // Burritos
@@ -707,7 +715,8 @@
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 8
 	startswith = list(
-		/datum/reagent/nutriment/soysauce = 2)
+		/datum/reagent/nutriment/soysauce = 2
+		)
 	bitesize = 4
 
 /obj/item/reagent_containers/food/cheeseburrito
@@ -716,7 +725,9 @@
 	icon_state = "cheeseburrito"
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 10
-	startswith = list(/datum/reagent/nutriment/soysauce = 2)
+	startswith = list(
+		/datum/reagent/nutriment/soysauce = 2
+		)
 	bitesize = 4
 
 /obj/item/reagent_containers/food/carnaburrito
@@ -727,7 +738,8 @@
 	nutriment_amt = 8
 	startswith = list(
 		/datum/reagent/nutriment/protein = 3,
-		/datum/reagent/nutriment/soysauce = 1)
+		/datum/reagent/nutriment/soysauce = 1
+		)
 	bitesize = 4
 
 /obj/item/reagent_containers/food/plasmaburrito
@@ -736,7 +748,9 @@
 	icon_state = "plasmaburrito"
 	center_of_mass = "x=15;y=15"
 	nutriment_amt = 8
-	startswith = list(/datum/reagent/capsaicin = 4)
+	startswith = list(
+		/datum/reagent/capsaicin = 4
+		)
 	bitesize = 4
 
 // Waffles

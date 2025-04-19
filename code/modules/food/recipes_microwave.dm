@@ -373,9 +373,9 @@ I said no!
 	fruit = list("goldapple" = 1)
 	reagents = list(/datum/reagent/sugar = 10, /datum/reagent/drink/milk = 50)
 	items = list(
-		/obj/item/reagent_containers/food/doughslice
-		/obj/item/reagent_containers/food/doughslice
-		/obj/item/reagent_containers/food/doughslice
+		/obj/item/reagent_containers/food/doughslice,
+		/obj/item/reagent_containers/food/doughslice,
+		/obj/item/reagent_containers/food/doughslice,
 		/obj/item/reagent_containers/food/egg
 	)
 	result = /obj/item/reagent_containers/food/appletart
@@ -871,7 +871,7 @@ I said no!
 	result = /obj/item/reagent_containers/food/jellyburger/cherry
 
 /datum/recipe/twobread
-	reagents = list(/datum/reagent/ethanol/wine = 5)
+	reagents = list(/datum/reagent/ethanol/wine = 20)
 	items = list(
 		/obj/item/reagent_containers/food/slice/bread,
 		/obj/item/reagent_containers/food/slice/bread,

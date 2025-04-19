@@ -646,7 +646,7 @@
 
 /datum/reagent/magical_custard/affect_digest(mob/living/carbon/M, alien, removed)
 	M.heal_organ_damage(2.5 * removed, 2.5 * removed)
-	H.adjustToxLoss(-2.5 * removed)
+	M.adjustToxLoss(-2.5 * removed)
 
 /datum/reagent/astrotame
 	name = "Astrotame"

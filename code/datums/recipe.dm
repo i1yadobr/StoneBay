@@ -131,7 +131,7 @@
 	for(var/i = 1; i <= amount; i++)
 		result_objs.Add(new result(container))
 
-	if(!result_objs[i].reagents?.reagent_list)
+	if(!result_objs[1].reagents?.reagent_list)
 		for(var/datum/reagent/R in result_objs[1].reagents.reagent_list)
 			result_reagents[R.type] = R.volume * amount
 
@@ -140,7 +140,7 @@
 		var/obj/item/O = I.return_item()
 		if(O.reagents)
 			for(var/datum/reagent/R in O.reagents.reagent_list)
-				if(istype(R, datum/reagent/nutriment/protein))
+				if(istype(R, /datum/reagent/nutriment/protein))
 					var/datum/reagent/nutriment/protein/P = R
 					add_up_reagents.add_reagent((P.cooked_path ? P.cooked_path : P.type), P.volume)
 				else if(R.type != /datum/reagent/nutriment) // Fuck basic nutriments, child types are okay.
