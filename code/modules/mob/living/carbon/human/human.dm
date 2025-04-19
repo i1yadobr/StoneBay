@@ -811,7 +811,7 @@
 	if(should_have_organ(BP_INTESTINES))
 		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
 		if(!I)
-			// Abdominal cavity here
+			// TODO: Abdominal cavity here
 			custom_pain("Your guts cramp!", 10)
 			return TRUE
 		else
@@ -846,8 +846,9 @@
 	if(should_have_organ(BP_INTESTINES))
 		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
 		if(!I) // No stomach nor intestines, tough time to have a supper.
-			// Abdominal cavity here
+			// TODO: Abdominal cavity here
 			custom_pain("Your guts cramp!", 10)
+			AM.forceMove(loc)
 		else
 			AM.forceMove(I)
 		return TRUE

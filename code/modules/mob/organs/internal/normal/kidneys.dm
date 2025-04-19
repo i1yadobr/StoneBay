@@ -55,12 +55,10 @@
 
 	owner.remove_hydration(dynamic_hydration_consumption)
 
-	//to_chat(owner, "KIDNEYS REPORT: [world.time SECONDS] | [owner.hydration]")
-
 	if(owner.should_have_organ(BP_BLADDER))
 		var/obj/item/organ/internal/bladder/L = owner.internal_organs_by_name[BP_BLADDER]
 		if(!L)
-			// Abdominal cavity here.
+			// TODO: Abdominal cavity here.
 			return
 		L.waste_to_spawn += dynamic_hydration_consumption
 

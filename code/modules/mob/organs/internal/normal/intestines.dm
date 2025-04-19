@@ -54,7 +54,9 @@
 	return (ret / waste_capacity) * 100
 
 /obj/item/organ/internal/intestines/proc/rupture()
-	// Abdominal cavity here
+	if(owner)
+		owner?.custom_pain("Your feel a burst of sudden, excruciating pain in your guts!", 30)
+	// TODO: Abdominal cavity here
 	return
 
 // This call needs to be split out to make sure that all the ingested things are metabolised
@@ -70,7 +72,6 @@
 	. = ..()
 	if(owner && !owner.stat)
 		if(!oldbroken && is_broken())
-			owner.custom_pain("Your feel a burst of sudden, excruciating pain in your guts!", 30)
 			rupture()
 
 /obj/item/organ/internal/intestines/think()
@@ -86,13 +87,13 @@
 		next_processing = world.time + 5 SECONDS
 
 		// Ruptured intestines, chance to send stuff into the abdominal cavity.
-		if(is_broken() && prob(damage - min_broken_damage))
+		if(contents.len > 1 && is_broken() && prob((damage - min_broken_damage) / 10))
 			for(var/obj/item/I in contents)
 				if(I == food_organ)
 					continue
-				// Abdominal cavity here
-				owner.custom_pain("Your guts cramp agonizingly!", 20)
-			// Waste to the abdominal cavity here
+				// TODO: Abdominal cavity here
+			owner.custom_pain("Your guts cramp agonizingly!", 20)
+			// TODO: Waste to the abdominal cavity here
 
 		// Simulation disabled, let's just despawn food chunks and decrease waste. Non-edible items will be waiting for a surgeon though.
 		if(!config.health.simulate_digestion)

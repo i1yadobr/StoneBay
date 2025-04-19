@@ -134,7 +134,12 @@
 	if(currently_processing)
 		var/obj/item/organ/internal/intestines/I = owner.internal_organs_by_name[BP_INTESTINES]
 		if(!I)
-			// Abdominal cavity here.
+			// TODO: Abdominal cavity here.
+			currently_processing.reagents.trans_to_mob(owner, currently_processing.reagents.total_volume, CHEM_INGEST)
+			processing.Remove(currently_processing)
+			qdel(currently_processing)
+			currently_processing = null
+			recalc_items_volume()
 		else
 			if(!is_broken() && istype(currently_processing, /obj/item/reagent_containers))
 				// Food, breaking down to reagents.

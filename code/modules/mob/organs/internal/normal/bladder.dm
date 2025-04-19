@@ -31,7 +31,9 @@
 	return stored.total_volume + waste_to_spawn
 
 /obj/item/organ/internal/bladder/proc/rupture()
-	// Abdominal cavity here
+	if(owner)
+		owner.custom_pain("Your feel a burst of sudden, excruciating pain in your groin!", 30)
+	// TODO: Abdominal cavity here
 	return
 
 /obj/item/organ/internal/bladder/take_internal_damage(amount, silent = FALSE)
@@ -39,7 +41,6 @@
 	. = ..()
 	if(owner && !owner.stat)
 		if(!oldbroken && is_broken())
-			owner.custom_pain("Your feel a burst of sudden, excruciating pain in your groin!", 30)
 			rupture()
 
 /obj/item/organ/internal/bladder/think()
