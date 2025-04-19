@@ -436,6 +436,16 @@
 	..()
 	M.add_chemical_effect(CE_PULSE, 2)
 
+/datum/reagent/nitroglycerin/decompile_into(datum/reagents/target)
+	if(!target)
+		return FALSE
+
+	var/datum/effect/effect/system/reagents_explosion/e = new()
+	e.set_up(volume * 0.25, holder.my_atom, 0, 0)
+	e.start()
+	holder.del_reagent(type)
+	return TRUE
+
 /datum/reagent/coolant
 	name = "Coolant"
 	description = "Industrial cooling substance."
