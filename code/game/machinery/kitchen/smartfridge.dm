@@ -14,7 +14,7 @@
 	var/global/max_n_of_items = 999 // Sorry but the BYOND infinite loop detector doesn't look things over 1000.
 	var/icon_on = "smartfridge"
 	var/icon_off = "smartfridge-off"
-	var/icon_state_panel = "smartfridge-panel"
+	var/icon_panel = "smartfridge-panel"
 	var/list/item_records = list()
 	var/datum/stored_items/currently_vending = null	//What we're putting out of the machine.
 	var/seconds_electrified = 0;
@@ -255,7 +255,7 @@
 		user.visible_message("[user] [panel_open ? "opens" : "closes"] the maintenance panel of \the [src].", "You [panel_open ? "open" : "close"] the maintenance panel of \the [src].")
 		ClearOverlays()
 		if(panel_open)
-			AddOverlays(image(icon, icon_state_panel))
+			AddOverlays(image(icon, icon_panel))
 		SSnano.update_uis(src)
 		return
 

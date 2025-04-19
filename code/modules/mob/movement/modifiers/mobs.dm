@@ -75,6 +75,3 @@
 
 /datum/movespeed_modifier/hamstring_magic
 	slowdown = -1.0
-
-/datum/movespeed_modifier/mobility
-	slowdown = -2.0
