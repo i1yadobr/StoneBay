@@ -144,9 +144,9 @@
 	item_state = "takeaway_cup"
 	filling_states = "50;65;80;100"
 
-	volume = 0.350 LITERS
+	volume = 0.3 LITERS
 	amount_per_transfer_from_this = 25
-	possible_transfer_amounts = "25;30;50;100;150;350"
+	possible_transfer_amounts = "25;30;50;100;150;300"
 
 	center_of_mass = "x=17;y=12"
 	pickup_sound = 'sound/effects/using/bottles/papercup.ogg'

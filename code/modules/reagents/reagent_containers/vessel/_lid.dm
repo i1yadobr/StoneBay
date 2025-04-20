@@ -271,8 +271,8 @@
 			if(user)
 				to_chat(usr, SPAN("notice", "You take \the [name] off \the [owner]."))
 			owner.verbs += /obj/item/reagent_containers/vessel/verb/drink_whole
-			owner.amount_per_transfer_from_this = 10
-			owner.possible_transfer_amounts = "5;10;15;30"
+			owner.amount_per_transfer_from_this = 25
+			owner.possible_transfer_amounts = "25;30;50;100;150;300"
 			return TRUE
 		if(LID_OPEN)
 			owner.atom_flags |= ATOM_FLAG_OPEN_CONTAINER
@@ -280,8 +280,8 @@
 			if(user)
 				to_chat(usr, SPAN("notice", "You put \the [name] on \the [owner]."))
 			owner.verbs -= /obj/item/reagent_containers/vessel/verb/drink_whole
-			owner.amount_per_transfer_from_this = 3
-			owner.possible_transfer_amounts = "3;5"
+			owner.amount_per_transfer_from_this = 10
+			owner.possible_transfer_amounts = "5;10;15;25"
 			return TRUE
 	return FALSE
 
