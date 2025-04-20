@@ -109,12 +109,12 @@
 			if(complex_fullness)
 				var/obj/item/organ/internal/stomach/S = C.internal_organs_by_name[BP_STOMACH]
 				var/stomach_fullness = S.get_fullness()
-				if(stomach_fullness >= S.volume_hardcap)
+				if(stomach_fullness >= 200) // 200% fullness, no more physical space
 					to_chat(C, SPAN("danger", "You cannot force any more of [src] to go down your throat."))
 					return FALSE
-				else if(stomach_fullness >= (S.volume_softcap + S.volume_hardcap) / 2)
+				else if(stomach_fullness >= 150) // 150% fullness, very likely to throw up
 					to_chat(C, SPAN("danger", "You force yourself to swallow some [src]."))
-				else if(stomach_fullness >= S.volume_softcap)
+				else if(stomach_fullness >= 100) // 100% fullness, softcap
 					to_chat(C, SPAN("notice", "You unwillingly chew a bit of [src]."))
 				else if(fullness <= STOMACH_FULLNESS_SUPER_LOW)
 					to_chat(C, SPAN("danger", "You hungrily chew out a piece of [src] and gobble it!"))
