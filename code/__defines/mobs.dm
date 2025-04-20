@@ -234,7 +234,7 @@
 #define BP_ADAMANTINE_RESONATOR   "adamantine resonator"
 #define BP_ADAMANTINE_VOCAL_CORDS "adamantine vocal cords"
 
-#define BP_INTERNAL_ORGANS list(BP_BRAIN, BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS)
+#define BP_INTERNAL_ORGANS list(BP_BRAIN, BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS, BP_TONGUE, BP_INTESTINES, BP_BLADDER)
 
 // Robo Organs.
 #define BP_CELL       "cell"

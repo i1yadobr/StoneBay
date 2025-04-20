@@ -5,6 +5,7 @@
 	icon_state = "egg"
 	filling_color = "#fdffd1"
 	volume = 60
+	static_volume = TRUE
 	center_of_mass = "x=16;y=13"
 	startswith = list(
 		/datum/reagent/nutriment/protein/egg = 45
@@ -102,6 +103,7 @@
 	icon_state = "egg-vegan"
 	filling_color = "#70bf70"
 	volume = 60
+	static_volume = TRUE
 	center_of_mass = "x=16;y=13"
 	nutriment_amt = 50
 	bitesize = 30 // 50 nutrition, 2 bites

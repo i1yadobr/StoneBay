@@ -926,7 +926,6 @@
 /obj/item/reagent_containers/food/sliceable/pizza
 	slices_num = 8
 	filling_color = "#baa14c"
-	trash = /obj/item/reagent_containers/food/pizzarim
 
 ////////////////////////
 /obj/item/reagent_containers/food/sliceable/pizza/margherita
@@ -958,6 +957,7 @@
 		/datum/reagent/drink/juice/tomato = 12.5
 		)
 	bitesize = 25 // 119 nutrition (+39 with a rim), 4 bites
+	trash = /obj/item/reagent_containers/food/pizzarim
 
 /obj/item/reagent_containers/food/slice/margherita/filled
 	filled = TRUE
@@ -994,6 +994,7 @@
 		/datum/reagent/drink/juice/tomato = 6.25
 		)
 	bitesize = 25 // 157.5 nutrition (+39 with a rim), 5 bites
+	trash = /obj/item/reagent_containers/food/pizzarim
 
 /obj/item/reagent_containers/food/slice/meatpizza/filled
 	filled = TRUE
@@ -1030,6 +1031,7 @@
 		/datum/reagent/drink/juice/tomato = 6.25
 		)
 	bitesize = 25 // 157.5 nutrition (+39 with a rim), 5 bites
+	trash = /obj/item/reagent_containers/food/pizzarim
 
 /obj/item/reagent_containers/food/slice/mushroompizza/filled
 	filled = TRUE
@@ -1067,6 +1069,7 @@
 		/datum/reagent/imidazoline = 1.5
 		)
 	bitesize = 25
+	trash = /obj/item/reagent_containers/food/pizzarim
 
 /obj/item/reagent_containers/food/slice/vegetablepizza/filled
 	filled = TRUE

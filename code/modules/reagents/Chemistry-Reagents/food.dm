@@ -152,6 +152,8 @@
 	ingest_absorbability = 0.05
 	digest_absorbability = 0.25
 
+	cooked_path = null
+
 /datum/reagent/nutriment/protein/fungal
 	name = "fungal protein"
 

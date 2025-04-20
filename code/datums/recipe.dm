@@ -131,12 +131,12 @@
 	for(var/i = 1; i <= amount; i++)
 		result_objs.Add(new result(container))
 
-	if(!result_objs[1].reagents?.reagent_list)
+	if(result_objs[1].reagents?.reagent_list)
 		for(var/datum/reagent/R in result_objs[1].reagents.reagent_list)
 			result_reagents[R.type] = R.volume * amount
 
 	var/datum/reagents/add_up_reagents = new /datum/reagents(100 LITERS, GLOB.temp_reagents_holder)
-	for(var/obj/item/I in (container.InsertedContents() ^ result_objs))
+	for(var/obj/item/I in (container.InsertedContents() - result_objs))
 		var/obj/item/O = I.return_item()
 		if(O.reagents)
 			for(var/datum/reagent/R in O.reagents.reagent_list)
@@ -151,11 +151,12 @@
 		qdel(I)
 
 	for(var/datum/reagent/R in add_up_reagents.reagent_list)
-		if(!result_reagents[R.type] || !result_reagents[R.type] > R.volume)
+		if(result_reagents[R.type] && result_reagents[R.type] >= R.volume)
 			continue
 		for(var/obj/result_obj in result_objs)
-			add_up_reagents.trans_to_obj(result_obj, round((R.volume - result_reagents[R.type]) / amount, 0.1))
+			add_up_reagents.trans_type_to(result_obj, R.type, round((R.volume - result_reagents[R.type]) / amount, 0.1))
 
+	qdel(add_up_reagents)
 	container.reagents.clear_reagents()
 	return result_objs
 

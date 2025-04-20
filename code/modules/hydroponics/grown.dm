@@ -46,6 +46,7 @@
 	if(!reagents)
 		create_reagents(volume)
 	reagents.clear_reagents()
+	reagents.maximum_volume = 10 LITERS
 
 	// Fill the object up with the appropriate reagents.
 	for(var/reagent_path in seed.chems)
@@ -66,7 +67,7 @@
 				reagents.add_reagent(reagent_path, volume_to_add, data)
 
 	update_desc()
-
+	recalc_max_volume()
 	if(reagents.total_volume > 0)
 		bitesize = min(reagents.total_volume, 30)
 

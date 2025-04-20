@@ -11,7 +11,9 @@
 	randpixel = 6
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
 	possible_transfer_amounts = null
-	volume = 1.0 LITERS // Sets the default container amount for all food items.
+	volume = 10 LITERS // Gets recalculated after initialization.
+
+	var/static_volume = FALSE // If positive, prevents volume recalculation.
 
 	var/bitesize = 30 // Size (reagent-wise) of a single bite.
 	var/bitecount = 0 // Number of bites taken.
@@ -31,15 +33,20 @@
 
 /obj/item/reagent_containers/food/Initialize(mapload, spawn_empty = FALSE)
 	. = ..()
-	if(nutriment_amt && !spawn_empty)
-		reagents.add_reagent(/datum/reagent/nutriment, nutriment_amt, nutriment_desc)
-	recalc_max_volume()
+	if(!spawn_empty)
+		if(nutriment_amt)
+			reagents.add_reagent(/datum/reagent/nutriment, nutriment_amt, nutriment_desc)
+		recalc_max_volume()
 
 /obj/item/reagent_containers/food/proc/recalc_max_volume()
+	if(static_volume)
+		return
+
 	if(!reagents)
 		return
-	volume = min((reagents.total_volume * 2), (reagents.total_volume + 0.25 LITERS))
-	reagents.maximum_volume = volume
+
+	reagents.maximum_volume = min((reagents.total_volume * 2), (reagents.total_volume + 0.25 LITERS))
+	volume = reagents.maximum_volume
 
 /obj/item/reagent_containers/food/proc/On_Consume(mob/M)
 	if(reagents.total_volume)

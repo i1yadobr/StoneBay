@@ -31,6 +31,8 @@
 	desc = "Disguisting, half-digested chunk of some sort of food."
 	icon_state = "ingested_chunk"
 	nutriment_amt = 0
+	volume = 0.1 LITER
+	static_volume = TRUE
 	bitesize = 30
 	w_class = ITEM_SIZE_TINY
 
