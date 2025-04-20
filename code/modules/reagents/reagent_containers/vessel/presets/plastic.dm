@@ -15,6 +15,12 @@
 	icon_state = "milk"
 	item_state = "milk"
 	center_of_mass = "x=16;y=9"
+	w_class = ITEM_SIZE_NORMAL
+
+	volume = 1.0 LITER
+	amount_per_transfer_from_this = 25
+	possible_transfer_amounts = "25;30;50;60;100;150;250;300;1000"
+
 	startswith = list(/datum/reagent/drink/milk)
 
 /obj/item/reagent_containers/vessel/plastic/soymilk
@@ -23,6 +29,12 @@
 	icon_state = "soymilk"
 	item_state = "soymilk"
 	center_of_mass = "x=16;y=9"
+	w_class = ITEM_SIZE_NORMAL
+
+	volume = 1.0 LITER
+	amount_per_transfer_from_this = 25
+	possible_transfer_amounts = "25;30;50;60;100;150;250;300;1000"
+
 	startswith = list(/datum/reagent/drink/milk/soymilk)
 
 /obj/item/reagent_containers/vessel/plastic/waterbottle

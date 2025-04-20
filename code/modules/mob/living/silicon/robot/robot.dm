@@ -576,7 +576,7 @@
 			to_chat(user, "Nothing to fix here!")
 			return
 		var/obj/item/weldingtool/WT = W
-		if(!WT.use_tool(src, user, delay = 3 SECONDS, amount = 5))
+		if(!WT.use_tool(src, user, delay = 3 SECONDS, amount = 50))
 			return
 
 		if(QDELETED(src) || !user)

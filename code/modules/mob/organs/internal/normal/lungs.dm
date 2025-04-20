@@ -5,8 +5,8 @@
 	organ_tag = BP_LUNGS
 	parent_organ = BP_CHEST
 	w_class = ITEM_SIZE_NORMAL
-	min_bruised_damage = 25
-	min_broken_damage = 50
+	min_bruised_damage = 35
+	min_broken_damage = 65
 	max_damage = 100
 	relative_size = 60
 
@@ -91,7 +91,7 @@
 					"blood drips from <B>\the [owner]'s</B> [parent.name]!",
 				)
 
-			owner.drip(1)
+			owner.drip(5)
 		if(prob(4))
 			if(active_breathing)
 				owner.visible_message(
@@ -133,10 +133,10 @@
 
 	var/safe_pressure_min = min_breath_pressure // Minimum safe partial pressure of breathable gas in kPa
 	// Lung damage increases the minimum safe pressure.
-	safe_pressure_min *= 1 + rand(1,4) * damage/max_damage
+	safe_pressure_min *= 1 + rand(1, 4) * damage/max_damage
 
 	if(!forced && owner.chem_effects[CE_BREATHLOSS] && !owner.chem_effects[CE_STABLE]) //opiates are bad mmkay
-		safe_pressure_min *= 1 + rand(1,4) * owner.chem_effects[CE_BREATHLOSS]
+		safe_pressure_min *= 1 + rand(1, 4) * owner.chem_effects[CE_BREATHLOSS]
 
 	var/failed_inhale = 0
 	var/failed_exhale = 0

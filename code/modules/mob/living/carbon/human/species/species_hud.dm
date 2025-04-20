@@ -7,6 +7,9 @@
 	var/has_pain = TRUE        // Draw the pain indicator.
 	var/has_pressure = TRUE    // Draw the pressure indicator.
 	var/has_nutrition = TRUE   // Draw the nutrition indicator.
+	var/has_hydration = TRUE   // Draw the hydration indicator.
+	var/has_bladder = TRUE     // Draw the bladder indicator.
+	var/has_bowels = TRUE      // Draw the bowels indicator.
 	var/has_bodytemp = TRUE    // Draw the bodytemp indicator.
 	var/has_hands = TRUE       // Set to draw hands.
 	var/has_drop = TRUE        // Set to draw drop button.
@@ -58,6 +61,10 @@
 		equip_slots |= slot_tie
 
 	equip_slots |= slot_legcuffed
+
+	if(!config.health.simulate_digestion)
+		has_bladder = FALSE
+		has_bowels = FALSE
 
 /datum/hud_data/diona
 	has_internals = FALSE

@@ -319,6 +319,7 @@
 		"tox damage"			= IC_PINTYPE_NUMBER,
 		"oxy damage"			= IC_PINTYPE_NUMBER,
 		"clone damage"			= IC_PINTYPE_NUMBER,
+		"internal damage"		= IC_PINTYPE_NUMBER,
 		"pulse"                 = IC_PINTYPE_NUMBER,
 		"oxygenation level"     = IC_PINTYPE_NUMBER,
 		"pain level"            = IC_PINTYPE_NUMBER,
@@ -352,14 +353,15 @@
 		set_pin_data(IC_OUTPUT, 2, (H.stat == 0))
 		set_pin_data(IC_OUTPUT, 3, damage_to_severity(100 * H.getBruteLoss() / H.maxHealth))
 		set_pin_data(IC_OUTPUT, 4, damage_to_severity(100 * H.getFireLoss() / H.maxHealth))
-		set_pin_data(IC_OUTPUT, 5, damage_to_severity(100 * H.getToxLoss() / H.maxHealth))
+		set_pin_data(IC_OUTPUT, 5, damage_to_severity(H.getToxLoss()))
 		set_pin_data(IC_OUTPUT, 6, damage_to_severity(100 * H.getOxyLoss() / H.maxHealth))
 		set_pin_data(IC_OUTPUT, 7, damage_to_severity(100 * H.getCloneLoss() / H.maxHealth))
-		set_pin_data(IC_OUTPUT, 8, H.get_pulse_as_number())
-		set_pin_data(IC_OUTPUT, 9, H.get_blood_oxygenation())
-		set_pin_data(IC_OUTPUT, 10, damage_to_severity(H.get_shock()))
-		set_pin_data(IC_OUTPUT, 11, H.radiation)
-		set_pin_data(IC_OUTPUT, 12, H.name)
+		set_pin_data(IC_OUTPUT, 8, damage_to_severity(100 * H.getInternalLoss() / H.maxHealth))
+		set_pin_data(IC_OUTPUT, 9, H.get_pulse_as_number())
+		set_pin_data(IC_OUTPUT, 10, H.get_blood_oxygenation())
+		set_pin_data(IC_OUTPUT, 11, damage_to_severity(H.get_shock()))
+		set_pin_data(IC_OUTPUT, 12, H.radiation)
+		set_pin_data(IC_OUTPUT, 13, H.name)
 
 	push_data()
 	activate_pin(2)
@@ -524,8 +526,11 @@
 		set_pin_data(IC_OUTPUT, 6, H.internal_organs_by_name[BP_KIDNEYS])
 		set_pin_data(IC_OUTPUT, 7, H.internal_organs_by_name[BP_STOMACH])
 		set_pin_data(IC_OUTPUT, 8, H.internal_organs_by_name[BP_APPENDIX])
-		set_pin_data(IC_OUTPUT, 9, H.internal_organs_by_name[BP_CELL])
-		set_pin_data(IC_OUTPUT, 10, H.internal_organs_by_name[BP_STACK])
+		set_pin_data(IC_OUTPUT, 9, H.internal_organs_by_name[BP_TONGUE])
+		set_pin_data(IC_OUTPUT, 10, H.internal_organs_by_name[BP_BLADDER])
+		set_pin_data(IC_OUTPUT, 11, H.internal_organs_by_name[BP_INTESTINES])
+		set_pin_data(IC_OUTPUT, 12, H.internal_organs_by_name[BP_CELL])
+		set_pin_data(IC_OUTPUT, 13, H.internal_organs_by_name[BP_STACK])
 
 	push_data()
 	activate_pin(2)

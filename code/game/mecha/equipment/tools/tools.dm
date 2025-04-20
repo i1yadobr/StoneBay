@@ -170,8 +170,8 @@
 	required_type = /obj/mecha/working
 	need_colorize = FALSE
 	var/spray_particles = 5
-	var/spray_amount = 200	//units of liquid per spray
-	var/max_volume = 5000
+	var/spray_amount = 2 LITERS //units of liquid per spray
+	var/max_volume = 50 LITERS
 	var/ff_reagent = /datum/reagent/water/firefoam
 
 /obj/item/mecha_parts/mecha_equipment/tool/extinguisher/New()

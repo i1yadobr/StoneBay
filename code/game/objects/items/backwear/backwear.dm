@@ -180,7 +180,7 @@
 ///// These contain reagents
 /obj/item/backwear/reagent
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
-	var/initial_capacity = 500
+	var/initial_capacity = 5 LITERS
 	var/initial_reagent_types  // A list of reagents and their ratio relative the initial capacity. list(/datum/reagent/water = 0.5) would fill the dispenser halfway to capacity.
 	var/amount_per_transfer_from_this = 10
 	var/possible_transfer_amounts = "5;10;25;50;100"

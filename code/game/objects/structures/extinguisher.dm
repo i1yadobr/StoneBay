@@ -1,5 +1,5 @@
-#define MIN_EMAGGED_REAGENTS_VOLUME 1
-#define MAX_EMAGGED_REAGENTS_VOLUME 300
+#define MIN_EMAGGED_REAGENTS_VOLUME 10 MILLI LITERS
+#define MAX_EMAGGED_REAGENTS_VOLUME 3 LITERS
 
 /obj/structure/extinguisher_cabinet
 	name = "extinguisher cabinet"

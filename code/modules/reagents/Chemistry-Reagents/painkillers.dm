@@ -8,16 +8,16 @@
 	overdose = REAGENTS_OVERDOSE * 0.5
 	scannable = TRUE
 	metabolism = REM * 0.5
-	ingest_met = REM * 0.25
-	absorbability = 0.25
+	digest_met = REM * 0.25
+	digest_absorbability = 0.25
 	excretion = 0.25
 	flags = IGNORE_MOB_SIZE
 
 	var/pain_power = 200 // Magnitide of painkilling effect
-	var/effective_dose = 0.5 // How many units it need to process to reach max power
+	var/effective_dose = 0.5 // How many ml it need to process to reach max power
 	var/soft_overdose = 7.5 // Determines when it starts causing negative effects w/out actually causing OD
 	var/tolerance_threshold = 7.5 // Having more than this value in chem_traces will reduce effectiveness
-	var/tolerance_mult = 0.1 // Percentage of effect weakening by each unit over tolerance_threshold
+	var/tolerance_mult = 0.1 // Percentage of effect weakening by each ml over tolerance_threshold
 
 /datum/reagent/painkiller/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	var/effectiveness = removed / metabolism
@@ -74,8 +74,8 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 	metabolism = REM * 0.5
-	ingest_met = REM * 0.25
-	absorbability = 1.0 // real-life tramadol bioavailability is surprisingly high, hitting almost 100%
+	digest_met = REM * 0.25
+	digest_absorbability = 1.0 // real-life tramadol bioavailability is surprisingly high, hitting almost 100%
 
 	pain_power = 100
 	effective_dose = 2.5
@@ -114,8 +114,8 @@
 		M.add_chemical_effect(CE_SLOWDOWN, 1)
 		M.add_chemical_effect(CE_TOXIN, 1)
 
-/datum/reagent/painkiller/tramadol/oxycodone/affect_ingest(mob/living/carbon/M, alien, removed, affecting_dose)
-	var/effectiveness = removed / ingest_met
+/datum/reagent/painkiller/tramadol/oxycodone/affect_digest(mob/living/carbon/M, alien, removed, affecting_dose)
+	var/effectiveness = removed / digest_met
 	handle_painkiller_effect(M, affecting_dose, effectiveness)
 	handle_painkiller_overdose(M, affecting_dose)
 	var/boozed = isboozed(M)
@@ -135,7 +135,7 @@
 	reagent_state = SOLID
 	data = 0
 	metabolism = REM * 0.5
-	ingest_met = REM * 0.25
+	digest_met = REM * 0.25
 
 	pain_power = 150
 	effective_dose = 2.5
@@ -228,9 +228,9 @@
 	overdose = 60
 	scannable = 1
 	metabolism = REM * 0.2
-	ingest_met = 0
+	digest_met = 0
 	flags = IGNORE_MOB_SIZE
-	absorbability = 0.8 // Actually, it's a real-life value
+	digest_absorbability = 0.8 // Actually, it's a real-life value
 	excretion = 0.75
 
 	pain_power = 35
@@ -240,6 +240,6 @@
 	tolerance_mult = 0.05
 
 /datum/reagent/painkiller/paracetamol/overdose(mob/living/carbon/M, alien)
-	M.add_chemical_effect(CE_TOXIN, 1)
+	M.add_chemical_effect(CE_TOXIN, 5)
 	M.druggy = max(M.druggy, 2)
 	M.add_chemical_effect(CE_PAINKILLER, 10)

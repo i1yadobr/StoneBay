@@ -6,8 +6,8 @@
 	health = 180
 	filling_color = "#ff1c1c"
 	center_of_mass = "x=16;y=14"
-	startswith = list(/datum/reagent/nutriment/protein = 9)
-	bitesize = 3
+	startswith = list(/datum/reagent/nutriment/protein = 150)
+	bitesize = 30
 
 	drop_sound = SFX_DROP_FLESH
 	pickup_sound = SFX_PICKUP_FLESH
@@ -55,6 +55,16 @@
 	name = "chicken piece"
 	desc = "It tastes like you'd expect."
 
+/obj/item/reagent_containers/food/meat/bear
+	name = "bear meat"
+	desc = "A very manly slab of meat."
+	icon_state = "bearmeat"
+	filling_color = "#db0000"
+	center_of_mass = "x=16;y=10"
+	startswith = list(
+		/datum/reagent/nutriment/protein = 145,
+		/datum/reagent/hyperzine = 5)
+
 /obj/item/reagent_containers/food/meat/xeno
 	name = "xenomeat"
 	desc = "A slab of green meat. Smells like acid."
@@ -62,9 +72,8 @@
 	item_state = "xenomeat"
 	filling_color = "#43de18"
 	startswith = list(
-		/datum/reagent/nutriment/protein = 9,
-		/datum/reagent/acid/polyacid = 9)
-	bitesize = 6
+		/datum/reagent/nutriment/protein = 100,
+		/datum/reagent/acid/polyacid = 50)
 
 /obj/item/reagent_containers/food/meat/pork
 	name = "pork slab"

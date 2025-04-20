@@ -186,7 +186,7 @@
 /datum/disease2/effect/toxins/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
-	mob.adjustToxLoss((2*multiplier))
+	mob.adjustToxLoss(multiplier)
 
 
 
@@ -219,7 +219,7 @@
 /datum/disease2/effect/killertoxins/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
-	mob.adjustToxLoss(15*multiplier)
+	mob.adjustToxLoss(2.5 * multiplier)
 
 
 

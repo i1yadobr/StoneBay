@@ -257,7 +257,7 @@
 	if(isWelder(W))
 		var/obj/item/weldingtool/WT = W
 
-		if(!WT.use_tool(src, user, amount = 1))
+		if(!WT.use_tool(src, user, amount = 10))
 			return
 
 		qdel_self()

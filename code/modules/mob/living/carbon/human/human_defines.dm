@@ -117,6 +117,8 @@
 
 	var/innate_heal = 1
 	var/shock_stage
+	var/coagulation = COAGULATION_NORMAL
+	var/heal_this_tick = 0 // How much damage we managed to regenerate since the last tick.
 
 	var/poise_pool = HUMAN_DEFAULT_POISE
 	var/poise = HUMAN_DEFAULT_POISE

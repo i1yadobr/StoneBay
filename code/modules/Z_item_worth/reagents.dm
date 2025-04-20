@@ -81,7 +81,7 @@
 /datum/reagent/lipozine
 	value = 0.11
 
-/datum/reagent/sodiumchloride
+/datum/reagent/salt
 	value = 0.11
 
 /datum/reagent/blackpepper

@@ -718,6 +718,7 @@
 	reagent_state = LIQUID
 	color = "#0050a177"
 	metabolism = REM * 0.1
+	ingest_met = REM // It's MAGICAL, let it work straight from the stomach.
 
 /datum/reagent/hell_water/affect_ingest(mob/living/carbon/M, alien, removed)
 	if(iscultist(M))
@@ -729,6 +730,7 @@
 		M.adjustOxyLoss(-10 * removed)
 		M.heal_organ_damage(5 * removed, 5 * removed)
 		M.adjustToxLoss(-5 * removed)
+		M.adjustInternalLoss(-5 * removed)
 	else
 		M.fire_stacks = max(2, M.fire_stacks)
 		M.IgniteMob()

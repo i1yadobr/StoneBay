@@ -22,8 +22,8 @@ var/list/organ_cache = list()
 
 	// Damage vars.
 	var/damage = 0                    // Current damage to the organ
-	var/min_broken_damage = 30     	  // Damage before becoming broken
-	var/max_damage             	  // Damage cap
+	var/min_broken_damage = 0         // Damage before becoming broken
+	var/max_damage = 60               // Damage cap
 	var/rejecting                     // Is this organ already being rejected?
 
 	var/death_time
@@ -71,10 +71,8 @@ var/list/organ_cache = list()
 	if(food_organ_type && !disable_food_organ)
 		food_organ = new food_organ_type(src)
 
-	if(max_damage)
+	if(!min_broken_damage)
 		min_broken_damage = Floor(max_damage / 2)
-	else
-		max_damage = min_broken_damage * 2
 
 	if(istype(holder))
 		owner = holder
@@ -92,7 +90,7 @@ var/list/organ_cache = list()
 			blood_DNA = list()
 		blood_DNA[dna.unique_enzymes] = dna.b_type
 
-	create_reagents(5 * (w_class-1)**2)
+	create_reagents(50 * (w_class-1)**2)
 	reagents.add_reagent(/datum/reagent/nutriment/protein, reagents.maximum_volume)
 
 /obj/item/organ/proc/set_dna(datum/dna/new_dna)

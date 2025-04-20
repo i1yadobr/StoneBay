@@ -78,7 +78,7 @@
 	full_pain_lasttick = full_pain
 
 /mob/living/carbon/human/proc/recheck_bad_external_organs()
-	var/damage_this_tick = getToxLoss()
+	var/damage_this_tick = getInternalLoss()
 	for(var/obj/item/organ/external/O in organs)
 		damage_this_tick += O.burn_dam + O.brute_dam
 
@@ -88,6 +88,7 @@
 
 // Takes care of organ related updates, such as broken and missing limbs
 /mob/living/carbon/human/proc/handle_organs()
+	heal_this_tick = 0
 
 	var/force_process = recheck_bad_external_organs()
 
@@ -192,7 +193,7 @@
 		var/obj/item/organ/external/E = organs_by_name[limb_tag]
 
 		if(!E || (E.status & ORGAN_DISFIGURED) || istype(E,/obj/item/organ/external/stump))
-			stance_d_l += 5
+			stance_d_r += 5
 
 		else if(E.is_malfunctioning())
 			stance_d_r += 4
@@ -222,68 +223,102 @@
 		return	// We're all good
 	// standing is poor
 	if(!(lying || resting))
-		if(((stance_d_l >= 5) && (stance_d_r >= 5))) // Both legs are missing, but hey at least there's nothing to ache
+		// Both legs are missing, but hey at least there's nothing to ache
+		if(((stance_d_l >= 5) && (stance_d_r >= 5)))
 			custom_emote(VISIBLE_MESSAGE, "can't stand without legs!", "AUTO_EMOTE")
 			Weaken(10)
-		else if(((stance_d_l >= 5) && (stance_d_r > 2)) || ((stance_d_l > 2) && (stance_d_r >= 5))) // One leg is missing and the other one is at least broken
+			resting = TRUE
+
+		// One leg is missing and the other one is at least broken
+		else if(((stance_d_l >= 5) && (stance_d_r > 2)) || ((stance_d_l > 2) && (stance_d_r >= 5)))
 			if(limb_pain)
 				emote("scream")
 				shock_stage+=5
 			custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
 			Weaken(10)
-		else if(((stance_d_l >= 4) && (stance_d_l > 0)) || ((stance_d_l > 0) && (stance_d_r >= 4))) // One leg is totally wrecked and the other one is hurt
-			if(prob(60))
+			resting = TRUE // Let's help the poor creature to stay down, preventing further pain.
+
+		// One leg is totally wrecked and the other one is hurt
+		else if(((stance_d_l >= 4) && (stance_d_l > 0)) || ((stance_d_l > 0) && (stance_d_r >= 4)))
+			if(prob(35))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=50
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(10)
-		else if((stance_d_l >= 2) && (stance_d_r >= 2)) // Both legs are broken
-			if(prob(40))
+				if(prob(50))
+					custom_emote(VISIBLE_MESSAGE, "limps badly!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(10)
+
+		// Both legs are broken
+		else if((stance_d_l >= 2) && (stance_d_r >= 2))
+			if(prob(25))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=25
 				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
 				Weaken(10)
-		else if(((stance_d_l >= 2) && (stance_d_r > 0)) || ((stance_d_l > 0) && (stance_d_r >= 2))) // One leg is broken and the other one is hort
-			if(prob(30))
+
+		// One leg is broken and the other one is hurt
+		else if(((stance_d_l >= 2) && (stance_d_r > 0)) || ((stance_d_l > 0) && (stance_d_r >= 2)))
+			if(prob(10))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=15
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(7)
-		else if((stance_d_l > 0) && (stance_d_r > 0)) // Borth legs are hurt
-			if(prob(20))
-				if(limb_pain)
-					emote("scream")
-					shock_stage+=12.5
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(5)
-		else if((stance_d_l >= 5) || (stance_d_r >= 5)) // One leg is missing and the other one is ok
-			if(prob(10))
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(3)
-		else if((stance_d_l >= 4) || (stance_d_r >= 4)) // One leg is wrecked and the other one is ok
+				if(prob(75))
+					custom_emote(VISIBLE_MESSAGE, "limps badly!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(7)
+
+		// Borth legs are hurt
+		else if((stance_d_l > 0) && (stance_d_r > 0))
 			if(prob(8))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=12.5
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(5)
-		else if((stance_d_l >= 3) || (stance_d_r >= 3)) // One leg is broken + dislocated and the other one is ok
+				if(prob(75))
+					custom_emote(VISIBLE_MESSAGE, "limps badly!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(5)
+
+		// One leg is missing and the other one is ok
+		else if((stance_d_l >= 5) || (stance_d_r >= 5))
+			if(prob(10))
+				if(prob(75))
+					custom_emote(VISIBLE_MESSAGE, "limps on one leg!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(3)
+
+		// One leg is wrecked and the other one is ok
+		else if((stance_d_l >= 4) || (stance_d_r >= 4))
+			if(prob(8))
+				if(limb_pain)
+					emote("scream")
+					shock_stage+=12.5
+				if(prob(75))
+					custom_emote(VISIBLE_MESSAGE, "limps on one leg!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(5)
+
+		// One leg is broken + dislocated and the other one is ok
+		else if((stance_d_l >= 3) || (stance_d_r >= 3))
 			if(prob(4))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=10
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(5)
-		else if((stance_d_l >= 2) || (stance_d_r >= 2)) // One leg is broken and the other one is ok
+				custom_emote(VISIBLE_MESSAGE, "limps on one leg!", "AUTO_EMOTE")
+
+		// One leg is broken and the other one is ok
+		else if((stance_d_l >= 2) || (stance_d_r >= 2))
 			if(prob(2))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=5
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(3)
+				custom_emote(VISIBLE_MESSAGE, "limps on one leg!", "AUTO_EMOTE")
 		else
 			return
 
@@ -398,3 +433,134 @@
 		if((E && E.damage > 0) || !E || (E && (E.status & ORGAN_BROKEN)) || (E && (E.status &= ~ORGAN_ARTERY_CUT)))
 			return 1
 	return 0
+
+/mob/living/carbon/human/proc/handle_coagulation()
+	if(isSynthetic() || isundead(src))
+		coagulation = COAGULATION_NONE
+		return
+
+	if(!should_have_organ(BP_LIVER)) // Blood can clot w/out a liver.
+		coagulation = species.coagulation
+		return
+
+	var/obj/item/organ/internal/liver/L = internal_organs_by_name[BP_LIVER]
+	if(istype(L))
+		coagulation = L.coagulation
+		return
+
+	coagulation = COAGULATION_NONE
+	return
+
+/mob/living/carbon/human/proc/handle_toxins()
+	if(isSynthetic() || isundead(src))
+		return
+
+	// Liverless species don't suffer from missing a liver, obviously.
+	if(should_have_organ(BP_LIVER))
+		var/obj/item/organ/internal/liver/L = internal_organs_by_name[BP_LIVER]
+		var/filtering_efficiency = L ? L.filtering_efficiency : 0
+
+		if(filtering_efficiency < 2) // Liver's not feeling alright, getting poisoned by our own metabolism.
+			adjustToxLoss((2 - filtering_efficiency) * 0.5, TRUE)
+
+	// Kidney-less species still get some passive detox as a placeholder. Xenomorphs and golems are immune to toxins anyway, but we can't be sure.
+	var/detox_efficiency = 0.5
+	var/obj/item/organ/internal/kidneys/K
+	if(should_have_organ(BP_KIDNEYS))
+		K = internal_organs_by_name[BP_KIDNEYS]
+		if(K)
+			detox_efficiency = K.detox_efficiency
+		else
+			detox_efficiency = -1.0
+
+	// High hydratation boosts detox efficiency (if applicible), low hydration slows it down or halts it completely.
+	switch(hydration)
+		if(HYDRATION_NONE)
+			detox_efficiency -= 0.5
+		if(HYDRATION_NONE+0.01 to HYDRATION_LOW)
+			detox_efficiency -= 0.2
+		if(HYDRATION_HIGH+0.01 to HYDRATION_SUPER)
+			if(detox_efficiency >= 0) // No effect if kidneys are broken
+				detox_efficiency += 0.2
+		if(HYDRATION_SUPER+0.01 to INFINITY)
+			if(detox_efficiency >= 0) // No effect if kidneys are broken
+				detox_efficiency += 0.5
+
+	if(chem_effects[CE_TOXIN])
+		detox_efficiency -= chem_effects[CE_TOXIN] * 0.1
+
+	if(chem_effects[CE_ANTITOX])
+		detox_efficiency += chem_effects[CE_ANTITOX] * 0.1
+
+	adjustToxLoss(-1 * detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
+
+	// For simplicity, let's assume that 5% the blood volume equals the amount of toxins that's enough to completely wreck the body.
+	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.05) : 280) * 100)
+
+	var/kidney_strain = 1.0
+	if(toxic_severity >= 100) // tb 280+, we're wrecked, lethal poisoning
+		adjustBrainLoss(0.5)
+		Weaken(30)
+		Paralyse(20)
+		adjustInternalLoss(2.5, TRUE)
+
+	if(toxic_severity >= 75) // tb 210+, we're in immediate danger, critical poisoning
+		if(prob(10))
+			losebreath++
+			adjustInternalLoss(5.0, TRUE)
+
+		make_dizzy(6)
+		slurring = max(slurring, 30)
+		eye_blurry = max(eye_blurry, 10)
+
+		if(prob(5))
+			Weaken(3)
+			to_chat(src, SPAN("danger", "<b>You feel extremely [pick("nauseous", "sick", "weak")]!</b>"))
+			vomit(timevomit = 3, silent = TRUE)
+			adjustInternalLoss(3.0)
+
+		kidney_strain = 2.5
+
+	else if(toxic_severity >= 50) // tb 140+, we're in danger, severe poisoning
+		make_dizzy(6)
+		eye_blurry = max(eye_blurry, 5)
+
+		if(prob(10))
+			slurring = max(slurring, 10)
+			adjustInternalLoss(3.0, TRUE)
+
+		if(prob(5))
+			to_chat(src, SPAN("danger", "You feel really [pick("nauseous", "sick", "weak")]!"))
+			vomit(timevomit = 2, silent = TRUE)
+			adjustInternalLoss(2.0) // Things start to become dangerous.
+
+		kidney_strain = 2.0
+
+	else if(toxic_severity >= 25) // tb 70+, we're not feeling well, mild poisoning
+		make_dizzy(6)
+
+		if(prob(10))
+			eye_blurry = max(eye_blurry, 5)
+			adjustInternalLoss(1.5, TRUE)
+
+		if(prob(3))
+			to_chat(src, SPAN("danger", "You feel [pick("nauseous", "sick", "weak")]..."))
+			vomit(timevomit = 1, silent = TRUE)
+			adjustInternalLoss(1.0) // Generalized organ damage in addition to the above. Still not lethal, but nasty.
+
+		kidney_strain = 1.5
+
+	else if(toxic_severity >= 5) // tb 14+, we start to notice that something's off, casual poisoning
+		if(prob(10))
+			make_dizzy(6)
+			adjustInternalLoss(1.0, TRUE) // Not enough to be life-threatening, but may cause trouble if we have ongoing health issues.
+
+		if(prob(1))
+			to_chat(src, "<i>You feel a bit [pick("nauseous", "sick", "weak")]...</i>")
+			vomit(timevomit = 1, level = 2, silent = TRUE)
+
+	else if(toxic_severity)
+		kidney_strain = 1.25
+
+	if(K)
+		K.hydration_consumption = DEFAULT_THIRST_FACTOR * kidney_strain

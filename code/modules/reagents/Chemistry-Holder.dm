@@ -3,11 +3,11 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 /datum/reagents
 	var/list/datum/reagent/reagent_list = list()
 	var/total_volume = 0
-	var/maximum_volume = 120
+	var/maximum_volume = 1 LITER
 	var/atom/my_atom = null
 	var/list/rad_sources = list()
 
-/datum/reagents/New(maximum_volume = 120, atom/my_atom)
+/datum/reagents/New(maximum_volume = 1 LITER, atom/my_atom)
 	if(!istype(my_atom))
 		CRASH("Invalid reagents holder: [log_info_line(my_atom)]")
 	..()
@@ -445,9 +445,12 @@ GLOBAL_DATUM_INIT(temp_reagents_holder, /obj, new)
 			return trans_to_holder(R, amount, multiplier, copy)
 		if(type == CHEM_INGEST)
 			var/datum/reagents/R = C.get_ingested_reagents()
-			return C.ingest(src, R, amount, multiplier, copy) //perhaps this is a bit of a hack, but currently there's no common proc for eating reagents
+			return trans_to_holder(R, amount, multiplier, copy)
 		if(type == CHEM_TOUCH)
 			var/datum/reagents/R = C.touching
+			return trans_to_holder(R, amount, multiplier, copy)
+		if(type == CHEM_DIGEST)
+			var/datum/reagents/R = C.get_digested_reagents()
 			return trans_to_holder(R, amount, multiplier, copy)
 	else
 		var/datum/reagents/R = new /datum/reagents(amount, GLOB.temp_reagents_holder)

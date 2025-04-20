@@ -1,3 +1,7 @@
+
+//
+#define REALISTIC_METABOLISM 0
+
 // /mob/var/stat things.
 #define CONSCIOUS   0
 #define UNCONSCIOUS 1
@@ -195,44 +199,49 @@
 #define INCAPACITATION_DEFAULT (INCAPACITATION_RESTRAINED|INCAPACITATION_BUCKLED_FULLY|INCAPACITATION_DISABLED)
 #define INCAPACITATION_ALL (~INCAPACITATION_NONE)
 
-// Organs.
-#define BP_MOUTH    "mouth"
-#define BP_EYES     "eyes"
-#define BP_HEART    "heart"
-#define BP_LUNGS    "lungs"
-#define BP_TRACH	"tracheae"
-#define BP_BRAIN    "brain"
-#define BP_LIVER    "liver"
-#define BP_KIDNEYS  "kidneys"
-#define BP_STOMACH  "stomach"
-#define BP_APPENDIX "appendix"
-#define BP_CELL     "cell"
-#define BP_HIVE     "hive node"
-#define BP_NUTRIENT "nutrient vessel"
-#define BP_ACID     "acid gland"
-#define BP_EGG      "egg sac"
-#define BP_RESIN    "resin spinner"
-#define BP_STRATA   "neural strata"
-#define BP_RESPONSE "response node"
-#define BP_GBLADDER "gas bladder"
-#define BP_POLYP    "polyp segment"
-#define BP_ANCHOR   "anchoring ligament"
-#define BP_PLASMA   "plasma vessel"
-#define BP_CHANG    "biostructure"
-#define BP_CANCER   "cancer"
-#define BP_EMBRYO   "alien embryo"
-#define BP_GANGLION "spinal ganglion"
-#define BP_ADAMANTINE_RESONATOR "adamantine resonator"
-#define BP_ADAMANTINE_VOCAL_CORDS "adamantine vocal cords"
-#define BP_METROID 	"metroid jelly vessel"
+// Normal Organs.
+#define BP_MOUTH      "mouth"
+#define BP_EYES       "eyes"
+#define BP_HEART      "heart"
+#define BP_LUNGS      "lungs"
+#define BP_TRACH      "tracheae"
+#define BP_BRAIN      "brain"
+#define BP_LIVER      "liver"
+#define BP_KIDNEYS    "kidneys"
+#define BP_STOMACH    "stomach"
+#define BP_APPENDIX   "appendix"
+#define BP_TONGUE     "tongue"
+#define BP_BLADDER    "bladder"
+#define BP_INTESTINES "intestines"
 
-#define BP_INTERNAL_ORGANS list(BP_BRAIN, BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS)
+// Weird Organs.
+#define BP_HIVE       "hive node"
+#define BP_NUTRIENT   "nutrient vessel"
+#define BP_ACID       "acid gland"
+#define BP_EGG        "egg sac"
+#define BP_RESIN      "resin spinner"
+#define BP_STRATA     "neural strata"
+#define BP_RESPONSE   "response node"
+#define BP_GBLADDER   "gas bladder"
+#define BP_POLYP      "polyp segment"
+#define BP_ANCHOR     "anchoring ligament"
+#define BP_PLASMA     "plasma vessel"
+#define BP_CHANG      "biostructure"
+#define BP_CANCER     "cancer"
+#define BP_EMBRYO     "alien embryo"
+#define BP_GANGLION   "spinal ganglion"
+#define BP_METROID    "metroid jelly vessel"
+#define BP_ADAMANTINE_RESONATOR   "adamantine resonator"
+#define BP_ADAMANTINE_VOCAL_CORDS "adamantine vocal cords"
+
+#define BP_INTERNAL_ORGANS list(BP_BRAIN, BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS, BP_TONGUE, BP_INTESTINES, BP_BLADDER)
 
 // Robo Organs.
-#define BP_POSIBRAIN	"posibrain"
-#define BP_VOICE		"vocal synthesiser"
-#define BP_STACK		"stack"
-#define BP_OPTICS		"optics"
+#define BP_CELL       "cell"
+#define BP_POSIBRAIN  "posibrain"
+#define BP_VOICE      "vocal synthesiser"
+#define BP_STACK      "stack"
+#define BP_OPTICS     "optics"
 
 // Limbs.
 #define BP_L_FOOT "l_foot"
@@ -278,6 +287,13 @@ GLOBAL_LIST_INIT(organ_tag_to_name, list(
 #define TASTE_NORMAL 1 //anything below 15%
 #define TASTE_DULL 0.5 //anything below 30%
 #define TASTE_NUMB 0.1 //anything below 150%
+
+// Humanoid coagulation (blood clotting)
+#define COAGULATION_NONE   0
+#define COAGULATION_WEAK   0.5
+#define COAGULATION_NORMAL 1.0
+#define COAGULATION_STRONG 2.0
+#define COAGULATION_FORCED 99999
 
 //Used by show_message() and emotes
 #define VISIBLE_MESSAGE 1
@@ -389,10 +405,23 @@ GLOBAL_LIST_INIT(organ_tag_to_name, list(
 #define STOMACH_FULLNESS_MEDIUM     250
 #define STOMACH_FULLNESS_HIGH       425
 #define STOMACH_FULLNESS_SUPER_HIGH 550
+#define STOMACH_FULLNESS_CAP        800
 
-#define STOMACH_CAPACITY_LOW    0.75 // Slim people
-#define STOMACH_CAPACITY_NORMAL 1.0  // Normal human beings
-#define STOMACH_CAPACITY_HIGH   1.45 // Spherical boiz
+// Slim people
+#define STOMACH_CAPACITY_LOW    0.75
+ // Normal human beings
+#define STOMACH_CAPACITY_NORMAL 1.0
+// Spherical boiz
+#define STOMACH_CAPACITY_HIGH   1.45
+
+#define HYDRATION_NONE 0
+#define HYDRATION_LOW 200
+#define HYDRATION_NORMAL 500
+#define HYDRATION_HIGH 900
+#define HYDRATION_SUPER 1400
+#define HYDRATION_LIMIT 2000
+
+#define MOUTH_CAPACITY 60
 
 #define HUMAN_POWER_NONE    "None"
 #define HUMAN_POWER_SPIT    "Spit"

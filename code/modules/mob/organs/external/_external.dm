@@ -4,8 +4,8 @@
 
 /obj/item/organ/external
 	name = "external"
-	min_broken_damage = 30
-	max_damage = 0
+	min_broken_damage = 0
+	max_damage = 60
 	dir = SOUTH
 	organ_tag = "limb"
 	appearance_flags = DEFAULT_APPEARANCE_FLAGS | LONG_GLIDE
@@ -612,6 +612,7 @@ This function completely restores a damaged organ to perfect condition.
 	else
 		remove_all_pain()
 		..()
+
 /obj/item/organ/external/cook_organ()
 	..()
 	for(var/obj/item/organ/internal in internal_organs)
@@ -717,7 +718,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			owner.update_body(1)
 
 		germ_level++
-		owner.adjustToxLoss(1)
+		owner.adjustToxLoss(2.0)
 
 //Updating wounds. Handles wound natural I had some free spachealing, internal bleedings and infections
 /obj/item/organ/external/proc/update_wounds()
@@ -783,7 +784,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 			brute_dam += W.damage
 
 		if(!BP_IS_ROBOTIC(src) && W.bleeding() && (H && H.should_have_organ(BP_HEART)))
-			W.bleed_timer--
+			var/coagulation = 1.0
+			if(H)
+				coagulation = H.coagulation
+			W.bleed_timer = max(W.bleed_timer - coagulation, 0)
 			status |= ORGAN_BLEEDING
 
 		clamped |= W.clamped

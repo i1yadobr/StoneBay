@@ -37,7 +37,7 @@
 
 	gluttonous =          GLUT_TINY | GLUT_SMALLER | GLUT_ITEM_ANYTHING | GLUT_PROJECTILE_VOMIT
 	virus_immune =        1
-	blood_volume =        600
+	blood_volume =        6 LITERS
 	min_age =             1
 	max_age =             5
 	brute_mod =           0.5

@@ -13,7 +13,7 @@
 	attack_verb = list("mopped", "bashed", "bludgeoned", "whacked")
 
 /obj/item/mop/New()
-	create_reagents(30)
+	create_reagents(300)
 
 /obj/item/mop/afterattack(atom/A, mob/user, proximity)
 	if(!proximity)

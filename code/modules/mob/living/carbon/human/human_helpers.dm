@@ -1,6 +1,7 @@
-#define HUMAN_EATING_NO_ISSUE		0
-#define HUMAN_EATING_NBP_MOUTH		1
-#define HUMAN_EATING_BLOCKED_MOUTH	2
+#define HUMAN_EATING_NO_ISSUE      0
+#define HUMAN_EATING_NBP_MOUTH     1
+#define HUMAN_EATING_BLOCKED_MOUTH 2
+#define HUMAN_EATING_RESIST        3
 
 #define add_clothing_protection(A)	\
 	var/obj/item/clothing/C = A; \
@@ -9,25 +10,38 @@
 
 /mob/living/carbon/human/can_eat(food, feedback = 1)
 	var/list/status = can_eat_status()
-	if(status[1] == HUMAN_EATING_NO_ISSUE)
-		return 1
-	if(feedback)
-		if(status[1] == HUMAN_EATING_NBP_MOUTH)
-			to_chat(src, "Where do you intend to put \the [food]? You don't have a mouth!")
-		else if(status[1] == HUMAN_EATING_BLOCKED_MOUTH)
-			to_chat(src, "<span class='warning'>\The [status[2]] is in the way!</span>")
-	return 0
 
-/mob/living/carbon/human/can_force_feed(feeder, food, feedback = 1)
+	switch(status[1])
+		if(HUMAN_EATING_NO_ISSUE, HUMAN_EATING_RESIST)
+			return TRUE
+		if(HUMAN_EATING_NBP_MOUTH)
+			if(feedback)
+				to_chat(src, "Where do you intend to put \the [food]? You don't have a mouth!")
+		if(HUMAN_EATING_BLOCKED_MOUTH)
+			if(feedback)
+				to_chat(src, SPAN("warning", "\The [status[2]] is in the way!"))
+
+	return FALSE
+
+/mob/living/carbon/human/can_force_feed(feeder, food, feedback = 1, check_resist = FALSE)
 	var/list/status = can_eat_status()
-	if(status[1] == HUMAN_EATING_NO_ISSUE)
-		return 1
-	if(feedback)
-		if(status[1] == HUMAN_EATING_NBP_MOUTH)
-			to_chat(feeder, "Where do you intend to put \the [food]? \The [src] doesn't have a mouth!")
-		else if(status[1] == HUMAN_EATING_BLOCKED_MOUTH)
-			to_chat(feeder, "<span class='warning'>\The [status[2]] is in the way!</span>")
-	return 0
+
+	switch(status[1])
+		if(HUMAN_EATING_NO_ISSUE)
+			return TRUE
+		if(HUMAN_EATING_NBP_MOUTH)
+			if(feedback)
+				to_chat(feeder, "Where do you intend to put \the [food]? \The [src] doesn't have a mouth!")
+		if(HUMAN_EATING_BLOCKED_MOUTH)
+			if(feedback)
+				to_chat(feeder, SPAN("warning", "\The [status[2]] is in the way!"))
+		if(HUMAN_EATING_RESIST)
+			if(!check_resist)
+				return TRUE
+			if(feedback)
+				visible_message(SPAN("warning", "[feeder] tries to feed \the [src] \the [food], but they resist!"))
+
+	return FALSE
 
 /mob/living/carbon/human/proc/can_eat_status()
 	if(!check_has_mouth())
@@ -35,6 +49,13 @@
 	var/obj/item/blocked = check_mouth_coverage()
 	if(blocked)
 		return list(HUMAN_EATING_BLOCKED_MOUTH, blocked)
+	if(a_intent != I_HELP)
+		if(stat || !client || paralysis || sleeping || (handcuffed && (buckled || lying)) || istype(wear_suit, /obj/item/clothing/suit/straight_jacket))
+			return list(HUMAN_EATING_NO_ISSUE)
+		for(var/obj/item/grab/G in grabbed_by)
+			if(G.restrains())
+				return list(HUMAN_EATING_NO_ISSUE)
+		return list(HUMAN_EATING_RESIST)
 	return list(HUMAN_EATING_NO_ISSUE)
 
 #undef HUMAN_EATING_NO_ISSUE

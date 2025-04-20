@@ -309,7 +309,7 @@
 				continue
 
 			new_meat.SetName("[slab_owner] [new_meat.name]")
-			new_meat.reagents.add_reagent(/datum/reagent/nutriment, slab_nutrition)
+			new_meat.reagents.add_reagent(/datum/reagent/nutriment, slab_nutrition * 10)
 			if(!victim.reagents)
 				continue
 
