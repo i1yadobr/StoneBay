@@ -713,7 +713,7 @@
 						switch(hydration)
 							if(HYDRATION_NONE)
 								to_chat(src, SPAN("warning", "[pick("Your mouth feels like a desert", "You're dried up", "You are extremely thirsty", "You really need some water")]!"))
-							if(HYDRATION_NONE to HYDRATION_LOW)
+							if(HYDRATION_NONE+0.01 to HYDRATION_LOW)
 								to_chat(src, SPAN("notice", "[pick("It'd be nice to have a drink", "Your mouth is getting dry", "Some water wouldn't hurt")]..."))
 
 		//Undead does not eat nor drink.

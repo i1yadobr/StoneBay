@@ -477,12 +477,12 @@
 	switch(hydration)
 		if(HYDRATION_NONE)
 			detox_efficiency -= 0.5
-		if(HYDRATION_NONE to HYDRATION_LOW)
+		if(HYDRATION_NONE+0.01 to HYDRATION_LOW)
 			detox_efficiency -= 0.2
-		if(HYDRATION_HIGH to HYDRATION_SUPER)
+		if(HYDRATION_HIGH+0.01 to HYDRATION_SUPER)
 			if(detox_efficiency >= 0) // No effect if kidneys are broken
 				detox_efficiency += 0.2
-		if(HYDRATION_SUPER to INFINITY)
+		if(HYDRATION_SUPER+0.01 to INFINITY)
 			if(detox_efficiency >= 0) // No effect if kidneys are broken
 				detox_efficiency += 0.5
 

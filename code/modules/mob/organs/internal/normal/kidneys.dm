@@ -46,11 +46,11 @@
 		if(HYDRATION_NONE)
 			dynamic_hydration_consumption = 0
 			take_internal_damage(0.15) // kidneys autoheal 0.1 damage each tick, so we effectively deal 0.05 damage here; hence it takes ~17 minutes of complete dehydration to bruise a pair of healthy kidneys.
-		if(HYDRATION_NONE to HYDRATION_LOW)
+		if(HYDRATION_NONE+0.01 to HYDRATION_LOW)
 			dynamic_hydration_consumption *= 0.75
-		if(HYDRATION_HIGH to HYDRATION_SUPER)
+		if(HYDRATION_HIGH+0.01 to HYDRATION_SUPER)
 			dynamic_hydration_consumption *= 1.25
-		if(HYDRATION_SUPER to INFINITY)
+		if(HYDRATION_SUPER+0.01 to INFINITY)
 			dynamic_hydration_consumption *= 2.0
 
 	owner.remove_hydration(dynamic_hydration_consumption)
