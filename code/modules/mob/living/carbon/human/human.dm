@@ -820,11 +820,12 @@
 
 	return FALSE
 
-/mob/living/carbon/human/proc/ingest(atom/movable/AM)
+/mob/living/carbon/human/proc/ingest(atom/movable/AM, ignore_taste = FALSE)
 	if(QDELETED(AM))
 		return FALSE
 
-	taste(AM.reagents, AM.reagents.total_volume)
+	if(!ignore_taste)
+		taste(AM.reagents, AM.reagents.total_volume)
 
 	if(!should_have_organ(BP_STOMACH))
 		return FALSE // Whatever fallback we rely on.

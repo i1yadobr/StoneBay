@@ -69,6 +69,7 @@
 	spam_flag = TRUE
 	if(M == user)
 		if(!M.can_eat("pills"))
+			spam_flag = FALSE
 			return
 		user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 		to_chat(M, SPAN("notice", "You swallow a pill from \the [src]."))
@@ -76,7 +77,8 @@
 
 		if(ishuman(M))
 			var/mob/living/carbon/human/H = M
-			if(H.ingest(pill))
+			if(H.ingest(pill, TRUE))
+				spam_flag = FALSE
 				return TRUE
 
 		if(pill.reagents.total_volume)
@@ -113,7 +115,8 @@
 		admin_attack_log(user, M, "Fed the victim with [pill] (Reagents: [contained])", "Was fed with [pill] (Reagents: [contained])", "used [pill] (Reagents: [contained]) to feed")
 
 		var/mob/living/carbon/human/H = M
-		if(H.ingest(pill))
+		if(H.ingest(pill, TRUE))
+			spam_flag = FALSE
 			return TRUE
 
 		if(pill.reagents.total_volume)
