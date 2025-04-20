@@ -314,7 +314,7 @@
 	if(istype(sauna))
 		sauna_ref = weakref(sauna)
 
-	create_reagents(1000)
+	create_reagents(10 LITERS)
 
 	overlay = new overlay()
 

@@ -16,7 +16,7 @@
 	strength = STR_HIGH
 	movespeed_modifier = /datum/movespeed_modifier/unathi
 	brute_mod = 0.8
-	blood_volume = 800
+	blood_volume = 8 LITERS
 	num_alternate_languages = 2
 	secondary_langs = list(LANGUAGE_UNATHI)
 	name_language = LANGUAGE_UNATHI
@@ -84,7 +84,8 @@
 	if(H.InStasis() || H.is_ic_dead() || isundead(H))
 		return
 	if(H.nutrition < 50)
-		H.adjustToxLoss(2,0)
+		H.adjustInternalLoss(2.0)
+		H.adjustToxLoss(1.0, TRUE)
 		return
 	if(!H.innate_heal)
 		return

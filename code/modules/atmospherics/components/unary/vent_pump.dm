@@ -350,7 +350,7 @@
 
 		var/obj/item/weldingtool/WT = W
 
-		if(!WT.use_tool(src, user, delay = 2 SECONDS, amount = 5))
+		if(!WT.use_tool(src, user, delay = 2 SECONDS, amount = 50))
 			return
 
 		if(QDELETED(src) || !user)
@@ -378,7 +378,7 @@
 
 		to_chat(user, "<span class='notice'>Now welding \the [src].</span>")
 
-		if(!W.use_tool(src, user, delay = 2 SECONDS, amount = 5))
+		if(!W.use_tool(src, user, delay = 2 SECONDS, amount = 50))
 			return
 
 		if(QDELETED(src) || !user)

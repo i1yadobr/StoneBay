@@ -92,7 +92,7 @@
 /obj/item/reagent_containers/rag/proc/default_attack(atom/target, mob/user)
 	if(!on_fire && reagents.total_volume)
 		if(user.zone_sel.selecting == BP_MOUTH)
-			if (standard_feed_mob(user, target))
+			if (standard_feed_mob(user, target, bypass_resist = FALSE))
 				user.do_attack_animation(src)
 				user.visible_message(
 					SPAN("danger", "\The [user] smothers [target] with [src]!"),

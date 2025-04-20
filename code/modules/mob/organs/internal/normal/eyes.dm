@@ -11,6 +11,8 @@
 	var/list/eye_colour = list(0,0,0)
 	var/innate_flash_protection = 0
 	max_damage = 45
+	min_bruised_damage = 15
+	min_broken_damage = 30
 	var/isRobotize = 0
 
 /obj/item/organ/internal/eyes/New()

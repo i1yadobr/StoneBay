@@ -26,7 +26,7 @@
 	..()
 	if (prob(60))
 		src.pixel_y = rand(0, 4)
-	create_reagents(5)
+	create_reagents(50)
 	return
 
 /obj/item/material/kitchen/utensil/attack(mob/living/carbon/M, mob/living/carbon/user)
@@ -58,7 +58,11 @@
 			M.visible_message("<span class='notice'>\The [user] eats some [loaded] from \the [src].</span>")
 		else
 			user.visible_message("<span class='warning'>\The [user] begins to feed \the [M]!</span>")
-			if(!(M.can_force_feed(user, loaded) && do_mob(user, M, 5 SECONDS)))
+			if(!M.can_force_feed(user, loaded))
+				return
+			if(do_mob(user, M, time = 2 SECONDS))
+				return
+			if(!M.can_force_feed(user, loaded, check_resist = TRUE))
 				return
 			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")
 		reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)

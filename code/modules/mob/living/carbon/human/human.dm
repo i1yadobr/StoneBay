@@ -64,6 +64,9 @@
 		sync_organ_dna()
 	make_blood()
 
+	if(!should_have_organ(BP_LIVER)) // Blood can clot w/out a liver.
+		coagulation = species.coagulation
+
 	BITSET(hud_updateflag, STATUS_HUD)
 
 /mob/living/carbon/human/Destroy()
@@ -89,11 +92,24 @@
 			return stomach.ingested
 	return touching // Kind of a shitty hack, but makes more sense to me than digesting them.
 
+/mob/living/carbon/human/get_digested_reagents()
+	if(should_have_organ(BP_INTESTINES))
+		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		if(I)
+			return I.digested
+	return touching
+
 /mob/living/carbon/human/proc/metabolize_ingested_reagents()
 	if(should_have_organ(BP_STOMACH))
 		var/obj/item/organ/internal/stomach/stomach = internal_organs_by_name[BP_STOMACH]
 		if(stomach)
 			stomach.metabolize()
+
+/mob/living/carbon/human/proc/metabolize_digested_reagents()
+	if(should_have_organ(BP_INTESTINES))
+		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		if(I)
+			I.metabolize()
 
 /mob/living/carbon/human/Stat()
 	. = ..()
@@ -756,7 +772,90 @@
 		return 0
 	return 1
 
-/mob/living/carbon/human/proc/vomit(toxvomit = 0, timevomit = 1, level = 3)
+/mob/living/carbon/human/proc/taste(datum/reagents/R, amount = 1, multiplier = 1, force = FALSE)
+	if(!force && last_taste_time + 50 >= world.time)
+		return FALSE
+
+	if(should_have_organ(BP_TONGUE))
+		var/obj/item/organ/internal/tongue/L = internal_organs_by_name[BP_TONGUE]
+		if(!L || L.is_broken())
+			return FALSE
+
+	var/datum/reagents/temp = new(amount, GLOB.temp_reagents_holder) //temporary holder used to analyse what gets transfered.
+	R.trans_to_holder(temp, amount, multiplier, 1)
+
+	var/text_output = temp.generate_taste_message(src)
+	if(text_output != last_taste_text || last_taste_time + 100 < world.time) //We dont want to spam the same message over and over again at the person. Give it a bit of a buffer.
+		to_chat(src, "<span class='notice'>You can taste [text_output].</span>")//no taste means there are too many tastes and not enough flavor.
+
+		last_taste_time = world.time
+		last_taste_text = text_output
+
+/mob/living/carbon/human/proc/ingest_reagents(datum/reagents/R, amount = 0)
+	if(!R || !amount)
+		return FALSE
+
+	taste(R, amount)
+
+	if(!should_have_organ(BP_STOMACH))
+		R.trans_to_mob(src, amount, CHEM_INGEST)
+		return TRUE
+
+	var/obj/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+	if(S)
+		if(S.is_broken() && prob(15))
+			custom_pain("Your stomach cramps!", 10)
+		R.trans_to_mob(src, amount, CHEM_INGEST)
+		return TRUE
+
+	if(should_have_organ(BP_INTESTINES))
+		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		if(!I)
+			// TODO: Abdominal cavity here
+			custom_pain("Your guts cramp!", 10)
+			return TRUE
+		else
+			R.trans_to_mob(src, amount, CHEM_DIGEST)
+		return TRUE
+
+	return FALSE
+
+/mob/living/carbon/human/proc/ingest(atom/movable/AM)
+	if(QDELETED(AM))
+		return FALSE
+
+	taste(AM.reagents, AM.reagents.total_volume)
+
+	if(!should_have_organ(BP_STOMACH))
+		return FALSE // Whatever fallback we rely on.
+
+	var/obj/item/organ/internal/stomach/S = internal_organs_by_name[BP_STOMACH]
+	if(S)
+		S.ingest(AM)
+
+		if(S.is_broken())
+			if(prob(25))
+				custom_pain("Your stomach cramps agonizingly!", 20)
+			else
+				custom_pain("Your stomach cramps!", 10)
+		else if(S.is_bruised() && prob(25))
+			custom_pain("Your stomach cramps a little.", 3)
+
+		return TRUE
+
+	if(should_have_organ(BP_INTESTINES))
+		var/obj/item/organ/internal/intestines/I = internal_organs_by_name[BP_INTESTINES]
+		if(!I) // No stomach nor intestines, tough time to have a supper.
+			// TODO: Abdominal cavity here
+			custom_pain("Your guts cramp!", 10)
+			AM.forceMove(loc)
+		else
+			AM.forceMove(I)
+		return TRUE
+
+	return FALSE
+
+/mob/living/carbon/human/proc/vomit(toxvomit = 0, timevomit = 1, level = 3, silent = FALSE)
 	set waitfor = 0
 	if(!check_has_mouth() || isSynthetic() || !timevomit || !level)
 		return
@@ -766,7 +865,8 @@
 		return
 	if(!lastpuke)
 		lastpuke = 1
-		to_chat(src, "<span class='warning'>You feel nauseous...</span>")
+		if(!silent)
+			to_chat(src, "<span class='warning'>You feel nauseous...</span>")
 		if(level > 1)
 			sleep(150 / timevomit)	//15 seconds until second warning
 			to_chat(src, "<span class='warning'>You feel like you are about to throw up!</span>")
@@ -774,9 +874,12 @@
 				sleep(100 / timevomit)	//and you have 10 more for mad dash to the bucket
 				Stun(3)
 				var/obj/item/organ/internal/stomach/stomach = internal_organs_by_name[BP_STOMACH]
-				if(nutrition <= STOMACH_FULLNESS_SUPER_LOW || !istype(stomach))
+				if(!istype(stomach))
+					custom_emote(VISIBLE_MESSAGE, "dry heaves.", "AUTO_EMOTE")
+				else if(!(nutrition > STOMACH_FULLNESS_SUPER_LOW || stomach.get_fullness() > 5))
 					custom_emote(VISIBLE_MESSAGE, "dry heaves.", "AUTO_EMOTE")
 				else
+					// Legacy stomach_contents (mostly used by mobs by now)
 					for(var/a in stomach_contents)
 						var/atom/movable/A = a
 						A.forceMove(get_turf(src))
@@ -784,13 +887,29 @@
 						if(src.species.gluttonous & GLUT_PROJECTILE_VOMIT)
 							A.throw_at(get_edge_target_turf(src, dir), 7, 1, src)
 
+					// Actual stomach contents
+					for(var/a in stomach.processing)
+						if(prob(20))
+							continue // Something may remain
+						var/atom/movable/A = a
+						if(A == stomach.currently_processing)
+							continue // Gripping tight on whatever we're processing right now
+						A.forceMove(get_turf(src))
+						stomach.processing.Remove(a)
+					stomach.recalc_items_volume()
+
+					// Getting rid of reagents in stomach, randoming from 30 ml to the whole contents
+					stomach.ingested.remove_any(rand(30, stomach.ingested.total_volume))
+
 					src.visible_message("<span class='warning'>[src] throws up!</span>","<span class='warning'>You throw up!</span>")
 					playsound(loc, 'sound/effects/splat.ogg', 50, 1)
 
 					var/turf/location = loc
 					if(istype(location, /turf/simulated))
 						location.add_vomit_floor(src, toxvomit, stomach.ingested)
-					remove_nutrition(30)
+
+					remove_nutrition(10.0)
+					remove_hydration(rand(50, 200))
 		sleep(350)	//wait 35 seconds before next volley
 		lastpuke = 0
 
@@ -953,7 +1072,7 @@
 	organ.take_external_damage(rand(1,3), 0, 0)
 	if(!BP_IS_ROBOTIC(organ) && (should_have_organ(BP_HEART))) //There is no blood in protheses.
 		organ.status |= ORGAN_BLEEDING
-		src.adjustToxLoss(rand(1,3))
+		adjustInternalLoss(rand(1,3))
 
 /mob/living/carbon/human/verb/check_pulse()
 	set category = "Object"
@@ -1468,15 +1587,16 @@
 /mob/living/carbon/human/should_have_organ(organ_check)
 
 	var/obj/item/organ/external/affecting
-	if(organ_check in list(BP_HEART, BP_LUNGS))
+	if(organ_check in list(BP_HEART, BP_LUNGS, BP_STOMACH, BP_LIVER))
 		affecting = organs_by_name[BP_CHEST]
-	else if(organ_check in list(BP_LIVER, BP_KIDNEYS))
+	else if(organ_check in list(BP_KIDNEYS, BP_BLADDER, BP_INTESTINES))
 		affecting = organs_by_name[BP_GROIN]
-	else if(organ_check in list(BP_EYES))
+	else if(organ_check in list(BP_EYES, BP_TONGUE))
 		affecting = organs_by_name[BP_HEAD]
 
 	if(affecting && BP_IS_ROBOTIC(affecting))
 		return 0
+
 	return (species && species.has_organ[organ_check])
 
 /mob/living/carbon/human/has_limb(limb_check)	//returns 1 if found, 2 if limb is robotic, 0 if not found and null if its chest or groin (dont pass those)
@@ -1527,7 +1647,11 @@
 			return 0
 
 /mob/living/carbon/human/get_adjusted_metabolism(metabolism)
-	return ..() * (species ? species.metabolism_mod : 1)
+	. = ..(metabolism)
+	for(var/datum/modifier/mod in modifiers)
+		if(!isnull(mod.metabolism_percent))
+			. *= mod.metabolism_percent
+	. *= (species ? species.metabolism_mod : 1)
 
 /mob/living/carbon/human/is_invisible_to(mob/viewer)
 	return (is_cloaked() || ..())

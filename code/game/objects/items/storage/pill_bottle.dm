@@ -73,13 +73,19 @@
 		user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 		to_chat(M, SPAN("notice", "You swallow a pill from \the [src]."))
 		remove_from_storage(pill, get_turf(M))
+
+		if(ishuman(M))
+			var/mob/living/carbon/human/H = M
+			if(H.ingest(pill))
+				return TRUE
+
 		if(pill.reagents.total_volume)
 			pill.reagents.trans_to_mob(M, pill.reagents.total_volume, CHEM_INGEST)
 		qdel(pill)
 		spam_flag = FALSE
 		return TRUE
 
-	else if(istype(M, /mob/living/carbon/human))
+	else if(ishuman(M))
 		if(!M.can_force_feed(user, "pills"))
 			spam_flag = FALSE
 			return FALSE
@@ -93,6 +99,10 @@
 			spam_flag = FALSE
 			return FALSE
 
+		if(!M.can_force_feed(user, "pills", check_resist = TRUE))
+			spam_flag = FALSE
+			return FALSE
+
 		if(pill?.loc != src)
 			spam_flag = FALSE
 			return FALSE
@@ -101,6 +111,11 @@
 		user.visible_message(SPAN("warning", "[user] forces [M] to swallow pills from \the [src]."))
 		var/contained = pill.reagentlist()
 		admin_attack_log(user, M, "Fed the victim with [pill] (Reagents: [contained])", "Was fed with [pill] (Reagents: [contained])", "used [pill] (Reagents: [contained]) to feed")
+
+		var/mob/living/carbon/human/H = M
+		if(H.ingest(pill))
+			return TRUE
+
 		if(pill.reagents.total_volume)
 			pill.reagents.trans_to_mob(M, pill.reagents.total_volume, CHEM_INGEST)
 		qdel(pill)

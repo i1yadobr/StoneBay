@@ -12,7 +12,7 @@
 
 /obj/item/soap/New()
 	..()
-	create_reagents(30)
+	create_reagents(300)
 	wet()
 
 /obj/item/soap/examine(mob/user, infix)
@@ -25,7 +25,7 @@
 		. += "It's dry!"
 
 /obj/item/soap/proc/wet()
-	reagents.add_reagent(/datum/reagent/space_cleaner, 15)
+	reagents.add_reagent(/datum/reagent/space_cleaner, 150)
 
 /obj/item/soap/Crossed(AM as mob|obj)
 	if(istype(AM, /mob/living))

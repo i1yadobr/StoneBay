@@ -37,6 +37,7 @@ interface MedicalData {
   burn_severity: string;
   tox_severity: string;
   oxy_severity: string;
+  internal_severity: string;
   rad_dose: number;
   clone_severity: string;
   immunity: number;
@@ -218,7 +219,7 @@ const ScanData = (props: any, context: any) => {
             </LabeledList.Item>
 
             <LabeledList.Item
-              label="Systematic Organ Failure"
+              label="Toxic Buildup"
               color={
                 data.medical_data.tox_severity === "None"
                   ? "good"
@@ -228,6 +229,19 @@ const ScanData = (props: any, context: any) => {
               }
             >
               {data.medical_data.tox_severity}
+            </LabeledList.Item>
+
+            <LabeledList.Item
+              label="Systematic Organ Failure"
+              color={
+                data.medical_data.internal_severity === "None"
+                  ? "good"
+                  : data.medical_data.internal_severity === "Severe"
+                  ? "bad"
+                  : "average"
+              }
+            >
+              {data.medical_data.internal_severity}
             </LabeledList.Item>
 
             <LabeledList.Item

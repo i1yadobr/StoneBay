@@ -234,46 +234,74 @@
 			breathe_organ.add_oxygen_deprivation(amount)
 	BITSET(hud_updateflag, HEALTH_HUD)
 
-/mob/living/carbon/human/getToxLoss() // In fact, returns internal organs damage. Should be reworked sometime in the future.
-	if((species.species_flags & SPECIES_FLAG_NO_POISON) || isSynthetic() || isundead(src))
+/mob/living/carbon/human/getToxLoss()
+	if(isSynthetic() || isundead(src))
 		return 0
-	var/amount = 0
-	for(var/obj/item/organ/internal/I in internal_organs)
-		amount += I.getToxLoss()
-	return amount
+	return toxic_severity
 
 /mob/living/carbon/human/setToxLoss(amount)
-	if(!(species.species_flags & SPECIES_FLAG_NO_POISON) && !isSynthetic() && !isundead(src))
-		adjustToxLoss(getToxLoss()-amount)
+	if(isSynthetic() || isundead(src))
+		return
+	toxic_buildup = amount
 
-// TODO: better internal organ damage procs.
-/mob/living/carbon/human/adjustToxLoss(amount)
+/mob/living/carbon/human/adjustToxPercent(amount)
+	if(status_flags & GODMODE)
+		return 0
+	amount = round(amount * ((species ? (species.blood_volume * 0.05) : 280) / 100))
+	adjustToxLoss(amount)
+	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.05) : 280) * 100)
 
-	if((species.species_flags & SPECIES_FLAG_NO_POISON) || isSynthetic() || isundead(src))
+/mob/living/carbon/human/adjustToxLoss(amount, bypass_liver = FALSE)
+	if(isSynthetic() || isundead(src))
 		return
 
 	var/heal = amount < 0 || HAS_TRAIT(src, TRAIT_TOXINLOVER)
 	amount = abs(amount)
 
-	if(!heal && (CE_ANTITOX in chem_effects))
-		amount *= 1 - (chem_effects[CE_ANTITOX] * 0.25)
+	// Liver is buffering some toxic damage, unless it's too busy. And unless the damage bypasses the liver (i.e. damage caused by liver failure).
+	var/obj/item/organ/internal/liver/liver = internal_organs_by_name[BP_LIVER]
+	if(liver && !bypass_liver && !heal)
+		amount = liver.store_tox(amount)
+		if(amount <= 0)
+			return // Try to store toxins in the liver; stop right here if it sponges all the damage
+
+	if(heal)
+		toxic_buildup = max(0, toxic_buildup - amount)
+	else
+		toxic_buildup += amount
+
+/mob/living/carbon/human/getInternalLoss() // In the year 2025, we finally have separate toxLoss and internalLoss. Awe.
+	if(isSynthetic() || isundead(src))
+		return 0
+	var/amount = 0
+	for(var/obj/item/organ/internal/I in internal_organs)
+		amount += I.damage
+	return amount
+
+/mob/living/carbon/human/setInternalLoss(amount)
+	if(!isSynthetic() && !isundead(src))
+		adjustInternalLoss(getInternalLoss() - amount)
+
+/mob/living/carbon/human/adjustInternalLoss(amount, toxic = FALSE)
+	if(isSynthetic() || isundead(src))
+		return
+
+	var/heal = amount < 0 || (toxic && HAS_TRAIT(src, TRAIT_TOXINLOVER))
+	amount = abs(amount)
 
 	var/list/pick_organs = shuffle(internal_organs.Copy())
 
-	// Prioritize damaging our filtration organs first.
-	var/obj/item/organ/internal/kidneys/kidneys = internal_organs_by_name[BP_KIDNEYS]
-	if(kidneys)
-		pick_organs -= kidneys
-		pick_organs.Insert(1, kidneys)
-	// Liver is buffering some toxic damage, preventing its friends from getting damage unless it's too busy with filtering.
-	var/obj/item/organ/internal/liver/liver = internal_organs_by_name[BP_LIVER]
-	if(liver)
-		if(!heal)
-			amount -= liver.store_tox(amount)
-			if(amount <= 0)
-				return // Try to store toxins in the liver; stop right here if it sponges all the damage
-		pick_organs -= liver
-		pick_organs.Insert(1, liver)
+	// Prioritize damaging our *working* filtration organs first if it's toxic damage.
+	if(toxic)
+		var/obj/item/organ/internal/kidneys/kidneys = internal_organs_by_name[BP_KIDNEYS]
+		if(kidneys && !kidneys.is_broken())
+			pick_organs -= kidneys
+			pick_organs.Insert(1, kidneys)
+
+		var/obj/item/organ/internal/liver/liver = internal_organs_by_name[BP_LIVER]
+		if(liver && !liver.is_broken())
+			pick_organs -= liver
+			pick_organs.Insert(1, liver)
 
 	// Move the brain to the very end since damage to it is vastly more dangerous
 	// (and isn't technically counted as toxloss) than general organ damage.
@@ -283,6 +311,9 @@
 		pick_organs += brain
 
 	for(var/obj/item/organ/internal/I in pick_organs)
+		if(toxic && BP_IS_ROBOTIC(I))
+			continue
+
 		if(amount <= 0)
 			for(var/datum/modifier/M in modifiers)
 				if(!isnull(M.incoming_healing_percent))
@@ -311,12 +342,15 @@
 				amount = 0
 
 /mob/living/carbon/human/proc/can_autoheal(dam_type)
-	if(!species || !dam_type) return FALSE
+	if(!species || !dam_type)
+		return FALSE
 
 	if(dam_type == BRUTE)
-		return(getBruteLoss() < species.total_health)
-	else if(dam_type == BURN)
-		return(getFireLoss() < species.total_health)
+		return !!coagulation && (getBruteLoss() < species.total_health) // No blood clotting = no brute autohealing, simple as that.
+
+	if(dam_type == BURN)
+		return (getFireLoss() < species.total_health)
+
 	return FALSE
 
 ////////////////////////////////////////////
@@ -430,15 +464,6 @@ In most cases it makes more sense to use apply_damage() instead! And make sure t
 
 
 ////////////////////////////////////////////
-
-/*
-This function restores the subjects blood to max.
-*/
-/mob/living/carbon/human/proc/restore_blood()
-	if(!should_have_organ(BP_HEART))
-		return
-	if(vessel.total_volume < species.blood_volume)
-		vessel.add_reagent(/datum/reagent/blood, species.blood_volume - vessel.total_volume)
 
 /*
 This function restores all organs.

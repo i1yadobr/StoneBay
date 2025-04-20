@@ -216,7 +216,7 @@
 		return//Already doing something.
 	if(isWelder(C) && !repairing)
 		var/obj/item/weldingtool/WT = C
-		if(!WT.use_tool(src, user, amount = 1))
+		if(!WT.use_tool(src, user, amount = 10))
 			return FALSE
 
 		blocked = !blocked

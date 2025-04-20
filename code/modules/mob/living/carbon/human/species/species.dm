@@ -58,7 +58,8 @@
 	var/virus_immune
 	var/short_sighted                         // Permanent weldervision.
 	var/light_sensitive                       // Ditto, but requires sunglasses to fix
-	var/blood_volume = 560                    // Initial blood volume.
+	var/blood_volume = 5.6 LITERS             // Initial blood volume.
+	var/coagulation = COAGULATION_NORMAL      // Coagulation value when liver is healthy OR none is needed.
 	var/hunger_factor = DEFAULT_HUNGER_FACTOR // Multiplier for hunger.
 	var/taste_sensitivity = TASTE_NORMAL      // How sensitive the species is to minute tastes.
 	var/troublesome_sexual_dimorphism = FALSE // Do other species have hard time differentiating our biological genders?
@@ -171,14 +172,17 @@
 	var/rarity_value = 1               // Relative rarity/collector value for this species.
 	                                   // Determines the organs that the species spawns with and
 	var/list/has_organ = list(         // which required-organ checks are conducted.
-		BP_HEART =    /obj/item/organ/internal/heart,
-		BP_STOMACH =  /obj/item/organ/internal/stomach,
-		BP_LUNGS =    /obj/item/organ/internal/lungs,
-		BP_LIVER =    /obj/item/organ/internal/liver,
-		BP_KIDNEYS =  /obj/item/organ/internal/kidneys,
-		BP_BRAIN =    /obj/item/organ/internal/cerebrum/brain,
-		BP_APPENDIX = /obj/item/organ/internal/appendix,
-		BP_EYES =     /obj/item/organ/internal/eyes
+		BP_HEART =      /obj/item/organ/internal/heart,
+		BP_STOMACH =    /obj/item/organ/internal/stomach,
+		BP_LUNGS =      /obj/item/organ/internal/lungs,
+		BP_LIVER =      /obj/item/organ/internal/liver,
+		BP_KIDNEYS =    /obj/item/organ/internal/kidneys,
+		BP_BRAIN =      /obj/item/organ/internal/cerebrum/brain,
+		BP_APPENDIX =   /obj/item/organ/internal/appendix,
+		BP_EYES =       /obj/item/organ/internal/eyes,
+		BP_TONGUE =     /obj/item/organ/internal/tongue,
+		BP_BLADDER =    /obj/item/organ/internal/bladder,
+		BP_INTESTINES = /obj/item/organ/internal/intestines
 		)
 	var/vision_organ              // If set, this organ is required for vision. Defaults to "eyes" if the species has them.
 	var/breathing_organ           // If set, this organ is required for breathing. Defaults to "lungs" if the species has them.

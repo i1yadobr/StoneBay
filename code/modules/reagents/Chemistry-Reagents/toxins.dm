@@ -3,18 +3,23 @@
 /datum/reagent/toxin
 	name = "Toxin"
 	description = "A toxic chemical."
+
 	taste_description = "bitterness"
 	taste_mult = 1.2
+
 	reagent_state = LIQUID
 	color = "#cf3600"
-	metabolism = REM * 0.25 // 0.05 by default. They last a while and slowly kill you.
+
+	metabolism = REM
+	digest_met = REM * 0.5 // 0.1 by default. They last a while and slowly kill you.
+	digest_absorbability = 1.0 // Eaten toxins last twice as long and deal half the damage per tick.
 
 	var/target_organ
-	var/strength = 4 // How much damage it deals per unit
+	var/strength = 5 // How much damage it deals per ml
 
 /datum/reagent/toxin/affect_blood(mob/living/carbon/M, alien, removed)
 	if(strength && alien != IS_DIONA)
-		M.add_chemical_effect(CE_TOXIN, strength)
+		M.add_up_to_chemical_effect(CE_TOXIN, strength)
 		var/dam = (strength * removed)
 		if(target_organ && ishuman(M))
 			var/mob/living/carbon/human/H = M
@@ -62,7 +67,7 @@
 	taste_mult = 1.5
 	reagent_state = LIQUID
 	color = "#e90eb8"
-	strength = 30
+	strength = 15
 	touch_met = 5
 	var/fire_mult = 5
 
@@ -148,7 +153,7 @@
 	strength = 10
 	overdose = 20
 	metabolism = REM * 0.5
-	absorbability = 0.75
+	digest_absorbability = 0.75
 
 /datum/reagent/toxin/potassium_chlorophoride/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	..()
@@ -201,7 +206,7 @@
 	taste_description = "plant food"
 	taste_mult = 0.5
 	reagent_state = LIQUID
-	strength = 0.5 // It's not THAT poisonous.
+	strength = 4.0 // It's not THAT poisonous.
 	color = "#664330"
 
 /datum/reagent/toxin/fertilizer/eznutrient
@@ -252,21 +257,6 @@
 	if(alien == IS_DIONA)
 		M.adjustToxLoss(50 * removed)
 
-/datum/reagent/acid/polyacid
-	name = "Polytrinic acid"
-	description = "Polytrinic acid is a an extremely corrosive chemical substance."
-	taste_description = "acid"
-	reagent_state = LIQUID
-	color = "#8e18a9"
-	power = 10
-	meltdose = 4
-
-/datum/reagent/acid/stomach
-	name = "stomach acid"
-	taste_description = "coppery foulness"
-	power = 1
-	color = "#d8ff00"
-
 /datum/reagent/lexorin
 	name = "Lexorin"
 	description = "Lexorin temporarily stops respiration. Causes tissue damage."
@@ -300,7 +290,7 @@
 	if(prob(33))
 		affect_blood(M, alien, removed)
 
-/datum/reagent/mutagen/affect_ingest(mob/living/carbon/M, alien, removed)
+/datum/reagent/mutagen/affect_digest(mob/living/carbon/M, alien, removed)
 	if(prob(67))
 		affect_blood(M, alien, removed)
 
@@ -314,7 +304,7 @@
 		return
 
 	if(M.dna)
-		if(prob(removed * mutation_potency)) // Approx. one mutation per 10 injected/20 ingested/30 touching units
+		if(prob(removed * mutation_potency)) // Approx. one mutation per 10 injected/20 ingested/30 touching ml
 			randmuti(M)
 			M.UpdateAppearance()
 	M.radiation += (0.05 SIEVERT) * removed
@@ -351,7 +341,7 @@
 	color = "#009ca8"
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE
-	absorbability = 0.75
+	digest_absorbability = 0.75
 
 /datum/reagent/soporific/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	if(alien == IS_DIONA)
@@ -383,7 +373,7 @@
 	color = "#000067"
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE * 0.5
-	absorbability = 0.75
+	digest_absorbability = 0.75
 
 /datum/reagent/chloralhydrate/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	if(alien == IS_DIONA)
@@ -411,7 +401,7 @@
 	taste_description = "shitty piss water"
 	reagent_state = LIQUID
 	color = "#ffd300"
-	absorbability = 1.0 // SpEcIaL ingestible chloralhydrate
+	digest_absorbability = 1.0 // SpEcIaL ingestible chloralhydrate
 
 	glass_name = "beer"
 	glass_desc = "A freezing pint of beer"
@@ -522,7 +512,7 @@
 	color = "#e700e7"
 	overdose = REAGENTS_OVERDOSE
 	metabolism = REM * 0.5
-	absorbability = 0.75
+	digest_absorbability = 0.75
 
 /datum/reagent/psilocybin/affect_blood(mob/living/carbon/M, alien, removed, affecting_dose)
 	if(alien == IS_DIONA)
@@ -644,14 +634,14 @@
 	reagent_state = LIQUID
 	color = "#535e66"
 	overdose = 5
+	ingest_met = REM
+	ingest_absorbability = 1.0
+	digest_absorbability = 1.0
 
 /datum/reagent/nanites/affect_blood(mob/living/carbon/M, alien, removed)
 	if(alien != IS_DIONA)
 		M.heal_organ_damage(15 * removed, 15 * removed)
 		M.add_chemical_effect(CE_OXYGENATED, 2)
-
-/datum/reagent/nanites/affect_ingest(mob/living/carbon/M, alien, removed)
-	affect_blood(M, alien, removed)
 
 /datum/reagent/nanites/overdose(mob/living/carbon/M, alien)
 	if(prob(80))

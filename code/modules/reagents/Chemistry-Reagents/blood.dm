@@ -1,4 +1,18 @@
 /datum/reagent/blood
+	name = "Blood"
+
+	reagent_state = LIQUID
+	color = "#c80000"
+
+	taste_description = "iron"
+	taste_mult = 1.5
+
+	metabolism = REM * 5
+	hydration_value = 0.51 // Scientific
+
+	glass_name = "tomato juice"
+	glass_desc = "Are you sure this is tomato juice?"
+
 	data = new /list(
 		"donor" = null,
 		"species" = SPECIES_HUMAN,
@@ -11,14 +25,6 @@
 		"antibodies" = list(),
 		"has_oxy" = 1
 	)
-	name = "Blood"
-	reagent_state = LIQUID
-	metabolism = REM * 5
-	color = "#c80000"
-	taste_description = "iron"
-	taste_mult = 1.3
-	glass_name = "tomato juice"
-	glass_desc = "Are you sure this is tomato juice?"
 
 /datum/reagent/blood/initialize_data(newdata)
 	..()
@@ -96,10 +102,7 @@
 			B.blood_DNA["UNKNOWN DNA STRUCTURE"] = "X*"
 
 /datum/reagent/blood/affect_ingest(mob/living/carbon/M, alien, removed)
-	if(M.chem_doses[type] > 5)
-		M.adjustToxLoss(removed)
-	if(M.chem_doses[type] > 15)
-		M.adjustToxLoss(removed)
+	// Only transferring viruses while in stomach, digested blood is considered "neutralized"
 	if(data && data["virus2"])
 		var/list/vlist = data["virus2"]
 		if(vlist.len)
@@ -107,6 +110,11 @@
 				var/datum/disease2/disease/V = vlist[ID]
 				if(V && V.spreadtype == "Contact")
 					infect_virus2(M, V.getcopy())
+
+/datum/reagent/blood/affect_digest(mob/living/carbon/M, alien, removed)
+	// Nutritious red water
+	M.add_hydration(removed * hydration_value)
+	M.add_nutrition(removed * 0.5)
 
 /datum/reagent/blood/affect_touch(mob/living/carbon/M, alien, removed)
 	if(ishuman(M))
@@ -129,11 +137,14 @@
 
 // pure concentrated antibodies
 /datum/reagent/antibodies
-	data = list("antibodies"=list())
 	name = "Antibodies"
+
 	taste_description = "slime"
+
 	reagent_state = LIQUID
 	color = "#0050f0"
+
+	data = list("antibodies"=list())
 
 /datum/reagent/antibodies/affect_blood(mob/living/carbon/M, alien, removed)
 	if(src.data)

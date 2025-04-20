@@ -180,7 +180,7 @@
 
 /obj/machinery/shower/Initialize(mapload, ...)
 	. = ..()
-	create_reagents(50)
+	create_reagents(0.5 LITERS)
 
 //add heat controls? when emagged, you can freeze to death in it?
 
@@ -521,7 +521,7 @@
 				return 1
 	else if(istype(O, /obj/item/mop))
 		playsound(loc, 'sound/effects/using/sink/filling1.ogg', 75)
-		O.reagents.add_reagent(/datum/reagent/water, 5)
+		O.reagents.add_reagent(/datum/reagent/water, 50)
 		to_chat(user, "<span class='notice'>You wet \the [O] in \the [src].</span>")
 		playsound(loc, 'sound/effects/slosh.ogg', 25, 1)
 		return

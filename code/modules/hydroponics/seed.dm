@@ -24,7 +24,7 @@
 	var/growth_stages = 0          // Number of stages the plant passes through before it is mature.
 	var/list/traits = list()       // Initialized in New()
 	var/list/mutants               // Possible predefined mutant varieties, if any.
-	var/list/chems                 // Chemicals that plant produces in products/injects into victim.
+	var/list/chems                 // Chemicals that plant produces in products/injects into victim. Format: list(/datum/reagent/reagent_path = list(default_volume, volume_per_potency), ...)
 	var/list/consume_gasses        // The plant will absorb these gasses during its life.
 	var/list/exude_gasses          // The plant will exude these gasses during its life.
 	var/kitchen_tag                // Used by the reagent grinder.

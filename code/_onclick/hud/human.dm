@@ -268,13 +268,38 @@
 		target.cells.screen_loc = ui_nutrition
 		infodisplay |= target.cells
 
-	else if(hud_data.has_nutrition)
-		mymob.nutrition_icon = new /atom/movable/screen()
-		mymob.nutrition_icon.icon = ui_style
-		mymob.nutrition_icon.icon_state = "nutrition0"
-		mymob.nutrition_icon.SetName("nutrition")
-		mymob.nutrition_icon.screen_loc = ui_nutrition
-		infodisplay |= mymob.nutrition_icon
+	else
+		if(hud_data.has_nutrition)
+			mymob.nutrition_icon = new /atom/movable/screen()
+			mymob.nutrition_icon.icon = ui_style
+			mymob.nutrition_icon.icon_state = "nutrition0"
+			mymob.nutrition_icon.SetName("nutrition")
+			mymob.nutrition_icon.screen_loc = ui_nutrition
+			infodisplay |= mymob.nutrition_icon
+
+		if(hud_data.has_hydration)
+			mymob.hydration_icon = new /atom/movable/screen()
+			mymob.hydration_icon.icon = ui_style
+			mymob.hydration_icon.icon_state = "hydration0"
+			mymob.hydration_icon.SetName("hydration")
+			mymob.hydration_icon.screen_loc = ui_nutrition
+			infodisplay |= mymob.hydration_icon
+
+		if(hud_data.has_bladder)
+			mymob.bladder_icon = new /atom/movable/screen()
+			mymob.bladder_icon.icon = ui_style
+			mymob.bladder_icon.icon_state = "bladder0"
+			mymob.bladder_icon.SetName("bladder")
+			mymob.bladder_icon.screen_loc = ui_bladder
+			infodisplay |= mymob.bladder_icon
+
+		if(hud_data.has_bowels)
+			mymob.bowels_icon = new /atom/movable/screen()
+			mymob.bowels_icon.icon = ui_style
+			mymob.bowels_icon.icon_state = "bowels0"
+			mymob.bowels_icon.SetName("bowels")
+			mymob.bowels_icon.screen_loc = ui_bladder
+			infodisplay |= mymob.bowels_icon
 
 	if(hud_data.has_poise)
 		mymob.poise_icon = new /atom/movable/screen()

@@ -188,7 +188,7 @@
 		for (var/obj/item/organ/external/C in E.children)
 			C.status |= ORGAN_DEAD
 	mob.update_body(1)
-	mob.adjustToxLoss(15 * multiplier)
+	mob.adjustToxLoss(5.0 * multiplier)
 
 /datum/disease2/effect/organs/deactivate(mob/living/carbon/human/mob)
 	if(..())

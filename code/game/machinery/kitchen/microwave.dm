@@ -33,7 +33,7 @@
 
 /obj/machinery/microwave/Initialize()
 	. = ..()
-	create_reagents(100)
+	create_reagents(1 LITER)
 	if (!available_recipes)
 		available_recipes = new
 		for (var/type in (typesof(/datum/recipe)-/datum/recipe))
@@ -266,7 +266,7 @@
 		return
 
 	var/datum/recipe/recipe = select_recipe(available_recipes,src)
-	var/obj/cooked
+	var/list/cooked
 	if (!recipe)
 		dirty += 1
 		if (prob(max(10, dirty * 5)))
@@ -277,7 +277,8 @@
 			wzhzhzh(4)
 			muck_finish()
 			cooked = fail()
-			cooked.dropInto(loc)
+			for(var/obj/item/I in cooked)
+				I.dropInto(loc)
 			return
 		else if (has_extra_item())
 			if (!wzhzhzh(4))
@@ -285,7 +286,8 @@
 				return
 			broke()
 			cooked = fail()
-			cooked.dropInto(loc)
+			for(var/obj/item/I in cooked)
+				I.dropInto(loc)
 			return
 		else
 			if (!wzhzhzh(10))
@@ -293,7 +295,8 @@
 				return
 			stop()
 			cooked = fail()
-			cooked.dropInto(loc)
+			for(var/obj/item/I in cooked)
+				I.dropInto(loc)
 			return
 	else
 		var/halftime = round(recipe.time / 20)
@@ -303,12 +306,14 @@
 		if (!wzhzhzh(halftime))
 			abort()
 			cooked = fail()
-			cooked.dropInto(loc)
+			for(var/obj/item/I in cooked)
+				I.dropInto(loc)
 			return
 		cooked = recipe.make_food(src)
 		stop()
 		if(cooked)
-			cooked.dropInto(loc)
+			for(var/obj/item/I in cooked)
+				I.dropInto(loc)
 		return
 
 /obj/machinery/microwave/proc/wzhzhzh(seconds as num) // Whoever named this proc is fucking literally Satan. ~ Z
@@ -396,8 +401,8 @@
 	src.reagents.clear_reagents()
 	var/obj/item/reagent_containers/food/badrecipe/ffuu = new(src)
 	ffuu.reagents.add_reagent(/datum/reagent/carbon, amount)
-	ffuu.reagents.add_reagent(/datum/reagent/toxin, amount/10)
-	return ffuu
+	ffuu.reagents.add_reagent(/datum/reagent/toxin, amount / 100)
+	return list(ffuu)
 
 /obj/machinery/microwave/Topic(href, href_list)
 	if(..())

@@ -53,6 +53,9 @@
 	var/atom/movable/screen/block_icon = null
 	var/atom/movable/screen/blockswitch_icon = null
 	var/atom/movable/screen/nutrition_icon = null
+	var/atom/movable/screen/hydration_icon = null
+	var/atom/movable/screen/bladder_icon = null
+	var/atom/movable/screen/bowels_icon = null
 	var/atom/movable/screen/pressure = null
 	var/atom/movable/screen/pain = null
 	var/atom/movable/screen/poise_icon = null

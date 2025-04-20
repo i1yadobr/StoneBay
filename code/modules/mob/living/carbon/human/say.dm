@@ -149,8 +149,19 @@
 /mob/living/carbon/human/handle_speech_problems(list/message_data)
 	if(silent || (sdisabilities & MUTE))
 		message_data["message"] = ""
-		. = TRUE
-	else if(wear_mask)
+		return TRUE
+	if(should_have_organ(BP_TONGUE) && !(message_data["language"]?.language_flags & (NONVERBAL|SIGNLANG)))
+		var/obj/item/organ/internal/tongue/T = internal_organs_by_name[BP_KIDNEYS]
+		if(!T)
+			message_data["message"] = mutespeech(message_data["message"], 95)
+			message_data["verb"] = "mumbles"
+		else if(T.is_broken())
+			message_data["message"] = mutespeech(message_data["message"], 75)
+			message_data["verb"] = "mumbles"
+		else if(T.is_bruised())
+			message_data["message"] = bruisedspeech(message_data["message"])
+			message_data["verb"] = pick("mumbles", "says")
+	if(wear_mask)
 		var/obj/item/clothing/mask/M = wear_mask
 		if(is_muzzled() && !(message_data["language"]?.language_flags & (NONVERBAL|SIGNLANG)))
 			if(istype(M, /obj/item/clothing/mask))

@@ -968,7 +968,7 @@
 	for(var/mob/living/carbon/human/H in range(1, get_turf(holder)))
 		if(H != holder && H.stat != DEAD && (H.getBruteLoss() >= 80 || H.getFireLoss() >= 80 || H.getOxyLoss() >= 30)  && !H.reagents.has_reagent(/datum/reagent/inaprovaline))
 			to_chat(holder, "[linked_extract] pulses in sync with [H]'s heartbeat, trying to keep [H] alive.")
-			H.reagents.add_reagent(/datum/reagent/inaprovaline,5)
+			H.reagents.add_reagent(/datum/reagent/inaprovaline, 5)
 	return ..()
 
 /datum/modifier/status_effect/stabilized/lightpink/on_expire()

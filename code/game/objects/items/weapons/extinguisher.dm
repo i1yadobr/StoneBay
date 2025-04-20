@@ -41,8 +41,8 @@
 	mod_reach = 0.6
 	armor_penetration = 5
 	w_class = ITEM_SIZE_SMALL
-	spray_amount = 80
-	max_volume = 1000
+	spray_amount = 0.8 LITERS
+	max_volume = 10 LITERS
 	sprite_name = "miniFE"
 	matter = list(MATERIAL_STEEL = 500)
 

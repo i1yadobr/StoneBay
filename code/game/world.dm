@@ -365,7 +365,8 @@ var/world_topic_spam_protect_time = world.timeofday
 							fire = L.getFireLoss(),
 							brute = L.getBruteLoss(),
 							clone = L.getCloneLoss(),
-							brain = L.getBrainLoss()
+							brain = L.getBrainLoss(),
+							internal = L.getInternalLoss()
 						))
 				if(ishuman(M))
 					var/mob/living/carbon/human/H = M
