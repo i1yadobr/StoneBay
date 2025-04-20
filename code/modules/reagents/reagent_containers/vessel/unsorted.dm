@@ -133,7 +133,7 @@
 	possible_transfer_amounts = "25;30;50;100;150;200"
 
 	center_of_mass = "x=15;y=10"
-	startswith = list(/datum/reagent/caffeine/coffee = 200)
+	startswith = list(/datum/reagent/caffeine/coffee = 150)
 	lid_type = null
 	unacidable = FALSE
 
@@ -189,7 +189,7 @@
 	amount_per_transfer_from_this = 25
 	possible_transfer_amounts = "25;30;50;100;150;200"
 
-	startswith = list(/datum/reagent/drink/tea = 200)
+	startswith = list(/datum/reagent/drink/tea = 150)
 	lid_type = null
 	unacidable = FALSE
 
@@ -204,7 +204,7 @@
 	amount_per_transfer_from_this = 25
 	possible_transfer_amounts = "25;30;50;100;150;200"
 
-	startswith = list(/datum/reagent/drink/ice = 200)
+	startswith = list(/datum/reagent/drink/ice = 150)
 	lid_type = null
 	unacidable = FALSE
 
@@ -219,7 +219,7 @@
 	amount_per_transfer_from_this = 25
 	possible_transfer_amounts = "25;30;50;100;150;200"
 
-	startswith = list(/datum/reagent/drink/hot_coco = 200)
+	startswith = list(/datum/reagent/drink/hot_coco = 150)
 	lid_type = null
 	unacidable = FALSE
 
