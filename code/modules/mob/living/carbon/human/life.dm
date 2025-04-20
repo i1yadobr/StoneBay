@@ -686,6 +686,7 @@
 				for(var/datum/modifier/mod in modifiers)
 					if(!isnull(mod.metabolism_percent))
 						nutrition_reduction *= mod.metabolism_percent
+				nutrition_reduction += heal_this_tick
 				remove_nutrition(nutrition_reduction)
 
 			if(!isSynthetic(src))

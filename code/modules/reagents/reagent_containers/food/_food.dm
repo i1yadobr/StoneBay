@@ -33,7 +33,13 @@
 	. = ..()
 	if(nutriment_amt && !spawn_empty)
 		reagents.add_reagent(/datum/reagent/nutriment, nutriment_amt, nutriment_desc)
+	recalc_max_volume()
 
+/obj/item/reagent_containers/food/proc/recalc_max_volume()
+	if(!reagents)
+		return
+	volume = min((reagents.total_volume * 2), (reagents.total_volume + 0.25 LITERS))
+	reagents.maximum_volume = volume
 
 /obj/item/reagent_containers/food/proc/On_Consume(mob/M)
 	if(reagents.total_volume)
@@ -303,6 +309,9 @@
 			for(var/i = 1 to (slices_num - slices_lost))
 				var/obj/slice = new slice_path(loc, TRUE)
 				reagents.trans_to_obj(slice, reagents_per_slice)
+				if(istype(slice, /obj/item/reagent_containers/food))
+					var/obj/item/reagent_containers/food/F = slice
+					F.recalc_max_volume()
 			qdel(src)
 			return
 	return ..()

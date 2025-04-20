@@ -163,6 +163,9 @@
 	desc = desc_list[current_stage]
 	src.min_damage = damage_list[current_stage]
 
+	if(parent_organ?.owner && !BP_IS_ROBOTIC(parent_organ))
+		parent_organ.owner.heal_this_tick += healed_damage
+
 	// return amount of healing still leftover, can be used for other wounds
 	return amount
 

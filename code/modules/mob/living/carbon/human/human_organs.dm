@@ -88,6 +88,7 @@
 
 // Takes care of organ related updates, such as broken and missing limbs
 /mob/living/carbon/human/proc/handle_organs()
+	heal_this_tick = 0
 
 	var/force_process = recheck_bad_external_organs()
 
@@ -192,7 +193,7 @@
 		var/obj/item/organ/external/E = organs_by_name[limb_tag]
 
 		if(!E || (E.status & ORGAN_DISFIGURED) || istype(E,/obj/item/organ/external/stump))
-			stance_d_l += 5
+			stance_d_r += 5
 
 		else if(E.is_malfunctioning())
 			stance_d_r += 4
@@ -222,68 +223,102 @@
 		return	// We're all good
 	// standing is poor
 	if(!(lying || resting))
-		if(((stance_d_l >= 5) && (stance_d_r >= 5))) // Both legs are missing, but hey at least there's nothing to ache
+		// Both legs are missing, but hey at least there's nothing to ache
+		if(((stance_d_l >= 5) && (stance_d_r >= 5)))
 			custom_emote(VISIBLE_MESSAGE, "can't stand without legs!", "AUTO_EMOTE")
 			Weaken(10)
-		else if(((stance_d_l >= 5) && (stance_d_r > 2)) || ((stance_d_l > 2) && (stance_d_r >= 5))) // One leg is missing and the other one is at least broken
+			resting = TRUE
+
+		// One leg is missing and the other one is at least broken
+		else if(((stance_d_l >= 5) && (stance_d_r > 2)) || ((stance_d_l > 2) && (stance_d_r >= 5)))
 			if(limb_pain)
 				emote("scream")
 				shock_stage+=5
 			custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
 			Weaken(10)
-		else if(((stance_d_l >= 4) && (stance_d_l > 0)) || ((stance_d_l > 0) && (stance_d_r >= 4))) // One leg is totally wrecked and the other one is hurt
-			if(prob(60))
+			resting = TRUE // Let's help the poor creature to stay down, preventing further pain.
+
+		// One leg is totally wrecked and the other one is hurt
+		else if(((stance_d_l >= 4) && (stance_d_l > 0)) || ((stance_d_l > 0) && (stance_d_r >= 4)))
+			if(prob(35))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=50
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(10)
-		else if((stance_d_l >= 2) && (stance_d_r >= 2)) // Both legs are broken
-			if(prob(40))
+				if(prob(50))
+					custom_emote(VISIBLE_MESSAGE, "limps badly!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(10)
+
+		// Both legs are broken
+		else if((stance_d_l >= 2) && (stance_d_r >= 2))
+			if(prob(25))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=25
 				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
 				Weaken(10)
-		else if(((stance_d_l >= 2) && (stance_d_r > 0)) || ((stance_d_l > 0) && (stance_d_r >= 2))) // One leg is broken and the other one is hort
-			if(prob(30))
+
+		// One leg is broken and the other one is hurt
+		else if(((stance_d_l >= 2) && (stance_d_r > 0)) || ((stance_d_l > 0) && (stance_d_r >= 2)))
+			if(prob(10))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=15
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(7)
-		else if((stance_d_l > 0) && (stance_d_r > 0)) // Borth legs are hurt
-			if(prob(20))
-				if(limb_pain)
-					emote("scream")
-					shock_stage+=12.5
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(5)
-		else if((stance_d_l >= 5) || (stance_d_r >= 5)) // One leg is missing and the other one is ok
-			if(prob(10))
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(3)
-		else if((stance_d_l >= 4) || (stance_d_r >= 4)) // One leg is wrecked and the other one is ok
+				if(prob(75))
+					custom_emote(VISIBLE_MESSAGE, "limps badly!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(7)
+
+		// Borth legs are hurt
+		else if((stance_d_l > 0) && (stance_d_r > 0))
 			if(prob(8))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=12.5
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(5)
-		else if((stance_d_l >= 3) || (stance_d_r >= 3)) // One leg is broken + dislocated and the other one is ok
+				if(prob(75))
+					custom_emote(VISIBLE_MESSAGE, "limps badly!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(5)
+
+		// One leg is missing and the other one is ok
+		else if((stance_d_l >= 5) || (stance_d_r >= 5))
+			if(prob(10))
+				if(prob(75))
+					custom_emote(VISIBLE_MESSAGE, "limps on one leg!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(3)
+
+		// One leg is wrecked and the other one is ok
+		else if((stance_d_l >= 4) || (stance_d_r >= 4))
+			if(prob(8))
+				if(limb_pain)
+					emote("scream")
+					shock_stage+=12.5
+				if(prob(75))
+					custom_emote(VISIBLE_MESSAGE, "limps on one leg!", "AUTO_EMOTE")
+				else
+					custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
+					Weaken(5)
+
+		// One leg is broken + dislocated and the other one is ok
+		else if((stance_d_l >= 3) || (stance_d_r >= 3))
 			if(prob(4))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=10
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(5)
-		else if((stance_d_l >= 2) || (stance_d_r >= 2)) // One leg is broken and the other one is ok
+				custom_emote(VISIBLE_MESSAGE, "limps on one leg!", "AUTO_EMOTE")
+
+		// One leg is broken and the other one is ok
+		else if((stance_d_l >= 2) || (stance_d_r >= 2))
 			if(prob(2))
 				if(limb_pain)
 					emote("scream")
 					shock_stage+=5
-				custom_emote(VISIBLE_MESSAGE, "collapses!", "AUTO_EMOTE")
-				Weaken(3)
+				custom_emote(VISIBLE_MESSAGE, "limps on one leg!", "AUTO_EMOTE")
 		else
 			return
 

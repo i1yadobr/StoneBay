@@ -612,6 +612,7 @@ This function completely restores a damaged organ to perfect condition.
 	else
 		remove_all_pain()
 		..()
+
 /obj/item/organ/external/cook_organ()
 	..()
 	for(var/obj/item/organ/internal in internal_organs)

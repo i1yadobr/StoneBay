@@ -926,6 +926,7 @@
 /obj/item/reagent_containers/food/sliceable/pizza
 	slices_num = 8
 	filling_color = "#baa14c"
+	trash = /obj/item/reagent_containers/food/pizzarim
 
 ////////////////////////
 /obj/item/reagent_containers/food/sliceable/pizza/margherita
