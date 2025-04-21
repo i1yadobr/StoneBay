@@ -262,32 +262,28 @@
 	if(!target_vessel)
 		return FALSE
 
-	user.visible_message(SPAN_NOTICE("[user] reaches out to clink glasses with [target]."),
-						 SPAN_NOTICE("You offer to clink glasses to [target]."))
+	user.custom_emote(message = "reaches out to clink glasses with [target].")
 	user.show_splash_text(target, "offers to clink!", force_skip_chat = TRUE)
 
 	var/choice = show_radial_menu(target, user, list("accept" = image('icons/hud/radial.dmi', "radial_accept"), "decline" = image('icons/hud/radial.dmi', "radial_decline")), require_near = TRUE)
 
 	if(!choice || choice == "decline")
 		target.show_splash_text(user, "declined!", force_skip_chat = TRUE)
-		user.visible_message(SPAN_WARNING("[target] refuses to clink glasses with [user]!"),
-							 SPAN_WARNING("[target] refuses to clink glasses with you!"))
+		target.custom_emote(message = "refuses to clink glasses with [user]!")
 		return TRUE
 
 	if(choice == "accept")
 		target.show_splash_text(user, "accepted!", force_skip_chat = TRUE)
-		user.visible_message(SPAN_NOTICE("[user] and [target] clink glasses!"),
-						 	 SPAN_NOTICE("You clink glasses with [target]! Cheers!"),
-						 	 SPAN_NOTICE("You hear glasses clinking."))
+		user.custom_emote(message = "and <b>[target]</b> clink glasses! Cheers!")
 		playsound(user.loc, GET_SFX(SFX_GLASSES_CLINK), 50, 1)
 
 	if(!is_open_container() || !target_vessel.is_open_container())
 		return TRUE
 
 	if(!reagents.total_volume || !target_vessel.reagents.total_volume)
-		return TRUE // No duping liquids here!
+		return TRUE
 
-	var/transfer_amount = rand(1, 4)
+	var/transfer_amount = rand(5, 25) // milliliters
 
 	reagents.remove_any(transfer_amount)
 	target_vessel.reagents.remove_any(transfer_amount)
