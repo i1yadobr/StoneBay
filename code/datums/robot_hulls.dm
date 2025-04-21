@@ -1,19 +1,11 @@
-#define ROBOT_HULL_FLAG_EMISSIVE (1<<0)
-#define ROBOT_HULL_FLAG_PANEL (1<<1)
-
 /datum/robot_hull
 	var/icon = 'icons/mob/robots.dmi'
 	var/icon_state = "robot"
-	var/icon_state_ea = "robot-ea"
-	var/icon_state_panel = "ov"
 	var/footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
-	var/hull_flags = null
 
-/datum/robot_hull/New(icon, icon_state, icon_state_ea, icon_state_panel, footstep_sound)
+/datum/robot_hull/New(icon, icon_state, footstep_sound)
 	src.icon = icon ? icon : initial(src.icon)
 	src.icon_state = icon_state ? icon_state : initial(src.icon_state)
-	src.icon_state_ea = icon_state_ea ? icon_state_ea : initial(src.icon_state_ea)
-	src.icon_state_panel = icon_state_panel ? icon_state_panel : initial(src.icon_state_panel)
 	src.footstep_sound = footstep_sound ? footstep_sound : initial(src.footstep_sound)
 
 /datum/robot_hull/spider
@@ -21,13 +13,9 @@
 
 /datum/robot_hull/spider/robot
 	icon_state = "robot"
-	icon_state_ea = "robot-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/spider/droid
 	icon_state = "droid"
-	icon_state_ea = "droid-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/spider/robot_service
 	icon_state = "robot-service"
@@ -40,8 +28,6 @@
 
 /datum/robot_hull/spider/bloodhound
 	icon_state = "bloodhound"
-	icon_state_ea = "bloodhound-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/spider/robot_mining
 	icon_state = "robot-mining"
@@ -51,8 +37,6 @@
 
 /datum/robot_hull/spider/droid_combat
 	icon_state = "droid-combat"
-	icon_state_ea = "droid-combat-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/spider/robot_medical
 	icon_state = "robot-medical"
@@ -62,96 +46,72 @@
 
 /datum/robot_hull/spider/landmate
 	icon_state = "landmate"
-	icon_state_ea = "landmate-ea"
 
 /datum/robot_hull/legs
-	icon_state_ea = "android-ea"
 	footstep_sound = SFX_FOOTSTEP_ROBOT_LEGS
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/legs/robot_old
 	icon_state = "robot_old"
 
 /datum/robot_hull/legs/service
-	icon_state = "service"
+	icon_state = "Service"
 
 /datum/robot_hull/legs/service2
-	icon_state = "service2"
+	icon_state = "Service2"
 
 /datum/robot_hull/legs/brobot
-	icon_state = "brobot"
+	icon_state = "Brobot"
 
 /datum/robot_hull/legs/maximillion
 	icon_state = "maximillion"
-	icon_state_ea = "maximillion-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/legs/maidbot
 	icon_state = "maidbot"
-	icon_state_ea = "maidbot-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/legs/janbot2
-	icon_state = "janbot2"
+	icon_state = "JanBot2"
 
 /datum/robot_hull/legs/janitorrobot
 	icon_state = "janitorrobot"
-	icon_state_ea = "janitorrobot-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/legs/secborg
 	icon_state = "secborg"
 
 /datum/robot_hull/legs/security
-	icon_state = "security"
-	icon_state_ea = "security-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
+	icon_state = "Security"
 
 /datum/robot_hull/legs/securityrobot
 	icon_state = "securityrobot"
-	icon_state_ea = "securityrobot-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/legs/miner_old
-	icon_state = "miner_old"
+	icon_state = "Miner_old"
 
 /datum/robot_hull/legs/droid_miner
 	icon_state = "droid-miner"
-	icon_state_ea = "droid-miner-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/legs/droid_science
 	icon_state = "droid-science"
 
 /datum/robot_hull/legs/medbot
-	icon_state = "medbot"
+	icon_state = "Medbot"
 
 /datum/robot_hull/legs/droid_medical
 	icon_state = "droid-medical"
 
 /datum/robot_hull/legs/engineering
-	icon_state = "engineering"
+	icon_state = "Engineering"
 
 /datum/robot_hull/legs/engineerrobot
 	icon_state = "engineerrobot"
 
 /datum/robot_hull/legs/kerfur_o_medical
 	icon_state = "kerfur-o-medical"
-	icon_state_ea = "kerfur-o-ea"
-	icon_state_panel = "kerfur-o"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE | ROBOT_HULL_FLAG_PANEL
 
 /datum/robot_hull/legs/kerfur_o_engineering
 	icon_state = "kerfur-o-engineering"
-	icon_state_ea = "kerfur-o-ea"
-	icon_state_panel = "kerfur-o"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE | ROBOT_HULL_FLAG_PANEL
 
 /datum/robot_hull/legs/kerfur_o_miner
 	icon_state = "kerfur-o-miner"
-	icon_state_ea = "kerfur-o-ea"
-	icon_state_panel = "kerfur-o"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE | ROBOT_HULL_FLAG_PANEL
 
 /datum/robot_hull/truck
 	// TODO: Add truck sound
@@ -159,40 +119,27 @@
 
 /datum/robot_hull/truck/mopgearrex
 	icon_state = "mopgearrex"
-	icon_state_ea = "mopgearrex-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/truck/secborg_tread
 	icon_state = "secborg+tread"
-	icon_state_ea = "secborg+tread-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/truck/miner
-	icon_state = "miner"
-	icon_state_ea = "miner-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
+	icon_state = "Miner"
 
 /datum/robot_hull/truck/engiborg_tread
 	icon_state = "engiborg+tread"
-	icon_state_ea = "engiborg+tread-ea"
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/flying
-	icon_state_panel = "drone"
-	icon_state_ea = "drone-ea"
 	footstep_sound = null
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE | ROBOT_HULL_FLAG_PANEL
 
 /datum/robot_hull/flying/drone_standard
 	icon_state = "drone-standard"
 
 /datum/robot_hull/flying/eyebot_standard
 	icon_state = "eyebot-standard"
-	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/toiletbot
 	icon_state = "toiletbot"
-	icon_state_ea = "toiletbot"
 
 /datum/robot_hull/flying/drone_service
 	icon_state = "drone-service"
@@ -205,66 +152,52 @@
 
 /datum/robot_hull/flying/eyebot_janitor
 	icon_state = "eyebot-janitor"
-	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/drone_sec
 	icon_state = "drone-sec"
 
 /datum/robot_hull/flying/eyebot_security
 	icon_state = "eyebot-security"
-	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/orb_security
 	icon_state = "orb-security"
-	icon_state_ea = "orb-security-ea"
 
 /datum/robot_hull/flying/drone_miner
 	icon_state = "drone-miner"
 
 /datum/robot_hull/flying/eyebot_miner
 	icon_state = "eyebot-miner"
-	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/drone_science
 	icon_state = "drone-science"
 
 /datum/robot_hull/flying/eyebot_science
 	icon_state = "eyebot-science"
-	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/surgeon
 	icon_state = "surgeon"
-	icon_state_ea = "surgeon-ea"
 
 /datum/robot_hull/flying/drone_medical
 	icon_state = "drone-medical"
 
 /datum/robot_hull/flying/eyebot_medical
 	icon_state = "eyebot-medical"
-	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/flying/drone_engineer
 	icon_state = "drone-engineer"
 
 /datum/robot_hull/flying/eyebot_engineering
 	icon_state = "eyebot-engineering"
-	icon_state_ea = "eyebot-ea"
 
 /datum/robot_hull/drone
 	icon_state = "repairbot"
-	icon_state_ea = "repairbot-ea"
 	footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE
 
 /datum/robot_hull/drone/construction
 	icon_state = "constructiondrone"
-	icon_state_ea = "constructiondrone-ea"
 
 /datum/robot_hull/sphere
-	icon_state_ea = "kerfur-ea"
-	icon_state_panel = "kerfur"
 	footstep_sound = SFX_FOOTSTEP_ROBOT_SPHERE
-	hull_flags = ROBOT_HULL_FLAG_EMISSIVE | ROBOT_HULL_FLAG_PANEL
 
 /datum/robot_hull/sphere/kerfur
 	icon_state = "kerfur"

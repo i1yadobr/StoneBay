@@ -101,8 +101,6 @@
 				blinded = FALSE
 
 		else // Not stunned.
-			if(stat != CONSCIOUS)
-				queue_icon_update()
 			set_stat(CONSCIOUS)
 
 		confused = max(0, confused - 1)

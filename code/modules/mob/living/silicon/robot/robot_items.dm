@@ -113,13 +113,13 @@
 
 /obj/item/card/robot //This is not a child of id cards, as to avoid dumb typechecks on computers.
 	name = "access code transmission device"
-	icon_state = "card_robot"
+	icon_state = "id-robot"
 	desc = "A circuit grafted onto the bottom of an ID card.  It is used to transmit access codes into other robot chassis, \
 	allowing you to lock and unlock other robots' panels."
 
 /obj/item/card/robot_sec //This is not a child of id cards, as to avoid dumb typechecks on computers.
 	name = "access code transmission device"
-	icon_state = "card_robot"
+	icon_state = "id-robot"
 	desc = "A circuit grafted onto the bottom of an ID card.  It is used to transmit access codes into security deployable barriers, \
 	allowing you to lock and unlock them."
 
@@ -381,8 +381,8 @@
 /obj/item/borg/combat/shield
 	name = "personal shielding"
 	desc = "A powerful experimental module that turns aside or absorbs incoming attacks at the cost of charge."
-	icon = 'icons/effects/effects.dmi'
-	icon_state = "shield"
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "shock"
 	var/shield_level = 0.5 //Percentage of damage absorbed by the shield.
 
 /obj/item/borg/combat/shield/verb/set_shield_level()
@@ -398,8 +398,7 @@
 	name = "mobility module"
 	desc = "By retracting limbs and tucking in its head, a combat android can roll at high speeds."
 	icon = 'icons/obj/decals.dmi'
-	icon_state = "speed"
-
+	icon_state = "shock"
 #define INFLATABLE_MODES list("walls", "doors", "panels")
 #define INFLATABLE_MODE_WALLS 1
 #define INFLATABLE_MODE_DOORS 2

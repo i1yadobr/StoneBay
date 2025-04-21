@@ -57,13 +57,3 @@
 		return FALSE
 
 	return TRUE
-
-/proc/has_robot_module_hull(hullname, mob/M, intentional)
-	if(!isrobot(M))
-		return FALSE
-
-	var/mob/living/silicon/robot/R = M
-	if(R.icontype != hullname)
-		return FALSE
-
-	return TRUE
