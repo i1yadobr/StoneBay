@@ -536,7 +536,7 @@
 				stat("[ms.name]: [ms.energy]/[ms.max_energy_multiplied]")
 
 /mob/living/silicon/robot/restrained()
-	return FALSE
+	return 0
 
 /mob/living/silicon/robot/bullet_act(obj/item/projectile/Proj)
 	var/obj/item/melee/energy/sword/robot/E = locate() in list(module_state_1, module_state_2, module_state_3)
@@ -1150,8 +1150,8 @@
 	if(is_component_functioning("comms"))
 		var/datum/robot_component/RC = get_robot_component("comms")
 		use_power(RC.active_usage)
-		return TRUE
-	return FALSE
+		return 1
+	return 0
 
 /mob/living/silicon/robot/proc/notify_ai(notifytype, first_arg, second_arg)
 	if(!connected_ai)
@@ -1192,11 +1192,11 @@
 		if(locked)
 			if(prob(90))
 				to_chat(user, "You emag the cover lock.")
-				locked = FALSE
+				locked = 0
 			else
 				to_chat(user, "You fail to emag the cover lock.")
 				to_chat(src, "Hack attempt detected.")
-			return TRUE
+			return 1
 		else
 			to_chat(user, "The cover is already unlocked.")
 		return

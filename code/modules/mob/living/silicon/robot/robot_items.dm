@@ -399,11 +399,11 @@
 	desc = "By retracting limbs and tucking in its head, a combat android can roll at high speeds."
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "shock"
+
 #define INFLATABLE_MODES list("walls", "doors", "panels")
 #define INFLATABLE_MODE_WALLS 1
 #define INFLATABLE_MODE_DOORS 2
 #define INFLATABLE_MODE_PANELS 3
-
 /obj/item/inflatable_dispenser
 	name = "inflatables dispenser"
 	desc = "A hand-held device which allows rapid deployment and removal of inflatables."
