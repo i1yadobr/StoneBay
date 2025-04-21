@@ -158,11 +158,11 @@ REAGENT SCANNER
 
 	var/toxLoss = H.getToxLoss()
 	if(toxLoss > 80)
-		status_data += "<font color='green'><b>Extreme toxic buildup detected.</b></font>"
+		status_data += "<font color='lime'><b>Extreme toxic buildup detected.</b></font>"
 	else if(toxLoss > 50)
-		status_data += "<font color='green'><b>Severe toxic buildup detected.</b></font>"
+		status_data += "<font color='lime'><b>Severe toxic buildup detected.</b></font>"
 	else if(toxLoss > 20)
-		status_data += "<font color='green'><b>Mild toxic buildup detected.</b></font>"
+		status_data += "<font color='lime'><b>Mild toxic buildup detected.</b></font>"
 
 	var/internalLoss = H.getInternalLoss()
 	if(internalLoss > 100)
