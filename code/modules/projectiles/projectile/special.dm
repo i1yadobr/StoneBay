@@ -381,9 +381,9 @@
 
 /obj/item/projectile/grenade/rubber
 	name = "rubber grenade"
-	damage = 25
+	damage = 20
 	agony = 70
-	poisedamage = 25.0
+	poisedamage = 27.5
 	impact_on_original = FALSE // No boomies, keep flying
 
 /obj/item/projectile/grenade/he/on_impact(atom/A)
