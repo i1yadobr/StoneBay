@@ -3,7 +3,7 @@
 	name = "grenade launcher"
 	desc = "Widely known as a Bloop Tube, it's ancient, but still compact, reliable and, more importantly, unremarkably stylish."
 	icon_state = "blooptube"
-	icon_state = "blooptube"
+	item_state = "blooptube"
 
 	w_class = ITEM_SIZE_NORMAL
 	force = 9.5

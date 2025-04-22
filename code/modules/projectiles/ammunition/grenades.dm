@@ -11,7 +11,7 @@
 	fall_sounds = list('sound/effects/weapons/gun/shell_fall.ogg')
 
 /obj/item/ammo_casing/grenade/attackby(obj/item/W, mob/user)
-	if(isScrewdriver(W))
+	if(!is_spent && isScrewdriver(W))
 		to_chat(user, SPAN("notice", "\The [src] doesn't seem to be disassemblable."))
 		return
 	return ..()
@@ -66,7 +66,7 @@
 	update_icon()
 
 /obj/item/ammo_casing/grenade/loaded/proc/open(mob/user)
-	if(opened == -1)
+	if(is_spent || opened == -1)
 		return
 
 	opened = !opened
@@ -88,19 +88,23 @@
 		AddOverlays(image(icon, src, "40mm_label"))
 
 /obj/item/ammo_casing/grenade/loaded/attack_self(mob/user)
-	if(opened != -1)
+	if(!is_spent && opened != -1)
 		open(user)
 		add_fingerprint(user)
 		return
 	return ..()
 
 /obj/item/ammo_casing/grenade/loaded/attackby(obj/item/W, mob/user)
+	if(is_spent)
+		return
+
 	if(isScrewdriver(W))
 		if(opened == -1)
 			to_chat(user, SPAN("notice", "\The [src] doesn't seem to be disassemblable."))
 		else
 			open(user)
 		return
+
 	if(istype(W, /obj/item/grenade))
 		if(!user.drop(W))
 			return
@@ -121,18 +125,28 @@
 		..()
 
 /obj/item/ammo_casing/grenade/loaded/expend()
-	var/obj/item/projectile/proj = ..()
-	if(!proj)
+	if(!ispath(projectile_type))
+		return
+
+	if(is_spent)
 		return
 
 	if(opened == TRUE)
 		return null
+
+	var/obj/item/projectile/proj = new projectile_type(src)
 
 	if(istype(proj, /obj/item/projectile/grenade/loaded))
 		var/obj/item/projectile/grenade/loaded/L = proj
 		L.set_grenade(grenade)
 		grenade = null
 
+	// Aurora forensics port, gunpowder residue.
+	if(leaves_residue)
+		leave_residue()
+
+	is_spent = TRUE
+	update_icon()
 	return proj
 
 /obj/item/ammo_casing/grenade/loaded/empty

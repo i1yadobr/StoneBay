@@ -547,7 +547,7 @@
 		hitscan_last = loc
 	if(can_hit_target(original, permutated))
 		Bump(original, TRUE)
-	else if(impact_on_original && loc == original)
+	else if(impact_on_original && (loc == original || loc == original.loc ) && loc != null)
 		on_impact(loc)
 		if(!QDELETED(src))
 			set_density(0)
