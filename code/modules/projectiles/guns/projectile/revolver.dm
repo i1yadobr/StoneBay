@@ -319,6 +319,7 @@
 	fire_delay = 5
 	fire_sound = 'sound/effects/weapons/misc/bloop.ogg'
 	one_hand_penalty = 3
+	starts_loaded = FALSE
 
 /obj/item/gun/projectile/revolver/grenade_launcher/on_update_icon()
 	icon_state = "grenade_launcher[!!loaded.len]"

@@ -19,6 +19,7 @@
 	ammo_type = /obj/item/ammo_casing/grenade
 	fire_sound = 'sound/effects/weapons/misc/bloop.ogg'
 	has_safety = FALSE
+	starts_loaded = FALSE
 
 /obj/item/gun/projectile/grenade_launcher/unload_ammo(atom/movable/unloader, allow_dump = TRUE, dump_loc = null)
 	if(loaded.len)
