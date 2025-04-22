@@ -11,6 +11,7 @@
 	mod_reach = 0.8
 	mod_handy = 0.9
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
+	slot_flags = SLOT_BELT
 
 	caliber = "40mm"
 	handle_casings = HOLD_CASINGS
