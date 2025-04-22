@@ -302,6 +302,7 @@
 	desc = "The Lumoco Arms MGL is the weapon of choice for when civilized approach is not even considered an option."
 	icon_state = "grenade_launcher"
 	item_state = "grenade_launcher"
+	wielded_item_state = "grenade_launcher-wielded"
 
 	w_class = ITEM_SIZE_HUGE
 	force = 12.5
@@ -317,6 +318,7 @@
 	max_shells = 6
 	fire_delay = 5
 	fire_sound = 'sound/effects/weapons/misc/bloop.ogg'
+	one_hand_penalty = 3
 
 /obj/item/gun/projectile/revolver/grenade_launcher/on_update_icon()
 	icon_state = "grenade_launcher[!!loaded.len]"

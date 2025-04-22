@@ -19,3 +19,23 @@
 	ammo_type = /obj/item/ammo_casing/grenade
 	fire_sound = 'sound/effects/weapons/misc/bloop.ogg'
 	has_safety = FALSE
+
+/obj/item/gun/projectile/grenade_launcher/unload_ammo(atom/movable/unloader, allow_dump = TRUE, dump_loc = null)
+	if(loaded.len)
+		var/obj/item/ammo_casing/C = loaded[loaded.len]
+		loaded.len--
+		if(ismob(unloader))
+			var/mob/user = unloader
+			if(user.get_inactive_hand() == src)
+				user.pick_or_drop(C)
+			else
+				C.forceMove(get_turf(unloader))
+		else if(Adjacent(src, unloader))
+			C.forceMove(get_turf(unloader))
+
+		unloader.visible_message("<b>[unloader]</b> removes \a [C] from [src].", SPAN("notice", "You remove \a [C] from [src]."))
+		playsound(src.loc, "bullet_insert", 50, 1)
+	else
+		to_chat(unloader, SPAN("warning", "[src] is empty."))
+
+	update_icon()

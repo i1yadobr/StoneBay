@@ -50,6 +50,10 @@
 	if(label_text)
 		name = "grenade shell"
 		AddComponent(/datum/component/label, label_text) // So the name isn't hardcoded and the label can be removed for reusability
+
+	if(ispath(grenade))
+		grenade = new grenade(src)
+
 	update_icon()
 
 /obj/item/ammo_casing/grenade/loaded/post_attach_label(datum/component/label/L)
@@ -74,7 +78,9 @@
 
 /obj/item/ammo_casing/grenade/loaded/on_update_icon()
 	if(spent_icon && is_spent)
+		ClearOverlays()
 		icon_state = spent_icon
+		return
 	else if(opened != -1)
 		icon_state = "40mm_loaded[opened][grenade ? "" : "u"]"
 	ClearOverlays()
@@ -98,8 +104,10 @@
 	if(istype(W, /obj/item/grenade))
 		if(!user.drop(W))
 			return
+		to_chat(user, "You install \the [grenade] into \the [src].")
 		W.forceMove(src)
 		grenade = W
+		update_icon()
 		return
 	return ..()
 
