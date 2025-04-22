@@ -1,5 +1,5 @@
 /obj/item/gun/launcher/grenade
-	name = "grenade launcher"
+	name = "grenade sling"
 	desc = "A bulky pump-action grenade launcher. Holds up to 6 grenades in a revolving magazine."
 	icon_state = "riotgun"
 	item_state = "riotgun"
