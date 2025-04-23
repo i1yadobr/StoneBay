@@ -81,6 +81,10 @@
 				qdel(src)
 				return
 
+/obj/machinery/chem_master/AltClick(mob/user)
+	if(grab_container(user, &beaker))
+		reagents.clear_reagents()
+
 /obj/machinery/chem_master/attackby(obj/item/W, mob/user)
 	if(default_deconstruction_screwdriver(user, W))
 		return
@@ -531,6 +535,12 @@
 		//Calling attack_hand(user) to make ensure no functionality is missed.
 		//If attack_hand is updated, this segment won't have to be updated as well.
 		return attack_hand(user)
+
+/obj/machinery/reagentgrinder/AltClick(mob/user)
+	if(!user.Adjacent(get_turf(src)))
+		return
+		
+	grab_container(user, &beaker)
 
 /obj/machinery/reagentgrinder/proc/show_choices(mob/user)
 	if(!length(choices))

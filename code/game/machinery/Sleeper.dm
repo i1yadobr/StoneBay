@@ -216,6 +216,13 @@
 			stasis = text2num(href_list["stasis"])
 			return TOPIC_REFRESH
 
+/obj/machinery/sleeper/AltClick(mob/user)
+	if(grab_container(user, &beaker))
+		toggle_filter()
+		toggle_pump()
+		for(var/obj/item/reagent_containers/vessel/beaker/A in component_parts)
+			component_parts -= A
+
 /obj/machinery/sleeper/attack_ai(mob/user)
 	return attack_hand(user)
 

@@ -75,6 +75,9 @@
 	cartridges -= label
 	SSnano.update_uis(src)
 
+/obj/machinery/chemical_dispenser/AltClick(mob/user)
+	grab_container(user, &container)
+
 /obj/machinery/chemical_dispenser/attackby(obj/item/W, mob/user)
 	if(default_deconstruction_crowbar(user, W))
 		return

@@ -264,6 +264,9 @@
 			user.visible_message(SPAN("notice", "\The [user] places \the [M] into \the [src]."), SPAN("notice", "You place \the [M] into \the [src]."))
 	return
 
+/obj/machinery/atmospherics/unary/cryo_cell/AltClick(mob/user)
+	grab_container(user, &beaker, get_step(loc, SOUTH))
+
 /obj/machinery/atmospherics/unary/cryo_cell/on_update_icon()
 	ClearOverlays()
 	var/overlays_state = 0
