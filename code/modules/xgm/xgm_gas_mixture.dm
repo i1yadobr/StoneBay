@@ -154,8 +154,7 @@
 	if(thermal_energy < 0)
 		if(temperature < TCMB)
 			return 0
-		var/thermal_energy_limit = -(temperature - TCMB)*heat_capacity	//ensure temperature does not go below TCMB
-		thermal_energy = max(thermal_energy, thermal_energy_limit)	//thermal_energy and thermal_energy_limit are negative here.
+		thermal_energy = max(thermal_energy, (TCMB - temperature) * heat_capacity) //ensure temperature does not go below TCMB. thermal_energy is negative here.
 	temperature += thermal_energy / heat_capacity
 	return thermal_energy
 
