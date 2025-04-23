@@ -1685,6 +1685,9 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/thunder/thunder9.ogg',
 		'sound/effects/thunder/thunder10.ogg',
 	),
+	SFX_GLASSES_CLINK = list(
+		'sound/items/glasses_clink.ogg'
+	),
 	// DEVICES
 	SFX_GEIGER_LOW = list(
 		'sound/effects/geiger/geiger_low_1.ogg',

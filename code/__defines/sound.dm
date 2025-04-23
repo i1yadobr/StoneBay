@@ -351,6 +351,7 @@
 #define SFX_PLANTCROSS              "plantcross"
 #define SFX_THUNDER                 "thunder"
 #define SFX_SHOE_COVERS             "shoe_covers"
+#define SFX_GLASSES_CLINK           "glasses_clink"
 
 // FOOTSTEPS
 #define SFX_DISTANT_MOVEMENT        "distant_movement"

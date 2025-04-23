@@ -116,6 +116,8 @@
 
 #define ismech(A) istype(A, /obj/mecha)
 
+#define isvessel(A) istype(A, /obj/item/reagent_containers/vessel)
+
 #define iseffect(A) istype(A, /obj/effect)
 
 #define ishostile(A) istype(A, /mob/living/simple_animal/hostile)

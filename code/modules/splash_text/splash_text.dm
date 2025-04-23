@@ -9,7 +9,7 @@
 
 /// Creates text that will float from the atom upwards to the viewer.
 /atom/proc/show_splash_text(mob/viewer, text, chat_text, force_skip_chat = FALSE)
-	INVOKE_ASYNC(src, nameof(.proc/animate_splash_text), viewer, text, chat_text)
+	INVOKE_ASYNC(src, nameof(.proc/animate_splash_text), viewer, text, chat_text, force_skip_chat)
 
 /// Creates text that will float from the atom upwards to the viewers in range.
 /atom/proc/show_splash_text_to_viewers(message, self_message, vision_distance = 7, list/mob/ignored_mobs, force_skip_chat = FALSE)
