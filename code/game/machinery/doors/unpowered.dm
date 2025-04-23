@@ -31,5 +31,8 @@
 	icon = 'icons/obj/doors/doormorgue.dmi'
 	icon_state = "door1"
 
+/obj/machinery/door/unpowered/vent_shaft/operable(additional_flags = 0)
+	return !(stat & (BROKEN|additional_flags))
+
 /obj/machinery/door/unpowered/vent_shaft/inoperable(additional_flags = 0)
 	return (stat & (BROKEN|additional_flags))
