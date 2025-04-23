@@ -30,7 +30,7 @@
 /obj/item/card/data
 	name = "data disk"
 	desc = "A disk of data."
-	icon_state = "data"
+	icon_state = "card_data"
 	var/function = "storage"
 	var/data = "null"
 	var/special = null
@@ -331,8 +331,8 @@ var/const/NO_EMAG_ACT = -50
 /obj/item/card/id/all_access
 	name = "\improper Administrator's spare ID"
 	desc = "The spare ID of the Lord of Lords himself."
-	icon_state = "card_all_access"
-	item_state = "card_all_access"
+	icon_state = "card_data"
+	item_state = "card_data"
 	registered_name = "Administrator"
 	assignment = "Administrator"
 
