@@ -38,7 +38,7 @@
 			to_chat(src, SPAN("danger", "[message]"))
 		else
 			to_chat(src, SPAN("warning", "[message]"))
-	next_pain_time = world.time + min(150 - power, 50)
+	next_pain_time = world.time + max(150 - power, 50)
 
 /mob/living/carbon/human/proc/handle_pain()
 	if(stat)

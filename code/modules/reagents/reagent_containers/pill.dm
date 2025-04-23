@@ -25,8 +25,7 @@
 	if(mimic_color)
 		color = reagents.get_color()
 
-/obj/item/reagent_containers/pill/attack(mob/M as mob, mob/user as mob, def_zone)
-		//TODO: replace with standard_feed_mob() call.
+/obj/item/reagent_containers/pill/attack(mob/M, mob/user, def_zone)
 	if(M == user)
 		if(!M.can_eat(src))
 			return
@@ -34,8 +33,10 @@
 		to_chat(M, "<span class='notice'>You swallow \the [src].</span>")
 
 		if(ishuman(M))
+			if(!M.drop(src, M.loc))
+				return
 			var/mob/living/carbon/human/H = M
-			if(H.ingest(src))
+			if(H.ingest(src, TRUE))
 				return 1
 
 		if(reagents.total_volume)
@@ -58,12 +59,15 @@
 		if(!M.can_force_feed(user, src, check_resist = TRUE))
 			return
 
+		if(!M.drop(src, M.loc))
+			return
+
 		user.visible_message("<span class='warning'>[user] forces [M] to swallow \the [src].</span>")
 		var/contained = reagentlist()
 		admin_attack_log(user, M, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
 
 		var/mob/living/carbon/human/H = M
-		if(H.ingest(src))
+		if(H.ingest(src, TRUE))
 			return 1
 
 		if(reagents.total_volume)

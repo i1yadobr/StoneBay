@@ -96,12 +96,12 @@
 		next_cramp = world.time + rand(200, 800)
 		owner.custom_pain("Your stomach cramps agonizingly!", 1)
 
-	if(prob(1))
+	if(prob(5))
 		var/fullness = get_fullness()
 		if(fullness > 150)
 			to_chat(src, SPAN("warning", "[pick("You definitely overate", "Thinking about food makes you gag", "It would be nice to clear your stomach")]..."))
-		else if(fullness > 100)
-			to_chat(src, SPAN("warning", "[pick("It seems you overate a bit", "Your own weight pulls you to the floor", "It would be nice to lose some weight")]..."))
+		else if(fullness > 100 && prob(25))
+			to_chat(src, SPAN("warning", "[pick("It seems you overate a bit", "Your own weight pulls you to the floor", "Your stomach feels full")]..."))
 
 	// Alcohol counts as double volume for the purposes of vomit probability
 	var/effective_volume = ingested.total_volume + items_volume + ingested.get_reagent_amount(/datum/reagent/ethanol)

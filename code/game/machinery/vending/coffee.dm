@@ -26,7 +26,7 @@
 		/obj/item/reagent_containers/vessel/coffee = 25,
 		/obj/item/reagent_containers/vessel/tea = 25,
 		/obj/item/reagent_containers/vessel/h_chocolate = 25,
-		/obj/item/reagent_containers/vessel/can/startrucks = 25,
+		/obj/item/reagent_containers/vessel/can/startrucks = 10,
 		/obj/item/storage/pill_bottle/sugar_cubes = 5
 		)
 
@@ -38,6 +38,7 @@
 		/obj/item/reagent_containers/vessel/coffee = 3,
 		/obj/item/reagent_containers/vessel/tea = 3,
 		/obj/item/reagent_containers/vessel/h_chocolate = 3,
+		/obj/item/reagent_containers/vessel/can/startrucks = 10,
 		/obj/item/storage/pill_bottle/sugar_cubes = 10
 		)
 
