@@ -229,7 +229,7 @@ Class Procs:
 	return istype(M) && M.operable()
 
 /obj/machinery/proc/operable(additional_flags = 0)
-	return !inoperable(additional_flags)
+	return !(stat & (POWEROFF|NOPOWER|BROKEN|additional_flags))
 
 /obj/machinery/proc/inoperable(additional_flags = 0)
 	return (stat & (POWEROFF|NOPOWER|BROKEN|additional_flags))

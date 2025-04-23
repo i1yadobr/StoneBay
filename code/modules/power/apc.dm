@@ -206,6 +206,7 @@
 
 	if(!QDELETED(cell))
 		cell.forceMove(loc)
+		cell.update_icon()
 	cell = null
 
 	GLOB.apc_list -= src

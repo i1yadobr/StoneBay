@@ -73,6 +73,9 @@
 			flick("[icon_base]closing", src)
 	return
 
+/obj/machinery/door/unpowered/simple/operable(additional_flags = 0)
+	return !(stat & (BROKEN|additional_flags))
+
 /obj/machinery/door/unpowered/simple/inoperable(additional_flags = 0)
 	return (stat & (BROKEN|additional_flags))
 

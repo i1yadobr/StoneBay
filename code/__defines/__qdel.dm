@@ -31,6 +31,8 @@
 #define QDEL_NULL(x) if(x) { qdel(x) ; x = null }
 #define QDEL_LIST(L) if(L) { for(var/I in L) qdel(I); L.Cut(); }
 #define QDEL_NULL_LIST(x) if(x) { for(var/y in x) { qdel(y) } ; x = null }
-#define QDEL_IN(item, ttl) spawn(ttl) {qdel(item)}
+#define QDEL_IN(item, ttl) if(!QDELETED(item)) { item.try_add_think_ctx("QDEL_IN", CALLBACK(item, nameof(/datum.proc/qdel_self)), world.time + ttl) }
+// Just in case if we REALLY need to use spawn() instead of thinking.
+#define QDEL_IN_SPAWN(item, ttl) spawn(ttl) {qdel(item)}
 #define QDEL_LIST_ASSOC(L) if(L) { for(var/I in L) { qdel(L[I]); qdel(I); } L.Cut(); }
 #define QDEL_LIST_ASSOC_VAL(L) if(L) { for(var/I in L) qdel(L[I]); L.Cut(); }
