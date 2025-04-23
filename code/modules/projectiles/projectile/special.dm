@@ -349,6 +349,10 @@
 	parent = loc
 	return ..()
 
+/obj/item/projectile/portal/Destroy()
+	parent = null
+	return ..()
+
 /obj/item/projectile/portal/on_impact(atom/A)
 	if(!istype(parent, /obj/item/gun/portalgun))
 		return
@@ -396,6 +400,11 @@
 
 /obj/item/projectile/grenade/loaded
 	var/obj/item/grenade/grenade
+
+/obj/item/projectile/grenade/loaded/Destroy()
+	if(!QDELETED(grenade))
+		QDEL_NULL(grenade)
+	return ..()
 
 /obj/item/projectile/grenade/loaded/proc/set_grenade(obj/item/grenade/G)
 	if(QDELETED(G))

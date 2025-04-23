@@ -56,6 +56,11 @@
 
 	update_icon()
 
+/obj/item/ammo_casing/grenade/loaded/Destroy()
+	if(!QDELETED(grenade))
+		QDEL_NULL(grenade)
+	return ..()
+
 /obj/item/ammo_casing/grenade/loaded/post_attach_label(datum/component/label/L)
 	label_text = L.label_name
 	update_icon()
