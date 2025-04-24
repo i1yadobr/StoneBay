@@ -6,6 +6,9 @@
 	can_plate = 0
 	can_reinforce = 0
 	flipped = -1
+	turf_height_offset = 5
+
+	var/has_overlay = TRUE
 
 /obj/structure/table/rack/New()
 	..()
@@ -15,6 +18,8 @@
 /obj/structure/table/rack/Initialize()
 	auto_align()
 	. = ..()
+	if(has_overlay)
+		AddOverlays(OVERLAY(icon, "[icon_state]over", layer = ABOVE_HUMAN_LAYER))
 
 /obj/structure/table/rack/update_connections()
 	return
@@ -35,3 +40,8 @@
 	name = "strange rack"
 	desc = "Must be the color."
 	icon_state = "bograck"
+
+/obj/structure/table/rack/alt
+	desc = "This one looks a bit different. Or is it?"
+	icon_state = "rack_alt"
+
