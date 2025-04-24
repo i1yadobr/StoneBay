@@ -19,7 +19,7 @@
 	auto_align()
 	. = ..()
 	if(has_overlay)
-		AddOverlays(OVERLAY(icon, "[icon_state]over", layer = ABOVE_HUMAN_LAYER))
+		AddOverlays(OVERLAY(icon, "[icon_state]over", layer = ABOVE_HUMAN_LAYER-0.01))
 
 /obj/structure/table/rack/update_connections()
 	return

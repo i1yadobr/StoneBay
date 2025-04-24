@@ -4,6 +4,7 @@
 	icon = 'icons/obj/doors/windoor.dmi'
 	icon_state = "left"
 	var/base_state = "left"
+	var/underlayer_state = "under"
 	dir = EAST
 	var/id = null  // for blast door button that can work with windoors now
 	min_force = 4
@@ -30,10 +31,20 @@
 	hitsound = pick(SFX_GLASS_HIT)
 
 /obj/machinery/door/window/on_update_icon()
+	ClearOverlays()
+
 	if(density)
 		icon_state = base_state
+		closed_layer = (dir == 1) ? ABOVE_WINDOW_LAYER : (ABOVE_HUMAN_LAYER+0.01)
+		layer = closed_layer
 	else
 		icon_state = "[base_state]open"
+
+	layer = closed_layer
+
+	if(underlayer_state)
+		AddOverlays(OVERLAY(icon, underlayer_state, layer = ABOVE_TILE_LAYER, dir = src.dir))
+
 
 /obj/machinery/door/window/proc/shatter(display_message = 1)
 	var/obj/item/material/shard/S = new /obj/item/material/shard(loc)
@@ -291,6 +302,7 @@
 	icon = 'icons/obj/doors/windoor.dmi'
 	icon_state = "leftsecure"
 	base_state = "leftsecure"
+	underlayer_state = "under_secure"
 	req_access = list(access_security)
 	maxhealth = 300
 	health = 300.0 //Stronger doors for prison (regular window door health is 150)
@@ -299,6 +311,7 @@
 	icon = 'icons/obj/doors/plasmawindoor.dmi'
 	icon_state = "left"
 	base_state = "left"
+	underlayer_state = null
 	material_used = MATERIAL_REINFORCED_PLASS
 	assembly_used = /obj/structure/windoor_assembly/plasma
 
@@ -307,6 +320,7 @@
 	icon = 'icons/obj/doors/plasmawindoor.dmi'
 	icon_state = "leftsecure"
 	base_state = "leftsecure"
+	underlayer_state = null
 	req_access = list(access_security)
 	maxhealth = 300
 	material_used = MATERIAL_REINFORCED_PLASS

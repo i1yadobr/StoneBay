@@ -407,9 +407,9 @@
 	update_nearby_tiles()
 	atom_flags &= ~ATOM_FLAG_FULLTILE_OBJECT
 	sleep(7)
-	layer = open_layer
 	explosion_resistance = 0
 	update_icon()
+	layer = open_layer
 	set_opacity(FALSE)
 	if(filler)
 		filler.set_opacity(opacity)
