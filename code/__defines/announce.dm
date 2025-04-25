@@ -14,6 +14,10 @@ GLOBAL_VAR_CONST(PREF_ANNOUNCER_TGSTATION, "\[Cargo\] /TG/station (Legacy)")
 	var/announcement_type = "Announcement"
 	var/sound = null
 
+/datum/announce/leak_fueltank
+	text = "We have discovered that some fuel tanks sent to %STATION_NAME% were not capped. Please refrain from smoking near the fuel while troubleshooting if you discover a leak. We sorry."
+	title = "An unfortunate mistake"
+
 /datum/announce/ion_storm
 	text = "It has come to our attention that the %STATION_NAME% passed through an ion storm. Please monitor all electronic equipment for malfunctions."
 	title = "Anomaly Alert"
