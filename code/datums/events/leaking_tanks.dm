@@ -16,12 +16,13 @@
 	. = max(1 HOUR, .)
 
 /datum/event/leaking_tanks/check_conditions()
-	. = SSevents.triggers.roles_count["Engineer"] >= 1
+	. = SSevents.triggers.roles_count["Station Engineer"] >= 1
+
 /datum/event/leaking_tanks/on_fire()
 
 	var/list/station_levels = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION)
 	var/list/matching_tanks = list()
-
+	announce()
 	for(var/obj/structure/reagent_dispensers/fueltank/candidate as anything in GLOB.fueltanks)
 		if(!(candidate.z in station_levels))
 			continue
@@ -42,5 +43,6 @@
 			message_admins("Fuel tank was opened and leaked by event at ([fueltank_leaked.x],[fueltank_leaked.y],[fueltank_leaked.z]), leaking [fuel_units_leak] units.")
 			already_leaking_tanks++
 
+
 /datum/event/leaking_tanks/proc/announce()
-	SSannounce.play_station_announce(/datum/announce/leak_fueltank)
+	SSannounce.play_station_announce(/datum/announce/leak_fueltanks)
