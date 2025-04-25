@@ -31,7 +31,7 @@
 #define QDEL_NULL(x) if(x) { qdel(x) ; x = null }
 #define QDEL_LIST(L) if(L) { for(var/I in L) qdel(I); L.Cut(); }
 #define QDEL_NULL_LIST(x) if(x) { for(var/y in x) { qdel(y) } ; x = null }
-#define QDEL_IN(item, ttl) spawn(ttl) {qdel(item)}
+#define QDEL_IN_THINK(item, ttl) spawn(ttl) {qdel(item)}
 // Just in case if we REALLY need to use spawn() instead of thinking and not lose it during random changes back and forth.
 #define QDEL_IN_SPAWN(item, ttl) spawn(ttl) {qdel(item)}
 // Just in case if we REALLY need to use thinking instead of spawn() and not lose it during random changes back and forth.
