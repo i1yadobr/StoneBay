@@ -128,8 +128,8 @@
 		leak_fuel(amount_per_transfer_from_this/10.0)
 
 	if(old_turf?.z != new_turf?.z)
-		GLOB.fueltanks[old_turf.z] -= src
-		GLOB.fueltanks[new_turf.z] += src
+		LAZYREMOVEASSOC(GLOB.fueltanks, old_turf?.z, src)
+		LAZYADDASSOC(GLOB.fueltanks, new_turf?.z, src)
 
 /obj/structure/reagent_dispensers/fueltank/Destroy()
 	QDEL_NULL(rig)
