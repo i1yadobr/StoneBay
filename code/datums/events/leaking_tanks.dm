@@ -11,7 +11,7 @@
 
 /datum/event/leaking_tanks/get_mtth()
 	. = ..()
-	. -= (SSevents.triggers.roles_count["Station Engineer"] * (15 MINUTES))
+	. -= (SSevents.triggers.roles_count["Engineer"] * (15 MINUTES))
 	. = max(1 HOUR, .)
 
 /datum/event/leaking_tanks/check_conditions()
