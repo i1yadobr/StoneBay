@@ -750,10 +750,10 @@
 	desc = "Poly the Parrot. An expert on quantum cracker theory."
 
 /mob/living/simple_animal/parrot/Poly/Initialize()
+	. = ..()
 	ears = new /obj/item/device/radio/headset/headset_eng(src)
 	available_channels = list(":e")
 	speak = GLOB.poly_phrases
-	..()
 
 /mob/living/simple_animal/parrot/say(message)
 

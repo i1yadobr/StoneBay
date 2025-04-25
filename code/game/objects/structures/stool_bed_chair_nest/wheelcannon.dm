@@ -70,7 +70,7 @@
 	if(isnull(assembly_overlay))
 		assembly_overlay = new(assembly)
 		assembly_overlay.SetTransform(0.2)
-		assembly_overlay.layer = ABOVE_HUMAN_LAYER
+		assembly_overlay.layer = DEPTH_OVERLAY_LAYER
 		assembly_overlay.appearance_flags |= KEEP_APART
 	AddOverlays(assembly_overlay)
 

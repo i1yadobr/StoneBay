@@ -109,6 +109,11 @@
 	#define MECH_ARM_LAYER              4.06
 	#define MECH_GEAR_LAYER             4.07
 	//ABOVE HUMAN
+	#define FLORA_LAYER                 4.075
+	#define DEPTH_OVERLAY_LAYER         4.076
+	#define SIDE_WINDOW_SIDES_LAYER     4.077
+	#define WINDOOR_LAYER               4.078
+	#define BLASTDOOR_LAYER             4.079
 	#define ABOVE_HUMAN_LAYER           4.08
 	#define VEHICLE_LOAD_LAYER          4.09
 	#define CAMERA_LAYER                4.10

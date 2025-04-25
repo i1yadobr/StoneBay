@@ -350,9 +350,6 @@
 
 	ini_dir = dir
 
-	update_nearby_tiles(need_rebuild=1)
-	update_nearby_icons()
-
 
 /obj/structure/window/Destroy()
 	set_density(0)
@@ -387,11 +384,11 @@
 	//A little cludge here, since I don't know how it will work with slim windows. Most likely VERY wrong.
 	//this way it will only update full-tile ones
 	ClearOverlays()
-	layer = FULL_WINDOW_LAYER
 	if(!is_full_window)
-		layer = SIDE_WINDOW_LAYER
+		layer = (dir == 1) ? SIDE_WINDOW_LAYER : SIDE_WINDOW_SIDES_LAYER
 		icon_state = "[basestate]"
 		return
+	layer = FULL_WINDOW_LAYER
 	var/list/dirs = list()
 	if(anchored)
 		for(var/obj/structure/window/W in orange(src,1))
@@ -487,10 +484,11 @@
 
 /obj/structure/window/Initialize()
 	. = ..()
-	layer = is_full_window ? FULL_WINDOW_LAYER : SIDE_WINDOW_LAYER
 	// windows only block while reinforced and fulltile, so we'll use the proc
 	real_explosion_block = explosion_block
-	explosion_block = EXPLOSION_BLOCK_PROC
+
+	update_nearby_tiles(need_rebuild=1)
+	update_nearby_icons()
 
 	AddElement(/datum/element/simple_rotation)
 
