@@ -26,7 +26,7 @@
 	var/open_sound = 'sound/machines/blastdoor_open.ogg'
 	var/close_sound = 'sound/machines/blastdoor_close.ogg'
 
-	closed_layer = ABOVE_WINDOW_LAYER
+	closed_layer = BLASTDOOR_LAYER
 	var/id = 1.0
 	dir = 1
 	explosion_resistance = 25

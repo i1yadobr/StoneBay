@@ -79,13 +79,13 @@
 		var/image/I = image('icons/obj/furniture.dmi', "[base_icon]_over")
 		if(material_alteration & MATERIAL_ALTERATION_COLOR)
 			I.color = material.icon_colour
-		I.layer = ABOVE_HUMAN_LAYER
+		I.layer = DEPTH_OVERLAY_LAYER
 		stool_cache[cache_key] = I
 	AddOverlays(stool_cache[cache_key])
 	if(buckled_mob)
 		cache_key = "[base_icon]_armrest"
 		var/image/I = image('icons/obj/furniture.dmi', "[base_icon]_armrest")
-		I.layer = ABOVE_HUMAN_LAYER
+		I.layer = DEPTH_OVERLAY_LAYER
 		if(material_alteration & MATERIAL_ALTERATION_COLOR)
 			I.color = padding_material.icon_colour
 		stool_cache[cache_key] = I

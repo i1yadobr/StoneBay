@@ -454,9 +454,9 @@
 	temperature = -30 CELSIUS
 
 /turf/simulated/floor/natural/frozenground/snow/Initialize()
+	. = ..()
 	if(prob(5))
 		icon_state = "snow[rand(1,12)]"
-	..()
 
 /turf/simulated/floor/natural/lava
 	name = "lava"

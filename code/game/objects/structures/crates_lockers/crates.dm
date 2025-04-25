@@ -31,7 +31,7 @@
 	if(!closed_turf_height_offset)
 		closed_turf_height_offset = turf_height_offset
 	if(has_overlay)
-		crate_overlay = OVERLAY(icon, "[icon_closed]over", layer = ABOVE_HUMAN_LAYER)
+		crate_overlay = OVERLAY(icon, "[icon_closed]over", layer = DEPTH_OVERLAY_LAYER)
 	update_icon()
 
 /obj/structure/closet/crate/on_update_icon()

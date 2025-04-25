@@ -6,7 +6,7 @@
 	desc = "Highly illegal drug. When you want to see the rainbow."
 
 /obj/item/storage/pill_bottle/happy/Initialize()
-	..()
+	. = ..()
 	new /obj/item/reagent_containers/pill/happy(src)
 	new /obj/item/reagent_containers/pill/happy(src)
 	new /obj/item/reagent_containers/pill/happy(src)
@@ -20,7 +20,7 @@
 	desc = "Highly illegal drug. Trade brain for speed."
 
 /obj/item/storage/pill_bottle/zoom/Initialize()
-	..()
+	. = ..()
 	new /obj/item/reagent_containers/pill/zoom(src)
 	new /obj/item/reagent_containers/pill/zoom(src)
 	new /obj/item/reagent_containers/pill/zoom(src)

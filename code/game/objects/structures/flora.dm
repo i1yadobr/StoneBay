@@ -257,7 +257,7 @@
 	icon = 'icons/obj/plants.dmi'
 	icon_state = "plant-26"
 
-	layer = ABOVE_HUMAN_LAYER
+	layer = FLORA_LAYER
 	var/dead = FALSE
 	var/obj/item/stored_item
 
@@ -517,7 +517,7 @@
 	icon = 'icons/obj/flora/goonbushes.dmi'
 	icon_state = ""
 	anchored = 1
-	layer = ABOVE_HUMAN_LAYER
+	layer = FLORA_LAYER
 
 /obj/structure/flora/goonbushes/shrub
 	name = "shrub"
@@ -555,7 +555,7 @@
 	desc = "A mass of twisted vines."
 	anchored = 1
 	density = 0
-	layer = ABOVE_HUMAN_LAYER
+	layer = FLORA_LAYER
 	var/cut_level = PLANT_NO_CUT
 	var/cut_hits = 3
 
@@ -617,7 +617,7 @@
 	icon = 'icons/obj/flora/jungleplants.dmi'
 	icon_state = "junglebush1"
 	anchored = 1
-	layer = ABOVE_HUMAN_LAYER
+	layer = FLORA_LAYER
 	var/light_overlay = FALSE
 	var/l_max_bright = 1
 	var/l_inner_range = 2
@@ -838,7 +838,7 @@
 	icon = 'icons/obj/plants.dmi'
 	icon_state = "plant-01"
 
-	layer = ABOVE_HUMAN_LAYER
+	layer = FLORA_LAYER
 
 /obj/structure/flora/pottedplant/large
 	name = "large potted plant"

@@ -385,7 +385,7 @@
 	//this way it will only update full-tile ones
 	ClearOverlays()
 	if(!is_full_window)
-		layer = (dir == 1) ? SIDE_WINDOW_LAYER : ABOVE_HUMAN_LAYER
+		layer = (dir == 1) ? SIDE_WINDOW_LAYER : SIDE_WINDOW_SIDES_LAYER
 		icon_state = "[basestate]"
 		return
 	layer = FULL_WINDOW_LAYER

@@ -35,12 +35,12 @@
 
 	if(density)
 		icon_state = base_state
-		closed_layer = (dir == 1) ? ABOVE_WINDOW_LAYER : (ABOVE_HUMAN_LAYER+0.01)
+		closed_layer = (dir == 1) ? ABOVE_WINDOW_LAYER : WINDOOR_LAYER
 		layer = closed_layer
 	else
 		icon_state = "[base_state]open"
-
-	layer = closed_layer
+		open_layer = (dir == 1) ? ABOVE_WINDOW_LAYER : WINDOOR_LAYER
+		layer = open_layer
 
 	if(underlayer_state)
 		AddOverlays(OVERLAY(icon, underlayer_state, layer = ABOVE_TILE_LAYER, dir = src.dir))
@@ -65,9 +65,9 @@
 		ae = electronics
 		electronics = null
 		ae.dropInto(loc)
-	if(operating == -1)
+	if(operating == DOOR_FAILURE)
 		ae.icon_state = "door_electronics_smoked"
-		operating = 0
+		operating = DOOR_IDLE
 	set_density(0)
 	playsound(src, SFX_BREAK_WINDOW, 70, 1)
 	if(display_message)
@@ -90,25 +90,25 @@
 		var/mob/living/bot/bot = AM
 		if(check_access(bot.botcard))
 			if(density)
-				open(autoclose = TRUE)
+				INVOKE_ASYNC(src, nameof(.proc/open))
 			else
-				close()
+				INVOKE_ASYNC(src, nameof(.proc/close))
 
 	else if(istype(AM, /obj/mecha))
 		var/obj/mecha/mech = AM
 		if(mech.occupant && allowed(mech.occupant))
 			if(density)
-				open(autoclose = TRUE)
+				INVOKE_ASYNC(src, nameof(.proc/open))
 			else
-				close()
+				INVOKE_ASYNC(src, nameof(.proc/close))
 
 	else if(ismob(AM))
 		var/mob/M = AM
 		if(allowed(M))
 			if(density)
-				open(autoclose = TRUE)
+				INVOKE_ASYNC(src, nameof(.proc/open))
 			else
-				close()
+				INVOKE_ASYNC(src, nameof(.proc/close))
 		else if(density)
 			flick(text("[]deny", base_state), src)
 
@@ -134,44 +134,59 @@
 	else
 		return 1
 
-/obj/machinery/door/window/open(autoclose = FALSE)
-	if(operating)
-		return
-	else
-		operating = TRUE
+/obj/machinery/door/window/can_open(forced = 0)
+	if(!forced && (stat & (NOPOWER|BROKEN)))
+		return FALSE
+	return ..()
+
+/obj/machinery/door/window/can_close(forced = 0)
+	if(!forced && (stat & (NOPOWER|BROKEN)))
+		return FALSE
+	return ..()
+
+/obj/machinery/door/window/open(forced = FALSE, autoclose = TRUE)
+	if(!can_open(forced))
+		return FALSE
+	operating = DOOR_OPENING
+
+	flick("[base_state]opening", src)
+	playsound(loc, 'sound/machines/windowdoor.ogg', 100, 1)
+
+	sleep(2)
+	set_density(0)
+	explosion_resistance = 0
+	update_nearby_tiles()
+
+	sleep(6)
+	update_icon()
+	operating = DOOR_IDLE
 
 	if(autoclose && !thinking_about_closing)
 		thinking_about_closing = TRUE
 		set_next_think_ctx("close_context", world.time + 10 SECONDS)
+	return TRUE
 
-	flick("[base_state]opening", src)
-	set_density(0)
-	update_icon()
-	playsound(loc, 'sound/machines/windowdoor.ogg', 100, 1)
-
-	explosion_resistance = 0
-	update_nearby_tiles()
-	operating = FALSE
-	return 1
-
-/obj/machinery/door/window/close()
-	if(operating)
-		return
-	else
-		operating = TRUE
+/obj/machinery/door/window/close(forced = FALSE)
+	if(!can_close(forced))
+		return FALSE
 
 	thinking_about_closing = FALSE
+	operating = DOOR_CLOSING
+
 	set_next_think_ctx("close_context", 0)
 
 	flick(text("[]closing", base_state), src)
-	set_density(1)
-	update_icon()
 	playsound(loc, 'sound/machines/windowdoor.ogg', 100, 1)
 
+	sleep(2)
+	set_density(1)
 	explosion_resistance = initial(explosion_resistance)
 	update_nearby_tiles()
-	operating = FALSE
-	return 1
+
+	sleep(6)
+	update_icon()
+	operating = DOOR_IDLE
+	return TRUE
 
 /obj/machinery/door/window/take_damage(damage)
 	health = max(0, health - damage)
@@ -195,17 +210,17 @@
 
 /obj/machinery/door/window/emag_act(remaining_charges, mob/user)
 	if(density && operable())
-		operating = -1
+		operating = DOOR_FAILURE
 		flick("[base_state]spark", src)
 		set_next_think(world.time + 1 SECOND)
 		return 1
 
 /obj/machinery/door/window/think()
-	open()
+	INVOKE_ASYNC(src, nameof(.proc/open), FALSE, TRUE)
 
 /obj/machinery/door/emp_act(severity)
 	if(prob(60 / severity))
-		open()
+		INVOKE_ASYNC(src, nameof(.proc/open), FALSE, TRUE)
 
 /obj/machinery/door/window/attackby(obj/item/I, mob/user)
 	if(operating)
@@ -222,10 +237,13 @@
 		return 1
 
 	//If it's emagged, crowbar can pry electronics out.
-	if(operating == -1 && isCrowbar(I))
-		playsound(loc, 'sound/items/Crowbar.ogg', 100, 1)
-		user.visible_message("[user] removes the electronics from the windoor.", "You start to remove electronics from the windoor.")
-		if(do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
+	if(isCrowbar(I) || istype(I, /obj/item/material/twohanded/fireaxe))
+		if(operating == DOOR_FAILURE)
+			playsound(loc, 'sound/items/Crowbar.ogg', 100, 1)
+			user.visible_message("[user] removes the electronics from the windoor.", "You start to remove electronics from the windoor.")
+			if(!do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
+				return
+
 			to_chat(user, "<span class='notice'>You removed the windoor electronics!</span>")
 
 			var/obj/structure/windoor_assembly/wa = new assembly_used(loc)
@@ -256,8 +274,18 @@
 				ae.dropInto(loc)
 			ae.icon_state = "door_electronics_smoked"
 
-			operating = 0
+			operating = DOOR_IDLE
 			shatter(src)
+			return
+
+		if(user.a_intent != I_HURT)
+			if(!(stat & (NOPOWER|BROKEN)))
+				to_chat(user, SPAN("notice", "The [src]'s motors resist your efforts to force it."))
+				return
+			if(density)
+				INVOKE_ASYNC(src, nameof(.proc/open), TRUE)
+			else
+				INVOKE_ASYNC(src, nameof(.proc/close), TRUE)
 			return
 
 	//If it's a weapon, smash windoor. Unless it's an id card, agent card, ect.. then ignore it (Cards really shouldnt damage a door anyway)
@@ -275,7 +303,10 @@
 	add_fingerprint(user, 0, I)
 
 	if(allowed(user))
-		density ? open() : close()
+		if(density)
+			INVOKE_ASYNC(src, nameof(.proc/open))
+		else
+			INVOKE_ASYNC(src, nameof(.proc/close))
 		return
 
 	else if(density)
