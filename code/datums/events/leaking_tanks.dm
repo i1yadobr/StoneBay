@@ -3,15 +3,15 @@
 	name = "Leaking fueltanks"
 	description = "Some fueltanks was leaking"
 
-	mtth = 15 MINUTES
-	difficulty = 5
+	mtth = 1 HOURS
+	difficulty = 10
 
 /datum/event/leaking_tanks/New()
 	. = ..()
 
 /datum/event/leaking_tanks/get_mtth()
 	. = ..()
-	. -= (SSevents.triggers.roles_count["Engineer"] * (15 MINUTES))
+	. -= (SSevents.triggers.roles_count["Station Engineer"] * (15 MINUTES))
 	. = max(1 HOUR, .)
 
 /datum/event/leaking_tanks/check_conditions()
