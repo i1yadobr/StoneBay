@@ -7,7 +7,7 @@
 	var/mob/living/carbon/human/attached
 	var/mode = 1 // 1 is injecting, 0 is taking blood.
 	var/obj/item/reagent_containers/beaker
-	var/list/transfer_amounts = list(REM, 1, 2)
+	var/list/transfer_amounts = list(REM, 1, 2, 3, 5, 10)
 	var/transfer_amount = 1
 
 /obj/structure/iv_drip/verb/set_APTFT()
