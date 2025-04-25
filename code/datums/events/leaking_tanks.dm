@@ -38,7 +38,7 @@
 		var/obj/structure/reagent_dispensers/fueltank/fueltank_leaked = pick_n_take(matching_tanks)
 		matching_tanks -= fueltank_leaked
 		if(fueltank_leaked)
-			var/fuel_units_leak = rand(25,100)
+			var/fuel_units_leak = rand(25, 100)
 			fueltank_leaked.modded = TRUE
 			fueltank_leaked.leak_fuel(fuel_units_leak)
 			log_game("Fuel tank was opened and leaked by event at [fueltank_leaked.loc.name] ([fueltank_leaked.x],[fueltank_leaked.y],[fueltank_leaked.z]), leaking [fuel_units_leak] units.")
