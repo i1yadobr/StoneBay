@@ -34,6 +34,7 @@
 	while(already_leaking_tanks < leaking_tanks_quantity)
 		if(!matching_tanks?.len)
 			break
+
 		var/obj/structure/reagent_dispensers/fueltank/fueltank_leaked = pick_n_take(matching_tanks)
 		matching_tanks -= fueltank_leaked
 		if(fueltank_leaked)
