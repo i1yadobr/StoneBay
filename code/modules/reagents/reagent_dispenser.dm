@@ -133,8 +133,7 @@
 
 /obj/structure/reagent_dispensers/fueltank/Destroy()
 	QDEL_NULL(rig)
-	if(GLOB.fueltanks[z])
-		GLOB.fueltanks[z] -= src
+	LAZYREMOVEASSOC(GLOB.fueltanks, Z, src)
 	return ..()
 
 /obj/structure/reagent_dispensers/fueltank/examine(mob/user, infix)
