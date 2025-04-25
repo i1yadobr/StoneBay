@@ -128,12 +128,12 @@
 		leak_fuel(amount_per_transfer_from_this/10.0)
 
 	if(old_turf?.z != new_turf?.z)
-		LAZYREMOVEASSOC(GLOB.fueltanks, old_turf?.z, src)
-		LAZYADDASSOC(GLOB.fueltanks, new_turf?.z, src)
+		LAZYREMOVEASSOC(GLOB.fueltanks, src, old_turf?.z)
+		LAZYADDASSOC(GLOB.fueltanks, src, new_turf?.z)
 
 /obj/structure/reagent_dispensers/fueltank/Destroy()
 	QDEL_NULL(rig)
-	LAZYREMOVEASSOC(GLOB.fueltanks, Z, src)
+	LAZYREMOVEASSOC(GLOB.fueltanks, src, z)
 	return ..()
 
 /obj/structure/reagent_dispensers/fueltank/examine(mob/user, infix)
