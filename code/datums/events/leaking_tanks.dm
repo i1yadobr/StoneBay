@@ -8,7 +8,6 @@
 
 /datum/event/leaking_tanks/New()
 	. = ..()
-	add_think_ctx("announce", CALLBACK(src, .proc/announce), 0)
 
 /datum/event/leaking_tanks/get_mtth()
 	. = ..()
