@@ -7,7 +7,14 @@
 	taste_description = "pure alcohol"
 	reagent_state = LIQUID
 	color = "#404030"
+
+	metabolism = 1.0
+	ingest_met = 0.75
+	digest_met = 3.5
+	ingest_absorbability = 0.5
+	digest_absorbability = 1.0
 	touch_met = 5
+
 	var/nutriment_factor = 0
 	var/strength = 10 // This is, essentially, ml between stages - the lower, the stronger. Less fine tuning, more clarity.
 	var/toxicity = 1
@@ -120,6 +127,9 @@
 	strength = 50
 	nutriment_factor = 0.5
 	hydration_value = 0.9
+
+	ingest_met = 1.0
+	digest_met = 5.0
 
 	glass_name = "beer"
 	glass_desc = "A freezing pint of beer"

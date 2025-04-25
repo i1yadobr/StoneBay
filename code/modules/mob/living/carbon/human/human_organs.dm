@@ -495,14 +495,17 @@
 	adjustToxLoss(-1 * detox_efficiency, TRUE) // Either healing tox damage, or applying even more bypassing a liver's protection.
 
 	// For simplicity, let's assume that 5% the blood volume equals the amount of toxins that's enough to completely wreck the body.
-	toxic_severity = round(toxic_buildup / (species ? (species.blood_volume * 0.05) : 280) * 100)
+	toxic_severity = floor(toxic_buildup / (species ? (species.blood_volume * 0.05) : 280) * 100)
 
 	var/kidney_strain = 1.0
-	if(toxic_severity >= 100) // tb 280+, we're wrecked, lethal poisoning
-		adjustBrainLoss(0.5)
-		Weaken(30)
+
+	if(toxic_severity >= 150) // tb 350+, complete toxic shutdown
 		Paralyse(20)
+
+	if(toxic_severity >= 100) // tb 280+, we're wrecked, lethal poisoning
+		Weaken(30)
 		adjustInternalLoss(2.5, TRUE)
+		adjustBrainLoss(0.5)
 
 	if(toxic_severity >= 75) // tb 210+, we're in immediate danger, critical poisoning
 		if(prob(10))
