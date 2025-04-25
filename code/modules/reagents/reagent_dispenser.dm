@@ -121,9 +121,9 @@
 	return
 
 /obj/structure/reagent_dispensers/fueltank/Move(newloc, direct)
-	. = ..()
 	var/turf/old_turf = get_turf(loc)
 	var/turf/new_turf = get_turf(newloc)
+	. = ..()
 	if (. && modded)
 		leak_fuel(amount_per_transfer_from_this/10.0)
 
