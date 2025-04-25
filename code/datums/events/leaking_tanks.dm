@@ -26,6 +26,7 @@
 	for(var/obj/structure/reagent_dispensers/fueltank/candidate as anything in GLOB.fueltanks)
 		if(!(candidate.z in station_levels))
 			continue
+
 		matching_tanks += candidate
 
 	var/leaking_tanks_quantity = rand(2,5)
