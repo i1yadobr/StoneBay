@@ -30,8 +30,7 @@
 		matching_tanks += candidate
 
 	var/leaking_tanks_quantity = rand(2, 5)
-	var/already_leaking_tanks = 0
-	while(already_leaking_tanks < leaking_tanks_quantity)
+	for(var/i = 0, i < leaking_tanks_quantity, i++)
 		if(!matching_tanks?.len)
 			break
 
@@ -43,7 +42,7 @@
 			fueltank_leaked.leak_fuel(fuel_units_leak)
 			log_game("Fuel tank was opened and leaked by event at [fueltank_leaked.loc.name] ([fueltank_leaked.x],[fueltank_leaked.y],[fueltank_leaked.z]), leaking [fuel_units_leak] units.")
 			message_admins("Fuel tank was opened and leaked by event at ([fueltank_leaked.x],[fueltank_leaked.y],[fueltank_leaked.z]), leaking [fuel_units_leak] units.")
-			already_leaking_tanks++
+		
 
 
 /datum/event/leaking_tanks/proc/announce()
