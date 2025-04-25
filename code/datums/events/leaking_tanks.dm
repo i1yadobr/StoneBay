@@ -29,7 +29,7 @@
 
 		matching_tanks += candidate
 
-	var/leaking_tanks_quantity = rand(2,5)
+	var/leaking_tanks_quantity = rand(2, 5)
 	var/already_leaking_tanks = 0
 	while(already_leaking_tanks < leaking_tanks_quantity)
 		if(!matching_tanks?.len)
