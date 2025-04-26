@@ -430,8 +430,8 @@
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "sink"
 	desc = "A sink used for washing one's hands and face."
-	anchored = 1
-	var/busy = 0 	//Something's being washed at the moment
+	anchored = TRUE
+	var/busy = FALSE // Something's being washed at the moment
 
 /obj/structure/sink/MouseDrop_T(obj/item/thing, mob/user)
 	..()
@@ -470,11 +470,11 @@
 	playsound(loc, 'sound/effects/using/sink/washing1.ogg', 75)
 	to_chat(usr, "<span class='notice'>You start washing your hands.</span>")
 
-	busy = 1
-	if(!do_after(user, 40,src))
-		busy = 0
+	busy = TRUE
+	if(!do_after(user, (3 SECONDS), src))
+		busy = FALSE
 		return
-	busy = 0
+	busy = FALSE
 
 	if(!Adjacent(user)) return		//Person has moved away from the sink
 
@@ -498,7 +498,10 @@
 		playsound(loc, 'sound/effects/using/sink/filling1.ogg', 75)
 		RG.reagents.add_reagent(/datum/reagent/water, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 		user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-		return 1
+		return TRUE
+
+	else if(istype(O, /obj/item/soap))
+		return FALSE // We don't want to wash it, we want to wet it.
 
 	else if (istype(O, /obj/item/melee/baton))
 		var/obj/item/melee/baton/B = O
@@ -518,13 +521,14 @@
 				user.visible_message( \
 					"<span class='danger'>[user] was stunned by \his wet [O]!</span>", \
 					"<span class='userdanger'>[user] was stunned by \his wet [O]!</span>")
-				return 1
+				return TRUE
+
 	else if(istype(O, /obj/item/mop))
 		playsound(loc, 'sound/effects/using/sink/filling1.ogg', 75)
-		O.reagents.add_reagent(/datum/reagent/water, 50)
+		O.reagents.add_reagent(/datum/reagent/water, 300)
 		to_chat(user, "<span class='notice'>You wet \the [O] in \the [src].</span>")
 		playsound(loc, 'sound/effects/slosh.ogg', 25, 1)
-		return
+		return TRUE
 
 	var/turf/location = user.loc
 	if(!isturf(location)) return
@@ -536,11 +540,11 @@
 
 	playsound(loc, 'sound/effects/using/sink/washing1.ogg', 75)
 
-	busy = 1
-	if(!do_after(user, 40,src))
-		busy = 0
+	busy = TRUE
+	if(!do_after(user, (3 SECONDS), src))
+		busy = FALSE
 		return
-	busy = 0
+	busy = FALSE
 
 	if(user.loc != location) return				//User has moved
 	if(!I) return 								//Item's been destroyed while washing
