@@ -239,7 +239,7 @@
 
 			return
 
-		var/damage = radiation / (0.05 SIEVERT)
+		var/damage = radiation / (0.5 SIEVERT)
 
 		if(radiation > (1 SIEVERT))
 			if(!full_prosthetic && !isundead(src))

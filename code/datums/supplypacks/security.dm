@@ -492,7 +492,7 @@
 /decl/hierarchy/supply_pack/security/grenade_launcher
 	name = "Weapons - Grenade launcher"
 	contains = list(/obj/item/gun/projectile/grenade_launcher = 1)
-	cost = 35
+	cost = 40
 	containertype = /obj/structure/closet/crate/secure/weapon
 	containername = "\improper MGL crate"
 	access = access_security
@@ -501,7 +501,7 @@
 /decl/hierarchy/supply_pack/security/revolver_grenade_launcher
 	name = "Weapons - MGL"
 	contains = list(/obj/item/gun/projectile/revolver/grenade_launcher = 1)
-	cost = 75
+	cost = 100
 	containertype = /obj/structure/closet/crate/secure/weapon
 	containername = "\improper MGL crate"
 	access = access_security
@@ -526,7 +526,7 @@
 /decl/hierarchy/supply_pack/security/grenade_shells_emp
 	name = "Ammunition - 40mm EMP shells"
 	contains = list(/obj/item/storage/box/grenade_shells_emp = 2)
-	cost = 30
+	cost = 40
 	containertype = /obj/structure/closet/crate/secure/weapon
 	containername = "\improper 40mm EMP shells crate"
 	access = access_security
@@ -535,7 +535,7 @@
 /decl/hierarchy/supply_pack/security/grenade_shells_frag
 	name = "Weapons - 40mm FRAG shells"
 	contains = list(/obj/item/storage/box/grenade_shells_frag = 2)
-	cost = 50
+	cost = 100
 	containertype = /obj/structure/closet/crate/secure/weapon
 	containername = "\improper 40mm FRAG shells crate"
 	access = access_armory
@@ -544,7 +544,7 @@
 /decl/hierarchy/supply_pack/security/grenade_shells_he
 	name = "Weapons - 40mm HE shells"
 	contains = list(/obj/item/storage/box/grenade_shells_he = 2)
-	cost = 75
+	cost = 125
 	containertype = /obj/structure/closet/crate/secure/weapon
 	containername = "\improper 40mm HE shells crate"
 	access = access_armory
