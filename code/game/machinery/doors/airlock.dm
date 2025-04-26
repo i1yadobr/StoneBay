@@ -272,6 +272,10 @@ About the new airlock wires panel:
 		set_light(0)
 	ClearOverlays()
 
+	if(operating > DOOR_IDLE)
+		ImmediateOverlayUpdate()
+		return
+
 	var/power_systems_on = arePowerSystemsOn()
 
 	if(density)
@@ -299,7 +303,7 @@ About the new airlock wires panel:
 			AddOverlays(OVERLAY(icon, "sparks_damaged"))
 			AddOverlays(emissive_appearance(icon, "sparks_damaged_ea"))
 
-		if(!p_open && power_systems_on)
+		if(!p_open && power_systems_on && !operating)
 			AddOverlays(emissive_appearance(icon, "closed_ea"))
 	else
 		icon_state = "door_open"

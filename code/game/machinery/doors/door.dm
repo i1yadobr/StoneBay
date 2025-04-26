@@ -407,6 +407,7 @@
 	if(!can_open(forced))
 		return FALSE
 	operating = DOOR_OPENING
+	update_icon()
 
 	do_animate("opening")
 	icon_state = "door0"
@@ -429,12 +430,12 @@
 	set_opacity(FALSE)
 	if(filler)
 		filler.set_opacity(opacity)
+	operating = DOOR_IDLE
 	update_icon()
 
 	if(anim_time_3)
 		sleep(anim_time_3)
 
-	operating = DOOR_IDLE
 	if(autoclose && !thinking_about_closing)
 		thinking_about_closing = TRUE
 		set_next_think_ctx("close_context", world.time + wait)
@@ -451,6 +452,7 @@
 
 	thinking_about_closing = FALSE
 	operating = DOOR_CLOSING
+	update_icon()
 
 	do_animate("closing")
 
@@ -470,13 +472,13 @@
 		set_opacity(TRUE) //caaaaarn!
 		if(filler)
 			filler.set_opacity(opacity)
+	operating = DOOR_IDLE
 	update_icon()
 	shove_everything(shove_mobs = push_mobs, min_w_class = ITEM_SIZE_NORMAL) // Door shields cheesy meta must be gone.
 
 	if(anim_time_3)
 		sleep(anim_time_3)
 
-	operating = DOOR_IDLE
 
 	//I shall not add a check every x ticks if a door has closed over some fire.
 	var/obj/fire/fire = locate() in loc
