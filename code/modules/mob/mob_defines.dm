@@ -53,6 +53,7 @@
 	var/atom/movable/screen/block_icon = null
 	var/atom/movable/screen/blockswitch_icon = null
 	var/atom/movable/screen/nutrition_icon = null
+	var/atom/movable/screen/jump_icon = null
 	var/atom/movable/screen/hydration_icon = null
 	var/atom/movable/screen/bladder_icon = null
 	var/atom/movable/screen/bowels_icon = null
@@ -132,6 +133,7 @@
 	var/a_intent = I_HELP//Living
 	var/m_intent = M_RUN//Living
 	var/obj/buckled = null//Living
+	var/mmb_intents = null
 	var/obj/item/l_hand = null//Living
 	var/obj/item/r_hand = null//Living
 	var/obj/item/back = null//Human/Monkey
