@@ -715,3 +715,16 @@
 	set name = "Whistle"
 	set category = "Emotes"
 	emote("whistle")
+
+/datum/emote/jump
+	key = "jump"
+
+	message_1p = "You jump."
+	message_3p = "jumps."
+
+	message_type = AUDIBLE_MESSAGE
+
+	sound_human_female = SFX_FEMALE_JUMP
+	sound_human_male = SFX_MALE_JUMP
+
+	state_checks = EMOTE_CHECK_CONSCIOUS
