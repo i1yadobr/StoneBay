@@ -6,9 +6,6 @@
 	mtth = 1 HOURS
 	difficulty = 10
 
-/datum/event/leaking_tanks/New()
-	. = ..()
-
 /datum/event/leaking_tanks/get_mtth()
 	. = ..()
 	. -= (SSevents.triggers.roles_count["Station Engineer"] * (15 MINUTES))
@@ -20,24 +17,26 @@
 /datum/event/leaking_tanks/on_fire()
 	var/list/station_levels = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION)
 	var/list/matching_tanks = list()
-	var/leaking_tanks_quantity = rand(2, 5)
+
 
 	announce()
 
-	for(var/obj/structure/reagent_dispensers/fueltank/candidate as anything in GLOB.fueltanks)
-		if(!(candidate.z in station_levels))
+	for (var/obj/structure/reagent_dispensers/fueltank/candidate as anything in GLOB.fueltanks)
+		if (!(candidate.z in station_levels))
 			continue
 
 		matching_tanks += candidate
 
-	for(var/i = 0, i < leaking_tanks_quantity, i++)
-		if(!matching_tanks?.len)
+	var/leaking_tanks_quantity = rand(2, 5)
+
+	for	(var/i = 0, i < leaking_tanks_quantity, i++)
+		if (!matching_tanks?.len)
 			break
 
 		var/obj/structure/reagent_dispensers/fueltank/fueltank_leaked = pick_n_take(matching_tanks)
 		matching_tanks -= fueltank_leaked
 
-		if(fueltank_leaked)
+		if (fueltank_leaked)
 			var/fuel_units_leak = rand(25, 100)
 			fueltank_leaked.modded = TRUE
 			fueltank_leaked.leak_fuel(fuel_units_leak)
