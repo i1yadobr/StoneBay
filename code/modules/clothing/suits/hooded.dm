@@ -13,6 +13,10 @@
 	MakeHood()
 
 /obj/item/clothing/suit/storage/hooded/Destroy()
+	if(hood && ishuman(hood.loc))
+		var/mob/living/carbon/H = hood.loc
+		H.drop(hood, src, TRUE)
+		H.update_inv_wear_suit()
 	QDEL_NULL(hood)
 	return ..()
 
@@ -39,10 +43,10 @@
 
 	if(ishuman(hood.loc))
 		var/mob/living/carbon/H = hood.loc
-		H.drop(hood, force = TRUE)
+		H.drop(hood, src, TRUE)
 		H.update_inv_wear_suit()
-
-	hood.forceMove(src)
+	else
+		hood.forceMove(src)
 
 /obj/item/clothing/suit/storage/hooded/dropped()
 	. = ..()
