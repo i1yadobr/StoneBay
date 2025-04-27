@@ -81,6 +81,7 @@
 			stop_typing()
 			return
 
+	if(client) // Apparently it can get lost since the last check because winget() sleeps the proc as it checks the client's skin state.
 		var/focus = winget(src, ":input", "focus")
 		if(cmptext(focus, "false"))
 			var/text = winget(src, ":input", "text")
