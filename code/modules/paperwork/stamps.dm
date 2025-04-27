@@ -15,8 +15,8 @@
 		if(ishuman(M))
 			var/mob/living/carbon/human/H = M
 			var/obj/item/organ/external/head/head = H.get_organ(BP_HEAD)
-			if(head)
-				head.apply_stamp(src.name, user)
+			if(istype(head))
+				head.apply_stamp(name, user)
 				return TRUE
 			else
 				to_chat(user, "<span class = 'notice'>You can't stamp on that!</span>")

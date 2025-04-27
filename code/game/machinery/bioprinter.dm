@@ -85,7 +85,8 @@
 	if(printing || (stat & (BROKEN|NOPOWER)))
 		return
 	show_printer_menu(user)
-	printer_menu.open()
+	if(printer_menu) // TODO: AI intraction.
+		printer_menu.open()
 
 /obj/machinery/organ_printer/proc/show_printer_menu(mob/user)
 	add_fingerprint(user)

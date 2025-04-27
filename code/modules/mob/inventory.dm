@@ -297,7 +297,6 @@ var/list/slot_equipment_priority = list( \
 
 /mob/proc/delete_inventory(include_carried = FALSE)
 	for(var/atom/entry in get_equipped_items(include_carried))
-		drop(entry, null, TRUE)
 		qdel(entry)
 
 // Returns all currently covered body parts
