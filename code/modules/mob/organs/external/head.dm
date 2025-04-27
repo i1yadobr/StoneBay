@@ -87,8 +87,11 @@
 				log_and_message_admins("has written something on [owner]'s ([owner.ckey]) head: \"[graffiti]\".", penman)
 
 /obj/item/organ/external/head/proc/apply_stamp(stamp_name, stamper)
-	if(owner && (owner.wear_mask || owner.head))
-		to_chat(stamper, "<span class='notice'>[owner]'s forehead is covered up.</span>")
+	if(!owner)
+		return
+
+	if(owner.wear_mask || owner.head)
+		to_chat(stamper, SPAN("notice", "[owner]'s forehead is covered up."))
 		return
 
 	if(!forehead_stamps)
@@ -97,11 +100,9 @@
 	if(!(stamp_name in forehead_stamps))
 		forehead_stamps += stamp_name
 		if(owner == stamper)
-			to_chat(stamper, "<span class='notice'>You stamped yourself with '[stamp_name]'.</span>")
+			owner.visible_message(SPAN("notice", "[stamper] stamps own forehead with \"[stamp_name]\"!"), SPAN("notice", "You stamp your forehead with \"[stamp_name]\"!"))
 		else
-			to_chat(stamper,"<span class='notice'>You stamp [owner]'s forehead with '[stamp_name]'!</span>")
-			to_chat(owner, "<span class='notice'>[stamper] stamped your forehead with '[stamp_name]'!</span>")
-			to_chat(stamper, "<span class = 'notice'>[stamper] stamps [owner]'s forehead with '[stamp_name]'.</span>", stamper, owner)
+			owner.visible_message(SPAN("notice", "[stamper] stamps [owner]'s forehead with \"[stamp_name]\"!"), SPAN("warning", "[stamper] stamped your forehead with \"[stamp_name]\"!"))
 
 /mob/living/carbon/human/proc/wash_forehead()
 	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
