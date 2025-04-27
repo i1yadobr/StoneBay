@@ -176,9 +176,10 @@
 		needs_to_close = !issilicon(user)
 	trigger_open_close(user)
 
-	if(needs_to_close && !thinking_about_closing)
-		thinking_about_closing = TRUE
+	if(needs_to_close)
 		set_next_think_ctx("close_context", world.time + 5 SECONDS)
+	else
+		set_next_think_ctx("close_context", 0)
 
 /obj/machinery/door/firedoor/proc/trigger_open_close(mob/user, forced = FALSE)
 	if(operating)
@@ -199,8 +200,7 @@
 			if(density)
 				visible_message(SPAN("danger","\The [user] forces \the [src] open!"))
 				trigger_open_close(user, TRUE)
-				if(!(stat & (BROKEN|NOPOWER)) && !thinking_about_closing)
-					thinking_about_closing = TRUE
+				if(!(stat & (BROKEN|NOPOWER)))
 					set_next_think_ctx("close_context", world.time + 15 SECONDS)
 			else
 				visible_message(SPAN("danger","\The [user] forces \the [src] closed!"))
@@ -287,8 +287,7 @@
 								"You hear metal strain and groan, and a door [density ? "opening" : "closing"].")
 		if(density)
 			trigger_open_close(user, TRUE)
-			if(!(stat & (BROKEN|NOPOWER)) && !thinking_about_closing)
-				thinking_about_closing = TRUE
+			if(!(stat & (BROKEN|NOPOWER)))
 				set_next_think_ctx("close_context", world.time + 15 SECONDS)
 		else
 			trigger_open_close(user)
