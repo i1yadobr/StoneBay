@@ -111,7 +111,7 @@
 /mob/living/carbon/human/examine(mob/user, infix)
 	. = ..()
 	var/obj/item/organ/external/head/head = get_organ(BP_HEAD)
-	if(head && head.forehead_stamps && head.forehead_stamps.len > 0)
+	if(istype(head) && head.forehead_stamps && head.forehead_stamps.len > 0)
 		var/gender_pronoun = src.gender == "male" ? "He" : "She"
 		var/posessive_pronoun = src.gender == "male" ? "his" : "her"
 		for(var/stamp in head.forehead_stamps)
