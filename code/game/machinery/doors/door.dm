@@ -37,8 +37,6 @@
 	var/tryingToLock = FALSE // for autoclosing
 	// turf animation
 	var/atom/movable/fake_overlay/c_animation = null
-	/// Determines whether this door already has thinkg_close context running or not
-	var/thinking_about_closing = FALSE
 	rad_resist_type = /datum/rad_resist/door
 
 	// Don't mess with these unless you absolutely know what you're doing.
@@ -436,9 +434,10 @@
 	if(anim_time_3)
 		sleep(anim_time_3)
 
-	if(autoclose && !thinking_about_closing)
-		thinking_about_closing = TRUE
+	if(autoclose)
 		set_next_think_ctx("close_context", world.time + wait)
+	else
+		set_next_think_ctx("close_context", 0)
 
 	return TRUE
 
@@ -450,7 +449,6 @@
 			set_next_think_ctx("close_context", world.time + wait)
 		return FALSE
 
-	thinking_about_closing = FALSE
 	operating = DOOR_CLOSING
 	update_icon()
 

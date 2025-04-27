@@ -161,16 +161,17 @@
 	update_icon()
 	operating = DOOR_IDLE
 
-	if(autoclose && !thinking_about_closing)
-		thinking_about_closing = TRUE
+	if(autoclose)
 		set_next_think_ctx("close_context", world.time + 10 SECONDS)
+	else
+		set_next_think_ctx("close_context", 0)
+
 	return TRUE
 
 /obj/machinery/door/window/close(forced = FALSE)
 	if(!can_close(forced))
 		return FALSE
 
-	thinking_about_closing = FALSE
 	operating = DOOR_CLOSING
 
 	set_next_think_ctx("close_context", 0)
