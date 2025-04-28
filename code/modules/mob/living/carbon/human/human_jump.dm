@@ -1,11 +1,11 @@
 #define NO_HURT_JUMP_PROB 15
-#define HURT_JUMP_PROB 70
+#define LITE_HURT_PROB 70
 #define KNOCK_DOWN_PROB 35
 
 #define LONG_JUMP_PROB 25
 #define MAX_JUMP_LENGTH 3
 #define DEFAULT_JUMP_LENGTH 2
-#define JUMP_KNOCKOUT_PROB 100
+#define JUMP_KNOCKOUT_PROB 25
 
 #define SALTO_PROB 10
 
@@ -19,6 +19,7 @@
 /mob/living/carbon/human/throw_impact(atom/hit_atom, speed, target_zone)
 	. = ..()
 	var/jump_in_spaceman = FALSE
+
 	if (hit_atom.density)
 		if(ishuman(hit_atom))
 			jump_in_spaceman = TRUE
@@ -40,7 +41,7 @@
 			to_chat(src, SPAN_WARNING("You jumped into [hit_atom.name]. It's lucky you weren't hurt."))
 			return
 
-		if (prob(HURT_JUMP_PROB))
+		if (prob(LITE_HURT_PROB))
 			Weaken(5)
 			adjustBruteLoss(20)
 			to_chat(src, SPAN_WARNING("Jumping into the [hit_atom.name] knocked the wind out of you"))
@@ -69,20 +70,24 @@
 
 	if (A == src || A == loc ||	lying || pulledby || LAZYLEN(grabbed_by))
 		to_chat(src, SPAN_WARNING("You can'jump right now"))
+		mmb_switch(MMB_JUMP)
 		return
 
 	if (buckled)
 		to_chat(src, SPAN_WARNING("You need unbucked first"))
+		mmb_switch(MMB_JUMP)
 		return
 
 	if (poise < (poise_pool / 2))
 		to_chat(src, SPAN_WARNING("Not enough balance!"))
+		mmb_switch(MMB_JUMP)
 		return
 
 	setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	face_atom(A)
 	var/jump_distance = MAX_JUMP_LENGTH
 	var/jump_turf = src.loc
+
 	for (var/i = 0, i < jump_distance, i++)
 		jump_turf = get_step(jump_turf, dir)
 
@@ -91,10 +96,10 @@
 
 	playsound(src, src.gender == MALE ? 'sound/effects/m_jump.ogg' : 'sound/effects/f_jump.ogg', 25, 0, 1)
 	visible_message(SPAN_NOTICE("[src] jump to [A]."))
-
+	damage_poise(body_build.poise_pool / 2)
 	throw_spin = FALSE
 
-	if (prob(SALTO_PROB)) // добавить код проверки что нет брут или бёрн урона
+	if (prob(SALTO_PROB))
 		throw_spin = TRUE
 		visible_message(SPAN_NOTICE("[src] did a somersault!."))
 
@@ -113,9 +118,10 @@
 	mmb_switch(MMB_JUMP)
 
 #undef NO_HURT_JUMP_PROB
-#undef LITE_HURT_JUMP_PROB
+#undef LITE_HURT_PROB
 #undef KNOCK_DOWN_PROB
 #undef LONG_JUMP_PROB
 #undef MAX_JUMP_LENGTH
 #undef DEFAULT_JUMP_LENGTH
+#undef JUMP_KNOCKOUT_PROB
 #undef SALTO_PROB
