@@ -9,19 +9,12 @@
 
 #define SALTO_PROB 10
 
-/mob/living/carbon/human/MiddleClickOn(atom/A)
-	. = ..()
-	switch (mmb_intents)
-		if (MMB_JUMP)
-			INVOKE_ASYNC(src, nameof(.proc/jump), A)
-			swap_hand() //A crutch solution so that hands don't change during a jump
-
 /mob/living/carbon/human/throw_impact(atom/hit_atom, speed, target_zone)
 	. = ..()
 	var/jump_in_spaceman = FALSE
 
 	if (hit_atom.density)
-		if(ishuman(hit_atom))
+		if (ishuman(hit_atom))
 			jump_in_spaceman = TRUE
 			var/mob/living/carbon/human/jump_target_human = hit_atom
 
@@ -51,36 +44,34 @@
 			adjustBruteLoss(10)
 			to_chat(src, SPAN_WARNING("You jumped into [hit_atom.name]. It must have hurt."))
 
-/mob/living/carbon/human/proc/mmb_switch(intent)
-	if (mmb_intents == intent)
-		mmb_intents = null
+/mob/living/carbon/human/proc/toggle_jump()
+	if (!src || src.stat)
+		return
+
+	if (jump_icon?.icon_state == "act_jump0")
+		jump_icon?.icon_state = "act_jump1"
+		src.active_ability = HUMAN_POWER_JUMP
 	else
-		mmb_intents = intent
+		jump_icon?.icon_state = "act_jump0"
+		src.active_ability = HUMAN_POWER_NONE
 
-	switch(intent)
-		if (MMB_JUMP)
-			if (jump_icon?.icon_state == "act_jump0")
-				jump_icon?.icon_state = "act_jump1"
-			else
-				jump_icon?.icon_state = "act_jump0"
-
-/mob/living/carbon/human/proc/jump(atom/A)
+/mob/living/carbon/human/proc/process_jump(atom/A)
 	if (QDELETED(A) || QDELETED(src) || A.z != z)
 		return
 
-	if (A == src || A == loc ||	lying || pulledby || LAZYLEN(grabbed_by))
-		to_chat(src, SPAN_WARNING("You can'jump right now"))
-		mmb_switch(MMB_JUMP)
+	if (A == src || A == loc || lying || pulledby || LAZYLEN(grabbed_by))
+		to_chat(src, SPAN_WARNING("You can't jump right now"))
+		toggle_jump(HUMAN_POWER_JUMP)
 		return
 
 	if (buckled)
-		to_chat(src, SPAN_WARNING("You need unbucked first"))
-		mmb_switch(MMB_JUMP)
+		to_chat(src, SPAN_WARNING("You need to unbuckle first"))
+		toggle_jump(HUMAN_POWER_JUMP)
 		return
 
 	if (poise < (poise_pool / 2))
 		to_chat(src, SPAN_WARNING("Not enough balance!"))
-		mmb_switch(MMB_JUMP)
+		toggle_jump(HUMAN_POWER_JUMP)
 		return
 
 	setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -95,33 +86,37 @@
 		return
 
 	playsound(src, src.gender == MALE ? 'sound/effects/m_jump.ogg' : 'sound/effects/f_jump.ogg', 25, 0, 1)
-	visible_message(SPAN_NOTICE("[src] jump to [A]."))
+	visible_message(SPAN_NOTICE("[src] jumps to [A]."))
 	damage_poise(body_build.poise_pool / 2)
 	throw_spin = FALSE
 
 	if (prob(SALTO_PROB))
 		throw_spin = TRUE
 		visible_message(SPAN_NOTICE("[src] did a somersault!."))
-
 	else
 		throw_spin = FALSE
 
 	if (prob(LONG_JUMP_PROB))
 		throw_at(jump_turf, MAX_JUMP_LENGTH, 1, src)
 		Stun(1)
-
 	else
 		throw_at(jump_turf, DEFAULT_JUMP_LENGTH, 1, src)
 		Stun(1)
 
+	if (QDELETED(src))
+		return
+
 	throw_spin = TRUE
-	mmb_switch(MMB_JUMP)
+	toggle_jump(HUMAN_POWER_JUMP)
+	swap_hand()
 
 #undef NO_HURT_JUMP_PROB
 #undef LITE_HURT_PROB
 #undef KNOCK_DOWN_PROB
+
 #undef LONG_JUMP_PROB
 #undef MAX_JUMP_LENGTH
 #undef DEFAULT_JUMP_LENGTH
 #undef JUMP_KNOCKOUT_PROB
+
 #undef SALTO_PROB

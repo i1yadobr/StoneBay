@@ -386,7 +386,7 @@
 		if("jump")
 			if(ishuman(usr))
 				var/mob/living/carbon/human/H = usr
-				H.mmb_switch(MMB_JUMP)
+				H.toggle_jump(HUMAN_POWER_JUMP)
 
 
 		if("module")
