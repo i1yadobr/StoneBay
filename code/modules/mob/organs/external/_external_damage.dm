@@ -9,11 +9,104 @@
 obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 	take_external_damage(amount)
 
+
+/obj/item/organ/external/proc/take_blunt_damage(brute, precision_depth = 3)
+	if(owner && (owner.status_flags & GODMODE))
+		return
+
+	if(blunt_dam < max_damage)
+		var/effective_damage = min(brute, max_damage - blunt_dam)
+		blunt_dam += effective_damage
+		brute -= effective_damage
+
+	// Slow blunt/general damage (i.e. low pressure) doesn't cause ruptures.
+	if(brute < 5.0 || !precision_depth)
+		return
+
+	precision_depth--
+
+	// No more blunt damage can be dealt, but the damage is high enough to cause ruptures - distributing half the damage evenly between cut and pierce.
+	brute *= 0.25
+	take_cut_damage(brute, precision_depth)
+	take_pierce_damage(brute, precision_depth)
+	return
+
+/obj/item/organ/external/proc/take_cut_damage(brute, precision_depth = 3)
+	if(owner && (owner.status_flags & GODMODE))
+		return
+
+	var/effective_damage
+	if(cut_dam < max_damage)
+		effective_damage = min(brute * 0.75, max_damage - cut_dam)
+		cut_dam += effective_damage
+		brute -= effective_damage
+
+	if(!precision_depth)
+		return
+
+	precision_depth--
+
+	if(pierce_dam < max_damage)
+		effective_damage = min(brute, pierce_dam - pierce_dam)
+		pierce_dam += effective_damage
+		brute -= effective_damage
+
+	if(!brute)
+		return
+
+	take_blunt_damage(brute * 0.5, precision_depth)
+	return
+
+/obj/item/organ/external/proc/take_pierce_damage(brute, precision_depth = 3)
+	if(owner && (owner.status_flags & GODMODE))
+		return
+
+	var/max_pierce_damage =
+
+	var/effective_damage
+	if(pierce_dam < max_damage)
+		effective_damage = min(brute * 0.75, max_damage - pierce_dam)
+		pierce_dam += effective_damage
+		brute -= effective_damage
+
+	if(!precision_depth)
+		return
+
+	precision_depth--
+
+	if(cut_dam < max_damage)
+		effective_damage = min(brute, pierce_dam - cut_dam)
+		cut_dam += effective_damage
+		brute -= effective_damage
+
+	if(!brute)
+		return
+
+	take_blunt_damage(brute * 0.5, precision_depth)
+	return
+
+/obj/item/organ/external/proc/take_burn_damage(burn)
+	if(owner && (owner.status_flags & GODMODE))
+		return
+
+	if(burn_dam >= max_damage)
+		return
+
+
+
+/obj/item/organ/external/proc/cache_last_damage()
+	burn_last = burn_dam
+	blunt_last = blunt_dam
+	cut_last = cut_dam
+	pierce_last = pierce_last
+
 /obj/item/organ/external/proc/take_external_damage(brute, burn, damage_flags, used_weapon = null)
-	if(owner && owner.status_flags & GODMODE)
+	if(owner && (owner.status_flags & GODMODE))
 		return 0
+
 	brute = round(brute * brute_mod, 0.1)
 	burn = round(burn * burn_mod, 0.1)
+
 	if((brute <= 0) && (burn <= 0))
 		return 0
 
@@ -31,6 +124,12 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 		if(burn)
 			SSstoryteller.report_wound(owner, BURN, burn)
 
+	if(brute)
+		if(blunt)
+			take_blunt_damage(brute)
+		else if(edge)
+		else if(sharp)
+
 	var/can_cut = (!BP_IS_ROBOTIC(src) && (sharp || prob(brute*2)))
 	var/spillover = 0
 	var/pure_brute = brute
@@ -45,7 +144,7 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 
 	if(owner && loc == owner)
 		owner.updatehealth() //droplimb will call updatehealth() again if it does end up being called
-		if(!is_stump() && (limb_flags & ORGAN_FLAG_CAN_AMPUTATE) && config.health.limbs_can_break)
+		if((limb_flags & ORGAN_FLAG_CAN_AMPUTATE) && config.health.limbs_can_break && !is_stump())
 			if((brute_dam + burn_dam + brute + burn + spillover) >= (max_damage * config.health.organ_health_multiplier))
 				var/force_droplimb = 0
 				if((brute_dam + burn_dam + brute + burn + spillover) >= (max_damage * config.health.organ_health_multiplier * 4))
@@ -176,22 +275,40 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 	if(BP_IS_ROBOTIC(src) && !robo_repair)
 		return
 
-	//Heal damage on the individual wounds
-	for(var/datum/wound/W in wounds)
-		if(brute == 0 && burn == 0)
-			break
+	if(burn_dam && burn && (burn_ratio < 1 || vital || (limb_flags & ORGAN_FLAG_HEALS_OVERKILL)))
+		burn = min(burn_dam, burn)
+		burn_dam -= burn
+		owner?.heal_this_tick += burn
 
-		// heal brute damage
-		if(W.damage_type == BURN && (burn_ratio < 1 || vital || (limb_flags & ORGAN_FLAG_HEALS_OVERKILL)))
-			burn = W.heal_damage(burn)
-		else if(brute_ratio < 1 || vital || (limb_flags & ORGAN_FLAG_HEALS_OVERKILL))
-			brute = W.heal_damage(brute)
+	if(brute_dam && brute && (brute_ratio < 1 || vital || (limb_flags & ORGAN_FLAG_HEALS_OVERKILL)))
+		// Healing random brute-based damage, while trying not to "spill" healing.
+		var/healed_amount
+		var/type_to_heal
+		var/list/damaged_types = list(&pierce_dam, &cut_dam, &blunt_dam)
+		while(brute > 0 && brute_dam > 0 && damaged_types.len)
+			type_to_heal = pick(damaged_types)
+			if(*type_to_heal <= 0)
+				damaged_types -= type_to_heal
+				continue
+
+			healed_amount = min(brute, *type_to_heal)
+
+			*type_to_heal -= healed_amount
+			brute -= healed_amount
+			owner?.heal_this_tick += healed_damage
+			if(*type_to_heal < 0.1)
+				*type_to_heal = 0
+				damaged_types -= type_to_heal
+			else
+				*type_to_heal = round(*type_to_heal, 0.1)
+
+			brute_dam = pierce_dam + cut_dam + blunt_dam
 
 	if(internal)
 		mend_fracture(TRUE)
 
 	//Sync the organ's damage with its wounds
-	src.update_damages()
+	update_damages()
 	owner.updatehealth()
 
 	var/should_update_damstate = update_damstate()

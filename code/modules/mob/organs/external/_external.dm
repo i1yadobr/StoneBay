@@ -20,10 +20,24 @@
 	// Damage vars.
 	var/brute_mod = 1                  // Multiplier for incoming brute damage.
 	var/burn_mod = 1                   // As above for burn.
+
 	var/brute_dam = 0                  // Actual current brute damage.
 	var/brute_ratio = 0                // Ratio of current brute damage to max damage.
+
 	var/burn_dam = 0                   // Actual current burn damage.
 	var/burn_ratio = 0                 // Ratio of current burn damage to max damage.
+	var/burn_last = 0
+
+	var/blunt_dam = 0                  // Amount of blunt brute damage.
+	var/blunt_last = 0
+	var/cut_dam = 0                    // Amount of sharp brute damage, aka "cut area".
+	var/cut_last = 0
+	var/pierce_dam = 0                 // Amount of pierce brute damage, aka "cut depth".
+	var/pierce_last = 0
+
+	var/bleeding = 0                   // Bleeding severity.
+	var/bandaged = 0                   // Bandaged severity.
+
 	var/last_dam = -1                  // used in healing/processing calculations.
 	var/pain = 0                       // How much the limb hurts.
 	var/full_pain = 0                  // Overall pain including damages.
@@ -1093,8 +1107,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	//Kinda difficult to keep standing when your leg's gettin' wrecked, eh?
 	if(limb_flags & ORGAN_FLAG_CAN_STAND)
 		if(prob(67))
-			owner.Weaken(3)
-			owner.Stun(2)
+			owner.Weaken(5)
+			owner.Stun(3)
 
 	broken_description = pick("broken", "fracture", "hairline fracture")
 
