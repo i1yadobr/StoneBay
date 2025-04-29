@@ -145,7 +145,7 @@
 //Blocking, dashing and jumping
 #define ui_block "EAST-4:24,SOUTH:5"
 #define ui_blockswitch "EAST-4:24,SOUTH:5"
-#define ui_jump        "EAST-5:24,SOUTH:5"
+#define ui_jump        "EAST-4:24,SOUTH+1:5"
 
 // AI
 #define ui_ai_core "SOUTH:6,WEST"
