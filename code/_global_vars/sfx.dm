@@ -1814,6 +1814,11 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/footstep/swamp3.ogg',
 		'sound/effects/footstep/swamp4.ogg',
 	),
+	SFX_PIP_TERMINAL = list(
+		'sound/items/payment/pip1.ogg',
+		'sound/items/payment/pip2.ogg',
+		'sound/items/payment/pip3.ogg'
+	),
 	SFX_KEYBOARD = list(
 		'sound/machines/keyboard/keystroke1.ogg',
 		'sound/machines/keyboard/keystroke2.ogg',

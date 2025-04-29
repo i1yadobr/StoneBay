@@ -1885,6 +1885,7 @@
 #include "code\modules\economy\ATM.dm"
 #include "code\modules\economy\cash.dm"
 #include "code\modules\economy\EFTPOS.dm"
+#include "code\modules\economy\payment_terminal.dm"
 #include "code\modules\economy\TradeDestinations.dm"
 #include "code\modules\emojis\emoji_parse.dm"
 #include "code\modules\emotes\_defines.dm"
