@@ -5,7 +5,6 @@
 #define LONG_JUMP_PROB 25
 #define MAX_JUMP_LENGTH 3
 #define DEFAULT_JUMP_LENGTH 2
-#define JUMP_KNOCKOUT_PROB 25
 
 #define SALTO_PROB 10
 
@@ -21,7 +20,7 @@
 			playsound(src, SFX_FIGHTING_PUNCH, 25, 0, 1)
 			do_attack_animation(jump_target_human)
 
-			if (prob(JUMP_KNOCKOUT_PROB))
+			if (prob(KNOCK_DOWN_PROB))
 				jump_target_human.apply_damage(10, BRUTE)
 				jump_target_human.Weaken(2)
 				visible_message(SPAN_NOTICE("[src] was knokout [hit_atom.name] in jump!."))
@@ -30,7 +29,7 @@
 				jump_target_human.apply_damage(5, BRUTE)
 				jump_target_human.Stun(1)
 
-		if(prob(NO_HURT_JUMP_PROB) && jump_in_spaceman == FALSE)
+		if (prob(NO_HURT_JUMP_PROB) && jump_in_spaceman == FALSE)
 			to_chat(src, SPAN_WARNING("You jumped into [hit_atom.name]. It's lucky you weren't hurt."))
 			return
 
@@ -113,10 +112,7 @@
 #undef NO_HURT_JUMP_PROB
 #undef LITE_HURT_PROB
 #undef KNOCK_DOWN_PROB
-
 #undef LONG_JUMP_PROB
 #undef MAX_JUMP_LENGTH
 #undef DEFAULT_JUMP_LENGTH
-#undef JUMP_KNOCKOUT_PROB
-
 #undef SALTO_PROB
