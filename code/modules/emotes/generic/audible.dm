@@ -728,3 +728,8 @@
 	sound_human_male = SFX_MALE_JUMP
 
 	state_checks = EMOTE_CHECK_CONSCIOUS
+
+/mob/proc/jump_emote()
+	set name = "Jump"
+	set category = "Emotes"
+	emote("jump", intentional = TRUE)

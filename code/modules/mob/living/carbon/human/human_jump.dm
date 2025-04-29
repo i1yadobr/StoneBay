@@ -84,7 +84,7 @@
 	if (!jump_turf || jump_turf == loc)
 		return
 
-	playsound(src, src.gender == MALE ? 'sound/effects/m_jump.ogg' : 'sound/effects/f_jump.ogg', 25, 0, 1)
+	playsound(src, src.gender == MALE ? SFX_MALE_JUMP : SFX_FEMALE_JUMP, 25, 0, 1)
 	visible_message(SPAN_NOTICE("[src] jumps to [A]."))
 	damage_poise(body_build.poise_pool / 2)
 	throw_spin = FALSE
