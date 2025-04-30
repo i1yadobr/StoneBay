@@ -1,6 +1,6 @@
 #define NO_HURT_JUMP_PROB 15
-#define LITE_HURT_PROB 70
-#define KNOCK_DOWN_PROB 35
+#define LITE_HURT_PROB 60
+#define KNOCK_DOWN_PROB 40
 
 #define LONG_JUMP_PROB 25
 #define MAX_JUMP_LENGTH 3
@@ -34,14 +34,14 @@
 			return
 
 		if (prob(LITE_HURT_PROB))
-			Weaken(5)
-			adjustBruteLoss(20)
-			to_chat(src, SPAN_WARNING("Jumping into the [hit_atom.name] knocked the wind out of you"))
-
-		else
 			Stun(3)
 			adjustBruteLoss(10)
 			to_chat(src, SPAN_WARNING("You jumped into [hit_atom.name]. It must have hurt."))
+
+		else
+			Weaken(5)
+			adjustBruteLoss(20)
+			to_chat(src, SPAN_WARNING("Jumping into the [hit_atom.name] knocked the wind out of you"))
 
 /mob/living/carbon/human/proc/toggle_jump()
 	if (!src || src.stat)

@@ -133,7 +133,6 @@
 	var/a_intent = I_HELP//Living
 	var/m_intent = M_RUN//Living
 	var/obj/buckled = null//Living
-	var/mmb_intents = null
 	var/obj/item/l_hand = null//Living
 	var/obj/item/r_hand = null//Living
 	var/obj/item/back = null//Human/Monkey

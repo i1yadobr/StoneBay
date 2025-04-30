@@ -729,6 +729,8 @@
 
 	state_checks = EMOTE_CHECK_CONSCIOUS
 
+	statpanel_proc = /mob/proc/jump_emote
+
 /mob/proc/jump_emote()
 	set name = "Jump"
 	set category = "Emotes"
