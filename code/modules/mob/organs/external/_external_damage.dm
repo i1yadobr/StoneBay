@@ -10,79 +10,133 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 	take_external_damage(amount)
 
 
-/obj/item/organ/external/proc/take_blunt_damage(brute, precision_depth = 3)
+// Deals blunt damage, distributes 50% of the damage between cut and pierce if there's excessive damage.
+/obj/item/organ/external/proc/take_blunt_damage(brute)
 	if(owner && (owner.status_flags & GODMODE))
 		return
+
+	// The maximum amount of damage of each type we can physically inflict.
+	var/max_blunt_damage = brute
+	var/max_cut_damage = brute * 0.25
+	var/max_pierce_damage = brute * 0.25
+
+	// The amount of damage we'd like to inflict.
+	var/potential_blunt_damage = brute
+	var/potential_cut_damage = 0
+	var/potential_pierce_damage = 0
+
+	var/damage_potential = 0
 
 	if(blunt_dam < max_damage)
-		var/effective_damage = min(brute, max_damage - blunt_dam)
-		blunt_dam += effective_damage
-		brute -= effective_damage
+		damage_potential = max_damage - blunt_dam
+		max_blunt_damage = min(brute, damage_potential)
+		if(damage_potential < potential_blunt_damage)
+			potential_cut_damage += potential_blunt_damage - damage_potential
+			potential_pierce_damage += potential_blunt_damage - damage_potential
+	else
+		max_blunt_damage = 0
+		potential_cut_damage += potential_blunt_damage * 0.25
+		potential_pierce_damage += potential_blunt_damage * 0.25
 
-	// Slow blunt/general damage (i.e. low pressure) doesn't cause ruptures.
-	if(brute < 5.0 || !precision_depth)
-		return
+	var/final_blunt_damage = min(potential_blunt_damage, max_blunt_damage)
+	blunt_dam = min(blunt_dam + final_blunt_damage, max_damage)
 
-	precision_depth--
+	var/final_cut_damage = min(potential_cut_damage, max_cut_damage)
+	cut_dam = min(cut_dam + final_cut_damage, max_damage)
 
-	// No more blunt damage can be dealt, but the damage is high enough to cause ruptures - distributing half the damage evenly between cut and pierce.
-	brute *= 0.25
-	take_cut_damage(brute, precision_depth)
-	take_pierce_damage(brute, precision_depth)
+	var/final_pierce_damage = min(potential_pierce_damage, max_pierce_damage)
+	pierce_dam = min(pierce_dam + final_pierce_damage, max_damage)
+
 	return
 
-/obj/item/organ/external/proc/take_cut_damage(brute, precision_depth = 3)
+/obj/item/organ/external/proc/take_cut_damage(brute)
 	if(owner && (owner.status_flags & GODMODE))
 		return
 
-	var/effective_damage
+	// The maximum amount of damage of each type we can physically inflict.
+	var/max_pierce_damage = brute
+	var/max_cut_damage = brute
+	var/max_blunt_damage = brute * 0.5
+
+	// The amount of damage we'd like to inflict.
+	var/potential_pierce_damage = brute * 0.25
+	var/potential_cut_damage = brute * 0.75
+	var/potential_blunt_damage = 0
+
+	var/damage_potential = 0
+
 	if(cut_dam < max_damage)
-		effective_damage = min(brute * 0.75, max_damage - cut_dam)
-		cut_dam += effective_damage
-		brute -= effective_damage
-
-	if(!precision_depth)
-		return
-
-	precision_depth--
+		damage_potential = max_damage - cut_dam
+		max_cut_damage = min(brute, damage_potential)
+		if(damage_potential < potential_cut_damage)
+			potential_pierce_damage += potential_cut_damage - damage_potential
+	else
+		max_cut_damage = 0
+		potential_pierce_damage += potential_cut_damage
 
 	if(pierce_dam < max_damage)
-		effective_damage = min(brute, pierce_dam - pierce_dam)
-		pierce_dam += effective_damage
-		brute -= effective_damage
+		damage_potential = max_damage - pierce_dam
+		max_pierce_damage = min(brute, damage_potential)
+		if(damage_potential < potential_pierce_damage)
+			potential_cut_damage += potential_pierce_damage - damage_potential
+	else
+		max_pierce_damage = 0
+		potential_cut_damage += potential_pierce_damage
 
-	if(!brute)
-		return
+	var/final_cut_damage = min(potential_cut_damage, max_cut_damage)
+	cut_dam = min(cut_dam + final_cut_damage, max_damage)
 
-	take_blunt_damage(brute * 0.5, precision_depth)
+	var/final_pierce_damage = min(potential_pierce_damage, max_pierce_damage)
+	pierce_dam = min(pierce_dam + final_pierce_damage, max_damage)
+
+	var/final_blunt_damage = clamp((brute - final_pierce_damage - final_cut_damage) * 0.5, 0, max_blunt_damage)
+	blunt_dam = min(blunt_dam + final_blunt_damage, max_damage)
+
 	return
 
-/obj/item/organ/external/proc/take_pierce_damage(brute, precision_depth = 3)
+/obj/item/organ/external/proc/take_pierce_damage(brute)
 	if(owner && (owner.status_flags & GODMODE))
 		return
 
-	var/max_pierce_damage =
+	// The maximum amount of damage of each type we can physically inflict.
+	var/max_blunt_damage = brute * 0.5
+	var/max_cut_damage = brute
+	var/max_pierce_damage = brute
 
-	var/effective_damage
+	// The amount of damage we'd like to inflict.
+	var/potential_blunt_damage = 0
+	var/potential_cut_damage = brute * 0.25
+	var/potential_pierce_damage = brute * 0.75
+
+	var/damage_potential = 0
+
 	if(pierce_dam < max_damage)
-		effective_damage = min(brute * 0.75, max_damage - pierce_dam)
-		pierce_dam += effective_damage
-		brute -= effective_damage
-
-	if(!precision_depth)
-		return
-
-	precision_depth--
+		damage_potential = max_damage - pierce_dam
+		max_pierce_damage = min(brute, damage_potential)
+		if(damage_potential < potential_pierce_damage)
+			potential_cut_damage += potential_pierce_damage - damage_potential
+	else
+		max_pierce_damage = 0
+		potential_cut_damage += potential_pierce_damage
 
 	if(cut_dam < max_damage)
-		effective_damage = min(brute, pierce_dam - cut_dam)
-		cut_dam += effective_damage
-		brute -= effective_damage
+		damage_potential = max_damage - cut_dam
+		max_cut_damage = min(brute, damage_potential)
+		if(damage_potential < potential_cut_damage)
+			potential_pierce_damage += potential_cut_damage - damage_potential
+	else
+		max_cut_damage = 0
+		potential_pierce_damage += potential_cut_damage
 
-	if(!brute)
-		return
+	var/final_pierce_damage = min(potential_pierce_damage, max_pierce_damage)
+	pierce_dam = min(pierce_dam + final_pierce_damage, max_damage)
 
-	take_blunt_damage(brute * 0.5, precision_depth)
+	var/final_cut_damage = min(potential_cut_damage, max_cut_damage)
+	cut_dam = min(cut_dam + final_cut_damage, max_damage)
+
+	var/final_blunt_damage = clamp((brute - final_pierce_damage - final_cut_damage) * 0.5 , 0, max_blunt_damage)
+	blunt_dam = min(blunt_dam + final_blunt_damage, max_damage)
+
 	return
 
 /obj/item/organ/external/proc/take_burn_damage(burn)
