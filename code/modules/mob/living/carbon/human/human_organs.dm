@@ -499,15 +499,19 @@
 
 	var/kidney_strain = 1.0
 
-	if(toxic_severity >= 150) // tb 350+, complete toxic shutdown
+	if(toxic_severity > TOXLOSS_HARDCAP) // hardcap
+		toxic_severity = TOXLOSS_HARDCAP
+		toxic_buildup = TOXLOSS_HARDCAP * ((species ? (species.blood_volume * 0.05) : 280) / 100)
+
+	if(toxic_severity > TOXLOSS_SOFTCAP) // tb 350+, complete toxic shutdown
 		Paralyse(20)
 
-	if(toxic_severity >= 100) // tb 280+, we're wrecked, lethal poisoning
-		Weaken(30)
+	if(toxic_severity > TOXLOSS_LETHAL) // tb 280+, we're wrecked, lethal poisoning
+		Weaken(10)
 		adjustInternalLoss(2.5, TRUE)
 		adjustBrainLoss(0.5)
 
-	if(toxic_severity >= 75) // tb 210+, we're in immediate danger, critical poisoning
+	if(toxic_severity > TOXLOSS_CRITICAL) // tb 210+, we're in immediate danger, critical poisoning
 		if(prob(10))
 			losebreath++
 			adjustInternalLoss(5.0, TRUE)
@@ -524,7 +528,7 @@
 
 		kidney_strain = 2.5
 
-	else if(toxic_severity >= 50) // tb 140+, we're in danger, severe poisoning
+	else if(toxic_severity > TOXLOSS_SEVERE) // tb 140+, we're in danger, severe poisoning
 		make_dizzy(6)
 		eye_blurry = max(eye_blurry, 5)
 
@@ -539,7 +543,7 @@
 
 		kidney_strain = 2.0
 
-	else if(toxic_severity >= 25) // tb 70+, we're not feeling well, mild poisoning
+	else if(toxic_severity > TOXLOSS_MILD) // tb 70+, we're not feeling well, mild poisoning
 		make_dizzy(6)
 
 		if(prob(10))
@@ -553,7 +557,7 @@
 
 		kidney_strain = 1.5
 
-	else if(toxic_severity >= 5) // tb 14+, we start to notice that something's off, casual poisoning
+	else if(toxic_severity > TOXLOSS_CASUAL) // tb 14+, we start to notice that something's off, casual poisoning
 		if(prob(10))
 			make_dizzy(6)
 			adjustInternalLoss(1.0, TRUE) // Not enough to be life-threatening, but may cause trouble if we have ongoing health issues.
@@ -562,7 +566,7 @@
 			to_chat(src, "<i>You feel a bit [pick("nauseous", "sick", "weak")]...</i>")
 			vomit(timevomit = 1, level = 2, silent = TRUE)
 
-	else if(toxic_severity)
+	else if(toxic_severity > TOXLOSS_NONE)
 		kidney_strain = 1.25
 
 	if(K)

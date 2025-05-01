@@ -423,6 +423,15 @@ GLOBAL_LIST_INIT(organ_tag_to_name, list(
 
 #define MOUTH_CAPACITY 60
 
+#define TOXLOSS_NONE     0
+#define TOXLOSS_CASUAL   5
+#define TOXLOSS_MILD     25
+#define TOXLOSS_SEVERE   50
+#define TOXLOSS_CRITICAL 75
+#define TOXLOSS_LETHAL   100
+#define TOXLOSS_SOFTCAP  150
+#define TOXLOSS_HARDCAP  200
+
 #define HUMAN_POWER_NONE    "None"
 #define HUMAN_POWER_SPIT    "Spit"
 #define HUMAN_POWER_LEAP    "Leap"
