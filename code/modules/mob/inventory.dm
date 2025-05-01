@@ -167,28 +167,6 @@ var/list/slot_equipment_priority = list( \
 	W.dropInto(A ? A : loc)
 	return FALSE
 
-/obj/item/proc/mouse_drop_pick_up(mob/user)
-	if(!CanMouseDrop(src, usr))
-		return FALSE
-
-	if(user == usr && (user.contents.Find(src) || in_range(src, user)))
-		if(!ishuman(user) || user.get_active_hand())
-			return FALSE
-
-		var/mob/living/carbon/human/H = user
-		var/obj/item/organ/external/temp = H.organs_by_name[BP_R_HAND]
-		if(H.hand)
-			temp = H.organs_by_name[BP_L_HAND]
-		if(temp && !temp.is_usable())
-			to_chat(user, SPAN("warning", "You try to pick up \the [src] with your [temp.name], but cannot!"))
-			return FALSE
-
-		if(user.pick_or_drop(src, loc))
-			to_chat(user, SPAN("notice", "You pick up \the [src]."))
-			return TRUE
-
-	return FALSE
-
 // Replaces 'old_item' w/ 'new_item', putting it in the same slot.
 // May optionally qdel 'old_item'.
 // Drops 'new_item' to wherever it wants if can't equip it in the given slot, use carefully.

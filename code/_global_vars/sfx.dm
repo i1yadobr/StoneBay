@@ -716,6 +716,12 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/weapons/chisel5.ogg',
 		'sound/weapons/chisel6.ogg'
 	),
+	SFX_USE_TERMINAL_DENY = list(
+		'sound/items/payment/pip_deny.ogg'
+	),
+	SFX_USE_TERMINAL_ACCESS = list(
+		'sound/items/payment/pip_access.ogg'
+	),
 	// PULL
 	SFX_PULL_BODY = list(
 		'sound/effects/pull/pull_body1.ogg',

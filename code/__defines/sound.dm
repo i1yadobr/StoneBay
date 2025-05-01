@@ -148,6 +148,8 @@
 #define SFX_KEYBOARD                "use_keyboard"
 #define SFX_PIP_TERMINAL            "use_terminal"
 #define SFX_USE_KNOB                "use_knob"
+#define SFX_USE_TERMINAL_DENY       "use_terminal_deny"
+#define SFX_USE_TERMINAL_ACCESS     "use_terminal_access"
 
 // PULLING
 #define SFX_PULL_BODY               "pull_body"

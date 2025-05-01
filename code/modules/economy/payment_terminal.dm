@@ -7,31 +7,52 @@
 	desc = "Advanced terminal for financial transactions. Supports direct card payments."
 	icon = 'icons/obj/device.dmi'
 	icon_state = "paypos"
-	var/machine_id = ""
-	var/machine_name = ""
+	var/machine_id
+	var/machine_name
 	var/mode = MODEFLAG_TERMINAL_AMOUNT
 	var/datum/money_account/linked_account
-	var/transaction_amount
-	var/temp_message = ""
-	var/temp_pin
-	var/temp_account
-	var/temp_paying
+	var/input_price
+	var/input_pin
+	var/input_account
+	var/account_paying
 	var/emag_tax = 0
 	var/static/image/price_overlay = image(icon = 'icons/obj/device.dmi', icon_state = "paypos_price")
 	maptext_y = 25
 	maptext_width = 40
 	maptext_x = -3
 
-/obj/item/device/payment_terminal/CtrlClick(mob/user)
-	. = ..()
-	if(issilicon(user))
-		set_mode(MODEFLAG_TERMINAL_ACCOUNT, user)
-		tgui_interact(user)
+/obj/item/device/payment_terminal/AIAltClick(mob/user)
+	interact_mode_account(user)
+
+/obj/item/device/payment_terminal/attack_ai(mob/user)
+	interact_mode_amount(user)
+
+/obj/item/device/payment_terminal/BorgAltClick(mob/user)
+	interact_mode_account(user)
+
+/obj/item/device/payment_terminal/attack_robot(mob/user)
+	interact_mode_amount(user)
 
 /obj/item/device/payment_terminal/attack_hand(mob/user)
-	if(isliving(user))
-		set_mode(MODEFLAG_TERMINAL_AMOUNT, user)
-		tgui_interact(user)
+	if(user.a_intent != I_GRAB)
+		interact_mode_amount(user)
+	else
+		if(!anchored)
+			set_mode(MODEFLAG_TERMINAL_ACCOUNT, user)
+			SStgui.update_uis(src)
+			dir = SOUTH
+			..()
+		else
+			to_chat(user, SPAN_WARNING("[src] is secured."))
+			dir = reverse_direction(user.dir)
+
+/obj/item/device/payment_terminal/proc/interact_mode_amount(mob/user)
+	set_mode(MODEFLAG_TERMINAL_AMOUNT, user)
+	tgui_interact(user)
+
+/obj/item/device/payment_terminal/proc/interact_mode_account(mob/user)
+	set_mode(MODEFLAG_TERMINAL_ACCOUNT, user)
+	tgui_interact(user)
 
 /obj/item/device/payment_terminal/attackby(obj/item/W, mob/user)
 	if(isWrench(W) && isturf(src.loc))
@@ -42,45 +63,45 @@
 		else
 			to_chat(user, SPAN_WARNING("[src] is now secured."))
 		return
+		
+	..()
 
 	var/obj/item/card/id/I = W.get_id_card()
 	if(I)
 		if(src.loc == user)
-			temp_account = I.associated_account_number
+			input_account = I.associated_account_number
 			set_new_account(user)
 		else
-			if(isnull(transaction_amount) || transaction_amount <= 0)
+			if(isnull(input_price) || input_price <= 0)
 				return
 			if(!process_payment(I.associated_account_number, user))
-				playsound(src, 'sound/items/payment/pip_deny.ogg', 70)
+				playsound(src, SFX_USE_TERMINAL_DENY, 70)
 		return
 
 	return ..()
 
 /obj/item/device/payment_terminal/attack_self(mob/user)
-	set_mode(MODEFLAG_TERMINAL_ACCOUNT, user)
-	tgui_interact(user)
+	interact_mode_account(user)
 
 /obj/item/device/payment_terminal/update_icon()
 	. = ..()
 	ClearOverlays()
-	if(isnull(linked_account) || isnull(transaction_amount) || transaction_amount <= 0)
+	if(isnull(linked_account) || input_price <= 0)
 		maptext = null
 		set_light(0)
 	else
 		AddOverlays(price_overlay)
-		set_light(0.2, 0.5, 2, 3.5, "#66FF00")
-		maptext = "<div style=\"font-size: 7px; color: #00AA00; text-shadow: 0 0 5px #00FF00, 0 0 8px #00FF00;"
-		maptext += "font-family: 'Courier New', Courier, monospace; text-align: center;\">[transaction_amount]C</div>"
+		set_light(0.2, 0.5, 0.8, 1.1, "#3a9100")
+		maptext = MAPTEXT("<div style=\"font-size: 7px; color: #00AA00; text-shadow: 0 0 5px #00FF00, 0 0 8px #00FF00; font-family: 'Courier New', Courier, monospace; text-align: center; -dm-text-outline: 1px #008a0077;\">[input_price]C</div>")
 
-/obj/item/device/payment_terminal/proc/set_mode(new_mode, mob/exception)
-	temp_pin = null
+/obj/item/device/payment_terminal/proc/set_mode(new_mode, mob/user)
+	input_pin = null
 	if(!isnull(linked_account))
-		temp_account = linked_account.account_number
+		input_account = linked_account.account_number
 	if(new_mode != mode)
 		mode = new_mode
 		for(var/datum/tgui/ui in SStgui.open_uis)
-			if(ui.src_object == src && ui.user != exception)
+			if(ui.src_object == src && ui.user != user)
 				ui.close()
 
 /obj/item/device/payment_terminal/tgui_interact(mob/user, datum/tgui/ui)
@@ -101,21 +122,21 @@
 	switch(mode)
 		if(MODEFLAG_TERMINAL_ACCOUNT)
 			linked_account = null
-			temp_account = null
+			input_account = null
 			set_new_account(user)
 		if(MODEFLAG_TERMINAL_AMOUNT)
-			transaction_amount = null
+			input_price = null
 		if(MODEFLAG_TERMINAL_PIN)
-			temp_pin = null
+			input_pin = null
 
 /obj/item/device/payment_terminal/proc/input_num(value)
 	switch(mode)
 		if(MODEFLAG_TERMINAL_AMOUNT)
-			transaction_amount = sanitize_num(transaction_amount, 7) * 10 + value
+			input_price = sanitize_num(input_price, 7) * 10 + value
 		if(MODEFLAG_TERMINAL_ACCOUNT)
-			temp_account = sanitize_num(temp_account, 6) * 10 + value
+			input_account = sanitize_num(input_account, 6) * 10 + value
 		if(MODEFLAG_TERMINAL_PIN)
-			temp_pin = sanitize_num(temp_pin, 4) * 10 + value
+			input_pin = sanitize_num(input_pin, 4) * 10 + value
 
 /obj/item/device/payment_terminal/proc/sanitize_num(value, max_len)
 	var/input = "[value]"
@@ -126,35 +147,35 @@
 /obj/item/device/payment_terminal/proc/get_temp_message()
 	switch(mode)
 		if(MODEFLAG_TERMINAL_AMOUNT)
-			return "[transaction_amount]"
+			return "[input_price]"
 		if(MODEFLAG_TERMINAL_ACCOUNT)
-			return "[temp_account]"
+			return "[input_account]"
 		if(MODEFLAG_TERMINAL_PIN)
-			return repeat_string(length("[temp_pin]"), "*")
+			return repeat_string(length("[input_pin]"), "*")
 
 /obj/item/device/payment_terminal/proc/input_enter(mob/user)
 	switch(mode)
 		if(MODEFLAG_TERMINAL_ACCOUNT)
 			set_new_account(user)
 		if(MODEFLAG_TERMINAL_PIN)
-			if(!process_payment(temp_paying, user))
-				playsound(src, 'sound/items/payment/pip_deny.ogg', 70)
+			if(!process_payment(account_paying, user))
+				playsound(src, SFX_USE_TERMINAL_DENY, 70)
 
 	for(var/datum/tgui/ui in SStgui.open_uis)
 		if(ui.src_object == src && ui.user == user)
 			ui.close()
 
 /obj/item/device/payment_terminal/proc/set_new_account(mob/user)
-	var/datum/money_account/D = get_account(temp_account)
+	var/datum/money_account/D = get_account(input_account)
 	if(D)
 		to_chat(user, SPAN_INFO("[src] is set new account."))
 		linked_account = D
-		playsound(src, 'sound/items/payment/pip_access.ogg', 70)
+		playsound(src, SFX_USE_TERMINAL_ACCESS, 70)
 	else
 		to_chat(user, SPAN_WARNING("[src] is reset account."))
 		linked_account = null
-		temp_account = null
-		playsound(src, 'sound/items/payment/pip_deny.ogg', 70)
+		input_account = null
+		playsound(src, SFX_USE_TERMINAL_DENY, 70)
 	update_icon()
 	generate_machine_id()
 	SStgui.update_uis(src)
@@ -164,8 +185,8 @@
 		machine_id = name
 		machine_name = name
 	else if(emag_tax > 0)
-		var/first = pick(first_parts_name_terminal)
-		var/second = pick(second_parts_name_terminal)
+		var/first = pick(GLOB.first_parts_name_terminal)
+		var/second = pick(GLOB.second_parts_name_terminal)
 		machine_name = "[first] [second]"
 		machine_id = "Terminal [machine_name]"
 	else
@@ -209,31 +230,31 @@
 		visible_message(SPAN_WARNING("\icon[src] \The [src] displayed: Account number not found on chip."))
 		return FALSE
 
-	temp_paying = account_number
-	var/datum/money_account/customer_account = get_account(temp_paying)
+	account_paying = account_number
+	var/datum/money_account/customer_account = get_account(account_paying)
 	if(isnull(customer_account))
 		visible_message(SPAN_WARNING("\icon[src] \The [src] displayed: Account number not found in NT system."))
-		temp_paying = null
+		account_paying = null
 		return FALSE
 
 	if(customer_account.security_level != 0)
-		if(isnull(temp_pin))
+		if(isnull(input_pin))
 			set_mode(MODEFLAG_TERMINAL_PIN, user)
 			tgui_interact(user)
 			return TRUE
 		else
-			customer_account = attempt_account_access(temp_paying, temp_pin, 2)
+			customer_account = attempt_account_access(account_paying, input_pin, 2)
 			if(!customer_account)
 				visible_message(SPAN_WARNING("\icon[src] \The [src] displayed: Unable to access account, incorrect credentials."))
-				temp_pin = null
-				if(!process_payment(temp_paying, user))
-					playsound(src, 'sound/items/payment/pip_deny.ogg', 70)
+				input_pin = null
+				if(!process_payment(account_paying, user))
+					playsound(src, SFX_USE_TERMINAL_DENY, 70)
 				return FALSE
 
-	var/correct_amout = transaction_amount + round(transaction_amount * emag_tax / 100)
+	var/correct_amout = input_price + round(input_price * emag_tax / 100)
 	if(customer_account.money < correct_amout)
 		visible_message(SPAN_WARNING("\icon[src] \The [src] displayed: Insufficient funds."))
-		temp_paying = null
+		account_paying = null
 		return FALSE
 
 	var/datum/transaction/T = new(
@@ -252,10 +273,10 @@
 	)
 	linked_account.do_transaction(T)
 
-	temp_paying = null
-	temp_pin = null
+	account_paying = null
+	input_pin = null
 	playsound(src, 'sound/items/payment/chek.ogg', 70)
-	print_receipt(transaction_amount, customer_account, linked_account)
+	print_receipt(input_price, customer_account, linked_account)
 	visible_message(SPAN_INFO("\icon[src] \The [src] chimes."))
 	return TRUE
 
@@ -291,7 +312,7 @@
 
 	emag_tax = min(emag_tax + 15, 100)
 
-	playsound(src, 'sound/items/payment/pip_access.ogg', 70)
+	playsound(src, SFX_USE_TERMINAL_ACCESS, 70)
 	generate_machine_id()
 	SStgui.update_uis(src)
 	if(prob(emag_tax))
@@ -300,20 +321,13 @@
 		visible_message(SPAN_INFO("\icon[src] \The [src] displayed: \"A small tax never killed anyone.\""))
 	return TRUE
 
-/obj/item/device/payment_terminal/MouseDrop(mob/user)
-	if(!anchored)
-		if(mouse_drop_pick_up(user))
-			set_mode(MODEFLAG_TERMINAL_ACCOUNT, user)
-			SStgui.update_uis(src)
-		dir = SOUTH
-
 /obj/item/device/payment_terminal/dropped(mob/user)
 	set_mode(MODEFLAG_TERMINAL_AMOUNT, user)
 	SStgui.update_uis(src)
 	if(user)
 		dir = user.dir
 
-var/global/list/first_parts_name_terminal = list(
+GLOBAL_LIST_INIT(first_parts_name_terminal, list(
 	"Charity Fund",
 	"Community",
 	"Association",
@@ -334,8 +348,9 @@ var/global/list/first_parts_name_terminal = list(
 	"Institute",
 	"Trust",
 	"Consortium"
-)
-var/global/list/second_parts_name_terminal = list(
+))
+
+GLOBAL_LIST_INIT(second_parts_name_terminal, list(
 	"red fire extinguishers",
 	"Tayarian orphans",
 	"broken destructors",
@@ -356,4 +371,4 @@ var/global/list/second_parts_name_terminal = list(
 	"innocent clowns",
 	"lost nuclear disks",
 	"forgotten in cryo"
-)
+))
