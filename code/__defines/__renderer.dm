@@ -164,7 +164,8 @@
 	#define DAMAGE_LAYER        1
 	#define IMPAIRED_LAYER      2
 	#define BLIND_LAYER         3
-	#define CRIT_LAYER          4
+	#define TEMPERATURE_LAYER   4
+	#define CRIT_LAYER          5
 
 #define HUD_PLANE                    8
 	#define UNDER_HUD_LAYER              0
