@@ -23,6 +23,7 @@
 
 	var/brute_dam = 0                  // Actual current brute damage.
 	var/brute_ratio = 0                // Ratio of current brute damage to max damage.
+	var/brute_last = 0
 
 	var/burn_dam = 0                   // Actual current burn damage.
 	var/burn_ratio = 0                 // Ratio of current burn damage to max damage.
@@ -35,8 +36,10 @@
 	var/pierce_dam = 0                 // Amount of pierce brute damage, aka "cut depth".
 	var/pierce_last = 0
 
-	var/bleeding = 0                   // Bleeding severity.
-	var/bandaged = 0                   // Bandaged severity.
+	var/max_bleeding = 0               // Maximum potential bleeding.
+	var/bandaged = 0                   // Bandaged stage.
+	var/scabbed = 0                    // Scabbing stage.
+	var/bleeding = 0                   // Effective bleeding severity.
 
 	var/last_dam = -1                  // used in healing/processing calculations.
 	var/pain = 0                       // How much the limb hurts.
@@ -778,6 +781,24 @@ Note that amputating the affected organ does in fact remove the infection from t
 	update_damages()
 	. = update_damstate()
 
+/obj/item/organ/external/proc/update_bleeding()
+	if(owner && (owner.status_flags & GODMODE))
+		bleeding = 0
+		bandaged = 0
+		scabbed = 0
+		return
+
+	max_bleeding = (cut_dam + pierce_dam) * 0.5
+	bandaged = clamp(bandaged, 0, bleeding)
+	scabbed = clamp(scabbed, 0, bleeding)
+
+	bleeding = max_bleeding - max(bandagd, scabbed)
+
+	if(bleeding)
+		status |= ORGAN_BLEEDING
+	else
+		status &= ~ORGAN_BLEEDING
+
 //Updates brute_damn and burn_damn from wound damages. Updates BLEEDING status.
 /obj/item/organ/external/proc/update_damages()
 	number_wounds = 0
@@ -864,11 +885,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 					)
 		if(DROPLIMB_BURN)
 			var/gore = "[BP_IS_ROBOTIC(src) ? "": " of burning flesh"]"
-			return list(
-				"\The [owner]'s [src.name] flashes away into ashes!",\
-				"Your [src.name] flashes away into ashes!",\
-				"You hear a crackling sound[gore]." \
-				)
+			if(clean)
+				return list(
+					"\The [owner]'s [src.name] flashes away into ashes!",\
+					"Your [src.name] flashes away into ashes!",\
+					"You hear a crackling sound[gore]." \
+					)
+			else
+				return list(
+					"\The [owner]'s [src.name] burns away into ashes!",\
+					"Your [src.name] burns away into ashes!",\
+					"You hear a crackling sound[gore]." \
+					)
 		if(DROPLIMB_BLUNT)
 			var/gore = "[BP_IS_ROBOTIC(src) ? "": " in shower of gore"]"
 			var/gore_sound = "[BP_IS_ROBOTIC(src) ? "rending sound of tortured metal" : "sickening splatter of gore"]"

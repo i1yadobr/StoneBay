@@ -42,13 +42,16 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 	blunt_dam = min(blunt_dam + final_blunt_damage, max_damage)
 
 	var/final_cut_damage = min(potential_cut_damage, max_cut_damage)
-	cut_dam = min(cut_dam + final_cut_damage, max_damage)
+	if(final_cut_damage >= 2.5)
+		cut_dam = min(cut_dam + final_cut_damage, max_damage)
 
 	var/final_pierce_damage = min(potential_pierce_damage, max_pierce_damage)
-	pierce_dam = min(pierce_dam + final_pierce_damage, max_damage)
+	if(final_cut_damage >= 2.5)
+		pierce_dam = min(pierce_dam + final_pierce_damage, max_damage)
 
 	return
 
+// Deals 75% of the amount as cut damage and 25% as pierce damage, deals up to 50% as blunt if excessive.
 /obj/item/organ/external/proc/take_cut_damage(brute)
 	if(owner && (owner.status_flags & GODMODE))
 		return
@@ -94,6 +97,7 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 
 	return
 
+// Deals 25% of the amount as cut damage and 75% as pierce damage, deals up to 50% as blunt if excessive.
 /obj/item/organ/external/proc/take_pierce_damage(brute)
 	if(owner && (owner.status_flags & GODMODE))
 		return
@@ -149,10 +153,12 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 
 
 /obj/item/organ/external/proc/cache_last_damage()
-	burn_last = burn_dam
 	blunt_last = blunt_dam
 	cut_last = cut_dam
 	pierce_last = pierce_last
+
+	brute_last = brute_dam
+	burn_last = burn_dam
 
 /obj/item/organ/external/proc/take_external_damage(brute, burn, damage_flags, used_weapon = null)
 	if(owner && (owner.status_flags & GODMODE))
@@ -161,7 +167,7 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 	brute = round(brute * brute_mod, 0.1)
 	burn = round(burn * burn_mod, 0.1)
 
-	if((brute <= 0) && (burn <= 0))
+	if(brute <= 0 && burn <= 0)
 		return 0
 
 	var/sharp = (damage_flags & DAM_SHARP)
@@ -178,82 +184,70 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 		if(burn)
 			SSstoryteller.report_wound(owner, BURN, burn)
 
+	cache_last_damage()
+
 	if(brute)
 		if(blunt)
 			take_blunt_damage(brute)
 		else if(edge)
+			take_cut_damage(brute)
 		else if(sharp)
+			take_pierce_damage(brute)
+		brute_dam = blunt_dam + cut_dam + pierce_dam
+		brute_ratio = brute_dam / max_damage
 
-	var/can_cut = (!BP_IS_ROBOTIC(src) && (sharp || prob(brute*2)))
-	var/spillover = 0
-	var/pure_brute = brute
-	if(!is_damageable(brute + burn))
-		spillover =  brute_dam + burn_dam + brute - max_damage
-		if(spillover > 0)
-			brute = max(brute - spillover, 0)
-		else
-			spillover = brute_dam + burn_dam + brute + burn - max_damage
-			if(spillover > 0)
-				burn = max(burn - spillover, 0)
+	if(burn)
+		take_burn_damage(burn)
+		burn_ratio = burn_dam / max_damage
+		if(laser && prob(40))
+			owner?.IgniteMob()
 
-	if(owner && loc == owner)
-		owner.updatehealth() //droplimb will call updatehealth() again if it does end up being called
+	var/blunt_dealt = blunt_dam - blunt_last
+	var/cut_dealt = cut_dam - cut_last
+	var/pierce_dealt = pierce_dam - pierce_last
+
+	var/brute_dealt = brute_dam - brute_last
+	var/burn_dealt = burn_dam - burn_last
+
+	// Dismemberment stuff
+	if(!isnull(owner)) && loc == owner)
+		owner.updatehealth()
 		if((limb_flags & ORGAN_FLAG_CAN_AMPUTATE) && config.health.limbs_can_break && !is_stump())
-			if((brute_dam + burn_dam + brute + burn + spillover) >= (max_damage * config.health.organ_health_multiplier))
-				var/force_droplimb = 0
-				if((brute_dam + burn_dam + brute + burn + spillover) >= (max_damage * config.health.organ_health_multiplier * 4))
-					force_droplimb = 1
-				//organs can come off in three cases
-				//1. If the damage source is edge_eligible and the brute damage dealt exceeds the edge threshold, then the organ is cut off.
-				//2. If the damage amount dealt exceeds the disintegrate threshold, the organ is completely obliterated.
-				//3. If the organ has already reached or would be put over it's max damage amount (currently redundant),
-				//   and the brute damage dealt exceeds the tearoff threshold, the organ is torn off.
-				//Check edge eligibility
-				var/edge_eligible = 0
-				if(edge)
-					if(istype(used_weapon, /obj/item))
-						var/obj/item/I = used_weapon
-						if(I.w_class >= w_class)
-							edge_eligible = 1
-					else
-						edge_eligible = 1
-				brute = pure_brute
-				if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE)
-					if(prob(brute) || force_droplimb)
-						droplimb(0, DROPLIMB_EDGE)
-						return
-				else if(burn >= max_damage / DROPLIMB_THRESHOLD_DESTROY)
-					if(prob(burn/3) || force_droplimb)
-						droplimb(0, DROPLIMB_BURN)
-						return
-				else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY)
-					if(prob(brute) || force_droplimb)
-						droplimb(0, DROPLIMB_BLUNT)
-						return
-				else if(brute >= max_damage / DROPLIMB_THRESHOLD_TEAROFF)
-					if(prob(brute/3) || force_droplimb)
-						droplimb(0, DROPLIMB_EDGE)
-						return
-				else if(force_droplimb)
-					if(edge_eligible)
-						droplimb(0, DROPLIMB_EDGE)
-						return
-					else if(burn)
-						droplimb(0, DROPLIMB_BURN)
-						return
-					else if(prob(25)) // A chance for a limb to be torn off instead of getting gibbed
-						droplimb(0, DROPLIMB_EDGE)
-					else
-						droplimb(0, DROPLIMB_BLUNT)
+			var/force_droplimb = FALSE
+			if(brute >= 5.0 && (brute_last + brute >= max_damage * 3) || burn && (burn_dam >= max_damage * 2))
+				force_droplimb = TRUE
+
+			if(burn && (burn_dam >= max_damage))
+				if(prob(burn) || force_droplimb))
+					droplimb(laser, DROPLIMB_BURN)
 					return
+
+			if(edge && (cut_dam >= max_damage))
+				if((brute >= 10.0 && prob(brute * brute_ratio)) || force_droplimb)
+					droplimb(FALSE, DROPLIMB_EDGE)
+					return
+
+			if(sharp && !edge && (pierce_dam >= max_damage))
+				if((brute >= 10.0 && prob(brute * brute_ratio)) || force_droplimb)
+					droplimb(FALSE, pick(DROPLIMB_EDGE, DROPLIMB_BLUNT))
+					return
+
+			if(blunt && (blunt_last >= max_damage) && (status & ORGAN_BROKEN))
+				if((brute >= (min_broken_damage * 0.5) && prob(brute * brute_ratio)) || force_droplimb)
+					droplimb(FALSE, DROPLIMB_BLUNT)
+					return
+
+			if(force_droplimb)
+				droplimb(FALSE, DROPLIMB_BLUNT)
+				return
 
 	// High brute damage or sharp objects may damage internal organs
 	if(!istype(used_weapon, /obj/item/projectile)) // Projectiles organ damage is being processed in human_defense.dm
 		var/damage_amt = brute
-		var/cur_damage = brute_dam
+		var/cur_damage = brute_last
 		if(laser)
 			damage_amt += burn
-			cur_damage += burn_dam
+			cur_damage += burn_last
 		var/organ_damage_threshold = 5
 		if(sharp)
 			organ_damage_threshold *= 0.5
@@ -264,7 +258,7 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 			organ_damage_prob *= cur_damage/15
 		if(encased && !(status & ORGAN_BROKEN)) //ribs and skulls protect
 			organ_damage_prob *= 0.5
-		if(internal_organs && internal_organs.len && (cur_damage + damage_amt >= max_damage || damage_amt >= organ_damage_threshold) && prob(organ_damage_prob))
+		if(LAZYLEN(internal_organs) && (cur_damage + damage_amt >= max_damage || damage_amt >= organ_damage_threshold) && prob(organ_damage_prob))
 			// Damage an internal organ
 			var/list/victims = list()
 			for(var/obj/item/organ/internal/I in internal_organs)
@@ -279,42 +273,42 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 				damage_amt /= 2
 				victim.take_internal_damage(damage_amt)
 
-	if(status & ORGAN_BROKEN && brute)
-		jostle_bone(brute)
-		if(owner && can_feel_pain() && prob(40))
-			owner.emote("scream")	//getting hit on broken hand hurts
+	// Bones stuff
+	if(brute >= (blunt ? 5.0 : 10.0))
+		if(status & ORGAN_BROKEN)
+			jostle_bone(brute)
+			if(owner && prob(40) && can_feel_pain())
+				owner.emote("scream") // Getting hit on a broken hand hurts
+		else
+			var/should_fracture = FALSE
+			if(blunt_last >= max_damage && (blunt || prob(brute_dam + brute)))
+				should_fracture = TRUE
+			else if(!should_fracture && blunt_dam >= min_broken_damage)
+				if(prob(brute_dam + brute * (1 + blunt))) // blunt damage is gud at fracturing
+					should_fracture = TRUE
 
-	if(brute_dam > min_broken_damage && prob(brute_dam + brute * (1+blunt)) ) //blunt damage is gud at fracturing
-		fracture()
+			if(should_fracture)
+				fracture()
 
-	// If the limbs can break, make sure we don't exceed the maximum damage a limb can take before breaking
-	var/datum/wound/created_wound
-	var/block_cut = !(brute > 15 || !(species.species_flags & SPECIES_FLAG_NO_MINOR_CUT))
+	adjust_pain(0.6 * burn + 0.4 * brute)
 
+	// Bleeding stuff
 	if(brute)
-		var/to_create = BRUISE
-		if(can_cut)
-			if(!block_cut)
-				to_create = CUT
-			//need to check sharp again here so that blunt damage that was strong enough to break skin doesn't give puncture wounds
-			if(sharp && !edge)
-				to_create = PIERCE
-		created_wound = createwound(to_create, brute)
+		if(edge)
+			bandaged -= brute
+			scabbed -= brute
+		else
+			bandaged -= brute * 0.5
+			scabbed -= brute * 0.5
 
 	if(burn)
-		if(laser)
-			createwound(LASER, burn)
-			if(prob(40))
-				owner.IgniteMob()
-		else
-			createwound(BURN, burn)
+		bandaged -= burn
+		scabbed += burn // Cauterization
 
-	adjust_pain(0.6*burn + 0.4*brute)
-	//If there are still hurties to dispense
-	if(owner && spillover)
-		owner.shock_stage += spillover * config.health.organ_damage_spillover_multiplier
+	update_bleeding()
 
-	// sync the organ's damage with its wounds
+	//////////////
+	// Sync the organ's damage with its wounds
 	update_damages()
 	if(owner)
 		owner.updatehealth()
