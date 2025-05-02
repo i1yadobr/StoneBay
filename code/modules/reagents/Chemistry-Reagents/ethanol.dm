@@ -37,14 +37,14 @@
 
 /datum/reagent/ethanol/affect_digest(mob/living/carbon/M, alien, removed)
 	M.add_nutrition(nutriment_factor * removed)
-	var/strength_mod = 1
+	var/strength_mod = 0.2
 	if(alien == IS_SKRELL)
-		strength_mod *= 5
+		strength_mod *= 1.0
 	if(alien == IS_DIONA)
 		strength_mod = 0
 
 	M.add_chemical_effect(CE_ALCOHOL, 1)
-	var/effective_dose = M.chem_traces[type] * strength_mod * (1 + volume / 600) //drinking a LOT will make you go down faster
+	var/effective_dose = M.chem_traces[type] * strength_mod * (1 + volume / 500) //drinking a LOT will make you go down faster
 
 	if(effective_dose >= strength) // Early warning
 		M.make_dizzy(6) // It is decreased at the speed of 3 per tick
@@ -312,7 +312,7 @@
 	description = "A strong and mildly flavoured, mexican produced spirit. Feeling thirsty hombre?"
 	taste_description = "paint stripper"
 	color = "#ffff91"
-	strength = 25
+	strength = 15
 	hydration_value = 0.6
 
 	glass_name = "Tequilla"
@@ -380,7 +380,7 @@
 	description = "A superb and well-aged single-malt whiskey. Damn."
 	taste_description = "molasses"
 	color = "#6d3a00"
-	strength = 25
+	strength = 15
 	hydration_value = 0.6
 
 	glass_name = "whiskey"
@@ -391,7 +391,7 @@
 	description = "Just when you thought regular whiskey was good... This silky, amber goodness has to come along and ruin everything."
 	taste_description = "liquid fire"
 	color = "#523600"
-	strength = 25
+	strength = 15
 
 	glass_name = "special blend whiskey"
 	glass_desc = "Just when you thought regular whiskey was good... This silky, amber goodness has to come along and ruin everything."
@@ -401,7 +401,7 @@
 	description = "An premium alchoholic beverage made from distilled grape juice."
 	taste_description = "bitter sweetness"
 	color = "#7e4043" // rgb: 126, 64, 67
-	strength = 15
+	strength = 30
 	hydration_value = 0.85
 
 	glass_name = "red wine"
@@ -416,7 +416,7 @@
 	description = "An exceptionally expensive alchoholic beverage made from distilled white grapes."
 	taste_description = "white velvet"
 	color = "#ffddaa" // rgb: 255, 221, 170 - a light cream
-	strength = 20
+	strength = 30
 
 	glass_name = "white wine"
 	glass_desc = "A very expensive looking drink."
@@ -426,7 +426,7 @@
 	description = "Martian sauvignon blanc. For those who actually like wine."
 	taste_description = "refreshing sourness"
 	color = "#ffebb2"
-	strength = 15
+	strength = 30
 
 	glass_name = "white wine"
 	glass_desc = "A very elite looking drink."
@@ -436,7 +436,7 @@
 	description = "Glamorous and fancy beyond all limits."
 	taste_description = "sweet and sour pleasure"
 	color = "#ffcbc9"
-	strength = 12
+	strength = 30
 
 	glass_name = "red wine"
 	glass_desc = "A very glamorous looking drink."
@@ -445,7 +445,7 @@
 	name = "Sparkling Wine"
 	description = "Much like regular wine, but with bubbles. This one is white."
 	color = "#fff696"
-	strength = 17
+	strength = 25
 
 	glass_name = "sparkling wine"
 	glass_desc = "A very festive looking drink."
@@ -991,7 +991,7 @@
 	name = "Glintwine"
 	description = "Mulled wine is very popular and traditional in the United Kingdom at Christmas, and less commonly throughout winter."
 	color = "#600202"
-	strength = 10
+	strength = 35
 	taste_mult = 1.5
 	druggy = 5
 	adj_temp = 10
