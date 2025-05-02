@@ -335,7 +335,7 @@
 	)
 
 	if(!rustg_json_is_valid(result))
-		CRASH(result)
+		return
 
 	patrol_path = json_decode(result)
 
