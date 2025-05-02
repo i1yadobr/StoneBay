@@ -58,7 +58,7 @@
 	if(!length(processing))
 		return
 	for(var/obj/item/I in processing)
-		items_volume += I.get_storage_cost() * 100
+		items_volume += I.get_storage_cost() * 50
 
 // 0 is empty, 100 is softcap, 200 is hardcap
 /obj/item/organ/internal/stomach/proc/get_fullness()

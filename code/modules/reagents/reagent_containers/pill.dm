@@ -59,7 +59,7 @@
 		if(!M.can_force_feed(user, src, check_resist = TRUE))
 			return
 
-		if(!M.drop(src, M.loc))
+		if(!user.drop(src, M.loc))
 			return
 
 		user.visible_message("<span class='warning'>[user] forces [M] to swallow \the [src].</span>")
