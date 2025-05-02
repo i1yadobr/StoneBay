@@ -98,7 +98,10 @@
 	return bled
 #undef BLOOD_SPRAY_DISTANCE
 
-/mob/living/carbon/human/proc/remove_blood(amt)
+/mob/living/carbon/proc/remove_blood(amt)
+	return 0
+
+/mob/living/carbon/human/remove_blood(amt)
 	if(!should_have_organ(BP_HEART)) //TODO: Make drips come from the reagents instead.
 		return 0
 	if(!amt)
@@ -300,8 +303,11 @@
 	return B
 
 //Percentage of maximum blood volume.
-/mob/living/carbon/human/proc/get_blood_volume()
-	if (isfakeliving(src))
+/mob/living/carbon/proc/get_blood_volume()
+	return 100
+
+/mob/living/carbon/human/get_blood_volume()
+	if(isfakeliving(src))
 		return 100
 	return round((vessel.get_reagent_amount(/datum/reagent/blood)/species.blood_volume)*100)
 

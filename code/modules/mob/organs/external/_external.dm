@@ -602,19 +602,24 @@ This function completely restores a damaged organ to perfect condition.
 //Determines if we even need to process this organ.
 /obj/item/organ/external/proc/need_process()
 	if(get_pain())
-		return 1
+		return TRUE
+
 	if(status & (ORGAN_CUT_AWAY|ORGAN_BLEEDING|ORGAN_BROKEN|ORGAN_DEAD|ORGAN_MUTATED))
-		return 1
+		return TRUE
+
 	if((brute_dam || burn_dam) && !BP_IS_ROBOTIC(src)) //Robot limbs don't autoheal and thus don't need to process when damaged
-		return 1
+		return TRUE
+
 	if(last_dam != brute_dam + burn_dam) // Process when we are fully healed up.
 		last_dam = brute_dam + burn_dam
-		return 1
-	else
-		last_dam = brute_dam + burn_dam
+		return TRUE
+
+	last_dam = brute_dam + burn_dam
+
 	if(germ_level)
-		return 1
-	return 0
+		return TRUE
+
+	return FALSE
 
 /obj/item/organ/external/var/should_update_damage_icons_this_tick = FALSE
 
@@ -622,7 +627,7 @@ This function completely restores a damaged organ to perfect condition.
 	if(owner)
 		// Process wounds, doing healing etc. Only do this every few ticks to save processing power
 		if(owner.life_tick % wound_update_accuracy == 0)
-			should_update_damage_icons_this_tick = update_wounds()
+			should_update_damage_icons_this_tick = handle_damage()
 
 		//Infections
 		update_germs()
@@ -737,138 +742,77 @@ Note that amputating the affected organ does in fact remove the infection from t
 		germ_level++
 		owner.adjustToxLoss(2.0)
 
-//Updating wounds. Handles wound natural I had some free spachealing, internal bleedings and infections
-/obj/item/organ/external/proc/update_wounds()
-
-	if(BP_IS_ROBOTIC(src)) //Robotic limbs don't heal or get worse.
-		for(var/datum/wound/W in wounds) //Repaired wounds disappear though
-			if(W.damage <= 0)  //and they disappear right away
-				qdel(W)        //TODO: robot wounds for robot limbs
+// Handles natural heal, internal bleedings and infections
+/obj/item/organ/external/proc/handle_damage()
+	if(BP_IS_ROBOTIC(src)) // Robotic limbs don't heal or get worse.
 		return
 
-	for(var/datum/wound/W in wounds)
-		// wounds can disappear after 10 minutes at the earliest
-		if(W.damage <= 0 && W.created + (10 MINUTES) <= world.time)
-			qdel(W)
-			. = TRUE
-			continue
-			// let the GC handle the deletion of the wound
+	var/mob/living/carbon/human/H
+	if(ishuman(owner))
+		H = owner
 
-		var/dam_type = BRUTE
-		if(W.damage_type == BURN)
-			dam_type = BURN
-		if(!owner.can_autoheal(dam_type))
-			continue
+	var/heal_amt = H ? H.coagulation * 0.5 : 0.5
 
-		// slow healing
-		var/heal_amt = 0
-		// if damage >= 50 AFTER treatment then it's probably too severe to heal within the timeframe of a round.
-		if (!owner.chem_effects[CE_TOXIN] && W.wound_damage() && brute_ratio < 0.5 && burn_ratio < 0.5)
-			heal_amt += 0.5
+	if(!heal_amt || owner.chem_effects[CE_TOXIN] || brute_ratio >= 3 || burn_ratio >= 2)
+		return // No autoheal
 
-		//we only update wounds once in [wound_update_accuracy] ticks so have to emulate realtime
-		heal_amt = heal_amt * wound_update_accuracy
-		//configurable regen speed woo, no-regen hardcore or instaheal hugbox, choose your destiny
-		heal_amt = heal_amt * config.health.organ_regeneration_multiplier
-		// amount of healing is spread over all the wounds
-		heal_amt = heal_amt / (LAZYLEN(wounds) + 1)
-		// making it look prettier on scanners
-		heal_amt = round(heal_amt,0.1)
+	heal_amt = round(heal_amt * wound_update_accuracy * config.health.organ_regeneration_multiplier, 0.1)
 
-		W.heal_damage(heal_amt)
+	. = heal_damage((burn_dam ? heal_amt * 0.5 : heal_amt), (brute_dam ? heal_amt * 0.5 : heal_amt), update_damage_icon = FALSE)
 
 	// sync the organ's damage with its wounds
 	update_damages()
-	. = update_damstate()
+	return
 
-/obj/item/organ/external/proc/update_bleeding()
+// Updates damage ratios, bleeding status, etc.
+/obj/item/organ/external/proc/update_damages()
 	if(owner && (owner.status_flags & GODMODE))
-		bleeding = 0
-		bandaged = 0
-		scabbed = 0
 		return
 
-	max_bleeding = (cut_dam + pierce_dam) * 0.5
-	bandaged = clamp(bandaged, 0, bleeding)
-	scabbed = clamp(scabbed, 0, bleeding)
+	// Bleeding
+	if(!BP_IS_ROBOTIC(src))
+		max_bleeding = (cut_dam + pierce_dam) * 0.5
+		bandaged = clamp(bandaged, 0, bleeding)
+		scabbed = clamp(scabbed, 0, bleeding)
 
-	bleeding = max_bleeding - max(bandagd, scabbed)
+		bleeding = max_bleeding - max(bandaged, scabbed)
 
-	if(bleeding)
-		status |= ORGAN_BLEEDING
-	else
-		status &= ~ORGAN_BLEEDING
-
-//Updates brute_damn and burn_damn from wound damages. Updates BLEEDING status.
-/obj/item/organ/external/proc/update_damages()
-	number_wounds = 0
-	brute_dam = 0
-	burn_dam = 0
-	status &= ~ORGAN_BLEEDING
-	var/clamped = 0
-
-	var/mob/living/carbon/human/H
-	if(istype(owner,/mob/living/carbon/human))
-		H = owner
-
-	//update damage counts
-	for(var/datum/wound/W in wounds)
-		if(W.damage_type == BURN)
-			burn_dam += W.damage
-		else
-			brute_dam += W.damage
-
-		if(!BP_IS_ROBOTIC(src) && W.bleeding() && (H && H.should_have_organ(BP_HEART)))
-			var/coagulation = 1.0
-			if(H)
-				coagulation = H.coagulation
-			W.bleed_timer = max(W.bleed_timer - coagulation, 0)
+		if(bleeding)
 			status |= ORGAN_BLEEDING
+		else
+			status &= ~ORGAN_BLEEDING
 
-		clamped |= W.clamped
-		number_wounds += W.amount
+	// Ratios
+	burn_ratio = burn_dam / max_damage
+	brute_ratio = brute_dam / max_damage
 
-	damage = brute_dam + burn_dam
-	update_damage_ratios()
-
-/obj/item/organ/external/proc/update_damage_ratios()
-	var/limb_loss_threshold = max_damage
-	brute_ratio = brute_dam / (limb_loss_threshold * 2)
-	burn_ratio = burn_dam / (limb_loss_threshold * 2)
-
-//Returns 1 if damage_state changed
+//Returns TRUE if damage_state changed
 /obj/item/organ/external/proc/update_damstate()
-	var/n_is = damage_state_text()
-	if (n_is != damage_state)
-		damage_state = n_is
-		return 1
-	return 0
-
-// new damage icon system
-// returns just the brute/burn damage code
-/obj/item/organ/external/proc/damage_state_text()
-
 	var/tburn = 0
 	var/tbrute = 0
 
-	if(burn_dam ==0)
-		tburn =0
-	else if (burn_dam < (max_damage * 0.25 / 2))
+	if(!burn_dam)
+		tburn = 0
+	else if(burn_dam < max_damage * 0.25)
 		tburn = 1
-	else if (burn_dam < (max_damage * 0.75 / 2))
+	else if(burn_dam < max_damage * 0.75)
 		tburn = 2
 	else
 		tburn = 3
 
-	if (brute_dam == 0)
+	if(!brute_dam)
 		tbrute = 0
-	else if (brute_dam < (max_damage * 0.25 / 2))
+	else if(brute_dam < max_damage * 0.25)
 		tbrute = 1
-	else if (brute_dam < (max_damage * 0.75 / 2))
+	else if(brute_dam < max_damage)
 		tbrute = 2
 	else
 		tbrute = 3
-	return "[tbrute][tburn]"
+
+	if(damage_state != "[tbrute][tburn]")
+		damage_state = "[tbrute][tburn]"
+		return TRUE
+	return FALSE
 
 /****************************************************
 			   DISMEMBERMENT

@@ -147,10 +147,12 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 	if(owner && (owner.status_flags & GODMODE))
 		return
 
-	if(burn_dam >= max_damage)
+	if(burn_dam >= max_damage * 2.0)
 		return
 
+	burn_dam = min(max_damage * 2.0, burn_dam + burn)
 
+	return
 
 /obj/item/organ/external/proc/cache_last_damage()
 	blunt_last = blunt_dam
@@ -273,55 +275,71 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 				damage_amt /= 2
 				victim.take_internal_damage(damage_amt)
 
-	// Bones stuff
-	if(brute >= (blunt ? 5.0 : 10.0))
-		if(status & ORGAN_BROKEN)
-			jostle_bone(brute)
-			if(owner && prob(40) && can_feel_pain())
-				owner.emote("scream") // Getting hit on a broken hand hurts
-		else
-			var/should_fracture = FALSE
-			if(blunt_last >= max_damage && (blunt || prob(brute_dam + brute)))
-				should_fracture = TRUE
-			else if(!should_fracture && blunt_dam >= min_broken_damage)
-				if(prob(brute_dam + brute * (1 + blunt))) // blunt damage is gud at fracturing
+	if(!BP_IS_ROBOTIC(src))
+		// Painful stuff
+		adjust_pain(0.6 * burn + 0.4 * brute)
+
+		// Bones stuff
+		if(brute >= (blunt ? 5.0 : 10.0))
+			if(status & ORGAN_BROKEN)
+				jostle_bone(brute)
+				if(owner && prob(40) && can_feel_pain())
+					owner.emote("scream") // Getting hit on a broken hand hurts
+			else
+				var/should_fracture = FALSE
+				if(blunt_last >= max_damage && (blunt || prob(brute_dam + brute)))
 					should_fracture = TRUE
+				else if(!should_fracture && blunt_dam >= min_broken_damage)
+					if(prob(brute_dam + brute * (1 + blunt))) // blunt damage is gud at fracturing
+						should_fracture = TRUE
 
-			if(should_fracture)
-				fracture()
+				if(should_fracture)
+					fracture()
 
-	adjust_pain(0.6 * burn + 0.4 * brute)
+		// Bloody stuff
+		if(brute)
+			if(edge)
+				bandaged -= brute
+				scabbed -= brute
+			else
+				bandaged -= brute * 0.5
+				scabbed -= brute * 0.5
 
-	// Bleeding stuff
-	if(brute)
-		if(edge)
-			bandaged -= brute
-			scabbed -= brute
-		else
-			bandaged -= brute * 0.5
-			scabbed -= brute * 0.5
+		if(burn)
+			bandaged -= burn
+			scabbed += burn // Cauterization
 
-	if(burn)
-		bandaged -= burn
-		scabbed += burn // Cauterization
+			// Burn damage can cause fluid loss due to blistering and cook-off.
+			// Smaller limbs and existing bloodloss reduce the amount of fluid loss.
+			if(owner && (burn_dam >= min_broken_damage))
+				var/fluid_loss = ceil((damage/(owner.maxHealth - config.health.health_threshold_dead)) * owner.species.blood_volume * (max_damage / 100) * (min(10, owner.get_blood_volume()) / 100))
+				owner.remove_blood(fluid_loss  * (laser ? FLUIDLOSS_CONC_BURN : FLUIDLOSS_WIDE_BURN))
 
-	update_bleeding()
+		// Arteries+Tendons stuff
+		if(brute > 15 && max(cut_dam, pierce_dam) > min_broken_damage)
+			var/internal_damage
+			if(prob(ceil(damage/2)) && sever_artery())
+				internal_damage = TRUE
+			if(prob(ceil(damage/4)) && sever_tendon())
+				internal_damage = TRUE
+			if(internal_damage)
+				owner.custom_pain("You feel something rip in your [name]!", 50, affecting = src)
 
-	//////////////
 	// Sync the organ's damage with its wounds
 	update_damages()
+
 	if(owner)
 		owner.updatehealth()
 		if(update_damstate())
 			owner.UpdateDamageIcon()
 		else if(status & ORGAN_BLEEDING)
-			owner.update_bandages()
+			owner.update_bandages() // TODO: Rework bandages
 
 	return created_wound
 
 /obj/item/organ/external/heal_damage(brute, burn, internal = 0, robo_repair = 0, update_damage_icon = TRUE)
 	if(BP_IS_ROBOTIC(src) && !robo_repair)
-		return
+		return FALSE
 
 	if(burn_dam && burn && (burn_ratio < 1 || vital || (limb_flags & ORGAN_FLAG_HEALS_OVERKILL)))
 		burn = min(burn_dam, burn)
