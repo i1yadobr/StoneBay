@@ -476,7 +476,7 @@
 	// High hydratation boosts detox efficiency (if applicible), low hydration slows it down or halts it completely.
 	switch(hydration)
 		if(HYDRATION_NONE)
-			detox_efficiency -= 0.5
+			detox_efficiency -= 0.35
 		if(HYDRATION_NONE+0.01 to HYDRATION_LOW)
 			detox_efficiency -= 0.2
 		if(HYDRATION_HIGH+0.01 to HYDRATION_SUPER)

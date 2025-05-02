@@ -7,7 +7,7 @@
 	taste_description = "iron"
 	taste_mult = 1.5
 
-	metabolism = REM * 5
+	metabolism = 50
 	hydration_value = 0.51 // Scientific
 
 	glass_name = "tomato juice"
