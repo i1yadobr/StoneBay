@@ -8,6 +8,8 @@
 	taste_mult = 1.5
 
 	metabolism = 50
+	ingest_met = 1.0
+	digest_met = 5.0
 	hydration_value = 0.51 // Scientific
 
 	glass_name = "tomato juice"
