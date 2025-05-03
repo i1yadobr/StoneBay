@@ -76,7 +76,7 @@
 	desc = "A light fragmentation grenade, designed to be fired from a launcher. It can still be activated and thrown by hand if necessary."
 	icon_state = "fragshell"
 
-	num_fragments = 50 //less powerful than a regular frag grenade
+	num_fragments = 25 //less powerful than a regular frag grenade
 
 /obj/item/grenade/frag/high_yield
 	name = "fragmentation bomb"
@@ -87,7 +87,7 @@
 	throw_range = 5 //heavy, can't be thrown as far
 
 	fragment_types = list(/obj/item/projectile/bullet/pellet/fragment=1,/obj/item/projectile/bullet/pellet/fragment/strong=4)
-	num_fragments = 200  //total number of fragments produced by the grenade
+	num_fragments = 100  //total number of fragments produced by the grenade
 	explosion_size = 3
 
 /obj/item/grenade/frag/high_yield/on_explosion(turf/O)
