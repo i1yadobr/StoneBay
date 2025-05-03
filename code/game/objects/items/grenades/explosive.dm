@@ -76,7 +76,6 @@
 	desc = "A light fragmentation grenade, designed to be fired from a launcher. It can still be activated and thrown by hand if necessary."
 	icon_state = "fragshell"
 
-
 	num_fragments = 20 //less powerful than a regular frag grenade
 
 /obj/item/grenade/frag/high_yield
