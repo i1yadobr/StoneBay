@@ -140,7 +140,7 @@
 
 /obj/item/asteroid/goliath_hide/afterattack(atom/target, mob/user, proximity_flag)
 	if(proximity_flag)
-		if(istype(target, /obj/item/clothing/suit/space))
+		if(istype(target, /obj/item/clothing/suit/space) || istype(target, /obj/item/clothing/head/helmet/space))
 			var/obj/item/clothing/suit/space/C = target
 			var/list/current_armor = C.armor
 			if(current_armor["melee"] < 80)
