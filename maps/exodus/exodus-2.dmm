@@ -5090,7 +5090,7 @@
 "bTT" = (/obj/machinery/teleporter_gate,/turf/simulated/floor/tiled/dark,/area/teleporter)
 "bTU" = (/obj/structure/table/rack,/obj/item/tank/oxygen,/obj/item/clothing/mask/gas,/turf/simulated/floor/tiled/dark,/area/teleporter)
 "bTV" = (/turf/simulated/wall/r_wall,/area/turret_protected/ai_upload_foyer)
-"bTW" = (/obj/effect/floor_decal/industrial/hatch/red,/obj/structure/closet/secure_closet/guncabinet{name = "grenade launchers cabinet"},/obj/item/gun/projectile/revolver/grenade_launcher,/turf/simulated/floor/tiled/dark/rough,/area/security/armory)
+"bTW" = (/obj/effect/floor_decal/industrial/hatch/red,/obj/structure/closet/secure_closet/guncabinet{name = "grenade launchers cabinet"},/obj/item/gun/projectile/grenade_launcher,/turf/simulated/floor/tiled/dark/rough,/area/security/armory)
 "bTX" = (/obj/structure/cable{icon_state = "4-8"; d2 = 8; d1 = 4},/obj/machinery/atmospherics/pipe/simple/hidden/supply{dir = 4},/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{dir = 4},/obj/effect/floor_decal/ss13_new/l4,/turf/simulated/floor/tiled/rough,/area/hallway/primary/central_one)
 "bTY" = (/obj/machinery/door/airlock/glass{name = "Bar"},/obj/machinery/door/firedoor/border_only,/obj/structure/disposalpipe/segment,/turf/simulated/floor/trim/darkwood,/area/crew_quarters/mess)
 "bTZ" = (/obj/structure/cable{icon_state = "4-8"; d2 = 8; d1 = 4},/obj/machinery/atmospherics/pipe/simple/hidden/supply{dir = 4},/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{dir = 4},/obj/machinery/navbeacon/box/CH_NORTH1,/obj/effect/floor_decal/ss13_new/l6,/turf/simulated/floor/tiled/rough,/area/hallway/primary/central_one)
