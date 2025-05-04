@@ -985,8 +985,7 @@ About the new airlock wires panel:
 
 /obj/machinery/door/airlock/emp_act(severity)
 	if(prob(20 / severity))
-		spawn(0)
-			open()
+		INVOKE_ASYNC(src, nameof(.proc/open))
 	if(prob(40 / severity))
 		var/duration = SecondsToTicks(30 / severity)
 		if(electrified_until > -1 && (duration + world.time) > electrified_until)

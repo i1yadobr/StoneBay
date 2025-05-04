@@ -120,13 +120,11 @@
 	handle_paralysed()
 	handle_supernatural()
 
-	mob_ai.attempt_escape()
-
-	mob_ai.process_moving()
-
-	mob_ai.process_speaking()
-
-	mob_ai.process_special_actions()
+	if(mob_ai)
+		mob_ai.attempt_escape()
+		mob_ai.process_moving()
+		mob_ai.process_speaking()
+		mob_ai.process_special_actions()
 
 	if(in_stasis)
 		return 1

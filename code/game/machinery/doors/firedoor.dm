@@ -186,13 +186,14 @@
 		return //Already doing something.
 
 	if(blocked)
-		to_chat(user, SPAN("warning", "\The [src] is welded solid!"))
+		if(user)
+			to_chat(user, SPAN("warning", "\The [src] is welded solid!"))
 		return
 
 	if(density)
-		INVOKE_ASYNC(src, nameof(/obj/machinery/door.proc/open), user, forced)
+		INVOKE_ASYNC(src, nameof(/obj/machinery/door.proc/open), forced, user)
 	else
-		INVOKE_ASYNC(src, nameof(/obj/machinery/door.proc/close), user, forced)
+		INVOKE_ASYNC(src, nameof(/obj/machinery/door.proc/close), forced)
 
 /obj/machinery/door/firedoor/attack_generic(mob/user, damage)
 	if(stat & (BROKEN|NOPOWER))
@@ -316,7 +317,7 @@
 	playsound(loc, close_sound, 50, TRUE)
 	return ..()
 
-/obj/machinery/door/firedoor/can_open(forced = FALSE)
+/obj/machinery/door/firedoor/can_open(forced = FALSE, push_mobs = TRUE)
 	if(blocked || (!forced && (stat & (NOPOWER|BROKEN))))
 		return FALSE
 	return ..()
@@ -326,7 +327,7 @@
 		return FALSE
 	return ..()
 
-/obj/machinery/door/firedoor/open(mob/user, forced = 0)
+/obj/machinery/door/firedoor/open(forced = FALSE, mob/user = null)
 	lockdown = FALSE
 
 	if(hatch_open)
@@ -336,7 +337,7 @@
 
 	if(!forced)
 		use_power_oneoff(360)
-	else
+	else if(user)
 		var/area/A = get_area(src)
 		log_admin("[user]([user.ckey]) has forced open an emergency shutter at X:[x], Y:[y], Z:[z] Area: [A.name].")
 
