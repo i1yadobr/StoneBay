@@ -130,8 +130,8 @@ var/list/ai_verbs_default = list(
 	anchored = 1
 	set_density(1)
 
-	holo_icon = getHologramIcon(icon('icons/mob/hologram.dmi',"Face"))
-	holo_icon_longrange = getHologramIcon(icon('icons/mob/hologram.dmi',"Face"), hologram_color = HOLOPAD_LONG_RANGE)
+	holo_icon = getHologramIcon(icon('icons/mob/silicon/hologram.dmi',"Face"))
+	holo_icon_longrange = getHologramIcon(icon('icons/mob/silicon/hologram.dmi',"Face"), hologram_color = HOLOPAD_LONG_RANGE)
 
 	if(istype(L, /datum/ai_laws))
 		laws = L
