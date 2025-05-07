@@ -399,7 +399,7 @@
 	desc = "A crate with an experimental supermatter crystal inside."
 
 /obj/structure/closet/crate/secure/large/plasma/supermatter/random/WillContain()
-	return list(/obj/machinery/power/supermatter/random, /obj/item/paper/supermatter_paper)
+	return list(/obj/machinery/power/supermatter/random)
 
 //fluff variant
 /obj/structure/closet/crate/secure/large/reinforced

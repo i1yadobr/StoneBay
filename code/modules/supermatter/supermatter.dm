@@ -598,6 +598,10 @@
 	current_decay_factor = rand(DECAY_FACTOR - DELTA_DECAY_FACTOR, DECAY_FACTOR + DELTA_DECAY_FACTOR)
 	current_critical_temperature = rand(CRITICAL_TEMPERATURE - DELTA_CRITICAL_TEMPERATURE, CRITICAL_TEMPERATURE + DELTA_CRITICAL_TEMPERATURE)
 	current_charging_factor = rand(100*(CHARGING_FACTOR - DELTA_CHARGING_FACTOR), 100*(CHARGING_FACTOR + DELTA_CHARGING_FACTOR)) / 100
+	// Spawn the supermatter paper in the same tile as the supermatter
+	var/obj/item/paper/supermatter_paper/P = new /obj/item/paper/supermatter_paper()
+	P.loc = src.loc
+	P.fill_research_paper(src)
 
 /obj/machinery/power/supermatter/random/explode(stored_power)
 	if(prob(collapse_chance))
@@ -615,78 +619,75 @@
 	name = "Unstable Supermatter Research Paper"
 	info = ""
 
-/obj/item/paper/supermatter_paper/Initialize()
-	. = ..()
+/obj/item/paper/supermatter_paper/proc/fill_research_paper(obj/machinery/power/supermatter/random/S)
+	if(!istype(S, /obj/machinery/power/supermatter/random))
+		return
+	var/obj/machinery/power/supermatter/random/SM = S
 	info = "<b>Unstable Supermatter Research Paper</b><br><br>"
-	// Since it is intended to spawn this in a crate with matter - we just need to check if the supermatter is on the same tile
-	// as the paper. This is a bit of a hack, but it works.
-	for(var/obj/machinery/power/supermatter/random/SM in oview(1, src))
-		if(!SM)
-			return
-		// Generate a random name for the supermatter
-		info += "<b>Supermatter ID:</b> [pick(GLOB.golem_names)] [pick(GLOB.greek_letters)] <br>"
+	// Generate a random name for the supermatter
+	info += "<b>Supermatter ID:</b> [pick(GLOB.golem_names)] [pick(GLOB.greek_letters)] <br>"
 
-		info += "<b>Thermal Release:</b> "
-		if(SM.current_thermal_release_modifier < 8000)
-			info += "Low<br>"
-		else if(SM.current_thermal_release_modifier < 12000)
-			info += "Medium<br>"
-		else if(SM.current_thermal_release_modifier < 16000)
-			info += "High<br>"
-		else
-			info += "Extreme<br>"
+	info += "<b>Thermal Release:</b> "
+	if(SM.current_thermal_release_modifier < 8000)
+		info += "Low<br>"
+	else if(SM.current_thermal_release_modifier < 12000)
+		info += "Medium<br>"
+	else if(SM.current_thermal_release_modifier < 16000)
+		info += "High<br>"
+	else
+		info += "Extreme<br>"
 
-		info += "<b>Radiation Release:</b> "
-		if(SM.current_radiation_release_modifier < 1.2)
-			info += "Low<br>"
-		else if(SM.current_radiation_release_modifier < 1.7)
-			info += "Medium<br>"
-		else if(SM.current_radiation_release_modifier < 2.1)
-			info += "High<br>"
-		else
-			info += "Extreme<br>"
+	info += "<b>Radiation Release:</b> "
+	if(SM.current_radiation_release_modifier < 1.2)
+		info += "Low<br>"
+	else if(SM.current_radiation_release_modifier < 1.7)
+		info += "Medium<br>"
+	else if(SM.current_radiation_release_modifier < 2.1)
+		info += "High<br>"
+	else
+		info += "Extreme<br>"
 
-		info += "<b>Resistance to destabilization:</b> "
-		if(SM.current_power_factor < 0.9)
-			info += "Low<br>"
-		else if(SM.current_power_factor < 1.0)
-			info += "Medium<br>"
-		else if(SM.current_power_factor < 1.1)
-			info += "High<br>"
-		else
-			info += "Extreme<br>"
+	info += "<b>Resistance to destabilization:</b> "
+	if(SM.current_power_factor < 0.9)
+		info += "Low<br>"
+	else if(SM.current_power_factor < 1.0)
+		info += "Medium<br>"
+	else if(SM.current_power_factor < 1.1)
+		info += "High<br>"
+	else
+		info += "Extreme<br>"
 
-		info += "<b>Decay Factor:</b> "
-		if(SM.current_decay_factor < 650)
-			info += "Extreme<br>"
-		else if(SM.current_decay_factor < 700)
-			info += "High<br>"
-		else if(SM.current_decay_factor < 750)
-			info += "Medium<br>"
-		else
-			info += "Low<br>"
+	info += "<b>Decay Factor:</b> "
+	if(SM.current_decay_factor < 650)
+		info += "Extreme<br>"
+	else if(SM.current_decay_factor < 700)
+		info += "High<br>"
+	else if(SM.current_decay_factor < 750)
+		info += "Medium<br>"
+	else
+		info += "Low<br>"
 
-		info += "<b>Critical Temperature:</b> "
-		if(SM.current_critical_temperature < 4000)
-			info += "Low<br>"
-		else if(SM.current_critical_temperature < 5500)
-			info += "Medium<br>"
-		else if(SM.current_critical_temperature < 7000)
-			info += "High<br>"
-		else
-			info += "Extreme High<br>"
+	info += "<b>Critical Temperature:</b> "
+	if(SM.current_critical_temperature < 4000)
+		info += "Low<br>"
+	else if(SM.current_critical_temperature < 5500)
+		info += "Medium<br>"
+	else if(SM.current_critical_temperature < 7000)
+		info += "High<br>"
+	else
+		info += "Extreme High<br>"
 
-		info += "<b>Charging Efficiency:</b> "
-		if(SM.current_charging_factor < 0.03)
-			info += "Low<br>"
-		else if(SM.current_charging_factor < 0.05)
-			info += "Medium<br>"
-		else if(SM.current_charging_factor < 0.07)
-			info += "High<br>"
-		else
-			info += "Extreme<br>"
-		info += "<br><br>"
-	info += "<b>Note: Unstable supermatter is highly volatile and has a chance of collapsing into a singularity instead of exploding. This is a rare event, but it can happen if the supermatter is not handled properly.</b>"
+	info += "<b>Charging Efficiency:</b> "
+	if(SM.current_charging_factor < 0.03)
+		info += "Low<br>"
+	else if(SM.current_charging_factor < 0.05)
+		info += "Medium<br>"
+	else if(SM.current_charging_factor < 0.07)
+		info += "High<br>"
+	else
+		info += "Extreme<br>"
+	info += "<br><br><b>Note: Unstable supermatter is highly volatile and has a chance of collapsing into a singularity instead of exploding. This is a rare event, but it can happen if the supermatter is not handled properly.</b>"
+	icon_state = "paper_words"
 
 #undef NITROGEN_RETARDATION_FACTOR
 #undef THERMAL_RELEASE_MODIFIER
