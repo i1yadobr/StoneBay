@@ -607,14 +607,15 @@
 /obj/item/clothing/under/savage_hunter
 	name = "savage hunter's hides"
 	desc = "Makeshift hides bound together with the sinew, packwax, and leather of some alien creature."
-	icon_state = "hunterhide"
-	item_state = "hunterhide"
+	icon_state = "hunter"
+	item_state = "hunter"
 	body_parts_covered = LOWER_TORSO|LEGS|ARMS
 	coverage = 0.3
 
 /obj/item/clothing/under/savage_hunter/female
 	name = "savage huntress's hides"
 	desc = "Makeshift hides bound together with the sinew, packwax, and leather of some alien creature. Includes a chestwrap so as not to leave one topless."
+	icon_state = "huntress"
 	item_state = "huntress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 

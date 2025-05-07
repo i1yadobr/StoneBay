@@ -9,7 +9,7 @@
 	if(isnull(screen) || screen.type != type)
 		clear_fullscreen(category, FALSE)
 		screens[category] = screen = new type()
-	else if((screen?.severity == severity) || (screen?.screen_loc != ui_fullscreen) || (client?.view == screen?.view))
+	else if((screen?.severity == severity) && (!client || (screen?.screen_loc != ui_fullscreen) || (client?.view == screen?.view)))
 		return
 
 	screen.icon_state = "[initial(screen.icon_state)][severity]"
@@ -92,8 +92,9 @@
 
 	var/list/temp = get_view_size(view)
 
-	src.view = view
-	transform = matrix(temp[1] / DEFAULT_FULLSCREEN_WIDTH, temp[2] / DEFAULT_FULLSCREEN_HEIGHT, MATRIX_SCALE)
+	if(src.view != view)
+		src.view = view
+		transform = matrix(temp[1] / DEFAULT_FULLSCREEN_WIDTH, temp[2] / DEFAULT_FULLSCREEN_HEIGHT, MATRIX_SCALE)
 
 /atom/movable/screen/fullscreen/brute
 	icon_state = "brutedamageoverlay"
@@ -106,6 +107,10 @@
 /atom/movable/screen/fullscreen/crit
 	icon_state = "passage"
 	layer = CRIT_LAYER
+
+/atom/movable/screen/fullscreen/frost
+	icon_state = "frost"
+	layer = TEMPERATURE_LAYER
 
 /atom/movable/screen/fullscreen/blind
 	icon_state = "blackimageoverlay"
