@@ -2178,7 +2178,7 @@
 "aUg" = (/obj/machinery/merchant_pad,/obj/effect/floor_decal/industrial/hatch/red,/turf/simulated/floor/tiled/dark,/area/merchant_station)
 "aUh" = (/obj/structure/table/woodentable,/obj/item/device/megaphone,/turf/unsimulated/floor{icon_state = "wood"; dir = 8},/area/wizard_station)
 "aUi" = (/obj/structure/table/woodentable,/obj/item/storage/box/donut,/turf/unsimulated/floor{icon_state = "wood"; dir = 8},/area/wizard_station)
-"aUj" = (/obj/structure/table/reinforced,/obj/item/device/eftpos,/obj/effect/floor_decal/corner/brown{dir = 9},/turf/simulated/floor/tiled/dark,/area/shuttle/merchant/home)
+"aUj" = (/obj/structure/table/reinforced,/obj/item/device/payment_terminal,/obj/effect/floor_decal/corner/brown{dir = 9},/turf/simulated/floor/tiled/dark,/area/shuttle/merchant/home)
 "aUk" = (/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/obj/machinery/atmospherics/pipe/simple/hidden/supply,/obj/effect/decal/cleanable/dirt,/turf/simulated/floor/tiled,/area/merchant_station)
 "aUl" = (/obj/effect/floor_decal/industrial/loading{dir = 8},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/simulated/floor/tiled,/area/merchant_station)
 "aUm" = (/obj/effect/floor_decal/industrial/hatch/yellow,/obj/effect/decal/cleanable/dirt,/turf/simulated/floor/tiled,/area/merchant_station)
