@@ -592,7 +592,6 @@
 
 /obj/machinery/power/supermatter/random/Initialize()
 	. = ..()
-	uid = gl_uid++
 	current_thermal_release_modifier = rand(THERMAL_RELEASE_MODIFIER - DELTA_THERMAL_RELEASE_MODIFIER, THERMAL_RELEASE_MODIFIER + DELTA_THERMAL_RELEASE_MODIFIER)
 	current_radiation_release_modifier = rand(10*(RADIATION_RELEASE_MODIFIER - DELTA_RADIATION_RELEASE_MODIFIER), 10*(RADIATION_RELEASE_MODIFIER + DELTA_RADIATION_RELEASE_MODIFIER)) / 10
 	current_power_factor = rand(10*(POWER_FACTOR - DELTA_POWER_FACTOR), 10*(POWER_FACTOR + DELTA_POWER_FACTOR)) / 10
