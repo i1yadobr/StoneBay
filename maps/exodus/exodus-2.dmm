@@ -7668,7 +7668,7 @@
 "cRL" = (/turf/simulated/wall/r_wall,/area/engineering/drone_fabrication)
 "cRM" = (/obj/effect/floor_decal/corner/yellow,/obj/structure/cable/green{icon_state = "4-8"; d2 = 8; d1 = 4},/turf/simulated/floor/tiled/rough,/area/engineering)
 "cRN" = (/turf/simulated/wall/r_wall,/area/engineering/engine_room)
-"cRO" = (/obj/machinery/door/airlock/maintenance_hatch{name = s; frequency = 1379; req_access = list(11); id_tag = "engine_airlock_interior"},/turf/simulated/floor/plating/rough,/area/engineering/engine_room)
+"cRO" = (/obj/machinery/door/airlock/maintenance_hatch{name = "Engine Airlock Interior"; frequency = 1379; req_access = list(11); id_tag = "engine_airlock_interior"},/turf/simulated/floor/plating/rough,/area/engineering/engine_room)
 "cRP" = (/obj/effect/floor_decal/industrial/warning/corner{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/simulated/floor/plating,/area/maintenance/locker)
 "cRQ" = (/obj/machinery/atmospherics/pipe/tank/air{dir = 4},/obj/effect/floor_decal/industrial/warning,/obj/effect/decal/cleanable/dirt,/turf/simulated/floor/plating,/area/maintenance/locker)
 "cRR" = (/obj/effect/floor_decal/industrial/warning{dir = 5},/obj/structure/table/steel,/obj/item/clothing/gloves/insulated,/turf/simulated/floor/tiled/rough,/area/engineering/engine_smes)
