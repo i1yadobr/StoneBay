@@ -8,7 +8,7 @@
 	density = 1
 	anchored = FALSE
 	name = "\improper AI core"
-	icon = 'icons/mob/ai.dmi'
+	icon = 'icons/mob/silicon/ai.dmi'
 	icon_state = "0"
 	var/state = AI_STAGE_FRAME
 	var/datum/ai_laws/laws = new /datum/ai_laws/nanotrasen
@@ -210,7 +210,7 @@
 
 /obj/structure/AIcore/deactivated
 	name = "inactive AI"
-	icon = 'icons/mob/ai.dmi'
+	icon = 'icons/mob/silicon/ai.dmi'
 	icon_state = "ai-empty"
 	anchored = TRUE
 	state = 20//So it doesn't interact based on the above. Not really necessary.
