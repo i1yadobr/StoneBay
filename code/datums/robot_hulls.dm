@@ -1,12 +1,38 @@
-/datum/robot_hull
-	var/icon = 'icons/mob/robots.dmi'
-	var/icon_state = "robot"
-	var/footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
+/// Utility proc that allows to easily override hull vars during instantiation.
+/proc/create_hull_with_overrides(list/overrides)
+	var/datum/robot_hull/new_hull = new
 
-/datum/robot_hull/New(icon, icon_state, footstep_sound)
-	src.icon = icon ? icon : initial(src.icon)
-	src.icon_state = icon_state ? icon_state : initial(src.icon_state)
-	src.footstep_sound = footstep_sound ? footstep_sound : initial(src.footstep_sound)
+	for (var/list/override as anything in overrides)
+		if (override in new_hull.vars)
+			new_hull.vars[override] = overrides[override]
+		else
+			util_crash_with("Attempted to override inexistent `[override]` var during hull creation!")
+
+	return new_hull
+
+/datum/robot_hull
+	// Bitfield, used in multiple places to enable/disable certain hull features
+	var/hull_flags = ROBOT_HULL_FLAG_HAS_EYES | ROBOT_HULL_FLAG_HAS_PANEL | ROBOT_HULL_FLAG_HAS_FOOTSTEPS
+	// Path to a file where `icon_state` is located
+	var/icon = 'icons/mob/silicon/robot.dmi'
+	// String later to be used as `icon_state` on robot
+	var/icon_state = "robot"
+	/// Sound later to be played on every robot movement
+	var/footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
+	/// Prefix used during panel's `icon_state` generation, can't be used from the get-go due to some robots having unique panels
+	VAR_PROTECTED/panel_icon_state_prefix = ROBOT_HULL_PANEL_DEFAULT
+
+/datum/robot_hull/proc/is_panel_custom()
+	return panel_icon_state_prefix == ROBOT_HULL_PANEL_CUSTOM
+
+/datum/robot_hull/proc/get_panel_icon()
+	return is_panel_custom() ? icon : ROBOT_HULL_PANEL_ICON
+
+/datum/robot_hull/proc/get_panel_icon_state(wires = FALSE, cell = FALSE)
+	var/icon_state_prefix = is_panel_custom() ? icon_state : panel_icon_state_prefix
+	var/icon_state_postfix = wires ? "+w" : cell ? "+c" : "-c"
+
+	return "[icon_state_prefix]-openpanel [icon_state_postfix]"
 
 /datum/robot_hull/spider
 	footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
@@ -106,7 +132,7 @@
 
 /datum/robot_hull/truck
 	// TODO: Add truck sound
-	footstep_sound = null
+	hull_flags = parent_type::hull_flags && (~ROBOT_HULL_FLAG_HAS_FOOTSTEPS)
 
 /datum/robot_hull/truck/mopgearrex
 	icon_state = "mopgearrex"
@@ -121,7 +147,7 @@
 	icon_state = "engiborg+tread"
 
 /datum/robot_hull/flying
-	footstep_sound = null
+	hull_flags = parent_type::hull_flags && (~ROBOT_HULL_FLAG_HAS_FOOTSTEPS)
 
 /datum/robot_hull/flying/drone_standard
 	icon_state = "drone-standard"
@@ -181,6 +207,7 @@
 	icon_state = "eyebot-engineering"
 
 /datum/robot_hull/drone
+	hull_flags = parent_type::hull_flags && (~ROBOT_HULL_FLAG_HAS_PANEL)
 	icon_state = "repairbot"
 	footstep_sound = SFX_FOOTSTEP_ROBOT_SPIDER
 
