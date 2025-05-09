@@ -128,6 +128,7 @@
 		/obj/item/clothing/head/hardhat/white,
 		/obj/item/clothing/gloves/insulated,
 		/obj/item/clothing/suit/storage/hazardvest,
+		/obj/item/clothing/suit/poncho/roles/engineering,
 		/obj/item/clothing/under/rank/chief_engineer,
 		/obj/item/clothing/under/rank/chief_engineer/dress,
 		/obj/item/clothing/shoes/brown
@@ -141,6 +142,7 @@
 		/obj/item/clothing/glasses/hud/standard/meson,
 		/obj/item/clothing/head/soft,
 		/obj/item/clothing/gloves/thick,
+		/obj/item/clothing/suit/poncho/roles/cargo,
 		/obj/item/clothing/under/rank/qm,
 		/obj/item/clothing/under/rank/qm/dress,
 		/obj/item/clothing/shoes/brown
@@ -158,6 +160,7 @@
 		/obj/item/clothing/under/rank/chief_medical_officer/dress,
 		/obj/item/clothing/suit/storage/toggle/labcoat/cmo,
 		/obj/item/clothing/suit/storage/toggle/labcoat/cmoalt,
+		/obj/item/clothing/suit/poncho/roles/medical,
 		/obj/item/clothing/accessory/storage/white_vest,
 		/obj/item/clothing/gloves/latex,
 		/obj/item/clothing/shoes/brown,
@@ -176,5 +179,6 @@
 		/obj/item/clothing/under/rank/research_director/rdalt,
 		/obj/item/clothing/under/rank/research_director/dress,
 		/obj/item/clothing/suit/storage/toggle/labcoat/rd,
+		/obj/item/clothing/suit/poncho/roles/science,
 		/obj/item/clothing/shoes/leather
 	)
