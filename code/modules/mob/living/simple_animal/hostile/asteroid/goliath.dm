@@ -145,7 +145,8 @@
 			var/list/current_armor = C.armor
 			if(current_armor["melee"] < 80)
 				current_armor["melee"] = min(current_armor["melee"] + 10, 80)
-				C.breach_threshold = min(C.breach_threshold + 2, 24)
+				if(istype(C))
+					C.breach_threshold = min(C.breach_threshold + 2, 24)
 				to_chat(user, "<span class='info'>You strengthen [target], improving its resistance against melee attacks.</span>")
 				qdel(src)
 			else
