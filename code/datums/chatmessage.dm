@@ -100,6 +100,11 @@
   * * italics - Just copy and paste, sir
   */
 /datum/chatmessage/proc/generate_image(text, atom/target, mob/owner, lifespan, italics = FALSE, size)
+	// Even though we've checked this in the constructor, async calls are really into pulling off the most random shit.
+	if(QDELETED(owner) || !owner.client)
+		qdel(src)
+		return
+
 	// Register client who owns this message
 	owned_by = owner.client
 
