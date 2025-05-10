@@ -560,13 +560,13 @@
 			metabolize_digested_reagents()
 
 	for(var/T in chem_doses)
-		if(bloodstr.has_reagent(T) || ingested.has_reagent(T) || touching.has_reagent(T))
+		if(bloodstr.has_reagent(T) || touching.has_reagent(T) || ingested?.has_reagent(T) || digested?.has_reagent(T))
 			continue
 		chem_doses.Remove(T)
 
 	// Trace chemicals
 	for(var/T in chem_traces)
-		if(bloodstr.has_reagent(T) || ingested.has_reagent(T) || touching.has_reagent(T))
+		if(bloodstr.has_reagent(T) || touching.has_reagent(T) || ingested?.has_reagent(T) || digested?.has_reagent(T))
 			continue
 		var/datum/reagent/R = T
 		chem_traces[T] -= initial(R.metabolism) * initial(R.excretion)
