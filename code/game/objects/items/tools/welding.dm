@@ -65,7 +65,7 @@
 
 	if(get_dist(src, user) <= 0)
 		if(tank)
-			. += "\icon[tank] \The [tank] contains [get_fuel()]/[tank.max_fuel] units of fuel!"
+			. += "\icon[tank] \The [tank] contains [get_fuel()]/[tank.max_fuel] ml of fuel!"
 		else
 			. += "There is no tank attached."
 
@@ -189,7 +189,7 @@
 		to_chat(user, SPAN("notice", "\The [src] is full."))
 		return
 	O.reagents.trans_to_obj(tank, amount)
-	to_chat(user, SPAN("notice", "You refill \the [src] with [amount] units of fuel from \the [O]."))
+	to_chat(user, SPAN("notice", "You refill \the [src] with [amount] ml of fuel from \the [O]."))
 	playsound(src.loc, 'sound/effects/refill.ogg', 50, 1, -6)
 	return
 

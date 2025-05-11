@@ -55,7 +55,7 @@
 	. = ..()
 
 	if((get_dist(src, user) <= 0) && !external_source)
-		. += "[text("\icon[] [] contains [] units of reagents left!", src, src.name, src.reagents.total_volume)]"
+		. += "[text("\icon[] [] contains [] ml of reagents left!", src, src.name, src.reagents.total_volume)]"
 
 /obj/item/extinguisher/attack_self(mob/user)
 	if(external_source)
@@ -125,7 +125,7 @@
 			return
 		O.reagents.remove_any(amount)
 		reagents.add_reagent(ff_reagent, amount)
-		to_chat(user, SPAN("notice", "You fill [src] with [amount] units of the contents of [O]."))
+		to_chat(user, SPAN("notice", "You fill [src] with [amount] ml of the contents of [O]."))
 		playsound(src.loc, 'sound/effects/refill.ogg', 50, 1, -6)
 		return
 

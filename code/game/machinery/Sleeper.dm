@@ -439,7 +439,7 @@
 		if(occupant.reagents.get_reagent_amount(chemical_type) + amount <= 20)
 			use_power_oneoff(amount * CHEM_SYNTH_ENERGY)
 			occupant.reagents.add_reagent(chemical_type, amount)
-			to_chat(user, "Occupant now has [occupant.reagents.get_reagent_amount(chemical_type)] unit\s of [chemical_name] in their bloodstream.")
+			to_chat(user, "Occupant now has [occupant.reagents.get_reagent_amount(chemical_type)] ml of [chemical_name] in their bloodstream.")
 		else
 			to_chat(user, "The subject has too many chemicals.")
 	else

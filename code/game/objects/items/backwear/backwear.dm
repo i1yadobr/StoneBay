@@ -203,7 +203,7 @@
 	. += "<span class='notice'>It contains:</span>"
 	if(reagents.reagent_list.len) // OOP be cool
 		for(var/datum/reagent/R in reagents.reagent_list)
-			. += "<span class='notice'>[R.volume] units of [R.name]</span>"
+			. += "<span class='notice'>[R.volume] ml of [R.name]</span>"
 	else
 		. += "<span class='notice'>Nothing.</span>"
 
@@ -236,5 +236,5 @@
 
 	var/trans = target.reagents.trans_to_obj(src, target.amount_per_transfer_from_this)
 	playsound(target, 'sound/effects/using/sink/fast_filling1.ogg', 75, TRUE)
-	to_chat(user, SPAN("notice", "You fill [src] with [trans] units of the contents of [target]."))
+	to_chat(user, SPAN("notice", "You fill [src] with [trans] ml of the contents of [target]."))
 	return 1
