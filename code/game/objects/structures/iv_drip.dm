@@ -166,7 +166,7 @@
 
 	if(beaker)
 		if(beaker.reagents && beaker.reagents.total_volume)
-			. += "<span class='notice'>Attached is \a [beaker] with [beaker.reagents.total_volume] units of liquid.</span>"
+			. += "<span class='notice'>Attached is \a [beaker] with [beaker.reagents.total_volume] ml of liquid.</span>"
 		else
 			. += "<span class='notice'>Attached is an empty [beaker].</span>"
 	else

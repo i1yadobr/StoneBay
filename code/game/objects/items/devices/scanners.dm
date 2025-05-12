@@ -575,14 +575,14 @@ REAGENT SCANNER
 		for(var/T in blood_traces)
 			var/datum/reagent/R = text2path(T)
 			if(details)
-				dat += "[initial(R.name)] ([blood_traces[T]] units) "
+				dat += "[initial(R.name)] ([blood_traces[T]] ml) "
 			else
 				dat += "[initial(R.name)] "
 		if(details)
 			dat += "\nMetabolism Products of Chemicals Found:"
 			for(var/T in blood_doses)
 				var/datum/reagent/R = text2path(T)
-				dat += "[initial(R.name)] ([blood_doses[T]] units) "
+				dat += "[initial(R.name)] ([blood_doses[T]] ml) "
 		to_chat(user, "[dat]")
 		reagents.clear_reagents()
 	return
@@ -631,7 +631,7 @@ REAGENT SCANNER
 		var/list/reagents_block
 
 		for(var/datum/reagent/reagent in target.reagents.reagent_list)
-			LAZYADD(reagents_block, SPAN_NOTICE("[round(reagent.volume, 0.001)] units of [reagent.name]\n"))
+			LAZYADD(reagents_block, SPAN_NOTICE("[round(reagent.volume, 0.001)] ml of [reagent.name]\n"))
 
 		if(!length(reagents_block))
 			LAZYADD(reagents_out, SPAN_NOTICE("No active chemical agents found in \the [target]."))

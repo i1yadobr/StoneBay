@@ -52,7 +52,7 @@
 
 	if(gauge)
 		if(fuel_tank)
-			. += "The fuel tank contains [round(get_fuel())]/[fuel_tank.max_fuel] units of fuel."
+			. += "The fuel tank contains [round(get_fuel())]/[fuel_tank.max_fuel] ml of fuel."
 		else
 			. += SPAN_WARNING("There's no fuel tank in [src]!")
 

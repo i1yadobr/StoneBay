@@ -76,7 +76,7 @@
 
 
 /datum/design/item/beaker/plass
-	desc = "A beaker made of plasma-based silicate, it doesn't allow radiation to pass through. Can hold up to 60 units."
+	desc = "A beaker made of plasma-based silicate, it doesn't allow radiation to pass through. Can hold up to 0.3 L."
 	id = "plassbeaker"
 	req_tech = list(TECH_MATERIAL = 2)
 	materials = list(MATERIAL_GLASS = 2500, MATERIAL_PLASMA = 1500)
@@ -84,7 +84,7 @@
 	sort_string = "MCAAA"
 
 /datum/design/item/beaker/noreact
-	desc = "A cryostasis beaker that allows for chemical storage without reactions. Can hold up to 60 units."
+	desc = "A cryostasis beaker that allows for chemical storage without reactions. Can hold up to 0.3 L."
 	id = "splitbeaker"
 	req_tech = list(TECH_MATERIAL = 2)
 	materials = list(MATERIAL_STEEL = 3000)
@@ -92,7 +92,7 @@
 	sort_string = "MCAAB"
 
 /datum/design/item/spray/noreact
-	desc = "A cryostasis spray that allows for chemical storage without reactions. Can hold up to 250 units."
+	desc = "A cryostasis spray that allows for chemical storage without reactions. Can hold up to 0.5 L."
 	id = "spraynoreact"
 	req_tech = list(TECH_BLUESPACE = 4, TECH_MATERIAL = 6)
 	materials = list(MATERIAL_STEEL = 3000, MATERIAL_PLASMA = 3000)
@@ -100,7 +100,7 @@
 	sort_string = "MCABA"
 
 /datum/design/item/beaker/bluespace
-	desc = "A bluespace beaker, powered by experimental bluespace technology and Element Cuban combined with the Compound Pete. Can hold up to 300 units."
+	desc = "A bluespace beaker, powered by experimental bluespace technology and Element Cuban combined with the Compound Pete. Can hold up to 1,5 L."
 	id = "bluespacebeaker"
 	req_tech = list(TECH_BLUESPACE = 2, TECH_MATERIAL = 6)
 	materials = list(MATERIAL_STEEL = 3000, MATERIAL_PLASMA = 3000, MATERIAL_DIAMOND = 500)

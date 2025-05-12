@@ -27,7 +27,7 @@
 			return
 		O.reagents.remove_any(amount)
 		reagents.add_reagent(/datum/reagent/water/firefoam, amount)
-		to_chat(user, SPAN("notice", "You crack the cap off the top of your [src] and fill it with [amount] units of the contents of \the [O]."))
+		to_chat(user, SPAN("notice", "You crack the cap off the top of your [src] and fill it with [amount] ml of the contents of \the [O]."))
 		playsound(src.loc, 'sound/effects/refill.ogg', 50, 1, -6)
 		return
 
