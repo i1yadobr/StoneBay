@@ -118,7 +118,7 @@
 			vampire.frenzy--
 
 		if(blood_total != vampire.blood_total)
-			var/update_msg = SPAN("notice", "You have accumulated [vampire.blood_total] [vampire.blood_total > 1 ? "units" : "unit"] of blood")
+			var/update_msg = SPAN("notice", "You have accumulated [vampire.blood_total] ml of blood")
 			if(blood_usable != vampire.blood_usable)
 				update_msg += SPAN("notice", " and have [vampire.blood_usable] left to use.")
 			else

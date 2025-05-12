@@ -22,7 +22,7 @@
 	. = ..()
 
 	if(get_dist(src, user) <= 1)
-		. += "[src] \icon[src] contains [reagents.total_volume] unit\s of water!"
+		. += "[src] \icon[src] contains [reagents.total_volume] ml of water!"
 
 /obj/structure/mopbucket/attackby(obj/item/I, mob/user)
 	if(istype(I, /obj/item/mop))

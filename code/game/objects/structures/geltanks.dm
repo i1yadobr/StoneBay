@@ -17,7 +17,7 @@
 	. = ..()
 
 	if(capacity >= 0)
-		. += "It contains [capacity]/[capacity_max] units of gel."
+		. += "It contains [capacity]/[capacity_max] ml of gel."
 	else
 		. += "It's empty."
 

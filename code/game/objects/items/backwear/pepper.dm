@@ -26,7 +26,7 @@
 			to_chat(user, SPAN("notice", "\The [src] is already full."))
 			return
 		O.reagents.trans_to_obj(src, amount)
-		to_chat(user, SPAN("notice", "You crack the cap off the top of your [src] and fill it with [amount] units of the contents of \the [O]."))
+		to_chat(user, SPAN("notice", "You crack the cap off the top of your [src] and fill it with [amount] ml of the contents of \the [O]."))
 		playsound(src.loc, 'sound/effects/refill.ogg', 50, 1, -6)
 		return
 

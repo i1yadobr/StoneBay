@@ -763,8 +763,8 @@
 		target.update_body(TRUE)
 
 	announce_success(user,
-		"[user] applies [trans] unit\s of the solution to affected tissue in [target]'s [parent_organ]",
-		"You apply [trans] unit\s of the solution to affected tissue in [target]'s [parent_organ] with \the [tool]."
+		"[user] applies [trans] ml of the solution to affected tissue in [target]'s [parent_organ]",
+		"You apply [trans] ml of the solution to affected tissue in [target]'s [parent_organ] with \the [tool]."
 		)
 
 
