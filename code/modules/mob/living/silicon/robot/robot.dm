@@ -3,7 +3,7 @@
 /mob/living/silicon/robot
 	name = "Cyborg"
 	real_name = "Cyborg"
-	icon = 'icons/mob/robots.dmi'
+	icon = 'icons/mob/silicon/robot.dmi'
 	icon_state = "robot"
 	maxHealth = 200
 	health = 200
@@ -24,12 +24,9 @@
 	var/integrated_light_max_bright = 0.75
 	var/datum/wires/robot/wires
 
-	/// Whether this type of robot supports custom icons
-	var/custom_sprite = TRUE
 	/// Default hull typepath
 	var/default_hull = /datum/robot_hull/spider/robot
 
-	var/static/list/eye_overlays
 	/// Key used to look up an appropriate hull datum in the `module_hulls`
 	var/icontype
 	/// Whether this mob've chosen a custom icon
@@ -281,30 +278,18 @@
 	icontype = new_icontype
 	icon = new_hull.icon
 	icon_state = new_hull.icon_state
-	footstep_sound = new_hull.footstep_sound
+	footstep_sound = (new_hull.hull_flags & ROBOT_HULL_FLAG_HAS_FOOTSTEPS) ? new_hull.footstep_sound : null
 
 	update_icon()
 
 	return TRUE
 
-/mob/living/silicon/robot/proc/set_module_hulls(list/new_sprites)
-	if(length(new_sprites))
-		module_hulls = new_sprites.Copy()
-		if(custom_sprite)
-			custom_sprite = (ckey in GLOB.robot_custom_icons)
-		// Custom_sprite check and entry
-		if(custom_sprite && CUSTOM_ITEM_ROBOTS)
-			var/list/customs = GLOB.robot_custom_icons[ckey]
-			var/list/valid_states = icon_states(CUSTOM_ITEM_ROBOTS)
-			for(var/list/custom_data in customs)
-				var/sprite_state = custom_data["item_state"]
-				var/footstep = custom_data["footstep"]
-				if(sprite_state && (sprite_state in valid_states))
-					if(module_hulls[sprite_state])
-						qdel(module_hulls[sprite_state])
-						module_hulls[sprite_state] = null
-					module_hulls[sprite_state] = new /datum/robot_hull(CUSTOM_ITEM_ROBOTS, sprite_state, footstep)
-	return module_hulls
+/mob/living/silicon/robot/proc/set_module_hulls(list/new_hulls)
+	if (!LAZYLEN(new_hulls))
+		return
+
+	module_hulls = new_hulls.Copy()
+	module_hulls += get_custom_hulls(ckey)
 
 /mob/living/silicon/robot/proc/choose_module()
 	if(module)
@@ -823,36 +808,22 @@
 	return 0
 
 /mob/living/silicon/robot/on_update_icon()
+	var/datum/robot_hull/using_hull = module_hulls[icontype]
+
 	ClearOverlays()
-	if(stat == CONSCIOUS)
-		var/eye_icon_state = "eyes-[module_hulls[icontype].icon_state]"
-		if(eye_icon_state in icon_states(icon))
-			if(!eye_overlays)
-				eye_overlays = list()
-			var/image/eye_overlay = eye_overlays[eye_icon_state]
-			if(!eye_overlay)
-				eye_overlays[eye_icon_state] = image(icon, eye_icon_state)
-				eye_overlays["[eye_icon_state]+ea"] = emissive_appearance(icon, eye_icon_state, cache = FALSE)
-			AddOverlays(eye_overlay)
-			AddOverlays("[eye_icon_state]+ea")
 
-	if(opened)
-		var/panelprefix = custom_sprite ? module_hulls[icontype] : "ov"
-		if(wiresexposed)
-			AddOverlays("[panelprefix]-openpanel +w")
-		else if(cell)
-			AddOverlays("[panelprefix]-openpanel +c")
-		else
-			AddOverlays("[panelprefix]-openpanel -c")
+	if (!is_ic_dead() && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES))
+		var/eyes_icon_state = "eyes-[using_hull.icon_state]"
 
-	if(module_active && istype(module_active,/obj/item/borg/combat/shield))
-		AddOverlays("[module_hulls[icontype].icon_state]-shield")
+		AddOverlays(eyes_icon_state)
+		AddOverlays(emissive_appearance(icon, eyes_icon_state))
 
-	if(modtype == "Combat")
-		if(module_active && istype(module_active,/obj/item/borg/combat/mobility))
-			icon_state = "[module_hulls[icontype].icon_state]-roll"
-		else
-			icon_state = module_hulls[icontype].icon_state
+	if (opened && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_PANEL))
+		var/panel_icon = using_hull.get_panel_icon()
+		var/panel_icon_state = using_hull.get_panel_icon_state(wires = wiresexposed, cell = !!cell)
+
+		AddOverlays(icon(panel_icon, panel_icon_state))
+		AddOverlays(emissive_blocker(panel_icon, panel_icon_state))
 
 /mob/living/silicon/robot/proc/installed_modules()
 	if(weapon_lock)
@@ -1100,7 +1071,6 @@
 		return FALSE
 
 	icon_chosen = FALSE
-	set_custom_sprite()
 
 	set_module_hulls(module_hulls)
 
@@ -1326,3 +1296,9 @@
 	var/S = safepick(GLOB.sfx_list[footstep_sound])
 
 	playsound(get_turf(src), S, volume, FALSE, range)
+
+/mob/living/silicon/robot/set_stat(new_stat)
+	. = ..()
+
+	if (stat != new_stat)
+		queue_icon_update()
