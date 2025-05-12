@@ -117,23 +117,53 @@
 
 /obj/structure/reagent_dispensers/fueltank/Initialize()
 	. = ..()
-	LAZYADDASSOC(GLOB.fueltanks, src, z)
+
+	var/turf/fueltank_turf = get_turf(loc)
+	var/fueltank_z_level = "[fueltank_turf.z]"
+
+	if (!fueltank_turf)
+		return
+
+	if (!GLOB.fueltanks)
+		GLOB.fueltanks = list()
+
+	if (!(fueltank_z_level in GLOB.fueltanks))
+		GLOB.fueltanks += list(fueltank_z_level = list())
+
+	LAZYADDASSOC(GLOB.fueltanks, fueltank_z_level, src)
 
 /obj/structure/reagent_dispensers/fueltank/Move(newloc, direct)
 	var/turf/old_turf = get_turf(loc)
 	var/turf/new_turf = get_turf(newloc)
+	var/old_z_level = "[old_turf?.z]"
+	var/new_z_level = "[new_turf?.z]"
+
 	. = ..()
 
 	if (. && modded)
 		leak_fuel(amount_per_transfer_from_this/10.0)
 
-	if (old_turf?.z != new_turf?.z)
-		LAZYREMOVEASSOC(GLOB.fueltanks, src, old_turf?.z)
-		LAZYADDASSOC(GLOB.fueltanks, src, new_turf?.z)
+	if (!GLOB.fueltanks)
+		GLOB.fueltanks = list()
+
+	if (isnum(new_z_level) && !(new_z_level in GLOB.fueltanks))
+		GLOB.fueltanks += list(new_z_level = list())
+
+	if (isnum(old_z_level) && isnum(new_z_level) && old_z_level != new_z_level)
+		LAZYREMOVEASSOC(GLOB.fueltanks, old_z_level, src)
+		LAZYADDASSOC(GLOB.fueltanks, new_z_level, src)
 
 /obj/structure/reagent_dispensers/fueltank/Destroy()
 	QDEL_NULL(rig)
-	LAZYREMOVEASSOC(GLOB.fueltanks, src, z)
+
+	var/turf/fueltank_turf = get_turf(loc)
+
+	if (fueltank_turf)
+		var/fueltank_z_level = fueltank_turf.z
+
+		if (isnum(fueltank_z_level) && GLOB.fueltanks && GLOB.fueltanks[fueltank_z_level])
+			LAZYREMOVEASSOC(GLOB.fueltanks, fueltank_z_level, src)
+
 	return ..()
 
 /obj/structure/reagent_dispensers/fueltank/examine(mob/user, infix)
