@@ -146,10 +146,10 @@
 	if (!GLOB.fueltanks)
 		GLOB.fueltanks = list()
 
-	if (isnum(new_z_level) && !(new_z_level in GLOB.fueltanks))
+	if (!new_z_level in GLOB.fueltanks)
 		GLOB.fueltanks += list(new_z_level = list())
 
-	if (isnum(old_z_level) && isnum(new_z_level) && old_z_level != new_z_level)
+	if (old_z_level != new_z_level)
 		LAZYREMOVEASSOC(GLOB.fueltanks, old_z_level, src)
 		LAZYADDASSOC(GLOB.fueltanks, new_z_level, src)
 
