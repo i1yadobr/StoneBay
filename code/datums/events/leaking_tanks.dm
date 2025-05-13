@@ -19,7 +19,6 @@
 	var/list/matching_tanks = list()
 
 	for (var/z_level in station_levels)
-
 		var/z_level_string = "[z_level]"
 		var/list/fueltanks_at_station  = (islist(GLOB.fueltanks[z_level_string]) ? GLOB.fueltanks[z_level_string] : list())
 
@@ -34,7 +33,6 @@
 	var/leaking_tanks_quantity = rand(2, 5)
 
 	for (var/i in 1 to leaking_tanks_quantity)
-
 		if (!matching_tanks.len)
 			break
 
