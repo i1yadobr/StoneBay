@@ -17,7 +17,6 @@
 /datum/event/leaking_tanks/on_fire()
 	var/list/station_levels = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION)
 	var/list/matching_tanks = list()
-	var/leaking_tanks_quantity = rand(2, 5)
 
 	for (var/z_level in station_levels)
 
@@ -31,6 +30,8 @@
 		return
 
 	announce()
+
+	var/leaking_tanks_quantity = rand(2, 5)
 
 	for (var/i in 1 to leaking_tanks_quantity)
 
