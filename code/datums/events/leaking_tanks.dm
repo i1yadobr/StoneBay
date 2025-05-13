@@ -39,11 +39,10 @@
 		var/obj/structure/reagent_dispensers/fueltank/fueltank_leaked = pick_n_take(matching_tanks)
 
 		if (fueltank_leaked)
-			var/fuel_units_leak = rand(100, 250)
-			fueltank_leaked.modded = TRUE
+			var/fuel_units_leak = rand(50, 250)
 			fueltank_leaked.leak_fuel(fuel_units_leak)
 
-			message_admins("Fuel tank was opened and leaked by event at ([fueltank_leaked.x],[fueltank_leaked.y],[fueltank_leaked.z]), leaking [fuel_units_leak] units.")
+			message_admins("Fuel tank was leaked by event at ([fueltank_leaked.x],[fueltank_leaked.y],[fueltank_leaked.z]), leaking [fuel_units_leak] units.")
 
 /datum/event/leaking_tanks/proc/announce()
 	SSannounce.play_station_announce(/datum/announce/leak_fueltanks)

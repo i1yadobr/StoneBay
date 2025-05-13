@@ -159,9 +159,9 @@
 	var/turf/fueltank_turf = get_turf(loc)
 
 	if (fueltank_turf)
-		var/fueltank_z_level = fueltank_turf.z
+		var/fueltank_z_level = "[fueltank_turf.z]"
 
-		if (isnum(fueltank_z_level) && GLOB.fueltanks && GLOB.fueltanks[fueltank_z_level])
+		if (fueltank_z_level && GLOB.fueltanks && GLOB.fueltanks[fueltank_z_level])
 			LAZYREMOVEASSOC(GLOB.fueltanks, fueltank_z_level, src)
 
 	return ..()
