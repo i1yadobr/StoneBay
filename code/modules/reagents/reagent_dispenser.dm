@@ -146,7 +146,7 @@
 	if (!GLOB.fueltanks)
 		GLOB.fueltanks = list()
 
-	if (!new_z_level in GLOB.fueltanks)
+	if (!(new_z_level in GLOB.fueltanks))
 		GLOB.fueltanks += list(new_z_level = list())
 
 	if (old_z_level != new_z_level)
