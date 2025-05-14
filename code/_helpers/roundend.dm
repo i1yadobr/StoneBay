@@ -177,6 +177,14 @@ GLOBAL_LIST_EMPTY(common_report)
 
 	return parts
 
+/datum/controller/subsystem/ticker/proc/teeth_report()
+	if(!GLOB.teeth_lost)
+		return
+
+	var/list/parts = list()
+	parts += "<b>Total teeth lost:</b> <span class='danger'><B>[GLOB.teeth_lost]</B></span>\n"
+	return "<div class='panel stationborder'>[parts.Join("<br>")]</div>"
+
 //Common part of the report
 /datum/controller/subsystem/ticker/proc/build_roundend_report()
 	var/list/parts = list()
@@ -185,6 +193,8 @@ GLOBAL_LIST_EMPTY(common_report)
 	parts += synths_report()
 
 	parts += money_report()
+
+	parts += teeth_report()
 
 	CHECK_TICK
 

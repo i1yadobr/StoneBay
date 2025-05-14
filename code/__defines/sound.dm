@@ -261,6 +261,7 @@
 #define SFX_DROP_SWORD              "drop_sword"
 #define SFX_DROP_TOOLBELT           "drop_toolbelt"
 #define SFX_DROP_TOOLBOX            "drop_toolbox"
+#define SFX_DROP_TOOTH              "drop_tooth"
 #define SFX_DROP_WELDINGTOOL        "drop_weldingtool"
 #define SFX_DROP_WIRECUTTER         "drop_wirecutter"
 #define SFX_DROP_WOODEN             "drop_wooden"
@@ -319,7 +320,7 @@
 #define SFX_FIGHTING_PUNCH          "fighting_punch"
 #define SFX_FIGHTING_SWING          "fighting_swing"
 #define SFX_STUNSTICK_HIT           "stunstick_hit"
-#define SFX_FALL_DAMAGE             "fall_damage"
+#define SFX_TRAUMA                  "trauma"
 
 // DEVICES
 #define SFX_GEIGER_LOW              "geiger_low"

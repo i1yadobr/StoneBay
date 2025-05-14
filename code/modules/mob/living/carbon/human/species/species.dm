@@ -217,6 +217,7 @@
 	var/list/equip_adjust = list()
 	var/list/equip_overlays = list()
 
+	var/teeth_type = /obj/item/stack/teeth/no_teeth		//The type of teeth they have.
 	var/sexybits_location	//organ tag where they are located if they can be kicked for increased pain
 
 	var/list/prone_overlay_offset = list(0, 0) // amount to shift overlays when lying

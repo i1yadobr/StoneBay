@@ -29,6 +29,7 @@
 	spawn_flags = SPECIES_CAN_JOIN
 	species_appearance_flags = HAS_HAIR_COLOR | HAS_SKIN_TONE_NORMAL | HAS_LIPS | HAS_UNDERWEAR | HAS_EYE_COLOR
 
+	teeth_type = /obj/item/stack/teeth/human //Teeth
 	sexybits_location = BP_GROIN
 
 /datum/species/human/handle_npc(mob/living/carbon/human/H)

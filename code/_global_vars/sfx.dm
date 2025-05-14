@@ -1167,6 +1167,11 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_DROP_TOOLBOX = list(
 		'sound/effects/drop/toolbox.ogg'
 	),
+	SFX_DROP_TOOTH = list(
+		'sound/effects/drop/tooth1.ogg',
+		'sound/effects/drop/tooth2.ogg',
+		'sound/effects/drop/tooth3.ogg'
+	),
 	SFX_DROP_WELDINGTOOL = list(
 		'sound/effects/drop/weldingtool.ogg'
 	),
@@ -1532,10 +1537,10 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/fighting/stunstick_hit1.ogg',
 		'sound/effects/fighting/stunstick_hit2.ogg',
 	),
-	SFX_FALL_DAMAGE = list(
-		'sound/effects/fall_damage1.ogg',
-		'sound/effects/fall_damage2.ogg',
-		'sound/effects/fall_damage3.ogg',
+	SFX_TRAUMA = list(
+		'sound/effects/trauma1.ogg',
+		'sound/effects/trauma2.ogg',
+		'sound/effects/trauma3.ogg'
 	),
 	// MISC
 	SFX_VENT = list(

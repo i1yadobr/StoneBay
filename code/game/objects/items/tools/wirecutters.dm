@@ -48,8 +48,43 @@
 			C.buckled.unbuckle_mob()
 		C.update_inv_handcuffed()
 		return
-	else
-		..()
+	else if(ishuman(C) && user.zone_sel.selecting == "mouth") //Tearing out teeth
+		var/mob/living/carbon/human/target = C
+
+		if(target.full_prosthetic)
+			return ..()
+
+		if(target.grabbed_by.len)
+			for(var/obj/item/grab/G in target.grabbed_by)
+				if(G.assailant == user && G.current_grab.state_name == "normal aggressive" && user.a_intent == I_GRAB)
+					var/obj/item/organ/external/head/target_head = locate(/obj/item/organ/external/head) in target.organs
+					if(!target_head || !target_head.get_teeth())
+						to_chat(user, SPAN_NOTICE("[target] doesn't have any teeth left!"))
+						return
+					user.next_move = world.time + 25 //also should prevent user from triggering this repeatedly
+					user.visible_message(SPAN_DANGER("[user] tries to tear off [target]'s tooth with [src]!"), SPAN_DANGER("You tries to tear off [target]'s tooth with [src]!"))		
+					playsound(target, SFX_FIGHTING_CRUNCH, 50, 1) //And out it goes.
+					if(do_after(user, 50, target))
+						if(!(G && G.assailant == user)) //check that we still have a grab
+							return
+						var/obj/item/stack/teeth/target_teeth = pick(target_head.teeth_list)
+						if(!target_teeth || target_teeth.zero_amount())
+							return
+						var/obj/item/stack/teeth/teared_teeth = new target_teeth.type(user.loc, 1)
+						target_teeth.use(1)
+						target_teeth.zero_amount() //Try to delete the teeth
+						teared_teeth.add_blood(target)
+						teared_teeth.update_icon()
+						target.visible_message(SPAN_DANGER("[user] tears off [target]'s tooth with [src]!"), SPAN_DANGER("[user] tears off your tooth with [src]!"))
+						target.apply_damage(rand(1, 3), BRUTE, target_head)
+						target.custom_pain("[pick("OH GOD YOUR MOUTH HURTS SO BAD!", "OH GOD WHY!", "OH GOD YOUR MOUTH!")]", 100, affecting = target_head)
+						playsound(target, SFX_TRAUMA, 50, 1) //And out it goes.
+						GLOB.teeth_lost++
+						return
+					else
+						to_chat(user, "<span class='notice'>Your attempt to pull out a tooth fails...</span>")
+						return
+	return ..()
 
 /obj/item/wirecutters/old
 	name = "old wirecutters"

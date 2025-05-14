@@ -432,6 +432,11 @@ meteor_act
 	if(prob(blocked + 25)) // successful armorblock greatly reduces the cutties, but doesn't prevent them completely
 		damage_flags &= ~(DAM_SHARP|DAM_EDGE)
 
+	//Knocking out teeth.
+	if(!src.full_prosthetic && istype(affecting, /obj/item/organ/external/head) && I.damtype == BRUTE && !I.edge && prob((effective_force * (hit_zone == BP_MOUTH ? 2 : 1))))
+		var/obj/item/organ/external/head/H = affecting
+		if(H.knock_out_teeth(get_dir(user, src), round(rand(1, 3) * ((effective_force)/10))))
+			src.visible_message(SPAN_DANGER("[src]'s teeth sail off in an arc!"), SPAN("userdanger", "Your teeth sail off in an arc!"))
 	//Oh you've run outta poise? I see... You're wrecked, my boy.
 	if(I.damtype == BRUTE || I.damtype == PAIN)
 		if(poise <= poise_pool*0.7 && !check_poise_immunity())

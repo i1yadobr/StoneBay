@@ -295,6 +295,11 @@
 			// Apply additional unarmed effects.
 			attack.apply_effects(H, src, armour, attack_damage, hit_zone, specmod)
 
+			var/teeth_knock_chance = armour >= 100 ? 0 : armour ? real_damage*blocked_mult(armour) : real_damage
+			if(!src.full_prosthetic && istype(affecting, /obj/item/organ/external/head) && prob(teeth_knock_chance * (hit_zone == BP_MOUTH ? 2 : 1))) //Higher chance to knock out teeth if you aim for mouth
+				var/obj/item/organ/external/head/U = affecting
+				if(U.knock_out_teeth(get_dir(H, src), round(rand(1, 2) * (teeth_knock_chance/10))))
+					src.visible_message(SPAN_DANGER("[src]'s teeth sail off in an arc!"), SPAN("userdanger", "Your teeth sail off in an arc!"))
 			// Finally, apply damage to target
 			apply_damage(real_damage, (attack.deal_halloss ? PAIN : BRUTE), hit_zone, armour, damage_flags = attack.damage_flags())
 

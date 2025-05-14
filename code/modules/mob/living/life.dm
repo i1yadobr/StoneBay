@@ -142,10 +142,30 @@
 	return burrieng
 
 /mob/living/proc/handle_lisping()
-	if(!lisping)
-		for(var/datum/modifier/trait/lisping/M in modifiers)
-			if(!isnull(M.lisping))
-				lisping = TRUE
+	for(var/datum/modifier/trait/lisping/M in modifiers)
+		if(!isnull(M.lisping))
+			lisping = TRUE
+			lisping_strength = 100
+			return lisping
+
+	if(ishuman(src))
+		var/mob/living/carbon/human/H = src
+		var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in H.organs
+		if(O)
+			if(O.get_teeth() == O.max_teeth) //All teeth at place = no lisp
+				lisping = FALSE
+				return lisping
+
+			if(!O.teeth_list.len || O.get_teeth() <= 0)
+				lisping_strength = 100 //No teeth = full lisp power
+			else
+				lisping_strength = (1 - (O.get_teeth()/O.max_teeth)) * 100 //Less teeth = more lisp
+
+			lisping = TRUE
+		else
+			lisping_strength = 0 //No head = no lisp.
+			lisping = FALSE	
+
 	return lisping
 
 /mob/living/proc/handle_paralysed()
