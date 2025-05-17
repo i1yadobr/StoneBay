@@ -24,9 +24,9 @@
 
 	var/mob/M
 	if(isturf(location))
-		M = new new_type( location )
+		M = new new_type(location, subspecies)
 	else
-		M = new new_type( src.loc )
+		M = new new_type(src.loc, subspecies)
 
 	if(!M || !ismob(M))
 		to_chat(usr, "Type path is not a mob (new_type = [new_type]) in change_mob_type(). Contact a coder.")
@@ -47,10 +47,6 @@
 		mind.transfer_to(M)
 	else
 		M.key = key
-
-	if(subspecies && istype(M,/mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
-		H.set_species(subspecies)
 
 	if(delete_old_mob)
 		QDEL_IN(src, 1)
