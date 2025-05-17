@@ -4,8 +4,8 @@
 	icon = 'icons/mob/metroids.dmi'
 	icon_state = "jellovessel"
 	organ_tag = BP_METROID
-	var/stored_jelly = 600
-	var/max_jelly= 600
+	var/stored_jelly = 6000
+	var/max_jelly= 6000
 
 /obj/item/organ/internal/promethean/metroid_jelly_vessel/think()
 	. = ..()
@@ -17,7 +17,7 @@
 		add_jelly(new_jelly_touching+new_jelly_reagents)
 
 /obj/item/organ/internal/promethean/metroid_jelly_vessel/proc/add_jelly(new_jelly)
-	stored_jelly = clamp((stored_jelly+new_jelly), 0, max_jelly)
+	stored_jelly = clamp((stored_jelly+new_jelly * 10), 0, max_jelly)
 
 /obj/item/organ/internal/promethean/metroid_jelly_vessel/proc/remove_jelly(new_jelly)
-	stored_jelly = clamp((stored_jelly-new_jelly), 0, max_jelly)
+	stored_jelly = clamp((stored_jelly-new_jelly * 10), 0, max_jelly)
