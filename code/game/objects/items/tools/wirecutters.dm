@@ -82,7 +82,7 @@
 						GLOB.teeth_lost++
 						return
 					else
-						to_chat(user, "<span class='notice'>Your attempt to pull out a tooth fails...</span>")
+						to_chat(user, SPAN_NOTICE("Your attempt to pull out a tooth fails..."))
 						return
 	return ..()
 

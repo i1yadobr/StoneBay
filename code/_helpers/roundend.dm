@@ -182,7 +182,7 @@ GLOBAL_LIST_EMPTY(common_report)
 		return
 
 	var/list/parts = list()
-	parts += "<b>Total teeth lost:</b> <span class='danger'><B>[GLOB.teeth_lost]</B></span>\n"
+	parts += "<b>Total teeth lost:</b> [SPAN_DANGER("<B>[GLOB.teeth_lost]</B>")]"
 	return "<div class='panel stationborder'>[parts.Join("<br>")]</div>"
 
 //Common part of the report
