@@ -119,9 +119,7 @@
 	. = ..()
 
 	var/turf/fueltank_turf = get_turf(loc)
-	var/fueltank_z_level = "[fueltank_turf.z]"
-
-	LAZYADDASSOC(GLOB.fueltanks, fueltank_z_level, src)
+	LAZYADDASSOC(GLOB.fueltanks, "[fueltank_turf.z]", src)
 
 /obj/structure/reagent_dispensers/fueltank/Move(newloc, direct)
 	. = ..()
@@ -135,8 +133,7 @@
 	var/turf/fueltank_turf = get_turf(loc)
 
 	if (fueltank_turf)
-		var/fueltank_z_level = "[fueltank_turf.z]"
-		LAZYREMOVEASSOC(GLOB.fueltanks, fueltank_z_level, src)
+		LAZYREMOVEASSOC(GLOB.fueltanks, "[fueltank_turf.z]", src)
 
 	return ..()
 

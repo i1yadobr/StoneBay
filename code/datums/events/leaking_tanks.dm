@@ -1,7 +1,7 @@
 #define MIN_TANK_QUANTITY 2
 #define MAX_TANK_QUANTITY 5
-#define MIN_FUEL_TO_LEAK 50
-#define MAX_FUEL_TO_LEAK 250
+#define MIN_FUEL_TO_LEAK 0.05 LITERS
+#define MAX_FUEL_TO_LEAK 0.25 LITERS
 
 /datum/event/leaking_tanks
 	id = "leaking_tanks"
@@ -22,14 +22,13 @@
 /datum/event/leaking_tanks/on_fire()
 	var/list/station_levels = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION)
 	var/list/matching_tanks = list()
-	//var/leaking_tanks_quantity = rand(2, 5)
 
 	for (var/z_level in station_levels)
-		var/z_level_string = "[z_level]"
-		var/list/fueltanks_at_station  = (islist(GLOB.fueltanks[z_level_string]) ? GLOB.fueltanks[z_level_string] : list())
+		//var/list/fueltanks_at_station  = (islist(GLOB.fueltanks["[z_level]"]) ? GLOB.fueltanks["[z_level]"] : list())
+		var/list/fueltanks_at_station = LAZYPICK_ASSOCLIST(GLOB.fueltanks, "[z_level]")
 
 		for (var/obj/structure/reagent_dispensers/fueltank/candidate as anything in fueltanks_at_station)
-			matching_tanks += candidate
+			LAZYADD(matching_tanks, candidate)
 
 	if(!matching_tanks.len)
 		return
