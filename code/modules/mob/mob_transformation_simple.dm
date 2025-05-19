@@ -24,9 +24,9 @@
 
 	var/mob/M
 	if(isturf(location))
-		M = new new_type(location, subspecies)
+		M = new new_type(location, new_species = subspecies)
 	else
-		M = new new_type(src.loc, subspecies)
+		M = new new_type(src.loc, new_species = subspecies)
 
 	if(!M || !ismob(M))
 		to_chat(usr, "Type path is not a mob (new_type = [new_type]) in change_mob_type(). Contact a coder.")
