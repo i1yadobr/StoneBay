@@ -24,10 +24,7 @@
 	var/list/matching_tanks = list()
 
 	for (var/z_level in station_levels)
-		//var/list/fueltanks_at_station  = (islist(GLOB.fueltanks["[z_level]"]) ? GLOB.fueltanks["[z_level]"] : list())
-		var/list/fueltanks_at_station = LAZYPICK_ASSOCLIST(GLOB.fueltanks, "[z_level]")
-
-		for (var/obj/structure/reagent_dispensers/fueltank/candidate as anything in fueltanks_at_station)
+		for (var/obj/structure/reagent_dispensers/fueltank/candidate as anything in GLOB.fueltanks["[z_level]"])
 			LAZYADD(matching_tanks, candidate)
 
 	if(!matching_tanks.len)
