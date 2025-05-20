@@ -124,19 +124,19 @@
 		return
 
 	if (!jelly_amount)
-		jelly_vessel.add_jelly(PROMETHEAN_REGEN_RATE_EMPTY * 0.1 * 10)
+		jelly_vessel.add_jelly(PROMETHEAN_REGEN_RATE_EMPTY)
 		H.adjustBruteLoss(2.5 * 0.1)
 		to_chat(H, SPAN_DANGER("You feel empty!"))
 
 	if (jelly_volume < BLOOD_VOLUME_SAFE)
 		if (H.nutrition >= STOMACH_FULLNESS_LOW)
-			jelly_vessel.add_jelly(PROMETHEAN_REGEN_RATE * 0.1 * 10)
+			jelly_vessel.add_jelly(PROMETHEAN_REGEN_RATE)
 			if (jelly_volume <= BLOOD_VOLUME_LOSE_NUTRITION) // don't lose nutrition if we are above a certain threshold, otherwise metroids on IV drips will still lose nutrition
 				H.add_nutrition(-1.25 * 0.1)
 
 	if (HAS_TRAIT(H, TRAIT_BLOOD_DEFICIENCY))
 		if(jelly_volume>=BLOOD_VOLUME_BAD)
-			jelly_vessel.remove_jelly(PROMETHEAN_REGEN_RATE * 0.1 * 10)
+			jelly_vessel.remove_jelly(PROMETHEAN_REGEN_RATE)
 
 	if (jelly_volume < BLOOD_VOLUME_OKAY)
 		if(prob(1))
@@ -173,7 +173,7 @@
 	consumed_limb.droplimb()
 	to_chat(H, SPAN_DANGER("Your [consumed_limb] is drawn back into your body, unable to maintain its shape!"))
 	qdel(consumed_limb)
-	jelly_vessel.add_jelly(200)
+	jelly_vessel.add_jelly(0.2 LITERS)
 
 /datum/action/innate/regenerate_limbs
 	name = "Regenerate Limbs"
@@ -208,25 +208,19 @@
 			if (istype(E, /obj/item/organ/external/stump))
 				limbs_to_heal.Add(limb_type)
 
-	if(!length(limbs_to_heal))
+	if (!length(limbs_to_heal))
 		to_chat(H, SPAN_NOTICE("You feel intact enough as it is."))
 		return
 
 	to_chat(H, SPAN_NOTICE("You focus intently on your missing [length(limbs_to_heal) >= 2 ? "limbs" : "limb"]..."))
 
-	if (jelly_volume >= 5*length(limbs_to_heal)+BLOOD_VOLUME_OKAY)
-		for (var/healed_limb in limbs_to_heal)
-			H.rejuvenate(TRUE)
-		jelly_vessel.remove_jelly(H.species.blood_volume * BLOOD_LOSE_PER_LIMB * length(limbs_to_heal) * 10) //FIXME fuck baymed with their BLOOD
-		to_chat(H, SPAN_NOTICE("...and after a moment you finish reforming!"))
-		return
-
-	else if (jelly_volume > BLOOD_VOLUME_BAD + 5)//We can partially heal some limbs
+	if (jelly_volume > BLOOD_VOLUME_BAD + 5)//We can partially heal some limbs
+		H.rejuvenate(TRUE)
 		while (jelly_volume >= BLOOD_VOLUME_BAD + 5)
 			var/healed_limb = pick(limbs_to_heal)
 			H.restore_limb(healed_limb)
 			limbs_to_heal -= healed_limb
-			jelly_vessel.remove_jelly(H.species.blood_volume * BLOOD_LOSE_PER_LIMB * 10) //FIXME fuck baymed with their BLOOD
+			jelly_vessel.remove_jelly(H.species.blood_volume * BLOOD_LOSE_PER_LIMB) //FIXME fuck baymed with their BLOOD
 
 		to_chat(H, SPAN_WARNING("...but there is not enough of you to fix everything! You must attain more mass to heal completely!"))
 		return
