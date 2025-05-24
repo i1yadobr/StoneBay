@@ -264,8 +264,8 @@ About the new airlock wires panel:
 	. = ..()
 	if(.)
 		hasShocked = 1
-		sleep(10)
-		hasShocked = 0
+		spawn(1 SECOND)
+			hasShocked = 0
 
 /obj/machinery/door/airlock/on_update_icon(keep_light = 0)
 	if(!keep_light)
