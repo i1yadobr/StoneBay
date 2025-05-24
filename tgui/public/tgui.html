@@ -48,10 +48,17 @@
           var majorVersion = groups && groups[1];
           return majorVersion ? parseInt(majorVersion, 10) : null;
         })();
+		
+		// Blink engine version
+        Byond.BLINK = (function () {
+          var groups = navigator.userAgent.match(/Chrome\/(\d+)\./);
+          var majorVersion = groups && groups[1];
+          return majorVersion ? parseInt(majorVersion, 10) : null;
+        })();
 
         // Basic checks to detect whether this page runs in BYOND
         var isByond =
-          (Byond.TRIDENT !== null || window.cef_to_byond) &&
+          (Byond.TRIDENT !== null || Byond.BLINK !== null || window.cef_to_byond) &&
           location.hostname === "127.0.0.1" &&
           location.search !== "?external";
 
@@ -340,6 +347,15 @@
             if (!sync) {
               node.media = "only x";
             }
+			var removeNodeAndRetry = function () {
+              node.parentNode.removeChild(node);
+              node = null;
+              retry();
+			}
+			node.onerror = function () {
+              node.onerror = null;
+			  removeNodeAndRetry();
+			}
             node.onload = function () {
               node.onload = null;
               if (isStyleSheetLoaded(node, url)) {
@@ -348,9 +364,7 @@
                 return;
               }
               // Try again
-              node.parentNode.removeChild(node);
-              node = null;
-              retry();
+              removeNodeAndRetry();
             };
             injectNode(node);
             return;
@@ -365,6 +379,33 @@
           loadAsset({ url: url, sync: sync, type: "css" });
         };
       })();
+	  
+	  Byond.saveBlob = function (blob, filename, ext) {
+        if (window.navigator.msSaveBlob) {
+		  // IE backwards compatibility for clients using BYOND <= 515
+		  window.navigator.msSaveBlob(blob, filename)
+		} else if (window.showSaveFilePicker) {
+		  var accept = {};
+		  accept[blob.type] = [ext];
+		  var opts = {
+		    suggestedName: filename,
+			types: [
+			  {
+			    description: "SS13 chatlog",
+				accept: accept,
+              }
+            ]
+          }
+          window.showSaveFilePicker(opts).then(function (fileHandle) {
+		    fileHandle.createWritable().then(function (writeableFileHandle) {
+			  writeableFileHandle.write(blob).then(function () {
+			    writeableFileHandle.close()
+			  })
+			})
+		  })
+		}
+	  };
+		 
 
       // Error handling
       // ------------------------------------------------------
@@ -477,7 +518,9 @@
       };
 
       // Signal tgui that we're ready to receive updates
-      Byond.sendMessage("ready");
+	  document.addEventListener('DOMContentLoaded', function (event) {
+		Byond.sendMessage('ready');
+	  });
     </script>
 
     <style>
