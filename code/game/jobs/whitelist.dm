@@ -1,4 +1,4 @@
-/proc/check_whitelist(key /*, rank*/)
+/proc/check_whitelist(key)
 	if(!establish_old_db_connection())
 		error("Failed to connect to database in load_whitelist().")
 		log_misc("Failed to connect to database in load_whitelist().")
