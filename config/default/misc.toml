@@ -84,3 +84,6 @@ forbid_singulo_following = true
 
 ## Set to false to disable safety on guns
 toggle_gun_safety = false
+
+## Set to false to disable non-HRP stuff (i.e. Mykola the Pig, traitor chef's hook)
+meme_content = true
