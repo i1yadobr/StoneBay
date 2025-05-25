@@ -1,5 +1,12 @@
-/proc/check_whitelist(mob/M /*, rank*/)
-	return ("[M.ckey]" in config.whitelist.ckeys)
+/proc/check_whitelist(key)
+	if(!establish_old_db_connection())
+		error("Failed to connect to database in load_whitelist().")
+		log_misc("Failed to connect to database in load_whitelist().")
+		return FALSE
+	var/DBQuery/query = sql_query("SELECT * FROM erro_whitelist WHERE ckey='[lowertext(key)]'", dbcon_old)
+	while(query.NextRow())
+		return TRUE
+	return FALSE
 
 /var/list/alien_whitelist = list()
 
