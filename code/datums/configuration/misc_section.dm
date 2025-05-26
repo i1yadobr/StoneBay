@@ -29,6 +29,7 @@
 	var/fun_hydroponics
 	var/forbid_singulo_following
 	var/toogle_gun_safety
+	var/meme_content
 
 
 /datum/configuration_section/misc/load_data(list/data)
@@ -60,3 +61,4 @@
 	CONFIG_LOAD_NUM(fun_hydroponics, data["fun_hydroponics"])
 	CONFIG_LOAD_BOOL(forbid_singulo_following, data["forbid_singulo_following"])
 	CONFIG_LOAD_BOOL(toogle_gun_safety, data["toogle_gun_safety"])
+	CONFIG_LOAD_BOOL(meme_content, data["meme_content"])
