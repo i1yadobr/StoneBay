@@ -161,12 +161,12 @@ var/global/floorIsLava = 0
 				<A href='?src=\ref[src];simplemake=human;species=Xenomorph Queen;mob=\ref[M]'>Queen</A> \] |
 				\[ Crew: <A href='?src=\ref[src];simplemake=human;mob=\ref[M]'>Human</A>
 				<A href='?src=\ref[src];simplemake=human;species=Unathi;mob=\ref[M]'>Unathi</A>
-				<A href='?src=\ref[src];simplemake=human;species=Tajaran;mob=\ref[M]'>Tajaran</A>
+				<A href='?src=\ref[src];simplemake=human;species=Tajara;mob=\ref[M]'>Tajaran</A>
 				<A href='?src=\ref[src];simplemake=human;species=Skrell;mob=\ref[M]'>Skrell</A>
 				<A href='?src=\ref[src];simplemake=human;species=Trottine;mob=\ref[M]'>Trottine</A>
 				<A href='?src=\ref[src];simplemake=human;species=Vox;mob=\ref[M]'>Vox</A> \] | \[
 				<A href='?src=\ref[src];simplemake=nymph;mob=\ref[M]'>Nymph</A>
-				<A href='?src=\ref[src];simplemake=human;species='Diona';mob=\ref[M]'>Diona</A> \] |
+				<A href='?src=\ref[src];simplemake=human;species=Diona;mob=\ref[M]'>Diona</A> \] |
 				\[ metroid: <A href='?src=\ref[src];simplemake=metroid;mob=\ref[M]'>Baby</A>,
 				<A href='?src=\ref[src];simplemake=adultmetroid;mob=\ref[M]'>Adult</A> \]
 				<A href='?src=\ref[src];simplemake=monkey;mob=\ref[M]'>Monkey</A> |
