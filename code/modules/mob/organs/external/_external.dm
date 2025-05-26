@@ -75,8 +75,6 @@
 
 	// Wound and structural data.
 	var/wound_update_accuracy = 2      // how often wounds should be updated, a higher number means less often
-	var/list/wounds                    // wound datum list.
-	var/number_wounds = 0              // number of wounds, which is NOT wounds.len!
 	var/obj/item/organ/external/parent // Master-limb.
 	var/list/children                  // Sub-limbs.
 	var/list/internal_organs = list()  // Internal organs of this body part
@@ -152,11 +150,6 @@
 		implants -= food_organ
 
 /obj/item/organ/external/Destroy()
-
-	if(wounds)
-		for(var/datum/wound/wound in wounds)
-			qdel(wound)
-
 	if(parent?.children)
 		parent.children -= src
 		parent = null
@@ -481,14 +474,17 @@ This function completely restores a damaged organ to perfect condition.
 	damage_state = "00"
 
 	status = 0
-	brute_dam = 0
+
 	burn_dam = 0
+	brute_dam = 0
+	cut_dam = 0
+	pierce_dam = 0
+	blunt_dam = 0
+
 	germ_level = 0
-	remove_all_pain()
 	genetic_degradation = 0
-	for(var/datum/wound/wound in wounds)
-		qdel(wound)
-	number_wounds = 0
+
+	remove_all_pain()
 
 	// handle internal organs
 	for(var/obj/item/organ/current_organ in internal_organs)
@@ -526,70 +522,6 @@ This function completely restores a damaged organ to perfect condition.
 	for(var/obj/item/organ/internal/I in internal_organs)
 		if(I) I.remove_rejuv()
 	..()
-
-/obj/item/organ/external/proc/createwound(type = CUT, damage, surgical)
-	if(damage <= 0)
-		return
-	//moved these before the open_wound check so that having many small wounds for example doesn't somehow protect you from taking internal damage (because of the return)
-	//Brute damage can possibly trigger an internal wound, too.
-	var/local_damage = brute_dam + burn_dam
-	if(!surgical && (type in list(CUT, PIERCE, BRUISE)) && damage > 15 && local_damage > min_broken_damage)
-		var/internal_damage
-		if(prob(ceil(damage/2)) && sever_artery())
-			internal_damage = TRUE
-		if(prob(ceil(damage/4)) && sever_tendon())
-			internal_damage = TRUE
-		if(internal_damage)
-			owner.custom_pain("You feel something rip in your [name]!", 50, affecting = src)
-
-	//Burn damage can cause fluid loss due to blistering and cook-off
-	if(owner && (type in list(BURN, LASER)) && (damage > 5 || damage + burn_dam >= 15) && !BP_IS_ROBOTIC(src))
-		var/fluid_loss_severity
-		switch(type)
-			if(BURN)  fluid_loss_severity = FLUIDLOSS_WIDE_BURN
-			if(LASER) fluid_loss_severity = FLUIDLOSS_CONC_BURN
-		var/fluid_loss = (damage/(owner.maxHealth - config.health.health_threshold_dead)) * owner.species.blood_volume * fluid_loss_severity
-		owner.remove_blood(fluid_loss)
-
-	// first check whether we can widen an existing wound
-	if(!surgical && LAZYLEN(wounds) && prob(max(50+(number_wounds-1)*10,90)))
-		if((type == CUT || type == BRUISE) && damage >= 5)
-			//we need to make sure that the wound we are going to worsen is compatible with the type of damage...
-			var/list/compatible_wounds = list()
-			for (var/datum/wound/W in wounds)
-				if (W.can_worsen(type, damage))
-					compatible_wounds += W
-
-			if(compatible_wounds.len)
-				var/datum/wound/W = pick(compatible_wounds)
-				W.open_wound(damage)
-				if(owner && prob(25))
-					if(BP_IS_ROBOTIC(src))
-						owner.visible_message("<span class='danger'>The damage to [owner.name]'s [name] worsens.</span>",\
-						"<span class='danger'>The damage to your [name] worsens.</span>",\
-						"<span class='danger'>You hear the screech of abused metal.</span>")
-					else
-						owner.visible_message("<span class='danger'>The wound on [owner.name]'s [name] widens with a nasty ripping noise.</span>",\
-						"<span class='danger'>The wound on your [name] widens with a nasty ripping noise.</span>",\
-						"<span class='danger'>You hear a nasty ripping noise, as if flesh is being torn apart.</span>")
-				return W
-
-	//Creating wound
-	var/wound_type = get_wound_type(type, damage)
-
-	if(wound_type)
-		var/datum/wound/W = new wound_type(damage, src)
-
-		//Check whether we can add the wound to an existing wound
-		if(surgical)
-			W.autoheal_cutoff = 0
-		else
-			for(var/datum/wound/other in wounds)
-				if(other.can_merge(W))
-					other.merge_wound(W)
-					return
-		LAZYADD(wounds, W)
-		return W
 
 /****************************************************
 			   PROCESSING & UPDATING
