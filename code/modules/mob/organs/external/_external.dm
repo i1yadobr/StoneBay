@@ -559,7 +559,7 @@ This function completely restores a damaged organ to perfect condition.
 	if(owner)
 		// Process wounds, doing healing etc. Only do this every few ticks to save processing power
 		if(owner.life_tick % wound_update_accuracy == 0)
-			should_update_damage_icons_this_tick = handle_damage()
+			should_update_damage_icons_this_tick = handle_regeneration()
 
 		//Infections
 		update_germs()
@@ -574,7 +574,7 @@ This function completely restores a damaged organ to perfect condition.
 
 /obj/item/organ/external/die()
 	for(var/obj/item/organ/external/E in children)
-		E.take_external_damage(10, 0, used_weapon = "parent organ sepsis")
+		E.take_external_damage(10, 0, used_weapon = "parent organ sepsis", clean = TRUE)
 	..()
 
 //Updating germ levels. Handles organ germ levels and necrosis.
@@ -675,7 +675,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		owner.adjustToxLoss(2.0)
 
 // Handles natural heal, internal bleedings and infections
-/obj/item/organ/external/proc/handle_damage()
+/obj/item/organ/external/proc/handle_regeneration()
 	if(BP_IS_ROBOTIC(src)) // Robotic limbs don't heal or get worse.
 		return
 
@@ -690,11 +690,39 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 	heal_amt = round(heal_amt * wound_update_accuracy * config.health.organ_regeneration_multiplier, 0.1)
 
-	. = heal_damage((burn_dam ? heal_amt * 0.5 : heal_amt), (brute_dam ? heal_amt * 0.5 : heal_amt), update_damage_icon = FALSE)
+	// Evenly spreading regeneration between burn and brute damage if both are present
+	if(burn_dam && brute_dam)
+		heal_amt *= 0.5
 
-	// sync the organ's damage with its wounds
+	if(burn_dam)
+		heal_burn_damage(heal_amt, FALSE, FALSE, FALSE)
+
+	if(brute_dam)
+		if(blunt_dam && (pierce_dam || cut_dam))
+			heal_amt *= 0.5
+
+		 if(blunt_dam)
+		 	heal_blunt_damage(heal_amt, FALSE, FALSE, FALSE)
+
+		// Sharp damage can't regenerate naturally if it's still bleeding
+		if(!(status & ORGAN_BLEEDING))
+			heal_sharp_damage(heal_amt, FALSE, FALSE, FALSE)
+
+	if(scabbed < max_bleeding)
+		scabbed += (H ? H.coagulation : 1.0) * wound_update_accuracy * ((bandaged >= scabbed) ? 1:0 * 0.5)
+
 	update_damages()
-	return
+
+	var/should_update_damstate
+
+	if(owner)
+		owner.updatehealth()
+
+		should_update_damstate = update_damstate()
+		if(update_damage_icon && should_update_damstate)
+			owner.UpdateDamageIcon()
+
+	return should_update_damstate
 
 // Updates damage ratios, bleeding status, etc.
 /obj/item/organ/external/proc/update_damages()
@@ -704,8 +732,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	// Bleeding
 	if(!BP_IS_ROBOTIC(src))
 		max_bleeding = (cut_dam + pierce_dam) * 0.5
-		bandaged = clamp(bandaged, 0, bleeding)
-		scabbed = clamp(scabbed, 0, bleeding)
+		bandaged = clamp(bandaged, 0, max_bleeding)
+		scabbed = clamp(scabbed, 0, max_bleeding)
 
 		bleeding = max_bleeding - max(bandaged, scabbed)
 

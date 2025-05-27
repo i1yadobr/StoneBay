@@ -360,47 +360,140 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 	if(BP_IS_ROBOTIC(src) && !robo_repair)
 		return FALSE
 
-	if(burn_dam && burn && (burn_ratio < 1 || vital || (limb_flags & ORGAN_FLAG_HEALS_OVERKILL)))
-		burn = min(burn_dam, burn)
-		burn_dam -= burn
-		owner?.heal_this_tick += burn
+	if(burn_dam && burn)
+		heal_burn_damage(brute * blunt_ratio, robo_repair, FALSE, FALSE)
 
-	if(brute_dam && brute && (brute_ratio < 1 || vital || (limb_flags & ORGAN_FLAG_HEALS_OVERKILL)))
-		// Healing random brute-based damage, while trying not to "spill" healing.
-		var/healed_amount
-		var/type_to_heal
-		var/list/damaged_types = list(&pierce_dam, &cut_dam, &blunt_dam)
-		while(brute > 0 && brute_dam > 0 && damaged_types.len)
-			type_to_heal = pick(damaged_types)
-			if(*type_to_heal <= 0)
-				damaged_types -= type_to_heal
-				continue
+	if(brute_dam && brute)
+		var/blunt_ratio = blunt_dam / brute_dam
+		var/sharp_ratio = 1 - blunt_ratio
 
-			healed_amount = min(brute, *type_to_heal)
+		if(blunt_ratio)
+			heal_blunt_damage(brute * blunt_ratio, robo_repair, FALSE, FALSE)
+		if(sharp_ratio)
+			heal_sharp_damage(brute * sharp_ratio, robo_repair, FALSE, FALSE)
 
-			*type_to_heal -= healed_amount
-			brute -= healed_amount
-			owner?.heal_this_tick += healed_damage
-			if(*type_to_heal < 0.1)
-				*type_to_heal = 0
-				damaged_types -= type_to_heal
-			else
-				*type_to_heal = round(*type_to_heal, 0.1)
-
-			brute_dam = pierce_dam + cut_dam + blunt_dam
+		brute_dam = pierce_dam + cut_dam + blunt_dam
 
 	if(internal)
 		mend_fracture(TRUE)
 
 	//Sync the organ's damage with its wounds
 	update_damages()
-	owner.updatehealth()
+	var/should_update_damstate
 
-	var/should_update_damstate = update_damstate()
-	if(owner && update_damage_icon && should_update_damstate)
-		owner.UpdateDamageIcon()
+	if(owner)
+		owner.updatehealth()
+
+		should_update_damstate = update_damstate()
+		if(update_damage_icon && should_update_damstate)
+			owner.UpdateDamageIcon()
 
 	return should_update_damstate
+
+/obj/item/organ/external/proc/heal_burn_damage(amount, robo_repair = FALSE, should_update_damages = TRUE, update_damage_icon = TRUE)
+	if(!amount)
+		return
+
+	if(BP_IS_ROBOTIC(src) && !robo_repair)
+		return
+
+	. = min(amount, burn_dam)
+	if(!.)
+		return amount
+
+	burn_dam -= (.)
+
+	if(burn_dam <= 0.1)
+		burn_dam = 0
+	else
+		burn_dam = round(burn_dam, 0.05)
+
+	if(!should_update_damages)
+		return (amount - (.))
+
+	update_damages()
+	if(owner)
+		owner.heal_this_tick += (.)
+		owner.updatehealth()
+		if(update_damage_icon && update_damstate())
+			owner.UpdateDamageIcon()
+
+	return (amount - (.))
+
+/obj/item/organ/external/proc/heal_blunt_damage(amount, robo_repair = FALSE, should_update_damages = TRUE, update_damage_icon = TRUE)
+	if(!amount)
+		return
+
+	if(BP_IS_ROBOTIC(src) && !robo_repair)
+		return
+
+	. = min(amount, blunt_dam)
+	if(!.)
+		return amount
+
+	blunt_dam -= (.)
+
+	if(blunt_dam <= 0.1)
+		blunt_dam = 0
+	else
+		blunt_dam = round(blunt_dam, 0.05)
+
+	brute_dam = pierce_dam + cut_dam + blunt_dam
+
+	if(!should_update_damages)
+		return (amount - (.))
+
+	update_damages()
+	if(owner)
+		owner.heal_this_tick += (.)
+		owner.updatehealth()
+		if(update_damage_icon && update_damstate())
+			owner.UpdateDamageIcon()
+
+	return (amount - (.))
+
+/obj/item/organ/external/proc/heal_sharp_damage(amount, robo_repair = FALSE, should_update_damages = TRUE, update_damage_icon = TRUE)
+	if(!amount)
+		return
+
+	if(BP_IS_ROBOTIC(src) && !robo_repair)
+		return
+
+	. = (cut_dam + pierce_dam)
+
+	if(!.)
+		return amount
+
+	var/cut_to_heal = amount * (cut_dam / (.))
+	var/pierce_to_heal = amount * (pierce_dam / (.))
+
+	cut_dam -= cut_to_heal
+	pierce_dam -= pierce_to_heal
+
+	if(cut_dam <= 0.1)
+		cut_dam = 0
+	else
+		cut_dam = round(cut_dam, 0.05)
+
+	if(pierce_dam <= 0.1)
+		pierce_dam = 0
+	else
+		pierce_dam = round(pierce_dam, 0.05)
+
+	brute_dam = pierce_dam + cut_dam + blunt_dam
+
+	if(!should_update_damages)
+		return (amount - (cut_to_heal + pierce_to_heal))
+
+	update_damages()
+	if(owner)
+		owner.heal_this_tick += (cut_to_heal + pierce_to_heal)
+		owner.updatehealth()
+		if(update_damstate() && update_damage_icon)
+			owner.UpdateDamageIcon()
+
+	return (amount - (cut_to_heal + pierce_to_heal))
+
 
 // Brute/burn
 /obj/item/organ/external/proc/get_brute_damage()
