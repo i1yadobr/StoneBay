@@ -119,13 +119,13 @@
 	var/regen_value = 0
 	switch(hydration)
 		if(HYDRATION_SUPER to INFINITY)
-			regen_value = 2.0
+			regen_value = 7.5
 		if(HYDRATION_HIGH to HYDRATION_SUPER)
-			regen_value = 1.5
+			regen_value = 5.0
 		if(HYDRATION_LOW to HYDRATION_HIGH)
-			regen_value = 1.0
+			regen_value = 2.5
 		if(1 to HYDRATION_LOW)
-			regen_value = 0.5
+			regen_value = 1.0
 
 	if(regen_value && regenerate_blood(regen_value + chem_effects[CE_BLOODRESTORE]))
 		remove_hydration(DEFAULT_THIRST_FACTOR * regen_value) // Regenerating blood dehydrates ya.
