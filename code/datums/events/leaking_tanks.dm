@@ -20,7 +20,6 @@
 	. = max(1 HOUR, .)
 
 /datum/event/leaking_tanks/on_fire()
-
 	var/list/matching_tanks = list()
 
 	for (var/z_level as anything in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION))
