@@ -26,7 +26,7 @@
 	for (var/z_level as anything in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION))
 		LAZYADD(matching_tanks, LAZYCOPY(GLOB.fueltanks["[z_level]"]))
 
-	if(!(length(matching_tanks)))
+	if (!length(matching_tanks))
 		return
 
 	announce()
