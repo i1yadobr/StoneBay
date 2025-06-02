@@ -20,29 +20,25 @@
 	. = max(1 HOUR, .)
 
 /datum/event/leaking_tanks/on_fire()
-	var/list/station_levels = GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION)
+
 	var/list/matching_tanks = list()
 
-	for (var/z_level in station_levels)
-		for (var/obj/structure/reagent_dispensers/fueltank/candidate as anything in GLOB.fueltanks["[z_level]"])
-			LAZYADD(matching_tanks, candidate)
+	for (var/z_level as anything in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION))
+		LAZYADD(matching_tanks, LAZYCOPY(GLOB.fueltanks["[z_level]"]))
 
-	if(!matching_tanks.len)
+	if(!(length(matching_tanks)))
 		return
 
 	announce()
 
 	for (var/i in 1 to rand(MIN_TANK_QUANTITY, MAX_TANK_QUANTITY))
-		if (!matching_tanks.len)
-			break
 
 		var/obj/structure/reagent_dispensers/fueltank/fueltank_leaked = pick_n_take(matching_tanks)
 
 		if (fueltank_leaked)
-			var/fuel_units_leak = rand(MIN_FUEL_TO_LEAK, MAX_FUEL_TO_LEAK)
-			fueltank_leaked.leak_fuel(fuel_units_leak)
+			fueltank_leaked.leak_fuel(rand(MIN_FUEL_TO_LEAK, MAX_FUEL_TO_LEAK))
 
-			message_admins("Fuel tank was leaked by event at ([fueltank_leaked.x],[fueltank_leaked.y],[fueltank_leaked.z]), leaking [fuel_units_leak] units.")
+			message_admins("Fuel tank was leaked by event at ([fueltank_leaked.x],[fueltank_leaked.y],[fueltank_leaked.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[fueltank_leaked.x];Y=[fueltank_leaked.y];Z=[fueltank_leaked.z]'>JMP</a>)")
 
 /datum/event/leaking_tanks/proc/announce()
 	SSannounce.play_station_announce(/datum/announce/leak_fueltanks)
