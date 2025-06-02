@@ -1,12 +1,14 @@
 #define NO_HURT_JUMP_PROB 15
 #define LITE_HURT_PROB 60
 #define KNOCK_DOWN_PROB 40
+#define HURT_LEGS_PROB 1
 
 #define LONG_JUMP_PROB 25
 #define MAX_JUMP_LENGTH 3
 #define DEFAULT_JUMP_LENGTH 2
 
 #define SALTO_PROB 10
+
 
 /mob/living/carbon/human/throw_impact(atom/hit_atom, speed, target_zone)
 	. = ..()
@@ -95,23 +97,37 @@
 	else
 		throw_spin = FALSE
 
+	var/orig_flags = src.pass_flags
+	src.pass_flags |= PASS_FLAG_TABLE
+
+	src.pixel_y = 5
+
 	if (prob(LONG_JUMP_PROB))
-		throw_at(jump_turf, MAX_JUMP_LENGTH, 1, src)
+		throw_at(jump_turf, MAX_JUMP_LENGTH, 1.25, src)
 		Stun(1)
 	else
-		throw_at(jump_turf, DEFAULT_JUMP_LENGTH, 1, src)
+		throw_at(jump_turf, DEFAULT_JUMP_LENGTH, 1.25, src)
 		Stun(1)
 
 	if (QDELETED(src))
 		return
 
+	if (prob(HURT_LEGS_PROB))
+		var/legs_to_hurt = pick(BP_L_FOOT, BP_R_FOOT)
+		src.apply_damage(45, PAIN, legs_to_hurt, 0)
+		src.apply_damage(10, BRUTE, legs_to_hurt, 0)
+		visible_message(SPAN_NOTICE("[src] jumped unsuccessfully and hurt foot!"))
+
+	spawn(2)
+		src.pass_flags = orig_flags
+		src.pixel_y = 0
 	throw_spin = TRUE
 	toggle_jump(HUMAN_POWER_JUMP)
-	swap_hand()
 
 #undef NO_HURT_JUMP_PROB
 #undef LITE_HURT_PROB
 #undef KNOCK_DOWN_PROB
+#undef HURT_LEGS_PROB
 #undef LONG_JUMP_PROB
 #undef MAX_JUMP_LENGTH
 #undef DEFAULT_JUMP_LENGTH
