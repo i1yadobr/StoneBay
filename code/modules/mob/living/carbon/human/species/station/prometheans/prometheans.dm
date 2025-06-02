@@ -120,7 +120,7 @@
 	var/jelly_amount = jelly_vessel.stored_jelly
 	var/jelly_volume = round((jelly_amount/blood_volume)*100)
 
-	if (H.stat == DEAD) //can't farm metroid prometheany from a dead metroid/prometheany person indefinitely
+	if (H.is_ic_dead()) //can't farm metroid prometheany from a dead metroid/prometheany person indefinitely
 		return
 
 	if (!jelly_amount)
