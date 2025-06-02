@@ -32,7 +32,6 @@
 	announce()
 
 	for (var/i in 1 to rand(MIN_TANK_QUANTITY, MAX_TANK_QUANTITY))
-
 		var/obj/structure/reagent_dispensers/fueltank/fueltank_leaked = pick_n_take(matching_tanks)
 
 		if (fueltank_leaked)
