@@ -493,6 +493,10 @@
 
 	user.rad_act(new /datum/radiation_source(new /datum/radiation/preset/supermatter(4), src))
 
+/obj/machinery/power/supermatter/supermatter_act()
+	qdel_self()
+	return TRUE
+
 /obj/machinery/power/supermatter/throw_impact(atom/hit_atom, speed, target_zone)
 	. = ..()
 	if (hit_atom.density)
@@ -506,23 +510,26 @@
 		AM.visible_message("<span class=\"warning\">\The [AM] slams into \the [src] inducing a resonance... \his body starts to glow and catch flame before flashing into ash.</span>",\
 		"<span class=\"danger\">You slam into \the [src] as your ears are filled with unearthly ringing. Your last thought is \"Oh, fuck.\"</span>",\
 		"<span class=\"warning\">You hear an uneartly ringing, then what sounds like a shrilling kettle as you are washed with a wave of heat.</span>")
+	else if(!grav_pulling) //To prevent spam, detonating supermatter does not indicate non-mobs being destroyed
+		AM.visible_message("<span class=\"warning\">\The [AM] smacks into \the [src] and rapidly flashes to ash.</span>",\
+		"<span class=\"warning\">You hear a loud crack as you are washed with a wave of heat.</span>")
 
-	Consume(AM, silent = isliving(AM))
+	Consume(AM)
 
 #define SUPERMATTER_MIN_THROW_DIST 1
 #define SUPERMATTER_MAX_THROW_DIST 3
 
 /obj/machinery/power/supermatter/proc/Consume(atom/victim, silent = FALSE)
 	if (istype(victim, /obj/machinery/power/supermatter))
-		var/atom/movable/movable_victim = victim
-		movable_victim.throw_at(get_edge_target_turf(movable_victim, get_dir(src, movable_victim)), rand(SUPERMATTER_MIN_THROW_DIST, SUPERMATTER_MAX_THROW_DIST), 1)
-		movable_victim.visible_message(SPAN_WARNING("\The [movable_victim] briefly lights up and instantly starts flying in the opposite direction."))
+		var/obj/machinery/power/supermatter/supermatter_victim = victim
+		if (config.misc.meme_content)
+			supermatter_victim.throw_at(get_edge_target_turf(supermatter_victim, get_dir(src, supermatter_victim)), rand(SUPERMATTER_MIN_THROW_DIST, SUPERMATTER_MAX_THROW_DIST), 1)
+			supermatter_victim.visible_message(SPAN_WARNING("\The [supermatter_victim] briefly lights up and instantly starts flying in the opposite direction."))
+		else
+			power += supermatter_victim.power
+
+	if (!victim.supermatter_act())
 		return
-
-	if (!grav_pulling && !silent) // To prevent spam, detonating supermatter does not indicate non-mobs being destroyed.
-		victim.visible_message(SPAN_WARNING("\The [victim] comes into contact with \the [src] and rapidly flashes to ash."))
-
-	victim.supermatter_act()
 
 	if (ismob(victim))
 		power += 400
