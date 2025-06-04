@@ -46,6 +46,7 @@
 	icon_state = "darkmatter"
 	base_icon_state = "darkmatter"
 
+	atom_flags = ATOM_FLAG_UNPUSHABLE
 	density = 1
 	anchored = 0
 	light_outer_range = 4
@@ -492,27 +493,41 @@
 
 	user.rad_act(new /datum/radiation_source(new /datum/radiation/preset/supermatter(4), src))
 
-/obj/machinery/power/supermatter/Bumped(atom/AM)
+/obj/machinery/power/supermatter/throw_impact(atom/hit_atom, speed, target_zone)
+	. = ..()
+	if (hit_atom.density)
+		Consume(hit_atom)
+
+/obj/machinery/power/supermatter/Bumped(atom/movable/AM)
 	if(istype(AM, /obj/effect))
 		return
+
 	if(isliving(AM))
 		AM.visible_message("<span class=\"warning\">\The [AM] slams into \the [src] inducing a resonance... \his body starts to glow and catch flame before flashing into ash.</span>",\
 		"<span class=\"danger\">You slam into \the [src] as your ears are filled with unearthly ringing. Your last thought is \"Oh, fuck.\"</span>",\
 		"<span class=\"warning\">You hear an uneartly ringing, then what sounds like a shrilling kettle as you are washed with a wave of heat.</span>")
-	else if(!grav_pulling) //To prevent spam, detonating supermatter does not indicate non-mobs being destroyed
-		AM.visible_message("<span class=\"warning\">\The [AM] smacks into \the [src] and rapidly flashes to ash.</span>",\
-		"<span class=\"warning\">You hear a loud crack as you are washed with a wave of heat.</span>")
 
-	Consume(AM)
+	Consume(AM, silent = isliving(AM))
 
-/obj/machinery/power/supermatter/proc/Consume(mob/living/user)
-	if(istype(user))
-		user.dust()
-		power += 200
+#define SUPERMATTER_MIN_THROW_DIST 1
+#define SUPERMATTER_MAX_THROW_DIST 3
+
+/obj/machinery/power/supermatter/proc/Consume(atom/victim, silent = FALSE)
+	if (istype(victim, /obj/machinery/power/supermatter))
+		var/atom/movable/movable_victim = victim
+		movable_victim.throw_at(get_edge_target_turf(movable_victim, get_dir(src, movable_victim)), rand(SUPERMATTER_MIN_THROW_DIST, SUPERMATTER_MAX_THROW_DIST), 1)
+		movable_victim.visible_message(SPAN_WARNING("\The [movable_victim] briefly lights up and instantly starts flying in the opposite direction."))
+		return
+
+	if (!grav_pulling && !silent) // To prevent spam, detonating supermatter does not indicate non-mobs being destroyed.
+		victim.visible_message(SPAN_WARNING("\The [victim] comes into contact with \the [src] and rapidly flashes to ash."))
+
+	victim.supermatter_act()
+
+	if (ismob(victim))
+		power += 400
 	else
-		qdel(user)
-
-	power += 200
+		power += 200
 
 	//Some poor sod got eaten, go ahead and irradiate people nearby.
 	for(var/mob/living/l in range(10))
@@ -524,6 +539,11 @@
 
 	var/datum/radiation_source/temp_src = SSradiation.radiate(src, new /datum/radiation/preset/supermatter(10))
 	temp_src.schedule_decay(20 SECONDS)
+
+	playsound(src, GET_SFX(SFX_SUPERMATTER), 100)
+
+#undef SUPERMATTER_MIN_THROW_DIST
+#undef SUPERMATTER_MAX_THROW_DIST
 
 /proc/supermatter_pull(atom/target, pull_range = 255, pull_power = STAGE_FIVE)
 	var/list/movable_atoms = list()

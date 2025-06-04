@@ -1688,6 +1688,9 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_GLASSES_CLINK = list(
 		'sound/items/glasses_clink.ogg'
 	),
+	SFX_SUPERMATTER = list(
+		'sound/effects/supermatter.ogg',
+	),
 	// DEVICES
 	SFX_GEIGER_LOW = list(
 		'sound/effects/geiger/geiger_low_1.ogg',
