@@ -519,7 +519,7 @@
 #define SUPERMATTER_MIN_THROW_DIST 1
 #define SUPERMATTER_MAX_THROW_DIST 3
 
-/obj/machinery/power/supermatter/proc/Consume(atom/victim, silent = FALSE)
+/obj/machinery/power/supermatter/proc/Consume(atom/victim)
 	if (istype(victim, /obj/machinery/power/supermatter))
 		var/obj/machinery/power/supermatter/supermatter_victim = victim
 		if (config.misc.meme_content)
