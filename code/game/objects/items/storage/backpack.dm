@@ -75,17 +75,37 @@
 
 /obj/item/storage/backpack/holding/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/storage/backpack/holding))
-		investigate_log("has triggered a wormhole event. Caused by [user.key]")
 		to_chat(usr, "\red The Bluespace interfaces of the two devices catastrophically malfunction!")
-		log_and_message_admins("detonated a bag of holding", user, src.loc)
-		explosion(get_turf(src), 0, 1, 3, 3)
-		var/datum/event/E = SSevents.total_events["wormholes"]
-		E.fire()
+
+		var/mob/living/carbon/human/human_user = user
+		if (istype(human_user))
+			for (var/limb_tag in list(BP_R_ARM, BP_L_ARM))
+				var/obj/item/organ/external/limb_to_drop = human_user.get_organ(limb_tag)
+				limb_to_drop.droplimb()
+				qdel(limb_to_drop)
+
+			human_user.visible_message(SPAN_DANGER("[human_user]'s hands are violently yanked into the collapsing structure of \the [src]!"))
+
+		var/outcome
+		if (config.misc.meme_content && prob(15))
+			new /obj/singularity(get_turf(src), 300)
+			outcome = "singularity"
+		else if (prob(60))
+			var/obj/effect/portal/wormhole/wormhole = create_wormhole(get_turf(src), get_random_turf_in_range(src, 16, 8))
+			wormhole.Bumped(user) // Otherwise spessman won't go through it...
+			outcome = "single wormhole"
+		else
+			var/datum/event/wormholes_event = SSevents.total_events["wormholes"]
+			wormholes_event.fire()
+			outcome = "wormhole event"
+
+		investigate_log("has triggered \a [outcome]. Caused by [user.key]")
+		log_and_message_admins("detonated a bag of holding", user, loc)
+
 		qdel(W)
 		qdel_self()
-		return
 
-	..()
+	. = ..()
 
 /obj/item/storage/backpack/santabag
 	name = "\improper Santa's gift bag"
@@ -507,4 +527,3 @@
 	name = "Carry rig"
 	desc = "A metal base with numerous straps designed to hold whatever and be attached to the back. Quite uncomfortable to wear."
 	icon_state = "carryrig"
-
