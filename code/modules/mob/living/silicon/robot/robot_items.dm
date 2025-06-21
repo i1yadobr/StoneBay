@@ -542,7 +542,7 @@
 /obj/item/reagent_containers/spray/cleaner/drone
 	name = "space cleaner"
 	desc = "BLAM!-brand non-foaming space cleaner!"
-	volume = 150
+	volume = 0.25 LITERS
 
 /obj/item/robot_rack
 	name = "a generic robot rack"

@@ -65,8 +65,9 @@
 
 	if(overdose && (location != CHEM_TOUCH))
 		var/overdose_threshold = overdose * (flags & IGNORE_MOB_SIZE? 1 : MOB_MEDIUM/M.mob_size)
-		if(volume > overdose_threshold)
-			overdose(M, alien)
+		var/overdose_volume = volume - overdose_threshold
+		if(overdose_volume > 0)
+			overdose(M, alien, overdose_volume)
 
 	//determine the metabolism rate
 	var/removed = metabolism
@@ -136,7 +137,7 @@
 		M.remove_hydration(removed * hydration_value)
 	return
 
-/datum/reagent/proc/overdose(mob/living/carbon/M, alien) // Overdose effect. Doesn't happen instantly.
+/datum/reagent/proc/overdose(mob/living/carbon/M, alien, overdose_volume) // Overdose effect. Doesn't happen instantly.
 	M.add_chemical_effect(CE_TOXIN, 5)
 	M.adjustToxLoss(0.5)
 	return

@@ -957,7 +957,7 @@
 	metabolism = 10.0
 	hydration_value = -2.5
 
-/datum/reagent/nanoblood/affect_blood(mob/living/carbon/human/M, alien, removed)
+/datum/reagent/nanoblood/affect_blood(mob/living/carbon/human/M, alien, removed, affecting_dose)
 	if(!M.should_have_organ(BP_HEART)) //We want the var for safety but we can do without the actual blood.
 		return
 	if(M.regenerate_blood(4 * removed))
@@ -965,6 +965,34 @@
 		if(M.chem_traces[type] > M.species.blood_volume / 8) //half of blood was replaced with us, rip white bodies
 			M.immunity = max(M.immunity - 0.5, 0)
 		M.remove_hydration(removed * hydration_value)
+
+/datum/reagent/teleglobin
+	name = "Teleglobin"
+	description = "A volatile substance with miraculous medical properties. When injected, it overdrives red cells production, but rapidly drains its resources. Causes severe damage when taken in high doses."
+	taste_description = "liquid blue space"
+	reagent_state = LIQUID
+	color = "#0026ff"
+	scannable = 1
+	overdose = 10
+	metabolism = REM * 2.0
+	hydration_value = -25.0
+
+/datum/reagent/teleglobin/overdose(mob/living/carbon/M, alien, overdose_volume)
+	M.take_organ_damage(5 + overdose_volume, 0)
+
+/datum/reagent/teleglobin/affect_blood(mob/living/carbon/human/M, alien, removed, affecting_dose)
+	if(!M.should_have_organ(BP_HEART)) //We want the var for safety but we can do without the actual blood.
+		return
+	if(M.regenerate_blood(100 * removed))
+		M.immunity = max(M.immunity - 0.5, 0)
+		if(M.chem_traces[type] > M.species.blood_volume / 200) //half of blood was replaced with us, rip white bodies
+			M.immunity = max(M.immunity - 2.0, 0)
+		M.remove_hydration(removed * hydration_value)
+
+/datum/reagent/teleglobin/affect_digest(mob/living/carbon/M, alien, removed, affecting_dose) // Quick damage, quick excertion
+	overdose(M, alien, volume)
+	volume *= 0.5
+	return
 
 /datum/reagent/thc   // -SECURITY OPEN UP!!! - Ha-ha. No. c:
 	name = "Tetrahydrocannabinol"
