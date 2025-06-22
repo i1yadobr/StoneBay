@@ -99,12 +99,14 @@
 	if(pump > 0)
 		if(beaker && istype(occupant))
 			if(beaker.reagents.total_volume < beaker.reagents.maximum_volume)
+				var/stomach_pumped = FALSE
 				var/datum/reagents/ingested = occupant.get_ingested_reagents()
 				// Pumping from the stomach first
 				if(ingested)
 					for(var/datum/reagent/x in ingested.reagent_list)
 						ingested.trans_to_obj(beaker, 15)
-				else
+						stomach_pumped = TRUE
+				if(!stomach_pumped)
 					// ...and from the intestines if the stomach's empty
 					var/datum/reagents/digested = occupant.get_digested_reagents()
 					if(digested)
