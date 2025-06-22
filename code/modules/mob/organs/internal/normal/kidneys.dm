@@ -1,7 +1,8 @@
 /obj/item/organ/internal/kidneys
 	name = "kidneys"
-	icon_state = "kidneys"
 	gender = PLURAL
+	icon_state = "kidneys"
+	w_class = ITEM_SIZE_SMALL
 	organ_tag = BP_KIDNEYS
 	parent_organ = BP_GROIN
 	min_bruised_damage = 20

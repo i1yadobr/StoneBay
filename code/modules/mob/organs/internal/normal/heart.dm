@@ -1,9 +1,10 @@
 /obj/item/organ/internal/heart
 	name = "heart"
 	icon_state = "heart-on"
+	dead_icon = "heart-off"
+	w_class = ITEM_SIZE_SMALL
 	organ_tag = BP_HEART
 	parent_organ = BP_CHEST
-	dead_icon = "heart-off"
 	var/pulse = PULSE_NORM
 	var/heartbeat = 0
 	var/beat_sound = 'sound/effects/singlebeat.ogg'
