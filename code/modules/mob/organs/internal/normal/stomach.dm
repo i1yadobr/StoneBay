@@ -3,6 +3,7 @@
 	desc = "Gross. This is hard to stomach."
 	icon_state = "stomach"
 	dead_icon = "stomach"
+	w_class = ITEM_SIZE_SMALL
 	organ_tag = BP_STOMACH
 	parent_organ = BP_CHEST
 	min_bruised_damage = 20

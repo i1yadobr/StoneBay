@@ -1,8 +1,10 @@
 /obj/item/organ/internal/intestines
 	name = "intestines"
 	desc = "A few meters of sausage casing."
+	gender = PLURAL
 	icon_state = "intestines"
 	dead_icon = "intestines"
+	w_class = ITEM_SIZE_NORMAL
 	organ_tag = BP_INTESTINES
 	parent_organ = BP_GROIN
 	min_bruised_damage = 25
