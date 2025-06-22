@@ -223,32 +223,38 @@
 
 /datum/reagent/cryoxadone/affect_blood(mob/living/carbon/M, alien, removed)
 	M.add_chemical_effect(CE_CRYO, 1)
-	if(M.bodytemperature < 170)
-		M.adjustCloneLoss(-50 * removed)
-		M.add_chemical_effect(CE_PAINKILLER, 80)
-		M.add_chemical_effect(CE_OXYGENATED, 1)
-		M.add_chemical_effect(CE_PULSE, -2)
-		if(ishuman(M))
-			var/mob/living/carbon/human/H = M
-			H.adjustToxLoss(max(-1, -12/max(1, H.getToxLoss())) * H.stasis_value)
 
-			for(var/obj/item/organ/external/E in H.organs)
-				if(BP_IS_ROBOTIC(E))
-					continue
-				if(E.status & ORGAN_BLEEDING && prob(50))
-					E.status &= ~ORGAN_BLEEDING
-					for(var/datum/wound/W in E.wounds)
-						W.clamped = 1
-					H.update_surgery()
+	if(M.bodytemperature >= 170)
+		return
 
-			for(var/obj/item/organ/internal/I in H.internal_organs)
-				if(BP_IS_ROBOTIC(I))
-					continue
-				if(I.damage >= I.min_bruised_damage)
-					continue
-				I.damage = max(I.damage - (removed * H.stasis_value), 0)
+	M.adjustCloneLoss(-50 * removed)
+	M.add_chemical_effect(CE_PAINKILLER, 80)
+	M.add_chemical_effect(CE_OXYGENATED, 1)
+	M.add_chemical_effect(CE_PULSE, -2)
 
-			H.heal_organ_damage((5 * removed * H.stasis_value), (7.5 * removed * H.stasis_value))
+	if(!ishuman(M))
+		return
+
+	var/mob/living/carbon/human/H = M
+	H.adjustToxLoss(max(-1, -12/max(1, H.getToxLoss())) * H.stasis_value)
+
+	for(var/obj/item/organ/external/E in H.organs)
+		if(BP_IS_ROBOTIC(E))
+			continue
+		if(E.status & ORGAN_BLEEDING && prob(50))
+			E.status &= ~ORGAN_BLEEDING
+			for(var/datum/wound/W in E.wounds)
+				W.clamped = 1
+			H.update_surgery()
+
+	for(var/obj/item/organ/internal/I in H.internal_organs)
+		if(BP_IS_ROBOTIC(I))
+			continue
+		if(I.damage >= I.min_broken_damage)
+			continue
+		I.damage = max(I.damage - (removed * H.stasis_value), 0)
+
+	H.heal_organ_damage((5 * removed * H.stasis_value), (7.5 * removed * H.stasis_value))
 
 /datum/reagent/clonexadone
 	name = "Clonexadone"
@@ -267,34 +273,40 @@
 
 /datum/reagent/clonexadone/affect_blood(mob/living/carbon/M, alien, removed)
 	M.add_chemical_effect(CE_CRYO, 1)
-	if(M.bodytemperature < 170)
-		M.adjustCloneLoss(-150 * removed)
-		M.add_chemical_effect(CE_PAINKILLER, 160)
-		M.add_chemical_effect(CE_OXYGENATED, 2)
-		M.add_chemical_effect(CE_PULSE, -2)
-		if(ishuman(M))
-			var/mob/living/carbon/human/H = M
-			H.adjustToxLoss(max(-1, -16/max(1, H.getToxLoss())) * H.stasis_value)
 
-			for(var/obj/item/organ/external/E in H.organs)
-				if(BP_IS_ROBOTIC(E))
-					continue
-				if(E.status & ORGAN_BLEEDING && prob(80))
-					E.status &= ~ORGAN_BLEEDING
-					for(var/datum/wound/W in E.wounds)
-						W.clamped = 1
-					H.update_surgery()
-				if(E.status & ORGAN_ARTERY_CUT && prob(8 * removed * H.stasis_value))
-					E.status &= ~ORGAN_ARTERY_CUT
+	if(M.bodytemperature >= 170)
+		return
 
-			for(var/obj/item/organ/internal/I in H.internal_organs)
-				if(BP_IS_ROBOTIC(I))
-					continue
-				if(I.damage >= I.min_broken_damage)
-					continue
-				I.damage = max(I.damage - (2 * removed * H.stasis_value), 0)
+	M.adjustCloneLoss(-150 * removed)
+	M.add_chemical_effect(CE_PAINKILLER, 160)
+	M.add_chemical_effect(CE_OXYGENATED, 2)
+	M.add_chemical_effect(CE_PULSE, -2)
 
-			H.heal_organ_damage((10 * removed * H.stasis_value), (12.5 * removed * H.stasis_value))
+	if(!ishuman(M))
+		return
+
+	var/mob/living/carbon/human/H = M
+	H.adjustToxLoss(max(-1, -16/max(1, H.getToxLoss())) * H.stasis_value)
+
+	for(var/obj/item/organ/external/E in H.organs)
+		if(BP_IS_ROBOTIC(E))
+			continue
+		if(E.status & ORGAN_BLEEDING && prob(80))
+			E.status &= ~ORGAN_BLEEDING
+			for(var/datum/wound/W in E.wounds)
+				W.clamped = 1
+			H.update_surgery()
+		if(E.status & ORGAN_ARTERY_CUT && prob(8 * removed * H.stasis_value))
+			E.status &= ~ORGAN_ARTERY_CUT
+
+	for(var/obj/item/organ/internal/I in H.internal_organs)
+		if(BP_IS_ROBOTIC(I))
+			continue
+		if(I.status & ORGAN_DEAD)
+			continue
+		I.damage = max(I.damage - (2 * removed * H.stasis_value), 0)
+
+	H.heal_organ_damage((10 * removed * H.stasis_value), (12.5 * removed * H.stasis_value))
 
 /* Other medicine */
 
