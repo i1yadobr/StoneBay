@@ -1,9 +1,9 @@
-/proc/check_whitelist(key)
+/proc/check_whitelist(ckey)
 	if(!establish_old_db_connection())
 		error("Failed to connect to database in load_whitelist().")
 		log_misc("Failed to connect to database in load_whitelist().")
 		return FALSE
-	var/DBQuery/query = sql_query("SELECT * FROM erro_whitelist WHERE ckey='[lowertext(key)]'", dbcon_old)
+	var/DBQuery/query = sql_query("SELECT * FROM erro_whitelist WHERE ckey='[lowertext(ckey)]'", dbcon_old)
 	while(query.NextRow())
 		return TRUE
 	return FALSE
