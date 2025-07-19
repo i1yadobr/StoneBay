@@ -29,7 +29,7 @@
 	department = "Engineering"
 	department_flag = ENG
 
-	total_positions = 8
+	total_positions = 3
 	spawn_positions = 7
 	supervisors = "the chief engineer"
 	selection_color = "#5b4d20"
