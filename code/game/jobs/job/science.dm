@@ -30,7 +30,7 @@
 	department_flag = SCI
 
 	total_positions = 5
-	spawn_positions = 3
+	spawn_positions = 5
 	supervisors = "the research director"
 	selection_color = "#633d63"
 	economic_modifier = 7
@@ -45,8 +45,8 @@
 	department = "Science"
 	department_flag = SCI
 
-	total_positions = 3
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the research director"
 	selection_color = "#633d63"
 	economic_modifier = 7
@@ -60,8 +60,8 @@
 	department = "Science"
 	department_flag = SCI
 
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "research director"
 	selection_color = "#633d63"
 	economic_modifier = 5
