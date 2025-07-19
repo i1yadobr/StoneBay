@@ -5,31 +5,23 @@
 	path = "exodus"
 
 	shuttle_types = list(
-		/datum/shuttle/autodock/ferry/escape_pod/escape_pod1,
-		/datum/shuttle/autodock/ferry/escape_pod/escape_pod2,
-		/datum/shuttle/autodock/ferry/escape_pod/escape_pod3,
-		/datum/shuttle/autodock/ferry/escape_pod/escape_pod5,
-		/datum/shuttle/autodock/ferry/supply/drone,
-		/datum/shuttle/autodock/ferry/elevator,
-		/datum/shuttle/autodock/multi/antag/mining,
-		/datum/shuttle/autodock/ferry/research,
-		/datum/shuttle/autodock/ferry/engie,
+		//datum/shuttle/autodock/multi/antag/mining,
+		//datum/shuttle/autodock/ferry/research,
+		//datum/shuttle/autodock/ferry/engie,
 		/datum/shuttle/autodock/ferry/mining,
-		/datum/shuttle/autodock/ferry/security,
-		/datum/shuttle/autodock/multi/antag/rescue,
-		/datum/shuttle/autodock/ferry/emergency/centcom,
-		/datum/shuttle/autodock/ferry/administration,
-		/datum/shuttle/autodock/multi/antag/syndicate,
-		/datum/shuttle/autodock/multi/antag/elite_syndicate,
+		//datum/shuttle/autodock/ferry/security,
+		//datum/shuttle/autodock/multi/antag/rescue,
+		//datum/shuttle/autodock/ferry/emergency/centcom,
+		//datum/shuttle/autodock/ferry/administration,
+		//datum/shuttle/autodock/multi/antag/syndicate,
+		//datum/shuttle/autodock/multi/antag/elite_syndicate,
 		/datum/shuttle/autodock/ferry/deathsquad,
 		/datum/shuttle/autodock/multi/antag/merchant,
-		/datum/shuttle/autodock/multi/antag/skipjack,
+		//datum/shuttle/autodock/multi/antag/skipjack,
 	)
 	load_legacy_saves = TRUE
 
 	map_levels = list(
-		new /datum/space_level/exodus_1,
-		new /datum/space_level/exodus_2,
 		new /datum/space_level/exodus_3,
 		new /datum/space_level/exodus_4,
 		new /datum/space_level/null_space,
@@ -38,7 +30,6 @@
 
 	derelict_levels = list(
 		new /datum/space_level/construction_site,
-		new /datum/space_level/snow_asteroid,
 		new /datum/space_level/derelict,
 		new /datum/space_level/jungle_level,
 		new /datum/space_level/old_restaurant,
@@ -53,8 +44,8 @@
 		)
 	)
 
-	station_name  = "NSS Exodus"
-	station_short = "Exodus"
+	station_name  = "Calypso №17 Mining Base"
+	station_short = "Calypso №17"
 	dock_name     = "NAS Crescent"
 	boss_name     = "Central Command"
 	boss_short    = "Centcomm"
