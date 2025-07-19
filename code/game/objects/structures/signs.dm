@@ -561,3 +561,16 @@
 	name = "\improper GitTrasen Contributor flag"
 	icon_state = "flag_coder"
 	desc = "Weird things happen to the poor souls who write code for all these consoley thingies you use in space."
+
+/obj/structure/sign/flag/soviet
+	name = "soviet flag"
+	icon_state = "flag_commie_alt"
+	desc = "Outrageous! Who put this shit here?!!"
+	description_antag = "<h3><b>Me</b></h3>"
+
+/obj/structure/sign/portrait
+	name = "golden portrait"
+	icon_state = "jack_trasen"
+	desc = "Jack Trasen - a great person, CEO of the legendary megacorpotaion, immortalized on this portrait, striking a majestic pose, looking after every wrongdoing of the crew. The frame on this portrait is made out of pure gold and the glass is especially sturdy, so that nobody would steal such a desired photo. Looks like the portrait is welded to the wall."
+	description_antag = "<h3>His rule shall end as abruptly as it started. Capitalism is a blight upon the human race</h3>"
+
