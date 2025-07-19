@@ -3,8 +3,8 @@
 	title = "Bartender"
 	department = "Service"
 	department_flag = SRV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
@@ -20,8 +20,8 @@
 	title = "Chef"
 	department = "Service"
 	department_flag = SRV
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
@@ -33,8 +33,8 @@
 	title = "Waiter"
 	department = "Service"
 	department_flag = SRV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	no_latejoin = TRUE
 	supervisors = "the bartender"
 	selection_color = "#515151"
@@ -59,8 +59,8 @@
 	title = "Gardener"
 	department = "Service"
 	department_flag = SRV
-	total_positions = 2
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
@@ -88,8 +88,8 @@
 	title = "Cargo Technician"
 	department = "Supply"
 	department_flag = SUP
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 4
+	spawn_positions = 4
 	supervisors = "the quartermaster and the head of personnel"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_mailsorting, access_cargo, access_cargo_bot, access_qm, access_mining, access_mining_station)
@@ -125,7 +125,7 @@
 
 //More or less assistants
 /datum/job/librarian
-	title = "Librarian"
+	title = "Journalist"
 	department = "Civilian"
 	department_flag = CIV
 	total_positions = 1
@@ -134,15 +134,15 @@
 	selection_color = "#515151"
 	access = list(access_library, access_maint_tunnels)
 	minimal_access = list(access_library)
-	alt_titles = list("Journalist")
+	alt_titles = list("Librarian")
 	outfit_type = /decl/hierarchy/outfit/job/librarian
 
 /datum/job/iaa
 	title = "Internal Affairs Agent"
 	department = "Support"
 	department_flag = SPT
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "company officials and Corporate Regulations"
 	selection_color = "#515151"
 	economic_modifier = 7
@@ -161,8 +161,8 @@
 	title = "Lawyer"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of security"
 	selection_color = "#515151"
 	economic_modifier = 3
@@ -175,8 +175,8 @@
 	title = "Clown"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "uncommon sense"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_clown)
@@ -194,8 +194,8 @@
 	title = "Mime"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_mime)
@@ -217,9 +217,9 @@
 	title = "Merchant"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 2
-	spawn_positions = 2
-	availablity_chance = 40
+	total_positions = 0
+	spawn_positions = 0
+	availablity_chance = 0
 	supervisors = "the invisible hand of the market"
 	selection_color = "#515151"
 	ideal_character_age = 30
