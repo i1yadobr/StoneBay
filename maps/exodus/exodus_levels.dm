@@ -15,12 +15,11 @@
 	travel_chance = 5
 
 /datum/space_level/exodus_3
-	path = 'maps/templates/empty_255.dmm'
-	travel_chance = 10
+	path = 'exodus-3.dmm'
+	travel_chance = 5
 	traits = list(
 		ZTRAIT_CONTACT
 	)
-	lateloading_level = TRUE
 	var/list/possible_planet_types = list(
 		/datum/map_generator/planet_generator/asteroid = 1,
 	)
