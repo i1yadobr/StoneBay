@@ -1,21 +1,14 @@
 /datum/job/assistant
-	title = "Assistant"
+	title = "Militia Member"
 	department = "Civilian"
 	department_flag = CIV
 
-	total_positions = -1
-	spawn_positions = -1
-	supervisors = "absolutely everyone"
+	total_positions = 4
+	spawn_positions = 4
+	supervisors = "Warden"
 	selection_color = "#515151"
 	economic_modifier = 1
-	access = list()			//See /datum/job/assistant/get_access()
-	minimal_access = list()	//See /datum/job/assistant/get_access()
-	alt_titles = list("Technical Assistant","Medical Intern","Research Assistant")
+	access = list(access_security, access_eva, access_sec_doors, access_brig, access_maint_tunnels, access_morgue, access_external_airlocks)
+	minimal_access = list(access_security, access_eva, access_sec_doors, access_brig, access_maint_tunnels, access_morgue, access_external_airlocks)
 	outfit_type = /decl/hierarchy/outfit/job/assistant
 	can_be_hired = FALSE
-
-/datum/job/assistant/get_access()
-	if(config.game.assistant_maint)
-		return list(access_maint_tunnels)
-	else
-		return list()
