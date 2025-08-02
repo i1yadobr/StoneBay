@@ -72,7 +72,7 @@
 	var/grav_pulling = 0
 	// Time in ticks between delamination ('exploding') and exploding (as in the actual boom)
 	var/pull_time = 300
-	var/explosion_power_modifier = 0
+	var/explosion_power_modifier = 9
 
 	var/emergency_issued = 0
 
@@ -107,17 +107,11 @@
 
 	var/datum/radiation_source/rad_source = null
 
-	var/is_unstable_and_fun = FALSE
-
 	is_poi = TRUE
 
 /obj/machinery/power/supermatter/Initialize()
 	. = ..()
 	uid = gl_uid++
-	if(prob(50))
-		is_unstable_and_fun = TRUE
-	if(!explosion_power_modifier)
-		explosion_power_modifier = rand(1, 30)
 
 /obj/machinery/power/supermatter/proc/handle_admin_warnings()
 	if(disable_adminwarn)
@@ -321,7 +315,7 @@
 	if(!istype(L)) 	//We are in a crate or somewhere that isn't turf, if we return to turf resume processing but for now.
 		return  //Yeah just stop.
 
-	if((damage > explosion_point) || (is_unstable_and_fun && prob(1)))
+	if(damage > explosion_point)
 		if(!exploded)
 			if(!istype(L, /turf/space))
 				announce_warning()
