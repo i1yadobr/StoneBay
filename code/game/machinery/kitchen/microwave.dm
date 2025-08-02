@@ -238,7 +238,7 @@
 				display_name = "Hotsauce"
 			if(R.type == /datum/reagent/frostoil)
 				display_name = "Coldsauce"
-			dat += "<B>[display_name]:</B> [R.volume] unit\s"
+			dat += "<B>[display_name]:</B> [R.volume] ml"
 
 		if(!length(items_counts) && !length(reagents.reagent_list))
 			dat += "<B>The microwave is empty</B>"

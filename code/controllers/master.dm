@@ -178,7 +178,8 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	// Initialize subsystems.
 	current_ticklimit = config.general.tick_limit_mc_init
 	for (var/datum/controller/subsystem/SS in subsystems)
-		if (SS.flags & SS_NO_INIT)
+		if(SS.flags & SS_NO_INIT)
+			SS.initialized = TRUE // set initialized to TRUE, because the value of initialized may still be checked on SS_NO_INIT subsystems as an "is this ready" check
 			continue
 		SS.Initialize(REALTIMEOFDAY)
 		CHECK_TICK

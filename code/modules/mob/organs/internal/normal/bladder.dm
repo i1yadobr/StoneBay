@@ -3,6 +3,7 @@
 	desc = "Water's transitional station on its way between glass and porcelain."
 	icon_state = "bladder"
 	dead_icon = "bladder"
+	w_class = ITEM_SIZE_SMALL
 	organ_tag = BP_BLADDER
 	parent_organ = BP_GROIN
 	min_bruised_damage = 25

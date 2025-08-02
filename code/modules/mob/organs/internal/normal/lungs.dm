@@ -1,10 +1,10 @@
 /obj/item/organ/internal/lungs
 	name = "lungs"
-	icon_state = "lungs"
 	gender = PLURAL
+	icon_state = "lungs"
+	w_class = ITEM_SIZE_NORMAL
 	organ_tag = BP_LUNGS
 	parent_organ = BP_CHEST
-	w_class = ITEM_SIZE_NORMAL
 	min_bruised_damage = 35
 	min_broken_damage = 65
 	max_damage = 100

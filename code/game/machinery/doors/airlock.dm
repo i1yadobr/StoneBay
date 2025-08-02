@@ -264,8 +264,8 @@ About the new airlock wires panel:
 	. = ..()
 	if(.)
 		hasShocked = 1
-		sleep(10)
-		hasShocked = 0
+		spawn(1 SECOND)
+			hasShocked = 0
 
 /obj/machinery/door/airlock/on_update_icon(keep_light = 0)
 	if(!keep_light)
@@ -985,8 +985,7 @@ About the new airlock wires panel:
 
 /obj/machinery/door/airlock/emp_act(severity)
 	if(prob(20 / severity))
-		spawn(0)
-			open()
+		INVOKE_ASYNC(src, nameof(.proc/open))
 	if(prob(40 / severity))
 		var/duration = SecondsToTicks(30 / severity)
 		if(electrified_until > -1 && (duration + world.time) > electrified_until)

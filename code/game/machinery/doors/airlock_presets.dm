@@ -356,7 +356,7 @@
 	mineral = MATERIAL_PLASMA
 
 /obj/machinery/door/airlock/plasma/attackby(obj/C, mob/user)
-	if(C)
+	if(istype(C))
 		ignite(C.get_temperature_as_from_ignitor())
 	..()
 

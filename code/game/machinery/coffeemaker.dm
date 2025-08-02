@@ -103,7 +103,7 @@
 		SPAN_NOTICE("- Brewing coffee at <b>[speed*100]%</b>.")
 		if(coffeepot)
 			for(var/datum/reagent/drink/cawfee as anything in coffeepot.reagents.reagent_list)
-				. += SPAN_NOTICE("- [cawfee.volume] units of coffee in pot.")
+				. += SPAN_NOTICE("- [cawfee.volume] ml of coffee in pot.")
 
 	if(coffee_cups >= 1)
 		. += SPAN_NOTICE("There [coffee_cups == 1 ? "is" : "are"] [coffee_cups] coffee cup[coffee_cups != 1 && "s"] left.")

@@ -10,6 +10,8 @@ GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 204
 #define CLOSET_STORAGE_ALL   (~0)
 
 // Flags bitmasks.
+#define NONE 0
+#define ALL (~0)
 
 // NOTE: We declare ATOM_FLAG_INITIALIZED earlier, in __initialization.dm, as FLAG(0)
 /// If a dense atom (potentially) only blocks movements from a given direction, i.e. window panes

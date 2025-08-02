@@ -45,8 +45,6 @@
 	/// Holder for a spawners menu.
 	var/datum/spawners_menu/spawners_menu = null
 
-	var/icon/original_mob_icon
-
 	/// Holder for a follow-orbit panel.
 	var/datum/follow_panel/follow_panel = new()
 
@@ -63,7 +61,6 @@
 		T = get_turf(body)               //Where is the body located?
 		attack_logs_ = body.attack_logs_ //preserve our attack logs by copying them to our ghost
 
-		original_mob_icon = body.icon
 		set_appearance(body)
 
 		name = body.mind?.name
@@ -662,12 +659,17 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/observer/ghost/proc/set_appearance(mob/target)
 	ClearTransform()	//make goast stand up
 	ClearOverlays()
-	if(!target || (!original_mob_icon && !ishuman(target)))
+
+	if (!target)
 		icon = initial(icon)
+		icon_state = initial(icon_state)
 		return
-	icon = original_mob_icon
+
+	icon = target.icon
 	icon_state = target.icon_state
+
 	CopyOverlays(target)
+
 	if(ishuman(target))
 		ImmediateOverlayUpdate()
 		var/mob/living/carbon/human/H = target

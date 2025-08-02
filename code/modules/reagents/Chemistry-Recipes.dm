@@ -505,6 +505,12 @@
 	required_reagents = list(/datum/reagent/dexalinp = 1, /datum/reagent/iron = 1, /datum/reagent/blood = 1)
 	result_amount = 3
 
+/datum/chemical_reaction/teleglobin
+	name = "Teleglobin"
+	result = /datum/reagent/teleglobin
+	required_reagents = list(/datum/reagent/nanoblood = 3, /datum/reagent/toxin/plasma = 2, /datum/reagent/chloralhydrate = 1)
+	result_amount = 2
+
 /datum/chemical_reaction/immunobooster
 	name = "Immunobooster"
 	result = /datum/reagent/immunobooster

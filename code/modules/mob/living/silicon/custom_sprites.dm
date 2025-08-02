@@ -69,18 +69,24 @@ GLOBAL_LIST_EMPTY(ai_custom_icons)
 #endif
 	return TRUE
 
-/mob/living/silicon/robot/proc/set_custom_sprite()
-	if(!(ckey in GLOB.robot_custom_icons))
-		return
+/proc/get_custom_hulls(ckey)
+	var/list/custom_hulls = list()
 
-	if(!(custom_sprite && CUSTOM_ITEM_ROBOTS))
-		return
+	if (!CUSTOM_ITEM_ROBOTS)
+		return custom_hulls
 
-	var/list/custom_data = GLOB.robot_custom_icons[ckey][1]
-	var/custom_state = custom_data["item_state"]
-	var/custom_step = custom_data["footstep"]
+	if (!(ckey in GLOB.robot_custom_icons))
+		return custom_hulls
 
-	module_hulls[custom_state] = new /datum/robot_hull(CUSTOM_ITEM_ROBOTS, custom_state, custom_step)
-	apply_hull(custom_state)
+	for (var/list/custom_data as anything in GLOB.robot_custom_icons[ckey])
+		var/custom_state = custom_data["item_state"]
+		var/custom_step = custom_data["footstep"]
 
-	return TRUE
+		custom_hulls[custom_state] = create_hull_with_overrides(list(
+			"icon" = CUSTOM_ITEM_ROBOTS,
+			"icon_state" = custom_state,
+			"panel_icon_state_prefix" = ROBOT_HULL_PANEL_CUSTOM,
+			"footstep_sound" = custom_step,
+		))
+
+	return custom_hulls

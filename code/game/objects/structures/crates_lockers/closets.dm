@@ -595,7 +595,7 @@
 		to_chat(user, SPAN("warning", "You can't do this right now."))
 		return
 	in_use = TRUE
-	if(open_delay && !do_after(user, open_delay, luck_check_type = LUCK_CHECK_COMBAT))
+	if(!locked && open_delay && !do_after(user, open_delay, luck_check_type = LUCK_CHECK_COMBAT))
 		in_use = FALSE
 		return
 	toggle(user)

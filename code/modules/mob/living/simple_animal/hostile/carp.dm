@@ -51,7 +51,7 @@
 
 /mob/living/simple_animal/hostile/carp/holographic
 	icon_state = "carp"
-	icon = 'icons/mob/hologram.dmi'
+	icon = 'icons/mob/silicon/hologram.dmi'
 
 	alpha = 127
 

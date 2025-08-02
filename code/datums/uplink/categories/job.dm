@@ -17,6 +17,7 @@
 	item_cost = 5
 	job_specific = list("Chef")
 	path = /obj/item/gun/meathook
+	meme_item = TRUE
 
 /datum/uplink_item/item/job/mimesword
 	name = "Baguette Sword"
@@ -32,12 +33,12 @@
 	job_specific = list("Clown")
 	path = /obj/item/clothing/shoes/clown_shoes/traitorshoes
 
-/datum/uplink_item/item/job/vuvuzela 
+/datum/uplink_item/item/job/vuvuzela
 	name = "Vuvuzela"
 	desc = "A very loud vuvuzela. It's loud enough to make you and all around you deaf."
 	item_cost = 2
 	job_specific = list("Clown")
-	path = /obj/item/bikehorn/vuvuzela/traitor 
+	path = /obj/item/bikehorn/vuvuzela/traitor
 
 /datum/uplink_item/item/job/empty_grenades
 	name = "Empty Grenades"

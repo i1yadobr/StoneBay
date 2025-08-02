@@ -125,9 +125,9 @@
 
 #define CUSTOM_ITEM_OBJ 'icons/obj/custom_items_obj.dmi'
 #define CUSTOM_ITEM_MOB null
-#define CUSTOM_ITEM_ROBOTS 'icons/mob/robots_custom.dmi'
-#define CUSTOM_ITEM_AI 'icons/mob/ai_custom/ai_cores.dmi'
-#define CUSTOM_ITEM_AI_HOLO 'icons/mob/ai_custom/ai_holos.dmi'
+#define CUSTOM_ITEM_ROBOTS 'icons/mob/silicon/robot_custom.dmi'
+#define CUSTOM_ITEM_AI 'icons/mob/silicon/ai_custom.dmi'
+#define CUSTOM_ITEM_AI_HOLO 'icons/mob/silicon/hologram_custom.dmi'
 
 #define WALL_CAN_OPEN 1
 #define WALL_OPENING 2

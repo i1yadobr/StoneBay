@@ -962,7 +962,6 @@ GLOBAL_LIST_INIT(robot_modules, list(
 	src.modules += new /obj/item/gun/energy/laser/mounted(src)
 	src.modules += new /obj/item/gun/energy/plasmacutter(src)
 	src.modules += new /obj/item/borg/combat/shield(src)
-	src.modules += new /obj/item/borg/combat/mobility(src)
 	src.emag = new /obj/item/gun/energy/lasercannon/mounted(src)
 	..()
 

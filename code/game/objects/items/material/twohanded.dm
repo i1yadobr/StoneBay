@@ -156,7 +156,7 @@
 		return
 
 	if(tank)
-		. += "\icon[tank] \The [tank] contains [get_fuel()]/[tank.max_fuel] units of fuel!"
+		. += "\icon[tank] \The [tank] contains [get_fuel()]/[tank.max_fuel] ml of fuel!"
 	else
 		. += "There is no tank attached."
 
