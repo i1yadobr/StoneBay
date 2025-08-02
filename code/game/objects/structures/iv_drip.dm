@@ -15,7 +15,7 @@
 	set category = "Object"
 	set src in range(1)
 	if(!istype(usr, /mob/living))
-		to_chat(usr, "<span class='warning'>You can't do that.</span>")
+		to_chat(usr, SPAN_WARNING("You can't do that."))
 		return
 	var/N = input("Amount per transfer from this:","[src]") as null|anything in transfer_amounts
 	if(N)
@@ -140,13 +140,16 @@
 	if(Adjacent(user))
 		attack_hand(user)
 
+/obj/structure/iv_drip/AltClick(mob/user)
+	return set_APTFT()
+
 /obj/structure/iv_drip/verb/toggle_mode()
 	set category = "Object"
 	set name = "Toggle IV Mode"
 	set src in view(1)
 
 	if(!istype(usr, /mob/living))
-		to_chat(usr, "<span class='warning'>You can't do that.</span>")
+		to_chat(usr, SPAN_WARNING("You can't do that."))
 		return
 
 	if(usr.incapacitated())
@@ -166,10 +169,10 @@
 
 	if(beaker)
 		if(beaker.reagents && beaker.reagents.total_volume)
-			. += "<span class='notice'>Attached is \a [beaker] with [beaker.reagents.total_volume] ml of liquid.</span>"
+			. += SPAN_NOTICE("Attached is \a [beaker] with [beaker.reagents.total_volume] ml of liquid.")
 		else
-			. += "<span class='notice'>Attached is an empty [beaker].</span>"
+			. += SPAN_NOTICE("Attached is an empty [beaker].")
 	else
-		. += "<span class='notice'>No chemicals are attached.</span>"
+		. += SPAN_NOTICE("No chemicals are attached.")
 
-	. += "<span class='notice'>[attached ? attached : "No one"] is hooked up to it.</span>"
+	. += SPAN_NOTICE("[attached ? attached : "No one"] is hooked up to it.")
