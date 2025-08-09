@@ -165,6 +165,15 @@
 		return tail_slim
 	return ..()
 
+/datum/species/tajaran/handle_vision(mob/living/carbon/human/H)
+	..()
+	if(H.eyecheck() < FLASH_PROTECTION_NONE && !H.eye_blind)
+		var/obj/item/organ/internal/eyes/E = H.internal_organs_by_name[BP_EYES]
+		E.damage += 1
+		if(prob(40))
+			H.flash_eyes()
+			to_chat(H, SPAN_DANGER("Your eyes hurt from the intensified light!"))
+
 /datum/species/skrell
 	name = SPECIES_SKRELL
 	name_plural = SPECIES_SKRELL
