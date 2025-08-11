@@ -265,6 +265,6 @@
 /obj/item/clothing/shoes/cheapboots/work/toeless
 	name = "toeless workboots"
 	desc = "A pair of sham work boots. These have never been designed for use in industrial settings.<br>They had their toes trimmed off to accomodate for species whose toes hold claws."
-	icon_state = "workbootstoeless"
+	icon_state = "workbootscheaptoeless"
 	species_restricted = null
 	coverage = 0.8
