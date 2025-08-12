@@ -113,8 +113,8 @@
 	playsound(loc, 'sound/items/Wirecutter.ogg', 50, 1)
 	user.visible_message(SPAN_NOTICE("[user] trims their \the [src]'s toes off."))
 	if(loc == user)
-		user.drop(src)
-		user.pick_or_drop(new_shoes)
+		user.replace_item(src, new_shoes, TRUE, TRUE)
+		return
 	qdel(src)
 
 /obj/item/clothing/shoes/on_update_icon()
