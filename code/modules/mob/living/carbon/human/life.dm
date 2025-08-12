@@ -941,16 +941,18 @@
 					if(bodytemperature <= getSpeciesOrSynthTemp(COLD_LEVEL_1))
 						bodytemp.icon_state = "temp-4"
 						overlay_fullscreen("temperature", /atom/movable/screen/fullscreen/frost, min(ceil((getSpeciesOrSynthTemp(COLD_LEVEL_1) - bodytemperature) / 5), 4))
-						return 1
-					if(bodytemperature <= base_temperature - temp_step*3)
+					else if(bodytemperature <= base_temperature - temp_step*3)
 						bodytemp.icon_state = "temp-3"
+						clear_fullscreen("temperature")
 					else if(bodytemperature <= base_temperature - temp_step*2)
 						bodytemp.icon_state = "temp-2"
+						clear_fullscreen("temperature")
 					else if(bodytemperature <= base_temperature - temp_step*1)
 						bodytemp.icon_state = "temp-1"
+						clear_fullscreen("temperature")
 					else
 						bodytemp.icon_state = "temp0"
-					clear_fullscreen("temperature")
+						clear_fullscreen("temperature")
 	return 1
 
 /mob/living/carbon/human/handle_hud_icons_health()
