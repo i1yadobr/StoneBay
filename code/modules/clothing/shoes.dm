@@ -96,10 +96,25 @@
 		to_chat(user, SPAN_WARNING("You can't find a way to modify \the [src]..."))
 		return
 
-	var/obj/item/clothing/shoes/new_shoes = new trimmed_variant(get_turf(src))
+	var/obj/item/clothing/shoes/new_shoes = new trimmed_variant(loc == user ? get_turf(src) : loc)
+	new_shoes.name = "toeless [src.name]"
 	new_shoes.armor = src.armor
+	transfer_fingerprints_to(new_shoes)
+	if(is_bloodied)
+		new_shoes.is_bloodied = TRUE
+		new_shoes.blood_color = src.blood_color
+	if(holding)
+		holding.forceMove(new_shoes)
+		new_shoes.holding = holding
+		holding = null
+		new_shoes.verbs |= /obj/item/clothing/shoes/proc/draw_knife
+	new_shoes.CopyOverlays(src)
+
 	playsound(loc, 'sound/items/Wirecutter.ogg', 50, 1)
 	user.visible_message(SPAN_NOTICE("[user] trims their \the [src]'s toes off."))
+	if(loc == user)
+		user.drop(src)
+		user.pick_or_drop(new_shoes)
 	qdel(src)
 
 /obj/item/clothing/shoes/on_update_icon()
