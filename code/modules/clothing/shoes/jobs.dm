@@ -27,6 +27,7 @@
 	armor = list(melee = 70, bullet = 70, laser = 60, energy = 25, bomb = 20, bio = 30)
 	siemens_coefficient = 0.5
 	can_hold_knife = 1
+	trimmed_variant = /obj/item/clothing/shoes/jackboots/unathi
 	cold_protection = FEET
 	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE
 
@@ -40,7 +41,7 @@
 	siemens_coefficient = 0.4
 
 /obj/item/clothing/shoes/jackboots/unathi
-	name = "toe-less jackboots"
+	name = "toeless jackboots"
 	desc = "Modified pair of jackboots, particularly comfortable for those species whose toes hold claws."
 	item_state = "digiboots"
 	siemens_coefficient = 0.7
@@ -54,6 +55,7 @@
 	armor = list(melee = 80, bullet = 40, laser = 50, energy = 25, bomb = 40, bio = 0)
 	siemens_coefficient = 0.4
 	can_hold_knife = 1
+	trimmed_variant = /obj/item/clothing/shoes/workboots/toeless
 
 	drop_sound = SFX_DROP_BOOTS
 	pickup_sound = SFX_PICKUP_BOOTS
@@ -64,7 +66,7 @@
 		)
 
 /obj/item/clothing/shoes/workboots/toeless
-	name = "toe-less workboots"
+	name = "toeless workboots"
 	desc = "A pair of toeless work boots designed for use in industrial settings. Modified for species whose toes have claws."
 	icon_state = "workbootstoeless"
 	siemens_coefficient = 0.6
