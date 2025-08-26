@@ -3006,6 +3006,7 @@
 #include "code\modules\splash_text\splash_text.dm"
 #include "code\modules\supermatter\setup_supermatter.dm"
 #include "code\modules\supermatter\supermatter.dm"
+#include "code\modules\supermatter\supermatter_act.dm"
 #include "code\modules\synthesized_instruments\echo_editor.dm"
 #include "code\modules\synthesized_instruments\env_editor.dm"
 #include "code\modules\synthesized_instruments\event_manager.dm"

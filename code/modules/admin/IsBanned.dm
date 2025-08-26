@@ -20,10 +20,10 @@
 		message_admins("<span class='notice'>Failed Login: [key] - Guests not allowed</span>")
 		key_cache[key] = 0
 		return list("reason"="guest", "desc"="\nReason: Guests not allowed. Please sign in with a byond account.")
-	
+
 	//Whitelist
-	if(config.whitelist.enable && !check_whitelist(key))
-		log_access("Failed Login: [key] - Not on whitelist")
+	if(config.whitelist.enable && !check_whitelist(ckeytext))
+		log_access("Failed Login: [ckeytext] - Not on whitelist")
 		return list("reason"="whitelist", "desc" = "\nReason: You are not on the white list for this server. <a href='[config.link.banappeals]'>[config.link.banappeals]")
 
 	var/client/C = GLOB.ckey_directory[ckeytext]

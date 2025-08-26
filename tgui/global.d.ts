@@ -44,6 +44,11 @@ type ByondType = {
    */
   TRIDENT: number | null;
 
+ /**
+   * Version of Blink engine of WebView2. Null if N/A.
+   */
+  BLINK: number | null;
+
   /**
    * True if browser is IE8 or lower.
    */
@@ -142,6 +147,12 @@ type ByondType = {
    * Uses a special encoding to preserve `Infinity` and `NaN`.
    */
   parseJson(text: string): any;
+  
+  /**
+  * Allows user to download the specified blob via File System API.
+  * Opens a File Picker pop-up for user to specify the download destination.
+  */
+  saveBlob(blob: Blob, filename: string, ext: string): void;
 
   /**
    * Sends a message to `/datum/tgui_window` which hosts this window instance.

@@ -46,6 +46,7 @@
 	icon_state = "darkmatter"
 	base_icon_state = "darkmatter"
 
+	atom_flags = ATOM_FLAG_UNPUSHABLE
 	density = 1
 	anchored = 0
 	light_outer_range = 4
@@ -492,9 +493,19 @@
 
 	user.rad_act(new /datum/radiation_source(new /datum/radiation/preset/supermatter(4), src))
 
-/obj/machinery/power/supermatter/Bumped(atom/AM)
+/obj/machinery/power/supermatter/supermatter_act()
+	qdel_self()
+	return TRUE
+
+/obj/machinery/power/supermatter/throw_impact(atom/hit_atom, speed, target_zone)
+	. = ..()
+	if (hit_atom.density)
+		Consume(hit_atom)
+
+/obj/machinery/power/supermatter/Bumped(atom/movable/AM)
 	if(istype(AM, /obj/effect))
 		return
+
 	if(isliving(AM))
 		AM.visible_message("<span class=\"warning\">\The [AM] slams into \the [src] inducing a resonance... \his body starts to glow and catch flame before flashing into ash.</span>",\
 		"<span class=\"danger\">You slam into \the [src] as your ears are filled with unearthly ringing. Your last thought is \"Oh, fuck.\"</span>",\
@@ -505,14 +516,25 @@
 
 	Consume(AM)
 
-/obj/machinery/power/supermatter/proc/Consume(mob/living/user)
-	if(istype(user))
-		user.dust()
-		power += 200
-	else
-		qdel(user)
+#define SUPERMATTER_MIN_THROW_DIST 1
+#define SUPERMATTER_MAX_THROW_DIST 3
 
-	power += 200
+/obj/machinery/power/supermatter/proc/Consume(atom/victim)
+	if (istype(victim, /obj/machinery/power/supermatter))
+		var/obj/machinery/power/supermatter/supermatter_victim = victim
+		if (config.misc.meme_content)
+			supermatter_victim.throw_at(get_edge_target_turf(supermatter_victim, get_dir(src, supermatter_victim)), rand(SUPERMATTER_MIN_THROW_DIST, SUPERMATTER_MAX_THROW_DIST), 1)
+			supermatter_victim.visible_message(SPAN_WARNING("\The [supermatter_victim] briefly lights up and instantly starts flying in the opposite direction."))
+		else
+			power += supermatter_victim.power
+
+	if (!victim.supermatter_act())
+		return
+
+	if (ismob(victim))
+		power += 400
+	else
+		power += 200
 
 	//Some poor sod got eaten, go ahead and irradiate people nearby.
 	for(var/mob/living/l in range(10))
@@ -524,6 +546,11 @@
 
 	var/datum/radiation_source/temp_src = SSradiation.radiate(src, new /datum/radiation/preset/supermatter(10))
 	temp_src.schedule_decay(20 SECONDS)
+
+	playsound(src, GET_SFX(SFX_SUPERMATTER), 100)
+
+#undef SUPERMATTER_MIN_THROW_DIST
+#undef SUPERMATTER_MAX_THROW_DIST
 
 /proc/supermatter_pull(atom/target, pull_range = 255, pull_power = STAGE_FIVE)
 	var/list/movable_atoms = list()

@@ -30,6 +30,7 @@
 	var/can_hold_knife
 	var/obj/item/holding
 	var/track_blood = 0
+	var/obj/item/clothing/shoes/trimmed_variant
 
 /obj/item/clothing/shoes/Destroy()
 	if(holding)
@@ -50,10 +51,10 @@
 	holding.forceMove(get_turf(usr))
 
 	if(usr.put_in_hands(holding))
-		usr.visible_message("<span class='warning'>\The [usr] pulls \the [holding] out of \the [src]!</span>", range = 1)
+		usr.visible_message(SPAN_WARNING("\The [usr] pulls \the [holding] out of \the [src]!"), range = 1)
 		holding = null
 	else
-		to_chat(usr, "<span class='warning'>Your need an empty, unbroken hand to do that.</span>")
+		to_chat(usr, SPAN_WARNING("Your need an empty, unbroken hand to do that."))
 		holding.forceMove(src)
 
 	if(!holding)
@@ -71,19 +72,50 @@
 /obj/item/clothing/shoes/attackby(obj/item/I, mob/user)
 	if(can_hold_knife && is_type_in_list(I, list(/obj/item/material/shard, /obj/item/material/butterfly, /obj/item/material/kitchen/utensil, /obj/item/material/hatchet/tacknife, /obj/item/material/knife/shiv)))
 		if(holding)
-			to_chat(user, "<span class='warning'>\The [src] is already holding \a [holding].</span>")
+			to_chat(user, SPAN_WARNING("\The [src] is already holding \a [holding]."))
 			return
 		if(!user.drop(I, src))
 			return
 		holding = I
-		user.visible_message("<span class='notice'>\The [user] shoves \the [I] into \the [src].</span>", range = 1)
+		user.visible_message(SPAN_NOTICE("\The [user] shoves \the [I] into \the [src]."), range = 1)
 		verbs |= /obj/item/clothing/shoes/proc/draw_knife
 		update_icon()
 	else if(istype(I, /obj/item/flame/match))
 		var/obj/item/flame/match/M = I
 		M.light_by_shoes(user)
+	else if(isWirecutter(I))
+		cut_toes(user)
 	else
 		return ..()
+
+/obj/item/clothing/shoes/proc/cut_toes(mob/user)
+	if(!("exclude" in species_restricted))
+		to_chat(user, SPAN_NOTICE("\The [src] don't require modification."))
+		return
+	if(!trimmed_variant)
+		to_chat(user, SPAN_WARNING("You can't find a way to modify \the [src]..."))
+		return
+
+	var/obj/item/clothing/shoes/new_shoes = new trimmed_variant(loc == user ? get_turf(src) : loc)
+	new_shoes.name = "toeless [src.name]"
+	new_shoes.armor = src.armor
+	transfer_fingerprints_to(new_shoes)
+	if(is_bloodied)
+		new_shoes.is_bloodied = TRUE
+		new_shoes.blood_color = src.blood_color
+	if(holding)
+		holding.forceMove(new_shoes)
+		new_shoes.holding = holding
+		holding = null
+		new_shoes.verbs |= /obj/item/clothing/shoes/proc/draw_knife
+	new_shoes.CopyOverlays(src)
+
+	playsound(loc, 'sound/items/Wirecutter.ogg', 50, 1)
+	user.visible_message(SPAN_NOTICE("[user] trims their \the [src]'s toes off."))
+	if(loc == user)
+		user.replace_item(src, new_shoes, TRUE, TRUE)
+		return
+	qdel(src)
 
 /obj/item/clothing/shoes/on_update_icon()
 	ClearOverlays()

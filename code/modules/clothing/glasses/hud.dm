@@ -102,6 +102,7 @@
 	matrix_icon = "night"
 	darkness_view = 7
 	see_invisible = SEE_INVISIBLE_NOLIGHTING
+	flash_protection = FLASH_PROTECTION_REDUCED
 	origin_tech = list(TECH_MAGNET = 2)
 
 /obj/item/device/hudmatrix/night/Initialize()
