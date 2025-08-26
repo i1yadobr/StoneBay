@@ -39,6 +39,7 @@
 	var/max_bleeding = 0               // Maximum potential bleeding.
 	var/bandaged = 0                   // Bandaged stage.
 	var/scabbed = 0                    // Scabbing stage.
+	var/clamped = FALSE                // Clamped state. Completely prevents bleeding, but also prevents sharp regeneration and is interrupted by any damage.
 	var/bleeding = 0                   // Effective bleeding severity.
 
 	var/last_dam = -1                  // used in healing/processing calculations.
@@ -332,49 +333,9 @@
 
 	return all_items
 
-/obj/item/organ/external/proc/is_dislocated()
-	if(dislocated > 0)
-		return 1
-	if(is_parent_dislocated())
-		return 1//if any parent is dislocated, we are considered dislocated as well
-	return 0
-
-/obj/item/organ/external/proc/is_parent_dislocated()
-	var/obj/item/organ/external/O = parent
-	while(O && O.dislocated != -1)
-		if(O.dislocated == 1)
-			return 1
-		O = O.parent
-	return 0
-
-
-/obj/item/organ/external/proc/dislocate()
-	if(dislocated == -1)
-		return
-
-	dislocated = 1
-	if(owner)
-		owner.verbs |= /mob/living/carbon/human/proc/undislocate
-
-/obj/item/organ/external/proc/undislocate()
-	if(dislocated == -1)
-		return
-
-	dislocated = 0
-	if(owner)
-		owner.shock_stage += 20
-
-		//check to see if we still need the verb
-		for(var/obj/item/organ/external/limb in owner.organs)
-			if(limb.dislocated == 1)
-				return
-
-		owner.verbs -= /mob/living/carbon/human/proc/undislocate
-
 /obj/item/organ/external/update_health()
 	damage = min(max_damage, (brute_dam + burn_dam))
 	return
-
 
 /obj/item/organ/external/replaced(mob/living/carbon/human/target)
 	..()
@@ -530,6 +491,21 @@ This function completely restores a damaged organ to perfect condition.
 //external organs handle brokenness a bit differently when it comes to damage.
 /obj/item/organ/external/is_broken()
 	return ((status & ORGAN_CUT_AWAY) || ((status & ORGAN_BROKEN) && !splinted))
+
+/obj/item/organ/external/proc/is_dislocated()
+	if(dislocated > 0)
+		return 1
+	if(is_parent_dislocated())
+		return 1//if any parent is dislocated, we are considered dislocated as well
+	return 0
+
+/obj/item/organ/external/proc/is_parent_dislocated()
+	var/obj/item/organ/external/O = parent
+	while(O && O.dislocated != -1)
+		if(O.dislocated == 1)
+			return 1
+		O = O.parent
+	return 0
 
 //Determines if we even need to process this organ.
 /obj/item/organ/external/proc/need_process()
@@ -705,7 +681,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		 	heal_blunt_damage(heal_amt, FALSE, FALSE, FALSE)
 
 		// Sharp damage can't regenerate naturally if it's still bleeding
-		if(!(status & ORGAN_BLEEDING))
+		if(!(status & ORGAN_BLEEDING) && !clamped)
 			heal_sharp_damage(heal_amt, FALSE, FALSE, FALSE)
 
 	if(scabbed < max_bleeding)
@@ -735,12 +711,14 @@ Note that amputating the affected organ does in fact remove the infection from t
 		bandaged = clamp(bandaged, 0, max_bleeding)
 		scabbed = clamp(scabbed, 0, max_bleeding)
 
-		bleeding = max_bleeding - max(bandaged, scabbed)
+		bleeding = clamped ? 0 : floor(max_bleeding - max(bandaged, scabbed))
 
 		if(bleeding)
 			status |= ORGAN_BLEEDING
 		else
 			status &= ~ORGAN_BLEEDING
+
+	brute_dam = blunt_dam + cut_dam + pierce_dam
 
 	// Ratios
 	burn_ratio = burn_dam / max_damage
@@ -951,14 +929,20 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return 1
 
 /obj/item/organ/external/proc/bandage()
-	var/rval = 0
-	status &= ~ORGAN_BLEEDING
-	for(var/datum/wound/W in wounds)
-		rval |= !W.bandaged
-		W.bandaged = 1
-	if(rval)
-		owner.update_surgery()
-	return rval
+	if(bandaged >= max_bleeding)
+		return 0 // No bandaging needed
+
+	if(bandaged)
+		. = 2 // Replacing bandages
+	else
+		. = 1 // Bandaging anew
+
+	bandaged = max_bleeding
+	clamped = FALSE
+
+	update_damages()
+	owner?.update_surgery()
+	return
 
 /obj/item/organ/external/proc/salve()
 	var/rval = 0
@@ -976,17 +960,17 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return rval
 
 /obj/item/organ/external/proc/clamp_organ()
-	var/rval = 0
-	src.status &= ~ORGAN_BLEEDING
-	for(var/datum/wound/W in wounds)
-		rval |= !W.clamped
-		W.clamped = 1
-	return rval
+	if(clamped || !max_bleeding)
+		return FALSE
+
+	clamped = TRUE
+	bandaged = 0
+	update_damages()
+	owner?.update_surgery()
+	return TRUE
 
 /obj/item/organ/external/proc/clamped()
-	for(var/datum/wound/W in wounds)
-		if(W.clamped)
-			return 1
+	return clamped
 
 /obj/item/organ/external/proc/remove_clamps()
 	var/rval = 0
@@ -1313,6 +1297,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return incision
 
 /obj/item/organ/external/proc/open()
+
+
+	/// NOWOUNDS TODO: Replace
 	var/datum/wound/cut/incision = get_incision()
 	. = 0
 	if(!incision)
@@ -1328,6 +1315,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		. = SURGERY_RETRACTED
 	if(. == SURGERY_RETRACTED && encased && (status & ORGAN_BROKEN))
 		. = SURGERY_ENCASED
+	//////////////////
 
 /obj/item/organ/external/proc/jostle_bone(force)
 	if(!(status & ORGAN_BROKEN)) //intact bones stay still

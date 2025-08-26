@@ -344,6 +344,10 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 			if(internal_damage)
 				owner.custom_pain("You feel something rip in your [name]!", 50, affecting = src)
 
+		if(clamped && !clean)
+			clamped = FALSE
+			owner?.update_surgery()
+
 	// Sync the organ's damage with its wounds
 	update_damages()
 
@@ -637,3 +641,26 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 		status |= ORGAN_TENDON_CUT
 		return TRUE
 	return FALSE
+
+/obj/item/organ/external/proc/dislocate()
+	if(dislocated == -1)
+		return
+
+	dislocated = 1
+	if(owner)
+		owner.verbs |= /mob/living/carbon/human/proc/undislocate
+
+/obj/item/organ/external/proc/undislocate()
+	if(dislocated == -1)
+		return
+
+	dislocated = 0
+	if(owner)
+		owner.shock_stage += 20
+
+		//check to see if we still need the verb
+		for(var/obj/item/organ/external/limb in owner.organs)
+			if(limb.dislocated == 1)
+				return
+
+		owner.verbs -= /mob/living/carbon/human/proc/undislocate
