@@ -90,11 +90,10 @@
 		SSticker.mode.check_win()
 	to_chat(src, SPAN_DEADSAY("[show_dead_message]"))
 
-	if(!client)
-		return TRUE
+	if(client)
+		var/turf/death_turf = get_turf(src)
+		var/death_turf_descriptor = "[death_turf.loc] \[[death_turf.x],[death_turf.y],[death_turf.z]\]"
+		log_and_message_staff("has died in [death_turf_descriptor]", src, death_turf)
 
-	var/turf/death_turf = get_turf(src)
-	var/death_turf_descriptor = "[death_turf.loc] \[[death_turf.x],[death_turf.y],[death_turf.z]\]"
-	log_and_message_staff("has died in [death_turf_descriptor]", src, death_turf)
 	return TRUE
 
