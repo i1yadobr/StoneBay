@@ -59,6 +59,8 @@
 	if(isundead(owner))
 		return
 
+	update_coagulation()
+
 	if(germ_level > INFECTION_LEVEL_ONE)
 		if(prob(1))
 			to_chat(owner, "<span class='danger'>Your skin itches.</span>")
