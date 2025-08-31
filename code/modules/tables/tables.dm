@@ -9,7 +9,7 @@
 	layer = TABLE_LAYER
 	throwpass = 1
 	turf_height_offset = 12
-	climb_delay = 2 SECONDS
+	climb_delay = 1.5 SECONDS
 
 	rad_resist_type = /datum/rad_resist/none
 
@@ -47,7 +47,9 @@
 
 		if(reinforced)
 			maxhealth += reinforced.integrity / 2
-			climb_delay = 3 SECONDS // Reinforced tables are harder to climb. Somehow.
+			climb_delay = 2.5 SECONDS // Reinforced tables are harder to climb. Somehow.
+		else
+			climb_delay = 1.5 SECONDS
 
 	health += maxhealth - old_maxhealth
 
