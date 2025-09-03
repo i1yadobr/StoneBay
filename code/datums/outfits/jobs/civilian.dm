@@ -1,6 +1,18 @@
 /decl/hierarchy/outfit/job/assistant
 	name = OUTFIT_JOB_NAME("Assistant")
 
+/decl/hierarchy/outfit/job/bandit
+	name = OUTFIT_JOB_NAME("Bandit")
+	uniform = /obj/item/clothing/under/color/black
+	suit = /obj/item/clothing/suit/storage/toggle/hoodie/black
+	mask = /obj/item/clothing/mask/balaclava
+	shoes = /obj/item/clothing/shoes/jackboots
+	l_pocket = /obj/item/gun/projectile/pistol/holdout
+	r_pocket = /obj/item/ammo_magazine/mc9mm
+	id_type = /obj/item/card/id/syndicate
+	pda_type = /obj/item/device/pda/ninja
+	backpack_contents = list(/obj/item/material/hatchet/tacknife = 1)
+
 /decl/hierarchy/outfit/job/service
 	l_ear = /obj/item/device/radio/headset/headset_service
 	hierarchy_type = /decl/hierarchy/outfit/job/service

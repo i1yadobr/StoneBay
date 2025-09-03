@@ -129,7 +129,7 @@
 			. += "<del>[rank]</del></td><td><b> \[SPECIES RESTRICTED]</b></td></tr>"
 			continue
 
-		if(("Assistant" in pref.job_low) && (rank != "Assistant"))
+		if(("Bandit" in pref.job_low) && (rank != "Bandit"))
 			. += "<font color=grey>[rank]</font></td><td></td></tr>"
 			continue
 		if((rank in GLOB.command_positions) || (rank == "AI"))//Bold head jobs
@@ -141,8 +141,8 @@
 
 		. += "<a href='?src=\ref[src];switch_job=[rank]'>"
 
-		if(rank == "Assistant")//Assistant is special
-			if("Assistant" in pref.job_low)
+		if(rank == "Bandit")//Bandit is special
+			if("Bandit" in pref.job_low)
 				. += " <font color=55cc55>\[Yes]</font>"
 			else
 				. += " <font color=black>\[No]</font>"
@@ -165,7 +165,7 @@
 		if(GET_RANDOM_JOB)
 			. += "<u><a href='?src=\ref[src];job_alternative=1'>Get random job if preferences unavailable</a></u>"
 		if(BE_ASSISTANT)
-			. += "<u><a href='?src=\ref[src];job_alternative=1'>Be assistant if preference unavailable</a></u>"
+			. += "<u><a href='?src=\ref[src];job_alternative=1'>Be bandit if preference unavailable</a></u>"
 		if(RETURN_TO_LOBBY)
 			. += "<u><a href='?src=\ref[src];job_alternative=1'>Return to lobby if preference unavailable</a></u>"
 
@@ -216,7 +216,7 @@
 	if(!job)
 		return 0
 
-	if(role == "Assistant")
+	if(role == "Bandit")
 		if(job.title in pref.job_low)
 			pref.job_low -= job.title
 		else

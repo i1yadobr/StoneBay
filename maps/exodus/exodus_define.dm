@@ -101,3 +101,7 @@
 		/area/shuttle/administration/,
 		/area/shuttle/specops/centcom,
 	)
+
+/datum/map/exodus/New()
+	..()
+	allowed_jobs.Remove(/datum/job/warden)

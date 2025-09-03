@@ -213,7 +213,7 @@ var/global/datum/controller/occupations/job_master
 			if(job.faction_restricted && (player.client.prefs.background != GLOB.using_map.company_name || (player.client.prefs.nanotrasen_relation in COMPANY_OPPOSING)))
 				continue
 
-			if(istype(job, GetJob("Assistant"))) // We don't want to give him assistant, that's boring!
+			if(istype(job, GetJob("Bandit"))) // We don't want to give him bandit, that's boring!
 				continue
 
 			if(job.is_restricted(player.client.prefs))
@@ -310,14 +310,14 @@ var/global/datum/controller/occupations/job_master
 
 		HandleFeedbackGathering()
 
-		//People who wants to be assistants, sure, go on.
+		//People who wants to be bandits, sure, go on.
 		Debug("DO, Running Assistant Check 1")
 		var/datum/job/assist = new DEFAULT_JOB_TYPE ()
 		var/list/assistant_candidates = FindOccupationCandidates(assist, 3)
 		Debug("AC1, Candidates: [assistant_candidates.len]")
 		for(var/mob/new_player/player in assistant_candidates)
 			Debug("AC1 pass, Player: [player]")
-			AssignRole(player, "Assistant")
+			AssignRole(player, "Bandit")
 			assistant_candidates -= player
 		Debug("DO, AC1 end")
 
@@ -376,11 +376,11 @@ var/global/datum/controller/occupations/job_master
 
 		Debug("DO, Running AC2")
 
-		// For those who wanted to be assistant if their preferences were filled, here you go.
+		// For those who wanted to be bandit if their preferences were filled, here you go.
 		for(var/mob/new_player/player in unassigned)
 			if(player.client.prefs.alternate_option == BE_ASSISTANT)
 				Debug("AC2 Assistant located, Player: [player]")
-				AssignRole(player, "Assistant")
+				AssignRole(player, "Bandit")
 
 		//For ones returning to lobby
 		for(var/mob/new_player/player in unassigned)

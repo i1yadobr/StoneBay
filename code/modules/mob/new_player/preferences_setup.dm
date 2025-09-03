@@ -71,8 +71,8 @@
 	if(equip_preview_mob && job_master)
 		// Determine what job is the highest priority, and dress them up as such.
 		// Order of the same priority jobs is not enforced.
-		if("Assistant" in job_low)
-			previewJob = job_master.GetJob("Assistant")
+		if("Bandit" in job_low)
+			previewJob = job_master.GetJob("Bandit")
 		else
 			for(var/job_title in selected_jobs)
 				previewJob = job_master.occupations_by_title[job_title]
