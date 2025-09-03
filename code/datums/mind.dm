@@ -539,7 +539,7 @@
 //HUMAN
 /mob/living/carbon/human/mind_initialize()
 	..()
-	if(!mind.assigned_role)	mind.assigned_role = "Assistant"	//defualt
+	if(!mind.assigned_role)	mind.assigned_role = "Bandit"	//defualt
 
 //metroid
 /mob/living/carbon/metroid/mind_initialize()
