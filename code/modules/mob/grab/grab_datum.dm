@@ -288,7 +288,7 @@
 
 	//assailant.visible_message("Debug: p_diff = [p_diff] | breakability = [breakability]") //Debug message
 
-	if(prob(p_diff))
+	if(p_diff > assailant.poise && prob(p_diff))
 		if(can_downgrade_on_resist && !prob(p_diff))
 			affecting.visible_message(SPAN("warning", "[affecting] has loosened [assailant]'s grip!"))
 			assailant.setClickCooldown(10)
