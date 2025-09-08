@@ -265,14 +265,14 @@
 		p_mult -= 0.1
 	if(affecting.confused)
 		p_mult -= 0.1
-	if(!affecting.lying)
-		p_mult += 0.1
+	if(affecting.lying)
+		p_mult -= 0.1
 
 	//if(break_strength < 1)
 	//	to_chat(G.assailant, "<span class='warning'>You try to break free but feel that unless something changes, you'll never escape!</span>")
 	//	return
 
-	var/p_lost = (5.5 + affecting.poise/10 - assailant.poise/20) * p_mult
+	var/p_lost = round((5.5 + affecting.poise/10 - assailant.poise/15) * p_mult, 0.1)
 	assailant.damage_poise(p_lost)
 	affecting.damage_poise(2.0)
 
