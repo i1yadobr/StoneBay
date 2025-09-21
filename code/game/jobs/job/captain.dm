@@ -1,5 +1,5 @@
 /datum/job/captain
-	title = "Captain"
+	title = "Директор"
 	department = "Command"
 	head_position = 1
 	department_flag = COM
@@ -28,7 +28,7 @@
 	return get_all_station_access()
 
 /datum/job/hop
-	title = "Head of Personnel"
+	title = "Заместитель директора"
 	department = "Civilian"
 	head_position = 1
 	department_flag = COM|CIV|SRV

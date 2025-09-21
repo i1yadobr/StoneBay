@@ -1,5 +1,5 @@
 /datum/job/chief_engineer
-	title = "Chief Engineer"
+	title = "Бригадир"
 	head_position = 1
 	department = "Engineering"
 	department_flag = ENG|COM
@@ -25,7 +25,7 @@
 	outfit_type = /decl/hierarchy/outfit/job/engineering/chief_engineer
 
 /datum/job/engineer
-	title = "Station Engineer"
+	title = "Инженер"
 	department = "Engineering"
 	department_flag = ENG
 
@@ -37,7 +37,7 @@
 	minimal_player_age = 7
 	access = list(access_eva, access_engine, access_engine_equip, access_tech_storage, access_maint_tunnels, access_external_airlocks, access_construction, access_atmospherics, access_emergency_storage)
 	minimal_access = list(access_eva, access_engine, access_engine_equip, access_tech_storage, access_maint_tunnels, access_external_airlocks, access_construction, access_atmospherics, access_emergency_storage)
-	alt_titles = list("Maintenance Technician", "Engine Technician", "Electrician", "Atmospheric Technician" = /decl/hierarchy/outfit/job/engineering/atmos)
+	alt_titles = list("Специалист по техническому обслуживанию", "Инженер Ячеек Содержания", "Электрик", "Специалист по атмосферным воздействиям" = /decl/hierarchy/outfit/job/engineering/atmos)
 	outfit_type = /decl/hierarchy/outfit/job/engineering/engineer
 	hud_icon = "hudengineer"
 
