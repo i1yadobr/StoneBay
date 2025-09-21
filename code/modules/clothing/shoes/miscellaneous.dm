@@ -33,7 +33,6 @@
 	armor = list(melee = 100, bullet = 90, laser = 80, energy = 25, bomb = 50, bio = 30)
 	item_flags = ITEM_FLAG_NOSLIP
 	siemens_coefficient = 0.4
-	species_restricted = null
 	can_hold_knife = 1
 
 	item_state_slots = list(
@@ -49,7 +48,6 @@
 	armor = list(melee = 100, bullet = 90, laser = 80, energy = 25, bomb = 50, bio = 30)
 	item_flags = ITEM_FLAG_NOSLIP
 	siemens_coefficient = 0.1
-	species_restricted = null
 	can_hold_knife = 1
 
 	cold_protection = FEET
@@ -236,7 +234,6 @@
 	icon_state = "jackboots"
 	item_state_slots = null
 	can_hold_knife = 1
-	trimmed_variant = /obj/item/clothing/shoes/cheapboots/toeless
 	cold_protection = FEET
 	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE
 	cold_protection = FEET
@@ -244,27 +241,12 @@
 	heat_protection = FEET
 	max_heat_protection_temperature = SHOE_MAX_HEAT_PROTECTION_TEMPERATURE
 
-/obj/item/clothing/shoes/cheapboots/toeless
-	name = "toeless budget jackboots"
-	desc = "Tall cheap-ass leatherlike boots with a hint of artificial shine.<br>This pair had their toes trimmed off to accomodate for species whose toes hold claws."
-	item_state = "digiboots"
-	species_restricted = null
-	coverage = 0.8
-
 /obj/item/clothing/shoes/cheapboots/work
 	name = "workboots"
 	icon_state = "workbootscheap"
 	desc = "A pair of sham work boots. These have never been designed for use in industrial settings."
-	trimmed_variant = /obj/item/clothing/shoes/cheapboots/work/toeless
 
 	item_state_slots = list(
 		slot_l_hand_str = "jackboots",
 		slot_r_hand_str = "jackboots",
 		)
-
-/obj/item/clothing/shoes/cheapboots/work/toeless
-	name = "toeless workboots"
-	desc = "A pair of sham work boots. These have never been designed for use in industrial settings.<br>They had their toes trimmed off to accomodate for species whose toes hold claws."
-	icon_state = "workbootscheaptoeless"
-	species_restricted = null
-	coverage = 0.8

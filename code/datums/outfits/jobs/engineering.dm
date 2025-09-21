@@ -11,9 +11,9 @@
 	BACKPACK_OVERRIDE_ENGINEERING
 
 /decl/hierarchy/outfit/job/engineering/chief_engineer
-	name = OUTFIT_JOB_NAME("Chief engineer")
+	name = OUTFIT_JOB_NAME("Бригадир")
 	head = /obj/item/clothing/head/hardhat/white
-	uniform = /obj/item/clothing/under/rank/chief_engineer
+	uniform = /obj/item/clothing/under/veles
 	belt = /obj/item/storage/belt/utility/chief
 	l_ear = /obj/item/device/radio/headset/heads/ce
 	gloves = /obj/item/clothing/gloves/thick
@@ -21,9 +21,9 @@
 	pda_type = /obj/item/device/pda/heads/ce
 
 /decl/hierarchy/outfit/job/engineering/engineer
-	name = OUTFIT_JOB_NAME("Engineer")
+	name = OUTFIT_JOB_NAME("Инженер")
 	head = /obj/item/clothing/head/hardhat
-	uniform = /obj/item/clothing/under/rank/engineer
+	uniform = /obj/item/clothing/under/veles/veles_blue
 	r_pocket = /obj/item/device/t_scanner
 	id_type = /obj/item/card/id/engineering
 	pda_type = /obj/item/device/pda/engineering

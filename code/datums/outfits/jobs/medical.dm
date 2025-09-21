@@ -10,7 +10,7 @@
 	BACKPACK_OVERRIDE_MEDICAL
 
 /decl/hierarchy/outfit/job/medical/cmo
-	name = OUTFIT_JOB_NAME("Chief Medical Officer")
+	name = OUTFIT_JOB_NAME("Главный врач")
 	l_ear  =/obj/item/device/radio/headset/heads/cmo
 	uniform = /obj/item/clothing/under/rank/chief_medical_officer
 	suit = /obj/item/clothing/suit/storage/toggle/labcoat/cmo
@@ -21,7 +21,7 @@
 	pda_type = /obj/item/device/pda/heads/cmo
 
 /decl/hierarchy/outfit/job/medical/doctor
-	name = OUTFIT_JOB_NAME("Medical Doctor")
+	name = OUTFIT_JOB_NAME("Врач")
 	uniform = /obj/item/clothing/under/rank/medical
 	suit = /obj/item/clothing/suit/storage/toggle/labcoat
 	l_hand = /obj/item/storage/firstaid/adv
@@ -29,16 +29,16 @@
 	id_type = /obj/item/card/id/medical
 
 /decl/hierarchy/outfit/job/medical/doctor/emergency_physician
-	name = OUTFIT_JOB_NAME("Emergency physician")
+	name = OUTFIT_JOB_NAME("Врач скорой помощи")
 	suit = /obj/item/clothing/suit/storage/toggle/fr_jacket
 
 /decl/hierarchy/outfit/job/medical/doctor/surgeon
-	name = OUTFIT_JOB_NAME("Surgeon")
+	name = OUTFIT_JOB_NAME("Хирург")
 	uniform = /obj/item/clothing/under/rank/medical/scrubs/blue
 	head = /obj/item/clothing/head/surgery/blue
 
 /decl/hierarchy/outfit/job/medical/virologist
-	name = OUTFIT_JOB_NAME("Virologist")
+	name = OUTFIT_JOB_NAME("Эпидемиолог")
 	uniform = /obj/item/clothing/under/rank/virologist
 	suit = /obj/item/clothing/suit/storage/toggle/labcoat/virologist
 	mask = /obj/item/clothing/mask/surgical
@@ -48,7 +48,7 @@
 	BACKPACK_OVERRIDE_VIROLOGY
 
 /decl/hierarchy/outfit/job/medical/doctor/nurse
-	name = OUTFIT_JOB_NAME("Nurse")
+	name = OUTFIT_JOB_NAME("Медсестра")
 	suit = null
 
 /decl/hierarchy/outfit/job/medical/doctor/nurse/pre_equip(mob/living/carbon/human/H)
@@ -64,7 +64,7 @@
 		head = null
 
 /decl/hierarchy/outfit/job/medical/chemist
-	name = OUTFIT_JOB_NAME("Chemist")
+	name = OUTFIT_JOB_NAME("Химик")
 	uniform = /obj/item/clothing/under/rank/chemist
 	suit = /obj/item/clothing/suit/storage/toggle/labcoat/chemist
 	id_type = /obj/item/card/id/medical/chemist
@@ -80,18 +80,18 @@
 	backpack_overrides[/decl/backpack_outfit/satchel]  = /obj/item/storage/backpack/satchel/gen
 
 /decl/hierarchy/outfit/job/medical/psychiatrist
-	name = OUTFIT_JOB_NAME("Psychiatrist")
+	name = OUTFIT_JOB_NAME("Психиатр")
 	uniform = /obj/item/clothing/under/rank/psych
 	suit = /obj/item/clothing/suit/storage/toggle/labcoat
 	shoes = /obj/item/clothing/shoes/laceup
 	id_type = /obj/item/card/id/medical/psychiatrist
 
 /decl/hierarchy/outfit/job/medical/psychiatrist/psychologist
-	name = OUTFIT_JOB_NAME("Psychologist")
+	name = OUTFIT_JOB_NAME("Психолог")
 	uniform = /obj/item/clothing/under/rank/psych/turtleneck
 
 /decl/hierarchy/outfit/job/medical/paramedic
-	name = OUTFIT_JOB_NAME("Paramedic")
+	name = OUTFIT_JOB_NAME("Фельдшер")
 	uniform = /obj/item/clothing/under/rank/medical/scrubs/black
 	suit = /obj/item/clothing/suit/storage/toggle/fr_jacket
 	shoes = /obj/item/clothing/shoes/jackboots
@@ -101,7 +101,7 @@
 	flags = OUTFIT_HAS_BACKPACK|OUTFIT_EXTENDED_SURVIVAL
 
 /decl/hierarchy/outfit/job/medical/paramedic/emt
-	name = OUTFIT_JOB_NAME("Emergency medical technician")
+	name = OUTFIT_JOB_NAME("Техник скорой медицинской помощи")
 	uniform = /obj/item/clothing/under/rank/medical/paramedic
 
 /decl/hierarchy/outfit/job/medical/paramedic/emt/New()

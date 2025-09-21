@@ -1,10 +1,11 @@
 /decl/hierarchy/outfit/job/captain
-	name = OUTFIT_JOB_NAME("Captain")
-	head = /obj/item/clothing/head/caphat
+	name = OUTFIT_JOB_NAME("Директор")
+	head = /obj/item/clothing/head/collectable/flatcap
 	glasses = /obj/item/clothing/glasses/sunglasses
-	uniform = /obj/item/clothing/under/rank/captain
+	uniform = /obj/item/clothing/under/gimmick/rank/captain/suit
 	l_ear = /obj/item/device/radio/headset/heads/captain
-	shoes = /obj/item/clothing/shoes/brown
+	shoes = /obj/item/clothing/shoes/green
+	r_hand = /obj/item/storage/briefcase
 	id_type = /obj/item/card/id/gold
 	pda_type = /obj/item/device/pda/captain
 	backpack_contents = list(/obj/item/storage/box/ids = 1)
@@ -29,8 +30,8 @@
 				qdel(medal)
 
 /decl/hierarchy/outfit/job/hop
-	name = OUTFIT_JOB_NAME("Head of Personnel")
-	uniform = /obj/item/clothing/under/rank/head_of_personnel
+	name = OUTFIT_JOB_NAME("Заместитель директора")
+	uniform = /obj/item/clothing/under/lawyer
 	l_ear = /obj/item/device/radio/headset/heads/hop
 	shoes = /obj/item/clothing/shoes/brown
 	id_type = /obj/item/card/id/silver

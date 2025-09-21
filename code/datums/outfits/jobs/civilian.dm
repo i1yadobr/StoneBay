@@ -13,7 +13,7 @@
 	suit = /obj/item/clothing/suit/armor/vest
 
 /decl/hierarchy/outfit/job/service/chef
-	name = OUTFIT_JOB_NAME("Chef")
+	name = OUTFIT_JOB_NAME("Повар")
 	uniform = /obj/item/clothing/under/rank/chef
 	suit = /obj/item/clothing/suit/chef
 	head = /obj/item/clothing/head/chefhat
@@ -34,7 +34,7 @@
 	BACKPACK_OVERRIDE_HYDRO
 
 /decl/hierarchy/outfit/job/service/janitor
-	name = OUTFIT_JOB_NAME("Janitor")
+	name = OUTFIT_JOB_NAME("Уборщик")
 	uniform = /obj/item/clothing/under/rank/janitor
 	id_type = /obj/item/card/id/civilian/janitor
 	pda_type = /obj/item/device/pda/janitor
@@ -77,7 +77,7 @@
 	pda_type = /obj/item/device/pda/librarian
 
 /decl/hierarchy/outfit/job/internal_affairs_agent
-	name = OUTFIT_JOB_NAME("Internal affairs agent")
+	name = OUTFIT_JOB_NAME("Представитель штаба")
 	l_ear = /obj/item/device/radio/headset/ia
 	uniform = /obj/item/clothing/under/rank/internalaffairs
 	suit = /obj/item/clothing/suit/storage/toggle/suit/black

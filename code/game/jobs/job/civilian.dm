@@ -3,8 +3,8 @@
 	title = "Bartender"
 	department = "Service"
 	department_flag = SRV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
@@ -17,7 +17,7 @@
 		H.add_mutation(MUTATION_BARTENDER)
 
 /datum/job/chef
-	title = "Chef"
+	title = "Повар"
 	department = "Service"
 	department_flag = SRV
 	total_positions = 2
@@ -26,15 +26,15 @@
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
 	minimal_access = list(access_kitchen)
-	alt_titles = list("Cook")
+	alt_titles = list("Повар")
 	outfit_type = /decl/hierarchy/outfit/job/service/chef
 
 /datum/job/barmonkey
 	title = "Waiter"
 	department = "Service"
 	department_flag = SRV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	no_latejoin = TRUE
 	supervisors = "the bartender"
 	selection_color = "#515151"
@@ -59,8 +59,8 @@
 	title = "Gardener"
 	department = "Service"
 	department_flag = SRV
-	total_positions = 2
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
@@ -70,7 +70,7 @@
 
 //Cargo
 /datum/job/qm
-	title = "Quartermaster"
+	title = "Заведующий логистикой"
 	department = "Supply"
 	department_flag = SUP
 	total_positions = 1
@@ -85,11 +85,11 @@
 	outfit_type = /decl/hierarchy/outfit/job/cargo/qm
 
 /datum/job/cargo_tech
-	title = "Cargo Technician"
+	title = "Грузчик"
 	department = "Supply"
 	department_flag = SUP
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 3
+	spawn_positions = 3
 	supervisors = "the quartermaster and the head of personnel"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_mailsorting, access_cargo, access_cargo_bot, access_qm, access_mining, access_mining_station)
@@ -100,8 +100,8 @@
 	title = "Shaft Miner"
 	department = "Supply"
 	department_flag = SUP
-	total_positions = 3
-	spawn_positions = 3
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the quartermaster and the head of personnel"
 	selection_color = "#515151"
 	economic_modifier = 5
@@ -111,7 +111,7 @@
 	outfit_type = /decl/hierarchy/outfit/job/cargo/mining
 
 /datum/job/janitor
-	title = "Janitor"
+	title = "Уборщик"
 	department = "Service"
 	department_flag = SRV
 	total_positions = 1
@@ -120,7 +120,7 @@
 	selection_color = "#515151"
 	access = list(access_janitor, access_maint_tunnels, access_engine, access_research, access_sec_doors, access_medical)
 	minimal_access = list(access_janitor, access_maint_tunnels, access_engine, access_research, access_sec_doors, access_medical)
-	alt_titles = list("Custodian","Sanitation Technician")
+	alt_titles = list("Дворник","Санитарный техник")
 	outfit_type = /decl/hierarchy/outfit/job/service/janitor
 
 //More or less assistants
@@ -128,8 +128,8 @@
 	title = "Librarian"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_library, access_maint_tunnels)
@@ -138,11 +138,11 @@
 	outfit_type = /decl/hierarchy/outfit/job/librarian
 
 /datum/job/iaa
-	title = "Internal Affairs Agent"
+	title = "Представитель штаба"
 	department = "Support"
 	department_flag = SPT
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 1
+	spawn_positions = 1
 	supervisors = "company officials and Corporate Regulations"
 	selection_color = "#515151"
 	economic_modifier = 7
@@ -161,8 +161,8 @@
 	title = "Lawyer"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of security"
 	selection_color = "#515151"
 	economic_modifier = 3
@@ -175,8 +175,8 @@
 	title = "Clown"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "uncommon sense"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_clown)
@@ -194,8 +194,8 @@
 	title = "Mime"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_mime)

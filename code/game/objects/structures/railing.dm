@@ -11,7 +11,6 @@
 	throwpass = 1
 	can_buckle = 1
 	buckle_require_restraints = 1
-	climb_delay = 2 SECONDS
 	var/health = 40
 	var/maxhealth = 40
 	var/check = 0
@@ -262,7 +261,7 @@
 	user.visible_message("<span class='warning'>\The [user] starts climbing over \the [src]!</span>")
 	LAZYDISTINCTADD(climbers, user)
 
-	if(!do_after(user, (user.get_climb_speed() * climb_delay), src))
+	if(!do_after(user,(issmall(user) ? 30 : 50), src))
 		LAZYREMOVE(climbers, user)
 		return
 

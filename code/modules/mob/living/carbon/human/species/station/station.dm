@@ -225,7 +225,7 @@
 	default_eye_color = "#ffffff"
 	organs_icon = 'icons/mob/human_races/organs/skrell.dmi'
 
-	cold_level_1 = 260 //Default 260 - Lower is better
+	cold_level_1 = 280 //Default 260 - Lower is better
 	cold_level_2 = 220 //Default 200
 	cold_level_3 = 130 //Default 120
 
@@ -233,8 +233,8 @@
 	heat_level_2 = 650 //Default 500
 	heat_level_3 = 1100 //Default 1000
 
-	cold_discomfort_level = 290 //16.85C, not more because they will have a constant messages
-	heat_discomfort_level = 315 //41.85C
+	cold_discomfort_level = 295 //16.85C, not more because they will have a constant messages
+	heat_discomfort_level = 375 //101.85C
 
 	reagent_tag = IS_SKRELL
 

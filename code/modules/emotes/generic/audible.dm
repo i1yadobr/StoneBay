@@ -299,7 +299,7 @@
 	statpanel_proc = /mob/proc/scream_long_emote
 
 /datum/emote/scream_long/get_sfx_volume()
-	return rand(90, 100)
+	return rand(40, 60)
 
 /mob/proc/scream_long_emote()
 	set name = "Scream (long)"

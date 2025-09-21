@@ -1,5 +1,5 @@
 /datum/job/rd
-	title = "Research Director"
+	title = "Глава Научного Отдела"
 	head_position = 1
 	department = "Science"
 	department_flag = COM|SCI
@@ -24,8 +24,23 @@
 	ideal_character_age = 50
 	outfit_type = /decl/hierarchy/outfit/job/science/rd
 
+/datum/job/seniorscientist
+	title = "Старший Научный Сотрудник"
+	department = "Science"
+	department_flag = SCI
+
+	total_positions = 2
+	spawn_positions = 3
+	supervisors = "the research director"
+	selection_color = "#633d63"
+	economic_modifier = 7
+	access = list(access_robotics, access_tox, access_tox_storage, access_research, access_xenobiology, access_xenoarch)
+	minimal_access = list(access_tox, access_tox_storage, access_research, access_xenoarch)
+	minimal_player_age = 7
+	outfit_type = /decl/hierarchy/outfit/job/science/senior
+
 /datum/job/scientist
-	title = "Scientist"
+	title = "Научный сотрудник"
 	department = "Science"
 	department_flag = SCI
 
@@ -36,12 +51,12 @@
 	economic_modifier = 7
 	access = list(access_robotics, access_tox, access_tox_storage, access_research, access_xenobiology, access_xenoarch)
 	minimal_access = list(access_tox, access_tox_storage, access_research, access_xenoarch)
-	alt_titles = list("Xenoarcheologist", "Anomalist", "Plasma Researcher")
+	alt_titles = list("Ксеноархеолог", "Аномалист", "Исследователь Блюспейса")
 	minimal_player_age = 7
 	outfit_type = /decl/hierarchy/outfit/job/science/scientist
 
 /datum/job/xenobiologist
-	title = "Xenobiologist"
+	title = "Лаборант"
 	department = "Science"
 	department_flag = SCI
 
@@ -56,7 +71,7 @@
 	outfit_type = /decl/hierarchy/outfit/job/science/xenobiologist
 
 /datum/job/roboticist
-	title = "Roboticist"
+	title = "Робототехник"
 	department = "Science"
 	department_flag = SCI
 
@@ -67,6 +82,6 @@
 	economic_modifier = 5
 	access = list(access_robotics, access_tox, access_tox_storage, access_tech_storage, access_morgue, access_research) //As a job that handles so many corpses, it makes sense for them to have morgue access.
 	minimal_access = list(access_robotics, access_tech_storage, access_morgue, access_research) //As a job that handles so many corpses, it makes sense for them to have morgue access.
-	alt_titles = list("Biomechanical Engineer","Mechatronic Engineer")
+	alt_titles = list("Биотехнический инженер","Исследователь Робототехнических аномалий")
 	minimal_player_age = 3
 	outfit_type = /decl/hierarchy/outfit/job/science/roboticist
