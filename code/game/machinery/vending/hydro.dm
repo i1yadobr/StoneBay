@@ -21,6 +21,11 @@
 					/obj/item/plantspray/pests = 20,
 					/obj/item/reagent_containers/syringe = 5,
 					/obj/item/storage/plants = 5)
+
+	illegal = list( /obj/item/seeds/maneaterseed = 3,
+					/obj/item/seeds/kudzuseed = 3,
+					/obj/item/seeds/killertomatoseed = 3)
+
 	premium = list(	/obj/item/reagent_containers/vessel/bottle/chemical/ammonia = 10,
 					/obj/item/reagent_containers/vessel/bottle/chemical/diethylamine = 5)
 

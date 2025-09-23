@@ -34,7 +34,12 @@
 		)
 	illegal = list(
 		/obj/item/reagent_containers/food/packaged/syndicake = 6,
-		/obj/item/reagent_containers/food/packaged/skrellsnacks = 3
+		/obj/item/reagent_containers/food/packaged/skrellsnacks = 3,
+		/obj/item/storage/box/sinpockets = 1
+		)
+	premium = list(
+		/obj/item/reagent_containers/food/superbiteburger = 1,
+		/obj/item/reagent_containers/food/aesirsalad = 1
 		)
 	prices = list(
 		/obj/item/reagent_containers/food/packaged/tweakers = 5,
@@ -74,7 +79,8 @@
 					/obj/item/reagent_containers/food/packaged/cheesiehonkers = 6,
 					/obj/item/reagent_containers/food/packaged/tastybread = 6)
 	illegal = list(	/obj/item/reagent_containers/food/packaged/syndicake = 6,
-					/obj/item/reagent_containers/food/packaged/skrellsnacks = 3)
+					/obj/item/reagent_containers/food/packaged/skrellsnacks = 3,
+					/obj/item/storage/box/sinpockets = 1)
 	prices = list(	/obj/item/reagent_containers/food/packaged/tweakers = 5,
 					/obj/item/reagent_containers/food/packaged/sweetroid = 5,
 					/obj/item/reagent_containers/food/packaged/sugarmatter = 5,
@@ -112,6 +118,7 @@
 					/obj/item/reagent_containers/food/packaged/tastybread = 10)
 	illegal = list(	/obj/item/reagent_containers/food/packaged/hemptogen = 3,
 					/obj/item/reagent_containers/food/packaged/skrellsnacks = 3)
+	premium = list( /obj/item/grenade/chem_grenade/apple = 5)
 	prices = list(	/obj/item/reagent_containers/food/grown/apple = 1,
 					/obj/item/reagent_containers/food/packaged/hematogen = 10,
 					/obj/item/reagent_containers/food/packaged/nutribar = 5,

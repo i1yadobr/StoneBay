@@ -42,5 +42,9 @@
 		/obj/item/material/knife/butch/kitchen = 2
 		)
 
+	premium = list(
+		/obj/item/reagent_containers/spray/pepper = 1
+		)
+
 /obj/item/vending_cartridge/dinnerware
 	build_path = /obj/machinery/vending/dinnerware
