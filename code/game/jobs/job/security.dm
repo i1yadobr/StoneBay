@@ -4,8 +4,8 @@
 	department = "Security"
 	department_flag = SEC|COM
 
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the captain"
 	selection_color = "#8e2929"
 	req_admin_notify = 1
@@ -48,8 +48,8 @@
 	department = "Security"
 	department_flag = SEC
 
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of security"
 	selection_color = "#601c1c"
 	alt_titles = list("Forensic Technician" = /decl/hierarchy/outfit/job/security/detective/forensic)
@@ -64,8 +64,8 @@
 	department = "Security"
 	department_flag = SEC
 
-	total_positions = 4
-	spawn_positions = 4
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of security"
 	selection_color = "#601c1c"
 	alt_titles = list("Junior Officer")

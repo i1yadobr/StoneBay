@@ -15,7 +15,7 @@
 
 	var/open_vacancies   = 0              // How many vacancies were opened by heads
 	var/filled_vacancies = 0              // How many vacancies were filled
-	var/can_be_hired  = TRUE              // Can the Command  open a vacancy for this role?
+	var/can_be_hired  = FALSE              // Can the Command  open a vacancy for this role?
 
 	var/supervisors = null                // Supervisors, who this person answers to directly
 	var/selection_color = "#ffffff"       // Selection screen color
@@ -37,9 +37,9 @@
 
 	var/loadout_allowed = TRUE            // Whether or not loadout equipment is allowed and to be created when joining.
 
-	var/announced = TRUE                  //If their arrival is announced on radio
-	var/latejoin_at_spawnpoints           //If this job should use roundstart spawnpoints for latejoin (offstation jobs etc)
-	var/off_station = FALSE
+	var/announced = FALSE                  //If their arrival is announced on radio
+	var/latejoin_at_spawnpoints = TRUE           //If this job should use roundstart spawnpoints for latejoin (offstation jobs etc)
+	var/off_station = TRUE
 
 	var/hud_icon						  //icon used for Sec HUD overlay
 	var/show_in_setup = TRUE
