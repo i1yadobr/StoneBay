@@ -51,7 +51,7 @@
 					/obj/item/module/power_control = 10,
 					/obj/item/airalarm_electronics = 10,
 					/obj/item/cell = 10,
-					/obj/item/clamp = 10,)
+					/obj/item/clamp = 10)
 	illegal = list( /obj/item/cell/high = 3,
 					/obj/item/airlock_brace = 4,
 					/obj/item/crowbar/brace_jack = 1)
