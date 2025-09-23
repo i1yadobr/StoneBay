@@ -47,8 +47,7 @@
 
 	premium = list(
 		/obj/item/storage/firstaid/surgery = 1,
-		/obj/item/storage/firstaid/adv = 1,
-		/obj/item/device/healthanalyzer_advanced = 1
+		/obj/item/storage/firstaid/adv = 1
 		)
 
 /obj/item/vending_cartridge/medical

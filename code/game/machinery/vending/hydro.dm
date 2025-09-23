@@ -22,9 +22,9 @@
 					/obj/item/reagent_containers/syringe = 5,
 					/obj/item/storage/plants = 5)
 
-	illegal = list( /obj/item/seeds/maneaterseed = 3,
-					/obj/item/seeds/kudzuseed = 3,
-					/obj/item/seeds/killertomatoseed = 3)
+	illegal = list( /obj/item/reagent_containers/spray/plantbgone = 5,
+					/obj/item/reagent_containers/vessel/bucket/watercan = 2,
+					/obj/item/reagent_containers/vessel/bottle/chemical/mutagen = 1)
 
 	premium = list(	/obj/item/reagent_containers/vessel/bottle/chemical/ammonia = 10,
 					/obj/item/reagent_containers/vessel/bottle/chemical/diethylamine = 5)

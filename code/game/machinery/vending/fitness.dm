@@ -40,7 +40,7 @@
 		)
 
 	premium = list(
-		/obj/item/storage/backpack/dufflebag/syndie = 1
+		/obj/item/storage/backpack/dufflebag = 1
 		)
 
 	prices = list(
