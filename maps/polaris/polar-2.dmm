@@ -205,7 +205,7 @@
 "eb" = (/obj/structure/cable{d1 = 1; d2 = 4; icon_state = "1-4"},/obj/effect/decal/cleanable/dirt,/obj/effect/floor_decal/rust,/turf/simulated/floor/plating,/area/polarplanet/shelter/nuclear2)
 "ec" = (/obj/machinery/space_heater,/turf/simulated/floor/trim/wood,/area/polarplanet/library)
 "ed" = (/turf/simulated/floor/trim/wood,/area/polarplanet/library)
-"ee" = (/obj/structure/table/woodentable,/obj/item/device/taperecorder,/obj/item/device/camera,/obj/item/device/eftpos{eftpos_name = "Library EFTPOS scanner"},/turf/simulated/floor/trim/wood,/area/polarplanet/library)
+"ee" = (/obj/structure/table/woodentable,/obj/item/device/taperecorder,/obj/item/device/camera,/obj/item/device/payment_terminal,/turf/simulated/floor/trim/wood,/area/polarplanet/library)
 "ef" = (/turf/simulated/wall,/area/polarplanet/crew_quarters/sleep/cryo)
 "eg" = (/obj/structure/table,/obj/item/storage/firstaid/surgery,/obj/effect/floor_decal/rust,/turf/simulated/floor/tiled/white/rough,/area/polarplanet/shelter/nuclear2)
 "eh" = (/obj/machinery/shower{dir = 8},/obj/effect/floor_decal/rust,/turf/simulated/floor/tiled/freezer,/area/polarplanet/shelter/nuclear2)

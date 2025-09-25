@@ -146,7 +146,7 @@
 								t += "<A href='?src=\ref[src];choice=change_security_level;new_security_level=0'>Select Minimum Security</a><BR>"
 							else
 								t += "<span class='good'><b>Minimum security set: </b></span><BR>"
-							t += "Either the account number or card is required to access this account. EFTPOS transactions will require a card and ask for a pin, but not verify the pin is correct.<hr>"
+							t += "Either the account number or card is required to access this account.<hr>"
 							if(authenticated_account.security_level != BANK_SECURITY_MODERATE)
 								t += "<A href='?src=\ref[src];choice=change_security_level;new_security_level=1'>Select Moderate Security</a><BR>"
 							else

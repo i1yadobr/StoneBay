@@ -550,7 +550,7 @@ var/list/worths = list(
 					/obj/item/device/assembly/signaler = 30,
 					/obj/item/device/assembly = 50,
 					/obj/item/device/uv_light = 150,
-					/obj/item/device/eftpos = 30,
+					/obj/item/device/payment_terminal = 90,
 					/obj/item/device = 90,
 //ORGANS,
 					/obj/item/organ/internal/heart = 1200,

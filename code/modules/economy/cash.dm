@@ -184,7 +184,7 @@
 	name = "Charge card"
 	icon_state = "efundcard"
 	desc = "A card that holds an amount of money."
-	var/owner_name = "" //So the ATM can set it so the EFTPOS can put a valid name on transactions.
+	var/owner_name = "" //So the ATM can set it so the vendomat can put a valid name on transactions.
 
 /obj/item/spacecash/ewallet/examine(mob/user, infix)
 	. = ..()
