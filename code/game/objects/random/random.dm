@@ -1464,11 +1464,15 @@ something, make sure it's not in one of the other lists.
 /obj/random/music_tape/spawn_choices()
 	return list(/obj/item/music_tape_box/jazz = 10,
 				/obj/item/music_tape_box/classic = 30,
+				/obj/item/music_tape_box/special = 10,
 				/obj/item/music_tape_box/frontier = 5,
 				/obj/item/music_tape_box/exodus = 5,
 				/obj/item/music_tape_box/retrojazz = 5,
-				/obj/item/music_tape_box/valhalla = 3)
-
+				/obj/item/music_tape_box/pixel = 5,
+				/obj/item/music_tape_box/cyber = 5,
+				/obj/item/music_tape_box/valhalla = 3,
+				/obj/item/music_tape_box/space = 3
+				)
 // Selects one spawn point out of a group of points with the same ID and asks it to generate its items
 var/list/multi_point_spawns
 

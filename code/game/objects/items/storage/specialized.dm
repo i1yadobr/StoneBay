@@ -269,8 +269,8 @@
 	music_tape = /obj/item/music_tape/syndie
 
 /obj/item/music_tape_box/valhalla
-	name = "Cyber Bar tape box"
-	icon_closed = "box_cyber"
+	name = "Valhalla tape box"
+	icon_closed = "box_valhalla"
 	music_tape = /obj/item/music_tape/random/valhalla
 
 /obj/item/music_tape_box/halloween
@@ -282,3 +282,22 @@
 	name = "Retro Jazz tape box"
 	icon_closed = "box_retrojazz"
 	music_tape = /obj/item/music_tape/random/retrojazz
+
+/obj/item/music_tape_box/space
+	name = "Space tape box"
+	icon_closed = "box_space"
+	music_tape = /obj/item/music_tape/random/space
+
+/obj/item/music_tape_box/cyber
+	name = "Cyber tape box"
+	icon_closed = "box_cyber"
+	music_tape = /obj/item/music_tape/random/cyber
+
+/obj/item/music_tape_box/special
+	name = "Special tape box"
+	music_tape = /obj/item/music_tape/random/special
+
+/obj/item/music_tape_box/pixel
+	name = "Pixel tape box"
+	icon_closed = "box_pixel"
+	music_tape = /obj/item/music_tape/random/pixel
