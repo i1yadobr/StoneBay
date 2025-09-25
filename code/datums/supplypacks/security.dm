@@ -492,19 +492,10 @@
 /decl/hierarchy/supply_pack/security/grenade_launcher
 	name = "Weapons - Grenade launcher"
 	contains = list(/obj/item/gun/projectile/grenade_launcher = 1)
-	cost = 40
+	cost = 200
 	containertype = /obj/structure/closet/crate/secure/weapon
 	containername = "\improper MGL crate"
-	access = access_security
-	security_level = SUPPLY_SECURITY_ELEVATED
-
-/decl/hierarchy/supply_pack/security/revolver_grenade_launcher
-	name = "Weapons - MGL"
-	contains = list(/obj/item/gun/projectile/revolver/grenade_launcher = 1)
-	cost = 100
-	containertype = /obj/structure/closet/crate/secure/weapon
-	containername = "\improper MGL crate"
-	access = access_security
+	access = access_armory
 	security_level = SUPPLY_SECURITY_ELEVATED
 
 /decl/hierarchy/supply_pack/security/grenade_shells
