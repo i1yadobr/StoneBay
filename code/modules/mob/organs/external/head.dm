@@ -22,6 +22,9 @@
 
 	var/has_lips = TRUE
 
+	var/list/teeth_list = list()
+	var/max_teeth = 32
+
 	var/forehead_graffiti
 	var/graffiti_style
 	var/list/forehead_stamps = list()
@@ -33,6 +36,9 @@
 		forehead_stamps = list()
 
 /obj/item/organ/external/head/droplimb(clean, disintegrate = DROPLIMB_EDGE, ignore_children, silent)
+	if(disintegrate == DROPLIMB_BLUNT)
+		for(var/obj/item/stack/teeth/T in src)
+			qdel(T)
 	if(BP_IS_ROBOTIC(src) && disintegrate == DROPLIMB_BURN)
 		var/obj/item/organ/internal/cerebrum/mmi/MMI = owner.internal_organs_by_name[BP_BRAIN]
 		if(istype(MMI))
@@ -293,6 +299,129 @@
 	get_facial_hair_icon()
 	update_icon()
 	owner = null
+
+/obj/item/organ/external/head/proc/get_teeth() //returns collective amount of teeth
+	var/amt = 0
+	if(!teeth_list) teeth_list = list()
+	for(var/obj/item/stack/teeth/T in teeth_list)
+		amt += T.amount
+	return amt
+
+/obj/item/organ/external/head/proc/knock_out_teeth(throw_dir, num=32) //Won't support knocking teeth out of a dismembered head or anything like that yet.
+	num = Clamp(num, 1, max_teeth)
+	var/done = FALSE
+	if(teeth_list && teeth_list.len) //We still have teeth
+		var/stacks = rand(1,5)
+		for(var/curr = 1 to stacks) //Random amount of teeth stacks
+			var/obj/item/stack/teeth/teeth = teeth_list.len ? pick(teeth_list) : null
+			if(!teeth || teeth.zero_amount()) return //No teeth left, abort!
+			var/drop = round(min(teeth.amount, num)/stacks)//Calculate the amount of teeth in the stack
+			if(drop < 1) drop = 1
+			var/obj/item/stack/teeth/T = new teeth.type(owner.loc, drop)
+			teeth.use(drop)
+			T.add_blood(owner)
+			T.update_icon()
+			playsound(owner, SFX_TRAUMA, 75, 0)
+
+			T.SpinAnimation(4, 1)
+			var/angle_of_movement = rand(-180,180)
+			T.AddComponent(/datum/component/movable_physics, _horizontal_velocity = rand(45, 55) / 10, \
+		 	_vertical_velocity = rand(40, 45) / 10, _horizontal_friction = rand(20, 24) / 100, _z_gravity = 9.8, \
+		 	_z_floor = 0, _angle_of_movement = angle_of_movement, _physic_flags = QDEL_WHEN_NO_MOVEMENT, \
+		 	_bounce_sounds = SFX_DROP_TOOTH)
+
+			T.loc.add_blood(owner)
+
+			if(teeth.zero_amount()) //Try to delete the teeth
+				teeth_list.Remove(teeth)
+			GLOB.teeth_lost += drop
+			done = TRUE
+	return done
+
+/obj/item/stack/teeth
+	name = "teeth"
+	singular_name = "tooth"
+	w_class = 1
+	force = 0
+	throwforce = 0
+	max_amount = 32
+	gender = PLURAL
+	desc = "Welp. Someone had their teeth knocked out."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "tooth1"
+	drop_sound = SFX_DROP_TOOTH
+
+/obj/item/stack/teeth/New()
+	..()
+	update_icon()
+	icon_state = "tooth[rand(1,3)]"
+
+/obj/item/stack/teeth/human
+	name = "human teeth"
+	singular_name = "human tooth"
+	var/list/image_list = list() // List of generated teeth icons for object overlay.
+	icon = null // We want to use the new generated overlay from update_icon.
+	icon_state = null
+
+/obj/item/stack/teeth/human/split(tamount, force=FALSE)
+	if(!amount)
+		return null
+
+	var/transfer = clamp(tamount, 0, src.max_amount)
+	if (transfer && src.use(transfer))
+		src.update_icon()
+		var/obj/item/stack/newstack = new src.type(loc, transfer)
+		newstack.color = color
+		transfer_fingerprints_to(newstack)
+		if(is_bloodied)
+			newstack.add_blood(blood_color)
+		if(blood_DNA)
+			newstack.blood_DNA |= blood_DNA
+		newstack.update_icon()
+		return newstack
+	return null
+
+/obj/item/stack/teeth/human/add(extra)
+	. = ..()
+	update_icon()
+
+/obj/item/stack/teeth/human/use(used)
+	. = ..()
+	update_icon()
+
+/obj/item/stack/teeth/human/update_icon()
+	ClearOverlays()
+	image_list.Cut()
+
+	for(var/i = 1 to src.amount)
+		var/obj/item/temp = new
+		temp.icon = 'icons/obj/surgery.dmi'
+		temp.icon_state = "tooth[rand(1,3)]"
+
+		var/icon/I = getFlatIcon(temp)
+		if(src.is_bloodied)
+			var/icon/alpha_mask = I
+			temp.add_blood(src.blood_color)
+			temp.ImmediateOverlayUpdate()
+			I = getFlatIcon(temp)
+			I.AddAlphaMask(alpha_mask)
+
+		I.Shift(pick(NORTH, SOUTH),rand(0,8))
+		I.Shift(pick(EAST, WEST),rand(0,8))
+		I.Turn(rand(0,360))
+		image_list += I
+
+	AddOverlays(image_list)
+	return
+
+/obj/item/stack/teeth/no_teeth //Used for species without unique teeth defined yet
+	max_amount = 0
+
+/obj/item/stack/proc/zero_amount()//Delete if no more teeth
+	if(amount < 1)
+		qdel(src)
+		return 1
+	return 0
 
 /obj/item/skull
 	name = "skull"

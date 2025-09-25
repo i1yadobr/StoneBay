@@ -57,6 +57,8 @@
 	GLOB.human_mob_list |= src
 	..()
 
+	add_teeth()
+	
 	if(dna)
 		dna.ready_dna(src)
 		dna.real_name = real_name
@@ -963,6 +965,7 @@
 		fixblood()
 
 	species.create_organs(src) // Reset our organs/limbs.
+	add_teeth()
 
 	if(!client || !key) //Don't boot out anyone already in the mob.
 		for(var/obj/item/organ/internal/cerebrum/brain/H in world)
@@ -979,6 +982,15 @@
 	losebreath = 0
 
 	..()
+
+/mob/living/carbon/human/proc/add_teeth()
+	var/obj/item/organ/external/head/U = locate() in organs
+	if(istype(U))
+		U.teeth_list.Cut() //Clear out their mouth of teeth
+		var/obj/item/stack/teeth/T = new species.teeth_type(U)
+		U.max_teeth = T.max_amount //Set max teeth for the head based on teeth spawntype
+		T.amount = T.max_amount
+		U.teeth_list += T
 
 /mob/living/carbon/human/proc/is_lung_ruptured()
 	var/obj/item/organ/internal/lungs/L = internal_organs_by_name[BP_LUNGS]

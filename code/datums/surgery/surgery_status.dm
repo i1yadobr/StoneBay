@@ -10,6 +10,7 @@
 	var/list/operated_organs = list()
 	/// Number, used to detemine current face surgery step, refactor this shit.
 	var/face = 0
+	var/jaw = 0
 
 /datum/surgery_status/proc/start_surgery(obj/item/organ/target_organ, target_zone)
 	LAZYADD(ongoing_steps, target_zone)

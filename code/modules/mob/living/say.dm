@@ -91,7 +91,7 @@ var/list/channel_to_radio_key = new
 		message_data["verb"] = pick("yells","roars","hollers")
 		. = TRUE
 	if(lisping)
-		message_data["message"] = lisp(message_data["message"])
+		message_data["message"] = lisp(message_data["message"], lisping_strength)
 		message_data["verb"] = pick("lisps","croups")
 		. = TRUE
 	if(burrieng)
