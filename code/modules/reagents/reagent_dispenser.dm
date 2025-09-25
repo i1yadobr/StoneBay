@@ -117,8 +117,26 @@
 	turf_height_offset = 25
 	climb_delay = 3 SECONDS
 
+/obj/structure/reagent_dispensers/fueltank/Initialize()
+	. = ..()
+
+	var/turf/fueltank_turf = get_turf(loc)
+	LAZYADDASSOC(GLOB.fueltanks, "[fueltank_turf.z]", src)
+
+/obj/structure/reagent_dispensers/fueltank/Move(newloc, direct)
+	. = ..()
+
+	if (. && modded)
+		leak_fuel(amount_per_transfer_from_this / 10.0)
+
 /obj/structure/reagent_dispensers/fueltank/Destroy()
 	QDEL_NULL(rig)
+
+	var/turf/fueltank_turf = get_turf(loc)
+
+	if (fueltank_turf)
+		LAZYREMOVEASSOC(GLOB.fueltanks, "[fueltank_turf.z]", src)
+
 	return ..()
 
 /obj/structure/reagent_dispensers/fueltank/examine(mob/user, infix)
@@ -258,10 +276,6 @@
 		explode()
 	return ..()
 
-/obj/structure/reagent_dispensers/fueltank/Move()
-	. = ..()
-	if (. && modded)
-		leak_fuel(amount_per_transfer_from_this/10.0)
 
 /obj/structure/reagent_dispensers/fueltank/proc/leak_fuel(amount)
 	if (reagents.total_volume == 0)

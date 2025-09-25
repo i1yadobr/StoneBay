@@ -28,3 +28,5 @@ GLOBAL_DATUM_INIT(sun, /datum/sun, new)
 GLOBAL_DATUM_INIT(universe, /datum/universal_state, new)
 
 GLOBAL_LIST_EMPTY(intact_station_closets) // List of closets (excluding crates) located on the STATION Z-LEVELS that have never been opened since initialization. Mostly for the Gatecrasher event, but may be useful for more fun thingies.
+/// List of fueltanks on station z-levels, mostly need for leaking fueltank event
+GLOBAL_LIST_EMPTY(fueltanks)
