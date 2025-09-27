@@ -2583,7 +2583,7 @@
 "aXJ" = (/turf/simulated/floor/tiled/rough,/area/storage/primary)
 "aXK" = (/obj/structure/reagent_dispensers/watertank,/turf/simulated/floor/tiled/rough,/area/storage/primary)
 "aXL" = (/obj/structure/table/standard,/obj/machinery/recharger,/turf/simulated/floor/tiled/rough,/area/storage/primary)
-"aXM" = (/obj/structure/reagent_dispensers/fueltank,/turf/simulated/floor/tiled/rough,/area/storage/primary)
+"aXM" = (/obj/random/fueltank,/turf/simulated/floor/tiled/rough,/area/storage/primary)
 "aXN" = (/obj/effect/floor_decal/industrial/hatch/yellow,/turf/simulated/floor/tiled/rough,/area/storage/primary)
 "aXO" = (/obj/machinery/navbeacon/delivery/ToolStorage,/obj/structure/cable/green{icon_state = "1-2"; d2 = 2; d1 = 1},/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/obj/effect/floor_decal/industrial/outline/yellow,/turf/simulated/floor/tiled/rough,/area/storage/primary)
 "aXP" = (/turf/simulated/wall,/area/hallway/primary/port)

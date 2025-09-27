@@ -271,6 +271,51 @@
 	reagents.remove_reagent(/datum/reagent/fuel,amount)
 	new /obj/effect/decal/cleanable/liquid_fuel(src.loc, amount,1)
 
+/obj/structure/reagent_dispensers/fueltank/fake
+	name = "fueltank"
+	desc = "A tank containing fuel. This one seems softer than usual?"
+
+/obj/structure/reagent_dispensers/fueltank/fake/attackby(obj/item/W, mob/user)
+	add_fingerprint(user)
+	if(isWrench(W))
+		user.visible_message(
+		  "[user] stares at [src] with a dumb bemused look.",
+		  "You try to wrench [src]'s faucet [modded ? "closed" : "open"]... but there's no wrenchable faucet on it."
+		)
+		return
+
+	else if(istype(W, /obj/item/device/assembly_holder))
+		if(rig)
+			to_chat(user, SPAN("warning", "There is another device in the way."))
+			return ..()
+		user.visible_message(
+		  "\The [user] taps [W] against \the [src] repeatedly like a monkey.",
+		  "You try to rig [W] to \the [src]... but you couldn't find a place to attach it to."
+		)
+		return
+
+	else if(W.get_temperature_as_from_ignitor())
+		if (reagents.total_volume == 0)
+			user.visible_message(
+		 	 SPAN("danger", "[user] puts [W] to [src]."),
+		 	 SPAN("danger", "You put \the [W] to \the [src] and nothing happens.")
+			)
+			return
+		log_and_message_admins("triggered a FAKE fueltank explosion with [W].")
+		user.visible_message(
+		  SPAN("danger", "[user] puts [W] to [src]!"),
+		  SPAN("danger", "You put \the [W] to \the [src] and with a moment of lucidity you realize... that it has been fake from the start.")
+		)
+		explode()
+
+		return
+	return ..()
+
+/obj/structure/reagent_dispensers/fueltank/fake/explode()
+	explosion(src.loc, 0, 0, 0, sfx_to_play=SFX_EXPLOSION_FUEL)
+	if(src)
+		qdel(src)
+
 /obj/structure/reagent_dispensers/composttank
 	name = "compost tank"
 	desc = "A tank containing compost. Can be used to recycle excessive seeds."

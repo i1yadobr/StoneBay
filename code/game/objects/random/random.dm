@@ -1469,6 +1469,15 @@ something, make sure it's not in one of the other lists.
 				/obj/item/music_tape_box/retrojazz = 5,
 				/obj/item/music_tape_box/valhalla = 3)
 
+/obj/random/fueltank
+	name = "random fueltank"
+	desc = "This is either a fake fueltank or, rarely, a real one."
+	icon_state = "landmark_fueltank"
+
+/obj/random/fueltank/spawn_choices()
+	return list(/obj/structure/reagent_dispensers/fueltank/fake = 90,
+				/obj/structure/reagent_dispensers/fueltank = 10)
+
 // Selects one spawn point out of a group of points with the same ID and asks it to generate its items
 var/list/multi_point_spawns
 
