@@ -27,9 +27,9 @@ GLOBAL_LIST_INIT(text_to_department_flags, list(
 	"Security" = SEC,
 	"Medical" = MED,
 	"Engineering" = ENG,
-	"Supply" = SUP,
+	"Cargo" = SUP,
 	"Exploration" = EXP,
-	"Service" = SRV,
+	"Provisioning" = SRV,
 	"Civilian" = CIV,
 	"Miscellaneous" = MSC
 ))
@@ -40,9 +40,9 @@ GLOBAL_LIST_INIT(department_flags_to_text, list(
 	num2text(SEC) = "Security",
 	num2text(MED) = "Medical",
 	num2text(ENG) = "Engineering",
-	num2text(SUP) = "Supply",
+	num2text(SUP) = "Cargo",
 	num2text(EXP) = "Exploration",
-	num2text(SRV) = "Service",
+	num2text(SRV) = "Provisioning",
 	num2text(CIV) = "Civilian",
 	num2text(MSC) = "Miscellaneous",
 ))
