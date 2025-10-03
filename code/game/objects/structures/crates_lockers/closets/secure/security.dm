@@ -29,13 +29,15 @@
 
 /obj/structure/closet/secure_closet/hop/WillContain()
 	return list(
+		new /datum/atom_creator/weighted(list(/obj/item/storage/backpack = 75,  /obj/item/storage/backpack/satchel/grey = 25)),
+		new /datum/atom_creator/simple(/obj/item/storage/backpack/dufflebag, 25),
 		/obj/item/storage/garment/head_of_provisioning,
 		/obj/item/melee/telebaton,
 		/obj/item/device/radio/headset/heads/hop,
 		/obj/item/cartridge/hop,
-		/obj/item/storage/box/ids = 2,
-		/obj/item/gun/energy/egun/elite,
-		/obj/item/device/flash
+		/obj/item/device/flash,
+		/obj/item/tank/emergency/oxygen,
+		/obj/item/material/coin/silver = 2
 	)
 
 /obj/structure/closet/secure_closet/hos

@@ -6,7 +6,7 @@
 	department_flag = CIV
 	total_positions = 1
 	spawn_positions = 1
-	supervisors = "the head of personnel"
+	supervisors = "the heads of staff"
 	selection_color = "#515151"
 	access = list(access_library, access_maint_tunnels)
 	minimal_access = list(access_library)
@@ -72,7 +72,7 @@
 	department_flag = CIV
 	total_positions = 1
 	spawn_positions = 1
-	supervisors = "the head of personnel"
+	supervisors = "the sound of silence"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_mime)
 	minimal_access = list(access_maint_tunnels, access_mime)

@@ -88,7 +88,7 @@
 	startswith = list(
 		/obj/item/clothing/glasses/hud/standard/meson,
 		/obj/item/clothing/glasses/sunglasses,
-		/obj/item/clothing/head/soft,
+		/obj/item/clothing/head/soft/hop,
 		/obj/item/clothing/gloves/thick,
 		/obj/item/clothing/head/caphat/hop,
 		/obj/item/clothing/under/rank/hop,

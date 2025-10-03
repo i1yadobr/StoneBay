@@ -53,17 +53,18 @@
 		data["front_photo"] = id_card ? id_card.front : "UNSET"
 		data["side_photo"] = id_card ? id_card.side : "UNSET"
 
-	data["command_jobs"] = format_jobs(GLOB.command_positions)
-	data["support_jobs"] = format_jobs(GLOB.support_positions)
-	data["engineering_jobs"] = format_jobs(GLOB.engineering_positions)
-	data["medical_jobs"] = format_jobs(GLOB.medical_positions)
-	data["science_jobs"] = format_jobs(GLOB.science_positions)
-	data["security_jobs"] = format_jobs(GLOB.security_positions)
-	data["exploration_jobs"] = format_jobs(GLOB.exploration_positions)
-	data["service_jobs"] = format_jobs(GLOB.service_positions)
-	data["supply_jobs"] = format_jobs(GLOB.supply_positions)
-	data["civilian_jobs"] = format_jobs(GLOB.civilian_positions)
-	data["centcom_jobs"] = format_jobs(get_all_centcom_jobs())
+	if(program && program.computer && program.can_run(user, 0, access_crew_records))
+		data["command_jobs"] = format_jobs(GLOB.command_positions)
+		data["support_jobs"] = format_jobs(GLOB.support_positions)
+		data["engineering_jobs"] = format_jobs(GLOB.engineering_positions)
+		data["medical_jobs"] = format_jobs(GLOB.medical_positions)
+		data["science_jobs"] = format_jobs(GLOB.science_positions)
+		data["security_jobs"] = format_jobs(GLOB.security_positions)
+		data["exploration_jobs"] = format_jobs(GLOB.exploration_positions)
+		data["service_jobs"] = format_jobs(GLOB.service_positions)
+		data["supply_jobs"] = format_jobs(GLOB.supply_positions)
+		data["civilian_jobs"] = format_jobs(GLOB.civilian_positions)
+		data["centcom_jobs"] = format_jobs(get_all_centcom_jobs())
 
 	data["all_centcom_access"] = is_centcom ? get_accesses(1) : null
 	data["regions"] = get_accesses()
@@ -84,10 +85,12 @@
 				var/list/accesses = list()
 				for(var/access in get_region_accesses(i))
 					if (get_access_desc(access))
-						accesses.Add(list(list(
-							"desc" = replacetext(get_access_desc(access), " ", "&nbsp"),
-							"ref" = access,
-							"allowed" = (access in id_card.access) ? 1 : 0)))
+						var/obj/item/card/id/I = user.get_id_card()
+						if(!ishuman(user) || (I && (access in I.access)) || (I && (access_crew_records in I.access)))
+							accesses.Add(list(list(
+								"desc" = replacetext(get_access_desc(access), " ", "&nbsp"),
+								"ref" = access,
+								"allowed" = (access in id_card.access) ? 1 : 0)))
 
 				regions.Add(list(list(
 					"name" = get_region_accesses_name(i),
@@ -203,7 +206,7 @@
 				else
 					computer.attackby(user.get_active_hand(), user)
 		if("terminate")
-			if(computer && can_run(user, 1))
+			if(computer && can_run(user, 1, access_crew_records))
 				id_card.assignment = "Terminated"
 				remove_nt_access(id_card)
 				callHook("terminate_employee", list(id_card))

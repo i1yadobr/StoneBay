@@ -310,7 +310,7 @@ FIELD_LIST("Sex", sex, FALSE, record_genders())
 FIELD_NUM("Age", age, FALSE)
 
 
-FIELD_SHORT_SECURE("Department", department, FALSE, access_hop)
+FIELD_SHORT_SECURE("Department", department, FALSE, access_change_ids)
 FIELD_SHORT("Species",species, FALSE)
 
 

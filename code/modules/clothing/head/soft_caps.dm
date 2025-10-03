@@ -111,7 +111,7 @@
 	desc = "It's field cap in NanoTrasen colors. This one seems to be extra durable."
 	icon_state = "ntwhitesoft"
 
-/obj/item/clothing/head/soft/sec/corp/guard
+/obj/item/clothing/head/soft/hop
 	name = "\improper Head of Provisioning cap"
 	desc = "One headwear to rule all of these tasteless yellow caps. This one seems to be extremely durable."
 	icon_state = "hopsoft"

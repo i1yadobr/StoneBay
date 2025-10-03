@@ -1,12 +1,14 @@
 
 /decl/hierarchy/outfit/job/hop
 	name = OUTFIT_JOB_NAME("Head of Provisioning")
+	head = /obj/item/clothing/head/soft/hop
 	uniform = /obj/item/clothing/under/rank/hop
 	l_ear = /obj/item/device/radio/headset/heads/hop
 	shoes = /obj/item/clothing/shoes/brown
+	glasses = /obj/item/clothing/glasses/sunglasses
 	id_type = /obj/item/card/id/provisioning/head
 	pda_type = /obj/item/device/pda/heads/hop
-	//backpack_contents = list(/obj/item/storage/box/ids = 1)
+	backpack_contents = list(/obj/item/clipboard = 1)
 
 /decl/hierarchy/outfit/job/cargo
 	l_ear = /obj/item/device/radio/headset/headset_cargo
