@@ -393,10 +393,10 @@
 	desc = "Lawyer"
 	region = ACCESS_REGION_GENERAL
 
-/var/const/access_crew_records = 68
-/datum/access/crew_records
-	id = access_crew_records
-	desc = "Crew Records"
+/var/const/access_human_resources = 68
+/datum/access/human_resources
+	id = access_human_resources
+	desc = "Human Resources"
 	region = ACCESS_REGION_COMMAND
 
 /******************

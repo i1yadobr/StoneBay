@@ -3,7 +3,7 @@
 	title = "Head of Provisioning"
 	department = "Provisioning"
 	head_position = 1
-	department_flag = COM|SUP|SRV
+	department_flag = SRV|SUP|COM
 
 	total_positions = 1
 	spawn_positions = 1
@@ -13,15 +13,15 @@
 	minimal_player_age = 30
 	minimum_character_age = 25
 	economic_modifier = 10
-	ideal_character_age = 40
+	ideal_character_age = 45
 	faction_restricted = TRUE
 
 	access = list(access_mailsorting, access_cargo, access_cargo_bot, access_qm, access_mining, access_mining_station,
 			access_bar, access_construction, access_kitchen, access_hydroponics, access_janitor, access_tech_storage,
-			access_heads, access_hop, access_RC_announce, access_keycard_auth, access_sec_doors, access_eva, access_maint_tunnels, access_external_airlocks)
+			access_heads, access_hop, access_RC_announce, access_keycard_auth, access_sec_doors, access_eva, access_maint_tunnels, access_external_airlocks, access_change_ids)
 	minimal_access = list(access_mailsorting, access_cargo, access_cargo_bot, access_qm, access_mining, access_mining_station,
 			access_bar, access_construction, access_kitchen, access_hydroponics, access_janitor, access_tech_storage,
-			access_heads, access_hop, access_RC_announce, access_keycard_auth, access_sec_doors, access_eva, access_maint_tunnels, access_external_airlocks)
+			access_heads, access_hop, access_RC_announce, access_keycard_auth, access_sec_doors, access_eva, access_maint_tunnels, access_external_airlocks, access_change_ids)
 
 	outfit_type = /decl/hierarchy/outfit/job/hop
 

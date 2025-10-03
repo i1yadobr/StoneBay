@@ -444,7 +444,7 @@ var/const/NO_EMAG_ACT = -50
 	desc = "A card which represents service and planning."
 	icon_state = "card_hop"
 	item_state = "card_head"
-	job_access_type = /decl/hierarchy/outfit/job/hop
+	job_access_type = /datum/job/hop
 
 /obj/item/card/id/provisioning/cargo
 	name = "identification card"
