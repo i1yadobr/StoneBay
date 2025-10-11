@@ -4,8 +4,8 @@
 	department = "Engineering"
 	department_flag = ENG|COM
 
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the captain"
 	selection_color = "#7f6e2c"
 	req_admin_notify = 1
@@ -29,8 +29,8 @@
 	department = "Engineering"
 	department_flag = ENG
 
-	total_positions = 8
-	spawn_positions = 7
+	total_positions = 5
+	spawn_positions = 5
 	supervisors = "the chief engineer"
 	selection_color = "#5b4d20"
 	economic_modifier = 5
