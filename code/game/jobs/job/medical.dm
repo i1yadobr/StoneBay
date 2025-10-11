@@ -4,8 +4,8 @@
 	department = "Medical"
 	department_flag = MED|COM
 
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the captain"
 	selection_color = "#026865"
 	req_admin_notify = 1
@@ -29,7 +29,7 @@
 	department_flag = MED
 
 	minimal_player_age = 7
-	total_positions = 5
+	total_positions = 3
 	spawn_positions = 3
 	supervisors = "the chief medical officer"
 	selection_color = "#013d3b"
@@ -49,8 +49,8 @@
 	department_flag = MED
 
 	minimal_player_age = 7
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the chief medical officer"
 	selection_color = "#013d3b"
 	economic_modifier = 5
