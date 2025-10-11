@@ -33,8 +33,8 @@
 	title = "Waiter"
 	department = "Service"
 	department_flag = SRV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	no_latejoin = TRUE
 	supervisors = "the bartender"
 	selection_color = "#515151"
@@ -60,7 +60,7 @@
 	department = "Service"
 	department_flag = SRV
 	total_positions = 2
-	spawn_positions = 1
+	spawn_positions = 2
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_hydroponics, access_bar, access_kitchen)
@@ -100,8 +100,8 @@
 	title = "Shaft Miner"
 	department = "Supply"
 	department_flag = SUP
-	total_positions = 3
-	spawn_positions = 3
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the quartermaster and the head of personnel"
 	selection_color = "#515151"
 	economic_modifier = 5
@@ -141,8 +141,8 @@
 	title = "Internal Affairs Agent"
 	department = "Support"
 	department_flag = SPT
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "company officials and Corporate Regulations"
 	selection_color = "#515151"
 	economic_modifier = 7
@@ -175,8 +175,8 @@
 	title = "Clown"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "uncommon sense"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_clown)
@@ -194,8 +194,8 @@
 	title = "Mime"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the head of personnel"
 	selection_color = "#515151"
 	access = list(access_maint_tunnels, access_mime)
@@ -217,8 +217,8 @@
 	title = "Merchant"
 	department = "Civilian"
 	department_flag = CIV
-	total_positions = 2
-	spawn_positions = 2
+	total_positions = 0
+	spawn_positions = 0
 	availablity_chance = 40
 	supervisors = "the invisible hand of the market"
 	selection_color = "#515151"
