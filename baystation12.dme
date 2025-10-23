@@ -3232,6 +3232,7 @@
 #include "maps\exodus\exodus.dm"
 #include "maps\exodus\exodus_define.dm"
 #include "maps\exodus\exodus_levels.dm"
+#include "maps\exodus\exodus_papers.dm"
 #include "maps\frontier\ent_biodome.dm"
 #include "maps\frontier\frontier_areas.dm"
 #include "maps\frontier\frontier_define.dm"
@@ -3252,3 +3253,4 @@
 #include "maps\~mapsystem\maps_jobs.dm"
 #include "~code\global_init.dm"
 // END_INCLUDE
+

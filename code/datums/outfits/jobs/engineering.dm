@@ -17,7 +17,7 @@
 	belt = /obj/item/storage/belt/utility/chief
 	l_ear = /obj/item/device/radio/headset/heads/ce
 	gloves = /obj/item/clothing/gloves/thick
-	id_type = /obj/item/card/id/engineering/head
+	id_type = null
 	pda_type = /obj/item/device/pda/heads/ce
 
 /decl/hierarchy/outfit/job/engineering/engineer
@@ -25,7 +25,7 @@
 	head = /obj/item/clothing/head/hardhat
 	uniform = /obj/item/clothing/under/rank/engineer
 	r_pocket = /obj/item/device/t_scanner
-	id_type = /obj/item/card/id/engineering
+	id_type = null
 	pda_type = /obj/item/device/pda/engineering
 
 /decl/hierarchy/outfit/job/engineering/engineer/void
@@ -38,5 +38,5 @@
 	name = OUTFIT_JOB_NAME("Atmospheric technician")
 	uniform = /obj/item/clothing/under/rank/atmospheric_technician
 	belt = /obj/item/storage/belt/utility/atmostech
-	id_type = /obj/item/card/id/engineering/atmos
+	id_type = null
 	pda_type = /obj/item/device/pda/atmos

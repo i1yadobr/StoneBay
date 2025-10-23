@@ -15,7 +15,7 @@
 	name = OUTFIT_JOB_NAME("Head of security")
 	l_ear = /obj/item/device/radio/headset/heads/hos
 	uniform = /obj/item/clothing/under/rank/head_of_security
-	id_type = /obj/item/card/id/security/head
+	id_type = null
 	pda_type = /obj/item/device/pda/heads/hos
 	backpack_contents = list(/obj/item/handcuffs = 1)
 
@@ -23,7 +23,7 @@
 	name = OUTFIT_JOB_NAME("Warden")
 	uniform = /obj/item/clothing/under/rank/warden
 	l_pocket = /obj/item/device/flash
-	id_type = /obj/item/card/id/security/warden
+	id_type = null
 	pda_type = /obj/item/device/pda/warden
 
 /decl/hierarchy/outfit/job/security/detective
@@ -34,7 +34,7 @@
 	l_pocket = /obj/item/flame/lighter/zippo
 	shoes = /obj/item/clothing/shoes/laceup
 	r_hand = /obj/item/storage/briefcase/crimekit
-	id_type = /obj/item/card/id/security/detective
+	id_type = null
 	pda_type = /obj/item/device/pda/detective
 	backpack_contents = list(/obj/item/storage/box/evidence = 1)
 
@@ -52,5 +52,5 @@
 	uniform = /obj/item/clothing/under/rank/security
 	l_pocket = /obj/item/device/flash
 	r_pocket = /obj/item/handcuffs
-	id_type = /obj/item/card/id/security
+	id_type = null
 	pda_type = /obj/item/device/pda/security

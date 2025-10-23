@@ -4,8 +4,8 @@
 	head_position = 1
 	department_flag = COM
 
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "company officials and Corporate Regulations"
 	selection_color = "#1d1d4f"
 	req_admin_notify = 1
@@ -33,8 +33,8 @@
 	head_position = 1
 	department_flag = COM|CIV|SRV
 
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the captain"
 	selection_color = "#2f2f7f"
 	req_admin_notify = 1

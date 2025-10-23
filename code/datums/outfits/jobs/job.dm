@@ -7,7 +7,7 @@
 	shoes = /obj/item/clothing/shoes/black
 
 	id_slot = slot_wear_id
-	id_type = /obj/item/card/id/civilian
+	id_type = null
 	pda_slot = slot_belt
 	pda_type = /obj/item/device/pda
 	backpack_contents = list()

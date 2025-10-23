@@ -3,8 +3,8 @@
 	department = "Civilian"
 	department_flag = CIV
 
-	total_positions = -1
-	spawn_positions = -1
+	total_positions = 3
+	spawn_positions = 3
 	supervisors = "absolutely everyone"
 	selection_color = "#515151"
 	economic_modifier = 1

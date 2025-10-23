@@ -8,7 +8,7 @@
 /decl/hierarchy/outfit/job/service/bartender
 	name = OUTFIT_JOB_NAME("Bartender")
 	uniform = /obj/item/clothing/under/rank/bartender
-	id_type = /obj/item/card/id/civilian/bartender
+	id_type = null
 	pda_type = /obj/item/device/pda/bar
 	suit = /obj/item/clothing/suit/armor/vest
 
@@ -17,7 +17,7 @@
 	uniform = /obj/item/clothing/under/rank/chef
 	suit = /obj/item/clothing/suit/chef
 	head = /obj/item/clothing/head/chefhat
-	id_type = /obj/item/card/id/civilian/chef
+	id_type = null
 	pda_type = /obj/item/device/pda/chef
 
 /decl/hierarchy/outfit/job/service/gardener
@@ -26,7 +26,7 @@
 	suit = /obj/item/clothing/suit/apron
 	gloves = /obj/item/clothing/gloves/thick/botany
 	r_pocket = /obj/item/device/analyzer/plant_analyzer
-	id_type = /obj/item/card/id/civilian/botanist
+	id_type = null
 	pda_type = /obj/item/device/pda/botanist
 
 /decl/hierarchy/outfit/job/service/gardener/New()
@@ -36,7 +36,7 @@
 /decl/hierarchy/outfit/job/service/janitor
 	name = OUTFIT_JOB_NAME("Janitor")
 	uniform = /obj/item/clothing/under/rank/janitor
-	id_type = /obj/item/card/id/civilian/janitor
+	id_type = null
 	pda_type = /obj/item/device/pda/janitor
 
 /decl/hierarchy/outfit/job/service/barmonkey
@@ -44,7 +44,7 @@
 	uniform = null
 	shoes = null
 	pda_type = null
-	id_type = /obj/item/card/id/civilian/barmonkey
+	id_type = null
 	flags = OUTFIT_NO_SURVIVAL
 
 /decl/hierarchy/outfit/job/service/barmonkey/equip_id(mob/living/carbon/human/H, rank, assignment, equip_adjustments)
@@ -73,7 +73,7 @@
 /decl/hierarchy/outfit/job/librarian
 	name = OUTFIT_JOB_NAME("Librarian")
 	uniform = /obj/item/clothing/under/suit_jacket/red
-	id_type = /obj/item/card/id/civilian/librarian
+	id_type = null
 	pda_type = /obj/item/device/pda/librarian
 
 /decl/hierarchy/outfit/job/internal_affairs_agent
@@ -84,7 +84,7 @@
 	shoes = /obj/item/clothing/shoes/brown
 	glasses = /obj/item/clothing/glasses/sunglasses/big
 	l_hand = /obj/item/storage/briefcase/iaa
-	id_type = /obj/item/card/id/civilian/internal_affairs_agent
+	id_type = null
 	pda_type = /obj/item/device/pda/iaa
 
 /decl/hierarchy/outfit/job/lawyer
@@ -93,14 +93,14 @@
 	suit = /obj/item/clothing/suit/storage/toggle/suit/blue
 	shoes = /obj/item/clothing/shoes/brown
 	l_hand = /obj/item/storage/briefcase
-	id_type = /obj/item/card/id/civilian/lawyer
+	id_type = null
 	pda_type = /obj/item/device/pda/lawyer
 
 /decl/hierarchy/outfit/job/chaplain
 	name = OUTFIT_JOB_NAME("Chaplain")
 	uniform = /obj/item/clothing/under/rank/chaplain
 	l_hand = /obj/item/storage/bible
-	id_type = /obj/item/card/id/civilian/chaplain
+	id_type = null
 	pda_type = /obj/item/device/pda/chaplain
 
 /decl/hierarchy/outfit/job/merchant
@@ -109,13 +109,13 @@
 	l_ear = /obj/item/device/radio/headset
 	shoes = /obj/item/clothing/shoes/black
 	pda_type = /obj/item/device/pda
-	id_type = /obj/item/card/id/merchant
+	id_type = null
 	backpack_contents = list(/obj/item/device/price_scanner = 1)
 
 /decl/hierarchy/outfit/job/clown
 	name = OUTFIT_JOB_NAME("Clown")
 	uniform = /obj/item/clothing/under/rank/clown
-	id_type = /obj/item/card/id/civilian/clown
+	id_type = null
 	pda_type = /obj/item/device/pda/clown
 	shoes = /obj/item/clothing/shoes/clown_shoes
 	mask = /obj/item/clothing/mask/gas/clown_hat
@@ -134,7 +134,7 @@
 	name = OUTFIT_JOB_NAME("Mime")
 	head = /obj/item/clothing/head/beret/classique
 	uniform = /obj/item/clothing/under/rank/mime
-	id_type = /obj/item/card/id/civilian/mime
+	id_type = null
 	pda_type = /obj/item/device/pda/mime
 	shoes = /obj/item/clothing/shoes/mime
 	mask = /obj/item/clothing/mask/gas/mime

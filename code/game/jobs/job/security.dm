@@ -4,8 +4,8 @@
 	department = "Security"
 	department_flag = SEC|COM
 
-	total_positions = 1
-	spawn_positions = 1
+	total_positions = 0
+	spawn_positions = 0
 	supervisors = "the captain"
 	selection_color = "#8e2929"
 	req_admin_notify = 1
