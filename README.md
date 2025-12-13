@@ -1,4 +1,4 @@
-# StoneBay [![Discord Shield](https://discordapp.com/api/guilds/414832443384659968/widget.png?style=shield)](https://discord.gg/4JFNdbk)
+# StoneBay
 
 [Наш сайт](https://ss13.ru/) - [Вики](https://wiki.ss13.ru/)
 
