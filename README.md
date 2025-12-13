@@ -1,5 +1,7 @@
 # StoneBay
 
+Данный проект является форком сборки [OnyxBay](https://github.com/ChaoticOnyx/OnyxBay) от команды [ChaoticOnyx](https://github.com/ChaoticOnyx) с последним общим [коммитом](https://github.com/i1yadobr/StoneBay/commit/1bd12977f08d8713a5042af83a55456ce155253e8) 25 сентября 2025 года.
+
 ---
 
 ## Полезная информация
