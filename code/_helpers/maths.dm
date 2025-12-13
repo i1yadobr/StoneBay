@@ -18,6 +18,7 @@
 
 // round() acts like floor(x, 1) by default but can't handle other values
 #define FLOOR(x, y) (round((x) / (y)) * (y))
+
 /// Gets the sign of x, returns -1 if negative, 0 if 0, 1 if positive
 #define SIGN(x) ( ((x) > 0) - ((x) < 0) )
 

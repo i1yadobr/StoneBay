@@ -1667,24 +1667,6 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/pig2.ogg',
 		'sound/effects/pig3.ogg'
 	),
-	SFX_PLANTCROSS = list(
-		'sound/effects/plantcross1.ogg',
-		'sound/effects/plantcross2.ogg',
-		'sound/effects/plantcross3.ogg',
-		'sound/effects/plantcross4.ogg'
-	),
-	SFX_THUNDER = list(
-		'sound/effects/thunder/thunder1.ogg',
-		'sound/effects/thunder/thunder2.ogg',
-		'sound/effects/thunder/thunder3.ogg',
-		'sound/effects/thunder/thunder4.ogg',
-		'sound/effects/thunder/thunder5.ogg',
-		'sound/effects/thunder/thunder6.ogg',
-		'sound/effects/thunder/thunder7.ogg',
-		'sound/effects/thunder/thunder8.ogg',
-		'sound/effects/thunder/thunder9.ogg',
-		'sound/effects/thunder/thunder10.ogg',
-	),
 	SFX_GLASSES_CLINK = list(
 		'sound/items/glasses_clink.ogg'
 	),
@@ -1810,12 +1792,6 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	),
 	SFX_FOOTSTEP_STAIRS = list(
 		'sound/effects/stairs_step.ogg'
-	),
-	SFX_FOOTSTEP_SWAMP = list(
-		'sound/effects/footstep/swamp1.ogg',
-		'sound/effects/footstep/swamp2.ogg',
-		'sound/effects/footstep/swamp3.ogg',
-		'sound/effects/footstep/swamp4.ogg',
 	),
 	SFX_KEYBOARD = list(
 		'sound/machines/keyboard/keystroke1.ogg',

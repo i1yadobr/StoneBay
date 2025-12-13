@@ -75,7 +75,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	power_equip = 0
 	power_environ = 0
 	has_gravity = 0
-	area_flags = AREA_FLAG_EXTERNAL | AREA_FLAG_UNIQUE_AREA | AREA_FLAG_CAVES_ALLOWED
+	area_flags = AREA_FLAG_EXTERNAL | AREA_FLAG_UNIQUE_AREA
 	ambient_music_tags = list(MUSIC_TAG_SPACE)
 	ambience_off = list(SFX_AMBIENT_SPACE)
 	ambience_powered = list(SFX_AMBIENT_SPACE)

@@ -3,8 +3,6 @@
 /// This is used in literally one place, turf.dm, to block ethereal jaunt.
 #define TURF_FLAG_NOJAUNT (1<<0)
 #define TURF_FLAG_NORUINS (1<<1)
-/// Blocks lava rivers from generating
-#define TURF_FLAG_NOLAVA  (1<<2)
 
 
 #define RUIN_MAP_EDGE_PAD 15
@@ -98,19 +96,14 @@
 /// Area that is not centcomm but not station either
 #define AREA_FLAG_NO_STATION        (1<<2)
 /// If mining tunnel generation is allowed in this area
-#define AREA_FLAG_CAVES_ALLOWED     (1<<3)
-/// If flora are allowed to spawn in this area randomly through tunnel generation
-#define AREA_FLAG_FLORA_ALLOWED     (1<<3)
 /// If mobs can be spawned by natural random generation
-#define AREA_FLAG_MOB_SPAWN_ALLOWED (1<<4)
+#define AREA_FLAG_MOB_SPAWN_ALLOWED (1<<3)
 /// Are you forbidden from teleporting to the area? (centcom, mobs, wizard, hand teleporter)
-#define AREA_FLAG_NOTELEPORT        (1<<5)
+#define AREA_FLAG_NOTELEPORT        (1<<4)
 /// Hides area from player Teleport function.
-#define AREA_FLAG_HIDDEN_AREA       (1<<6)
+#define AREA_FLAG_HIDDEN_AREA       (1<<5)
 /// Loading multiple maps with this area type will create multiple instances.
-#define AREA_FLAG_UNIQUE_AREA       (1<<7)
-/// Allows weather effects to affect this area
-#define AREA_FLAG_ALLOW_WEATHER     (1<<8)
+#define AREA_FLAG_UNIQUE_AREA       (1<<6)
 
 //Area gravity flags
 #define AREA_GRAVITY_NEVER  -1 // No gravity, never
