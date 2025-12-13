@@ -224,7 +224,9 @@
 								"You hear a click and a faint electronic hum.")
 	else
 		var/should_disable_regulating = FALSE
-		if(abs(environment.temperature - target_temperature) <= 0.5)
+		if(abs(environment.temperature - target_temperature) <= 0.5 || danger_check)
+			should_disable_regulating = TRUE
+		else
 			var/danger_check
 			GET_DANGER_LEVEL(danger_check, target_temperature, TLV["temperature"])
 			if(danger_check)
