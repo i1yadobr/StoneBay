@@ -63,18 +63,18 @@ class HubStorageBackend {
   }
 
   async get (key) {
-    const value = await window.hubStorage.getItem('onyxbay-' + key)
+    const value = await window.hubStorage.getItem('StoneBay-' + key)
     if (typeof value === 'string') {
       return JSON.parse(value)
     }
   }
 
   set (key, value) {
-    window.hubStorage.setItem('onyxbay-' + key, JSON.stringify(value));
+    window.hubStorage.setItem('StoneBay-' + key, JSON.stringify(value));
   }
 
   remove (key) {
-    window.hubStorage.removeItem('onyxbay-' + key)
+    window.hubStorage.removeItem('StoneBay-' + key)
   }
 
   clear () {

@@ -91,7 +91,7 @@ function Get-GithubRepository
         .OUTPUTS
             [GithubRepository] - репозитории GitHub.
         .EXAMPLE
-            Get-GithubRepository -Name 'OnyxBay' -Owner 'ChaoticOnyx'
+            Get-GithubRepository -Name 'StoneBay' -Owner 'ChaoticOnyx'
     #>
 
     [CmdletBinding()]
@@ -116,7 +116,7 @@ function Get-GithubRepository
         {
             throw $_.Exception
         }
-        
+
         return [GithubRepository]::FromJson(($Response.Content | ConvertFrom-Json))
     }
 }
@@ -173,7 +173,7 @@ function Get-GithubPullRequestFiles
         .EXAMPLE
             (Get-GithubEnvironment).Repository | Get-GithubPullRequestFiles -PullRequestNumber 7
         .EXAMPLE
-            Get-GithubPullRequestFiles -Repository @{ Name = 'OnyxBay'; Owner = 'ChaoticOnyx' } -PullRequestNumber 5250
+            Get-GithubPullRequestFiles -Repository @{ Name = 'StoneBay'; Owner = 'ChaoticOnyx' } -PullRequestNumber 5250
         .PARAMETER Repository
             Репозитории.
         .PARAMETER PullRequestNumber
@@ -253,7 +253,7 @@ function Get-GithubLastRelease
         .PARAMETER Repository
             Репозитории в котором нужно получить последний релиз.
         .EXAMPLE
-            Get-GithubLastRelease -Repository @{ Name = 'OnyxBay'; Owner = 'ChaoticOnyx' }
+            Get-GithubLastRelease -Repository @{ Name = 'StoneBay'; Owner = 'ChaoticOnyx' }
         .OUTPUTS
             [Release] - Последний релиз из репозитория.
     #>

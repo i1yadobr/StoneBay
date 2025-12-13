@@ -72,12 +72,12 @@ GLOBAL_REAL(config, /datum/server_configuration) = new
 	if(mode)
 		RUSTG_CHECK(rustg_cfg_add_source_glob("config/[mode]/**/*"))
 
-	var/server_id = world.GetConfig("env", "ONYXBAY__GENERAL__SERVER_ID")
+	var/server_id = world.GetConfig("env", "StoneBay__GENERAL__SERVER_ID")
 
 	if(server_id)
 		RUSTG_CHECK(rustg_cfg_add_source_glob("config/[server_id]/**/*"))
 
-	RUSTG_CHECK(rustg_cfg_add_source_env("ONYXBAY", "__"))
+	RUSTG_CHECK(rustg_cfg_add_source_env("StoneBay", "__"))
 	RUSTG_CHECK(rustg_cfg_end_builder())
 
 	raw_data = json_decode(rustg_cfg_try_deserialize())

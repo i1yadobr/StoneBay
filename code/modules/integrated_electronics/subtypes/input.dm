@@ -859,7 +859,7 @@
 		activate_pin(1)
 		return IC_TOPIC_REFRESH
 
-// TODO: refactor ntnet circuit to OnyxBay code and add items using this stuff (ex. modular_computer, airlock)
+// TODO: refactor ntnet circuit to StoneBay code and add items using this stuff (ex. modular_computer, airlock)
 
 //This circuit gives information on where the machine is.
 /obj/item/integrated_circuit/input/gps

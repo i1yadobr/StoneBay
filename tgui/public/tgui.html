@@ -48,7 +48,7 @@
           var majorVersion = groups && groups[1];
           return majorVersion ? parseInt(majorVersion, 10) : null;
         })();
-		
+
 		// Blink engine version
         Byond.BLINK = (function () {
           var groups = navigator.userAgent.match(/Chrome\/(\d+)\./);
@@ -379,7 +379,7 @@
           loadAsset({ url: url, sync: sync, type: "css" });
         };
       })();
-	  
+
 	  Byond.saveBlob = function (blob, filename, ext) {
         if (window.navigator.msSaveBlob) {
 		  // IE backwards compatibility for clients using BYOND <= 515
@@ -405,7 +405,7 @@
 		  })
 		}
 	  };
-		 
+
 
       // Error handling
       // ------------------------------------------------------
@@ -649,7 +649,7 @@
         A fatal exception has occurred at 002B:C562F1B7 in TGUI. The current
         application will be terminated. Send the copy of the following stack
         trace to an authorized Nanotrasen incident handler at
-        https://github.com/ChaoticOnyx/OnyxBay. Thank you for your cooperation.
+        https://github.com/ChaoticOnyx/StoneBay. Thank you for your cooperation.
       </marquee>
       <div id="FatalError__stack" class="FatalError__stack"></div>
     </div>
