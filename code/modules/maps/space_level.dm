@@ -5,9 +5,6 @@
 	/// The base turf type
 	var/base_turf = /turf/space
 
-	/// Set to TRUE so this level will be initialized in SSmapping initialization sequence.
-	var/lateloading_level = FALSE
-
 	/**
 	 * Certified atmos shitfuckery.
 	 */
