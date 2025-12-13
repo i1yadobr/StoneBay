@@ -225,14 +225,11 @@
 	else
 		var/should_disable_regulating = FALSE
 		if(abs(environment.temperature - target_temperature) <= 0.5)
-			should_disable_regulating = TRUE
-			goto nodeDisableRegulating
-		var/danger_check
-		GET_DANGER_LEVEL(danger_check, target_temperature, TLV["temperature"])
-		if(danger_check)
-			should_disable_regulating = TRUE
+			var/danger_check
+			GET_DANGER_LEVEL(danger_check, target_temperature, TLV["temperature"])
+			if(danger_check)
+				should_disable_regulating = TRUE
 
-		nodeDisableRegulating
 		if(should_disable_regulating)
 			update_use_power(POWER_USE_IDLE)
 			regulating_temperature = 0
