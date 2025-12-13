@@ -8,7 +8,7 @@
       "dmb": "${workspaceFolder}/${command:CurrentDMB}",
       "env": {
         "MODE": "dev",
-        "ONYXBAY__GENERAL__SERVER_ID": "test"
+        "StoneBay__GENERAL__SERVER_ID": "test"
       },
     },
     {
@@ -19,7 +19,7 @@
       "dmb": "${workspaceFolder}/${command:CurrentDMB}",
       "env": {
         "MODE": "dev",
-        "ONYXBAY__GENERAL__SERVER_ID": "test"
+        "StoneBay__GENERAL__SERVER_ID": "test"
       },
     },
     {
@@ -29,7 +29,7 @@
       "dmb": "${workspaceFolder}/${command:CurrentDMB}",
       "env": {
         "MODE": "dev",
-        "ONYXBAY__GENERAL__SERVER_ID": "test"
+        "StoneBay__GENERAL__SERVER_ID": "test"
       }
     },
     {
@@ -40,7 +40,7 @@
       "dmb": "${workspaceFolder}/${command:CurrentDMB}",
       "env": {
         "MODE": "dev",
-        "ONYXBAY__GENERAL__SERVER_ID": "test"
+        "StoneBay__GENERAL__SERVER_ID": "test"
       },
       "dreamDaemon": true
     },

@@ -1,5 +1,5 @@
 ЭТО ШАБЛОН PULL REQUEST. Внимательно прочитайте его и напишите описание Pull Request в соответствии с ним. Каждое отклонение от шаблона увеличивает время принятия Pull Request-а (вплоть до бесконечности)!
-Подробнее про то, как создавать Pull Request-ы смотрите в нашем [Guide to Contribute](https://github.com/ChaoticOnyx/OnyxBay/blob/dev/docs/contributing.md).
+Подробнее про то, как создавать Pull Request-ы смотрите в нашем [Guide to Contribute](https://github.com/ChaoticOnyx/StoneBay/blob/dev/docs/contributing.md).
 
 ТЕКСТ ВЫШЕ НУЖНО УДАЛИТЬ.
 
@@ -43,4 +43,4 @@ prefix: A summary of changes made.
 - [ ] Pull Request полностью завершен, мне не нужна помощь чтобы его закончить.
 - [ ] Я внимательно прочитал(-а) все свои изменения и багов в них не нашёл(-ла).
 - [ ] Я запускал(-а) сервер со своими изменениями локально и все протестировал(-а).
-- [ ] Я ознакомился(-ась) c [Guide to Contribute](https://github.com/ChaoticOnyx/OnyxBay/blob/dev/docs/contributing.md).
+- [ ] Я ознакомился(-ась) c [Guide to Contribute](https://github.com/ChaoticOnyx/StoneBay/blob/dev/docs/contributing.md).

@@ -189,7 +189,7 @@
 
 				else if(istype(O, /obj/item/seeds) && !istype(O, /obj/item/seeds/cutting))
 					if(TR.seed)
-						// TODO: refact this to OnyxBay code
+						// TODO: refact this to StoneBay code
 						// if(istype(O, /obj/item/seeds/kudzu))
 						// 	investigate_log("had Kudzu planted in it by [acting_object] at [AREACOORD(src)]","kudzu")
 						acting_object.visible_message(SPAN("notice", "[acting_object] plants [O]."))

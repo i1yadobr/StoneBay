@@ -32,7 +32,7 @@
                         <a href="https://wiki.ss13.ru/index.php?title=Main_Page">
                             <i class="fas fa-book"></i>
                         </a>
-                        <a href="https://github.com/ChaoticOnyx/OnyxBay">
+                        <a href="https://github.com/ChaoticOnyx/StoneBay">
                             <i class="fab fa-github"></i>
                         </a>
                         <a href="https://discord.gg/5BRMMFg">
@@ -52,7 +52,7 @@
         <ul class="changes">
             {{~ for change in changelog.changes ~}}
             <li class="{{ change.color }}"><i class="{{ change.icon }}"></i>{{ change.message_md_to_html }} {{- if change.pr -}}
-                <sup><a href="https://github.com/ChaoticOnyx/OnyxBay/pull/{{ change.pr }}">#{{ change.pr }}</a></sup> {{- end -}}
+                <sup><a href="https://github.com/ChaoticOnyx/StoneBay/pull/{{ change.pr }}">#{{ change.pr }}</a></sup> {{- end -}}
             </li>
             {{~ end ~}}
         </ul>
