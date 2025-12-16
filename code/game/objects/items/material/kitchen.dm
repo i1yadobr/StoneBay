@@ -52,19 +52,22 @@
 			return ..()
 
 	if (reagents.total_volume > 0)
-		if(M == user)
-			if(!M.can_eat(loaded))
+		//TODO: Make a better way to fix it:
+		//Tempory fix a problem when can_force_feed() only funclionality with mob/living/carbon/human, not just a mob/living/carbon
+		var/mob/living/carbon/human/H = M
+		if(H == user)
+			if(!H.can_eat(loaded))
 				return
-			M.visible_message("<span class='notice'>\The [user] eats some [loaded] from \the [src].</span>")
+			H.visible_message("<span class='notice'>\The [user] eats some [loaded] from \the [src].</span>")
 		else
-			user.visible_message("<span class='warning'>\The [user] begins to feed \the [M]!</span>")
-			if(!M.can_force_feed(user, loaded))
+			user.visible_message("<span class='warning'>\The [user] begins to feed \the [H]!</span>")
+			if(!H.can_force_feed(user, loaded))
 				return
-			if(do_mob(user, M, time = 2 SECONDS))
+			if(do_mob(user, H, time = 2 SECONDS))
 				return
-			if(!M.can_force_feed(user, loaded, check_resist = TRUE))
+			if(!H.can_force_feed(user, loaded, check_resist = TRUE))
 				return
-			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")
+			H.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [H] with \the [src].</span>")
 		reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
 		playsound(M.loc, 'sound/items/eatfood.ogg', rand(10, 40), 1)
 		ClearOverlays()

@@ -45,28 +45,32 @@
 		return 1
 
 	else if(ishuman(M))
-		if(!M.can_force_feed(user, src))
+
+		//TODO: Make a better way to fix it:
+		//Tempory fix a problem when can_force_feed() only funclionality with mob/living/carbon/human, not just a mob/living/carbon
+		var/mob/living/carbon/human/H = M
+
+		if(!H.can_force_feed(user, src))
 			return
 
-		user.visible_message("<span class='warning'>[user] attempts to force [M] to swallow \the [src].</span>")
+		user.visible_message("<span class='warning'>[user] attempts to force [H] to swallow \the [src].</span>")
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		if(!do_mob(user, M))
+		if(!do_mob(user, H))
 			return
 
 		if(!isrobot(user) && user.get_active_hand() != src)
 			return
 
-		if(!M.can_force_feed(user, src, check_resist = TRUE))
+		if(!H.can_force_feed(user, src, check_resist = TRUE))
 			return
 
-		if(!user.drop(src, M.loc))
+		if(!user.drop(src, H.loc))
 			return
 
-		user.visible_message("<span class='warning'>[user] forces [M] to swallow \the [src].</span>")
+		user.visible_message("<span class='warning'>[user] forces [H] to swallow \the [src].</span>")
 		var/contained = reagentlist()
-		admin_attack_log(user, M, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
+		admin_attack_log(user, H, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
 
-		var/mob/living/carbon/human/H = M
 		if(H.ingest(src, TRUE))
 			return 1
 

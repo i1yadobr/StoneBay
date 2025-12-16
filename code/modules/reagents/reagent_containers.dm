@@ -146,7 +146,9 @@
 
 
 		else
-			var/mob/living/carbon/H = target
+			//TODO: Make a better way to fix it:
+			//Tempory fix a problem when can_force_feed() only funclionality with mob/living/carbon/human, not just a mob/living/carbon
+			var/mob/living/carbon/human/H = target
 			if(!H.can_force_feed(user, src))
 				return
 
