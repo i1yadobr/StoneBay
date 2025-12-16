@@ -319,7 +319,7 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 			aiEyeFlag = 1
 
 		var/x
-		for(x=0; x<duration, x++)
+		for(x=0, x<duration, x++)
 			if(!M.client)
 				return
 
