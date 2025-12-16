@@ -140,43 +140,42 @@
 			if(!M.can_force_feed(user, src))
 				return
 
-			var/stomach_fullness
-			var/obj/item/organ/internal/stomach/S
-			//if(ishuman(C)) - TODO: doesn't work for some reason
+			if(ishuman(C))
+				//TODO: Make a better way to fix it:
+				//Tempory fix a problem when can_force_feed() only funclionality with mob/living/carbon/human, not just a mob/living/carbon
+				var/mob/living/carbon/human/H = M
+				var/stomach_fullness
+				var/obj/item/organ/internal/stomach/S
+				if(H.should_have_organ(BP_STOMACH))
+					S = H.internal_organs_by_name[BP_STOMACH]
+					stomach_fullness = S.get_fullness()
 
-			//TODO: Make a better way to fix it:
-			//Tempory fix a problem when can_force_feed() only funclionality with mob/living/carbon/human, not just a mob/living/carbon
-			var/mob/living/carbon/human/H = M
-			if(H.should_have_organ(BP_STOMACH))
-				S = H.internal_organs_by_name[BP_STOMACH]
-				stomach_fullness = S.get_fullness()
-
-			if(S)
-				if(stomach_fullness >= S.volume_hardcap)
-					user.visible_message(SPAN("danger", "[user] cannot force anymore of [src] down [H]'s throat."))
-					return FALSE
+				if(S)
+					if(stomach_fullness >= S.volume_hardcap)
+						user.visible_message(SPAN("danger", "[user] cannot force anymore of [src] down [H]'s throat."))
+						return FALSE
+					else
+						user.visible_message(SPAN("danger", "[user] attempts to feed [H] [src]."))
 				else
-					user.visible_message(SPAN("danger", "[user] attempts to feed [H] [src]."))
-			else
-				if(fullness <= STOMACH_FULLNESS_SUPER_HIGH)
-					user.visible_message(SPAN("danger", "[user] attempts to feed [H] [src]."))
-				else
-					user.visible_message(SPAN("danger", "[user] cannot force anymore of [src] down [H]'s throat."))
-					return FALSE
+					if(fullness <= STOMACH_FULLNESS_SUPER_HIGH)
+						user.visible_message(SPAN("danger", "[user] attempts to feed [H] [src]."))
+					else
+						user.visible_message(SPAN("danger", "[user] cannot force anymore of [src] down [H]'s throat."))
+						return FALSE
 
-				user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-				if(!do_mob(user, H, time = 2 SECONDS))
-					return
+					user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+					if(!do_mob(user, H, time = 2 SECONDS))
+						return
 
-				if(user.get_active_hand() != src)
-					return
+					if(user.get_active_hand() != src)
+						return
 
-				if(!H.can_force_feed(user, src, check_resist = TRUE))
-					return
+					if(!H.can_force_feed(user, src, check_resist = TRUE))
+						return
 
-				var/contained = reagentlist()
-				admin_attack_log(user, H, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
-				user.visible_message(SPAN("danger", "[user] feeds [H] [src]."))
+					var/contained = reagentlist()
+					admin_attack_log(user, H, "Fed the victim with [name] (Reagents: [contained])", "Was fed [src] (Reagents: [contained])", "used [src] (Reagents: [contained]) to feed")
+					user.visible_message(SPAN("danger", "[user] feeds [H] [src]."))
 
 		if(reagents && !(atom_flags & ATOM_FLAG_HOLOGRAM))								//Handle ingestion of the reagent.
 			playsound(M.loc, SFX_EAT, rand(45, 60), FALSE)
