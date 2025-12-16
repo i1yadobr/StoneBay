@@ -142,7 +142,7 @@
 
 			var/stomach_fullness
 			var/obj/item/organ/internal/stomach/S
-			if(ishuman(C))
+			//if(ishuman(C)) - TODO: doesn't work for some reason
 
 			//TODO: Make a better way to fix it:
 			//Tempory fix a problem when can_force_feed() only funclionality with mob/living/carbon/human, not just a mob/living/carbon
