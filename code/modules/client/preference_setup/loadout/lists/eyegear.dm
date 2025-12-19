@@ -53,5 +53,5 @@
 	display_name = "psychoscope"
 	path = /obj/item/clothing/glasses/hud/psychoscope
 	cost = 3
-	price = 50
+	50
 	allowed_roles = list(/datum/job/rd)

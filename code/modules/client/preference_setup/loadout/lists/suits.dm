@@ -153,101 +153,81 @@
 /datum/gear/suit/pirate
 	display_name = "pirate suit"
 	path = /obj/item/clothing/suit/pirate
-	price = 15
 
 /datum/gear/suit/cardborg
 	display_name = "cardborg suit"
 	path = /obj/item/clothing/suit/cardborg
-	price = 6
 
 /datum/gear/suit/santa
 	display_name = "santa's suit"
 	path = /obj/item/clothing/suit/space/santa
-	price = 40
 
 /datum/gear/suit/plaguedoctorsuit
 	display_name = "plague doctor suit"
 	path = /obj/item/clothing/suit/bio_suit/plaguedoctorsuit
-	price = 20
 
 /datum/gear/suit/hgpirate
 	display_name = "pirate captain coat"
 	path = /obj/item/clothing/suit/hgpirate
-	price = 10
 
 /datum/gear/suit/johnny_coat
 	display_name = "johnny coat"
 	path = /obj/item/clothing/suit/johnny_coat
-	price = 10
 
 /datum/gear/suit/judgerobe
 	display_name = "judge's robe"
 	path = /obj/item/clothing/suit/judgerobe
-	price = 10
 
 /datum/gear/suit/monkeysuit
 	display_name = "monkey suit"
 	path = /obj/item/clothing/suit/monkeysuit
-	price = 10
 
 /datum/gear/suit/chickensuit
 	display_name = "chicken suit"
 	path = /obj/item/clothing/suit/chickensuit
-	price = 10
 
 /datum/gear/suit/yuri
 	display_name = "yuri coat"
 	path = /obj/item/clothing/suit/yuri
-	price = 10
 
 /datum/gear/suit/bee
 	display_name = "bee suit"
 	path = /obj/item/clothing/suit/storage/hooded/bee
-	price = 10
 
 /datum/gear/suit/hos_formal
 	display_name = "head of security's formal coat"
 	path = /obj/item/clothing/suit/hos_formal
-	price = 10
 	allowed_roles = list(/datum/job/hos)
 
 /datum/gear/suit/witchhunter
 	display_name = "witchunter garb"
 	path = /obj/item/clothing/suit/witchhunter
-	price = 10
 	allowed_roles = list(/datum/job/chaplain)
 
 /datum/gear/suit/wizrobe_fake
 	display_name = "wizard robe"
 	path = /obj/item/clothing/suit/wizrobe/fake
-	price = 20
 
 /datum/gear/suit/wizrobe_marisa_fake
 	display_name = "witch robe"
 	path = /obj/item/clothing/suit/wizrobe/marisa/fake
-	price = 20
 
 /datum/gear/suit/ianshirt
 	display_name = "ian shirt"
 	path = /obj/item/clothing/suit/ianshirt
-	price = 5
 
 /datum/gear/suit/punk_jacket_AC
 	display_name = "punk jacket black"
 	path = /obj/item/clothing/suit/storage/toggle/punk_jacket_AC
-	price = 20
 
 /datum/gear/suit/punk_jacket_RD
 	display_name = "punk jacket raven"
 	path = /obj/item/clothing/suit/storage/toggle/punk_jacket_RD
-	price = 20
 
 /datum/gear/suit/punk_jacket_TS
 	display_name = "punk jacket brown"
 	path = /obj/item/clothing/suit/storage/toggle/punk_jacket_TS
-	price = 20
 
 /datum/gear/suit/fashionable_coat
 	display_name = "fashionable coat"
 	path = /obj/item/clothing/suit/storage/fashionable_coat
-	price = 20
