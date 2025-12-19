@@ -449,6 +449,7 @@
 
 /datum/gear/uniform/savage_hunter
 	display_name = "savage hunter's hides"
+	path = /obj/item/clothing/under/savage_hunter
 
 /datum/gear/uniform/savage_hunter/New()
 	..()
