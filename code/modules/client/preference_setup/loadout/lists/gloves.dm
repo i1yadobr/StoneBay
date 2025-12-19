@@ -25,6 +25,7 @@
 /datum/gear/ring/New()
 	..()
 	var/ringtype = list()
+
 	ringtype["CTI ring"] = /obj/item/clothing/ring/cti
 	ringtype["Mariner University ring"] = /obj/item/clothing/ring/mariner
 	ringtype["engagement ring"] = /obj/item/clothing/ring/engagement
@@ -38,6 +39,7 @@
 	ringtype["ring, glass"] = /obj/item/clothing/ring/material/glass
 	ringtype["ring, wood"] = /obj/item/clothing/ring/material/wood
 	ringtype["ring, plastic"] = /obj/item/clothing/ring/material/plastic
+
 	gear_tweaks += new /datum/gear_tweak/path(ringtype)
 
 /datum/gear/gloves/boxing

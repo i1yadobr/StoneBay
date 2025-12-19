@@ -10,6 +10,7 @@
 /datum/gear/accessory/tie/New()
 	..()
 	var/ties = list()
+
 	ties["blue tie"] = /obj/item/clothing/accessory/blue
 	ties["red tie"] = /obj/item/clothing/accessory/red
 	ties["blue tie, clip"] = /obj/item/clothing/accessory/blue_clip
@@ -19,6 +20,7 @@
 	ties["navy tie"] = /obj/item/clothing/accessory/navy
 	ties["horrible tie"] = /obj/item/clothing/accessory/horrible
 	ties["brown tie"] = /obj/item/clothing/accessory/brown
+
 	gear_tweaks += new /datum/gear_tweak/path(ties)
 
 /datum/gear/accessory/tie_color
@@ -29,8 +31,10 @@
 /datum/gear/accessory/tie_color/New()
 	..()
 	var/ties = list()
+
 	ties["tie"] = /obj/item/clothing/accessory
 	ties["striped tie"] = /obj/item/clothing/accessory/long
+
 	gear_tweaks += new /datum/gear_tweak/path(ties)
 
 /datum/gear/accessory/corset_color
@@ -60,9 +64,11 @@
 /datum/gear/accessory/ntaward/New()
 	..()
 	var/ntawards = list()
+
 	ntawards["sciences medal"] = /obj/item/clothing/accessory/medal/bronze/nanotrasen
 	ntawards["nanotrasen service"] = /obj/item/clothing/accessory/medal/silver/nanotrasen
 	ntawards["command medal"] = /obj/item/clothing/accessory/medal/gold/nanotrasen
+
 	gear_tweaks += new /datum/gear_tweak/path(ntawards)
 
 /datum/gear/accessory/armband_security
@@ -107,6 +113,7 @@
 /datum/gear/accessory/pin/New()
 	..()
 	var/pinies = list()
+
 	pinies["NanoTrasen pin"] = /obj/item/clothing/accessory/pin
 	pinies["pig pin"]        = /obj/item/clothing/accessory/pin/pig
 	pinies["skull pin"]      = /obj/item/clothing/accessory/pin/skull

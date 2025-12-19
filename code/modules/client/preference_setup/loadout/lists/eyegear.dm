@@ -19,11 +19,13 @@
 /datum/gear/eyes/fashionglasses/New()
 	..()
 	var/glasses = list()
+
 	glasses["green glasses"] = /obj/item/clothing/glasses/gglasses
 	glasses["hipster glasses"] = /obj/item/clothing/glasses/regular/hipster
 	glasses["red glasses"] = /obj/item/clothing/glasses/rglasses
 	glasses["monocle"] = /obj/item/clothing/glasses/monocle
 	glasses["scanning goggles"] = /obj/item/clothing/glasses/regular/scanners
+
 	gear_tweaks += new /datum/gear_tweak/path(glasses)
 
 /datum/gear/eyes/hud
@@ -33,6 +35,7 @@
 /datum/gear/eyes/hud/New()
 	..()
 	var/huds = list()
+
 	huds["goggles HUD"] = /obj/item/clothing/glasses/hud/standard
 	huds["dual HUD"] = /obj/item/clothing/glasses/hud/dual
 	huds["clear HUD"] = /obj/item/clothing/glasses/hud/monoglass
@@ -42,6 +45,7 @@
 	huds["clip-on HUD"] = /obj/item/clothing/glasses/hud/shades
 	huds["over-eye HUD"] = /obj/item/clothing/glasses/hud/one_eyed/oneye
 	huds["patch HUD"] = /obj/item/clothing/glasses/hud/one_eyed/patch
+
 	gear_tweaks += new /datum/gear_tweak/path(huds)
 
 /datum/gear/eyes/prescriptionlenses

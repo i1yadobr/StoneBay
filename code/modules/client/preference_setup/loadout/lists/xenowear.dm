@@ -94,10 +94,12 @@
 /datum/gear/shoes/caligae/New()
 	..()
 	var/caligae = list()
+
 	caligae["no sock"] = /obj/item/clothing/shoes/sandal/tajaran/caligae
 	caligae["black sock"] = /obj/item/clothing/shoes/sandal/tajaran/caligae/black
 	caligae["grey sock"] = /obj/item/clothing/shoes/sandal/tajaran/caligae/grey
 	caligae["white sock"] = /obj/item/clothing/shoes/sandal/tajaran/caligae/white
+
 	gear_tweaks += new /datum/gear_tweak/path(caligae)
 
 /datum/gear/head/zhan_scarf
@@ -115,9 +117,11 @@
 /datum/gear/accessory/capes/New()
 	..()
 	var/capes = list()
+
 	capes["simple cape"] = /obj/item/clothing/accessory/shouldercape/grunt
 	capes["decorated cape"] = /obj/item/clothing/accessory/shouldercape/officer
 	capes["government cape"] = /obj/item/clothing/accessory/shouldercape/command
+
 	gear_tweaks += new /datum/gear_tweak/path(capes)
 
 // Pre-modified gloves

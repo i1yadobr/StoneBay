@@ -40,16 +40,17 @@
 /datum/gear/suit/suit_jacket/New()
 	..()
 	var/suitjackets = list()
+
 	suitjackets += /obj/item/clothing/suit/storage/toggle/suit/black
 	suitjackets += /obj/item/clothing/suit/storage/toggle/suit/blue
 	suitjackets += /obj/item/clothing/suit/storage/toggle/suit/purple
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(suitjackets)
 
 /datum/gear/suit/custom_suit_jacket
 	display_name = "suit jacket, colour select"
 	path = /obj/item/clothing/suit/storage/toggle/suit
 	flags = GEAR_HAS_COLOR_SELECTION
-
 
 /datum/gear/suit/varsity
 	display_name = "varsity, various colors"
@@ -58,10 +59,12 @@
 /datum/gear/suit/varsity/New()
 	..()
 	var/varsity = list()
+
 	varsity += /obj/item/clothing/suit/storage/toggle/varsity
 	varsity += /obj/item/clothing/suit/storage/toggle/varsity/blue
 	varsity += /obj/item/clothing/suit/storage/toggle/varsity/red
 	varsity += /obj/item/clothing/suit/storage/toggle/varsity/brown
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(varsity)
 
 /datum/gear/suit/hazard
@@ -96,6 +99,7 @@
 /datum/gear/suit/leather/New()
 	..()
 	var/jackets = list()
+
 	jackets += /obj/item/clothing/suit/storage/toggle/bomber
 	jackets += /obj/item/clothing/suit/storage/black_jacket_NT
 	jackets += /obj/item/clothing/suit/storage/toggle/brown_jacket_NT
@@ -103,6 +107,7 @@
 	jackets += /obj/item/clothing/suit/storage/toggle/brown_jacket
 	jackets += /obj/item/clothing/suit/storage/mbill
 	jackets += /obj/item/clothing/suit/storage/black_jacket_long
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(jackets)
 
 /datum/gear/suit/department_wintercoat
@@ -192,10 +197,12 @@
 /datum/gear/suit/trenchcoat/New()
 	..()
 	var/trenchcoats = list()
+
 	trenchcoats += /obj/item/clothing/suit/storage/civ_trench
 	trenchcoats += /obj/item/clothing/suit/storage/civ_trench/grey
 	trenchcoats += /obj/item/clothing/suit/storage/toggle/leathercoat
 	trenchcoats += /obj/item/clothing/suit/storage/toggle/browncoat
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(trenchcoats)
 
 /datum/gear/suit/pirate

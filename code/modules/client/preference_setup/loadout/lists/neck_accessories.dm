@@ -9,10 +9,12 @@
 /datum/gear/neck_accessory/cross/New()
 	..()
 	var/crosstypes = list()
+
 	crosstypes["Silver cross"] = /obj/item/underwear/neck/cross/silver
 	crosstypes["Golden cross"] = /obj/item/underwear/neck/cross/gold
 	crosstypes["Wooden cross"] = /obj/item/underwear/neck/cross/wood
 	crosstypes["Plain cross"]  = /obj/item/underwear/neck/cross
+
 	gear_tweaks += new /datum/gear_tweak/path(crosstypes)
 
 /datum/gear/neck_accessory/choker_color

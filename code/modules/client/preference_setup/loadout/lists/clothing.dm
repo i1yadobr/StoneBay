@@ -12,8 +12,10 @@
 /datum/gear/clothing/flannel/New()
 	..()
 	var/list/flannel = list()
+
 	flannel["comfy flannel"] = /obj/item/clothing/accessory/toggleable/flannel
 	flannel["soft flannel"] = /obj/item/clothing/accessory/toggleable/flannel/alt
+
 	gear_tweaks += new /datum/gear_tweak/path(flannel)
 
 /datum/gear/clothing/scarf
@@ -28,9 +30,11 @@
 /datum/gear/clothing/hawaii/New()
 	..()
 	var/list/shirts = list()
+
 	shirts["blue hawaii shirt"] = /obj/item/clothing/accessory/toggleable/hawaii
 	shirts["red hawaii shirt"] = /obj/item/clothing/accessory/toggleable/hawaii/red
 	shirts["random colored hawaii shirt"] = /obj/item/clothing/accessory/toggleable/hawaii/random
+
 	gear_tweaks += new /datum/gear_tweak/path(shirts)
 
 /datum/gear/clothing/vest
