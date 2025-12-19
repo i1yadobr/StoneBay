@@ -146,10 +146,6 @@
 	trenchcoats += /obj/item/clothing/suit/storage/toggle/browncoat
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(trenchcoats)
 
-//
-// Donator's shop
-//
-
 /datum/gear/suit/pirate
 	display_name = "pirate suit"
 	path = /obj/item/clothing/suit/pirate
