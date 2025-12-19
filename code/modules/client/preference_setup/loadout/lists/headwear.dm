@@ -33,12 +33,14 @@
 /datum/gear/head/cap/New()
 	..()
 	var/caps = list()
+
 	caps["cap"] = /obj/item/clothing/head/soft/black
 	caps["flat cap"] = /obj/item/clothing/head/flatcap
 	caps["mailman cap"] = /obj/item/clothing/head/mailman
 	caps["rainbow cap"] = /obj/item/clothing/head/soft/rainbow
 	caps["white cap"] = /obj/item/clothing/head/soft/mime
 	caps["major bill's shipping cap"] = /obj/item/clothing/head/soft/mbill
+
 	gear_tweaks += new /datum/gear_tweak/path(caps)
 
 /datum/gear/head/hairflower
@@ -48,12 +50,14 @@
 /datum/gear/head/hairflower/New()
 	..()
 	var/pins = list()
+
 	pins["blue pin"] = /obj/item/clothing/head/hairflower/blue
 	pins["pink pin"] = /obj/item/clothing/head/hairflower/pink
 	pins["red pin"] = /obj/item/clothing/head/hairflower
 	pins["yellow pin"] = /obj/item/clothing/head/hairflower/yellow
 	pins["white pin"] = /obj/item/clothing/head/hairflower/white
 	pins["purple pin"] = /obj/item/clothing/head/hairflower/purple
+
 	gear_tweaks += new /datum/gear_tweak/path(pins)
 
 /datum/gear/head/hardhat
@@ -65,10 +69,12 @@
 /datum/gear/head/hardhat/New()
 	..()
 	var/hardhats = list()
+
 	hardhats["blue hardhat"] = /obj/item/clothing/head/hardhat/dblue
 	hardhats["orange hardhat"] = /obj/item/clothing/head/hardhat/orange
 	hardhats["red hardhat"] = /obj/item/clothing/head/hardhat/red
 	hardhats["yellow hardhat"] = /obj/item/clothing/head/hardhat
+
 	gear_tweaks += new /datum/gear_tweak/path(hardhats)
 
 /datum/gear/head/formalhat
@@ -78,6 +84,7 @@
 /datum/gear/head/formalhat/New()
 	..()
 	var/formalhats = list()
+
 	formalhats["boatsman hat"] = /obj/item/clothing/head/boaterhat
 	formalhats["bowler hat"] = /obj/item/clothing/head/bowler
 	formalhats["fedora"] = /obj/item/clothing/head/fedora //m'lady
@@ -86,6 +93,7 @@
 	formalhats["top hat"] = /obj/item/clothing/head/that
 	formalhats["fedora, brown"] = /obj/item/clothing/head/det
 	formalhats["fedora, grey"] = /obj/item/clothing/head/det/grey
+
 	gear_tweaks += new /datum/gear_tweak/path(formalhats)
 
 /datum/gear/head/informalhat
@@ -95,10 +103,12 @@
 /datum/gear/head/informalhat/New()
 	..()
 	var/informalhats = list()
+
 	informalhats["cowboy hat"] = /obj/item/clothing/head/cowboy_hat
 	informalhats["panama"] = /obj/item/clothing/head/panama
 	informalhats["ushanka"] = /obj/item/clothing/head/ushanka
 	informalhats["TCC ushanka"] = /obj/item/clothing/head/ushanka/tcc
+
 	gear_tweaks += new /datum/gear_tweak/path(informalhats)
 
 /datum/gear/head/hijab
@@ -137,6 +147,7 @@
 /datum/gear/head/garland/New()
 	..()
 	var/garland = list()
+
 	garland["floral garland"] = /obj/item/clothing/head/garland
 	garland["sunflower crown"] = /obj/item/clothing/head/garland/sunflower
 	garland["poppy crown"] = /obj/item/clothing/head/garland/poppy
@@ -145,6 +156,7 @@
 	garland["flower crown, blue, yellow, green & white"] = /obj/item/clothing/head/garland/rainbowbunch/bygw
 	garland["flower crown, red, blue, purple & pink"] = /obj/item/clothing/head/garland/rainbowbunch/rbpp
 	garland["flower crown, yellow, green & white"] = /obj/item/clothing/head/garland/rainbowbunch/ygw
+
 	gear_tweaks += new /datum/gear_tweak/path(garland)
 
 /datum/gear/head/kitty

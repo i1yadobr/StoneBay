@@ -127,6 +127,7 @@
 /datum/gear/uniform/suit/New()
 	..()
 	var/suits = list()
+
 	suits += /obj/item/clothing/under/sl_suit
 	suits += /obj/item/clothing/under/suit_jacket
 	suits += /obj/item/clothing/under/lawyer/blue
@@ -143,6 +144,7 @@
 	suits += /obj/item/clothing/under/blazer
 	suits += /obj/item/clothing/under/kilt
 	suits += /obj/item/clothing/under/dress/dress_hr
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(suits)
 
 /datum/gear/uniform/scrubs
@@ -168,6 +170,7 @@
 	dresses += /obj/item/clothing/under/dress/dress_pink
 	dresses += /obj/item/clothing/under/dress/dress_purple
 	dresses += /obj/item/clothing/under/sundress
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(dresses)
 
 /datum/gear/uniform/skirt
@@ -188,6 +191,7 @@
 /datum/gear/uniform/skirts_color/New()
 	..()
 	var/skirts_colorable = list()
+
 	skirts_colorable += /obj/item/clothing/under/skirt_c
 	skirts_colorable += /obj/item/clothing/under/skirt_c/pencil
 	skirts_colorable += /obj/item/clothing/under/skirt_c/casual
@@ -197,6 +201,7 @@
 	skirts_colorable += /obj/item/clothing/under/skirt_c/plaid
 	skirts_colorable += /obj/item/clothing/under/skirt_c/skater
 	skirts_colorable += /obj/item/clothing/under/skirt_c/tube
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(skirts_colorable)
 
 /datum/gear/uniform/casual_pants
@@ -236,8 +241,10 @@
 /datum/gear/uniform/veles_jumpsuit/New()
 	..()
 	var/veles = list()
+
 	veles += /obj/item/clothing/under/veles
 	veles += /obj/item/clothing/under/veles/veles_blue
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(veles)
 
 /datum/gear/uniform/tacticool_turtleneck
@@ -383,8 +390,10 @@
 /datum/gear/uniform/hosformal/New()
 	..()
 	var/suits = list()
+
 	suits += /obj/item/clothing/under/hosformalmale
 	suits += /obj/item/clothing/under/hosformalfem
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(suits)
 
 /datum/gear/uniform/dress/rosa
@@ -454,8 +463,10 @@
 /datum/gear/uniform/savage_hunter/New()
 	..()
 	var/suits = list()
+
 	suits += /obj/item/clothing/under/savage_hunter
 	suits += /obj/item/clothing/under/savage_hunter/female
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(suits)
 
 /datum/gear/uniform/dress/cheongsam
@@ -509,7 +520,9 @@
 /datum/gear/uniform/camouflage/New()
 	..()
 	var/camo = list()
+
 	camo += /obj/item/clothing/under/camo
 	camo += /obj/item/clothing/under/camo/firestarter
 	camo += /obj/item/clothing/under/camo/urban
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(camo)

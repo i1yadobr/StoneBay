@@ -23,6 +23,7 @@
 	scarfs["stripped blue scarf"] = /obj/item/clothing/mask/sbluescarf
 	scarfs["stripped green scarf"] = /obj/item/clothing/mask/sgreenscarf
 	scarfs["stipped red scarf"] = /obj/item/clothing/mask/sredscarf
+
 	gear_tweaks += new /datum/gear_tweak/path(scarfs)
 
 /datum/gear/mask/scarf_color
@@ -40,6 +41,7 @@
 	scarf_colorable += /obj/item/clothing/mask/scarf_c/torn
 	scarf_colorable += /obj/item/clothing/mask/scarf_c/smock
 	scarf_colorable += /obj/item/clothing/mask/scarf_c/neckerchief
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(scarf_colorable)
 
 /datum/gear/mask/fakemoustache

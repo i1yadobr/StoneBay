@@ -13,6 +13,7 @@
 /datum/gear/earrings/New()
 	..()
 	var/earrings = list()
+
 	earrings["stud, pearl"]      = /obj/item/clothing/ears/earring/stud
 	earrings["stud, glass"]      = /obj/item/clothing/ears/earring/stud/glass
 	earrings["stud, wood"]       = /obj/item/clothing/ears/earring/stud/wood
@@ -43,6 +44,7 @@
 	earrings["dangle, sapphire"] = /obj/item/clothing/ears/earring/dangle/sapphire
 	earrings["dangle, diamond"]  = /obj/item/clothing/ears/earring/dangle/diamond
 	earrings["yin yang"]         = /obj/item/clothing/ears/earring/yinyang
+
 	gear_tweaks += new /datum/gear_tweak/path(earrings)
 
 /datum/gear/earring
@@ -53,6 +55,7 @@
 /datum/gear/earring/New()
 	..()
 	var/earring = list()
+
 	earring["stud, pearl"]      = /obj/item/clothing/ears/earring/single/stud
 	earring["stud, glass"]      = /obj/item/clothing/ears/earring/single/stud/glass
 	earring["stud, wood"]       = /obj/item/clothing/ears/earring/single/stud/wood
@@ -82,4 +85,5 @@
 	earring["dangle, ruby"]     = /obj/item/clothing/ears/earring/single/dangle/ruby
 	earring["dangle, sapphire"] = /obj/item/clothing/ears/earring/single/dangle/sapphire
 	earring["dangle, diamond"]  = /obj/item/clothing/ears/earring/single/dangle/diamond
+
 	gear_tweaks += new /datum/gear_tweak/path(earring)

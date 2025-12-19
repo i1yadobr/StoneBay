@@ -10,6 +10,7 @@
 /datum/gear/shoes/color/New()
 	..()
 	var/shoes = list()
+
 	shoes += /obj/item/clothing/shoes/black
 	shoes += /obj/item/clothing/shoes/blue
 	shoes += /obj/item/clothing/shoes/brown
@@ -22,6 +23,7 @@
 	shoes += /obj/item/clothing/shoes/red
 	shoes += /obj/item/clothing/shoes/white
 	shoes += /obj/item/clothing/shoes/yellow
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(shoes)
 
 /datum/gear/shoes/heels
@@ -39,6 +41,7 @@
 /datum/gear/shoes/sandal/New()
 	..()
 	var/sandals = list()
+
 	sandals += /obj/item/clothing/shoes/sandal
 	sandals += /obj/item/clothing/shoes/sandal/color/black
 	sandals += /obj/item/clothing/shoes/sandal/color/grey
@@ -47,6 +50,7 @@
 	sandals += /obj/item/clothing/shoes/sandal/color/red
 	sandals += /obj/item/clothing/shoes/sandal/color/green
 	sandals += /obj/item/clothing/shoes/sandal/color/orange
+
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(sandals)
 
 /datum/gear/shoes/jackboots

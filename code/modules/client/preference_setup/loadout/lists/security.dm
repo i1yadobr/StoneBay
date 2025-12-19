@@ -12,10 +12,12 @@
 /datum/gear/security/pcarrier/New()
 	..()
 	var/armors = list()
+
 	armors["standard plate carrier"] = /obj/item/clothing/suit/armor/pcarrier
 	armors["green plate carrier"] = /obj/item/clothing/suit/armor/pcarrier/green
 	armors["navy blue plate carrier"] = /obj/item/clothing/suit/armor/pcarrier/navy
 	armors["tan plate carrier"] = /obj/item/clothing/suit/armor/pcarrier/tan
+
 	gear_tweaks += new /datum/gear_tweak/path(armors)
 
 /datum/gear/security/armor_deco

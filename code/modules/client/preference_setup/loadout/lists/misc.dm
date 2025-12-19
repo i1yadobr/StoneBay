@@ -55,6 +55,7 @@
 	plushes["spider plush"] = /obj/item/toy/plushie/spider
 	plushes["farwa plush"] = /obj/item/toy/plushie/farwa
 	plushes["snail plush"] = /obj/item/toy/plushie/snail
+
 	gear_tweaks += new /datum/gear_tweak/path(plushes)
 
 /datum/gear/mirror
@@ -97,6 +98,7 @@
 	var/cigar_type = list()
 	cigar_type["premium"] = /obj/item/clothing/mask/smokable/cigarette/cigar
 	cigar_type["Cohiba Robusto"] = /obj/item/clothing/mask/smokable/cigarette/cigar/cohiba
+
 	gear_tweaks += new /datum/gear_tweak/path(cigar_type)
 
 /datum/gear/ecig
@@ -134,6 +136,7 @@
 	cover_type["blue"]   = /obj/item/welding_cover/blue
 	cover_type["flame"]  = /obj/item/welding_cover/flame
 	cover_type["white"]  = /obj/item/welding_cover/white
+
 	gear_tweaks += new /datum/gear_tweak/path(cover_type)
 
 /datum/gear/bikehorn

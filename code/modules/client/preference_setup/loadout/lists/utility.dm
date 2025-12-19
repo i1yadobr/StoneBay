@@ -23,11 +23,13 @@
 /datum/gear/utility/folder/New()
 	..()
 	var/folders = list()
+
 	folders["blue folder"] = /obj/item/folder/blue
 	folders["grey folder"] = /obj/item/folder
 	folders["red folder"] = /obj/item/folder/red
 	folders["white folder"] = /obj/item/folder/white
 	folders["yellow folder"] = /obj/item/folder/yellow
+
 	gear_tweaks += new /datum/gear_tweak/path(folders)
 
 /datum/gear/utility/paicard
