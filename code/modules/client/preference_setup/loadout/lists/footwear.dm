@@ -31,7 +31,6 @@
 	description = "Cheap, yet elegant, pair of female shoes. These are definitely made for walking tho."
 	allowed_roles = CIVILIAN_ROLES
 	cost = 2
-	10
 
 /datum/gear/shoes/sandal
 	display_name = "sandals selection"
