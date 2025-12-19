@@ -503,6 +503,7 @@
 
 /datum/gear/uniform/camouflage
 	display_name = "camouflage jumpsuits"
+	path = /obj/item/clothing/under/camo
 
 /datum/gear/uniform/camouflage/New()
 	..()
