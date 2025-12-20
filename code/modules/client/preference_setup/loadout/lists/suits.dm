@@ -127,7 +127,7 @@
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_args(
 		/obj/item/clothing/suit/storage/toggle/fr_jacket,
 		/obj/item/clothing/suit/storage/toggle/labcoat/blue,
-		/obj/item/clothing/suit/surgicalapron)/
+		/obj/item/clothing/suit/surgicalapron)
 
 /datum/gear/suit/medical_poncho
 	display_name = "poncho, medical"
