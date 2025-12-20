@@ -42,7 +42,7 @@
 
 /datum/gear/cane
 	display_name = "cane"
-	path = /obj/item/can
+	path = /obj/item/cane
 
 /datum/gear/cardemon_pack
 	display_name = "Cardemon booster pack"
