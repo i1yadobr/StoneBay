@@ -1,6 +1,92 @@
+/datum/gear/accessory/wallet
+	display_name = "wallet, colour select"
+	path = /obj/item/storage/wallet
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/accessory/wallet_poly
+	display_name = "wallet, polychromic"
+	path = /obj/item/storage/wallet/poly
+	cost = 2
+
+/datum/gear/ashtray
+	display_name = "ashtray, plastic"
+	path = /obj/item/material/ashtray/plastic
+
+/datum/gear/balloon
+	display_name = "balloon"
+	path = /obj/item/toy/balloon
+
+/datum/gear/balloon/nanotrasen
+	display_name = "'motivational' balloon"
+	path = /obj/item/toy/balloon/nanotrasen
+
+/datum/gear/bedsheet_clown
+	display_name = "clown's bedsheet"
+	path = /obj/item/bedsheet/clown
+
+/datum/gear/bedsheet_mime
+	display_name = "mime's bedsheet"
+	path = /obj/item/bedsheet/mime
+
+/datum/gear/bedsheet_rainbow
+	display_name = "rainbow's bedsheet"
+	path = /obj/item/bedsheet/rainbow
+
+/datum/gear/bikehorn
+	display_name = "bike horn"
+	path = /obj/item/bikehorn
+
+/datum/gear/bosunwhistle
+	display_name = "bosun's whistle"
+	path = /obj/item/toy/bosunwhistle
+
 /datum/gear/cane
 	display_name = "cane"
-	path = /obj/item/cane
+	path = /obj/item/can
+
+/datum/gear/cardemon_pack
+	display_name = "Cardemon booster pack"
+	path = /obj/item/pack/cardemon
+
+/datum/gear/cards
+	display_name = "deck of cards"
+	path = /obj/item/deck/cards
+
+/datum/gear/cigars
+	display_name = "fancy cigar case"
+	path = /obj/item/storage/fancy/cigar
+	cost = 2
+
+/datum/gear/cigar
+	display_name = "fancy cigar"
+	path = /obj/item/clothing/mask/smokable/cigarette/cigar
+
+/datum/gear/cigar/New()
+	..()
+	var/cigar_type = list()
+	cigar_type["premium"] = /obj/item/clothing/mask/smokable/cigarette/cigar
+	cigar_type["Cohiba Robusto"] = /obj/item/clothing/mask/smokable/cigarette/cigar/cohiba
+
+	gear_tweaks += new /datum/gear_tweak/path(cigar_type)
+
+/datum/gear/champion
+	display_name = "champion's belt"
+	path = /obj/item/storage/belt/champion
+	slot = slot_belt
+
+/datum/gear/coffeecup
+	display_name = "coffee cup"
+	path = /obj/item/reagent_containers/vessel/mug
+	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/comb
+	display_name = "plastic comb"
+	path = /obj/item/haircomb
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/cornpipe
+	display_name = "pipe, corn"
+	path = /obj/item/clothing/mask/smokable/pipe/cobpipe
 
 /datum/gear/dice
 	display_name = "dice pack"
@@ -10,35 +96,27 @@
 	display_name = "dice pack (gaming)"
 	path = /obj/item/storage/pill_bottle/dice_nerd
 
-/datum/gear/cards
-	display_name = "deck of cards"
-	path = /obj/item/deck/cards
+/datum/gear/ecig
+	display_name = "electronic cigarette"
+	path = /obj/item/clothing/mask/smokable/ecig/util
 
-/datum/gear/tarot
-	display_name = "deck of tarot cards"
-	path = /obj/item/deck/tarot
+/datum/gear/ecig/deluxe
+	display_name = "electronic cigarette, deluxe"
+	path = /obj/item/clothing/mask/smokable/ecig/deluxe
+	cost = 2
 
 /datum/gear/holder
 	display_name = "card holder"
 	path = /obj/item/deck/holder
 
-/datum/gear/cardemon_pack
-	display_name = "Cardemon booster pack"
-	path = /obj/item/pack/cardemon
-
-/datum/gear/spaceball_pack
-	display_name = "Spaceball booster pack"
-	path = /obj/item/pack/spaceball
-
-/datum/gear/coffeecup
-	display_name = "coffee cup"
-	path = /obj/item/reagent_containers/vessel/mug
+/datum/gear/lipstick
+	display_name = "lipstick selection"
+	path = /obj/item/lipstick
 	flags = GEAR_HAS_TYPE_SELECTION
 
-/datum/gear/towel
-	display_name = "towel"
-	path = /obj/item/towel
-	flags = GEAR_HAS_COLOR_SELECTION
+/datum/gear/mirror
+	display_name = "handheld mirror"
+	path = /obj/item/mirror
 
 /datum/gear/plush_toy
 	display_name = "plush toy"
@@ -58,67 +136,34 @@
 
 	gear_tweaks += new /datum/gear_tweak/path(plushes)
 
-/datum/gear/mirror
-	display_name = "handheld mirror"
-	path = /obj/item/mirror
-
-/datum/gear/lipstick
-	display_name = "lipstick selection"
-	path = /obj/item/lipstick
-	flags = GEAR_HAS_TYPE_SELECTION
-
-/datum/gear/comb
-	display_name = "plastic comb"
-	path = /obj/item/haircomb
-	flags = GEAR_HAS_COLOR_SELECTION
+/datum/gear/rubberducky
+	display_name = "rubber ducky"
+	path = /obj/item/bikehorn/rubberducky
 
 /datum/gear/smokingpipe
 	display_name = "pipe, smoking"
 	path = /obj/item/clothing/mask/smokable/pipe
 
-/datum/gear/cornpipe
-	display_name = "pipe, corn"
-	path = /obj/item/clothing/mask/smokable/pipe/cobpipe
+/datum/gear/spaceball_pack
+	display_name = "Spaceball booster pack"
+	path = /obj/item/pack/spaceball
 
-/datum/gear/ashtray
-	display_name = "ashtray, plastic"
-	path = /obj/item/material/ashtray/plastic
+/datum/gear/spinningtoy
+	display_name = "gravitational singularity"
+	path = /obj/item/toy/spinningtoy
 
-/datum/gear/cigars
-	display_name = "fancy cigar case"
-	path = /obj/item/storage/fancy/cigar
-	cost = 2
+/datum/gear/tarot
+	display_name = "deck of tarot cards"
+	path = /obj/item/deck/tarot
 
-/datum/gear/cigar
-	display_name = "fancy cigar"
-	path = /obj/item/clothing/mask/smokable/cigarette/cigar
-
-/datum/gear/cigar/New()
-	..()
-	var/cigar_type = list()
-	cigar_type["premium"] = /obj/item/clothing/mask/smokable/cigarette/cigar
-	cigar_type["Cohiba Robusto"] = /obj/item/clothing/mask/smokable/cigarette/cigar/cohiba
-
-	gear_tweaks += new /datum/gear_tweak/path(cigar_type)
-
-/datum/gear/ecig
-	display_name = "electronic cigarette"
-	path = /obj/item/clothing/mask/smokable/ecig/util
-
-/datum/gear/ecig/deluxe
-	display_name = "electronic cigarette, deluxe"
-	path = /obj/item/clothing/mask/smokable/ecig/deluxe
-	cost = 2
-
-/datum/gear/accessory/wallet
-	display_name = "wallet, colour select"
-	path = /obj/item/storage/wallet
+/datum/gear/towel
+	display_name = "towel"
+	path = /obj/item/towel
 	flags = GEAR_HAS_COLOR_SELECTION
 
-/datum/gear/accessory/wallet_poly
-	display_name = "wallet, polychromic"
-	path = /obj/item/storage/wallet/poly
-	cost = 2
+/datum/gear/vuvuzela
+	display_name = "vuvuzela"
+	path = /obj/item/bikehorn/vuvuzela
 
 /datum/gear/welding_cover
 	display_name = "welding helmet covers selection"
@@ -138,48 +183,3 @@
 	cover_type["white"]  = /obj/item/welding_cover/white
 
 	gear_tweaks += new /datum/gear_tweak/path(cover_type)
-
-/datum/gear/bikehorn
-	display_name = "bike horn"
-	path = /obj/item/bikehorn
-
-/datum/gear/vuvuzela
-	display_name = "vuvuzela"
-	path = /obj/item/bikehorn/vuvuzela
-
-/datum/gear/rubberducky
-	display_name = "rubber ducky"
-	path = /obj/item/bikehorn/rubberducky
-
-/datum/gear/champion
-	display_name = "champion's belt"
-	path = /obj/item/storage/belt/champion
-	slot = slot_belt
-
-/datum/gear/bedsheet_clown
-	display_name = "clown's bedsheet"
-	path = /obj/item/bedsheet/clown
-
-/datum/gear/bedsheet_mime
-	display_name = "mime's bedsheet"
-	path = /obj/item/bedsheet/mime
-
-/datum/gear/bedsheet_rainbow
-	display_name = "rainbow's bedsheet"
-	path = /obj/item/bedsheet/rainbow
-
-/datum/gear/bosunwhistle
-	display_name = "bosun's whistle"
-	path = /obj/item/toy/bosunwhistle
-
-/datum/gear/balloon
-	display_name = "balloon"
-	path = /obj/item/toy/balloon
-
-/datum/gear/balloon/nanotrasen
-	display_name = "'motivational' balloon"
-	path = /obj/item/toy/balloon/nanotrasen
-
-/datum/gear/spinningtoy
-	display_name = "gravitational singularity"
-	path = /obj/item/toy/spinningtoy

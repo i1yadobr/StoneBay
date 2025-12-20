@@ -3,6 +3,10 @@
 	sort_category = "Shoes"
 	slot = slot_shoes
 
+/datum/gear/shoes/clown_shoes
+	display_name = "clown shoes"
+	path = /obj/item/clothing/shoes/clown_shoes
+
 /datum/gear/shoes/color
 	display_name = "shoes selection"
 	path = /obj/item/clothing/shoes
@@ -26,6 +30,10 @@
 
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(shoes)
 
+/datum/gear/shoes/cyborg_shoes
+	display_name = "cyborg shoes"
+	path = /obj/item/clothing/shoes/cyborg
+
 /datum/gear/shoes/heels
 	display_name = "heels, colour select"
 	path = /obj/item/clothing/shoes/heels
@@ -33,6 +41,15 @@
 	description = "Cheap, yet elegant, pair of female shoes. These are definitely made for walking tho."
 	allowed_roles = CIVILIAN_ROLES
 	cost = 2
+
+/datum/gear/shoes/jackboots
+	display_name = "jackboots"
+	path = /obj/item/clothing/shoes/cheapboots
+	cost = 2
+
+/datum/gear/shoes/mime_shoes
+	display_name = "mime shoes"
+	path = /obj/item/clothing/shoes/mime
 
 /datum/gear/shoes/sandal
 	display_name = "sandals selection"
@@ -53,32 +70,15 @@
 
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(sandals)
 
-/datum/gear/shoes/jackboots
-	display_name = "jackboots"
-	path = /obj/item/clothing/shoes/cheapboots
-	cost = 2
-
-/datum/gear/shoes/workboots
-	display_name = "workboots"
-	path = /obj/item/clothing/shoes/cheapboots/work
-	cost = 2
-
-/datum/gear/shoes/clown_shoes
-	display_name = "clown shoes"
-	path = /obj/item/clothing/shoes/clown_shoes
-
-/datum/gear/shoes/cyborg_shoes
-	display_name = "cyborg shoes"
-	path = /obj/item/clothing/shoes/cyborg
+/datum/gear/shoes/slippers
+	display_name = "bunny slippers"
+	path = /obj/item/clothing/shoes/slippers
 
 /datum/gear/shoes/swimmingfins
 	display_name = "swimming fins"
 	path = /obj/item/clothing/shoes/swimmingfins
 
-/datum/gear/shoes/slippers
-	display_name = "bunny slippers"
-	path = /obj/item/clothing/shoes/slippers
-
-/datum/gear/shoes/mime_shoes
-	display_name = "mime shoes"
-	path = /obj/item/clothing/shoes/mime
+/datum/gear/shoes/workboots
+	display_name = "workboots"
+	path = /obj/item/clothing/shoes/cheapboots/work
+	cost = 2

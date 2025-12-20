@@ -2,16 +2,6 @@
 	sort_category = "Hats"
 	slot = slot_head
 
-/datum/gear/head/beret
-	display_name = "beret, colour select"
-	path = /obj/item/clothing/head/beret/plaincolor
-	flags = GEAR_HAS_COLOR_SELECTION
-	description = "A simple, solid color beret. This one has no emblems or insignia on it."
-
-/datum/gear/head/whitentberet
-	display_name = "beret, NanoTrasen security"
-	path = /obj/item/clothing/head/beret/guard
-
 /datum/gear/head/bandana
 	display_name = "bandana selection"
 	path = /obj/item/clothing
@@ -19,6 +9,16 @@
 /datum/gear/head/bandana/New()
 	..()
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(typesof(/obj/item/clothing/mask/bandana) + typesof(/obj/item/clothing/head/bandana))
+
+/datum/gear/head/bearpelt
+	display_name = "bearpelt"
+	path = /obj/item/clothing/head/bearpelt
+
+/datum/gear/head/beret
+	display_name = "beret, colour select"
+	path = /obj/item/clothing/head/beret/plaincolor
+	flags = GEAR_HAS_COLOR_SELECTION
+	description = "A simple, solid color beret. This one has no emblems or insignia on it."
 
 /datum/gear/head/bow
 	display_name = "hair bow, colour select"
@@ -42,6 +42,66 @@
 	caps["major bill's shipping cap"] = /obj/item/clothing/head/soft/mbill
 
 	gear_tweaks += new /datum/gear_tweak/path(caps)
+
+/datum/gear/head/capcap_alt
+	display_name = "captain's cap"
+	path = /obj/item/clothing/head/caphat/cap/capcap_alt
+	allowed_roles = list(/datum/job/captain)
+
+/datum/gear/head/captain_alt
+	display_name = "old captain's hat"
+	path = /obj/item/clothing/head/caphat/alt
+	allowed_roles = list(/datum/job/captain)
+
+/datum/gear/head/cardborg
+	display_name = "cardborg hat"
+	path = /obj/item/clothing/head/cardborg
+
+/datum/gear/head/chicken
+	display_name = "chicken head"
+	path = /obj/item/clothing/head/chicken
+
+/datum/gear/head/festive
+	display_name = "festive hat"
+	path = /obj/item/clothing/head/festive
+
+/datum/gear/head/formalhat
+	display_name = "formal hat selection"
+	path = /obj/item/clothing/head
+
+/datum/gear/head/formalhat/New()
+	..()
+	var/formalhats = list()
+
+	formalhats["boatsman hat"] = /obj/item/clothing/head/boaterhat
+	formalhats["bowler hat"] = /obj/item/clothing/head/bowler
+	formalhats["fedora"] = /obj/item/clothing/head/fedora //m'lady
+	formalhats["feather trilby"] = /obj/item/clothing/head/feathertrilby
+	formalhats["fez"] = /obj/item/clothing/head/fez
+	formalhats["top hat"] = /obj/item/clothing/head/that
+	formalhats["fedora, brown"] = /obj/item/clothing/head/det
+	formalhats["fedora, grey"] = /obj/item/clothing/head/det/grey
+
+	gear_tweaks += new /datum/gear_tweak/path(formalhats)
+
+/datum/gear/head/garland
+	display_name = "garland selection"
+	path = /obj/item/clothing/head
+
+/datum/gear/head/garland/New()
+	..()
+	var/garland = list()
+
+	garland["floral garland"] = /obj/item/clothing/head/garland
+	garland["sunflower crown"] = /obj/item/clothing/head/garland/sunflower
+	garland["poppy crown"] = /obj/item/clothing/head/garland/poppy
+	garland["lily crown"] = /obj/item/clothing/head/garland/lily
+	garland["flower crown, red, yellow & white"] = /obj/item/clothing/head/garland/rainbowbunch/ryw
+	garland["flower crown, blue, yellow, green & white"] = /obj/item/clothing/head/garland/rainbowbunch/bygw
+	garland["flower crown, red, blue, purple & pink"] = /obj/item/clothing/head/garland/rainbowbunch/rbpp
+	garland["flower crown, yellow, green & white"] = /obj/item/clothing/head/garland/rainbowbunch/ygw
+
+	gear_tweaks += new /datum/gear_tweak/path(garland)
 
 /datum/gear/head/hairflower
 	display_name = "hair flower pin"
@@ -77,24 +137,10 @@
 
 	gear_tweaks += new /datum/gear_tweak/path(hardhats)
 
-/datum/gear/head/formalhat
-	display_name = "formal hat selection"
-	path = /obj/item/clothing/head
-
-/datum/gear/head/formalhat/New()
-	..()
-	var/formalhats = list()
-
-	formalhats["boatsman hat"] = /obj/item/clothing/head/boaterhat
-	formalhats["bowler hat"] = /obj/item/clothing/head/bowler
-	formalhats["fedora"] = /obj/item/clothing/head/fedora //m'lady
-	formalhats["feather trilby"] = /obj/item/clothing/head/feathertrilby
-	formalhats["fez"] = /obj/item/clothing/head/fez
-	formalhats["top hat"] = /obj/item/clothing/head/that
-	formalhats["fedora, brown"] = /obj/item/clothing/head/det
-	formalhats["fedora, grey"] = /obj/item/clothing/head/det/grey
-
-	gear_tweaks += new /datum/gear_tweak/path(formalhats)
+/datum/gear/head/hijab
+	display_name = "hijab, colour select"
+	path = /obj/item/clothing/head/hijab
+	flags = GEAR_HAS_COLOR_SELECTION
 
 /datum/gear/head/informalhat
 	display_name = "informal hat selection"
@@ -111,15 +157,38 @@
 
 	gear_tweaks += new /datum/gear_tweak/path(informalhats)
 
-/datum/gear/head/hijab
-	display_name = "hijab, colour select"
-	path = /obj/item/clothing/head/hijab
-	flags = GEAR_HAS_COLOR_SELECTION
-
 /datum/gear/head/kippa
 	display_name = "kippa, colour select"
 	path = /obj/item/clothing/head/kippa
 	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/head/kitty
+	display_name = "kitty ears"
+	path = /obj/item/clothing/head/kitty
+
+/datum/gear/head/marisa_wizard_fake
+	display_name = "marisa wizard hat"
+	path = /obj/item/clothing/head/wizard/marisa/fake
+
+/datum/gear/head/petehat
+	display_name = "pete hat"
+	path = /obj/item/clothing/head/collectable/petehat
+
+/datum/gear/head/pirate
+	display_name = "pirate cap"
+	path = /obj/item/clothing/head/pirate
+
+/datum/gear/head/plaguedoctorhat
+	display_name = "plague doctor hat"
+	path = /obj/item/clothing/head/plaguedoctorhat
+
+/datum/gear/head/pumpkinhead
+	display_name = "pumpkin head"
+	path = /obj/item/clothing/head/pumpkinhead
+
+/datum/gear/head/rabbitears
+	display_name = "rabbit ears"
+	path = /obj/item/clothing/head/rabbitears
 
 /datum/gear/head/turban
 	display_name = "turban, colour select"
@@ -140,76 +209,9 @@
 	display_name = "surgical cap, colour select"
 	flags = GEAR_HAS_COLOR_SELECTION
 
-/datum/gear/head/garland
-	display_name = "garland selection"
-	path = /obj/item/clothing/head
-
-/datum/gear/head/garland/New()
-	..()
-	var/garland = list()
-
-	garland["floral garland"] = /obj/item/clothing/head/garland
-	garland["sunflower crown"] = /obj/item/clothing/head/garland/sunflower
-	garland["poppy crown"] = /obj/item/clothing/head/garland/poppy
-	garland["lily crown"] = /obj/item/clothing/head/garland/lily
-	garland["flower crown, red, yellow & white"] = /obj/item/clothing/head/garland/rainbowbunch/ryw
-	garland["flower crown, blue, yellow, green & white"] = /obj/item/clothing/head/garland/rainbowbunch/bygw
-	garland["flower crown, red, blue, purple & pink"] = /obj/item/clothing/head/garland/rainbowbunch/rbpp
-	garland["flower crown, yellow, green & white"] = /obj/item/clothing/head/garland/rainbowbunch/ygw
-
-	gear_tweaks += new /datum/gear_tweak/path(garland)
-
-/datum/gear/head/kitty
-	display_name = "kitty ears"
-	path = /obj/item/clothing/head/kitty
-
-/datum/gear/head/wizard_fake
-	display_name = "wizard hat"
-	path = /obj/item/clothing/head/wizard/fake
-
-/datum/gear/head/marisa_wizard_fake
-	display_name = "marisa wizard hat"
-	path = /obj/item/clothing/head/wizard/marisa/fake
-
-/datum/gear/head/witchwig
-	display_name = "witchwig"
-	path = /obj/item/clothing/head/witchwig
-
-/datum/gear/head/bearpelt
-	display_name = "bearpelt"
-	path = /obj/item/clothing/head/bearpelt
-
-/datum/gear/head/rabbitears
-	display_name = "rabbit ears"
-	path = /obj/item/clothing/head/rabbitears
-
-/datum/gear/head/festive
-	display_name = "festive hat"
-	path = /obj/item/clothing/head/festive
-
-/datum/gear/head/petehat
-	display_name = "pete hat"
-	path = /obj/item/clothing/head/collectable/petehat
-
-/datum/gear/head/cardborg
-	display_name = "cardborg hat"
-	path = /obj/item/clothing/head/cardborg
-
-/datum/gear/head/pirate
-	display_name = "pirate cap"
-	path = /obj/item/clothing/head/pirate
-
-/datum/gear/head/plaguedoctorhat
-	display_name = "plague doctor hat"
-	path = /obj/item/clothing/head/plaguedoctorhat
-
 /datum/gear/head/sombrero
 	display_name = "sombrero"
 	path = /obj/item/clothing/head/sombrero
-
-/datum/gear/head/chicken
-	display_name = "chicken head"
-	path = /obj/item/clothing/head/chicken
 
 /datum/gear/head/rasta
 	display_name = "rasta hat"
@@ -219,25 +221,23 @@
 	display_name = "cock head"
 	path = /obj/item/clothing/head/richard
 
-/datum/gear/head/pumpkinhead
-	display_name = "pumpkin head"
-	path = /obj/item/clothing/head/pumpkinhead
-
 /datum/gear/head/yurihead
 	display_name = "yuri helmet"
 	path = /obj/item/clothing/head/yuri
 
-/datum/gear/head/capcap_alt
-	display_name = "captain's cap"
-	path = /obj/item/clothing/head/caphat/cap/capcap_alt
-	allowed_roles = list(/datum/job/captain)
-
-/datum/gear/head/captain_alt
-	display_name = "old captain's hat"
-	path = /obj/item/clothing/head/caphat/alt
-	allowed_roles = list(/datum/job/captain)
+/datum/gear/head/whitentberet
+	display_name = "beret, NanoTrasen security"
+	path = /obj/item/clothing/head/beret/guard
 
 /datum/gear/head/witchhunter
 	display_name = "witchunter hat"
 	path = /obj/item/clothing/head/witchunter_hat
 	allowed_roles = list(/datum/job/chaplain)
+
+/datum/gear/head/witchwig
+	display_name = "witchwig"
+	path = /obj/item/clothing/head/witchwig
+
+/datum/gear/head/wizard_fake
+	display_name = "wizard hat"
+	path = /obj/item/clothing/head/wizard/fake
