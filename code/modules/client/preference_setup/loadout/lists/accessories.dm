@@ -120,3 +120,13 @@
 /datum/gear/accessory/vynilcorset
 	display_name = "vinyl corset"
 	path = /obj/item/clothing/accessory/vynilcorset
+
+/datum/gear/accessory/wallet
+	display_name = "wallet, colour select"
+	path = /obj/item/storage/wallet
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/accessory/wallet_poly
+	display_name = "wallet, polychromic"
+	path = /obj/item/storage/wallet/poly
+	cost = 2
