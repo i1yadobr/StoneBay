@@ -15,11 +15,6 @@
 	display_name = "cardborg suit"
 	path = /obj/item/clothing/suit/cardborg
 
-/datum/gear/suit/cargo_poncho
-	display_name = "poncho, supply"
-	path = /obj/item/clothing/suit/poncho/roles/cargo
-	allowed_roles = SUPPLY_ROLES
-
 /datum/gear/suit/chickensuit
 	display_name = "chicken suit"
 	path = /obj/item/clothing/suit/chickensuit
@@ -90,11 +85,6 @@
 
 	gear_tweaks += new /datum/gear_tweak/departmental(paths_to_jobs)
 
-/datum/gear/suit/engineering_poncho
-	display_name = "poncho, engineering"
-	path = /obj/item/clothing/suit/poncho/roles/engineering
-	allowed_roles = ENGINEERING_ROLES
-
 /datum/gear/suit/fashionable_coat
 	display_name = "fashionable coat"
 	path = /obj/item/clothing/suit/storage/fashionable_coat
@@ -128,11 +118,6 @@
 		/obj/item/clothing/suit/storage/toggle/fr_jacket,
 		/obj/item/clothing/suit/storage/toggle/labcoat/blue,
 		/obj/item/clothing/suit/surgicalapron)
-
-/datum/gear/suit/medical_poncho
-	display_name = "poncho, medical"
-	path = /obj/item/clothing/suit/poncho/roles/medical
-	allowed_roles = MEDICAL_ROLES
 
 /datum/gear/suit/monkeysuit
 	display_name = "monkey suit"
@@ -186,7 +171,32 @@
 	display_name = "plague doctor suit"
 	path = /obj/item/clothing/suit/bio_suit/plaguedoctorsuit
 
-/datum/gear/suit/poncho
+/datum/gear/suit/poncho_cargo
+	display_name = "poncho, supply"
+	path = /obj/item/clothing/suit/poncho/roles/cargo
+	allowed_roles = SUPPLY_ROLES
+
+/datum/gear/suit/poncho_engineering
+	display_name = "poncho, engineering"
+	path = /obj/item/clothing/suit/poncho/roles/engineering
+	allowed_roles = ENGINEERING_ROLES
+
+/datum/gear/suit/poncho_medical
+	display_name = "poncho, medical"
+	path = /obj/item/clothing/suit/poncho/roles/medical
+	allowed_roles = MEDICAL_ROLES
+
+/datum/gear/suit/poncho_science
+	display_name = "poncho, science"
+	path = /obj/item/clothing/suit/poncho/roles/science
+	allowed_roles = RESEARCH_ROLES
+
+/datum/gear/suit/poncho_security
+	display_name = "poncho, security"
+	path = /obj/item/clothing/suit/poncho/roles/security
+	allowed_roles = SECURITY_ROLES
+
+/datum/gear/suit/poncho_selection
 	display_name = "poncho selection"
 	path = /obj/item/clothing/suit/poncho/colored
 	cost = 1
@@ -207,16 +217,6 @@
 /datum/gear/suit/santa
 	display_name = "santa's suit"
 	path = /obj/item/clothing/suit/space/santa
-
-/datum/gear/suit/science_poncho
-	display_name = "poncho, science"
-	path = /obj/item/clothing/suit/poncho/roles/science
-	allowed_roles = RESEARCH_ROLES
-
-/datum/gear/suit/security_poncho
-	display_name = "poncho, security"
-	path = /obj/item/clothing/suit/poncho/roles/security
-	allowed_roles = SECURITY_ROLES
 
 /datum/gear/suit/suit_jacket
 	display_name = "standard suit jackets"
