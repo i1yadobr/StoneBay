@@ -62,6 +62,7 @@
 /datum/gear/mask/scarf/New()
 	..()
 	var/scarfs = list()
+
 	scarfs["blue scarf"] = /obj/item/clothing/mask/bluescarf
 	scarfs["green scarf"] = /obj/item/clothing/mask/greenscarf
 	scarfs["red scarf"] = /obj/item/clothing/mask/redscarf
@@ -81,6 +82,7 @@
 /datum/gear/mask/scarf_color/New()
 	..()
 	var/scarf_colorable = list()
+
 	scarf_colorable += /obj/item/clothing/mask/scarf_c
 	scarf_colorable += /obj/item/clothing/mask/scarf_c/neck
 	scarf_colorable += /obj/item/clothing/mask/scarf_c/soft

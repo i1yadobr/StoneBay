@@ -169,6 +169,7 @@
 /datum/gear/uniform/dress_selection/New()
 	..()
 	var/dresses = list()
+
 	dresses += /obj/item/clothing/under/sundress_white
 	dresses += /obj/item/clothing/under/dress/dress_fire
 	dresses += /obj/item/clothing/under/dress/dress_green

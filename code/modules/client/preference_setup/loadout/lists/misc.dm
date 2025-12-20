@@ -54,6 +54,7 @@
 /datum/gear/cigar/New()
 	..()
 	var/cigar_type = list()
+
 	cigar_type["premium"] = /obj/item/clothing/mask/smokable/cigarette/cigar
 	cigar_type["Cohiba Robusto"] = /obj/item/clothing/mask/smokable/cigarette/cigar/cohiba
 
@@ -116,6 +117,7 @@
 /datum/gear/plush_toy/New()
 	..()
 	var/plushes = list()
+
 	plushes["diona nymph plush"] = /obj/item/toy/plushie/nymph
 	plushes["mouse plush"] = /obj/item/toy/plushie/mouse
 	plushes["kitten plush"] = /obj/item/toy/plushie/kitten
@@ -162,6 +164,7 @@
 /datum/gear/welding_cover/New()
 	..()
 	var/cover_type = list()
+
 	cover_type["knight"] = /obj/item/welding_cover/knight
 	cover_type["engie"]  = /obj/item/welding_cover/engie
 	cover_type["demon"]  = /obj/item/welding_cover/demon
