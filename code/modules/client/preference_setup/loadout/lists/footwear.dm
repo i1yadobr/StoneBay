@@ -39,7 +39,6 @@
 	path = /obj/item/clothing/shoes/heels
 	flags = GEAR_HAS_COLOR_SELECTION
 	description = "Cheap, yet elegant, pair of female shoes. These are definitely made for walking tho."
-	allowed_roles = CIVILIAN_ROLES
 	cost = 2
 
 /datum/gear/shoes/jackboots
