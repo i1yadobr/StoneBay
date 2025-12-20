@@ -3,11 +3,6 @@
 	slot = slot_glasses
 	cost = 2
 
-/datum/gear/eyes/glasses
-	display_name = "prescription glasses"
-	path = /obj/item/clothing/glasses/regular
-	cost = 1
-
 /datum/gear/eyes/eyepatch
 	display_name = "eyepatch"
 	path = /obj/item/clothing/glasses/eyepatch
@@ -27,6 +22,11 @@
 	glasses["scanning goggles"] = /obj/item/clothing/glasses/regular/scanners
 
 	gear_tweaks += new /datum/gear_tweak/path(glasses)
+
+/datum/gear/eyes/glasses
+	display_name = "prescription glasses"
+	path = /obj/item/clothing/glasses/regular
+	cost = 1
 
 /datum/gear/eyes/hud
 	display_name = "HUDs selection"

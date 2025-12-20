@@ -3,19 +3,28 @@
 	slot = slot_gloves
 	sort_category = "Gloves"
 
+/datum/gear/gloves/boxing
+	display_name = "boxing gloves"
+	path = /obj/item/clothing/gloves/boxing
+
 /datum/gear/gloves/colored
 	display_name = "gloves, colored"
 	flags = GEAR_HAS_COLOR_SELECTION
 	path = /obj/item/clothing/gloves/color
 
-/datum/gear/gloves/rainbow
-	display_name = "gloves, rainbow"
-	path = /obj/item/clothing/gloves/rainbow
-
 /datum/gear/gloves/fingerless_gloves
 	display_name = "fingerless gloves, colored"
 	path = /obj/item/clothing/gloves/color/fingerless_gloves
 	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/gloves/long_evening_gloves
+	display_name = "long evening gloves"
+	path = /obj/item/clothing/gloves/color/long_evening_gloves
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/gloves/rainbow
+	display_name = "gloves, rainbow"
+	path = /obj/item/clothing/gloves/rainbow
 
 /datum/gear/ring
 	display_name = "ring"
@@ -41,12 +50,3 @@
 	ringtype["ring, plastic"] = /obj/item/clothing/ring/material/plastic
 
 	gear_tweaks += new /datum/gear_tweak/path(ringtype)
-
-/datum/gear/gloves/boxing
-	display_name = "boxing gloves"
-	path = /obj/item/clothing/gloves/boxing
-
-/datum/gear/gloves/long_evening_gloves
-	display_name = "long evening gloves"
-	path = /obj/item/clothing/gloves/color/long_evening_gloves
-	flags = GEAR_HAS_COLOR_SELECTION
