@@ -18,12 +18,6 @@
 	path = /obj/item/storage/backpack/carppack
 	cost = 2
 
-/datum/gear/storage/santabag
-	display_name = "santabag"
-	slot = slot_back
-	path = /obj/item/storage/backpack/santabag/fake
-	cost = 2
-
 /datum/gear/storage/shoulder_bag
 	display_name = "shoulder bag"
 	slot = slot_back

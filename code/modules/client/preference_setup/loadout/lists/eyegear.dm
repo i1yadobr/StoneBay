@@ -19,7 +19,6 @@
 	glasses["hipster glasses"] = /obj/item/clothing/glasses/regular/hipster
 	glasses["red glasses"] = /obj/item/clothing/glasses/rglasses
 	glasses["monocle"] = /obj/item/clothing/glasses/monocle
-	glasses["scanning goggles"] = /obj/item/clothing/glasses/regular/scanners
 
 	gear_tweaks += new /datum/gear_tweak/path(glasses)
 

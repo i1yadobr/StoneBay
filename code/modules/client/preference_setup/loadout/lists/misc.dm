@@ -2,22 +2,6 @@
 	display_name = "ashtray, plastic"
 	path = /obj/item/material/ashtray/plastic
 
-/datum/gear/balloon
-	display_name = "balloon"
-	path = /obj/item/toy/balloon
-
-/datum/gear/balloon/nanotrasen
-	display_name = "'motivational' balloon"
-	path = /obj/item/toy/balloon/nanotrasen
-
-/datum/gear/bedsheet_clown
-	display_name = "clown's bedsheet"
-	path = /obj/item/bedsheet/clown
-
-/datum/gear/bedsheet_mime
-	display_name = "mime's bedsheet"
-	path = /obj/item/bedsheet/mime
-
 /datum/gear/bedsheet_rainbow
 	display_name = "rainbow's bedsheet"
 	path = /obj/item/bedsheet/rainbow
@@ -59,11 +43,6 @@
 	cigar_type["Cohiba Robusto"] = /obj/item/clothing/mask/smokable/cigarette/cigar/cohiba
 
 	gear_tweaks += new /datum/gear_tweak/path(cigar_type)
-
-/datum/gear/champion
-	display_name = "champion's belt"
-	path = /obj/item/storage/belt/champion
-	slot = slot_belt
 
 /datum/gear/coffeecup
 	display_name = "coffee cup"

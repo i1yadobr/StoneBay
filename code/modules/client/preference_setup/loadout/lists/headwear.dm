@@ -43,11 +43,6 @@
 
 	gear_tweaks += new /datum/gear_tweak/path(caps)
 
-/datum/gear/head/capcap_alt
-	display_name = "captain's cap"
-	path = /obj/item/clothing/head/caphat/cap/capcap_alt
-	allowed_roles = list(/datum/job/captain)
-
 /datum/gear/head/captain_alt
 	display_name = "old captain's hat"
 	path = /obj/item/clothing/head/caphat/alt
