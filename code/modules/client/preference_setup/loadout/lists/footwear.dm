@@ -36,9 +36,9 @@
 
 /datum/gear/shoes/heels
 	display_name = "heels, colour select"
+	description = "Cheap, yet elegant, pair of female shoes. These are definitely made for walking tho."
 	path = /obj/item/clothing/shoes/heels
 	flags = GEAR_HAS_COLOR_SELECTION
-	description = "Cheap, yet elegant, pair of female shoes. These are definitely made for walking tho."
 	cost = 2
 
 /datum/gear/shoes/jackboots
