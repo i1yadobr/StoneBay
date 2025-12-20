@@ -3,10 +3,6 @@
 	sort_category = "Shoes"
 	slot = slot_shoes
 
-/datum/gear/shoes/clown_shoes
-	display_name = "clown shoes"
-	path = /obj/item/clothing/shoes/clown_shoes
-
 /datum/gear/shoes/color
 	display_name = "shoes selection"
 	path = /obj/item/clothing/shoes
@@ -46,10 +42,6 @@
 	path = /obj/item/clothing/shoes/cheapboots
 	cost = 2
 
-/datum/gear/shoes/mime_shoes
-	display_name = "mime shoes"
-	path = /obj/item/clothing/shoes/mime
-
 /datum/gear/shoes/sandal
 	display_name = "sandals selection"
 	path = /obj/item/clothing/shoes/sandal
@@ -72,10 +64,6 @@
 /datum/gear/shoes/slippers
 	display_name = "bunny slippers"
 	path = /obj/item/clothing/shoes/slippers
-
-/datum/gear/shoes/swimmingfins
-	display_name = "swimming fins"
-	path = /obj/item/clothing/shoes/swimmingfins
 
 /datum/gear/shoes/workboots
 	display_name = "workboots"

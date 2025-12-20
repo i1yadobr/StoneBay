@@ -37,11 +37,6 @@
 	display_name = "rogue's uniform"
 	path = /obj/item/clothing/under/captain_fly
 
-/datum/gear/uniform/captain_formal_alt
-	display_name = "captain's formal uniform"
-	path = /obj/item/clothing/under/captainformal/captain_formal_alt
-	allowed_roles = list(/datum/job/captain)
-
 /datum/gear/uniform/casual_pants
 	display_name = "casual pants selection"
 	path = /obj/item/clothing/under/casual_pants
@@ -363,17 +358,9 @@
 	display_name = "pirate outfit"
 	path = /obj/item/clothing/under/pirate
 
-/datum/gear/uniform/psyche
-	display_name = "psychedelic jumpsuit"
-	path = /obj/item/clothing/under/psyche
-
 /datum/gear/uniform/psycho
 	display_name = "psycho suit"
 	path = /obj/item/clothing/under/psysuit
-
-/datum/gear/uniform/rank/centcom/officer
-	display_name = "officer's dress uniform"
-	path = /obj/item/clothing/under/rank/centcom/officer
 
 /datum/gear/uniform/rank/vice
 	display_name = "vice officer's jumpsuit"
@@ -408,14 +395,6 @@
 /datum/gear/uniform/scrubs/custom
 	display_name = "scrubs, colour select"
 	flags = GEAR_HAS_COLOR_SELECTION
-
-/datum/gear/uniform/sexyclown
-	display_name = "sexy clown outfit"
-	path = /obj/item/clothing/under/sexyclown
-
-/datum/gear/uniform/sexymime
-	display_name = "sexy mime outfit"
-	path = /obj/item/clothing/under/sexymime
 
 /datum/gear/uniform/shorts
 	display_name = "shorts selection"
@@ -466,7 +445,6 @@
 	display_name = "soviet uniform"
 	path = /obj/item/clothing/under/soviet
 
-
 /datum/gear/uniform/suit
 	display_name = "clothes selection"
 	path = /obj/item/clothing/under
@@ -497,11 +475,6 @@
 /datum/gear/uniform/tacticool_turtleneck
 	display_name = "tacticool turtleneck"
 	path = /obj/item/clothing/under/syndicate/tacticool
-
-/datum/gear/uniform/tactical/jumpsuit
-	sort_category = "Uniforms" // Since we don't want those who's bought this POS to lose it due to path change;
-	display_name = "tactical jumpsuit"
-	path = /obj/item/clothing/under/tactical
 
 /datum/gear/uniform/tan
 	display_name = "tan suit"

@@ -214,10 +214,6 @@
 	display_name = "punk jacket brown"
 	path = /obj/item/clothing/suit/storage/toggle/punk_jacket_TS
 
-/datum/gear/suit/santa
-	display_name = "santa's suit"
-	path = /obj/item/clothing/suit/space/santa
-
 /datum/gear/suit/suit_jacket
 	display_name = "standard suit jackets"
 	path = /obj/item/clothing/suit/storage/toggle/suit
