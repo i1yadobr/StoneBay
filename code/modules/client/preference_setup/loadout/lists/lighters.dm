@@ -14,10 +14,6 @@
 	path = /obj/item/flame/lighter/zippo
 	cost = 2
 
-//
-// Doner's shop
-//
-
 /datum/gear/lighters/zippo/ablack
 	display_name = "Tyranny lighter"
 	path = /obj/item/flame/lighter/zippo/ablack
