@@ -15,6 +15,12 @@
 	allowed_roles = list(/datum/job/captain, /datum/job/hop, /datum/job/hos, /datum/job/officer, /datum/job/warden, /datum/job/detective, /datum/job/merchant, /datum/job/bartender)
 	cost = 3
 
+/datum/gear/security/gas
+	display_name = "clear gas mask"
+	path = /obj/item/clothing/mask/gas/clear
+	slot = slot_wear_mask
+	allowed_roles = ARMED_ROLES
+
 /datum/gear/security/gloves
 	display_name = "security gloves"
 	path = /obj/item/clothing/gloves/security

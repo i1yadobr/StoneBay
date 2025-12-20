@@ -25,10 +25,6 @@
 	path = /obj/item/device/camera
 	cost = 2
 
-/datum/gear/mask/gas/clear
-	display_name = "clear gas mask"
-	path = /obj/item/clothing/mask/gas/clear
-
 /datum/gear/utility/clipboard
 	display_name = "clipboard"
 	path = /obj/item/clipboard
