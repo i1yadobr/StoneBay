@@ -1006,6 +1006,7 @@ window "mainwindow"
 		is-flat = true
 		button-type = pushbox
 
+
 window "mapwindow"
 	elem "mapwindow"
 		type = MAIN
