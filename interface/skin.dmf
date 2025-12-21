@@ -1032,7 +1032,7 @@ window "mapwindow"
 		saved-params = "icon-size;zoom-mode"
 		on-show = ".winset\"mainwindow.mainvsplit.left=mapwindow\""
 		on-hide = ".winset\"mainwindow.mainvsplit.left=\""
-		style=".center { text-align: center; } .maptext { font-family: 'Small Fonts'; font-size: 7px; -dm-text-outline: 1px black; color: white; line-height: 1.1; } .maptext i {font-style: normal; font-size: 6px;} .small { font-size: 6px; } .big { font-size: 8px; } .reallybig { font-size: 8px; } .extremelybig { font-size: 8px; } .clown { color: #FF69Bf;} .tajaran {color: #803B56;} .skrell {color: #00CED1;} .solcom {color: #22228B;} .com_srus {color: #7c4848;} .zombie {color: #ff0000;} .soghun {color: #228B22;} .vox {color: #AA00AA;} .diona {color: #804000; font-weight: bold;} .trinary {color: #727272;} .metroid {color: #0077AA;} .hypnophrase { color: #0d0d0d; font-weight: bold; } .yell { font-weight: bold; }"
+		style = ".center { text-align: center; } .maptext { font-family: 'Small Fonts'; font-size: 7px; -dm-text-outline: 1px black; color: white; line-height: 1.1; } .maptext i {font-style: normal; font-size: 6px;} .small { font-size: 6px; } .big { font-size: 8px; } .reallybig { font-size: 8px; } .extremelybig { font-size: 8px; } .clown { color: #FF69Bf;} .tajaran {color: #803B56;} .skrell {color: #00CED1;} .solcom {color: #22228B;} .com_srus {color: #7c4848;} .zombie {color: #ff0000;} .soghun {color: #228B22;} .vox {color: #AA00AA;} .diona {color: #804000; font-weight: bold;} .trinary {color: #727272;} .metroid {color: #0077AA;} .hypnophrase { color: #0d0d0d; font-weight: bold; } .yell { font-weight: bold; }"
 	elem "statusbar"
 		type = LABEL
 		pos = 0,464
@@ -1120,8 +1120,8 @@ window "browserwindow"
 		type = MAIN
 		pos = 281,0
 		size = 640x480
-		anchor1 = none
-		anchor2 = none
+		anchor1 = -1,-1
+		anchor2 = -1,-1
 		is-visible = false
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Browser"
@@ -1139,10 +1139,11 @@ window "browserwindow"
 window "infowindow"
 	elem "infowindow"
 		type = MAIN
-		pos = 372,0
+		pos = 480,0
 		size = 640x480
-		anchor1 = none
-		anchor2 = none
+		anchor1 = -1,-1
+		anchor2 = -1,-1
+		background-color = none
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Info"
 		titlebar = false
@@ -1151,86 +1152,21 @@ window "infowindow"
 		can-minimize = false
 		can-resize = false
 		is-pane = true
+		outer-size = 660x500
+		outer-pos = 480,0
+		inner-pos = 10,10
+		screen-size = 2560x1528
 	elem "info"
 		type = CHILD
-		pos = 0,24
-		size = 640x456
+		pos = 0,0
+		size = 640x480
 		anchor1 = 0,0
 		anchor2 = 100,100
+		background-color = none
 		saved-params = "splitter"
 		left = "statwindow"
 		right = "outputwindow"
 		is-vert = false
-	elem "wikib"
-		type = BUTTON
-		pos = 74,2
-		size = 66x20
-		anchor1 = 12,0
-		anchor2 = 23,0
-		saved-params = "is-checked"
-		text = "Wiki"
-		command = "wiki"
-		group = "rpanemode"
-	elem "storeb"
-		type = BUTTON
-		pos = 468,2
-		size = 66x20
-		anchor1 = 78,0
-		anchor2 = 88,0
-		saved-params = "is-checked"
-		text = "Donations"
-		command = "donations-info"
-		group = "rpanemode"
-	elem "rulesb"
-		type = BUTTON
-		pos = 140,2
-		size = 64x20
-		anchor1 = 23,0
-		anchor2 = 34,0
-		saved-params = "is-checked"
-		text = "Rules"
-		command = "rules"
-		group = "rpanemode"
-	elem "backstoryb"
-		type = BUTTON
-		pos = 204,2
-		size = 67x20
-		anchor1 = 34,0
-		anchor2 = 45,0
-		saved-params = "is-checked"
-		text = "Backstory"
-		command = "backstory"
-		group = "rpanemode"
-	elem "discordb"
-		type = BUTTON
-		pos = 271,2
-		size = 65x20
-		anchor1 = 45,0
-		anchor2 = 56,0
-		saved-params = "is-checked"
-		text = "Discord"
-		command = "discord"
-		group = "rpanemode"
-	elem "bugreportb"
-		type = BUTTON
-		pos = 336,2
-		size = 65x20
-		anchor1 = 56,0
-		anchor2 = 67,0
-		saved-params = "is-checked"
-		text = "Report Bug"
-		command = "report-bug"
-		group = "rpanemode"
-	elem "changelog"
-		type = BUTTON
-		pos = 401,2
-		size = 67x20
-		anchor1 = 67,0
-		anchor2 = 78,0
-		saved-params = "is-checked"
-		text = "Changelog"
-		command = "Changelog"
-		group = "rpanemode"
 
 
 window "saywindow"
@@ -1238,8 +1174,8 @@ window "saywindow"
 		type = MAIN
 		pos = 570,452
 		size = 300x90
-		anchor1 = none
-		anchor2 = none
+		anchor1 = -1,-1
+		anchor2 = -1,-1
 		background-color = none
 		is-visible = false
 		saved-params = "size;pos"
@@ -1247,16 +1183,12 @@ window "saywindow"
 		statusbar = false
 		can-close = false
 		can-minimize = false
-		can-resize = true
-		outer-size = 308x117
-		inner-size = 300x90
 	elem "saywindow-button"
 		type = BUTTON
 		pos = 110,50
 		size = 80x25
 		anchor1 = 37,56
 		anchor2 = 63,83
-		background-color = none
 		border = line
 		saved-params = ""
 		text = "OK"
@@ -1267,7 +1199,6 @@ window "saywindow"
 		size = 280x20
 		anchor1 = 3,18
 		anchor2 = 96,40
-		is-default = false
 		border = sunken
 		saved-params = ""
 		command = "Say "
@@ -1280,8 +1211,8 @@ window "statwindow"
 		type = MAIN
 		pos = 372,0
 		size = 640x480
-		anchor1 = none
-		anchor2 = none
+		anchor1 = -1,-1
+		anchor2 = -1,-1
 		saved-params = "pos;size;is-minimized;is-maximized"
 		is-pane = true
 
@@ -1299,8 +1230,8 @@ window "preferences_window"
 		type = MAIN
 		pos = 281,0
 		size = 1200x800
-		anchor1 = none
-		anchor2 = none
+		anchor1 = -1,-1
+		anchor2 = -1,-1
 		is-visible = false
 		saved-params = "pos;size;is-minimized;is-maximized"
 		statusbar = false
