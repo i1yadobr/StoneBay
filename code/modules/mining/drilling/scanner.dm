@@ -17,7 +17,7 @@
 /obj/item/mining_scanner/attack_self(mob/user as mob)
 	to_chat(user, "You begin sweeping \the [src] about, scanning for metal deposits.")
 
-	if(!do_after(user, 50,src))
+	if(!do_after(user, 50, src))
 		return
 
 	var/list/metals = list(

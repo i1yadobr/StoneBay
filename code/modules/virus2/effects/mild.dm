@@ -332,7 +332,7 @@
 	if(..())
 		return
 
-	mob.add_mutation(mRemotetalk)
+	mob.mutations.Add(mRemotetalk)
 
 /datum/disease2/effect/shakey
 	name = "World Shaking Syndrome"

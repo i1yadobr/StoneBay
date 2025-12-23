@@ -31,8 +31,6 @@
 			death()
 			return FALSE
 
-	update_health_slowdown()
-
 	return TRUE
 
 

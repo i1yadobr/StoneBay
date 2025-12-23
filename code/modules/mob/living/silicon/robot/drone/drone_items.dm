@@ -353,7 +353,7 @@
 				if(MODE_EMPTY)
 					inuse = TRUE
 					visible_message(SPAN("notice", "\The [user] starts removing item from \the [S]."))
-					if(do_after(user,30))
+					if(do_after(user, 30, src))
 						inuse = FALSE
 						if(length(S.contents))
 							var/obj/item/I = S.contents[length(S.contents)]

@@ -825,7 +825,7 @@
 			else if(isCrowbar(W))
 				to_chat(user, "You start prying out the circuit.")
 				playsound(src.loc, 'sound/items/Crowbar.ogg', 50, 1)
-				if(do_after(user, 20, src, luck_check_type = LUCK_CHECK_ENG) && !QDELETED(src))
+				if(do_after(user, 20, src) && !QDELETED(src))
 					to_chat(user, "You pry out the circuit!")
 					var/obj/item/airalarm_electronics/circuit = new /obj/item/airalarm_electronics()
 					circuit.dropInto(user.loc)

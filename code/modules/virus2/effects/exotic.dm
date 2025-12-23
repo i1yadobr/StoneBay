@@ -72,7 +72,7 @@
 	incoming_fire_damage_percent = 1.4
 	bleeding_rate_percent = 2
 	incoming_healing_percent = 0.2
-	//haste = 1
+	haste = 1
 
 /datum/modifier/musclerace/New(new_holder, new_origin)
 	. = ..()

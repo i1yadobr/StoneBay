@@ -186,7 +186,7 @@
 					pref.rlimb_data[other_limb] = action
 				if(!pref.organ_data[BP_BRAIN])
 					pref.organ_data[BP_BRAIN] = "assisted"
-				for(var/internal_organ in list(BP_HEART,BP_EYES,BP_TONGUE,BP_LUNGS,BP_LIVER,BP_KIDNEYS,BP_INTESTINES,BP_BLADDER))
+				for(var/internal_organ in list(BP_HEART,BP_EYES,BP_TONGUE,BP_LUNGS,BP_LIVER,BP_KIDNEYS,BP_INTESTINES))
 					pref.organ_data[internal_organ] = "mechanical"
 
 /datum/category_item/player_setup_item/augmentation/proc/reset_limbs()

@@ -395,6 +395,12 @@
 	if (N)
 		shield_level = text2num(N)/100
 
+/obj/item/borg/combat/mobility
+	name = "mobility module"
+	desc = "By retracting limbs and tucking in its head, a combat android can roll at high speeds."
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "shock"
+
 #define INFLATABLE_MODES list("walls", "doors", "panels")
 #define INFLATABLE_MODE_WALLS 1
 #define INFLATABLE_MODE_DOORS 2

@@ -309,7 +309,7 @@ var/list/mining_floors = list()
 
 		to_chat(user, "<span class='warning'>You start chiselling [src] into a sculptable block.</span>")
 
-		if(!do_after(user,80))
+		if(!do_after(user, 80, src))
 			return
 
 		if (!istype(src, /turf/simulated/mineral))
@@ -615,7 +615,8 @@ var/list/mining_floors = list()
 
 		to_chat(user, "<span class='warning'>You start digging.</span>")
 
-		if(!do_after(user,40, src)) return
+		if(!do_after(user,40, src))
+			return
 
 		to_chat(user, "<span class='notice'>You dug a hole.</span>")
 		gets_dug()

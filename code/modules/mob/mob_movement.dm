@@ -27,9 +27,7 @@
 
 /mob/forceMove(atom/destination, unbuckle_mob = TRUE)
 	. = ..()
-	if(!.)
-		return
-	if(unbuckle_mob)
+	if(. && unbuckle_mob)
 		buckled?.unbuckle_mob()
 
 /client/Northeast()
@@ -54,13 +52,13 @@
 				var/mob/living/carbon/C = usr
 				C.toggle_throw_mode()
 			else
-				to_chat(usr, "<span class='warning'>This mob type cannot throw items.</span>")
+				to_chat(usr, SPAN("warning", "This mob type cannot throw items."))
 			return
 		if(NORTHWEST)
 			mob.hotkey_drop()
 
 /mob/proc/hotkey_drop()
-	to_chat(usr, "<span class='warning'>This mob type cannot drop items.</span>")
+	to_chat(usr, SPAN("warning", "This mob type cannot drop items."))
 
 /mob/living/carbon/hotkey_drop()
 	if(!can_use_hands)
@@ -80,7 +78,7 @@
 	set hidden = 1
 
 	if(!usr.pulling)
-		to_chat(usr, "<span class='notice'>You are not pulling anything.</span>")
+		to_chat(usr, SPAN("notice", "You are not pulling anything."))
 		return
 	usr.stop_pulling()
 
@@ -100,7 +98,6 @@
 	set hidden = 1
 	if(mob)
 		mob.mode()
-	return
 
 
 /client/verb/toggle_throw_mode()
@@ -126,22 +123,16 @@
 	else
 		glide_size = max(min, glide_size_override)
 
+	for (var/atom/movable/AM in contents)
+		AM.set_glide_size(glide_size, min, max)
 	if(istype(src, /obj))
 		var/obj/O = src
 		if(O.buckled_mob)
 			O.buckled_mob.set_glide_size(glide_size, min, max)
 
-	SEND_SIGNAL(src, SIGNAL_UPDATE_GLIDE_SIZE, glide_size)
-
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
 	var/old_loc = loc
-
-	var/turf/old_turf = get_turf(old_loc)
-	var/turf/new_turf = get_turf(newloc)
-
-	if(old_turf?.z != new_turf?.z)
-		SEND_SIGNAL(src, SIGNAL_Z_CHANGED, src, old_turf, new_turf)
 
 	if (direct & (direct - 1))
 		if (direct & 1)
@@ -190,6 +181,8 @@
 
 	SEND_SIGNAL(src, SIGNAL_MOVED, src, old_loc, loc)
 
+	return
+
 /proc/step_glide(atom/movable/am, dir, glide_size_override)
 	am.set_glide_size(glide_size_override)
 	return step(am, dir)
@@ -203,10 +196,6 @@
 /mob/proc/Allow_Spacemove(check_drift = 0)
 	if(!Check_Dense_Object()) //Nothing to push off of so end here
 		return 0
-
-	if(restrained()) //Check to see if we can do things
-		return 0
-
 	return -1
 
 //Checks if a mob has solid ground to stand on
@@ -249,7 +238,7 @@
 //return 1 if slipped, 0 otherwise
 /mob/proc/handle_spaceslipping()
 	if(prob(slip_chance(5)) && !buckled)
-		to_chat(src, "<span class='warning'>You slipped!</span>")
+		to_chat(src, SPAN("warning", "You slipped!"))
 		src.inertia_dir = src.last_move
 		step(src, src.inertia_dir)
 		return 1
@@ -294,6 +283,3 @@
 	DO_MOVE(WEST)
 
 #undef DO_MOVE
-
-/mob/proc/update_move_intent_slowdown()
-	add_movespeed_modifier((m_intent == M_WALK) ? /datum/movespeed_modifier/walk : /datum/movespeed_modifier/run)

@@ -77,7 +77,6 @@ var/global/floorIsLava = 0
 		<A href='?_src_=holder;warn=[M.ckey]'>Warn</A> |
 		<A href='?src=\ref[src];newban=\ref[M]'>Ban</A> |
 		<A href='?src=\ref[src];jobban2=\ref[M]'>Jobban</A> |
-		<A href='?src=\ref[src];hellban=\ref[M]'>Hellban</A> |
 		<A href='?src=\ref[src];notes=show;mob=\ref[M]'>Notes</A>
 	"}
 
@@ -662,7 +661,6 @@ var/global/floorIsLava = 0
 /////////////////////////////////////////////////////////////////////////////////////////////////admins2.dm merge
 //i.e. buttons/verbs
 
-
 /datum/admins/proc/restart()
 	set category = "Server"
 	set name = "Restart"
@@ -670,32 +668,20 @@ var/global/floorIsLava = 0
 	if (!usr.client.holder)
 		return
 
-	var/list/options = list("Regular Restart", "Hard Restart (Skip MC Shutdown)", "Hardest Restart (Direct world.Reboot) \[Dangerous\]")
+	var/list/options = list("Regular Restart", "Force Restart (Direct world.Reboot)")
 
-	var/result = tgui_input_list(usr, "Select reboot method", "World Reboot", options)
-	if(!result)
-		return
-
-	var/failsafe = tgui_input_text(usr, "To confirm, type \"Server Restart\" in the box below", "WORLD REBOOT. THINK TWICE!!!")
-	if(failsafe != "Server Restart")
-		return
-
-	feedback_set_details("end_error","admin reboot - by [key_name(usr)]")
-	feedback_add_details("admin_verb","R") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-	var/init_by = "<span class='notice'>Initiated by [key_name(usr)].</span>"
-	switch(result)
-		if("Regular Restart")
-			to_world("<span class='danger'>Restarting world!</span> [init_by]")
-			log_admin("[key_name(usr)] initiated a reboot.")
-			world.Reboot()
-		if("Hard Restart (Skip MC Shutdown)")
-			to_world("<span class='boldannounce'>Hard world restart.</span> [init_by]")
-			log_admin("[key_name(usr)] initiated a hard reboot.")
-			world.Reboot(reboot_hardness = REBOOT_HARD)
-		if("Hardest Restart (Direct world.Reboot) \[Dangerous\]")
-			to_world("<span class='boldannounce'>Hardest world restart.</span> [init_by]")
-			log_admin("[key_name(usr)] initiated a hardest reboot.")
-			world.Reboot(reboot_hardness = REBOOT_REALLY_HARD)
+	var/result = input(usr, "Select reboot method", "World Reboot", options[1]) as null|anything in options
+	if(result)
+		var/init_by = SPAN("notice", "Initiated by [key_name(usr)].")
+		switch(result)
+			if("Regular Restart")
+				to_world("[SPAN("danger", "Restarting world!")] [init_by]")
+				log_admin("[key_name(usr)] initiated a reboot.")
+				world.Reboot()
+			if("Force Restart (Direct world.Reboot)")
+				to_world("[SPAN("boldannounce", "Force world restart.")] [init_by]")
+				log_admin("[key_name(usr)] initiated a force reboot.")
+				world.Reboot(force = TRUE)
 
 /datum/admins/proc/end_round()
 	set category = "Server"
@@ -824,9 +810,9 @@ var/global/floorIsLava = 0
 	set category = "Server"
 	set desc="Toggle traitor scaling"
 	set name="Toggle Traitor Scaling"
-	config.gamemode.traitor_scaling = !config.gamemode.traitor_scaling
-	log_admin("[key_name(usr)] toggled Traitor Scaling to [config.gamemode.traitor_scaling].")
-	message_admins("[key_name_admin(usr)] toggled Traitor Scaling [config.gamemode.traitor_scaling ? "on" : "off"].", 1)
+	config.gamemode.antag_scaling = !config.gamemode.antag_scaling
+	log_admin("[key_name(usr)] toggled Traitor Scaling to [config.gamemode.antag_scaling].")
+	message_admins("[key_name_admin(usr)] toggled Traitor Scaling [config.gamemode.antag_scaling ? "on" : "off"].", 1)
 	feedback_add_details("admin_verb","TTS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /datum/admins/proc/startnow()
@@ -860,67 +846,18 @@ var/global/floorIsLava = 0
 	world.update_status()
 	feedback_add_details("admin_verb","TE") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-/datum/admins/proc/toggleAI()
-	set category = "Server"
-	set desc="People can't be AI"
-	set name="Toggle AI"
-	config.misc.allow_ai = !( config.misc.allow_ai )
-	if (!( config.misc.allow_ai ))
-		to_world("<B>The AI job is no longer chooseable.</B>")
-	else
-		to_world("<B>The AI job is chooseable now.</B>")
-	log_admin("[key_name(usr)] toggled AI allowed.")
-	world.update_status()
-	feedback_add_details("admin_verb","TAI") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
 /datum/admins/proc/toggleaban()
 	set category = "Server"
 	set desc="Respawn basically"
 	set name="Toggle Respawn"
-	config.misc.abandon_allowed = !(config.misc.abandon_allowed)
-	if(config.misc.abandon_allowed)
+	config.misc.respawn_allowed = !(config.misc.respawn_allowed)
+	if(config.misc.respawn_allowed)
 		to_world("<B>You may now respawn.</B>")
 	else
 		to_world("<B>You may no longer respawn :(</B>")
-	log_and_message_admins("toggled respawn to [config.misc.abandon_allowed ? "On" : "Off"].")
+	log_and_message_admins("toggled respawn to [config.misc.respawn_allowed ? "On" : "Off"].")
 	world.update_status()
 	feedback_add_details("admin_verb","TR") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
-/datum/admins/proc/toggle_aliens()
-	set category = "Server"
-	set desc="Toggle alien mobs"
-	set name="Toggle Aliens"
-	if(!check_rights(R_ADMIN))
-		return
-
-	config.misc.aliens_allowed = !config.misc.aliens_allowed
-	log_admin("[key_name(usr)] toggled Aliens to [config.misc.aliens_allowed].")
-	message_admins("[key_name_admin(usr)] toggled Aliens [config.misc.aliens_allowed ? "on" : "off"].", 1)
-	feedback_add_details("admin_verb","TA") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
-/datum/admins/proc/toggle_alien_eggs()
-	set category = "Server"
-	set desc="Toggle xenomorph egg laying"
-	set name="Toggle Alien Eggs"
-
-	if(!check_rights(R_ADMIN))
-		return
-	config.misc.alien_eggs_allowed = !config.misc.alien_eggs_allowed
-	log_admin("[key_name(usr)] toggled Alien Egg Laying to [config.misc.alien_eggs_allowed].")
-	message_admins("[key_name_admin(usr)] toggled Alien Egg Laying [config.misc.alien_eggs_allowed ? "on" : "off"].", 1)
-	feedback_add_details("admin_verb","AEA") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
-
-/datum/admins/proc/toggle_space_ninja()
-	set category = "Server"
-	set desc="Toggle space ninjas spawning."
-	set name="Toggle Space Ninjas"
-	if(!check_rights(R_ADMIN))
-		return
-
-	config.misc.ninjas_allowed = !config.misc.ninjas_allowed
-	log_and_message_admins("toggled Space Ninjas [config.misc.ninjas_allowed ? "on" : "off"].")
-	feedback_add_details("admin_verb","TSN") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /datum/admins/proc/delay()
 	set category = "Server"
@@ -1026,13 +963,13 @@ var/global/floorIsLava = 0
 
 	if(!check_rights(R_SPAWN))	return
 
-	var/owner = input("Select a ckey.", "Spawn Custom Item") as null|anything in config.custom.items
-	if(!owner|| !config.custom.items[owner])
+	var/owner = input("Select a ckey.", "Spawn Custom Item") as null|anything in custom_items
+	if(!owner|| !custom_items[owner])
 		return
 
-	var/list/possible_items = config.custom.items[owner]
+	var/list/possible_items = custom_items[owner]
 	var/datum/custom_item/item_to_spawn = input("Select an item to spawn.", "Spawn Custom Item") as null|anything in possible_items
-	if(!item_to_spawn)
+	if(!item_to_spawn || !item_to_spawn.is_valid(usr))
 		return
 
 	item_to_spawn.spawn_item(get_turf(usr))
@@ -1043,18 +980,21 @@ var/global/floorIsLava = 0
 	set desc = "Check the custom item list."
 	set name = "Check Custom Items"
 
-	if(!check_rights(R_SPAWN))
+	if(!check_rights(R_SPAWN))	return
+
+	if(!custom_items)
+		to_chat(usr, "Custom item list is null.")
 		return
 
-	if(!length(config.custom.items))
+	if(!custom_items.len)
 		to_chat(usr, "Custom item list not populated.")
 		return
 
-	for(var/assoc_key in config.custom.items)
+	for(var/assoc_key in custom_items)
 		to_chat(usr, "[assoc_key] has:")
-		var/list/current_items = config.custom.items[assoc_key]
+		var/list/current_items = custom_items[assoc_key]
 		for(var/datum/custom_item/item in current_items)
-			to_chat(usr, "- path: [item.item_path] patreon_type: [item.patreon_type] req_job: [json_encode(item.req_job)] flags: [json_encode(item.flags)]")
+			to_chat(usr, "- name: [item.name] icon: [item.item_icon] path: [item.item_path] desc: [item.item_desc]")
 
 /datum/admins/proc/spawn_plant(seedtype in SSplants.seeds)
 	set category = "Debug"
@@ -1186,8 +1126,8 @@ var/global/floorIsLava = 0
 	set category = "Debug"
 	set desc="Reduces view range when wearing welding helmets"
 	set name="Toggle tinted welding helmets."
-	config.misc.welder_vision_allowed = !( config.misc.welder_vision_allowed )
-	if (config.misc.welder_vision_allowed)
+	config.misc.welder_tint = !( config.misc.welder_tint )
+	if (config.misc.welder_tint)
 		to_world("<B>Reduced welder vision has been enabled!</B>")
 	else
 		to_world("<B>Reduced welder vision has been disabled!</B>")

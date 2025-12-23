@@ -74,7 +74,7 @@
 	for(var/mob/O in viewers(user))
 		O.show_message(text("<span class='warning'>\The [user] started reprogramming \the [src]!</span>"), 1)
 
-	if(do_after(user, 50,src))
+	if(do_after(user, 50, src))
 		set_state(!on)
 		user.visible_message(\
 		"<span class='notice'>[user.name] [on ? "enabled" : "disabled"] the breaker box!</span>",\

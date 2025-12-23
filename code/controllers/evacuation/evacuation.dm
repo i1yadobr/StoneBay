@@ -39,8 +39,8 @@ var/datum/evacuation_controller/evacuation_controller
 	recall = _recall
 
 /datum/evacuation_controller/proc/set_up()
-	set waitfor=0
-	set background=1
+	set waitfor = 0
+	set background = 1
 	return
 
 /datum/evacuation_controller/proc/get_cooldown_message()
@@ -54,10 +54,10 @@ var/datum/evacuation_controller/evacuation_controller
 /datum/evacuation_controller/proc/call_evacuation(mob/user, _emergency_evac, forced, skip_announce, autotransfer)
 
 	if(state != EVAC_IDLE)
-		return 0
+		return FALSE
 
 	if(!can_evacuate(user, forced))
-		return 0
+		return FALSE
 
 	emergency_evacuation = _emergency_evac
 
@@ -96,12 +96,12 @@ var/datum/evacuation_controller/evacuation_controller
 				/datum/announce/shuttle_called,
 				"The shuttle begins preparations for departure to [station_name()]. Prepare valuable property, wounded and arrested people for scheduled transfer. Estimate [round(evacuation_controller.get_eta()/60)] minute\s until the shuttle docks at [GLOB.using_map.dock_name].")
 
-	return 1
+	return TRUE
 
 /datum/evacuation_controller/proc/cancel_evacuation()
 
 	if(!can_cancel())
-		return 0
+		return FALSE
 
 	evac_cooldown_time = world.time + (world.time - evac_called_at)
 	state = EVAC_COOLDOWN
@@ -120,7 +120,7 @@ var/datum/evacuation_controller/evacuation_controller
 	else
 		SSannounce.play_announce(/datum/announce/shuttle_recalled)
 
-	return 1
+	return TRUE
 
 /datum/evacuation_controller/proc/finish_preparing_evac()
 	state = EVAC_LAUNCHING
@@ -144,7 +144,7 @@ var/datum/evacuation_controller/evacuation_controller
 		SSannounce.play_announce(/datum/announce/shuttle_leaving_dock, "The Crew Transfer Shuttle has left the station. Estimate [round(get_eta()/60,1)] minute\s until the shuttle docks at [GLOB.using_map.dock_name].")
 
 	launch_map_vote()
-	return 1
+	return TRUE
 
 /datum/evacuation_controller/proc/finish_evacuation()
 	state = EVAC_COMPLETE

@@ -200,7 +200,7 @@
 		user.visible_message("\The [user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
 	else
 		user.visible_message("\The [user] begins securing \the [src] to the floor.", "You start securing \the [src] to the floor.")
-	if(do_after(user, delay, src, luck_check_type = LUCK_CHECK_ENG))
+	if(do_after(user, delay, src))
 		if(!src)
 			return 0
 		to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
@@ -228,11 +228,6 @@
 	var/turf/T = get_turf(src)
 	if(T)
 		T.update_turf_height()
-
-/obj/proc/change_pull_slowdown(new_slowdown)
-	pull_slowdown = new_slowdown
-	if(pulledby)
-		pulledby.update_pull_slowdown()
 
 /obj/do_climb(mob/living/user)
 	return ..(user, climb_delay)

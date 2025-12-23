@@ -41,7 +41,7 @@
 
 		to_chat(user, "<span class='notice'>You start [D.drill_verb].</span>")
 
-		if(do_after(user,D.digspeed - D.digspeed / 4, src))
+		if(do_after(user, D.digspeed - D.digspeed / 4, src))
 			to_chat(user, "<span class='notice'>You finish [D.drill_verb] \the [src].</span>")
 			qdel(src)
 	return ..()

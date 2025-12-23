@@ -65,9 +65,10 @@
 		if(S)
 			res_slowdown = max(res_slowdown, (S.get_fullness() - 100) / 50)
 
+
 	if(res_slowdown)
-		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown, slowdown = res_slowdown)
-	else if(has_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown))
-		remove_movespeed_modifier(/datum/movespeed_modifier/nutrition_slowdown)
+		add_modifier(/datum/modifier/trait/slowdown)
+	else
+		handle_modifiers()
 
 #undef UPDATE_DELAY

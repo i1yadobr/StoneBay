@@ -246,10 +246,7 @@
 		AttemptLateSpawn(job, client.prefs.spawnpoint)
 		return
 
-	if(!ready && href_list["preference"])
-		if(client)
-			client.prefs.process_link(src, href_list)
-	else if(!href_list["late_join"])
+	if(!href_list["late_join"])
 		new_player_panel()
 
 	if(href_list["showpoll"])
@@ -544,9 +541,9 @@
 
 	new /atom/movable/screen/splash/fake(null, TRUE, new_character.client, SSlobby.current_lobby_art)
 
-	// Give them their cortical stack if we're using them.
-	if(config && config.revival.use_cortical_stacks && new_character.client && new_character.client.prefs.has_cortical_stack /*&& new_character.should_have_organ(BP_BRAIN)*/)
-		new_character.create_stack()
+	// Give them their neural lace if it's enabled.
+	if(config && config.health.use_neural_lace && new_character.client && new_character.client.prefs.has_neural_lace)
+		new_character.create_neural_lace()
 
 	if(new_character.isSynthetic())
 		new_character.add_synth_emotes()
@@ -633,21 +630,3 @@
 
 /mob/new_player/is_eligible_for_antag_spawn(antag_id)
 	return TRUE
-
-/mob/new_player/proc/show_game_tip()
-	if(!config.game_tips.enable)
-		return
-
-	var/atom/movable/screen/text = new()
-
-	text.screen_loc = "CENTER,SOUTH+1%"
-	text.maptext_width = 256
-	text.maptext_height = 100
-	text.maptext_y = -50
-	text.maptext_x = -112
-	text.maptext = MAPTEXT("<center><font size=5>Подсказка раунда</font><br><br>[config.game_tips.get_tip()]</center>")
-	text.plane = FULLSCREEN_PLANE
-
-	client.screen += text
-
-	animate(text, 3 SECONDS, maptext_y = 0)

@@ -1,7 +1,7 @@
 #define REBOOT_HARD 1
 #define REBOOT_REALLY_HARD 2
 
-var/server_name = "OnyxBay"
+var/server_name = "StoneBay"
 
 /var/game_id = null
 /hook/global_init/proc/generate_gameid()
@@ -97,81 +97,43 @@ var/server_name = "OnyxBay"
 
 	return match
 
-/world/proc/__init_tracy()
-#ifdef TRACY_PROFILER
-	var/tracy_lib
-
-	if(world.system_type == MS_WINDOWS)
-		tracy_lib = "prof.dll"
-	else
-		tracy_lib = "./libprof.so"
-
-	var/tracy_init = call_ext(tracy_lib, "init")()
-
-	if(tracy_init != "0")
-		CRASH("[tracy_lib] init error: [tracy_init]")
-#else
-	return
-#endif
-
-/world/proc/__init_prometheus(server_name, port)
-	rustg_prom_set_labels(list("server" = server_name))
-	rustg_prom_init(port)
-
-	// Register all the metrics here
-
-	rustg_prom_counter_register(PROM_MASTER_ITERATIONS, "How many times have we ran")
-	rustg_prom_gauge_float_register(PROM_MASTER_TICK_DRIFT, "Tick drift")
-	rustg_prom_gauge_float_register(PROM_SUBSYSTEM_COST, "Average time to execute")
-	rustg_prom_gauge_float_register(PROM_SUBSYSTEM_TICKS_TO_RUN, "How many ticks does this subsystem take to run on avg")
-	rustg_prom_gauge_float_register(PROM_SUBSYSTEM_TICK_USAGE, "Average tick usage")
-	rustg_prom_gauge_float_register(PROM_SUBSYSTEM_TICK_OVERRUN, "Average tick overrun")
-	rustg_prom_counter_register(PROM_RUNTIMES, "Total amount of runtimes")
-	rustg_prom_gauge_int_register(PROM_TOTAL_PLAYERS, "Total amount of players")
-	rustg_prom_gauge_int_register(PROM_TOTAL_LIVING, "Total amount of living players")
-	rustg_prom_gauge_int_register(PROM_WIDESCREEN_PLAYERS, "Total amount of players with widescreen")
-	rustg_prom_gauge_int_register(PROM_GC_QUEUED, "Count of queued datums to be deleted")
-	rustg_prom_counter_register(PROM_GC_HARD_DELS, "Count of hard deleted datums")
-	rustg_prom_counter_register(PROM_GC_COLLECTED, "Count of garbage collected datums")
-	rustg_prom_counter_register(PROM_GC_ITEM_QDELS, "Total number of times it's passed thru qdel")
-	rustg_prom_counter_register(PROM_GC_ITEM_FAILURES, "Times it was queued for soft deletion but failed to soft delete.")
-	rustg_prom_counter_register(PROM_GC_ITEM_HARD_DELETES, "Different from failures because it also includes QDEL_HINT_HARDDEL deletions")
-	rustg_prom_gauge_int_register(PROM_MOBS_TOTAL, "Total amount of mobs")
-	rustg_prom_gauge_int_register(PROM_MOBS_INSTANCE_TOTAL, "Total amount of mob's instances")
-
-#define RECOMMENDED_VERSION 514
+#define RECOMMENDED_VERSION 516
 /world/New()
-	__init_tracy()
-	__detect_rust_g()
 	SetupLogs()
-
-	changelog_hash = md5('html/changelog.html')					//used for telling if the changelog has changed recently
 
 	if(byond_version < RECOMMENDED_VERSION)
 		to_world_log("Your server's byond version does not meet the recommended requirements for this server. Please update BYOND")
 
+	// Load converter lib that is required for reading TOML configs
+	if(world.system_type == UNIX)
+		GLOB.converter_dll = "./converter.so"
+	else
+		GLOB.converter_dll = "converter.dll"
+
+	if(!fexists(GLOB.converter_dll))
+		log_error("CRITICAL: [GLOB.converter_dll] not found")
+		log_error("Can't read config, shutting down...")
+		sleep(50)
+		shutdown()
+
+	load_sql_config("config/dbconfig.txt")
+
 	// Load up the base config.toml
-	config.load_configuration()
+	try
+		config.load_configuration()
+	catch(var/exception/e)
+		log_error("CRITICAL: failed to read config: [e.name]")
+		log_error("Can't read config, shutting down...")
+		sleep(50)
+		shutdown()
 
-	if(config.general.prometheus_port)
-		to_world_log("Enabled metrics endpoint on [config.general.prometheus_port]")
-
-		__init_prometheus(config.general.server_id, config.general.prometheus_port)
-
-	if(config.general.server_port)
-		var/port = OpenPort(config.general.server_port)
-		to_world_log(port ? "Changed port to [port]" : "Failed to change port")
-
+	// TODO(rufus): move the title/music/watchlist stuff into procs or something else, world creation proc should be clean
 	//set window title
 	if(config.general.subserver_name)
 		var/subserver_name = uppertext(copytext(config.general.subserver_name, 1, 2)) + copytext(config.general.subserver_name, 2)
-		name = "[server_name]: [subserver_name] - [GLOB.using_map.full_name]"
+		name = "[config.general.server_name]: [subserver_name] - [GLOB.using_map.full_name]"
 	else
-		name = "[server_name] - [GLOB.using_map.full_name]"
-
-	if(config && config.game.use_age_restriction_for_jobs != null && config.general.server_suffix && world.port > 0)
-		// dumb and hardcoded but I don't care~
-		config.general.server_name += " #[(world.port % 1000) / 100]"
+		name = "[config.general.server_name] - [GLOB.using_map.full_name]"
 
 	watchlist = new /datum/watchlist
 
@@ -186,392 +148,25 @@ var/server_name = "OnyxBay"
 	. = ..()
 
 	Master.Initialize(10, FALSE)
+	webhook_send_world_started(config.general.server_id)
 
 #undef RECOMMENDED_VERSION
 
 var/world_topic_spam_protect_time = world.timeofday
 
-/world/Topic(T, addr, master, key)
-	log_href("\"[T]\", from:[addr], master:[master][log_end]")
+/world/Topic(T, addr, master, keys)
+	log_href("\"[T]\", from:[addr]")
+	// TODO(rufus): add topic rate limiting, create code/modules/world_topic/rate_limit.dm
+	return handle_world_topic(T)
 
-	var/input[] = params2list(T)
-	var/key_valid = config.external.comms_password && input["key"] == config.external.comms_password
-
-	if (T == "ping")
-		var/x = 1
-		for (var/client/C)
-			x++
-		return x
-
-	else if(T == "players")
-		var/n = 0
-		for(var/mob/M in GLOB.player_list)
-			if(M.client)
-				n++
-		return n
-
-	else if (copytext(T,1,7) == "status")
-		var/list/s = list()
-		s["version"] = game_version
-		s["mode"] = PUBLIC_GAME_MODE
-		s["respawn"] = config.misc.abandon_allowed
-		s["enter"] = config.game.enter_allowed
-		s["vote"] = config.vote.allow_vote_mode
-		s["ai"] = config.misc.allow_ai
-		s["host"] = host ? host : null
-
-		// This is dumb, but spacestation13.com's banners break if player count isn't the 8th field of the reply, so... this has to go here.
-		s["players"] = 0
-		s["stationtime"] = stationtime2text()
-		s["roundduration"] = roundduration2text()
-		s["map"] = GLOB.using_map.full_name
-
-		var/active = 0
-		var/list/players = list()
-		var/list/admins = list()
-		var/legacy = input["status"] != "2"
-		for(var/client/C in GLOB.clients)
-			if(C.holder)
-				if(C.is_stealthed())
-					continue	//so stealthmins aren't revealed by the hub
-				admins[C.key] = C.holder.rank
-			if(legacy)
-				s["player[players.len]"] = C.key
-			players += C.key
-			if(istype(C.mob, /mob/living))
-				active++
-
-		s["players"] = players.len
-		s["admins"] = admins.len
-		if(!legacy)
-			s["playerlist"] = list2params(players)
-			s["adminlist"] = list2params(admins)
-			s["active_players"] = active
-
-		return list2params(s)
-
-	else if(T == "manifest")
-		var/list/positions = list()
-		var/list/nano_crew_manifest = nano_crew_manifest()
-		// We rebuild the list in the format external tools expect
-		for(var/dept in nano_crew_manifest)
-			var/list/dept_list = nano_crew_manifest[dept]
-			if(dept_list.len > 0)
-				positions[dept] = list()
-				for(var/list/person in dept_list)
-					positions[dept][person["name"]] = person["rank"]
-
-		for(var/k in positions)
-			positions[k] = list2params(positions[k]) // converts positions["heads"] = list("Bob"="Captain", "Bill"="CMO") into positions["heads"] = "Bob=Captain&Bill=CMO"
-
-		return list2params(positions)
-
-	else if(T == "revision")
-		var/list/L = list()
-		L["gameid"] = game_id
-		L["dm_version"] = DM_VERSION // DreamMaker version compiled in
-		L["dd_version"] = world.byond_version // DreamDaemon version running on
-
-		if(revdata.revision)
-			L["revision"] = revdata.revision
-			L["branch"] = revdata.branch
-			L["date"] = revdata.date
-		else
-			L["revision"] = "unknown"
-
-		return list2params(L)
-
-	else if(copytext(T,1,5) == "laws")
-		if(input["key"] != config.external.comms_password)
-			if(abs(world_topic_spam_protect_time - world.time) < 50)
-				sleep(50)
-				world_topic_spam_protect_time = world.time
-				return "Bad Key (Throttled)"
-
-			world_topic_spam_protect_time = world.time
-
-			return "Bad Key"
-
-		var/list/match = text_find_mobs(input["laws"], /mob/living/silicon)
-
-		if(!match.len)
-			return "No matches"
-		else if(match.len == 1)
-			var/mob/living/silicon/S = match[1]
-			var/info = list()
-			info["name"] = S.name
-			info["key"] = S.key
-
-			if(!S.laws)
-				info["laws"] = null
-				return list2params(info)
-
-			var/list/lawset_parts = list(
-				"ion" = S.laws.ion_laws,
-				"inherent" = S.laws.inherent_laws,
-				"supplied" = S.laws.supplied_laws
-			)
-
-			for(var/law_type in lawset_parts)
-				var/laws = list()
-				for(var/datum/ai_law/L in lawset_parts[law_type])
-					laws += L.law
-				info[law_type] = list2params(laws)
-
-			info["zero"] = S.laws.zeroth_law ? S.laws.zeroth_law.law : null
-
-			return list2params(info)
-
-		else
-			var/list/ret = list()
-			for(var/mob/M in match)
-				ret[M.key] = M.name
-			return list2params(ret)
-
-	else if(copytext(T,1,5) == "info")
-		if(input["key"] != config.external.comms_password)
-			if(abs(world_topic_spam_protect_time - world.time) < 50)
-				sleep(50)
-				world_topic_spam_protect_time = world.time
-				return "Bad Key (Throttled)"
-
-			world_topic_spam_protect_time = world.time
-
-			return "Bad Key"
-
-		var/list/match = text_find_mobs(input["info"])
-
-		if(!match.len)
-			return "No matches"
-		else if(match.len == 1)
-			var/mob/M = match[1]
-			var/info = list()
-			info["key"] = M.key
-			info["name"] = M.name == M.real_name ? M.name : "[M.name] ([M.real_name])"
-			info["role"] = M.mind ? (M.mind.assigned_role ? M.mind.assigned_role : "No role") : "No mind"
-			var/turf/MT = get_turf(M)
-			info["loc"] = M.loc ? "[M.loc]" : "null"
-			info["turf"] = MT ? "[MT] @ [MT.x], [MT.y], [MT.z]" : "null"
-			info["area"] = MT ? "[MT.loc]" : "null"
-			info["antag"] = M.mind ? (M.mind.special_role ? M.mind.special_role : "Not antag") : "No mind"
-			info["hasbeenrev"] = M.mind ? M.mind.has_been_rev : "No mind"
-			info["stat"] = M.stat
-			info["type"] = M.type
-			if(isliving(M))
-				var/mob/living/L = M
-				info["damage"] = list2params(list(
-							oxy = L.getOxyLoss(),
-							tox = L.getToxLoss(),
-							fire = L.getFireLoss(),
-							brute = L.getBruteLoss(),
-							clone = L.getCloneLoss(),
-							brain = L.getBrainLoss(),
-							internal = L.getInternalLoss()
-						))
-				if(ishuman(M))
-					var/mob/living/carbon/human/H = M
-					info["species"] = H.species.name
-				else
-					info["species"] = "non-human"
-			else
-				info["damage"] = "non-living"
-				info["species"] = "non-human"
-			info["gender"] = M.gender
-			return list2params(info)
-		else
-			var/list/ret = list()
-			for(var/mob/M in match)
-				ret[M.key] = M.name
-			return list2params(ret)
-
-	else if("who" in input)
-		var/result = "Current players:\n"
-		var/num = 0
-		for(var/client/C in GLOB.clients)
-			if(C.holder)
-				if(C.is_stealthed() && !key_valid)
-					continue
-			result += "\t [C]\n"
-			num++
-		result += "Total players: [num]"
-		return result
-
-	else if("adminwho" in input)
-		var/result = "Current admins:\n"
-		for(var/client/C in GLOB.clients)
-			if(C.holder)
-				if(!C.is_stealthed())
-					result += "\t [C], [C.holder.rank]\n"
-		return result
-
-	else if ("ooc" in input)
-		if(!key_valid)
-			if(abs(world_topic_spam_protect_time - world.time) < 50)
-				sleep(50)
-				world_topic_spam_protect_time = world.time
-				return "Bad Key (Throttled)"
-			world_topic_spam_protect_time = world.time
-			return "Bad Key"
-		var/username = input["username"]
-		var/message = sanitize(input["message"])
-
-		if(!message)
-			return "missing message"
-		if(!username)
-			return "missing username"
-		if(!config.misc.ooc_allowed)
-			return "globally muted"
-
-		GLOB.indigo_bot.chat_webhook(config.indigo_bot.ooc_webhook, "DOOC: **[username]:** [message]")
-
-		var/sent_message = "[create_text_tag("dooc", "Discord")] <EM>[username]:</EM> <span class='message linkify'>[message]</span>"
-		for(var/client/target in GLOB.clients)
-			if(!target)
-				continue //sanity
-			to_chat(target, "<span class='ooc dooc'><span class='everyone'>[sent_message]</span></span>", type = MESSAGE_TYPE_DOOC)
-
-	else if ("asay" in input)
-		return "not supported" //simply no asay on bay
-
-	else if("adminhelp" in input)
-		if(!key_valid)
-			if(abs(world_topic_spam_protect_time - world.time) < 50)
-				sleep(50)
-				world_topic_spam_protect_time = world.time
-				return "Bad Key (Throttled)"
-			world_topic_spam_protect_time = world.time
-			return "Bad Key"
-
-		var/client/C
-		var/req_ckey = ckey(input["ckey"])
-
-		for(var/client/K in GLOB.clients)
-			if(K.ckey == req_ckey)
-				C = K
-				break
-		if(!C)
-			return "No client with that name on server"
-
-		var/rank = "Discord Admin"
-		var/response = html_encode(input["response"])
-
-		var/message = "<font color='red'>[rank] PM from <b>[input["admin"]]</b>: [response]</font>"
-		var/amessage =  "<span class='info'>[rank] PM from [input["admin"]] to <b>[key_name(C)]</b> : [response])]</span>"
-		// webhook_send_ahelp("[input["admin"]] -> [req_ckey]", response)
-
-		sound_to(C, sound('sound/effects/adminhelp.ogg'))
-		to_chat(C, message)
-
-		for(var/client/A in GLOB.admins)
-			if(A != C)
-				to_chat(A, amessage)
-		return "Message Successful"
-
-	else if("OOC" in input)
-		if(!key_valid)
-			if(abs(world_topic_spam_protect_time - world.time) < 50)
-				sleep(50)
-				world_topic_spam_protect_time = world.time
-				return "Bad Key (Throttled)"
-			world_topic_spam_protect_time = world.time
-			return "Bad Key"
-		toggle_ooc()
-		log_and_message_admins("discord toggled OOC.")
-		return config.misc.ooc_allowed ? "ON" : "OFF"
-
-	else if(copytext(T,1,6) == "notes")
-		/*
-			We got a request for notes from the IRC Bot
-			expected output:
-				1. notes = ckey of person the notes lookup is for
-				2. validationkey = the key the bot has, it should match the gameservers commspassword in it's configuration.
-		*/
-		if(input["key"] != config.external.comms_password)
-			if(abs(world_topic_spam_protect_time - world.time) < 50)
-				sleep(50)
-				world_topic_spam_protect_time = world.time
-				return "Bad Key (Throttled)"
-
-			world_topic_spam_protect_time = world.time
-			return "Bad Key"
-
-		return show_player_info_irc(ckey(input["notes"]))
-
-	else if(copytext(T,1,4) == "age")
-		if(input["key"] != config.external.comms_password)
-			if(abs(world_topic_spam_protect_time - world.time) < 50)
-				sleep(50)
-				world_topic_spam_protect_time = world.time
-				return "Bad Key (Throttled)"
-
-			world_topic_spam_protect_time = world.time
-			return "Bad Key"
-
-		var/age = get_player_age(input["age"])
-		if(isnum(age))
-			if(age >= 0)
-				return "[age]"
-			else
-				return "Ckey not found"
-		else
-			return "Database connection failed or not set up"
-
-	else if(copytext(T,1,14) == "placepermaban")
-		if(!config.external.ban_comms_password)
-			return "Not enabled"
-		if(input["bankey"] != config.external.ban_comms_password)
-			if(abs(world_topic_spam_protect_time - world.time) < 50)
-				sleep(50)
-				world_topic_spam_protect_time = world.time
-				return "Bad Key (Throttled)"
-
-			world_topic_spam_protect_time = world.time
-			return "Bad Key"
-
-		var/target = ckey(input["target"])
-
-		var/client/C
-		for(var/client/K in GLOB.clients)
-			if(K.ckey == target)
-				C = K
-				break
-		if(!C)
-			return "No client with that name found on server"
-		if(!C.mob)
-			return "Client missing mob"
-
-		if(!_DB_ban_record(input["id"], "0", "127.0.0.1", 1, C.mob, -1, input["reason"]))
-			return "Save failed"
-		ban_unban_log_save("[input["id"]] has permabanned [C.ckey]. - Reason: [input["reason"]] - This is a ban until appeal.")
-		notes_add(target,"[input["id"]] has permabanned [C.ckey]. - Reason: [input["reason"]] - This is a ban until appeal.",input["id"])
-		qdel(C)
-
-
-/world/Reboot(reason, reboot_hardness = 0)
-	// sound_to(world, sound('sound/AI/newroundsexy.ogg')
-
-	if(reboot_hardness == REBOOT_REALLY_HARD)
-		..(reason)
-		return
-
-	if(!reboot_hardness == REBOOT_HARD)
-		Master.Shutdown()
-
+/world/Reboot(reason, force = FALSE)
 	for(var/client/C in GLOB.clients)
 		C?.tgui_panel?.send_roundrestart()
 
-		if(config.external.server) //if you set a server location in config.txt, it sends you there instead of trying to reconnect to the same world address. -- NeoFite
-			send_link(C, "byond://[config.external.server]")
-
-	if(config.general.wait_for_sigusr1 && reason != 3)
-		text2file("foo", "reboot_called")
-		to_world("<span class=danger>World reboot waiting for external scripts. Please be patient.</span>")
-		return
-
-	game_log("World rebooted at [time_stamp()]")
-
-	if(blackbox)
-		blackbox.save_all_data_to_sql()
+	if(!force)
+		Master.Shutdown()
+		game_log("World rebooted at [time_stamp()]")
+		blackbox?.save_all_data_to_sql()
 
 	..(reason)
 
@@ -586,65 +181,19 @@ var/world_topic_spam_protect_time = world.timeofday
 
 /hook/startup/proc/loadMOTD()
 	world.load_motd()
-	return 1
+	return TRUE
 
 /world/proc/load_motd()
-	join_motd = config.texts.motd
+	join_motd = file2text("config/motd.txt")
 	load_regular_announcement()
 
 /world/proc/update_status()
-	var/s = ""
+	var/status_html = "<b>RU/EN - StoneBay - Inspired by 2025 OnyxBay</b><br>\
+	Focused on a mostly classic, controversy-free experience.<br>\
+	Everyone is welcome!<br>"
+	status = status_html
 
-	if (config && config.general.server_name)
-		s += "<b>[config.general.server_name]</b>"
-
-//	s += "<b>[station_name()]</b>";
-//	s += " ("
-//	s += "<a href=\"http://\">" //Change this to wherever you want the hub to link to.
-//	s += "[game_version]"
-//	s += "Default"  //Replace this with something else. Or ever better, delete it and uncomment the game version.
-//	s += "</a>"
-//	s += ")"
-
-	var/list/features = list()
-
-	if(SSticker.master_mode)
-		features += SSticker.master_mode
-	else
-		features += "<b>STARTING</b>"
-
-	if (!config.game.enter_allowed)
-		features += "closed"
-
-	features += config.misc.abandon_allowed ? "respawn" : "no respawn"
-
-	if (config && config.vote.allow_vote_mode)
-		features += "vote"
-
-	if (config && config.misc.allow_ai)
-		features += "AI allowed"
-
-	var/n = 0
-	for (var/mob/M in GLOB.player_list)
-		if (M.client)
-			n++
-
-	if (n > 1)
-		features += "~[n] players"
-	else if (n > 0)
-		features += "~[n] player"
-
-
-	if (config && config.general.hosted_by)
-		features += "hosted by <b>[config.general.hosted_by]</b>"
-
-	if (features)
-		s += ": [jointext(features, ", ")]"
-
-	/* does this help? I do not know */
-	if (src.status != s)
-		src.status = s
-
+// TODO(rufus): there is zero reason for these to be impossible to find a reference to macros, refactor
 #define WORLD_LOG_START(X) WRITE_FILE(GLOB.world_##X##_log, "\n\nStarting up round ID [game_id]. [time2text(world.realtime, "DD.MM.YY hh:mm")]\n---------------------")
 #define WORLD_SETUP_LOG(X) GLOB.world_##X##_log = file("[log_directory]/[log_prefix][#X].log") ; WORLD_LOG_START(X)
 #define WORLD_SETUP_LOG_DETAILED(X) GLOB.world_##X##_log = file("[log_directory_detailed]/[log_prefix_detailed][#X].log") ; WORLD_LOG_START(X)
@@ -674,17 +223,15 @@ var/world_topic_spam_protect_time = world.timeofday
 
 #define FAILED_DB_CONNECTION_CUTOFF 5
 var/failed_db_connections = 0
-var/failed_old_db_connections = 0
-var/failed_don_db_connections = 0
 
-
+// TODO(rufus): move database related stuff into its proper folder
 /hook/startup/proc/connectDB()
 	if(!config.external.sql_enabled)
-		log_to_dd("SQL disabled. Your server will not use feedback database.")
+		log_to_dd("SQL disabled. Your server will not use the main database.")
 	else if(!setup_database_connection())
-		log_to_dd("Your server failed to establish a connection with the feedback database.")
+		log_to_dd("Your server failed to establish a connection with the main database.")
 	else
-		log_to_dd("Feedback database connection established.")
+		log_to_dd("Main database connection established.")
 	return TRUE
 
 /proc/setup_database_connection()
@@ -694,14 +241,13 @@ var/failed_don_db_connections = 0
 	if(!dbcon)
 		dbcon = new()
 
-	var/user = config.database.feedback_login
-	var/pass = config.database.feedback_password
-	var/db = config.database.feedback_database
-	var/address = config.database.address
-	var/port = config.database.port
-
-	dbcon.Connect("dbi:mysql:[db]:[address]:[port]","[user]","[pass]")
+	dbcon.Connect("dbi:mysql:[sqldb]:[sqladdress]:[sqlport]","[sqllogin]","[sqlpass]")
+	if (!dbcon.IsConnected())
+		failed_db_connections++
+		log_to_dd(dbcon.ErrorMsg())
+		return FALSE
 	. = dbcon.IsConnected()
+
 	if ( . )
 		failed_db_connections = 0	//If this connection succeeded, reset the failed connections counter.
 	else
@@ -710,7 +256,7 @@ var/failed_don_db_connections = 0
 
 	return .
 
-//This proc ensures that the connection to the feedback database (global variable dbcon) is established
+//This proc ensures that the connection to the main database (global variable dbcon) is established
 /proc/establish_db_connection()
 	if(!config.external.sql_enabled)
 		return FALSE
@@ -720,102 +266,6 @@ var/failed_don_db_connections = 0
 
 	if(!dbcon || !dbcon.IsConnected())
 		return setup_database_connection()
-	else
-		return TRUE
-
-
-/hook/startup/proc/connectOldDB()
-	if(!config.external.sql_enabled)
-		log_to_dd("SQL disabled. Your server configured to use legacy admin and ban system.")
-	else if(!setup_old_database_connection())
-		log_to_dd("Your server failed to establish a connection with the SQL database.")
-	else
-		log_to_dd("SQL database connection established.")
-	return TRUE
-
-//These two procs are for the old database, while it's being phased out. See the tgstation.sql file in the SQL folder for more information.
-//If you don't know what any of this do, look at the same code above
-/proc/setup_old_database_connection()
-
-	if(failed_old_db_connections > FAILED_DB_CONNECTION_CUTOFF)
-		return 0
-
-	if(!dbcon_old)
-		dbcon_old = new()
-
-	var/user = config.database.login
-	var/pass = config.database.password
-	var/db = config.database.database
-	var/address = config.database.address
-	var/port = config.database.port
-
-	dbcon_old.Connect("dbi:mysql:[db]:[address]:[port]","[user]","[pass]")
-	. = dbcon_old.IsConnected()
-	if ( . )
-		failed_old_db_connections = 0
-	else
-		failed_old_db_connections++
-		to_world_log(dbcon.ErrorMsg())
-
-	return .
-
-/proc/establish_old_db_connection()
-	if(!config.external.sql_enabled)
-		return FALSE
-
-	if(failed_old_db_connections > FAILED_DB_CONNECTION_CUTOFF)
-		return FALSE
-
-	if(!dbcon_old || !dbcon_old.IsConnected())
-		return setup_old_database_connection()
-	else
-		return TRUE
-
-
-/hook/startup/proc/connectDonDB()
-	if(!config.external.sql_enabled)
-		log_to_dd("SQL disabled. Your server will not use Donations database.")
-	else if(!setup_don_database_connection())
-		log_to_dd("Your server failed to establish a connection with the Donations database.")
-	else
-		log_to_dd("Donations database connection established.")
-	return TRUE
-
-//If you don't know what any of this do, look at the same code above
-proc/setup_don_database_connection()
-
-	if(failed_don_db_connections > FAILED_DB_CONNECTION_CUTOFF)
-		return 0
-
-	if(!dbcon_don)
-		dbcon_don = new()
-
-	var/user = config.database.donation_login
-	var/pass = config.database.donation_password
-	var/db = config.database.donation_database
-	var/address = config.database.donation_address
-	var/port = config.database.donation_port
-	dbcon_don.Connect("dbi:mysql:[db]:[address]:[port]","[user]","[pass]")
-	log_debug("Connecting to donationsDB")
-
-	. = dbcon_don.IsConnected()
-	if ( . )
-		failed_don_db_connections = 0
-	else
-		failed_don_db_connections++
-		log_to_dd(dbcon.ErrorMsg())
-
-	return .
-
-/proc/establish_don_db_connection()
-	if(!config.external.sql_enabled)
-		return FALSE
-
-	if(failed_don_db_connections > FAILED_DB_CONNECTION_CUTOFF)
-		return FALSE
-
-	if(!dbcon_don || !dbcon_don.IsConnected())
-		return setup_don_database_connection()
 	else
 		return TRUE
 

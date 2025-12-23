@@ -197,10 +197,6 @@
 	if(!user.IsAdvancedToolUser())
 		return FALSE
 
-	if(!prob(user.client?.get_luck_for_type(LUCK_CHECK_COMBAT)))
-		show_splash_text(user, "Gun misfires!", SPAN_DANGER("Your Gun misfires!"))
-		return
-
 	var/mob/living/M = user
 	if(is_pacifist(user))
 		to_chat(user, SPAN("warning", "You can't you're pacifist!"))
@@ -501,7 +497,7 @@
 
 	mouthshoot = 1
 	M.visible_message("<span class='danger'>[user] sticks their gun in their mouth, ready to pull the trigger...</span>")
-	if(!do_after(user, 40, progress=0))
+	if(!do_after(user, 40, src, progress=0))
 		M.visible_message("<span class='notice'>[user] decided life was worth living</span>")
 		mouthshoot = 0
 		return
@@ -567,7 +563,7 @@
 
 		weapon_in_mouth = TRUE
 		target.visible_message(SPAN_DANGER("[user] sticks their gun in [target]'s mouth, ready to pull the trigger..."))
-		if(!do_after(user, 2 SECONDS, progress=0))
+		if(!do_after(user, 2 SECONDS, src, progress=0))
 			target.visible_message(SPAN_NOTICE("[user] decided [target]'s life was worth living."))
 			weapon_in_mouth = FALSE
 			return

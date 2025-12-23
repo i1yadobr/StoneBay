@@ -182,6 +182,7 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 			reached++
 	return reached
 
+// TODO(rufus): about time to update the feedback/blackbox system, hello 2011
 /datum/feedback_variable
 	var/variable
 	var/value
@@ -337,6 +338,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 	feedback_set_details("round_end","[time2text(world.realtime)]") //This one MUST be the last one that gets set.
 
 
+// TODO(rufus): purge or fix all the blackbox related stuff
 //This proc is only to be called at round end.
 /obj/machinery/blackbox_recorder/proc/save_all_data_to_sql()
 	if(!feedback) return
@@ -345,7 +347,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 	if(!establish_db_connection()) return
 	var/round_id
 
-	var/DBQuery/query = sql_query("SELECT MAX(round_id) AS round_id FROM erro_feedback")
+	var/DBQuery/query = sql_query("SELECT MAX(round_id) AS round_id FROM feedback")
 
 	while(query.NextRow())
 		round_id = query.item[1]
@@ -357,7 +359,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 	for(var/datum/feedback_variable/FV in feedback)
 		sql_query({"
 			INSERT INTO
-				erro_feedback
+				feedback
 			VALUES
 				(null,
 				Now(),

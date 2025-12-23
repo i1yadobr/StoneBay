@@ -14,6 +14,9 @@ var/jobban_keylist[0]		//to store the keys & ranks
 	jobban_savebanfile()
 
 var/const/IAA_ban_reason = "Restricted by CentComm"
+
+// TODO(rufus): add antag guest-jobbans too, no reason to miss out on a 1984 opportunity.
+//   Also probably worth rewriting, 12 years is a lo-o-ong time.
 //returns a reason if M is banned from rank, returns 0 otherwise
 /proc/jobban_isbanned(mob/M, rank)
 	//ckech if jobs subsystem doesn't runned yet.
@@ -21,14 +24,11 @@ var/const/IAA_ban_reason = "Restricted by CentComm"
 		return FALSE
 
 	if(M && rank)
-		/*
-		if(_jobban_isbanned(M, rank)) return "Reason Unspecified"	//for old jobban
-		*/
-
 		if (guest_jobbans(rank))
-			if(config.game.guest_jobban && IsGuestKey(M.key))
+			var/whitelisted = check_whitelist(M.ckey)
+			if(config.game.guest_jobban && IsGuestKey(M.key) && !whitelisted)
 				return "Guest Job-ban"
-			if(config.whitelist.enable && !check_job_whitelist(M.ckey, rank))
+			if(config.game.use_whitelist && !whitelisted)
 				return "Whitelisted Job"
 
 		for (var/s in jobban_keylist)
@@ -60,20 +60,6 @@ var/const/IAA_ban_reason = "Restricted by CentComm"
 
 	return FALSE
 
-/*
-DEBUG
-/mob/verb/list_all_jobbans()
-	set name = "list all jobbans"
-
-	for(var/s in jobban_keylist)
-		log_debug(s)
-
-/mob/verb/reload_jobbans()
-	set name = "reload jobbans"
-
-	jobban_loadbanfile()
-*/
-
 /hook/startup/proc/loadJobBans()
 	jobban_loadbanfile()
 	return 1
@@ -102,7 +88,7 @@ DEBUG
 				ckey,
 				job
 			FROM
-				erro_ban
+				ss13_ban
 			WHERE
 				bantype = 'JOB_PERMABAN'
 				AND
@@ -119,9 +105,9 @@ DEBUG
 		//Job tempbans
 		var/DBQuery/query1
 		if(isnull(config.general.server_id))
-			query1 = sql_query("SELECT ckey, job FROM erro_ban WHERE bantype = 'JOB_TEMPBAN' AND isnull(unbanned) AND expiration_time > Now()", dbcon)
+			query1 = sql_query("SELECT ckey, job FROM ss13_ban WHERE bantype = 'JOB_TEMPBAN' AND isnull(unbanned) AND expiration_time > Now()", dbcon)
 		else
-			query1 = sql_query("SELECT ckey, job FROM erro_ban WHERE bantype = 'JOB_TEMPBAN' AND isnull(unbanned) AND server_id = $$ AND expiration_time > Now()", dbcon, config.general.server_id)
+			query1 = sql_query("SELECT ckey, job FROM ss13_ban WHERE bantype = 'JOB_TEMPBAN' AND isnull(unbanned) AND server_id = $$ AND expiration_time > Now()", dbcon, config.general.server_id)
 
 		while(query1.NextRow())
 			var/ckey = query1.item[1]

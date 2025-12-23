@@ -141,15 +141,6 @@
 	message_admins("[key_name_admin(src)] has remade the powernets. makepowernets() called.", 0)
 	feedback_add_details("admin_verb","MPWN") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-/client/proc/cmd_debug_tog_aliens()
-	set category = "Server"
-	set name = "Toggle Aliens"
-
-	config.misc.aliens_allowed = !config.misc.aliens_allowed
-	log_admin("[key_name(src)] has turned aliens [config.misc.aliens_allowed ? "on" : "off"].")
-	message_admins("[key_name_admin(src)] has turned aliens [config.misc.aliens_allowed ? "on" : "off"].", 0)
-	feedback_add_details("admin_verb","TAL") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
 /client/proc/cmd_admin_grantfullaccess(mob/M in SSmobs.mob_list)
 	set category = "Admin"
 	set name = "Grant Full Access"
@@ -198,11 +189,6 @@
 	if(isghost(adminmob))
 		qdel(adminmob)
 	feedback_add_details("admin_verb","ADC") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
-
-
-
-
 
 /client/proc/cmd_admin_areatest()
 	set category = "Mapping"
@@ -463,3 +449,11 @@
 		SSgarbage.toggle_harddel(TRUE)
 		log_and_message_admins("stop hard deleting garbage queue.", usr)
 	return
+
+// Just a convenience verb for visibility, accessible from the Debug verb list for admins.
+/client/proc/enable_browser_devtools()
+	set category = "Debug"
+	set name = "Enable Browser Devtools"
+	set desc = "Enable access to devtools on right-click on any browser UIs (plain browser, NanoUI, or TGUI windows)."
+
+	browser_devtools()

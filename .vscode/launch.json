@@ -6,31 +6,19 @@
       "request": "launch",
       "name": "DS Debug",
       "dmb": "${workspaceFolder}/${command:CurrentDMB}",
-      "env": {
-        "MODE": "dev",
-        "StoneBay__GENERAL__SERVER_ID": "test"
-      },
     },
     {
       "type": "byond",
       "request": "launch",
       "name": "Build & DS Debug",
       "preLaunchTask": "dm: build - ${command:CurrentDME}",
-      "dmb": "${workspaceFolder}/${command:CurrentDMB}",
-      "env": {
-        "MODE": "dev",
-        "StoneBay__GENERAL__SERVER_ID": "test"
-      },
+      "dmb": "${workspaceFolder}/${command:CurrentDMB}"
     },
     {
       "type": "byond",
       "request": "launch",
       "name": "DD Debug",
-      "dmb": "${workspaceFolder}/${command:CurrentDMB}",
-      "env": {
-        "MODE": "dev",
-        "StoneBay__GENERAL__SERVER_ID": "test"
-      }
+      "dmb": "${workspaceFolder}/${command:CurrentDMB}"
     },
     {
       "type": "byond",
@@ -38,10 +26,6 @@
       "name": "Build & DD Debug",
       "preLaunchTask": "dm: build - ${command:CurrentDME}",
       "dmb": "${workspaceFolder}/${command:CurrentDMB}",
-      "env": {
-        "MODE": "dev",
-        "StoneBay__GENERAL__SERVER_ID": "test"
-      },
       "dreamDaemon": true
     },
     {

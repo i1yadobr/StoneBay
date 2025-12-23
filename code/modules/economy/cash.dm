@@ -214,7 +214,7 @@
 	next_scratch = world.time + 6 SECONDS
 
 	to_chat(user, "<span class='notice'>You initiate the simulated scratch action process on the [src]...</span>")
-	if(do_after(user,4.5 SECONDS))
+	if(do_after(user, 4.5 SECONDS, src))
 		var/won = 0
 		var/result = rand(1,10000)
 		if(result <= 4000) // 40% chance to not earn anything at all.

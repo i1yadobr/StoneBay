@@ -61,5 +61,5 @@
 	if(istype(C, /obj/item/shovel))
 		playsound(src, 'sound/items/snow_shoveling.ogg', 100, 1)
 		to_chat(user, "<span class='notice'>Removing snow...</span>")
-		if(do_after(user, 30))
+		if(do_after(user, 30, src))
 			qdel(src)

@@ -21,6 +21,3 @@
 
 /// from turf CtrlClickOn(): (/mob)
 #define SIGNAL_MOB_CTRL_CLICK "mob_ctrl_click"
-
-/// Called on '/mob/proc/update_movespeed()' (/mob)
-#define SIGNAL_MOB_MOVESPEED_UPDATED "mob_movespeed_updated"

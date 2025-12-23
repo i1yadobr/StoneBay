@@ -1,0 +1,6 @@
+{
+  "$schema": "schema/custom_sprites.schema.json",
+  "robot": [],
+  "ai_holo": [],
+  "ai_core": []
+}

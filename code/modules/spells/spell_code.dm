@@ -392,7 +392,7 @@
 	if(!(spell_flags & (STATALLOWED|GHOSTCAST)))
 		incap_flags |= INCAPACITATION_KNOCKOUT
 
-	return do_after(user,delay, incapacitation_flags = incap_flags)
+	return do_after(user, delay, incapacitation_flags = incap_flags)
 
 /datum/spell/proc/set_connected_god(mob/living/deity/god)
 	connected_god = god

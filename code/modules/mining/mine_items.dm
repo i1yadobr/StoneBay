@@ -707,7 +707,7 @@
 					playsound(user, GET_SFX(SFX_USE_CHISEL), 30, 1)
 
 			last_struck = 1
-			if(do_after(user,(20)))
+			if(do_after(user, 20, src))
 				last_struck = 0
 				if(times_carved <= 9)
 					times_carved += 1

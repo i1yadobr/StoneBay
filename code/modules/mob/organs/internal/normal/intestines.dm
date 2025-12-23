@@ -97,16 +97,6 @@
 			owner.custom_pain("Your guts cramp agonizingly!", 20)
 			// TODO: Waste to the abdominal cavity here
 
-		// Simulation disabled, let's just despawn food chunks and decrease waste. Non-edible items will be waiting for a surgeon though.
-		if(!config.health.simulate_digestion)
-			for(var/obj/item/I in contents)
-				if(I == food_organ)
-					continue
-				if(!istype(I, /obj/item/reagent_containers))
-					continue
-				qdel(I)
-			waste_stored = clamp(waste_stored - 1, 0, waste_capacity)
-
 		// Simulation enabled, warning the owner if needed.
 		else if(!owner.stat)
 			var/fullness = get_fullness()

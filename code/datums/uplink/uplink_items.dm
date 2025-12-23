@@ -126,9 +126,6 @@ var/datum/uplink/uplink = new()
 	if(length(job_specific) && !(U.owner.assigned_role in job_specific))
 		return FALSE
 
-	if(meme_item && !config.misc.meme_content)
-		return FALSE
-
 	if(!length(antag_roles))
 		return TRUE
 

@@ -177,7 +177,7 @@
 		reduce_uses(5, "ate")
 	else if(istype(M,/mob/living/carbon/human) && M.lying)
 		to_chat(user, "You start outlining [M.name].")
-		if(do_after(user, 50))
+		if(do_after(user, 50, src))
 			to_chat(user, "You finish outlining [M.name].")
 			new /obj/effect/decal/cleanable/crayon(M.loc, colour, shadeColour, "outline", "body outline")
 			reduce_uses()

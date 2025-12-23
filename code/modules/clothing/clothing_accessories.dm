@@ -70,9 +70,6 @@
 	slowdown_accessory = 0
 	for(var/obj/item/clothing/accessory/A in accessories)
 		slowdown_accessory += A.slowdown
-	if(ismob(loc))
-		var/mob/M = loc
-		M.update_equipment_slowdown()
 
 /**
  *  Attach accessory A to src
