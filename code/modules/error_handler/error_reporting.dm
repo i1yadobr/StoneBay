@@ -1,5 +1,4 @@
 // this proc will only work with DEBUG enabled
-#ifdef DEBUG
 
 /hook/roundend/proc/send_runtimes_to_ircbot()
 	if(!revdata.revision) return // we can't do much useful if we don't know what we are

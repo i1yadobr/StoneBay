@@ -1,3 +1,4 @@
+// TODO(rufus): move customs to DB and build a UI for editing them, also clean up this outdated code
 // Switch this out to use a database at some point. Each ckey is
 // associated with a list of custom item datums. When the character
 // spawns, the list is checked and all appropriate datums are spawned.

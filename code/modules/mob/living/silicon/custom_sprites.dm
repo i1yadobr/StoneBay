@@ -15,8 +15,9 @@ GLOBAL_LIST_EMPTY(ai_custom_icons)
 	src.footstep_sound = footstep_sound
 
 /hook/startup/proc/load_silicon_custom_sprites()
-	if(!fexists("config/custom_sprites.json"))
-		return
+	var/config_file_path = "config/custom_items/custom_items.json"
+	if(!fexists(config_file_path))
+		return TRUE
 	var/list/config_json = json_decode(file2text("config/custom_sprites.json"))
 
 #ifdef CUSTOM_ITEM_AI_HOLO

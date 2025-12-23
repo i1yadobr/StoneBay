@@ -88,7 +88,7 @@ var/const/IAA_ban_reason = "Restricted by CentComm"
 				ckey,
 				job
 			FROM
-				ss13_ban
+				ban
 			WHERE
 				bantype = 'JOB_PERMABAN'
 				AND
@@ -105,9 +105,9 @@ var/const/IAA_ban_reason = "Restricted by CentComm"
 		//Job tempbans
 		var/DBQuery/query1
 		if(isnull(config.general.server_id))
-			query1 = sql_query("SELECT ckey, job FROM ss13_ban WHERE bantype = 'JOB_TEMPBAN' AND isnull(unbanned) AND expiration_time > Now()", dbcon)
+			query1 = sql_query("SELECT ckey, job FROM ban WHERE bantype = 'JOB_TEMPBAN' AND isnull(unbanned) AND expiration_time > Now()", dbcon)
 		else
-			query1 = sql_query("SELECT ckey, job FROM ss13_ban WHERE bantype = 'JOB_TEMPBAN' AND isnull(unbanned) AND server_id = $$ AND expiration_time > Now()", dbcon, config.general.server_id)
+			query1 = sql_query("SELECT ckey, job FROM ban WHERE bantype = 'JOB_TEMPBAN' AND isnull(unbanned) AND server_id = $$ AND expiration_time > Now()", dbcon, config.general.server_id)
 
 		while(query1.NextRow())
 			var/ckey = query1.item[1]

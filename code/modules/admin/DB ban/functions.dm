@@ -69,7 +69,7 @@
 
 	sql_query({"
 		INSERT INTO
-			ss13_ban(
+			ban(
 				bantime,
 				serverip,
 				bantype,
@@ -179,7 +179,7 @@
 		SELECT
 			id
 		FROM
-			ss13_ban
+			ban
 		WHERE
 			ckey = $ckey
 			AND
@@ -224,9 +224,9 @@
 
 	var/DBQuery/query
 	if(isnull(config.general.server_id))
-		query = sql_query("SELECT ckey, duration, reason FROM ss13_ban WHERE id = $banid", dbcon, list(banid = banid))
+		query = sql_query("SELECT ckey, duration, reason FROM ban WHERE id = $banid", dbcon, list(banid = banid))
 	else
-		query = sql_query("SELECT ckey, duration, reason, server_id FROM ss13_ban WHERE id = $banid", dbcon, list(banid = banid))
+		query = sql_query("SELECT ckey, duration, reason, server_id FROM ban WHERE id = $banid", dbcon, list(banid = banid))
 
 	var/eckey = usr.ckey	//Editing admin ckey
 	var/pckey				//(banned) Player ckey
@@ -257,7 +257,7 @@
 
 			sql_query({"
 				UPDATE
-					ss13_ban
+					ban
 				SET
 					reason = $value,
 					edits = CONCAT(edits, $edits_log)
@@ -279,7 +279,7 @@
 
 			sql_query({"
 				UPDATE
-					ss13_ban
+					ban
 				SET
 					duration = $value,
 					edits = CONCAT(edits, $edits_log),
@@ -310,9 +310,9 @@
 
 	var/sql
 	if(isnull(config.general.server_id))
-		sql = "SELECT ckey FROM ss13_ban WHERE id = $id"
+		sql = "SELECT ckey FROM ban WHERE id = $id"
 	else
-		sql = "SELECT ckey, server_id FROM ss13_ban WHERE id = $id"
+		sql = "SELECT ckey, server_id FROM ban WHERE id = $id"
 
 	var/ban_number = 0 //failsafe
 
@@ -342,7 +342,7 @@
 
 	sql_query({"
 		UPDATE
-			ss13_ban
+			ban
 		SET
 			unbanned = 1,
 			unbanned_datetime = Now(),
@@ -491,7 +491,7 @@
 					computerid,
 					server_id
 				FROM
-					ss13_ban
+					ban
 				WHERE
 					1
 					[playersearch]

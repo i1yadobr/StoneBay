@@ -402,7 +402,6 @@ var/const/NO_EMAG_ACT = -50
 
 /obj/item/card/id/engineering/atmos
 	icon_state = "card_atmos"
-	job_access_type = /datum/job/atmos
 
 /obj/item/card/id/engineering/head
 	name = "identification card"

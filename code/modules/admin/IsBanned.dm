@@ -78,7 +78,7 @@
 				bantime,
 				bantype
 			FROM
-				ss13_ban
+				ban
 			WHERE
 				(ckey = $ckeytext
 				[ipquery]

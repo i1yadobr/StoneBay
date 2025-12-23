@@ -5,8 +5,6 @@ var/list/hash_to_gear = list()
 /datum/preferences
 	var/list/gear_list //Custom/fluff item loadouts.
 	var/gear_slot = 1  //The current gear save slot
-	var/datum/gear/trying_on_gear
-	var/list/trying_on_tweaks = new
 	var/loadout_is_busy = FALSE // All these gear tweaks be slow as anything. Let's just force things to yield, sparing us from sanitizing and resanitizing stuff.
 
 /datum/preferences/proc/Gear()
@@ -451,8 +449,6 @@ var/list/hash_to_gear = list()
 	ASSERT(user)
 	var/list/gear = pref.gear_list[pref.gear_slot]
 	gear.Cut()
-	pref.trying_on_gear = null
-	pref.trying_on_tweaks.Cut()
 	var/list/pool = new
 	for(var/gear_name in gear_datums)
 		var/datum/gear/G = gear_datums[gear_name]

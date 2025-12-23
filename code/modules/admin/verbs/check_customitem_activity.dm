@@ -1,28 +1,6 @@
 var/checked_for_inactives = 0
 var/inactive_keys = "None<br>"
 
-/client/proc/check_customitem_activity()
-	set category = "Admin"
-	set name = "Check activity of players with custom items"
-
-	var/dat = "<meta charset=\"utf-8\"><b>Inactive players with custom items</b><br>"
-	dat += "<br>"
-	dat += "The list below contains players with custom items that have not logged\
-	 in for the past two months, or have not logged in since this system was implemented.\
-	 This system requires the feedback SQL database to be properly setup and linked.<br>"
-	dat += "<br>"
-	dat += "Populating this list is done automatically, but must be manually triggered on a per\
-	 round basis. Populating the list may cause a lag spike, so use it sparingly.<br>"
-	dat += "<hr>"
-	if(checked_for_inactives)
-		dat += inactive_keys
-		dat += "<hr>"
-		dat += "This system was implemented on March 1 2013, and the database a few days before that. Root server access is required to add or disable access to specific custom items.<br>"
-	else
-		dat += "<a href='?src=\ref[src];_src_=holder;populate_inactive_customitems=1'>Populate list (requires an active database connection)</a><br>"
-
-	show_browser(usr, dat, "window=inactive_customitems;size=600x480")
-
 /proc/populate_inactive_customitems_list(client/C)
 	set background = 1
 
@@ -54,7 +32,7 @@ var/inactive_keys = "None<br>"
 	//run a query to get all ckeys inactive for over 2 months
 	var/list/inactive_ckeys = list()
 	if(ckeys_with_customitems.len)
-		var/DBQuery/query_inactive = sql_query("SELECT ckey, lastseen FROM ss13_player WHERE datediff(Now(), lastseen) > 60", dbcon)
+		var/DBQuery/query_inactive = sql_query("SELECT ckey, lastseen FROM player WHERE datediff(Now(), lastseen) > 60", dbcon)
 
 		while(query_inactive.NextRow())
 			var/cur_ckey = query_inactive.item[1]
@@ -66,7 +44,7 @@ var/inactive_keys = "None<br>"
 	//if there are ckeys left over, check whether they have a database entry at all
 	if(ckeys_with_customitems.len)
 		for(var/cur_ckey in ckeys_with_customitems)
-			var/DBQuery/query_inactive = sql_query("SELECT ckey FROM ss13_player WHERE ckey = $cur_ckey", dbcon, list(cur_ckey = cur_ckey))
+			var/DBQuery/query_inactive = sql_query("SELECT ckey FROM player WHERE ckey = $cur_ckey", dbcon, list(cur_ckey = cur_ckey))
 
 			if(!query_inactive.RowCount())
 				inactive_ckeys += cur_ckey

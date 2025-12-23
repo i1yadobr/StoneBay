@@ -54,7 +54,7 @@ var/savefile/Banlistjob
 
 	return 1
 
-
+// TODO(rufus): cleanup
 /proc/AddBanjob(ckey, computerid, reason, bannedby, temp, minutes, rank)
 	UpdateTime()
 	var/bantimestamp
@@ -207,7 +207,6 @@ var/savefile/Banlistjob
 /datum/admins/proc/unjobbanpanel()
 	var/count = 0
 	var/dat
-	//var/dat = "<HR><B>Unban Player:</B> <span class='notice'>(U) = Unban , (E) = Edit Ban</span> <span class='good'>(Total<HR><table border=1 rules=all frame=void cellspacing=0 cellpadding=3 ></span>"
 	Banlistjob.cd = "/base"
 	for (var/A in Banlistjob.dir)
 		count++
@@ -217,26 +216,6 @@ var/savefile/Banlistjob
 	dat += "</table>"
 	dat = "<HR><B>Bans:</B> <FONT COLOR=blue>(U) = Unban , </FONT> - <FONT COLOR=green>([count] Bans)</FONT><HR><table border=1 rules=all frame=void cellspacing=0 cellpadding=3 >[dat]"
 	show_browser(usr, dat, "window=unbanp;size=875x400")
-
-/*/datum/admins/proc/permjobban(ckey, computerid, reason, bannedby, temp, minutes, rank)
-	if(AddBanjob(ckey, computerid, reason, usr.ckey, 0, 0, job))
-		to_chat(M, "<span class='danger'>You have been banned from [job] by [usr.client.ckey].\nReason: [reason].</span>")
-		to_chat(M, "<span class='warning'>This is a ban until appeal.</span>")
-		if(config.link.banappeals)
-			to_chat(M, "<span class='warning'>To try to resolve this matter head to [config.link.banappeals]</span>")
-		else
-			to_chat(M, "<span class='warning'>No ban appeals URL has been set.</span>")
-		log_and_message_admins("has banned from [job] [ckey].\nReason: [reason]\nThis is a ban until appeal.")
-/datum/admins/proc/timejobban(ckey, computerid, reason, bannedby, temp, minutes, rank)
-	if(AddBanjob(ckey, computerid, reason, usr.ckey, 1, mins, job))
-		to_chat(M, "<span class='danger'>You have been jobbanned from [job] by [usr.client.ckey].\nReason: [reason].</span>")
-		to_chat(M, "<span class='warning'>This is a temporary ban, it will be removed in [mins] minutes.</span>")
-		if(config.link.banappeals)
-			to_chat(M, "<span class='warning'>To try to resolve this matter head to [config.link.banappeals]</span>")
-		else
-			to_chat(M, "<span class='warning'>No ban appeals URL has been set.</span>")
-		log_and_message_admins("has banned from [job] [ckey].\nReason: [reason]\nThis will be removed in [mins] minutes.")*/
-//////////////////////////////////// DEBUG ////////////////////////////////////
 
 /proc/CreateBansjob()
 
