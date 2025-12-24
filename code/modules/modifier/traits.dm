@@ -224,18 +224,3 @@
 
 /datum/modifier/trait/slowdown/high
 	slowdown = 1
-
-/datum/modifier/trait/slowdown/bloodchill
-	slowdown = 2
-
-/datum/modifier/trait/slowdown/bonechill
-	slowdown = 2
-
-/datum/modifier/trait/slowdown/tarfoot
-	slowdown = 6
-
-/datum/modifier/trait/slowdown/equipment_immunity_speedmod
-	slowdown = 1
-
-/datum/modifier/trait/slowdown/lightpink
-	slowdown = -1

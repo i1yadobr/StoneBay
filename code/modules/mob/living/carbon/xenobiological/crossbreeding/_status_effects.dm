@@ -200,7 +200,7 @@
 	alert_type = /atom/movable/screen/movable/alert/status_effect/bloodchill
 
 /datum/modifier/status_effect/bloodchill/on_applied()
-	holder.add_modifier(/datum/modifier/trait/slowdown/bloodchill)
+	ADD_TRAIT(holder, /datum/modifier/movespeed/bloodchill)
 	return ..()
 
 /datum/modifier/status_effect/bloodchill/tick()
@@ -208,7 +208,7 @@
 		holder.adjustFireLoss(2)
 
 /datum/modifier/status_effect/bloodchill/on_expire()
-	holder.remove_a_modifier_of_type(/datum/modifier/trait/slowdown/bloodchill)
+	REMOVE_TRAIT(holder, /datum/modifier/movespeed/bloodchill)
 	..()
 
 /datum/modifier/status_effect/bonechill
@@ -217,7 +217,7 @@
 	alert_type = /atom/movable/screen/movable/alert/status_effect/bloodchill
 
 /datum/modifier/status_effect/bonechill/on_applied()
-	holder.add_modifier(/datum/modifier/trait/slowdown/bonechill)
+	ADD_TRAIT(holder, /datum/modifier/movespeed/bonechill)
 	return ..()
 
 /datum/modifier/status_effect/bonechill/tick()
@@ -226,7 +226,7 @@
 		holder.bodytemperature -= 10
 
 /datum/modifier/status_effect/bonechill/on_expire()
-	holder.remove_a_modifier_of_type(/datum/modifier/trait/slowdown/bonechill)
+	REMOVE_TRAIT(holder, /datum/modifier/movespeed/bonechill)
 	..()
 
 /atom/movable/screen/movable/alert/status_effect/bonechill
@@ -355,11 +355,11 @@
 	duration = 30
 
 /datum/modifier/status_effect/tarfoot/on_applied()
-	holder.add_modifier(/datum/modifier/trait/slowdown/tarfoot)
+	ADD_TRAIT(holder, /datum/modifier/movespeed/tarfoot)
 	return ..()
 
 /datum/modifier/status_effect/tarfoot/on_expire()
-	holder.remove_a_modifier_of_type(/datum/modifier/trait/slowdown/tarfoot)
+	REMOVE_TRAIT(holder, /datum/modifier/movespeed/tarfoot)
 
 /datum/modifier/status_effect/spookcookie
 	name = "spookcookie"
@@ -793,11 +793,11 @@
 
 /datum/modifier/status_effect/stabilized/red/on_applied()
 	. = ..()
-	holder.add_modifier(/datum/modifier/trait/slowdown/equipment_immunity_speedmod)
+	ADD_TRAIT(holder, /datum/modifier/movespeed/equipment_immunity_speedmod)
 	set_next_think(world.time+1)
 
 /datum/modifier/status_effect/stabilized/red/on_expire()
-	holder.remove_modifiers_of_type(/datum/modifier/trait/slowdown/equipment_immunity_speedmod)
+	REMOVE_TRAIT(holder, /datum/modifier/movespeed/equipment_immunity_speedmod)
 	set_next_think(0)
 	return ..()
 
@@ -959,7 +959,7 @@
 	think_delay = 5 SECONDS
 
 /datum/modifier/status_effect/stabilized/lightpink/on_applied()
-	holder.add_modifier(/datum/modifier/trait/slowdown/lightpink)
+	ADD_TRAIT(holder, /datum/modifier/movespeed/lightpink)
 	ADD_TRAIT(holder, TRAIT_PACIFISM)
 	set_next_think(world.time+1)
 	return ..()
@@ -972,7 +972,7 @@
 	return ..()
 
 /datum/modifier/status_effect/stabilized/lightpink/on_expire()
-	holder.remove_a_modifier_of_type(/datum/modifier/trait/slowdown/lightpink)
+	REMOVE_TRAIT(holder, /datum/modifier/movespeed/lightpink)
 	REMOVE_TRAIT(holder, TRAIT_PACIFISM)
 	set_next_think(0)
 
@@ -1057,7 +1057,7 @@
 	duration = 1 MINUTE
 
 /datum/modifier/status_effect/burningpurple/on_applied()
-	ADD_TRAIT(holder, /datum/modifier/trait/slowdown/lightpink)
+	ADD_TRAIT(holder, /datum/modifier/movespeed/lightpink)
 
 /datum/modifier/status_effect/burningpurple/on_expire()
-	REMOVE_TRAIT(holder, /datum/modifier/trait/slowdown/lightpink)
+	REMOVE_TRAIT(holder, /datum/modifier/movespeed/lightpink)

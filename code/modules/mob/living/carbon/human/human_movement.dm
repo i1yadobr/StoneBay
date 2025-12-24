@@ -24,6 +24,14 @@
 		if(!isnull(M.slowdown))
 			. += M.slowdown
 
+		var/equipment_slowdown_immunity = FALSE
+		for(var/datum/modifier/movespeed/MS in modifiers)
+			if(!isnull(MS.movespeed_modifier))
+				. += MS.movespeed_modifier
+
+			if(!equipment_slowdown_immunity && MS.equipment_slowdown_immunity)
+				equipment_slowdown_immunity = TRUE
+
 	if(species.slowdown)
 		. += species.slowdown
 

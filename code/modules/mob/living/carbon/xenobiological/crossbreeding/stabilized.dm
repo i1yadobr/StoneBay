@@ -150,6 +150,8 @@ Stabilized extracts:
 		if(L.has_modifier_of_type(/datum/modifier/status_effect/stabilized/gold))
 			L.remove_a_modifier_of_type(/datum/modifier/status_effect/stabilized/gold)
 
+	//TODO: Fix Runtime
+	//code/modules/mob/living/carbon/xenobiological/crossbreeding/stabilized.dm, line 158: Cannot read null.familiar
 	if(choice == "Familiar Location")
 		to_chat(user, SPAN_NOTICE("You prod [src], and it shudders slightly."))
 		var/datum/modifier/status_effect/stabilized/gold/G = linked_effect
