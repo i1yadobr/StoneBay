@@ -1,4 +1,3 @@
-//Define all tape types in policetape.dm
 /obj/item/taperoll
 	name = "tape roll"
 	icon = 'icons/obj/policetape.dmi'

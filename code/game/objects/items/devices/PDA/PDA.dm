@@ -575,10 +575,6 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 //NOTE: graphic resources are loaded on client login
 /obj/item/device/pda/attack_self(mob/user as mob)
-	var/datum/asset/assets = get_asset_datum(/datum/asset/directories/pda)
-	ASSERT(user.client)
-	assets.send(user.client)
-
 	user.set_machine(src)
 
 	var/datum/component/uplink/U = get_component(/datum/component/uplink)
