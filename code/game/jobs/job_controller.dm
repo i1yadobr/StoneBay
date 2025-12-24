@@ -25,15 +25,18 @@ var/global/datum/controller/occupations/job_master
 			return 0
 		for(var/J in all_jobs)
 			var/datum/job/job = decls_repository.get_decl(J)
-			if(!job)	continue
-			if(!job.show_in_setup) continue
+			if(!job)
+				continue
+			if(!job.show_in_setup)
+				continue
 			occupations += job
 			occupations_by_type[job.type] = job
 			occupations_by_title[job.title] = job
 			job.current_positions = 0
 			for(var/alt_title in job.alt_titles)
 				occupations_by_title[alt_title] = job
-			if(!setup_titles) continue
+			if(!setup_titles)
+				continue
 			if(job.department_flag & COM)
 				GLOB.command_positions |= job.title
 			if(job.department_flag & SPT)

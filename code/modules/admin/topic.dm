@@ -1047,11 +1047,11 @@
 			return
 
 		if(SSticker.mode)
+			alert(usr, "The game has already started.", null, null, null, null)
 			return
-		alert(usr, "The game has already started.", null, null, null, null)
 		if(SSticker.master_mode != "secret")
+			alert(usr, "The game mode has to be secret!", null, null, null, null)
 			return
-		alert(usr, "The game mode has to be secret!", null, null, null, null)
 		secret_force_mode = href_list["f_secret2"]
 		log_and_message_admins("set the forced secret mode as [secret_force_mode].")
 		Game() // updates the main game menu

@@ -229,7 +229,8 @@ var/list/hash_to_gear = list()
 		entry += "<td width=25%><a [display_class ? "class='[display_class]' " : ""]href='byond://?src=\ref[src];select_gear=[html_encode(G.gear_hash)]'>[G.display_name]</a></td>"
 		entry += "</td></tr>"
 
-		gear_entries += entry
+		if(!hide_unavailable_gear || allowed_to_see)
+			gear_entries += entry
 
 	. += gear_entries
 
