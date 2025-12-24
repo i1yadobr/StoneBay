@@ -457,26 +457,6 @@
 		else
 			. += "<span class='notice'>[copytext_preserve_html(msg, 1, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
 
-/*
-/mob/verb/help()
-	set name = "Help"
-	show_browser(src, 'html/help.html', "window=help")
-	return
-*/
-
-/client/verb/changes()
-	set name = "Changelog"
-	set category = "OOC"
-	getFiles(
-		'html/pie.htc',
-		'html/changelog.css',
-		'html/changelog.html'
-		)
-	show_browser(src, 'html/changelog.html', "window=changes;size=675x800")
-	if(prefs.lastchangelog != changelog_hash)
-		prefs.lastchangelog = changelog_hash
-		SScharacter_setup.queue_preferences_save(prefs)
-
 /mob/verb/cancel_camera()
 	set name = "Cancel Camera View"
 	set category = "OOC"
