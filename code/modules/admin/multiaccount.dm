@@ -50,11 +50,14 @@
 				)
 		"}, dbcon, list(targetkey = targetkey))
 
+
+	// TODO(rufus): refactor to reading named fields via GetRowData() instead of num indexes
+	// TODO(rufus): present time in the admin's local timezone
 	while(query.NextRow())
 		size += 1
 		output+="<tr><td>[query.item[1]]</td>"
-		output+="<td>[query.item[2]]</td>"
-		output+="<td>[query.item[3]]</td>"
+		output+="<td>[query.item[2]] UTC</td>"
+		output+="<td>[query.item[3]] UTC</td>"
 		output+="<td>[query.item[4]]</td>"
 		output+="<td>[query.item[5]]</td></tr>"
 
@@ -91,11 +94,13 @@
 				)
 		"}, dbcon, list(targetkey = targetkey))
 
+	// TODO(rufus): refactor to reading named fields via GetRowData() instead of num indexes
+	// TODO(rufus): present time in the admin's local timezone
 	while(query.NextRow())
 		size += 1
 		output+="<tr><td>[query.item[1]]</td>"
-		output+="<td>[query.item[2]]</td>"
-		output+="<td>[query.item[3]]</td>"
+		output+="<td>[query.item[2]] UTC</td>"
+		output+="<td>[query.item[3]] UTC</td>"
 		output+="<td>[query.item[4]]</td>"
 		output+="<td>[query.item[5]]</td></tr>"
 
