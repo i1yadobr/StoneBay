@@ -1001,7 +1001,8 @@
 			return
 
 		if(SSticker.mode)
-			return alert(usr, "The game has already started.", null, null, null, null)
+			alert(usr, "The game has already started.", null, null, null, null)
+			return
 		var/dat = {"<meta charset=\"utf-8\"><B>What mode do you wish to play?</B><HR>"}
 		for(var/mode in gamemode_cache)
 			var/datum/game_mode/M = gamemode_cache[mode]
@@ -1016,9 +1017,11 @@
 			return
 
 		if(SSticker.mode)
-			return alert(usr, "The game has already started.", null, null, null, null)
+			alert(usr, "The game has already started.", null, null, null, null)
+			return
 		if(SSticker.master_mode != "secret")
-			return alert(usr, "The game mode has to be secret!", null, null, null, null)
+			alert(usr, "The game mode has to be secret!", null, null, null, null)
+			return
 		var/dat = {"<meta charset=\"utf-8\"><B>What game mode do you want to force secret to be? Use this if you want to change the game mode, but want the players to believe it's secret. This will only work if the current game mode is secret.</B><HR>"}
 		for(var/mode in gamemode_cache)
 			var/datum/game_mode/M = gamemode_cache[mode]
@@ -1032,8 +1035,8 @@
 			return
 
 		if (SSticker.mode)
+			alert(usr, "The game has already started.", null, null, null, null)
 			return
-		alert(usr, "The game has already started.", null, null, null, null)
 		SSticker.master_mode = href_list["c_mode2"]
 		SSticker.bypass_gamemode_vote = 1
 		log_and_message_admins("set the mode as [SSticker.master_mode].")
