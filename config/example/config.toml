@@ -223,12 +223,6 @@ guest_jobban = true
 ## Set to false to stop people connecting to your server without a registered ckey. (i.e. guest-* are all blocked from connecting)
 guests_allowed = false
 
-## Set to false to preventing people using OOC chat roundstart
-disable_ooc_at_roundstart = false
-
-## Set to false to preventing people using LOOC chat roundstart
-disable_looc_at_roundstart = false
-
 # Time before a round starts.
 pregame_timeleft = 1800
 

@@ -6,7 +6,7 @@
 	density = 0
 	anchored = 1.0
 	w_class = ITEM_SIZE_NORMAL
-	plane = FLOOR_PLANE
+	plane = TURF_PLANE
 	layer = LATTICE_LAYER
 
 /obj/structure/lattice/Initialize()

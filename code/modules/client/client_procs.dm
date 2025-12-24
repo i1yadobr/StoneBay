@@ -258,9 +258,8 @@
 		qdel(src)
 		return
 
-	//////////////
-	//DISCONNECT//
-	//////////////
+		spawn(0)
+			setup_discord_verification()
 
 /client/Del()
 	if(!gc_destroyed)

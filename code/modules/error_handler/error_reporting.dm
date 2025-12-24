@@ -16,5 +16,3 @@
 		errors[++errors.len] = list2params(data)
 
 	return 1
-
-#endif

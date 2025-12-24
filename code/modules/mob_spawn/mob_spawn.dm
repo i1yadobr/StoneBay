@@ -128,6 +128,8 @@ GLOBAL_LIST_EMPTY(mob_spawners)
 
 	///which role to check for a job ban
 	var/role_ban = null
+
+	//TODO: Find a better way to do that and remove this var
 	/// Typepath indicating the kind of job datum this ghost role will have. PLEASE inherit this with a new job datum, it's not hard. jobs come with policy configs.
 	var/spawner_job_path
 

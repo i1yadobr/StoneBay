@@ -2,7 +2,8 @@
 	set name = "Check multiaccounts"
 	set category = "Admin"
 
-	if(!holder) return
+	if(!holder)
+		return
 	switch(alert("Chose checktype",,"All","Select player","Type ckey","Cancel"))
 		if("All")
 			holder.checkAllAccounts()
@@ -10,7 +11,10 @@
 			var/targets = list()
 			var/list/mobs = sortmobs()
 			for(var/mob/M in mobs)
-				if(M.ckey) targets += "[M.ckey]"
+				if(M.ckey)
+					targets += "[M.ckey]"
+				if(!length(targets))
+					to_chat(src, "Cannot find any mobs to check multiaccounts for")
 			holder.showAccounts(input("Select ckey", "Ckey") in targets)
 		if("Type ckey")
 			var/target = ckey(input(usr, "Type in ckey for check.", "Ckey") as text|null)

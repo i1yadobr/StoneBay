@@ -730,7 +730,9 @@ var/global/floorIsLava = 0
 	if(!check_rights(R_ADMIN))
 		return
 
-	toggle_ooc()
+
+	config.misc.ooc_allowed = !config.misc.ooc_allowed
+	to_world("<b>The OOC channel has been globally [config.misc.ooc_allowed ? "enabled" : "disabled"]!</b>")
 	log_and_message_admins("toggled OOC.")
 	feedback_add_details("admin_verb","TOOC") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
@@ -758,7 +760,8 @@ var/global/floorIsLava = 0
 	if(!check_rights(R_ADMIN))
 		return
 
-	toggle_looc()
+	config.misc.looc_allowed = !config.misc.looc_allowed
+	to_world("<b>The LOOC channel has been globally [config.misc.looc_allowed ? "enabled" : "disabled"]!</b>")
 	log_and_message_admins("toggled LOOC.")
 	feedback_add_details("admin_verb","TLOOC") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 

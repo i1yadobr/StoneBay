@@ -51,8 +51,6 @@
 	var/use_loyalty_implants = FALSE
 	var/guest_jobban = TRUE
 	var/guests_allowed = FALSE
-	var/disable_ooc_at_roundstart = FALSE
-	var/disable_looc_at_roundstart = FALSE
 	var/pregame_timeleft = 1800
 	var/restart_timeout = 600
 
@@ -105,7 +103,5 @@
 	CONFIG_LOAD_BOOL(use_loyalty_implants, data["use_loyalty_implants"])
 	CONFIG_LOAD_BOOL(guest_jobban, data["guest_jobban"])
 	CONFIG_LOAD_BOOL(guests_allowed, data["guests_allowed"])
-	CONFIG_LOAD_BOOL(disable_ooc_at_roundstart, data["disable_ooc_at_roundstart"])
-	CONFIG_LOAD_BOOL(disable_looc_at_roundstart, data["disable_looc_at_roundstart"])
 	CONFIG_LOAD_NUM(pregame_timeleft, data["pregame_timeleft"])
 	CONFIG_LOAD_NUM(restart_timeout, data["restart_timeout"])
