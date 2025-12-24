@@ -73,7 +73,6 @@
 	blockswitch_icon = null
 	nutrition_icon = null
 	hydration_icon = null
-	bowels_icon = null
 	pressure = null
 	pain = null
 	item_use_icon = null

@@ -285,13 +285,6 @@
 			mymob.hydration_icon.screen_loc = ui_nutrition
 			infodisplay |= mymob.hydration_icon
 
-		if(hud_data.has_bowels)
-			mymob.bowels_icon = new /atom/movable/screen()
-			mymob.bowels_icon.icon = ui_style
-			mymob.bowels_icon.icon_state = "bowels0"
-			mymob.bowels_icon.SetName("bowels")
-			infodisplay |= mymob.bowels_icon
-
 	if(hud_data.has_poise)
 		mymob.poise_icon = new /atom/movable/screen()
 		mymob.poise_icon.icon = 'icons/hud/common/screen_poise.dmi'

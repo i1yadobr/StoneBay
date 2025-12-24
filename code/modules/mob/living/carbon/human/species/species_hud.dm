@@ -8,7 +8,6 @@
 	var/has_pressure = TRUE    // Draw the pressure indicator.
 	var/has_nutrition = TRUE   // Draw the nutrition indicator.
 	var/has_hydration = TRUE   // Draw the hydration indicator.
-	var/has_bowels = TRUE      // Draw the bowels indicator.
 	var/has_bodytemp = TRUE    // Draw the bodytemp indicator.
 	var/has_hands = TRUE       // Set to draw hands.
 	var/has_drop = TRUE        // Set to draw drop button.
