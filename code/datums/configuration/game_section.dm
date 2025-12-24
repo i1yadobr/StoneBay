@@ -4,7 +4,6 @@
 	var/default_view = "15x15"
 	var/default_view_wide = "19x15"
 
-	var/list/events_preset = list()
 	var/map_switching = FALSE
 	var/auto_map_vote = FALSE
 	var/auto_map_switching = FALSE
@@ -58,7 +57,6 @@
 	CONFIG_LOAD_STR(default_view, data["default_view"])
 	CONFIG_LOAD_STR(default_view_wide, data["default_view_wide"])
 
-	CONFIG_LOAD_LIST(events_preset, data["events_preset"])
 	CONFIG_LOAD_BOOL(map_switching, data["map_switching"])
 	CONFIG_LOAD_BOOL(auto_map_vote, data["auto_map_vote"])
 	CONFIG_LOAD_BOOL(auto_map_switching, data["auto_map_switching"])

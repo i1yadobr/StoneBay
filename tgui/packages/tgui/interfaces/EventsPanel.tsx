@@ -3,7 +3,6 @@ import { useBackend, useLocalState } from "../backend";
 import {
   Button,
   Divider,
-  Dropdown,
   Icon,
   LabeledList,
   Section,
@@ -15,7 +14,6 @@ import { Event } from "./EventWindow";
 type InputData = {
   events: Event[];
   paused: boolean;
-  presets: string[];
 };
 
 function EventTooltip(props: { event: Event }, context: any) {
@@ -123,14 +121,6 @@ export function EventsPanel(props: any, context: any) {
           <LabeledList>
             <LabeledList.Item label="Status">
               {data.paused ? "Paused" : "Running"}
-            </LabeledList.Item>
-            <LabeledList.Item label="Presets">
-              <Dropdown
-                options={data.presets}
-                onSelected={(preset_name: string) => {
-                  act("apply_preset", { preset_name });
-                }}
-              />
             </LabeledList.Item>
           </LabeledList>
         </Section>
