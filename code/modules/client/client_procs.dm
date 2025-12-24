@@ -2,6 +2,7 @@
 	//SECURITY//
 	////////////
 #define UPLOAD_LIMIT		10485760	//Restricts client uploads to the server to 10MB //Boosted this thing. What's the worst that can happen?
+#define MIN_CLIENT_VERSION	516
 
 #define LIMITER_SIZE	5
 #define CURRENT_SECOND	1
@@ -114,16 +115,6 @@
 		cmd_admin_pm(C, null, ticket)
 		return
 
-	if(href_list["irc_msg"])
-		if(!holder && received_irc_pm < world.time - 6000) //Worse they can do is spam IRC for 10 minutes
-			to_chat(usr, SPAN("warning", "You are no longer able to use this, it's been more then 10 minutes since an admin on IRC has responded to you."))
-			return
-		if(mute_irc)
-			to_chat(usr, SPAN("warning", "You cannot use this as your client has been muted from sending messages to the admins on IRC."))
-			return
-		cmd_admin_irc_pm(href_list["irc_msg"])
-		return
-
 	if(href_list["close_ticket"])
 		var/datum/ticket/ticket = locate(href_list["close_ticket"])
 
@@ -135,7 +126,6 @@
 	switch(href_list["_src_"])
 		if("holder")	hsrc = holder
 		if("usr")		hsrc = mob
-		if("prefs")		return prefs.process_link(usr, href_list)
 		if("vars")		return view_var_Topic(href, href_list, hsrc)
 
 	switch(href_list["action"])
@@ -193,13 +183,6 @@
 			holder = admin_datum
 			GLOB.admins += src
 		admin_datum.owner = src
-	else if(config.admin.promote_localhost)
-		var/static/localhost_addresses = list("127.0.0.1", "::1")
-
-		if(isnull(address) || (address in localhost_addresses))
-			var/datum/admins/A = new /datum/admins("Host", R_ALL, ckey)
-
-			A.associate(src)
 
 	else if((config.multiaccount.panic_bunker != 0) && (get_player_age(ckey) < config.multiaccount.panic_bunker))
 		var/player_age = get_player_age(ckey)
@@ -223,11 +206,10 @@
 
 	. = ..()	// calls mob.Login()
 
-	if(byond_version < config.general.client_min_major_version || byond_build < config.general.client_min_minor_version || (byond_build in config.general.client_blacklisted_minor_versions))
-		to_chat(src, "<b><center><font size='5' color='red'>Your <font color='blue'>BYOND</font> version is [(byond_build in config.general.client_blacklisted_minor_versions) ? "blacklisted" : "too out of date!"]</font><br>\
-		<font size='3'>Please update it to [config.general.client_min_major_version].[config.general.client_recommended_minor_version].</font>\
-		<font size='3'>You can use this link: https://secure.byond.com/download/build/515/</font></center>")
-		QDEL_IN(src, 1)
+	if(byond_version < MIN_CLIENT_VERSION)
+		to_chat(src, "<b><center><font size='5' color='red'>Your <font color='blue'>BYOND</font> version is too out of date!</font><br>\
+		<font size='3'>Please update it to [MIN_CLIENT_VERSION].</font></center>")
+		qdel(src)
 		return
 
 	GLOB.using_map.map_info(src)
@@ -252,9 +234,6 @@
 			winset(src, null, "command=\".configure graphics-hwmode on\"")
 
 	log_client_to_db()
-	SSdonations.log_client_to_db(src)
-	SSdonations.update_donator(src)
-	SSdonations.update_donator_items(src)
 
 	send_resources()
 
@@ -279,10 +258,8 @@
 		qdel(src)
 		return
 
-	load_luck()
-	//////////////
-	//DISCONNECT//
-	//////////////
+	spawn(0)
+		setup_discord_verification()
 
 /client/Del()
 	if(!gc_destroyed)
@@ -307,7 +284,7 @@
 	if(!establish_db_connection())
 		return null
 
-	var/DBQuery/query = sql_query("SELECT datediff(Now(),firstseen) as age FROM erro_player WHERE ckey = $ckey", dbcon, list(ckey = ckey(key)))
+	var/DBQuery/query = sql_query("SELECT datediff(Now(),firstseen) as age FROM player WHERE ckey = $ckey", dbcon, list(ckey = ckey(key)))
 
 	if(query.NextRow())
 		return text2num(query.item[1])
@@ -330,7 +307,7 @@
 	if(!establish_db_connection())
 		return
 
-	var/DBQuery/query = sql_query("SELECT id, datediff(Now(),firstseen) as age FROM erro_player WHERE ckey = $ckey", dbcon, list(ckey = ckey))
+	var/DBQuery/query = sql_query("SELECT id, datediff(Now(),firstseen) as age FROM player WHERE ckey = $ckey", dbcon, list(ckey = ckey))
 	var/id = 0
 	player_age = 0	// New players won't have an entry so knowing we have a connection we set this to zero to be updated if their is a record.
 	while(query.NextRow())
@@ -338,13 +315,13 @@
 		player_age = text2num(query.item[2])
 		break
 
-	var/DBQuery/query_ip = sql_query("SELECT ckey FROM erro_player WHERE ip = $address", dbcon, list(address = address || "127.0.0.1"))
+	var/DBQuery/query_ip = sql_query("SELECT ckey FROM player WHERE ip = $address", dbcon, list(address = address || "127.0.0.1"))
 	related_accounts_ip = ""
 	while(query_ip.NextRow())
 		related_accounts_ip += "[query_ip.item[1]], "
 		break
 
-	var/DBQuery/query_cid = sql_query("SELECT ckey FROM erro_player WHERE computerid = $computer_id", dbcon, list(computer_id = computer_id))
+	var/DBQuery/query_cid = sql_query("SELECT ckey FROM player WHERE computerid = $computer_id", dbcon, list(computer_id = computer_id))
 	related_accounts_cid = ""
 	while(query_cid.NextRow())
 		related_accounts_cid += "[query_cid.item[1]], "
@@ -365,10 +342,10 @@
 
 	if(id)
 		// Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-		sql_query("UPDATE erro_player SET lastseen = Now(), ip = $address, computerid = $computer_id, lastadminrank = $admin_rank WHERE id = $id", dbcon, list(address = address || "127.0.0.1", computer_id = computer_id, admin_rank = admin_rank, id = id))
+		sql_query("UPDATE player SET lastseen = Now(), ip = $address, computerid = $computer_id, lastadminrank = $admin_rank WHERE id = $id", dbcon, list(address = address || "127.0.0.1", computer_id = computer_id, admin_rank = admin_rank, id = id))
 	else
 		// New player!! Need to insert all the stuff
-		sql_query("INSERT INTO erro_player VALUES (null, $ckey, Now(), Now(), $address, $computer_id, $admin_rank)", dbcon, list(ckey = ckey, address = address || "127.0.0.1", computer_id = computer_id, admin_rank = admin_rank))
+		sql_query("INSERT INTO player VALUES (null, $ckey, Now(), Now(), $address, $computer_id, $admin_rank)", dbcon, list(ckey = ckey, address = address || "127.0.0.1", computer_id = computer_id, admin_rank = admin_rank))
 
 	sql_query("INSERT INTO connection(datetime, ckey, ip, computerid) VALUES (Now(), $ckey, $address, $computer_id)", dbcon, list(ckey = ckey, address = address || "127.0.0.1", computer_id = computer_id))
 
@@ -667,139 +644,3 @@
 	var/mob/living/M = mob
 	if(istype(M) && !M.in_throw_mode)
 		M.OnMouseDown(object, location, control, params)
-
-/client/proc/get_luck_for_type(luck_type)
-	switch(luck_type)
-		if(LUCK_CHECK_GENERAL)
-			return luck_general
-
-		if(LUCK_CHECK_COMBAT)
-			return luck_combat
-
-		if(LUCK_CHECK_ENG)
-			return luck_eng
-
-		if(LUCK_CHECK_MED)
-			return luck_med
-
-		if(LUCK_CHECK_RND)
-			return luck_rnd
-
-/client/proc/load_luck()
-	if(!establish_db_connection())
-		error("Ban database connection failure.")
-		log_misc("Ban database connection failure.")
-		return
-
-	var/DBQuery/query = sql_query({"
-			SELECT
-				luck_level,
-				luck_type
-			FROM
-				erro_ban
-			WHERE
-				(ckey = $ckeytext)
-				AND
-				(
-					bantype = 'LUCK_PERMABAN'
-					OR
-					bantype = 'LUCK_TEMPBAN'
-				)
-				AND
-				isnull(unbanned)
-				[isnull(config.general.server_id) ? "" : " AND server_id = $server_id"]
-			"}, dbcon, list(ckeytext = src.ckey, server_id = config.general.server_id))
-
-	while(query.NextRow())
-		var/luck_level =  text2num(query.item[1])
-		var/luck_type = query.item[2]
-		switch(luck_type)
-			if(LUCK_CHECK_GENERAL)
-				luck_general =luck_level
-			if(LUCK_CHECK_COMBAT)
-				luck_combat = luck_level
-			if(LUCK_CHECK_ENG)
-				luck_eng = luck_level
-			if(LUCK_CHECK_MED)
-				luck_med = luck_level
-			if(LUCK_CHECK_RND)
-				luck_rnd = luck_level
-
-
-
-/client/proc/write_luck(lucktype, luck_level, duration=-1, admin, reason)
-	if(!establish_db_connection())
-		error("Ban database connection failure.")
-		log_misc("Ban database connection failure.")
-		return
-
-	var/datum/admins/admin_datum = admin
-	var/bantype = BANTYPE_PERMA_LUCKBAN
-	if(duration!=-1)
-		bantype = BANTYPE_TEMP_LUCKBAN
-
-	admin_datum.DB_ban_record(bantype,src.mob,duration,reason,null,TRUE,src.ckey,null,src.computer_id,luck_level,lucktype)
-	load_luck()
-
-/client/proc/update_luck()
-	if(!establish_db_connection())
-		error("Ban database connection failure.")
-		log_misc("Ban database connection failure.")
-		return
-
-	var/DBQuery/query = sql_query({"
-			SELECT
-				id,
-				duration,
-				rounds
-			FROM
-				erro_ban
-			WHERE
-				(ckey = $ckeytext)
-				AND
-				bantype = 'LUCK_TEMPBAN'
-				AND
-				isnull(unbanned)
-				[isnull(config.general.server_id) ? "" : " AND server_id = $server_id"]
-			"}, dbcon, list(ckeytext = src.ckey, server_id = config.general.server_id))
-
-	while(query.NextRow())
-		var/id = text2num(query.item[1])
-		var/duration = text2num(query.item[2])
-		var/isRounds = text2num(query.item[3])
-		if(!isRounds)
-			return
-		if(duration>1)
-			sql_query({"
-				UPDATE
-					erro_ban
-				SET
-					duration = $duration
-				WHERE
-					id = $id
-					AND
-					ckey = $ckeytext
-					AND
-					bantype = 'LUCK_TEMPBAN'
-					AND
-					isnull(unbanned)
-					[isnull(config.general.server_id) ? "" : " AND server_id = $server_id"]
-				"}, dbcon, list(id = id, duration = duration-1, ckeytext = src.ckey, server_id = config.general.server_id))
-		else
-			sql_query({"
-				UPDATE
-					erro_ban
-				SET
-					unbanned = 1,
-					unbanned_reason = 'Expired',
-					unbanned_datetime = Now()
-				WHERE
-					id = $id
-					AND
-					ckey = $ckeytext
-					AND
-					bantype = 'LUCK_TEMPBAN'
-					AND
-					isnull(unbanned)
-					[isnull(config.general.server_id) ? "" : " AND server_id = $server_id"]
-				"}, dbcon, list(id = id, ckeytext = src.ckey, server_id = config.general.server_id))

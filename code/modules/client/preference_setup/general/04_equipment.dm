@@ -5,6 +5,7 @@
 	var/decl/backpack_outfit/backpack
 	var/list/backpack_metadata
 
+	var/has_neural_lace = FALSE
 	var/equip_preview_mob = EQUIP_PREVIEW_ALL
 
 	var/icon/bgstate = "steel"

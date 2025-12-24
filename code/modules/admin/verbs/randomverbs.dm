@@ -46,7 +46,9 @@
 	set category = "Special Verbs"
 	set name = "Subtle Message"
 
-	if(!ismob(M))	return
+	if(!ismob(M))
+		return
+
 	if (!holder)
 		to_chat(src, "Only administrators may use this command.")
 		return
@@ -55,6 +57,7 @@
 
 	if (!msg)
 		return
+
 	if(usr)
 		if (usr.client)
 			if(usr.client.holder)
@@ -220,15 +223,17 @@
 /proc/cmd_admin_mute(mob/M, mute_type)
 	if(!usr || !usr.client)
 		return
+
 	if(!usr.client.holder)
 		to_chat(usr, "<font color='red'>Error: cmd_admin_mute: You don't have permission to do this.</font>")
 		return
+
 	if(!M.client)
 		to_chat(usr, "<font color='red'>Error: cmd_admin_mute: This mob doesn't have a client tied to it.</font>")
+		return
 	if(M.client.holder)
 		to_chat(usr, "<font color='red'>Error: cmd_admin_mute: You cannot mute an admin/mod.</font>")
-	if(!M.client)		return
-	if(M.client.holder)	return
+		return
 
 	var/muteunmute
 	var/mute_string
@@ -240,7 +245,8 @@
 		if(MUTE_ADMINHELP)	mute_string = "adminhelp, admin PM and ASAY"
 		if(MUTE_DEADCHAT)	mute_string = "deadchat and DSAY"
 		if(MUTE_ALL)		mute_string = "everything"
-		else				return
+		else
+			return
 
 
 	if(M.client.prefs.muted & mute_type)
@@ -262,7 +268,8 @@
 		to_chat(src, "Only administrators may use this command.")
 		return
 	var/confirm = alert(src, "You sure?", "Confirm", "Yes", "No")
-	if(confirm != "Yes") return
+	if(confirm != "Yes")
+		return
 	log_admin("[key_name(src)] has added a random AI law.")
 	message_admins("[key_name_admin(src)] has added a random AI law.", 1)
 
@@ -324,10 +331,12 @@ Ccomp's first proc.
 
 	if(G.has_enabled_antagHUD == 1 && config.ghost.antag_hud_restricted)
 		var/response = alert(src, "[selection] has enabled antagHUD. Are you sure you wish to allow them to respawn?","Ghost has used AntagHUD","No","Yes")
-		if(response == "No") return
+		if(response == "No")
+			return
 	else
 		var/response = alert(src, "Are you sure you wish to allow [selection] to respawn?","Allow respawn","No","Yes")
-		if(response == "No") return
+		if(response == "No")
+			return
 
 	G.timeofdeath=-19999						/* time of death is checked in /mob/verb/abandon_mob() which is the Respawn verb.
 									   timeofdeath is used for bodies on autopsy but since we're messing with a ghost I'm pretty sure
@@ -405,6 +414,7 @@ Ccomp's first proc.
 	Works kind of like entering the game with a new character. Character receives a new mind if they didn't have one.
 	Traitors and the like can also be revived with the previous role mostly intact.
  */
+ // TODO(rufus): check and fix
 /client/proc/respawn_character()
 	set category = "Special Verbs"
 	set name = "Respawn Character"
@@ -585,18 +595,23 @@ Ccomp's first proc.
 	set category = "Special Verbs"
 	set name = "Explosion"
 
-	if(!check_rights(R_DEBUG|R_FUN))	return
+	if(!check_rights(R_DEBUG|R_FUN))
+		return
 
 	var/devastation = input("Range of total devastation. -1 to none", text("Input"))  as num|null
-	if(devastation == null) return
+	if(devastation == null)
+		return
 	var/heavy = input("Range of heavy impact. -1 to none", text("Input"))  as num|null
-	if(heavy == null) return
+	if(heavy == null)
+		return
 	var/light = input("Range of light impact. -1 to none", text("Input"))  as num|null
-	if(light == null) return
+	if(light == null)
+		return
 	var/flash = input("Range of flash. -1 to none", text("Input"))  as num|null
-	if(flash == null) return
+	if(flash == null)
+		return
 	var/shaped = 0
-	if(config.game.use_recursive_explosions)
+	if(config.game.dynamic_explosions)
 		if(alert(src, "Shaped explosion?", "Shape", "Yes", "No") == "Yes")
 			shaped = input("Shaped where to?", "Input")  as anything in list("NORTH","SOUTH","EAST","WEST")
 			shaped = text2dir(shaped)
@@ -617,12 +632,15 @@ Ccomp's first proc.
 	set category = "Special Verbs"
 	set name = "EM Pulse"
 
-	if(!check_rights(R_DEBUG|R_FUN))	return
+	if(!check_rights(R_DEBUG|R_FUN))
+		return
 
 	var/heavy = input("Range of heavy pulse.", text("Input"))  as num|null
-	if(heavy == null) return
+	if(heavy == null)
+		return
 	var/light = input("Range of light pulse.", text("Input"))  as num|null
-	if(light == null) return
+	if(light == null)
+		return
 
 	if (heavy || light)
 
@@ -639,12 +657,15 @@ Ccomp's first proc.
 	set category = "Special Verbs"
 	set name = "Gib"
 
-	if(!check_rights(R_ADMIN|R_FUN))	return
+	if(!check_rights(R_ADMIN|R_FUN))
+		return
 
 	var/confirm = alert(src, "You sure?", "Confirm", "Yes", "No")
-	if(confirm != "Yes") return
+	if(confirm != "Yes")
+		return
 	//Due to the delay here its easy for something to have happened to the mob
-	if(!M)	return
+	if(!M)
+		return
 
 	log_admin("[key_name(usr)] has gibbed [key_name(M)]")
 	message_admins("[key_name_admin(usr)] has gibbed [key_name_admin(M)]", 1)
@@ -738,9 +759,11 @@ Ccomp's first proc.
 	if(!SSticker.mode || !evacuation_controller)
 		return
 
-	if(!check_rights(R_ADMIN))	return
+	if(!check_rights(R_ADMIN))
+		return
 
-	if(alert(src, "Are you sure?", "Confirm", "Yes", "No") != "Yes") return
+	if(alert(src, "Are you sure?", "Confirm", "Yes", "No") != "Yes")
+		return
 
 	if(SSticker.mode.auto_recall_shuttle)
 		if(input("The evacuation will just be cancelled if you call it. Call anyway?") in list("Confirm", "Cancel") != "Confirm")
@@ -757,9 +780,11 @@ Ccomp's first proc.
 	set category = "Admin"
 	set name = "Cancel Evacuation"
 
-	if(!check_rights(R_ADMIN))	return
+	if(!check_rights(R_ADMIN))
+		return
 
-	if(alert(src, "You sure?", "Confirm", "Yes", "No") != "Yes") return
+	if(alert(src, "You sure?", "Confirm", "Yes", "No") != "Yes")
+		return
 
 	if(!evacuation_controller)
 		return
@@ -776,7 +801,8 @@ Ccomp's first proc.
 	if (!evacuation_controller)
 		return
 
-	if(!check_rights(R_ADMIN))	return
+	if(!check_rights(R_ADMIN))
+		return
 
 	evacuation_controller.deny = !evacuation_controller.deny
 
@@ -798,7 +824,8 @@ Ccomp's first proc.
 	set name = "Make Everyone Random"
 	set desc = "Make everyone have a random appearance. You can only use this before rounds!"
 
-	if(!check_rights(R_FUN))	return
+	if(!check_rights(R_FUN))
+		return
 
 	if (GAME_STATE >= RUNLEVEL_GAME)
 		to_chat(usr, "Nope you can't do this, the game's already started. This only works before rounds!")

@@ -110,12 +110,6 @@ SUBSYSTEM_DEF(ticker)
 		//Holiday Round-start stuff	~Carn
 		Holiday_Game_Start()
 
-	if(config.game.disable_ooc_at_roundstart)
-		disable_ooc()
-
-	if(config.game.disable_looc_at_roundstart)
-		disable_looc()
-
 /datum/controller/subsystem/ticker/proc/playing_tick()
 	mode.process()
 	var/mode_finished = mode_finished()
@@ -124,7 +118,6 @@ SUBSYSTEM_DEF(ticker)
 		Master.SetRunLevel(RUNLEVEL_POSTGAME)
 		end_game_state = END_GAME_READY_TO_END
 		INVOKE_ASYNC(src, nameof(.proc/declare_completion))
-		INVOKE_ASYNC(src, nameof(.proc/update_clients_luck))
 
 	else if(mode_finished && (end_game_state <= END_GAME_NOT_OVER))
 		end_game_state = END_GAME_MODE_FINISH_DONE
@@ -386,13 +379,6 @@ Helpers
 	message_staff("<span class='warning'><b>No active tickets remaining, restarting in [restart_timeout/10] seconds if an admin has not delayed the round end.</b></span>")
 	end_game_state = END_GAME_ENDING
 
-/datum/controller/subsystem/ticker/proc/update_clients_luck()
-	for(var/client/C in GLOB.clients)
-		if(isnewplayer(C.mob))
-			continue
-
-		C.update_luck()
-
 /datum/controller/subsystem/ticker/proc/declare_completion()
 	to_world("<br><br><br><H1>A round of [mode.name] has ended!</H1>")
 	for(var/client/C in GLOB.clients)
@@ -400,13 +386,6 @@ Helpers
 			C.RollCredits()
 
 	display_report()
-	GLOB.indigo_bot.round_end_webhook(
-		config.indigo_bot.round_end_webhook,
-		game_id,
-		"[mode.name] *([SSstoryteller.character.name])*",
-		length(GLOB.clients),
-		roundduration2text()
-	)
 
 	//Print a list of antagonists to the server log
 	var/list/total_antagonists = list()

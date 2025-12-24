@@ -25,15 +25,18 @@ var/global/datum/controller/occupations/job_master
 			return 0
 		for(var/J in all_jobs)
 			var/datum/job/job = decls_repository.get_decl(J)
-			if(!job)	continue
-			if(!job.show_in_setup) continue
+			if(!job)
+				continue
+			if(!job.show_in_setup)
+				continue
 			occupations += job
 			occupations_by_type[job.type] = job
 			occupations_by_title[job.title] = job
 			job.current_positions = 0
 			for(var/alt_title in job.alt_titles)
 				occupations_by_title[alt_title] = job
-			if(!setup_titles) continue
+			if(!setup_titles)
+				continue
 			if(job.department_flag & COM)
 				GLOB.command_positions |= job.title
 			if(job.department_flag & SPT)
@@ -557,22 +560,38 @@ var/global/datum/controller/occupations/job_master
 		BITSET(H.hud_updateflag, SPECIALROLE_HUD)
 		return H
 
-	proc/LoadJobs()
+	// TODO(rufus): test if AI and Cyborg work, refactor, and introduce/port per map job limits
+	proc/LoadJobs(jobsfile) //ran during round setup, reads info from jobs.txt -- Urist
 		if(!config.misc.load_jobs_from_txt)
-			return FALSE
+			return 0
 
-		var/list/job_entries = config.jobs.maps[lowertext(GLOB.using_map.name)] || list()
+		var/list/jobEntries = file2list(jobsfile)
 
-		for(var/job in job_entries)
-			var/datum/job/J = GetJob(job)
-
-			if(!J)
+		for(var/job in jobEntries)
+			if(!job)
 				continue
 
-			J.set_positions(job_entries[job])
+			job = trim(job)
+			if (!length(job))
+				continue
 
-		return TRUE
+			var/pos = findtext(job, "=")
+			var/name = null
+			var/value = null
 
+			if(pos)
+				name = copytext(job, 1, pos)
+				value = copytext(job, pos + 1)
+			else
+				continue
+
+			if(name && value)
+				var/datum/job/J = GetJob(name)
+				if(!J)	continue
+				J.total_positions = text2num(value)
+				J.spawn_positions = text2num(value)
+
+		return 1
 
 	proc/HandleFeedbackGathering()
 		for(var/datum/job/job in occupations)

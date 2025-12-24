@@ -22,7 +22,6 @@ GLOBAL_DATUM_INIT(xenomorphs, /datum/antagonist/xenos, new)
 	initial_spawn_req = 4
 	initial_spawn_target = 6
 
-	spawn_announcement = /datum/announce/unidentified_lifesigns
 	spawn_announcement_delay = 5000
 
 	station_crew_involved = FALSE
@@ -38,19 +37,15 @@ GLOBAL_DATUM_INIT(xenomorphs, /datum/antagonist/xenos, new)
 		to_chat(player.current, SPAN("notice", "Hiss! You are a xenomorph! Do everything you can to make sure the hive thriving!"))
 	else
 		to_chat(player.current, SPAN("notice", "[welcome_text]"))
-	if(config.gamemode.disable_objectives == CONFIG_OBJECTIVE_ALL || !player.objectives.len)
+	if(config.gamemode.antag_objectives == CONFIG_ANTAG_OBJECTIVES_NONE || !player.objectives.len)
 		to_chat(player.current, SPAN("notice", "[antag_text]"))
 
 	show_objectives_at_creation(player)
 	return TRUE
 
-/datum/antagonist/xenos/attempt_random_spawn()
-	if(config.misc.aliens_allowed)
-		..()
-
 /datum/antagonist/xenos/antags_are_dead()
 	for(var/datum/mind/antag in current_antagonists)
-		if(!antag.current.is_ooc_dead())
+		if(antag.current.stat != DEAD)
 			return FALSE
 	return TRUE
 

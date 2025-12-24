@@ -80,7 +80,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_rejuvenate,
 	/client/proc/toggleghostwriters,
 	/client/proc/toggledrones,
-	/client/proc/check_customitem_activity,
 	/client/proc/man_up,
 	/client/proc/global_man_up,
 	/client/proc/response_team, // Response Teams admin verb,
@@ -132,9 +131,6 @@ var/list/admin_verbs_fun = list(
 	/client/proc/drop_bomb,
 	/client/proc/everyone_random,
 	/client/proc/cinematic,
-	/datum/admins/proc/toggle_aliens,
-	/datum/admins/proc/toggle_alien_eggs,
-	/datum/admins/proc/toggle_space_ninja,
 	/client/proc/cmd_admin_add_freeform_ai_law,
 	/client/proc/cmd_admin_add_random_ai_law,
 	/client/proc/editappear,
@@ -169,18 +165,12 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/delay,
 	/datum/admins/proc/toggleaban,
 	/client/proc/everyone_random,
-	/datum/admins/proc/toggleAI,
 	/client/proc/cmd_admin_delete,		// delete an instance/object/mob/etc,
 	/client/proc/cmd_debug_del_all,
 	/datum/admins/proc/adrev,
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
-	/datum/admins/proc/toggle_aliens,
-	/datum/admins/proc/toggle_alien_eggs,
-	/datum/admins/proc/toggle_space_ninja,
-	/client/proc/check_customitem_activity,
-	/client/proc/nanomapgen_DumpImage,
-	/client/proc/cmd_set_station_date
+	/client/proc/nanomapgen_DumpImage
 	)
 
 var/list/admin_verbs_debug = list(
@@ -193,7 +183,6 @@ var/list/admin_verbs_debug = list(
 	/client/proc/cmd_debug_mob_lists,
 	/client/proc/cmd_admin_delete,
 	/client/proc/cmd_debug_del_all,
-	/client/proc/cmd_debug_tog_aliens,
 	/client/proc/air_report,
 	/client/proc/reload_admins,
 	/client/proc/restart_controller,
@@ -220,17 +209,12 @@ var/list/admin_verbs_debug = list(
 	/datum/admins/proc/view_runtimes,
 	/client/proc/cmd_analyse_health_context,
 	/client/proc/cmd_analyse_health_panel,
-	/client/proc/cmd_view_language_context,
-	/client/proc/cmd_view_language_panel,
 	/client/proc/visualpower,
 	/client/proc/visualpower_remove,
 	/client/proc/hard_del,
+	/client/proc/enable_browser_devtools,
 	/client/proc/enable_profiler,
-	/client/proc/bluespace_tech,
-	/client/proc/test_pt_mark_start,
-	/client/proc/test_pt_mark_goal,
-	/client/proc/test_pt_clear,
-	/client/proc/test_pt_vis,
+	/client/proc/bluespace_tech
 	)
 
 var/list/admin_verbs_paranoid_debug = list(
@@ -282,9 +266,6 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/drop_bomb,
 	/client/proc/cinematic,
-	/datum/admins/proc/toggle_aliens,
-	/datum/admins/proc/toggle_alien_eggs,
-	/datum/admins/proc/toggle_space_ninja,
 	/client/proc/cmd_admin_add_freeform_ai_law,
 	/client/proc/cmd_admin_add_random_ai_law,
 	/client/proc/cmd_admin_create_centcom_report,
@@ -297,7 +278,6 @@ var/list/admin_verbs_hideable = list(
 	/datum/admins/proc/delay,
 	/datum/admins/proc/toggleaban,
 	/client/proc/everyone_random,
-	/datum/admins/proc/toggleAI,
 	/datum/admins/proc/adrev,
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
@@ -311,7 +291,6 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/debug_controller,
 	/client/proc/cmd_debug_mob_lists,
 	/client/proc/cmd_debug_del_all,
-	/client/proc/cmd_debug_tog_aliens,
 	/client/proc/air_report,
 	/client/proc/enable_debug_verbs,
 	/client/proc/roll_dices,
@@ -322,10 +301,6 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/toggle_possess_mode,
 	/client/proc/enable_profiler,
 	/client/proc/bluespace_tech,
-	/client/proc/test_pt_mark_start,
-	/client/proc/test_pt_mark_goal,
-	/client/proc/test_pt_clear,
-	/client/proc/test_pt_vis,
 	/client/proc/delbook,
 	/client/proc/debug_glob_variables
 	)
@@ -440,6 +415,7 @@ var/list/admin_verbs_mentor = list(
 	if(isghost(mob))
 		//re-enter
 		var/mob/observer/ghost/ghost = mob
+		// TODO(rufus): if they are *not* a mentor, they can re-enter corpse? huh? apply a proper check for adminHUD/antagHUD
 		if(!is_mentor(usr.client))
 			ghost.can_reenter_corpse = 1
 		if(ghost.can_reenter_corpse)

@@ -1,3 +1,4 @@
+//TODO: Place return in right dir
 /datum/admins/Topic(href, href_list)
 	..()
 
@@ -138,9 +139,21 @@
 				if(null,"") return
 				if("*New Rank*")
 					new_rank = input("Please input a new rank", "New custom rank", null, null) as null|text
+					if(config.admin.admin_legacy_system)
+						new_rank = ckeyEx(new_rank)
 					if(!new_rank)
 						to_chat(usr, "<font color='red'>Error: Topic 'editrights': Invalid rank</font>")
 						return
+					if(config.admin.admin_legacy_system)
+						if(admin_ranks.len)
+							if(new_rank in admin_ranks)
+								rights = admin_ranks[new_rank]		//we typed a rank which already exists, use its rights
+							else
+								admin_ranks[new_rank] = 0			//add the new rank to admin_ranks
+				else
+					if(config.admin.admin_legacy_system)
+						new_rank = ckeyEx(new_rank)
+						rights = admin_ranks[new_rank]				//we input an existing rank, use its rights
 
 			if(D)
 				D.disassociate()								//remove adminverbs and unlink from client
@@ -769,7 +782,8 @@
 						return
 
 					switch(alert("Ban on [config.general.server_id ? config.general.server_id : "this server"]?",, "Ban", "Cancel"))
-						if("Cancel")	return
+						if("Cancel")
+							return
 
 					var/msg
 					for(var/job in notbannedlist)
@@ -791,12 +805,14 @@
 					href_list["jobban2"] = 1 // lets it fall through and refresh
 					return 1
 				if("No")
-					if(!check_rights(R_BAN))  return
+					if(!check_rights(R_BAN))
+						return
 					var/reason = sanitize(input(usr,"Reason?","Please State Reason","") as text|null)
 					if(reason)
 
 						switch(alert("Ban on [config.general.server_id ? config.general.server_id : "this server"]?",, "Ban", "Cancel"))
-							if("Cancel")	return
+							if("Cancel")
+								return
 
 						var/msg
 						for(var/job in notbannedlist)
@@ -828,7 +844,8 @@
 			var/msg
 			for(var/job in joblist)
 				var/reason = jobban_isbanned(M, job)
-				if(!reason) continue //skip if it isn't jobbanned anyway
+				if(!reason)
+					continue //skip if it isn't jobbanned anyway
 				switch(alert("Job: '[job]' Reason: '[reason]' Un-jobban?","Please Confirm","Yes","No"))
 					if("Yes")
 						ban_unban_log_save("[key_name(usr)] unjobbanned [key_name(M)] from [job]")
@@ -862,41 +879,9 @@
 			//M.client = null
 			qdel(M.client)
 
-	else if(href_list["hellban"])
+	else if(href_list["removejobban"])
 		if(!check_rights(R_BAN))
 			return
-
-		var/mob/M = locate(href_list["hellban"])
-		if(!ismob(M))
-			to_chat(usr, "This can only be used on instances of type /mob")
-			return
-
-		if(!M.ckey)
-			to_chat(usr, "This mob has no ckey")
-			return
-
-		var/type = tgui_input_list(usr, "Choose luckban type", "Hellban", list(LUCK_CHECK_GENERAL, LUCK_CHECK_COMBAT, LUCK_CHECK_ENG, LUCK_CHECK_MED, LUCK_CHECK_RND))
-		if(!type)
-			return
-
-		var/duration = tgui_input_number(usr, "Choose the duration (ROUNDS!!!) -1 for Perma Ban", "Hellban", 1, 1000, -1, round_value = TRUE)
-		if(!duration)
-			return
-
-		var/level = tgui_input_number(usr, "Select luck level", "Hellban", 100, 100, 0, round_value = TRUE)
-		if(!level)
-			return
-
-		var/reason = tgui_input_text(usr, "Input a reason", "Hellban", "", 255, 0)
-
-		var/confirmation = tgui_alert(usr, "Luckban [M.ckey], lucktype [type], luck level [level], duration: [duration].", "Hellban", list("Yes", "No"))
-		if(confirmation == "No")
-			return
-
-		M.client.write_luck(type, level, duration, src, reason)
-
-	else if(href_list["removejobban"])
-		if(!check_rights(R_BAN))	return
 
 		var/t = href_list["removejobban"]
 		if(t)
@@ -919,9 +904,11 @@
 			return
 
 		var/mob/M = locate(href_list["newban"])
-		if(!ismob(M)) return
+		if(!ismob(M))
+			return
 
-		if(M.client && M.client.holder)	return	//admins cannot be banned. Even if they could, the ban doesn't affect them anyway
+		if(M.client && M.client.holder)
+			return	//admins cannot be banned. Even if they could, the ban doesn't affect them anyway
 
 		switch(alert("Temporary Ban?",,"Yes","No", "Cancel"))
 			if("Yes")
@@ -937,7 +924,8 @@
 					return
 
 				switch(alert("Ban on [config.general.server_id ? config.general.server_id : "this server"]?",, "Ban", "Cancel"))
-					if("Cancel")	return
+					if("Cancel")
+						return
 
 				AddBan(M.ckey, M.computer_id, reason, usr.ckey, 1, mins)
 				ban_unban_log_save("[usr.client.ckey] has banned [M.ckey]. - Reason: [reason] - This will be removed in [mins] minutes.")
@@ -956,16 +944,19 @@
 				qdel(M.client)
 				//qdel(M)	// See no reason why to delete mob. Important stuff can be lost. And ban can be lifted before round ends.
 			if("No")
-				if(!check_rights(R_BAN))   return
+				if(!check_rights(R_BAN))
+					return
 				var/reason = sanitize(input(usr,"Reason?","reason","Griefer") as text|null)
 				if(!reason)
 					return
 
 				switch(alert("Ban on [config.general.server_id ? config.general.server_id : "this server"]?",, "Ban", "Cancel"))
-					if("Cancel")	return
+					if("Cancel")
+						return
 
 				switch(alert(usr,"IP ban?",,"Yes","No","Cancel"))
-					if("Cancel")	return
+					if("Cancel")
+						return
 					if("Yes")
 						AddBan(M.ckey, M.computer_id, reason, usr.ckey, 0, 0, M.lastKnownIP)
 					if("No")
@@ -988,23 +979,30 @@
 				return
 
 	else if(href_list["mute"])
-		if(!check_rights(R_MOD,0) && !check_rights(R_ADMIN))  return
+		if(!check_rights(R_MOD,0) && !check_rights(R_ADMIN))
+			return
 
 		var/mob/M = locate(href_list["mute"])
-		if(!ismob(M))	return
-		if(!M.client)	return
+		if(!ismob(M))
+			return
+		if(!M.client)
+			return
 
 		var/mute_type = href_list["mute_type"]
-		if(istext(mute_type))	mute_type = text2num(mute_type)
-		if(!isnum(mute_type))	return
+		if(istext(mute_type))
+			mute_type = text2num(mute_type)
+		if(!isnum(mute_type))
+			return
 
 		cmd_admin_mute(M, mute_type)
 
 	else if(href_list["c_mode"])
-		if(!check_rights(R_ADMIN))	return
+		if(!check_rights(R_ADMIN))
+			return
 
 		if(SSticker.mode)
-			return alert(usr, "The game has already started.", null, null, null, null)
+			alert(usr, "The game has already started.", null, null, null, null)
+			return
 		var/dat = {"<meta charset=\"utf-8\"><B>What mode do you wish to play?</B><HR>"}
 		for(var/mode in gamemode_cache)
 			var/datum/game_mode/M = gamemode_cache[mode]
@@ -1015,12 +1013,15 @@
 		show_browser(usr, dat, "window=c_mode")
 
 	else if(href_list["f_secret"])
-		if(!check_rights(R_ADMIN))	return
+		if(!check_rights(R_ADMIN))
+			return
 
 		if(SSticker.mode)
-			return alert(usr, "The game has already started.", null, null, null, null)
+			alert(usr, "The game has already started.", null, null, null, null)
+			return
 		if(SSticker.master_mode != "secret")
-			return alert(usr, "The game mode has to be secret!", null, null, null, null)
+			alert(usr, "The game mode has to be secret!", null, null, null, null)
+			return
 		var/dat = {"<meta charset=\"utf-8\"><B>What game mode do you want to force secret to be? Use this if you want to change the game mode, but want the players to believe it's secret. This will only work if the current game mode is secret.</B><HR>"}
 		for(var/mode in gamemode_cache)
 			var/datum/game_mode/M = gamemode_cache[mode]
@@ -1030,10 +1031,12 @@
 		show_browser(usr, dat, "window=f_secret")
 
 	else if(href_list["c_mode2"])
-		if(!check_rights(R_ADMIN|R_SERVER))	return
+		if(!check_rights(R_ADMIN|R_SERVER))
+			return
 
 		if (SSticker.mode)
-			return alert(usr, "The game has already started.", null, null, null, null)
+			alert(usr, "The game has already started.", null, null, null, null)
+			return
 		SSticker.master_mode = href_list["c_mode2"]
 		SSticker.bypass_gamemode_vote = 1
 		log_and_message_admins("set the mode as [SSticker.master_mode].")
@@ -1043,19 +1046,23 @@
 		.(href, list("c_mode"=1))
 
 	else if(href_list["f_secret2"])
-		if(!check_rights(R_ADMIN|R_SERVER))	return
+		if(!check_rights(R_ADMIN|R_SERVER))
+			return
 
 		if(SSticker.mode)
-			return alert(usr, "The game has already started.", null, null, null, null)
+			alert(usr, "The game has already started.", null, null, null, null)
+			return
 		if(SSticker.master_mode != "secret")
-			return alert(usr, "The game mode has to be secret!", null, null, null, null)
+			alert(usr, "The game mode has to be secret!", null, null, null, null)
+			return
 		secret_force_mode = href_list["f_secret2"]
 		log_and_message_admins("set the forced secret mode as [secret_force_mode].")
 		Game() // updates the main game menu
 		.(href, list("f_secret"=1))
 
 	else if(href_list["monkeyone"])
-		if(!check_rights(R_SPAWN))	return
+		if(!check_rights(R_SPAWN))
+			return
 
 		var/mob/living/carbon/human/H = locate(href_list["monkeyone"])
 		if(!istype(H))
@@ -1066,7 +1073,8 @@
 		H.monkeyize()
 
 	else if(href_list["corgione"])
-		if(!check_rights(R_SPAWN))	return
+		if(!check_rights(R_SPAWN))
+			return
 
 		var/mob/living/carbon/human/H = locate(href_list["corgione"])
 		if(!istype(H))
@@ -1077,14 +1085,16 @@
 		H.corgize()
 
 	else if(href_list["forcespeech"])
-		if(!check_rights(R_FUN))	return
+		if(!check_rights(R_FUN))
+			return
 
 		var/mob/M = locate(href_list["forcespeech"])
 		if(!ismob(M))
 			to_chat(usr, "this can only be used on instances of type /mob")
 
 		var/speech = input("What will [key_name(M)] say?.", "Force speech", "")// Don't need to sanitize, since it does that in say(), we also trust our admins.
-		if(!speech)	return
+		if(!speech)
+			return
 		M.say(speech)
 		speech = sanitize(speech) // Nah, we don't trust them
 		log_and_message_admins("forced [key_name_admin(M)] to say: [speech]")
@@ -1118,7 +1128,8 @@
 		//so they black out before warping
 		M.Paralyse(5)
 		sleep(5)
-		if(!M)	return
+		if(!M)
+			return
 
 		M.forceMove(prison_cell)
 		if(istype(M, /mob/living/carbon/human))
@@ -1129,8 +1140,10 @@
 		to_chat(M, "<span class='warning'>You have been sent to the prison station!</span>")
 		log_and_message_admins("sent [key_name_admin(M)] to the prison station.")
 
+	// TODO(rufus): we have actual buttons for quick send to thunderdome, check and fix
 	else if(href_list["tdome1"])
-		if(!check_rights(R_FUN))	return
+		if(!check_rights(R_FUN))
+			return
 
 		if(alert(usr, "Confirm?", "Message", "Yes", "No") != "Yes")
 			return
@@ -1154,6 +1167,7 @@
 		log_admin("[key_name(usr)] has sent [key_name(M)] to the thunderdome. (Team 1)")
 		message_admins("[key_name_admin(usr)] has sent [key_name_admin(M)] to the thunderdome. (Team 1)", 1)
 
+	//TODO: Place return in right dir
 	else if(href_list["tdome2"])
 		if(!check_rights(R_FUN))	return
 
@@ -1978,10 +1992,6 @@
 	else if(href_list["ac_set_signature"])
 		src.admincaster_signature = sanitize(input(usr, "Provide your desired signature", "Network Identity Handler", ""))
 		src.access_news_network()
-
-	else if(href_list["populate_inactive_customitems"])
-		if(check_rights(R_ADMIN|R_SERVER))
-			populate_inactive_customitems_list(src.owner)
 
 	else if(href_list["vsc"])
 		if(check_rights(R_ADMIN|R_SERVER))

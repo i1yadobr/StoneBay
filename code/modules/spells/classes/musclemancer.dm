@@ -13,7 +13,7 @@
 /datum/wizard_class/musclemancer/on_class_chosen(mob/user, obj/item/spellbook)
 	to_chat(user, SPAN("notice", "Suddenly, you realize you've never ever gotten your own spell book. What you've been holding is just a cream puff."))
 
-	user.add_mutation(MUTATION_STRONG)
+	user.mutations.Add(MUTATION_STRONG)
 	user.update_mutations()
 
 	var/datum/spell/CP = new /datum/spell/targeted/equip_item/cream_puff
@@ -22,8 +22,8 @@
 	var/datum/spell/HS = new /datum/spell/healthy_sleep
 	user.add_spell(HS)
 
-	var/datum/spell/HM = new /datum/spell/toggled/hamstring_magic
-	user.add_spell(HM)
+	// var/datum/spell/HM = new /datum/spell/toggled/hamstring_magic
+	// user.add_spell(HM)
 
 	var/datum/spell/DM = new /datum/spell/hand/deltoid_magic
 	user.add_spell(DM)

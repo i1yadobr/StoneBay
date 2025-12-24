@@ -2,7 +2,8 @@
 	set name = "Check multiaccounts"
 	set category = "Admin"
 
-	if(!holder) return
+	if(!holder)
+		return
 	switch(alert("Chose checktype",,"All","Select player","Type ckey","Cancel"))
 		if("All")
 			holder.checkAllAccounts()
@@ -10,11 +11,14 @@
 			var/targets = list()
 			var/list/mobs = sortmobs()
 			for(var/mob/M in mobs)
-				if(M.ckey) targets += "[M.ckey]"
+				if(M.ckey)
+					targets += "[M.ckey]"
+				if(!length(targets))
+					to_chat(src, "Cannot find any mobs to check multiaccounts for")
 			holder.showAccounts(input("Select ckey", "Ckey") in targets)
 		if("Type ckey")
 			var/target = ckey(input(usr, "Type in ckey for check.", "Ckey") as text|null)
-			if(!target) //Cancel works now
+			if(!target)
 				return
 			holder.showAccounts(target)
 
@@ -33,24 +37,27 @@
 			ip,
 			computerid
 		FROM
-			erro_player
+			player
 		WHERE
 			computerid
 			IN
 				(SELECT DISTINCT
 					computerid
 				FROM
-					erro_player
+					player
 				WHERE
 					ckey LIKE $targetkey
 				)
 		"}, dbcon, list(targetkey = targetkey))
 
+
+	// TODO(rufus): refactor to reading named fields via GetRowData() instead of num indexes
+	// TODO(rufus): present time in the admin's local timezone
 	while(query.NextRow())
 		size += 1
 		output+="<tr><td>[query.item[1]]</td>"
-		output+="<td>[query.item[2]]</td>"
-		output+="<td>[query.item[3]]</td>"
+		output+="<td>[query.item[2]] UTC</td>"
+		output+="<td>[query.item[3]] UTC</td>"
 		output+="<td>[query.item[4]]</td>"
 		output+="<td>[query.item[5]]</td></tr>"
 
@@ -66,32 +73,34 @@
 			ip,
 			computerid
 		FROM
-			erro_player
+			player
 		WHERE
 			ip
 			IN
 				(SELECT DISTINCT
 					ip
 				FROM
-					erro_player
+					player
 				WHERE
 					computerid
 					IN
 						(SELECT DISTINCT
 							computerid
 						FROM
-							erro_player
+							player
 						WHERE
 							ckey LIKE $targetkey
 						)
 				)
 		"}, dbcon, list(targetkey = targetkey))
 
+	// TODO(rufus): refactor to reading named fields via GetRowData() instead of num indexes
+	// TODO(rufus): present time in the admin's local timezone
 	while(query.NextRow())
 		size += 1
 		output+="<tr><td>[query.item[1]]</td>"
-		output+="<td>[query.item[2]]</td>"
-		output+="<td>[query.item[3]]</td>"
+		output+="<td>[query.item[2]] UTC</td>"
+		output+="<td>[query.item[3]] UTC</td>"
 		output+="<td>[query.item[4]]</td>"
 		output+="<td>[query.item[5]]</td></tr>"
 
@@ -113,21 +122,21 @@
 			SELECT
 				ckey
 			FROM
-				erro_player
+				player
 			WHERE
 				ip
 				IN
 					(SELECT DISTINCT
 						ip
 					FROM
-						erro_player
+						player
 					WHERE
 						computerid
 						IN
 							(SELECT DISTINCT
 								computerid
 							FROM
-								erro_player
+								player
 							WHERE
 								ckey LIKE $ckey
 							)
@@ -149,14 +158,14 @@
 			SELECT
 				ckey
 			FROM
-				erro_player
+				player
 			WHERE
 				computerid
 				IN
 					(SELECT DISTINCT
 						computerid
 					FROM
-						erro_player
+						player
 					WHERE
 						ckey LIKE $ckey
 					)

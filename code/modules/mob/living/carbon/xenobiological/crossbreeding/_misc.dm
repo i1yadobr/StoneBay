@@ -170,12 +170,12 @@
 		else
 			if(user==pokemon)
 				to_chat(user, SPAN_NOTICE("You peeking inside strange gold egg."))
-				if(!do_after(user, 100))
+				if(!do_after(user, 100, src))
 					return
 
 				to_chat(user, SPAN_NOTICE("You feeling that something looking on you."))
 
-				if(!do_after(user, 100))
+				if(!do_after(user, 100, src))
 					return
 				to_chat(pokemon, SPAN_NOTICE("The world warps around you, and you're suddenly in an endless void, with a window to the outside floating in front of you."))
 				pokemon.drop(src, force = TRUE)

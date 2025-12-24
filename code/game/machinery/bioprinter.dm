@@ -28,7 +28,6 @@
 		BP_LIVER      = list("Liver",      /obj/item/organ/internal/liver,      25),
 		BP_STOMACH    = list("Stomach",    /obj/item/organ/internal/stomach,    25),
 		BP_TONGUE     = list("Tongue",     /obj/item/organ/internal/tongue ,    15),
-		BP_BLADDER    = list("Bladder",    /obj/item/organ/internal/bladder,    25),
 		BP_INTESTINES = list("Intestines", /obj/item/organ/internal/intestines, 25),
 		BP_L_ARM      = list("Left Arm",   /obj/item/organ/external/arm,        65),
 		BP_L_HAND     = list("Left Hand",  /obj/item/organ/external/hand,       40),

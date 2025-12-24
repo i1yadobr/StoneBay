@@ -159,12 +159,6 @@
 	parent_organ = BP_CHEST
 	organ_tag = "neural strata"
 
-
-/obj/item/organ/internal/diona/bladder
-	name = "gas bladder"
-	parent_organ = BP_HEAD
-	organ_tag = "gas bladder"
-
 /obj/item/organ/internal/diona/polyp
 	name = "polyp segment"
 	parent_organ = BP_GROIN

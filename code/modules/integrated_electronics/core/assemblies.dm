@@ -695,7 +695,7 @@
 
 /obj/item/device/electronic_assembly/proc/default_unfasten_wrench(mob/user, obj/item/I, time = 20)
 	if(isWrench(I) && istype(loc, /turf) && can_anchor)
-		if(do_after(user, time))
+		if(do_after(user, time, src))
 			user.visible_message("\The [user] wrenches \the [src]'s anchoring bolts [anchored ? "back" : "into position"].")
 			playsound(user, 'sound/items/Ratchet.ogg',50)
 			anchored = !anchored

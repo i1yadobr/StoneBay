@@ -242,7 +242,7 @@
 		if(operating == DOOR_FAILURE)
 			playsound(loc, 'sound/items/Crowbar.ogg', 100, 1)
 			user.visible_message("[user] removes the electronics from the windoor.", "You start to remove electronics from the windoor.")
-			if(!do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
+			if(!do_after(user, 40, src))
 				return
 
 			to_chat(user, "<span class='notice'>You removed the windoor electronics!</span>")

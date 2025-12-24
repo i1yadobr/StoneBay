@@ -28,7 +28,7 @@
 	if(power_supply.charge < power_supply.maxcharge)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		to_chat(user, "<span class='notice'>You begin charging \the [src]...</span>")
-		if(do_after(user,20))
+		if(do_after(user, 20, src))
 			playsound(src.loc, 'sound/effects/weapons/energy/kinetic_reload.ogg', 60, 1)
 			user.visible_message(
 				"<span class='warning'>\The [user] pumps \the [src]!</span>",

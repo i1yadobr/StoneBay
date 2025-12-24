@@ -109,8 +109,6 @@
 			return global.additional_antag_types;
 		if("admin_datums")
 			return global.admin_datums;
-		if("admin_pm_repository")
-			return global.admin_pm_repository;
 		if("admin_ranks")
 			return global.admin_ranks;
 		if("admin_secrets")
@@ -193,8 +191,6 @@
 			return global.assigned;
 		if("atmosphere_alarm")
 			return global.atmosphere_alarm;
-		if("attack_log_repository")
-			return global.attack_log_repository;
 		if("autolathe_categories")
 			return global.autolathe_categories;
 		if("autolathe_recipes")
@@ -231,8 +227,6 @@
 			return global.changelog_hash;
 		if("channel_to_radio_key")
 			return global.channel_to_radio_key;
-		if("checked_for_inactives")
-			return global.checked_for_inactives;
 		if("chemical_reaction_logs")
 			return global.chemical_reaction_logs;
 		if("chemical_reactions_list")
@@ -267,12 +261,12 @@
 			return global.crew_repository;
 		if("custom_event_msg")
 			return global.custom_event_msg;
+		if("custom_items")
+			return global.custom_items;
 		if("damage_icon_parts")
 			return global.damage_icon_parts;
 		if("dbcon")
 			return global.dbcon;
-		if("dbcon_old")
-			return global.dbcon_old;
 		if("dbcon_don")
 			return global.dbcon_don;
 		if("debug_verbs")
@@ -321,8 +315,6 @@
 			return global.explosion_turfs;
 		if("failed_db_connections")
 			return global.failed_db_connections;
-		if("failed_old_db_connections")
-			return global.failed_old_db_connections;
 		if("file_uid")
 			return global.file_uid;
 		if("fileaccess_timer")
@@ -395,8 +387,6 @@
 			return global.id_card_states;
 		if("image_repository")
 			return global.image_repository;
-		if("inactive_keys")
-			return global.inactive_keys;
 		if("init")
 			return global.init;
 		if("intents")
@@ -503,8 +493,6 @@
 			return global.minor_air_alarms;
 		if("mob_hat_cache")
 			return global.mob_hat_cache;
-		if("mob_repository")
-			return global.mob_repository;
 		if("motion_alarm")
 			return global.motion_alarm;
 		if("multi_point_spawns")
@@ -641,8 +629,6 @@
 			return global.secret_force_mode;
 		if("send_emergency_team")
 			return global.send_emergency_team;
-		if("server_name")
-			return global.server_name;
 		if("side_effects")
 			return global.side_effects;
 		if("skin_styles_female_list")
@@ -661,6 +647,18 @@
 			return global.sparring_attack_cache;
 		if("splatter_cache")
 			return global.splatter_cache;
+		if("sqladdress")
+			return global.sqladdress;
+		if("sqldb")
+			return global.sqldb;
+		if("sqllogging")
+			return global.sqllogging;
+		if("sqllogin")
+			return global.sqllogin;
+		if("sqlpass")
+			return global.sqlpass;
+		if("sqlport")
+			return global.sqlport;
 		if("station_account")
 			return global.station_account;
 		if("station_date")
@@ -761,6 +759,8 @@
 			return global.weighted_mundaneevent_locations;
 		if("weighted_randomevent_locations")
 			return global.weighted_randomevent_locations;
+		if("whitelist")
+			return global.whitelist;
 		if("whitelisted_species")
 			return global.whitelisted_species;
 		if("wireColours")
@@ -886,8 +886,6 @@
 			global.additional_antag_types=newval;
 		if("admin_datums")
 			global.admin_datums=newval;
-		if("admin_pm_repository")
-			global.admin_pm_repository=newval;
 		if("admin_ranks")
 			global.admin_ranks=newval;
 		if("admin_secrets")
@@ -974,8 +972,6 @@
 			global.assigned=newval;
 		if("atmosphere_alarm")
 			global.atmosphere_alarm=newval;
-		if("attack_log_repository")
-			global.attack_log_repository=newval;
 		if("autolathe_categories")
 			global.autolathe_categories=newval;
 		if("autolathe_recipes")
@@ -1012,8 +1008,6 @@
 			global.changelog_hash=newval;
 		if("channel_to_radio_key")
 			global.channel_to_radio_key=newval;
-		if("checked_for_inactives")
-			global.checked_for_inactives=newval;
 		if("chemical_reaction_logs")
 			global.chemical_reaction_logs=newval;
 		if("chemical_reactions_list")
@@ -1048,12 +1042,12 @@
 			global.crew_repository=newval;
 		if("custom_event_msg")
 			global.custom_event_msg=newval;
+		if("custom_items")
+			global.custom_items=newval;
 		if("damage_icon_parts")
 			global.damage_icon_parts=newval;
 		if("dbcon")
 			global.dbcon=newval;
-		if("dbcon_old")
-			global.dbcon_old=newval;
 		if("dbcon_don")
 			global.dbcon_don=newval
 		if("debug_verbs")
@@ -1102,8 +1096,6 @@
 			global.explosion_turfs=newval;
 		if("failed_db_connections")
 			global.failed_db_connections=newval;
-		if("failed_old_db_connections")
-			global.failed_old_db_connections=newval;
 		if("file_uid")
 			global.file_uid=newval;
 		if("fileaccess_timer")
@@ -1176,8 +1168,6 @@
 			global.id_card_states=newval;
 		if("image_repository")
 			global.image_repository=newval;
-		if("inactive_keys")
-			global.inactive_keys=newval;
 		if("init")
 			global.init=newval;
 		if("intents")
@@ -1284,8 +1274,6 @@
 			global.minor_air_alarms=newval;
 		if("mob_hat_cache")
 			global.mob_hat_cache=newval;
-		if("mob_repository")
-			global.mob_repository=newval;
 		if("motion_alarm")
 			global.motion_alarm=newval;
 		if("multi_point_spawns")
@@ -1422,8 +1410,6 @@
 			global.secret_force_mode=newval;
 		if("send_emergency_team")
 			global.send_emergency_team=newval;
-		if("server_name")
-			global.server_name=newval;
 		if("side_effects")
 			global.side_effects=newval;
 		if("skin_styles_female_list")
@@ -1442,6 +1428,18 @@
 			global.sparring_attack_cache=newval;
 		if("splatter_cache")
 			global.splatter_cache=newval;
+		if("sqladdress")
+			global.sqladdress=newval;
+		if("sqldb")
+			global.sqldb=newval;
+		if("sqllogging")
+			global.sqllogging=newval;
+		if("sqllogin")
+			global.sqllogin=newval;
+		if("sqlpass")
+			global.sqlpass=newval;
+		if("sqlport")
+			global.sqlport=newval;
 		if("station_account")
 			global.station_account=newval;
 		if("station_date")
@@ -1540,6 +1538,8 @@
 			global.weighted_mundaneevent_locations=newval;
 		if("weighted_randomevent_locations")
 			global.weighted_randomevent_locations=newval;
+		if("whitelist")
+			global.whitelist=newval;
 		if("whitelisted_species")
 			global.whitelisted_species=newval;
 		if("wireColours")
@@ -1618,7 +1618,6 @@
 	"account_hack_attempted",
 	"additional_antag_types",
 	"admin_datums",
-	"admin_pm_repository",
 	"admin_ranks",
 	"admin_secrets",
 	"admin_verbs_admin",
@@ -1668,7 +1667,6 @@
 	"assigned",
 	"assigned_blocks",
 	"atmosphere_alarm",
-	"attack_log_repository",
 	"autolathe_categories",
 	"autolathe_recipes",
 	"base_miss_chance",
@@ -1689,7 +1687,6 @@
 	"cargo_supply_packs",
 	"changelog_hash",
 	"channel_to_radio_key",
-	"checked_for_inactives",
 	"chemical_reaction_logs",
 	"chemical_reactions_list",
 	"chicken_count",
@@ -1712,7 +1709,6 @@
 	"custom_items",
 	"damage_icon_parts",
 	"dbcon",
-	"dbcon_old",
 	"dbcon_don",
 	"debug_verbs",
 	"decls_repository",
@@ -1742,7 +1738,6 @@
 	"explosion_in_progress",
 	"explosion_turfs",
 	"failed_db_connections",
-	"failed_old_db_connections",
 	"file_uid",
 	"fileaccess_timer",
 	"finds_as_strings",
@@ -1781,7 +1776,6 @@
 	"human_icon_cache",
 	"id_card_states",
 	"image_repository",
-	"inactive_keys",
 	"init",
 	"intents",
 	"intercom_range_display_status",
@@ -1840,7 +1834,6 @@
 	"minor_air_alarms",
 	"minor_announcement",
 	"mob_hat_cache",
-	"mob_repository",
 	"motion_alarm",
 	"moving_levels",
 	"multi_point_spawns",
@@ -1918,7 +1911,6 @@
 	"secret_force_mode",
 	"send_emergency_team",
 	"sent_spiders_to_station",
-	"server_name",
 	"severity_to_string",
 	"ship_engines",
 	"side_effects",
@@ -1939,11 +1931,6 @@
 	"sqllogin",
 	"sqlpass",
 	"sqlport",
-	"sqldonaddress",
-	"sqldonport",
-	"sqldondb",
-	"sqldonlogin",
-	"sqldonpass",
 	"station_account",
 	"station_date",
 	"stool_cache",

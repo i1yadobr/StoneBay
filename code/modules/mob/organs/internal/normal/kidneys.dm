@@ -55,11 +55,3 @@
 			dynamic_hydration_consumption *= 2.0
 
 	owner.remove_hydration(dynamic_hydration_consumption)
-
-	if(owner.should_have_organ(BP_BLADDER))
-		var/obj/item/organ/internal/bladder/L = owner.internal_organs_by_name[BP_BLADDER]
-		if(!L)
-			// TODO: Abdominal cavity here.
-			return
-		L.waste_to_spawn += dynamic_hydration_consumption
-

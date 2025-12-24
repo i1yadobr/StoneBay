@@ -19,8 +19,6 @@
 	var/datum/preferences/prefs = null
 	var/species_ingame_whitelisted = FALSE
 
-	var/datum/donator_info/donator_info = new
-
 	/*
 	As of byond 512, due to how broken preloading is, preload_rsc MUST be set to 1 at compile time if resource URLs are *not* in use,
 	BUT you still want resource preloading enabled (from the server itself). If using resource URLs, it should be set to 0 and
@@ -65,17 +63,14 @@
 	// For tracking shift key (world.time)
 	var/shift_released_at = 0
 
-	/// Settings window.
+	// Settings window.
 	var/datum/player_settings/settings = null
 
-	/// Messages currently seen by this client
+	// Messages currently seen by this client
 	var/list/seen_messages
 
-	/// Whether typing indicators are enabled
+	// Whether typing indicators are enabled
 	var/typing_indicators
 
-	var/luck_general = 100
-	var/luck_combat = 100
-	var/luck_eng = 100
-	var/luck_med = 100
-	var/luck_rnd = 100
+	// connected external accounts e.g. discord
+	var/list/connected_accounts

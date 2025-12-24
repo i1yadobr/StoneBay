@@ -172,7 +172,7 @@
 		finalize_recipe_production(recipe, required, produced, user)
 		return
 
-	else if(craft_tool != 2 && do_after(user, recipe.time, luck_check_type = LUCK_CHECK_ENG))
+	else if(craft_tool != 2 && do_after(user, recipe.time, src))
 		finalize_recipe_production(recipe, required, produced, user)
 		return
 

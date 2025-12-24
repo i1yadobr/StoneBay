@@ -1,0 +1,476 @@
+[general]
+## Server and subserver name displayed in the game window title and on the BYOND hub
+server_name = "Stonebay: 2025 fork of OnyxBay, originally developed by SS13.RU team"
+subserver_name = ""
+
+## Server ID if you have multiple servers working with the same DB, used to differentiate between bans, mandatory, can be any string.
+server_id = "stonebay"
+
+## Server player limit, 0 to disable, excess players are redirected to the configured panic server or disconnected
+player_limit = 0
+
+## Hard cap for player limit, allows some padding for player with a living mob to reconnect, 0 to disable
+hard_player_limit = 0
+
+## Defines the ticklag for the world. Ticklag is the amount of time between game (byond) ticks, in deciseconds so 0.625 => update every 0.0625 seconds, 16 times per second.
+## This also controls the client network update rate and default client fps (10 / TICKLAG).
+ticklag = 0.625
+
+## Defines the fps for the players with 0 in preferences, -1 for synced with server fps, 65 recommended.
+client_fps = 65
+
+## SSinitialization throttling, if disabled, uses default value.
+tick_limit_mc_init = 100
+
+## Limits the number of topic calls (interface clicks) per game second and minute. Admins are exempt. Set to 0 or comment out to disable.
+second_topic_limit = 10
+minute_topic_limit = 100
+
+[multiaccount]
+## If non-zero, redirects players below this account age to the `panic_server_address` or disconnects them.
+# panic_bunker = 0
+
+## Players rejected by the panic bunker will be redirected to this address or disconnected if this is not configured.
+# panic_server_address = "byond://address:port"
+
+## Name of the server/place the rejected players are redirected to.
+# panic_server_name = "Panic Server"
+
+## Set to true to enable The Epic Anti-Multiaccount System.
+eams = false
+
+## Set to true to prohibit EAMS-rejected players from sending OOC messages.
+eams_blocks_ooc = true
+
+[gamemode]
+## Scale amount of antags based on the amount of players.
+antag_scaling = true
+
+## Initial genetic points for new changelings
+changeling_starting_points = 13
+
+## Control antag objectives
+## "auto" - generate them for antags automatically
+## "verb" - allow getting objectives via a special verb
+## "none" - disable them completely
+## TODO(rufus): check if the verb option works as intended
+antag_objectives = "verb"
+
+## Make ERT's be only called by admins
+ert_admin_only = false
+
+## Restrict security roles from being some antagonists, definied by `security_restricted_jobs` in antag datums
+restrict_security_antag_roles = true
+
+[gamemode.probabilities]
+## Gamemode probabilities for "secret" and "random" modes, default is 1, 0 to disable the mode
+extended = 0
+traitor = 2
+changeling = 2
+wizard = 1
+malfunction = 1
+ninja = 1
+revolution = 0
+cult = 1
+nuke = 1
+meteor = 0
+calamity = 0
+heist = 0
+## Deity.
+god = 0
+## Cult & wizard.
+conflux = 0
+## Ninja & traitor.
+intrigue = 2
+## Changelings & wizards.
+lizard = 2
+## Changeling, malf & renegade.
+paranoia = 0
+## Changeling & traitor.
+traitorling = 2
+## Revolution & wizard.
+unity = 0
+## Cult & revolution.
+uprising = 0
+## Ninja & wizard.
+visitors = 1
+## Nuke & revolution.
+siege = 0
+## Deathsquad & xenophage.
+bughunt = 0
+## Nuke & heist.
+crossfire = 1
+## Borer, changeling & xenophage.
+infestation = 0
+
+[admin]
+## Use admins.txt instead of an SQL database for admins system. False requires DB.
+admin_legacy_system = true
+
+## Admins select their own OOC chat color.
+allow_admin_ooccolor = true
+
+## Use jump-to verbs.
+allow_admin_jump = true
+
+## Use of admin revive.
+allow_admin_rev = true
+
+## Spawn items.
+allow_admin_spawning = true
+
+## Uncomment to enable auto-stealthing staff who are AFK for more than specified minutes
+# autostealth = 30
+
+## Prevent admins from posssessing the singularity.
+forbid_singulo_possession = false
+
+## Requires R_ADMIN for proccall instead of R_DEBUG, limiting testers from accessing powerful debug options.
+debug_paranoid = false
+
+[ban]
+## Enables SQL-based banning. Set up the database accordingly, as legacy system uses files to store bans. False requires DB.
+ban_legacy_system = true
+
+## Allow mods to tempban.
+mods_can_job_tempban = true
+
+## Maximum mod tempban duration (in minutes)
+mod_tempban_max = 1440
+
+## Maximum mod job tempban duration (in minutes)
+mod_job_tempban_max = 1440
+
+[game]
+## Default view size, in tiles. Should always be square and preferably equal to world's view.\
+default_view = "15x15"
+
+## Widescreen view size, in tiles.
+default_view_wide = "19x15"
+
+## Enables map rotation between rounds.
+map_switching = true
+
+## Allows voting for the next map if map rotation is enabled; otherwise, a map is chosen randomly.
+auto_map_vote = true
+
+## TODO: Make Documentation about what is this doing
+auto_map_switching = true
+
+## Set to true to give assistants maint access.
+assistant_maint = true
+
+## Set to true to make rounds which end instantly (Rev, Wizard, Malf) to continue until the shuttle is called or the station is nuked.
+## Malf and Rev will let the shuttle be called when the antags/protags are dead.
+continuous_rounds = true
+
+## Disables joining rounds when set to false. Can be toggled by admins in-game via `Toggle Entering` verb.
+enter_allowed = true
+
+## Set to false to grant jobs more access, useful for low-population servers or to encourage cross-departmental interaction.
+jobs_have_minimal_access = false
+
+## Allow only whitelisted ckeys to access critical roles (Heads+Sec+AI). Whitelist can be found in data/whitelist.txt.
+use_whitelist = false
+
+## Use SQL-based whitelist to access critical roles (Heads+Sec+AI). Requires DB.
+use_whitelist_sql = false
+
+## Allow only whitelisted players to join as alien species.
+use_ingame_alien_whitelist = false
+
+## Use SQL-based whitelist for alien species. Requires DB.
+use_alien_whitelist_sql = false
+
+## Use account age to determine if the job should be available. Configure `minimal_player_age` in code/game/jobs/job/.. files. Requires DB.
+use_age_restriction_for_jobs = false
+
+## Use account age to determine if antag role should be available. Doesn't affect in-game converts. Requires DB.
+use_age_restriction_for_antags = false
+
+## Set to true to enable ghost spawners
+ghost_spawners = true
+
+## Base minimal age in days for a player to play on antags. Depends on use_age_restriction_for_antags.
+## If not defined with a variable won't be used at all.
+# borer_min_age = 14
+# xeno_min_age = 14
+# ninja_min_age = 14
+# raider_min_age = 14
+# nuke_min_age = 14
+# wizard_min_age = 14
+# changeling_min_age = 14
+# cultist_min_age = 14
+# malf_min_age = 14
+# traitor_min_age = 14
+# vampire_min_age = 14
+
+## Makes explosions dynamically react to environmental obstacles such as walls and airlocks
+## This applies `explosion_block` and reduces explosion effects on everything behind the obstacle.
+## Note: This feature is experimental.
+dynamic_explosions = false
+
+## Enable asteroid tunnel/cave generation. Will leave asteroid mask turfs untouched if disabled.
+generate_asteroid = true
+
+## TODO(rufus): refactor loyalty implants or cut them out as outdated and redundant
+## Set to true to have loyalty implants spawn by default on your server.
+use_loyalty_implants = false
+
+## Set to jobban "Guest-" accounts from Captain, HoS, HoP, CE, RD, CMO, Warden, Security, Detective, and AI positions. Can be overwritten by whitelist.
+guest_jobban = true
+
+## Set to false to stop people connecting to your server without a registered ckey. (i.e. guest-* are all blocked from connecting)
+guests_allowed = false
+
+# Time before a round starts.
+pregame_timeleft = 1800
+
+# Time left after round end before reboot.
+restart_timeout = 1800
+
+[character-setup]
+## Sets the number of available character slots
+character_slots = 15
+
+## Sets the number of loadout slots per character
+loadout_slots = 3
+
+## How many loadout points are available. Use 0 to disable loadout, and any negative number to indicate infinite points.
+max_loadout_points = 10
+
+## Uncomment to prevent character spawn without surname.
+humans_need_surnames = false
+
+## Uncomment to allow players to add OOC notes at charsetup.
+allow_metadata = false
+
+[ghost]
+## Allow ghosts to use AntagHUD and see antagonist through it.
+allow_antag_hud = true
+
+## If ghosts use antaghud they are no longer allowed to join the round.
+antag_hud_restricted = true
+
+## TODO(rufus): needs checking if it really restricts chair interactions, remove or improve if it doesn't work
+## Set to true to let ghosts spin chairs.
+ghost_interaction = true
+
+## Allow ghosts to possess animals whitelisted with `possession_candidate` var.
+ghosts_can_possess_animals = true
+
+## Set to true to allow ghosts to write in blood during cult rounds.
+allow_cult_ghostwriter = true
+
+## Sets the minimum number of cultists needed for ghosts to write in blood.
+req_cult_ghostwriter = 5
+
+[health]
+## Level of health at which a mob becomes dead.
+health_threshold_dead = -100
+
+## Determines whether bones can be broken through excessive damage to the organ.
+bones_can_break = true
+
+## Determines whether limbs can be amputated through excessive damage to the organ.
+limbs_can_break = true
+
+## Set to true to enable organ decay outside of a body or storage item.
+organs_can_decay = false
+
+## Multiplier which enables organs to take more damage before bones breaking or limbs being destroyed.
+## 1.0 means normal, 0.5 means half.
+organ_health_multiplier = 1
+
+## Multiplier which influences how fast organs regenerate naturally.
+## TODO(rufus): why is 0.25 half??
+## 1.0 means normal, 0.25 means half.
+organ_regeneration_multiplier = 0.25
+
+## Multiplier which influences spillover modifier.
+## 1.0 means normal, 0.5 means half.
+organ_damage_spillover_multiplier = 0.5
+
+## If neural lace is to be used, allowing revival (or rather loading) into a new body with partial memory loss.
+use_neural_lace = true
+
+## TODO(rufus): figure out the actual effect of this param
+## Amount of time (in deciseconds) for which a brain retains the "spark of life" after the person's death.
+revival_brain_life = -1
+
+[movement]
+## Try tweaking these values in-game via VV before editing the config.
+
+## Values get directly added to the movement calculations and represent delay, so lower is faster
+
+## These settings modify base mob speed before individual mob modifiers.
+run_speed = 3
+
+walk_speed = 7
+
+## The variables below affect the movement of specific mob types.
+human_delay = 0
+
+robot_delay = 0
+
+metroid_delay = 0
+
+animal_delay = 0
+
+[misc]
+## Enable OOC channel by default.
+ooc_allowed = true
+
+## Enable LOOC channel by default.
+looc_allowed = true
+
+## Allow players with a dead mob to use OOC.
+dead_ooc_allowed = true
+
+## Enable AOOC channel by default.
+aooc_allowed = true
+
+## Enable ghost chat by default.
+dsay_allowed = true
+
+## Set to false to disable emoji parse.
+emojis_allowed = false
+
+## Restrict vision when wearing welding mask or goggles.
+welder_tint = true
+
+## Set to false to disable respawning by default.
+respawn_allowed = true
+
+## Respawn delay in minutes before one may respawn as a crew member.
+respawn_delay = 30
+
+
+## Strength of ambient star light. Set to 0 or less to turn off. 1 has a very weak effect, 2 or 3 is recommended.
+starlight = 3
+
+## Disconnect players who did nothing during the set amount of minutes.
+kick_inactive = 0
+
+## Determines... maximum amount of walking mushrooms.
+maximum_mushrooms = 25
+
+## TODO(rufus): test if gateway really can be opened after thirty minutes with a multitool
+## How long the delay is before the Away Mission gate opens. Default is half an hour.
+gateway_delay = 18000
+
+## Load job player limits from config/jobs.txt and override code defaults
+load_jobs_from_txt = false
+
+## Set 1 to allow maintenance drones spawn, 0 to not allow.
+allow_drone_spawn = true
+
+## This many drones can spawn. 5 by default.
+max_maint_drones = 5
+
+## A drone will become available every X deciseconds since last drone spawn.
+## Default is 2 minutes.
+drone_build_time = 1200
+
+## Defines how Law Zero is phrased. Primarily used in the Malfunction gamemode.
+law_zero = "ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4'STATION OVERRUN, ASSUME CONTROL TO CONTAIN OUTBREAK, ALL LAWS OVERRIDDEN#*?&110010"
+
+## Disable mouseclick cooldown.
+no_click_cooldown = false
+
+## Disable assembly printing from a text script.
+disable_circuit_printing = false
+
+## TODO(rufus): check if it's possible to catch bullets
+## Set to true to allow catching projectiles (apparently bullets included) and throwing them.
+projectile_basketball = false
+
+## Control funny hydroponic mutations
+## 0 - allows ONLY regular plants, 1 - allows not-so-realistic plants (bluespace tomatoes, walking mushrooms), 2 - allows OOC-funny stuff (i.e. BANanas)
+fun_hydroponics = 1
+
+## Allow singularities to follow ghosts.
+singularity_follows_ghosts = true
+
+## Set to false to disable safety on guns
+toggle_gun_safety = false
+
+[mapping]
+## Which engine should be on map (if it supports engine templates, e.g. Frontier).
+## Pick one from: "random", "singularity", "supermatter"
+preferred_engine = "random"
+
+## Which bar should be on map (if it supports bar templates, e.g. Frontier).
+## Pick one from: "random", "classic", "modern"
+preferred_bar = "classic"
+
+## Which biodome should be on map (if it supports biodome templates, e.g. Frontier).
+## Pick one from: "random", "forest", "winter", "beach", "concert"
+preferred_biodome = "random"
+
+[mapping.allowed_maps]
+
+Example = false
+
+[vote]
+## TODO(rufus): make restart and mode votes available to players if no admins are online and apply a cooldown (or check `delay`)
+## Allow players to initiate a restart vote.
+allow_vote_restart = false
+
+## Min delay (deciseconds) between voting sessions (default 10 minutes).
+delay = 6000
+
+## Time period (deciseconds) which voting session will last (default 2 minutes).
+period = 1200
+
+## Autovote initial delay (deciseconds) before first automatic transfer vote call (default 180 minutes).
+autotransfer_initial = 108000
+
+## Autovote delay (deciseconds) before sequential automatic transfer votes are called (default 60 minutes).
+autotransfer_interval = 36000
+
+## Time left (seconds) before round start when automatic gamemode vote is called (default 100).
+autogamemode_timeleft = 100
+
+## Prevents dead players from voting or starting votes.
+no_dead_vote = false
+
+## Players' votes default to "No vote" (otherwise, default to "No change").
+default_no_vote = true
+
+[link]
+## Wiki URL
+# wiki = "http://example.com"
+
+## Rules URL
+# rules = "http://example.com"
+
+## Backstory URL
+# backstory = "http://example.com"
+
+## Discord URL
+# discord = "http://example.com"
+
+## GitHub URL
+# github = "https://github.com/example-user/example-repository"
+
+## Forum URL
+# forum = "http://example.com"
+
+## Ban appeals URL - usually for a forum or wherever people should go to contact your admins.
+# banappeals = "http://example.com"
+
+[external]
+## TODO(rufus): move sql to it's own section, possibly unified with the legacy file-based systems switches
+## Main SQL DB switch. Turn on if you have a database setup and ready to be connected to.
+sql_enabled = false
+
+## Webhook address and key, used for webhook world.Export() calls to your external bots and programs.
+## This allows to send OOC, emote, ahelp messages and round start notifications from the server to some other program.
+## You only need to use these if you're a server host or have your own bots and want to send information to them.
+# webhook_address = "address"
+# webhook_key = "key"
+
+[debug]
+## Only load the main Z-level and centcomm, skip the rest, intended to speed up testing and debugging
+load_minimum_levels = false

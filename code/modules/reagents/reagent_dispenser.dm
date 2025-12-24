@@ -138,7 +138,7 @@
 		  SPAN("notice", "\The [user] begins to detach [rig] from \the [src]."),
 		  SPAN("notice", "You begin to detach [rig] from \the [src].")
 		)
-		if(do_after(user, 20, src, , luck_check_type = LUCK_CHECK_COMBAT))
+		if(do_after(user, 20, src))
 			user.visible_message(
 			  SPAN("notice", "\The [user] detaches \the [rig] from \the [src]."),
 			  SPAN("notice", "You detach [rig] from \the [src]")

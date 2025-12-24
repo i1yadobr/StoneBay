@@ -34,33 +34,6 @@ SUBSYSTEM_DEF(events)
 		total_events["[E.id]"] = E
 		disabled_events["[E.id]"] = FALSE
 
-	if(config.game.events_preset)
-		apply_events_preset(config.game.events_preset)
-
-/datum/controller/subsystem/events/proc/apply_events_preset(preset)
-	if(!(preset in config.events.preset))
-		CRASH("Invalid events preset [preset]")
-
-	var/event_state = config.events.preset[preset]
-	var/default_state = event_state["default"]
-
-	if(default_state == null)
-		default_state = FALSE
-
-	for(var/event_id in total_events)
-		// Special variable
-		if(event_id == "default")
-			continue
-
-		// Some events may be blacklisted
-		if(!(event_id in disabled_events))
-			continue
-
-		if(!(event_id in event_state))
-			disabled_events[event_id] = !default_state
-		else
-			disabled_events[event_id] = !event_state[event_id]
-
 /datum/controller/subsystem/events/proc/enable_all_events()
 	for(var/event_id in total_events)
 		disabled_events[event_id] = FALSE

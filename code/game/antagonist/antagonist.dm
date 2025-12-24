@@ -85,7 +85,7 @@
 	cur_max = hard_cap
 	if(!role_text_plural)
 		role_text_plural = role_text
-	if(config.gamemode.protect_roles_from_antagonist)
+	if(config.gamemode.restrict_security_antag_roles)
 		restricted_jobs |= additional_restricted_jobs
 	if(antaghud_indicator)
 		if(!GLOB.hud_icon_reference)

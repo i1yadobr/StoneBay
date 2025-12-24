@@ -85,7 +85,7 @@
 		user.visible_message("\The [user] starts to wipe down [A] with [src]!")
 		reagents.splash(A, 1) //get a small amount of liquid on the thing we're wiping.
 		update_name()
-		if(do_after(user,30, progress = 0))
+		if(do_after(user, 30, progress = 0))
 			user.visible_message("\The [user] finishes wiping off the [A]!")
 			A.clean_blood()
 

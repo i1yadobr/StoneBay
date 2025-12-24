@@ -1,0 +1,21 @@
+# MySQL Connection Configuration
+
+# Server the MySQL database can be found at
+# Examples: 127.0.0.1, 200.135.5.43, myss13server.com etc.
+ADDRESS 127.0.0.1
+
+# MySQL server port (default is 3306)
+PORT 3306
+
+# Name of the database that stores connections, bans, admins etc.
+DATABASE onyxdb
+
+# Username/Login used to access the database
+LOGIN root
+
+# Password used to access the database
+PASSWORD pass
+
+# Track population and death statistics
+# Comment this out to disable
+#ENABLE_STAT_TRACKING

@@ -185,7 +185,6 @@
 
 	//Figure out the target pressure difference
 	var/pressure_delta = get_pressure_delta(environment)
-	//src.visible_message("DEBUG >>> [src]: pressure_delta = [pressure_delta]")
 
 	if((environment.temperature || air_contents.temperature) && pressure_delta > 0.5)
 		if(pump_direction) //internal -> external
@@ -430,7 +429,7 @@
 	var/datum/gas_mixture/env_air = loc.return_air()
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 	to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
-	if (do_after(user, 40, src, luck_check_type = LUCK_CHECK_ENG))
+	if (do_after(user, 40, src))
 		user.visible_message( \
 			"<span class='notice'>\The [user] unfastens \the [src].</span>", \
 			"<span class='notice'>You have unfastened \the [src].</span>", \

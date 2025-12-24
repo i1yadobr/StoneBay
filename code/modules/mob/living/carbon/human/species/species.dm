@@ -158,9 +158,8 @@
 	var/species_flags = 0              // Various specific features.
 	var/species_appearance_flags = 0           // Appearance/display related features.
 	var/spawn_flags = 0                // Flags that specify who can spawn as this species
+	var/slowdown = 0                   // Passive movement speed malus (or boost, if negative)
 
-	/// Movespeed modifier. Defined in movespeed_species.dm
-	var/movespeed_modifier = /datum/movespeed_modifier/species
 	/// Allows to calculate value representing `cached_slowdown` that can be interpreted as walking.
 	var/walk_speed_perc = 0.5
 
@@ -181,7 +180,6 @@
 		BP_APPENDIX =   /obj/item/organ/internal/appendix,
 		BP_EYES =       /obj/item/organ/internal/eyes,
 		BP_TONGUE =     /obj/item/organ/internal/tongue,
-		BP_BLADDER =    /obj/item/organ/internal/bladder,
 		BP_INTESTINES = /obj/item/organ/internal/intestines
 		)
 	var/vision_organ              // If set, this organ is required for vision. Defaults to "eyes" if the species has them.
@@ -466,12 +464,10 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	return
 
 /datum/species/proc/on_species_loss(mob/living/carbon/human/H)
-	H.remove_movespeed_modifier(movespeed_modifier)
 	remove_inherent_verbs(H)
 	remove_inherent_traits(H)
 
 /datum/species/proc/handle_post_spawn(mob/living/carbon/human/H) //Handles anything not already covered by basic species assignment.
-	H.add_movespeed_modifier(movespeed_modifier)
 	add_inherent_verbs(H)
 	add_inherent_traits(H)
 	H.mob_bump_flag = bump_flag
@@ -577,7 +573,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 	H.set_fullscreen(H.eye_blind && !H.equipment_prescription, "blind", /atom/movable/screen/fullscreen/blind)
 	H.set_fullscreen(H.stat == UNCONSCIOUS, "blackout", /atom/movable/screen/fullscreen/blackout)
 
-	if(config.misc.welder_vision_allowed)
+	if(config.misc.welder_tint)
 		H.set_fullscreen(H.equipment_tint_total, "welder", /atom/movable/screen/fullscreen/impaired, H.equipment_tint_total)
 	var/how_nearsighted = get_how_nearsighted(H)
 	H.set_fullscreen(how_nearsighted, "nearsighted", /atom/movable/screen/fullscreen/oxy, how_nearsighted)

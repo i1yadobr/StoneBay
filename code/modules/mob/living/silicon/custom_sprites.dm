@@ -15,10 +15,15 @@ GLOBAL_LIST_EMPTY(ai_custom_icons)
 	src.footstep_sound = footstep_sound
 
 /hook/startup/proc/load_silicon_custom_sprites()
+	var/config_file_path = "config/custom_items/custom_items.json"
+	if(!fexists(config_file_path))
+		return TRUE
+	var/list/config_json = json_decode(file2text("config/custom_sprites.json"))
+
 #ifdef CUSTOM_ITEM_AI_HOLO
-	for(var/datum/custom_sprite/sprite in config.custom.sprites?["ai_holo"])
-		var/ckey = sprite.ckey
-		var/custom_icon_state = sprite.sprite
+	for(var/list/item in config_json["ai_holo"])
+		var/ckey = item["ckey"]
+		var/custom_icon_state = item["sprite"]
 
 		var/datum/ai_holo/H = new(custom_icon_state, CUSTOM_ITEM_AI_HOLO, custom_icon_state, TRUE, FALSE)
 		H.ckey = ckey
@@ -29,10 +34,10 @@ GLOBAL_LIST_EMPTY(ai_custom_icons)
 #ifdef CUSTOM_ITEM_ROBOTS
 	var/list/custom_robot_icon_states = icon_states(CUSTOM_ITEM_ROBOTS)
 
-	for(var/datum/custom_sprite/sprite in config.custom.sprites?["robot"])
-		var/ckey = sprite.ckey
-		var/custom_icon_state = sprite.sprite
-		var/footstep_sound = sprite.footstep_sound
+	for(var/list/item in config_json["robot"])
+		var/ckey = item["ckey"]
+		var/custom_icon_state = item["sprite"]
+		var/footstep_sound = item["footstep_sound"]
 		if(!length(GLOB.robot_custom_icons[ckey]))
 			GLOB.robot_custom_icons[ckey] = list()
 
@@ -47,9 +52,9 @@ GLOBAL_LIST_EMPTY(ai_custom_icons)
 	var/list/custom_ai_icon_states = icon_states(CUSTOM_ITEM_AI)
 	var/custom_index = 0
 
-	for(var/datum/custom_sprite/sprite in config.custom.sprites?["ai_core"])
-		var/ckey = sprite.ckey
-		var/custom_icon_state = sprite.sprite
+	for(var/list/item in config_json["ai_core"])
+		var/ckey = item["ckey"]
+		var/custom_icon_state = item["sprite"]
 
 		var/datum/ai_icon/selected_sprite
 

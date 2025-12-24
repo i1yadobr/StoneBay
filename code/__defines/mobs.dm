@@ -211,7 +211,6 @@
 #define BP_STOMACH    "stomach"
 #define BP_APPENDIX   "appendix"
 #define BP_TONGUE     "tongue"
-#define BP_BLADDER    "bladder"
 #define BP_INTESTINES "intestines"
 
 // Weird Organs.
@@ -222,7 +221,6 @@
 #define BP_RESIN      "resin spinner"
 #define BP_STRATA     "neural strata"
 #define BP_RESPONSE   "response node"
-#define BP_GBLADDER   "gas bladder"
 #define BP_POLYP      "polyp segment"
 #define BP_ANCHOR     "anchoring ligament"
 #define BP_PLASMA     "plasma vessel"
@@ -234,13 +232,13 @@
 #define BP_ADAMANTINE_RESONATOR   "adamantine resonator"
 #define BP_ADAMANTINE_VOCAL_CORDS "adamantine vocal cords"
 
-#define BP_INTERNAL_ORGANS list(BP_BRAIN, BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS, BP_TONGUE, BP_INTESTINES, BP_BLADDER)
+#define BP_INTERNAL_ORGANS list(BP_BRAIN, BP_HEART, BP_EYES, BP_LUNGS, BP_LIVER, BP_KIDNEYS, BP_TONGUE, BP_INTESTINES)
 
 // Robo Organs.
 #define BP_CELL       "cell"
 #define BP_POSIBRAIN  "posibrain"
 #define BP_VOICE      "vocal synthesiser"
-#define BP_STACK      "stack"
+#define BP_NEURAL_LACE	"neural_lace"
 #define BP_OPTICS     "optics"
 
 // Limbs.

@@ -1,3 +1,11 @@
+// TODO(rufus): while xenomorphs do need some refactoring, this is fine to keep enabled and as is for now.
+//   Consider making facehugger subspecies that apply random effects to the victim, have varying
+//   incubation time and apply random complications instead of just allowing any sort-of-medical
+//   person to cut out the embryo and be done with the event. See the original Alien movie series
+//   for some inspiration. Aliens are absolute and ultimate murder species with evolutionary
+//   measures protecting them with unmatched efficiency until the specimen is fully grown.
+//   It was definitely *not* possible to just cut out the embryo.
+//   However, these ideas might need a broad alien rework first.
 /datum/event/stray_facehugger
 	id = "stray_facehugger"
 	name = "Stray Facehugger"
@@ -6,9 +14,6 @@
 	mtth = 3 HOURS
 	difficulty = 60
 	fire_only_once = TRUE
-
-/datum/event/stray_facehugger/check_conditions()
-	. = config.misc.aliens_allowed
 
 /datum/event/stray_facehugger/get_mtth()
 	. = ..()

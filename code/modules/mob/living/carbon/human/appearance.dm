@@ -41,11 +41,7 @@
 	if(src.body_build == body_build)
 		return
 
-	if(src.body_build?.movespeed_modifier)
-		remove_movespeed_modifier(src.body_build.movespeed_modifier)
-
 	src.body_build = body_build
-	add_movespeed_modifier(src.body_build.movespeed_modifier)
 	regenerate_icons()
 	return 1
 
@@ -174,12 +170,12 @@
 	dna.ready_dna(src)
 	sync_organ_dna()
 
-/mob/living/carbon/human/proc/generate_valid_species(check_whitelist = 1, list/whitelist = list(), list/blacklist = list())
+/mob/living/carbon/human/proc/generate_valid_species(load_whitelistSQL = 1, list/whitelist = list(), list/blacklist = list())
 	var/list/valid_species = new()
 	for(var/current_species_name in all_species)
 		var/datum/species/current_species = all_species[current_species_name]
 
-		if(check_whitelist) //If we're using the whitelist, make sure to check it!
+		if(load_whitelistSQL) //If we're using the whitelist, make sure to check it!
 			if((current_species.spawn_flags & SPECIES_IS_RESTRICTED) && !check_rights(R_ADMIN, 0, src))
 				continue
 			if(!is_alien_whitelisted(src, current_species))

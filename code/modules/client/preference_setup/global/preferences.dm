@@ -206,9 +206,6 @@ var/global/list/_client_preferences_by_type
 	if(!preference_mob.client)
 		return
 
-	if(!SSannounce.is_announcer_available(preference_mob, new_value))
-		to_chat(preference_mob, SPAN_WARNING("Selected announcer is not available due to a low patron tier, default announcer will be used instead."))
-
 /datum/client_preference/language_display
 	description = "Display Language Names"
 	key = "LANGUAGE_DISPLAY"
@@ -405,21 +402,6 @@ var/global/list/_client_preferences_by_type
 	description = "Show Cinema-like Credits At Round-end"
 	key = "SHOW_CREDITS"
 	default_value = GLOB.PREF_NO
-
-/datum/client_preference/ooc_name_color
-	description = "OOC Name Color"
-	key = "OOC_NAME_COLOR"
-	category = PREF_CATEGORY_CHAT
-
-/datum/client_preference/ooc_name_color/may_set(client/given_client)
-	return given_client.donator_info.patron_type != PATREON_NONE
-
-/datum/client_preference/ooc_name_color/get_options(client/given_client)
-	return given_client.donator_info.get_available_ooc_patreon_tiers()
-
-/datum/client_preference/ooc_name_color/get_default_value(client/given_client)
-	ASSERT(given_client)
-	return given_client.donator_info.patron_type
 
 /datum/client_preference/default_hotkey_mode
 	description = "Default Hotkey Mode"

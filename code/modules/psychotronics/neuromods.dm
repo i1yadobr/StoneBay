@@ -55,7 +55,7 @@
 		return
 
 	user.verbs += /mob/living/carbon/human/proc/remotesay
-	user.add_mutation(mRemotetalk)
+	user.mutations.Add(mRemotetalk)
 
 /* - LANGUAGES - */
 
@@ -92,3 +92,14 @@
 	name = "Language: Skrellian"
 	desc = "The neuromod makes possible to speak on 'Skrellian'"
 	language = LANGUAGE_SKRELLIAN
+
+/* -- INCREASE SPEED -- */
+/datum/neuromod/increase_speed
+	name = "Powerful Legs"
+	desc = "The neuromod strengths a legs and increases moving speed."
+	chance = 5
+
+/datum/neuromod/increase_speed/Handle(mob/living/user)
+	if (!user.additional_speed)
+		user.additional_speed = 1
+		user.mutations.Add(mRun)

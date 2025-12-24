@@ -43,23 +43,6 @@
 	if(length(turfs))
 		throw_at(pick(turfs), maxrange, speed, src)
 
-///Returns the closest atom of a specific type in a list from a source
-/proc/get_closest_atom(type, list/atom_list, source)
-	var/closest_atom
-	var/closest_distance
-	for(var/atom in atom_list)
-		if(!istype(atom, type))
-			continue
-		var/distance = get_dist(source, atom)
-		if(!closest_atom)
-			closest_distance = distance
-			closest_atom = atom
-		else
-			if(closest_distance > distance)
-				closest_distance = distance
-				closest_atom = atom
-	return closest_atom
-
 ///Returns a list of all locations (except the area) the movable is within.
 /proc/get_nested_locs(atom/movable/atom_on_location, include_turf = FALSE)
 	. = list()

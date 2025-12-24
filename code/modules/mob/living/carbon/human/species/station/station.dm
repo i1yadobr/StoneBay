@@ -94,7 +94,7 @@
 	generic_attack_mod = 2.0
 	darksight_range = 8
 	darksight_tint = DARKTINT_GOOD
-	movespeed_modifier = /datum/movespeed_modifier/tajaran
+	slowdown = -0.5
 	brute_mod = 1.15
 	burn_mod =  1.15
 	gluttonous = GLUT_TINY
@@ -264,7 +264,7 @@
 	language = LANGUAGE_ROOTLOCAL
 	unarmed_types = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/diona)
 	//primitive_form = "Nymph"
-	movespeed_modifier = /datum/movespeed_modifier/diona
+	slowdown = 7
 	rarity_value = 3
 	hud_type = /datum/hud_data/diona
 	siemens_coefficient = 0.3
@@ -296,7 +296,6 @@
 		BP_NUTRIENT = /obj/item/organ/internal/diona/nutrients,
 		BP_STRATA =   /obj/item/organ/internal/diona/strata,
 		BP_RESPONSE = /obj/item/organ/internal/diona/node,
-		BP_GBLADDER = /obj/item/organ/internal/diona/bladder,
 		BP_POLYP =    /obj/item/organ/internal/diona/polyp,
 		BP_ANCHOR =   /obj/item/organ/internal/diona/ligament
 		)

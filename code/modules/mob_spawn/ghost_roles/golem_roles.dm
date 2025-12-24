@@ -38,7 +38,6 @@
 		owner_ref = weakref(creator)
 		spawner_job_path = /datum/job/servant_golem
 
-
 /obj/effect/mob_spawn/ghost_role/human/golem/name_mob(mob/living/spawned_mob, forced_name)
 	if(!forced_name)
 		var/datum/species/golem/golem_species = all_species[mob_species]
@@ -49,7 +48,6 @@
 
 	spawned_mob.fully_replace_character_name(forced_name)
 	return
-
 
 /obj/effect/mob_spawn/ghost_role/human/golem/special(mob/living/new_spawn, mob/mob_possessor)
 	. = ..()

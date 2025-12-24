@@ -13,6 +13,7 @@
 
 // Other Mutations:
 #define mRemotetalk    100 // Remote talking.
+#define mRun           101 // No slowdown.
 
 // disabilities
 #define NEARSIGHTED 0x1

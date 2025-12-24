@@ -154,7 +154,7 @@
 /obj/structure/bed/chair/wheelchair/MouseDrop_T(atom/movable/dropping, mob/living/user)
 	if(istype(dropping, /obj/structure/disposalconstruct) && !buckled_mob)
 		show_splash_text(user, "attaching...", "You start attaching \the [dropping] to \the [src]...")
-		if(!do_after(user, 10 SECONDS, src, TRUE, luck_check_type = LUCK_CHECK_COMBAT))
+		if(!do_after(user, 10 SECONDS, src, TRUE))
 			return
 
 		if(QDELETED(src) || QDELETED(dropping) || QDELETED(user) || buckled_mob)
@@ -225,13 +225,3 @@
 		pulling = null
 		usr.pulledby = null
 	..()
-	if(ishuman(M))
-		var/mob/living/carbon/human/H = M
-		H.update_organ_movespeed()
-
-/obj/structure/bed/chair/wheelchair/unbuckle_mob()
-	if(ishuman(buckled_mob))
-		var/mob/living/carbon/human/H = buckled_mob
-		H.update_organ_movespeed()
-
-	return ..()

@@ -17,12 +17,12 @@ code\game\dna\genes\goon_powers.dm
 	..()
 	for(var/mob/living/target in targets)
 		for(var/x in mutations)
-			target.add_mutation(x)
+			target.mutations.Add(x)
 		target.disabilities |= disabilities
 		target.update_mutations()	//update target's mutation overlays
 		spawn(duration)
 			for(var/x in mutations)
-				target.remove_mutation(x)
+				target.mutations.Remove(x)
 			target.disabilities &= ~disabilities
 			target.update_mutations()
 	return

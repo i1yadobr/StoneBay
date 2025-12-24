@@ -336,7 +336,7 @@ var/global/list/additional_antag_types = list()
 
 /datum/game_mode/proc/create_antagonists()
 
-	if(!config.gamemode.traitor_scaling)
+	if(!config.gamemode.antag_scaling)
 		antag_scaling_coeff = 0
 
 	var/list/all_antag_types = GLOB.all_antag_types_
@@ -347,15 +347,8 @@ var/global/list/additional_antag_types = list()
 			if(antag)
 				antag_templates |= antag
 
-	if(additional_antag_types && additional_antag_types.len)
-		if(!antag_templates)
-			antag_templates = list()
-		for(var/antag_type in additional_antag_types)
-			var/datum/antagonist/antag = all_antag_types[antag_type]
-			if(antag)
-				antag_templates |= antag
-
 	shuffle(antag_templates) //In the case of multiple antag types
+	// TODO(rufus): move out of create_antagonists proc to gamemode setup.
 	newscaster_announcements = pick(newscaster_standard_feeds)
 
 /datum/game_mode/proc/print_roundend()
@@ -449,7 +442,7 @@ var/global/list/additional_antag_types = list()
 
 	if(!player || !player.current) return
 
-	if(config.gamemode.disable_objectives == CONFIG_OBJECTIVE_ALL || !player.objectives.len)
+	if(config.gamemode.antag_objectives == CONFIG_ANTAG_OBJECTIVES_NONE || !player.objectives.len)
 		return
 
 	var/obj_count = 1

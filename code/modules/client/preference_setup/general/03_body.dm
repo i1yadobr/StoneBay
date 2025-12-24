@@ -55,7 +55,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	pref.b_type = R.read("b_type")
 	pref.body_height = R.read("body_height")
 	pref.disabilities = R.read("disabilities")
-	pref.has_cortical_stack = R.read("has_cortical_stack")
+	pref.has_neural_lace = R.read("has_neural_lace")
 	pref.body_markings = R.read("body_markings")
 
 /datum/category_item/player_setup_item/general/body/save_character(datum/pref_record_writer/W)
@@ -81,7 +81,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	W.write("b_type", pref.b_type)
 	W.write("body_height", pref.body_height)
 	W.write("disabilities", pref.disabilities)
-	W.write("has_cortical_stack", pref.has_cortical_stack)
+	W.write("has_neural_lace", pref.has_neural_lace)
 	W.write("body_markings", pref.body_markings)
 
 /datum/category_item/player_setup_item/general/body/sanitize_character()
@@ -114,14 +114,14 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		pref.b_eyes		= sanitize_integer(pref.b_eyes, 0, 255, initial(pref.b_eyes))
 
 	pref.b_type			= sanitize_text(pref.b_type, initial(pref.b_type))
-	pref.has_cortical_stack = sanitize_bool(pref.has_cortical_stack, initial(pref.has_cortical_stack))
+	pref.has_neural_lace = sanitize_bool(pref.has_neural_lace, initial(pref.has_neural_lace))
 
 	if(!pref.body_height || !(pref.body_height in body_heights))
 		pref.body_height = HUMAN_HEIGHT_NORMAL
 
 	var/datum/species/mob_species = all_species[pref.species]
 	if(mob_species && mob_species.spawn_flags & SPECIES_NO_LACE)
-		pref.has_cortical_stack = FALSE
+		pref.has_neural_lace = FALSE
 
 	var/low_skin_tone = mob_species ? (35 - mob_species.max_skin_tone()) : -185
 	sanitize_integer(pref.s_tone, low_skin_tone, 34, initial(pref.s_tone))
@@ -142,13 +142,13 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	. += "(<a href='?src=\ref[src];random=1'>&reg;</A>)"
 	. += "<br>"
 
-	if(config.revival.use_cortical_stacks)
+	if(config.health.use_neural_lace)
 		. += "Neural lace: "
 		if(mob_species.spawn_flags & SPECIES_NO_LACE)
 			. += "incompatible."
 		else
-			. += pref.has_cortical_stack ? "present." : "<b>not present.</b>"
-			. += " \[<a href='byond://?src=\ref[src];toggle_stack=1'>toggle</a>\]"
+			. += pref.has_neural_lace ? "present." : "<b>not present.</b>"
+			. += " \[<a href='byond://?src=\ref[src];toggle_neural_lace=1'>toggle</a>\]"
 		. += "<br>"
 
 	. += "Height: <a href='?src=\ref[src];body_height=1'>[human_height_text(pref.body_height)]</a><br>"
@@ -197,8 +197,8 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		pref.randomize_appearance_and_body_for()
 		return TOPIC_REFRESH_UPDATE_PREVIEW
 
-	else if(href_list["toggle_stack"])
-		pref.has_cortical_stack = !pref.has_cortical_stack
+	else if(href_list["toggle_neural_lace"])
+		pref.has_neural_lace = !pref.has_neural_lace
 		return TOPIC_REFRESH
 
 	else if(href_list["blood_type"])
@@ -444,7 +444,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	dat += "<small>"
 	if(current_species.spawn_flags & SPECIES_CAN_JOIN)
 		dat += "</br><b>Often present among humans.</b>"
-	if(current_species.spawn_flags & SPECIES_IS_WHITELISTED & config.whitelist.enable_alien_whitelist)
+	if(current_species.spawn_flags & SPECIES_IS_WHITELISTED & config.game.use_ingame_alien_whitelist)
 		dat += "</br><b>Whitelist restricted.</b>"
 	if(!current_species.has_organ[BP_HEART])
 		dat += "</br><b>Does not have blood.</b>"
@@ -471,7 +471,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	dat += "</table><center><hr/>"
 
 	var/restricted = 0
-	if(config.whitelist.enable_alien_whitelist) //If we're using the whitelist, make sure to check it!
+	if(config.game.use_ingame_alien_whitelist) //If we're using the whitelist, make sure to check it!
 		if (!(current_species.spawn_flags & SPECIES_CAN_JOIN))
 			restricted = 2
 		else if ((current_species.spawn_flags & SPECIES_IS_WHITELISTED) && !is_alien_whitelisted(preference_mob(),current_species))

@@ -224,25 +224,6 @@
 		qdel(S)
 	char_render_holders = null
 
-/datum/preferences/proc/process_link(mob/user, list/href_list)
-	if(!user)
-		return
-	if(isliving(user))
-		return
-
-	if(href_list["preference"] == "open_whitelist_forum")
-		if(config.link.forum)
-			send_link(user, config.link.forum)
-		else
-			to_chat(user, "<span class='danger'>The forum URL is not set in the server configuration.</span>")
-			return
-	else if(href_list["close"])
-		// User closed preferences window, cleanup anything we need to.
-		clear_character_previews()
-		return 1
-	update_setup_window(usr)
-	return 1
-
 /datum/preferences/Topic(href, list/href_list)
 	if(..())
 		return 1
@@ -369,7 +350,7 @@
 	//For species that don't care about your silly prefs
 	character.species.handle_limbs_setup(character)
 	if(!is_preview_copy)
-		for(var/name in list(BP_HEART, BP_EYES, BP_BRAIN, BP_LUNGS, BP_LIVER, BP_KIDNEYS, BP_STOMACH, BP_TONGUE, BP_BLADDER, BP_INTESTINES))
+		for(var/name in list(BP_HEART, BP_EYES, BP_BRAIN, BP_LUNGS, BP_LIVER, BP_KIDNEYS, BP_STOMACH, BP_TONGUE, BP_INTESTINES))
 			var/status = organ_data[name]
 			if(!status)
 				continue

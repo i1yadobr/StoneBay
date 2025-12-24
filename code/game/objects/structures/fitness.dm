@@ -68,7 +68,7 @@
 		else
 			flick("[icon_state]_[weight]", src)
 
-		if(do_after(user, usetime))
+		if(do_after(user, usetime, src))
 			playsound(src.loc, 'sound/effects/weightdrop.ogg', 25, 1)
 			user.remove_nutrition(weight * 5.0)
 			user.remove_hydration(7.5 * weight)

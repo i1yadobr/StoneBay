@@ -44,10 +44,8 @@
 		return
 
 	if(hydration <= HYDRATION_NONE)
-		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/hydration_slowdown, slowdown = 1.0)
+		add_modifier(/datum/modifier/trait/slowdown)
 	else if(hydration <= HYDRATION_LOW)
-		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/hydration_slowdown, slowdown = 0.5)
-	else if(has_movespeed_modifier(/datum/movespeed_modifier/hydration_slowdown))
-		remove_movespeed_modifier(/datum/movespeed_modifier/hydration_slowdown)
+		add_modifier(/datum/modifier/trait/slowdown/high)
 
 #undef UPDATE_DELAY

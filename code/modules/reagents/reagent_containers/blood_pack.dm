@@ -47,7 +47,7 @@
 			user.visible_message(SPAN_WARNING("[user] raises \the [src] up to their mouth and bites into it."), SPAN_NOTICE("You raise \the [src] up to your mouth and bite into it, starting to drain its contents.<br>You need to stand still."))
 			being_feed = TRUE
 			vampire_marks = TRUE
-			while (do_after(user, 30, src, luck_check_type = LUCK_CHECK_MED))
+			while (do_after(user, 30, src))
 				if(!user)
 					return
 				var/blood_taken = 0
@@ -95,7 +95,7 @@
 		attached = null
 	else if(ishuman(over_object))
 		visible_message(SPAN_WARNING("\The [usr] starts hooking \the [over_object] up to \the [src]."))
-		if(do_after(usr, 30, , luck_check_type = LUCK_CHECK_MED))
+		if(do_after(usr, 30, ))
 			to_chat(usr, "You hook \the [over_object] up to \the [src].")
 			attached = over_object
 			set_next_think(world.time)

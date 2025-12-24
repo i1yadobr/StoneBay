@@ -53,32 +53,7 @@ SUBSYSTEM_DEF(announce)
 	var/announcer_pref = C.get_preference_value(/datum/client_preference/announcer)
 	var/datum/announcer/A = announcer_by_pref(announcer_pref)
 
-	if(!is_announcer_available(player, A))
-		return announcer_by_type(DEFAULT_ANNOUNCER)
-	else
-		return A
-
-/// player - mob or a client
-/// announcer - type, preference value or an instance.
-/datum/controller/subsystem/announce/proc/is_announcer_available(player, announcer)
-	var/client/C = player
-	var/mob/M = player
-
-	if(istype(M))
-		C = M.client
-
-	ASSERT(!isnull(C) && istype(C))
-
-	var/datum/announcer/A = announcer
-
-	if(ispath(announcer))
-		A = announcer_by_type(announcer)
-	else if(istext(announcer))
-		A = announcer_by_pref(announcer)
-
-	ASSERT(!isnull(A) && istype(A))
-
-	return C.donator_info.patreon_tier_available(A.required_tier)
+	return A
 
 /datum/controller/subsystem/announce/proc/play_announce(
 		announce_type, text_override = null, title_override = null, sender_override = null,

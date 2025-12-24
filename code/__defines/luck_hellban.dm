@@ -1,5 +1,0 @@
-#define LUCK_CHECK_GENERAL "general"
-#define LUCK_CHECK_COMBAT "combat"
-#define LUCK_CHECK_ENG "engineering"
-#define LUCK_CHECK_MED "medical"
-#define LUCK_CHECK_RND "rnd"

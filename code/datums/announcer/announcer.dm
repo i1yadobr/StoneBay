@@ -1,6 +1,5 @@
 /datum/announcer
 	var/sounds = list()
-	var/required_tier = PATREON_NONE
 
 /datum/announcer/default
 	sounds = list(
@@ -70,8 +69,6 @@
 	)
 
 /datum/announcer/vgstation
-	required_tier = PATREON_NONE
-
 	sounds = list(
 		/datum/announce/command_report 			= 'sound/announcer/vgstation/command_report.ogg',
 		/datum/announce/ion_storm 				= 'sound/announcer/vgstation/ion_storm.ogg',
@@ -83,8 +80,6 @@
 	)
 
 /datum/announcer/baystation12
-	required_tier = PATREON_NONE
-
 	sounds = list(
 		/datum/announce/command_report 				= 'sound/announcer/baystation12/command_report.ogg',
 		/datum/announce/ion_storm 					= 'sound/announcer/baystation12/ion_storm.ogg',
@@ -103,8 +98,6 @@
 
 
 /datum/announcer/baystation12_torch
-	required_tier = PATREON_NONE
-
 	sounds = list(
 		/datum/announce/command_report 			= 'sound/announcer/baystation12-torch/command_report.ogg',
 		/datum/announce/level_7_biohazard 		= 'sound/announcer/baystation12-torch/level_7_biohazard.ogg',
@@ -117,8 +110,6 @@
 	)
 
 /datum/announcer/tgstation
-	required_tier = PATREON_NONE
-
 	sounds = list(
 		/datum/announce/command_report 				= 'sound/announcer/tgstation/command_report.ogg',
 		/datum/announce/ion_storm 					= 'sound/announcer/tgstation/ion_storm.ogg',

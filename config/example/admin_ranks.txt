@@ -1,0 +1,43 @@
+########################################################################################
+# ADMIN RANK DEFINES                                                                   #
+# The format of this is very simple. Rank name goes first.                             #
+# Rank is CASE-SENSITIVE, all punctuation will be stripped so spaces don't matter.     #
+# Each rank is then followed by keywords with the prefix "+".                          #
+# These keywords represent groups of verbs and abilities which are given to that rank. #
+# +@ (or +prev) is a special shorthand which adds all the rights of the rank above it. #
+# Ranks with no keywords will just be given the most basic verbs and abilities   ~Carn #
+########################################################################################
+
+# KEYWORDS:
+# +ADMIN = General admin tools/verbs.
+# +FUN = Event-oriented stuff and some fun secrets in the Secrets tab.
+# +BAN = Bans, jobbans, permabans.
+# +STEALTH = Ability to hide yourself from who, adminwho and client list in the hub.
+# +POSSESS = Ability to possess objects
+# +REJUV (or +REJUVINATE) = Ability to revive and use godmode, respawning gibbed/dusted players is TODO
+# +BUILD (or +BUILDMODE) = the ability to use buildmode
+# +SERVER = High-risk actions (e.g., server config changes).
+# +DEBUG = Debug tools for troubleshooting (often for coders).
+# +VAREDIT = Edit variables (everyone can view, but this allows editing).
+# +RIGHTS (or +PERMISSIONS) = Promote/demote users, manage roles and permissions.
+# +SOUND (or +SOUNDS) = Upload/play sounds.
+# +SPAWN (or +CREATE) = Spawn/transform atoms (high-risk items need +FUN).
+# +EVERYTHING (or +HOST or +ALL) = Grants all permissions.
+
+RetiredAdmin
+
+Moderator       +MOD
+TrialModerator  +MOD
+
+Mentor			+MENTOR  
+TrialAdmin      +@ +ADMIN +STEALTH +SPAWN +REJUV +VAREDIT +BAN +SERVER
+GameAdmin       +@ +DEBUG +FUN +POSSESS +BUILDMODE +SOUND +PERMISSIONS
+SeniorAdmin     +@
+
+HeadDeveloper   +EVERYTHING
+HeadAdmin       +EVERYTHING
+Host            +EVERYTHING
+
+Developer       +DEBUG +VAREDIT +SERVER +SPAWN +REJUV +POSSESS +BUILDMODE +ADMIN +FUN
+TrialDevAdmin   +DEBUG +VAREDIT +SERVER +SPAWN +REJUV +POSSESS +BUILDMODE +ADMIN +STEALTH +BAN +FUN
+DevAdmin        +DEBUG +VAREDIT +SERVER +SPAWN +REJUV +POSSESS +BUILDMODE +ADMIN +STEALTH +BAN +FUN +SOUND +PERMISSIONS

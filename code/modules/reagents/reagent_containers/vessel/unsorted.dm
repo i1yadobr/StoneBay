@@ -101,7 +101,7 @@
 		playsound(get_turf(src), GET_SFX(SFX_FOOTSTEP_WATER), 100, TRUE)
 		reagents.trans_to(G.affecting, min(reagents.total_volume, 10))
 
-		if(!do_after(user, 3 SECONDS, src, TRUE))
+		if(!do_after(user, 3 SECONDS, src, needhand = TRUE))
 			return
 
 		if(QDELETED(src) || !G?.affecting)

@@ -87,10 +87,7 @@
 			human_user.visible_message(SPAN_DANGER("[human_user]'s hands are violently yanked into the collapsing structure of \the [src]!"))
 
 		var/outcome
-		if (config.misc.meme_content && prob(15))
-			new /obj/singularity(get_turf(src), 300)
-			outcome = "singularity"
-		else if (prob(60))
+		if (prob(60))
 			var/obj/effect/portal/wormhole/wormhole = create_wormhole(get_turf(src), get_random_turf_in_range(src, 16, 8))
 			wormhole.Bumped(user) // Otherwise spessman won't go through it...
 			outcome = "single wormhole"

@@ -217,12 +217,13 @@
 	require_module = 1
 
 /obj/item/borg/upgrade/vtec/action(mob/living/silicon/robot/R)
-	if(..()) return FALSE
-
-	if(R.has_movespeed_modifier(/datum/movespeed_modifier/vtec_speedup))
+	if(..())
 		return FALSE
 
-	R.add_movespeed_modifier(/datum/movespeed_modifier/vtec_speedup)
+	if(R.speed == -1)
+		return FALSE
+
+	R.speed--
 	installed = TRUE
 	return TRUE
 

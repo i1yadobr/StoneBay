@@ -7,6 +7,7 @@
 
 	throw_range = 4
 
+	var/equipment_slowdown = -1
 	var/list/hud_list[12]
 	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is imbedded in us.
 	var/obj/item/rig/wearing_rig // This is very not good, but it's much much better than calling get_rig() every update_canmove() call.
@@ -1223,8 +1224,8 @@
 	if(client)
 		Login()
 
-	if(config && config.revival.use_cortical_stacks && client && client.prefs.has_cortical_stack && !(species.spawn_flags & SPECIES_NO_LACE))
-		create_stack()
+	if(config && config.health.use_neural_lace && client && client.prefs.has_neural_lace && !(species.spawn_flags & SPECIES_NO_LACE))
+		create_neural_lace()
 	full_prosthetic = null
 
 	//recheck species-restricted clothing
@@ -1590,7 +1591,7 @@
 	var/obj/item/organ/external/affecting
 	if(organ_check in list(BP_HEART, BP_LUNGS, BP_STOMACH, BP_LIVER))
 		affecting = organs_by_name[BP_CHEST]
-	else if(organ_check in list(BP_KIDNEYS, BP_BLADDER, BP_INTESTINES))
+	else if(organ_check in list(BP_KIDNEYS, BP_INTESTINES))
 		affecting = organs_by_name[BP_GROIN]
 	else if(organ_check in list(BP_EYES, BP_TONGUE))
 		affecting = organs_by_name[BP_HEAD]
@@ -1772,16 +1773,13 @@
 /mob/living/carbon/human/proc/useblock_off()
 	src.setClickCooldown(3)
 	src.blocking = 0
-	remove_movespeed_modifier(/datum/movespeed_modifier/blocking)
 	if(src.block_icon) //in case we don't have the HUD and we use the hotkey
 		src.block_icon.icon_state = "act_block0"
 
 /mob/living/carbon/human/proc/useblock_on()
 	src.blocking = 1
-	add_movespeed_modifier(/datum/movespeed_modifier/blocking)
 	if(src.block_icon) //in case we don't have the HUD and we use the hotkey
 		src.block_icon.icon_state = "act_block1"
-
 
 /mob/living/carbon/human/verb/blockswitch()
 	set name = "Block Hand Toggle"

@@ -15,8 +15,6 @@
 
 - **[База данных](https://github.com/i1yadobr/StoneBay/blob/dev/docs/db.md)** - база данных и как её поднимать.
 
-- **[Профилирование](https://github.com/i1yadobr/StoneBay/blob/dev/docs/profiling.md)** - профилирование кода.
-
 ## Лицензия
 
 Исходный код StoneBay находится под лицензией [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl.html), полный текст которой можно найти в файле [LICENSE](/LICENSE).

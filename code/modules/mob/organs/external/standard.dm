@@ -52,7 +52,7 @@
 	artery_name = "iliac artery"
 	cavity_name = "abdominal"
 	limb_flags = ORGAN_FLAG_CAN_AMPUTATE | ORGAN_FLAG_GENDERED_ICON | ORGAN_FLAG_CAN_BREAK
-	internal_organs_size = 11 // Kidneys = 2, bladder = 2, intestines = 6, appendix = 1
+	internal_organs_size = 9 // Kidneys = 2, intestines = 6, appendix = 1
 
 /obj/item/organ/external/arm
 	organ_tag = BP_L_ARM

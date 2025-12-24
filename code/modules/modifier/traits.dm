@@ -153,10 +153,10 @@
 	desc = "You don't feel cold!"
 
 /datum/modifier/trait/cold_resist/on_applied()
-	holder.add_mutation(MUTATION_COLD_RESISTANCE)
+	holder.mutations.Add(MUTATION_COLD_RESISTANCE)
 
 /datum/modifier/trait/cold_resist/on_expire()
-	holder.remove_mutation(MUTATION_COLD_RESISTANCE)
+	holder.mutations.Remove(MUTATION_COLD_RESISTANCE)
 
 /datum/modifier/trait/noslip
 	name = "No Slip"
@@ -213,3 +213,14 @@
 /datum/modifier/trait/magicimmune
 	name = "Magic Immunity"
 	desc = "You're immune to magic"
+
+//TODO: Think about better way for slowdowning mobs, if that possible
+
+/datum/modifier/trait/slowdown
+	name = "Slowdown"
+	desc = "You're too slow"
+
+	slowdown = 0.5
+
+/datum/modifier/trait/slowdown/high
+	slowdown = 1

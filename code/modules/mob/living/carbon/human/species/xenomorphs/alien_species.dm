@@ -205,7 +205,7 @@
 	name = SPECIES_XENO_DRONE
 	caste_name = "drone"
 	weeds_plasma_rate = 15
-	movespeed_modifier = /datum/movespeed_modifier/xenos
+	slowdown = 0
 	total_health = 100
 	tail = "xenos_drone_tail"
 	rarity_value = 5
@@ -261,7 +261,7 @@
 	name = SPECIES_XENO_HUNTER
 	weeds_plasma_rate = 5
 	caste_name = "hunter"
-	movespeed_modifier = /datum/movespeed_modifier/xenos_hunter
+	slowdown = -0.5
 	total_health = 125
 	tail = "xenos_hunter_tail"
 	strength = STR_HIGH
@@ -298,13 +298,13 @@
 	unarmed_types = list(/datum/unarmed_attack/claws/strong/xeno/feral, /datum/unarmed_attack/bite/strong/xeno)
 	icobase = 'icons/mob/human_races/xenos/r_xenos_hunter_feral.dmi'
 	tail = "xenos_hunter_feral_tail"
-	movespeed_modifier = /datum/movespeed_modifier/xenos_feral
+	slowdown = -1
 
 /datum/species/xenos/sentinel
 	name = SPECIES_XENO_SENTINEL
 	weeds_plasma_rate = 10
 	caste_name = "sentinel"
-	movespeed_modifier = /datum/movespeed_modifier/xenos
+	slowdown = 0
 	total_health = 150
 	weeds_heal_rate = 15
 	tail = "xenos_sentinel_tail"
@@ -354,7 +354,7 @@
 	weeds_heal_rate = 20
 	weeds_plasma_rate = 20
 	caste_name = "queen"
-	movespeed_modifier = /datum/movespeed_modifier/xenos_queen
+	slowdown = 3.5
 	tail = "xenos_queen_tail"
 	rarity_value = 10
 	strength = STR_VHIGH

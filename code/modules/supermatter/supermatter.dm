@@ -133,12 +133,12 @@
 		return
 
 	// Generic checks, similar to checks done by supermatter monitor program.
-	aw_normal = status_adminwarn_check(SUPERMATTER_NORMAL, aw_normal, "INFO: Supermatter crystal has been energised.", FALSE)
-	aw_notify = status_adminwarn_check(SUPERMATTER_NOTIFY, aw_notify, "INFO: Supermatter crystal is approaching unsafe operating temperature.", FALSE)
-	aw_warning = status_adminwarn_check(SUPERMATTER_WARNING, aw_warning, "WARN: Supermatter crystal is taking integrity damage!", FALSE)
-	aw_danger = status_adminwarn_check(SUPERMATTER_DANGER, aw_danger, "WARN: Supermatter integrity is below 50%!", TRUE)
-	aw_emerg = status_adminwarn_check(SUPERMATTER_EMERGENCY, aw_emerg, "CRIT: Supermatter integrity is below 25%!", FALSE)
-	aw_delam = status_adminwarn_check(SUPERMATTER_DELAMINATING, aw_delam, "CRIT: Supermatter is delaminating!", TRUE)
+	aw_normal = status_adminwarn_check(SUPERMATTER_NORMAL, aw_normal, "INFO: Supermatter crystal has been energised.")
+	aw_notify = status_adminwarn_check(SUPERMATTER_NOTIFY, aw_notify, "INFO: Supermatter crystal is approaching unsafe operating temperature.")
+	aw_warning = status_adminwarn_check(SUPERMATTER_WARNING, aw_warning, "WARN: Supermatter crystal is taking integrity damage!")
+	aw_danger = status_adminwarn_check(SUPERMATTER_DANGER, aw_danger, "WARN: Supermatter integrity is below 50%!")
+	aw_emerg = status_adminwarn_check(SUPERMATTER_EMERGENCY, aw_emerg, "CRIT: Supermatter integrity is below 25%!")
+	aw_delam = status_adminwarn_check(SUPERMATTER_DELAMINATING, aw_delam, "CRIT: Supermatter is delaminating!")
 
 	// EPR check. Only runs when supermatter is energised. Triggers when there is very low amount of coolant in the core (less than one standard canister).
 	// This usually means a core breach or deliberate venting.
@@ -149,7 +149,7 @@
 	else
 		aw_EPR = FALSE
 
-/obj/machinery/power/supermatter/proc/status_adminwarn_check(min_status, current_state, message, send_to_irc = FALSE)
+/obj/machinery/power/supermatter/proc/status_adminwarn_check(min_status, current_state, message)
 	var/status = get_status()
 	if(status >= min_status)
 		if(!current_state)
@@ -533,41 +533,25 @@
 
 	Consume(AM)
 
-#define SUPERMATTER_MIN_THROW_DIST 1
-#define SUPERMATTER_MAX_THROW_DIST 3
-
-/obj/machinery/power/supermatter/proc/Consume(atom/victim)
-	if (istype(victim, /obj/machinery/power/supermatter))
-		var/obj/machinery/power/supermatter/supermatter_victim = victim
-		if (config.misc.meme_content)
-			supermatter_victim.throw_at(get_edge_target_turf(supermatter_victim, get_dir(src, supermatter_victim)), rand(SUPERMATTER_MIN_THROW_DIST, SUPERMATTER_MAX_THROW_DIST), 1)
-			supermatter_victim.visible_message(SPAN_WARNING("\The [supermatter_victim] briefly lights up and instantly starts flying in the opposite direction."))
-		else
-			power += supermatter_victim.power
-
-	if (!victim.supermatter_act())
-		return
-
-	if (ismob(victim))
-		power += 400
-	else
+/obj/machinery/power/supermatter/proc/Consume(mob/living/user)
+	if(istype(user))
+		user.dust()
 		power += 200
+	else
+		qdel(user)
+
+	power += 200
 
 	//Some poor sod got eaten, go ahead and irradiate people nearby.
 	for(var/mob/living/l in range(10))
 		if(l in view())
-			l.show_message("<span class=\"warning\">As \the [src] slowly stops resonating, you find your skin covered in new radiation burns.</span>", 1,\
-				"<span class=\"warning\">The unearthly ringing subsides and you notice you have new radiation burns.</span>", 2)
+			l.show_message(SPAN("warning", "As \the [src] slowly stops resonating, you find your skin covered in new radiation burns."), 1,
+				SPAN("warning", "The unearthly ringing subsides and you notice you have new radiation burns."), 2)
 		else
-			l.show_message("<span class=\"warning\">You hear an uneartly ringing and notice your skin is covered in fresh radiation burns.</span>", 2)
+			l.show_message(SPAN("warning", "You hear an uneartly ringing and notice your skin is covered in fresh radiation burns."), 2)
 
 	var/datum/radiation_source/temp_src = SSradiation.radiate(src, new /datum/radiation/preset/supermatter(10))
 	temp_src.schedule_decay(20 SECONDS)
-
-	playsound(src, GET_SFX(SFX_SUPERMATTER), 100)
-
-#undef SUPERMATTER_MIN_THROW_DIST
-#undef SUPERMATTER_MAX_THROW_DIST
 
 /proc/supermatter_pull(atom/target, pull_range = 255, pull_power = STAGE_FIVE)
 	var/list/movable_atoms = list()

@@ -44,8 +44,6 @@
 
 #define isliving(A) istype(A, /mob/living)
 
-#define isstructure(A) istype(A, /obj/structure)
-
 #define isbot(A) istype(A, /mob/living/bot)
 
 #define ismouse(A) istype(A, /mob/living/simple_animal/mouse)

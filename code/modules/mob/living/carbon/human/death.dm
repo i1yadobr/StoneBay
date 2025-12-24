@@ -48,7 +48,7 @@
 	BITSET(hud_updateflag, LIFE_HUD)
 
 	//backs up lace if available.
-	var/obj/item/organ/internal/stack/s = get_organ(BP_STACK)
+	var/obj/item/organ/internal/neurolace/s = get_organ(BP_NEURAL_LACE)
 	if(s)
 		s.do_backup()
 
@@ -78,7 +78,7 @@
 
 	RemoveHairAndFacials()
 
-	add_mutation(MUTATION_HUSK)
+	mutations.Add(MUTATION_HUSK)
 	for(var/obj/item/organ/external/head/h in organs)
 		h.status |= ORGAN_DISFIGURED
 	update_body(1)
@@ -95,7 +95,7 @@
 
 	RemoveHairAndFacials()
 
-	add_mutation(MUTATION_SKELETON)
+	mutations.Add(MUTATION_SKELETON)
 	for(var/obj/item/organ/external/head/h in organs)
 		h.status |= ORGAN_DISFIGURED
 	update_body(1)

@@ -258,7 +258,7 @@
 		return SURGERY_FAILURE
 
 	var/obj/item/organ/internal/O = target.internal_organs_by_name[target_organ.organ_tag]
-	if(O && (O.parent_organ == parent_organ.organ_tag || istype(target_organ, /obj/item/organ/internal/stack)))
+	if(O && (O.parent_organ == parent_organ.organ_tag || istype(target_organ, /obj/item/organ/internal/neurolace)))
 		target.show_splash_text(user, "stack is already present!", "There's already a stack present!")
 		return SURGERY_FAILURE
 

@@ -50,7 +50,7 @@
 	busy = 1
 	to_chat(user, "<span class='notice'>You dip your hands into \the [src]'s [text_modifications["Dip"]]</span>")
 	for(var/count = 0, count < blood_cost/10, count++)
-		if(!do_after(user, 50,src))
+		if(!do_after(user, 50, src))
 			busy = 0
 			return
 		user.visible_message("\The [user] swirls their hands in \the [src].", text_modifications["Shape"])
