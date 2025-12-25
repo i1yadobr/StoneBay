@@ -2,7 +2,8 @@
 #error T_BOARD macro is not defined but we need it!
 #endif
 
-//Stuff that doesn't fit into any category goes here
+// TODO(rufus): move all circuits under code/game/objects/items/circuitboards
+//   there's absolutely no need for them to be near their machniery defines
 
 /obj/item/circuitboard/aicore
 	name = T_BOARD("AI core")
