@@ -222,7 +222,7 @@
 			var/obj/item/pickaxe/drill/D = W
 			dismantle_verb = D.drill_verb
 			dismantle_sound = D.drill_sound
-			cut_delay -= D.digspeed
+			cut_delay -= (50 - D.dig_delay) // smaller dig_delay means faster cutting
 
 		if(dismantle_verb)
 

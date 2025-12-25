@@ -166,10 +166,13 @@ var/list/mining_floors = list()
 	if(mineral.icon_tag == "diamond")
 		explosion_block = 3
 
+// TODO(rufus): refactor this "pile of spaghetti" that the commenter below couldn't handle.
+//   I myself touched some of the code in order to make it compilable and functional porting
+//   a feature from OnyxBay, it's not *that* bad.
 //Not even going to touch this pile of spaghetti
-/turf/simulated/mineral/attackby(obj/item/W, mob/user)
+/turf/simulated/mineral/attackby(obj/item/W as obj, mob/user as mob)
 	if(!user.IsAdvancedToolUser())
-		to_chat(usr, FEEDBACK_YOU_LACK_DEXTERITY)
+		to_chat(usr,  FEEDBACK_YOU_LACK_DEXTERITY)
 		return
 
 	if(istype(W, /obj/item/device/core_sampler))
@@ -185,11 +188,13 @@ var/list/mining_floors = list()
 
 	if(istype(W, /obj/item/device/measuring_tape))
 		var/obj/item/device/measuring_tape/P = W
-		user.visible_message(SPAN_NOTICE("\The [user] extends [P] towards [src]."), SPAN_NOTICE("You extend [P] towards [src].</span>"))
+		user.visible_message(SPAN_NOTICE("\The [user] extends [P] towards [src]."), SPAN_NOTICE("You extend [P] towards [src]."))
 		if(do_after(user, 10, src))
 			to_chat(user, SPAN_NOTICE("\The [src] has been excavated to a depth of [excavation_level]cm."))
 		return
 
+	// TODO(rufus): separate out all the xenoarcheology code instead of
+	//   dealing with a mix of mining and artifacts logic
 	if(istype(W, /obj/item/pickaxe))
 		if(!istype(user.loc, /turf))
 			return
@@ -200,21 +205,26 @@ var/list/mining_floors = list()
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		else
 			var/obj/item/pickaxe/drill/D = P
-			if(last_act + D.digspeed > world.time) //Prevents message spam
+			if(last_act + D.dig_delay > world.time)
 				return
 			last_act = world.time
 
 		playsound(user, P.drill_sound, 20, 1)
 
-		var/newDepth = excavation_level + P.excavation_amount // Used commonly below
+		var/archeology_excavation_amount = 0
+		if(istype(W, /obj/item/pickaxe/archaeologist))
+			var/obj/item/pickaxe/archaeologist/archeo_pick = W
+			archeology_excavation_amount = archeo_pick.excavation_amount
+		excavation_level += archeology_excavation_amount
+
 		//handle any archaeological finds we might uncover
 		var/fail_message = ""
 		if(finds && finds.len)
 			var/datum/find/F = finds[1]
-			if(newDepth > F.excavation_required) // Digging too deep can break the item. At least you won't summon a Balrog (probably)
+			if(excavation_level > F.excavation_required) // Digging too deep can break the item. At least you won't summon a Balrog (probably)
 				fail_message = ". <b>[pick("There is a crunching noise", "[W] collides with some different rock", "Part of the rock face crumbles away", "Something breaks under [W]")]</b>"
 
-		to_chat(user, "<span class='notice'>You are digging \the [src][fail_message].</span>")
+		to_chat(user, SPAN_NOTICE("You are digging \the [src][fail_message]."))
 
 		if(fail_message && prob(90))
 			if(prob(25))
@@ -226,23 +236,23 @@ var/list/mining_floors = list()
 
 		if(istype(P, /obj/item/pickaxe/drill))
 			var/obj/item/pickaxe/drill/D = P
-			if(!do_after(user, D.digspeed, src))
+			if(!do_after(user, D.dig_delay, src))
 				return
-		durability -= P.power
+		durability -= P.mining_power
 		if(finds && finds.len)
 			var/datum/find/F = finds[1]
-			if(newDepth == F.excavation_required) // When the pick hits that edge just right, you extract your find perfectly, it's never confined in a rock
+			if(excavation_level == F.excavation_required) // When the pick hits that edge just right, you extract your find perfectly, it's never confined in a rock
 				excavate_find(1, F)
-			else if(newDepth > F.excavation_required - F.clearance_range) // Not quite right but you still extract your find, the closer to the bottom the better, but not above 80%
-				excavate_find(prob(80 * (F.excavation_required - newDepth) / F.clearance_range), F)
+			else if(excavation_level > F.excavation_required - F.clearance_range) // Not quite right but you still extract your find, the closer to the bottom the better, but not above 80%
+				// TODO(rufus): review the math here
+				excavate_find(prob(80 * (F.excavation_required - excavation_level) / F.clearance_range), F)
 
 		if(istype(P, /obj/item/pickaxe/drill))
-			to_chat(user, "<span class='notice'>You finish [P.drill_verb] \the [src].</span>")
-
-		if(newDepth >= 200)
-			excavation_level = 200
+			to_chat(user, SPAN_NOTICE("You finish [P.drill_verb] \the [src]."))
 
 		if(durability <= 0 || excavation_level >= 200) // This means the rock is mined out fully
+			if(excavation_level >= 200)
+				to_chat(user, SPAN_NOTICE("With most of \the [src] cleared away, the remaining half-meter of fragments crumbles under its own weight and scatters."))
 			var/obj/structure/boulder/B
 			if(artifact_find)
 				if(excavation_level > 0 || prob(15))
@@ -261,10 +271,13 @@ var/list/mining_floors = list()
 			else
 				GetDrilled(1)
 			return
-		else if(mineral && durability < initial(durability) - initial(durability) / max(ore_left, 1))
-			DropMineral(user.dir)
+		else if(mineral && durability < initial(durability) - initial(durability) / max(mineral.result_amount, 1))
+			DropMineral()
 
-		excavation_level += P.excavation_amount
+		// TODO(rufus): temporary solution before this whole function is properly refactored.
+		//   Adding this because update_excav_overlay switch statement had to be updated as
+		//   new BYOND versions don't allow switching over variables, only constants.
+		var/excav_quadrant_changed = floor(excavation_level / 50) != floor((excavation_level-archeology_excavation_amount) / 50)
 		var/updateIcon = 0
 
 		//Archaeo overlays
@@ -278,16 +291,9 @@ var/list/mining_floors = list()
 			archaeo_overlay = null
 			updateIcon = 1
 
-		//There's got to be a better way to do this
-		var/update_excav_overlay = FALSE
-		if (excavation_level >= 150 && (excavation_level - P.excavation_amount < 150) || \
-			excavation_level >= 100 && (excavation_level - P.excavation_amount < 100) || \
-			excavation_level >= 50  && (excavation_level - P.excavation_amount < 50))
-			update_excav_overlay = TRUE
-
 		//update overlays displaying excavation level
-		if( !(excav_overlay && excavation_level > 0) || update_excav_overlay )
-			var/excav_quadrant = round(excavation_level / 50) + 1
+		if(excavation_level > 0 && (!excav_overlay || excav_quadrant_changed))
+			var/excav_quadrant = floor(excavation_level / 50) + 1
 			excav_overlay = "overlay_excv[excav_quadrant]_[rand(1,3)]"
 			updateIcon = 1
 
@@ -295,7 +301,7 @@ var/list/mining_floors = list()
 			update_icon()
 
 		//drop some rocks
-		next_rock += P.excavation_amount
+		next_rock += archeology_excavation_amount
 		while(next_rock > 50)
 			next_rock -= 50
 			var/obj/item/ore/O = new(src)
@@ -308,15 +314,15 @@ var/list/mining_floors = list()
 			return
 		last_act = world.time
 
-		to_chat(user, "<span class='warning'>You start chiselling [src] into a sculptable block.</span>")
+		to_chat(user, SPAN("warning", "You start chiselling [src] into a sculptable block."))
 
-		if(!do_after(user, 80, src))
+		if(!do_after(user,80))
 			return
 
 		if (!istype(src, /turf/simulated/mineral))
 			return
 
-		to_chat(user, "<span class='notice'>You finish chiselling [src] into a sculptable block.</span>")
+		to_chat(user, SPAN("notice", "You finish chiselling [src] into a sculptable block."))
 		new /obj/structure/sculpting_block(src)
 		GetDrilled(1)
 
@@ -349,10 +355,8 @@ var/list/mining_floors = list()
 	return O
 
 /turf/simulated/mineral/proc/GetDrilled(artifact_fail = 0)
-	//var/destroyed = 0 //used for breaking strange rocks
-	if(mineral && ore_left)
-
-		while(ore_left > 0)
+	if(mineral && mineral.result_amount > 0)
+		while(mineral.result_amount > 0)
 			DropMineral()
 
 	if(artifact_find && artifact_fail)
@@ -594,9 +598,10 @@ var/list/mining_floors = list()
 
 	var/list/usable_tools = list(
 		/obj/item/shovel,
-		/obj/item/pickaxe/drill/diamonddrill,
 		/obj/item/pickaxe/drill,
-		/obj/item/pickaxe/drill/borgdrill
+		/obj/item/pickaxe/drill/adv,
+		/obj/item/pickaxe/drill/diamond,
+		/obj/item/pickaxe/drill/cyborg
 		)
 
 	var/valid_tool

@@ -1749,7 +1749,7 @@
 "klE" = (/obj/structure/table/steel_reinforced,/obj/item/storage/toolbox/electrical{pixel_y = 4; pixel_x = 2},/obj/item/storage/toolbox/syndicate,/obj/machinery/light/small/red,/turf/simulated/floor/shuttle/red,/area/syndicate_station)
 "klI" = (/obj/structure/flora/log,/obj/item/toy/figure/syndie{pixel_y = 8},/turf/unsimulated/floor/frozenground,/area/syndicate_mothership)
 "kmx" = (/obj/effect/floor_decal/corner/red,/obj/effect/floor_decal/corner/red{dir = 1},/turf/simulated/floor/tiled/dark,/area/centcom)
-"knz" = (/obj/item/pickaxe/drill/diamonddrill,/obj/item/device/flashlight/lantern,/turf/simulated/floor/natural/sand/darksand,/area/rescue_base)
+"knz" = (/obj/item/pickaxe/drill/diamond,/obj/item/device/flashlight/lantern,/turf/simulated/floor/natural/sand/darksand,/area/rescue_base)
 "knO" = (/obj/effect/floor_decal/spline/plain/grey,/turf/simulated/floor/tiled,/area/acting/backstage)
 "knP" = (/obj/machinery/atmospherics/pipe/simple/hidden,/obj/effect/floor_decal/corner/green{dir = 6},/obj/effect/floor_decal/corner/grey{dir = 9},/turf/simulated/floor/tiled,/area/shuttle/merchant/home)
 "kof" = (/obj/machinery/smartfridge/drying_rack,/turf/simulated/floor/tiled,/area/acting/backstage)

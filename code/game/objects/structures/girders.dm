@@ -97,7 +97,7 @@
 			dismantle()
 		return
 
-	else if(istype(W, /obj/item/pickaxe/drill/diamonddrill))
+	else if(istype(W, /obj/item/pickaxe/drill/diamond))
 		user.visible_message(SPAN("notice", "[user] drills through \the [src]!"), \
 				             SPAN("notice", "You drill through \the [src]!"))
 		dismantle()
@@ -325,7 +325,7 @@
 				             	 SPAN("notice", "You slice apart \the [src]!"))
 		dismantle()
 
-	else if(istype(W, /obj/item/pickaxe/drill/diamonddrill))
+	else if(istype(W, /obj/item/pickaxe/drill/diamond))
 		user.visible_message(SPAN("notice", "[user] drills through \the [src]!"), \
 				             SPAN("notice", "You drill through \the [src]!"))
 		new /obj/item/remains/human(get_turf(src))
