@@ -102,7 +102,7 @@
 	dat += "</div>"
 	dat += "<br><b>Equipment point cost list:</b><BR><table border='0' width='300'>"
 	for(var/datum/data/mining_equipment/equipment in equipment_list)
-		if(prize.amount != 0)
+		if(equipment.amount != 0)
 			dat += "<tr><td>[equipment.name]</td><td>[equipment.cost]</td><td><A href='?src=\ref[src];purchase=\ref[equipment]'>Purchase</A> ([equipment.amount == -1 ? "No limit" : equipment.amount])</td></tr>"
 		else
 			dat += "<tr><td>[equipment.name]</td><td>(Out of stock!)</td></tr>"

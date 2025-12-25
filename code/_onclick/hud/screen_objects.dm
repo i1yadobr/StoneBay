@@ -608,7 +608,7 @@
 	return 1
 
 /atom/movable/screen/holomap
-	icon = 'icons/480x480.dmi'
+	icon = 'icons/holomap/holomap_480x480.dmi'
 	icon_state = "blank"
 	name = "holomap"
 	icon = null

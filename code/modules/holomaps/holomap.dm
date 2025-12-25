@@ -4,12 +4,12 @@
 		GLOB.holomaps[zlevel] = generate_holomap_z(zlevel)
 
 /proc/generate_holomap_z(z)
-	var/icon/map = icon('icons/480x480.dmi', "stationmap")
+	var/icon/map = icon('icons/holomap/holomap_480x480.dmi', "stationmap")
 	if(!(z in GLOB.using_map.get_levels_with_trait(ZTRAIT_STATION))) // If it is not a station level, then we simply use generic background image
 		return map
 
-	var/icon/canvas = icon('icons/480x480.dmi', "blank")
-	var/icon/canvas_areas = icon('icons/480x480.dmi', "blank")
+	var/icon/canvas = icon('icons/holomap/holomap_480x480.dmi', "blank")
+	var/icon/canvas_areas = icon('icons/holomap/holomap_480x480.dmi', "blank")
 
 	var/turf/center = locate(world.maxx / 2, world.maxy / 2, z)
 	if(!center)
