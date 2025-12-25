@@ -1,35 +1,5 @@
-/**********************Miner Lockers**************************/
-
-/obj/structure/closet/secure_closet/miner
-	name = "shaft miner locker"
-	icon_state = "miningsec1"
-	icon_closed = "miningsec"
-	icon_locked = "miningsec1"
-	icon_opened = "miningsecopen"
-	icon_broken = "miningsecbroken"
-	icon_off = "miningsecoff"
-	req_access = list(access_mining)
-
-/obj/structure/closet/secure_closet/miner/Initialize()
-	. = ..()
-	if(prob(50))
-		new /obj/item/storage/backpack/industrial(src)
-	else
-		new /obj/item/storage/backpack/satchel/eng(src)
-
-	new /obj/item/device/radio/headset/headset_cargo(src)
-	new /obj/item/clothing/under/rank/miner(src)
-	new /obj/item/clothing/gloves/thick(src)
-	new /obj/item/clothing/shoes/black(src)
-	new /obj/item/device/analyzer(src)
-	new /obj/item/storage/ore(src)
-	new /obj/item/device/flashlight/lantern(src)
-	new /obj/item/shovel(src)
-	new /obj/item/pickaxe(src)
-	new /obj/item/clothing/glasses/hud/standard/meson(src)
-
-/*****************************Pickaxe********************************/
-
+// TODO(rufus): split to files, maybe in a subfolder
+//   700 lines of loosely connected items code is no way to live
 /obj/item/pickaxe
 	name = "pickaxe"
 	desc = "Pure classics."
@@ -50,42 +20,52 @@
 	attack_verb = list("hit", "pierced", "sliced", "attacked")
 	sharp = 1
 
-	var/power = 10 //Power to an item var so R&D can make improved picks
+	// a relative power of this mining tool, default rock/mineral has
+	// 100 durability, so it'll take 10 regular pickaxe hits to fully break it
+	var/mining_power = 10
+	// TODO(rufus): rename the variables below together with the separation of drills into their own subtype
 	var/drilling = FALSE
-	var/excavation_amount = 0
+	// TODO(rufus): improve sound for the basic pickaxe and make cooler sounds for improved picks
+	//   and optionally consider separate sounds for drills, although this is a bit trickier to get right
 	var/drill_sound = 'sound/effects/fighting/Genhit.ogg'
 	var/drill_verb = "picking"
 
+// TODO(rufus): separate drills into their own subtype, e.g. /obj/item/drill
+//   or /obj/item/mining_drill in case you're afraid of name collisions.
+//   Drills and pickaxes do share some traits, but in their core are different items with different logic.
+//   And checks for them happen separately anways, with some exceptions.
+//   Anyways, even if it produces a bit more code, please separate picks and drills into their own item trees.
 /obj/item/pickaxe/drill
-	name = "mining drill" //Can dig sand as well!
-	icon_state = "handdrill"
-	item_state = "jackhammer"
+	name = "mining drill"
 	desc = "The most basic of mining drills, for short excavations and small mineral extractions."
-	power = 100 //It will remove the rock in one go, but SLOWLY
+	icon_state = "handdrill"
+	mining_power = 100
 	drill_verb = "drilling"
-	power = 100
-	var/digspeed = 40 //Delay to an item var so R&D can make improved drills
+	var/dig_delay = 40 // deciseconds
 
 /obj/item/pickaxe/silver
 	name = "silver pickaxe"
+	desc = "This makes no metallurgic sense."
 	icon_state = "spickaxe"
 	item_state = "spickaxe"
-	power = 30
+	mining_power = 30
 	origin_tech = list(TECH_MATERIAL = 3)
-	desc = "This makes no metallurgic sense."
 
 /obj/item/pickaxe/drill/adv
 	name = "advanced mining drill"
+	desc = "Yours is the drill that will pierce through the rock walls."
 	icon_state = "advdrill"
 	item_state = "jackhammer"
 	force = 15.5
-	digspeed = 30
+	dig_delay = 30
 	origin_tech = list(TECH_MATERIAL = 2, TECH_POWER = 3, TECH_ENGINEERING = 2)
-	desc = "Yours is the drill that will pierce through the rock walls."
 	drill_verb = "drilling"
 
+// TODO(rufus): lost all it's charm and is just another pickaxe now
+//   research what it initially was and how to make it shine again
 /obj/item/pickaxe/jackhammer
 	name = "sonic jackhammer"
+	desc = "Cracks rocks with sonic blasts."
 	icon_state = "jackhammer"
 	item_state = "jackhammer"
 	force = 17.5
@@ -93,44 +73,47 @@
 	mod_reach = 1.35
 	mod_handy = 0.8
 	armor_penetration = 90
-	power = 50 //faster than drill, but cannot dig
+	mining_power = 50
 	origin_tech = list(TECH_MATERIAL = 3, TECH_POWER = 2, TECH_ENGINEERING = 2)
-	desc = "Cracks rocks with sonic blasts, perfect for killing cave lizards."
 	drill_verb = "hammering"
 
 /obj/item/pickaxe/gold
 	name = "golden pickaxe"
+	desc = "This makes no metallurgic sense."
 	icon_state = "gpickaxe"
 	item_state = "gpickaxe"
-	power = 50
+	mining_power = 50
 	origin_tech = list(TECH_MATERIAL = 4)
-	desc = "This makes no metallurgic sense."
 
+// TODO(rufus): give all the tools in this file a better description,
+//   I mean what is this? A fact checking lesson? We get that it's a diamond pickaxe,
+//   why the heck would you just reiterate this in the description?
+//   This game is meant to be fun, not depressingly boring and obvious.
 /obj/item/pickaxe/diamond
 	name = "diamond pickaxe"
+	desc = "A pickaxe with a diamond pick head."
 	icon_state = "dpickaxe"
 	item_state = "dpickaxe"
 	force = 19.0
-	power = 80
+	mining_power = 80
 	origin_tech = list(TECH_MATERIAL = 6, TECH_ENGINEERING = 4)
-	desc = "A pickaxe with a diamond pick head."
 
-/obj/item/pickaxe/drill/diamonddrill //When people ask about the badass leader of the mining tools, they are talking about ME!
+/obj/item/pickaxe/drill/diamond
 	name = "diamond mining drill"
+	desc = "Yours is the drill that will pierce the heavens!"
 	icon_state = "diamonddrill"
 	item_state = "jackhammer"
 	force = 19.0
-	digspeed = 5 //Digs through walls, girders, and can dig up sand
+	dig_delay = 5
 	origin_tech = list(TECH_MATERIAL = 6, TECH_POWER = 4, TECH_ENGINEERING = 5)
-	desc = "Yours is the drill that will pierce the heavens!"
 	drill_verb = "drilling"
 
-/obj/item/pickaxe/drill/borgdrill
+/obj/item/pickaxe/drill/cyborg
 	name = "cyborg mining drill"
+	desc = ""
 	icon_state = "borgdrill"
 	item_state = "jackhammer"
-	digspeed = 10
-	desc = ""
+	dig_delay = 10
 	drill_verb = "drilling"
 
 /obj/item/pickaxe/sledgehammer
@@ -148,7 +131,7 @@
 	mod_handy = 0.4
 	armor_penetration = 100 // It crushes walls
 	drill_verb = "hammering"
-	power = 50
+	mining_power = 50
 	var/wielded = 0
 
 /obj/item/pickaxe/sledgehammer/update_twohanding()
@@ -174,8 +157,6 @@
 	var/new_state = "[icon_state][wielded]"
 	item_state_slots[slot_l_hand_str] = new_state
 	item_state_slots[slot_r_hand_str] = new_state
-
-/*****************************Shovel********************************/
 
 /obj/item/shovel
 	name = "shovel"
@@ -214,8 +195,6 @@
 	armor_penetration = 10
 	w_class = ITEM_SIZE_SMALL
 
-/**********************Flags**************************/
-
 /obj/item/stack/flag
 	name = "flags"
 	desc = "Some colourful flags."
@@ -250,10 +229,10 @@
 
 /obj/item/stack/flag/solgov
 	name = "sol gov flags"
+	desc = "A portable flag with the Sol Government symbol on it. I claim this land for Sol!"
 	singular_name = "sol gov flag"
 	icon_state = "solgovflag"
 	fringe = "solgovflag_fringe"
-	desc = "A portable flag with the Sol Government symbol on it. I claim this land for Sol!"
 	light_color = COLOR_BLUE
 
 /obj/item/stack/flag/attackby(obj/item/W, mob/user)
@@ -310,11 +289,10 @@
 	ClearOverlays()
 	set_light(0)
 
-/**********************Mining car (Crate like thing, not the rail car)**************************/
-
 /obj/structure/closet/crate/miningcar
-	desc = "A mining car. This one doesn't work on rails, but has to be dragged."
+
 	name = "Mining car (not for rails)"
+	desc = "A mining car. This one doesn't work on rails, but has to be dragged."
 	icon_state = "miningcar"
 	density = 1
 	icon_opened = "miningcaropen"
@@ -323,8 +301,6 @@
 
 	turf_height_offset = 15
 	opened_turf_height_offset = 3
-
-/**********************Pinpointer**********************/
 
 /obj/item/ore_radar
 	name = "scanner pad"
@@ -390,8 +366,6 @@
 		if(16 to INFINITY)
 			icon_state = "pinonfar"
 
-/**********************Lazarus Injector**********************/
-
 /obj/item/lazarus_injector
 	name = "lazarus injector"
 	desc = "An injector with a cocktail of nanomachines and chemicals, this device can seemingly raise animals from the dead. If no effect in 3 days please call customer support."
@@ -453,8 +427,9 @@
 	if(malfunctioning || emagged)
 		. += SPAN_INFO("The display on [src] seems to be flickering.")
 
-/**********************Point Transfer Card**********************/
-
+// TODO(rufus): with the removal of access check on points redemption this is obsolete.
+//   Review if there is any use for it and delete if it's really time for these to go.
+//   Honestly, I've never seen one in use over the past three years.
 /obj/item/card/mining_point_card
 	name = "mining points card"
 	desc = "A small card preloaded with mining points. Swipe your ID card over it to transfer the points, then discard."
@@ -476,14 +451,12 @@
 	. = ..()
 	. += "There's [points] point\s on the card."
 
-/**********************Resonator**********************/
-
 /obj/item/resonator
 	name = "resonator"
+	desc = "A handheld device that creates small fields of energy that resonate until they detonate, crushing rock. It can also be activated without a target to create a field at the user's location, to act as a delayed time trap. It's more effective in a vacuum."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "resonator"
 	item_state = "resonator"
-	desc = "A handheld device that creates small fields of energy that resonate until they detonate, crushing rock. It can also be activated without a target to create a field at the user's location, to act as a delayed time trap. It's more effective in a vacuum."
 	w_class = ITEM_SIZE_HUGE
 	force = 20.0
 	mod_weight = 1.5
@@ -575,14 +548,12 @@
 		L.apply_damage(resonance_damage, BRUTE)
 	qdel(src)
 
-
-/******************************Ore Magnet*******************************/
 /obj/item/oremagnet
 	name = "ore magnet"
+	desc = "A handheld device that creates a well of negative force that attracts minerals of a very specific type, size, and state to its user."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "magneto"
 	item_state = "jaunter"
-	desc = "A handheld device that creates a well of negative force that attracts minerals of a very specific type, size, and state to its user."
 	w_class = 3
 	force = 10
 	throwforce = 5
@@ -617,14 +588,12 @@
 		on = 0
 		to_chat(user, "You turn it off.")
 
-/******************************Ore Summoner*******************************/
-
 /obj/item/oreportal
 	name = "ore summoner"
+	desc = "A handheld device that creates a well of warp energy that teleports minerals of a very specific type, size, and state to its user."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "supermagneto"
 	item_state = "jaunter"
-	desc = "A handheld device that creates a well of warp energy that teleports minerals of a very specific type, size, and state to its user."
 	w_class = 3
 	force = 15
 	throwforce = 5
@@ -641,14 +610,13 @@
 		limit -= 1
 		CHECK_TICK
 
-/******************************Sculpting*******************************/
 /obj/item/autochisel
 	name = "auto-chisel"
+	desc = "With an integrated AI chip and hair-trigger precision, this baby makes sculpting almost automatic!"
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "auto-chisel"
 	item_state = "jackhammer"
 	origin_tech = list(TECH_MATERIAL = 3, TECH_POWER = 2, TECH_ENGINEERING = 2)
-	desc = "With an integrated AI chip and hair-trigger precision, this baby makes sculpting almost automatic!"
 
 /obj/structure/sculpting_block
 	name = "sculpting block"
