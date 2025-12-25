@@ -33,9 +33,13 @@
 /obj/item/combotool/advtool
 	name = "Advanced Multitool"
 	desc = "This small, handheld device is made of durable, insulated plastic, has a rubber grip, and can be used as a multitool, screwdriver or wirecutters."
-	description_info = "Multitools are incredibly versatile and can be used on a wide variety of machines. The most common use for this is to trip a device's wires without having to cut them. Simply click on an object with exposed wiring to use it. This one can also be used as a screwdriver or wirecutters. There might be other uses, as well..."
+
+	description_info = "Multitools are incredibly versatile and can be used on a wide variety of machines. \
+	The most common use for this is to trip a device's wires without having to cut them. \
+	Simply click on an object with exposed wiring to use it. This one can also be used as a screwdriver or wirecutters. There might be other uses, as well..."
 	description_fluff = "This device is not just a regular multitool - it is a masterpiece. You can deal with almost any machine using only this little thing."
 	description_antag = "This handy little tool can get you through doors, turn off power, and anything else you might need."
+
 	icon = 'icons/obj/device.dmi'
 	item_state = "multitool"
 	icon_state = "advtool"
@@ -152,9 +156,14 @@
 /obj/item/device/multitool/advpart
 	name = "compact multitool"
 	desc = "You are not supposed to see this, use this or interact with this at all. However, if nobody knows..."
-	description_info = "Multitools are incredibly versatile and can be used on a wide variety of machines. The most common use for this is to trip a device's wires without having to cut them. Simply click on an object with exposed wiring to use it. There might be other uses, as well..."
-	description_fluff = "The common, every day multitool is descended from certain electrical tools from Earth's early space age. Though none too cheap, they are incredibly handy, and can be found in any self-respecting technician's toolbox."
+
+	description_info = "Multitools are incredibly versatile and can be used on a wide variety of machines. \
+	The most common use for this is to trip a device's wires without having to cut them. Simply click on an object with exposed wiring to use it. \
+	There might be other uses, as well..."
+	description_fluff = "The common, every day multitool is descended from certain electrical tools from Earth's early space age. \
+	Though none too cheap, they are incredibly handy, and can be found in any self-respecting technician's toolbox."
 	description_antag = "This handy little tool can get you through doors, turn off power, and anything else you might need."
+
 	item_state = "multitool"
 	icon_state = "adv_multitool"
 	force = 3.5
@@ -167,9 +176,11 @@
 /obj/item/screwdriver/advpart
 	name = "compact screwdriver"
 	desc = "Just a regular screwdriver. However, this one is especially small."
+
 	description_info = "This tool is used to expose or safely hide away cabling. It can open and shut the maintenance panels on vending machines, airlocks, and much more. You can also use it, in combination with a crowbar, to install or remove windows."
 	description_fluff = "Screws have not changed significantly in centuries, and neither have the drivers used to install and remove them."
 	description_antag = "In the world of breaking and entering, tools like multitools and wirecutters are the bread; the screwdriver is the butter. In a pinch, try targetting someone's eyes and stabbing them with it - it'll really hurt!"
+
 	icon = 'icons/obj/device.dmi'
 	icon_state = "adv_screwdriver"
 	item_state = "screwdriver"
@@ -187,9 +198,13 @@
 /obj/item/wirecutters/advpart
 	name = "compact wirecutters"
 	desc = "A special pair of pliers with cutting edges. Various brackets and manipulators built into the handle allow it to repair severed wiring. This pair has some insulation."
-	description_info = "This tool will cut wiring anywhere you see it - make sure to wear insulated gloves! When used on more complicated machines or airlocks, it can not only cut cables, but repair them, as well."
+
+	description_info = "This tool will cut wiring anywhere you see it - make sure to wear insulated gloves! When used on more complicated machines or airlocks, \
+	it can not only cut cables, but repair them, as well."
 	description_fluff = "With modern alloys, today's wirecutters can snap through cables of astonishing thickness."
-	description_antag = "These cutters can be used to cripple the power anywhere on the ship. All it takes is some creativity, and being in the right place at the right time."
+	description_antag = "These cutters can be used to cripple the power anywhere on the ship. All it takes is some creativity, \
+	and being in the right place at the right time."
+
 	icon = 'icons/obj/device.dmi'
 	item_state = "cutters"
 	icon_state = "adv_wirecutters"

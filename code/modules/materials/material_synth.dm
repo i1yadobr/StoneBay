@@ -17,9 +17,12 @@
 	default_type = MATERIAL_PLASTIC
 
 /obj/item/stack/material/cyborg/steel
+	description_info = "Use this in your hand to bring up the recipe menu. If you have enough sheets, \
+	click on something in the list to construct it. \
+	<br>As a synthetic, you can replenish your supply of metal by recharging."
+
 	icon_state = "metal"
 	default_type = MATERIAL_STEEL
-	description_info = "Use this in your hand to bring up the recipe menu. If you have enough sheets, click on something in the list to construct it.<br>As a synthetic, you can replenish your supply of metal by recharging."
 
 /obj/item/stack/material/cyborg/plasteel
 	icon_state = "plasteel"
@@ -34,12 +37,16 @@
 	default_type = MATERIAL_MARBLE
 
 /obj/item/stack/material/cyborg/glass
+	description_info = "Use this in your hand to construct a window. Can be upgraded to reinforced glass by adding metal rods, \
+	which are made from metal sheets.<br>As a synthetic, you can replenish your supply of glass by recharging."
+
 	icon_state = "glass"
 	default_type = MATERIAL_GLASS
-	description_info = "Use this in your hand to construct a window. Can be upgraded to reinforced glass by adding metal rods, which are made from metal sheets.<br>As a synthetic, you can replenish your supply of glass by recharging."
 
 /obj/item/stack/material/cyborg/glass/reinforced
+	description_info = "Use this in your hand to construct a window. Reinforced glass is much stronger against damage. \
+	<br>As a synthetic, you can replenish your supply of reinforced glass by recharging."
+
 	icon_state = "rglass"
 	default_type = MATERIAL_REINFORCED_GLASS
 	charge_costs = list(500, 1000)
-	description_info = "Use this in your hand to construct a window. Reinforced glass is much stronger against damage.<br>As a synthetic, you can replenish your supply of reinforced glass by recharging."

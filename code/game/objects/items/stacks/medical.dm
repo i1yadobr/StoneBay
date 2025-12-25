@@ -455,7 +455,9 @@
 	name = "prototype serum injector"
 	singular_name = "serum dose"
 	desc = "A weird-looking injector with some sort of bloody-red serum inside."
+
 	description_antag = "This more-expensive-than-your-life-is liquid, rumored to be made of mysterious vampire-like creatures, is capable brining dead to life."
+
 	icon_state = "resurrect_serum"
 	origin_tech = list(TECH_BIO = 10)
 	amount = 1

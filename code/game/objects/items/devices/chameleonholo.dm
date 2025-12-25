@@ -88,7 +88,10 @@
 // Chameleon bomb, gentlemen
 /obj/item/device/chameleonholo/bomb
 	name = "chameleon bomb"
-	description_antag = "A powerful bomb with an integrated chameleon hologram projector. Be careful, once you arm and activate it, any touch will trigger an explosion!"
+
+	description_antag = "A powerful bomb with an integrated chameleon hologram projector. \
+	Be careful, once you arm and activate it, any touch will trigger an explosion!"
+
 	icon_state = "chambomb"
 	item_state = "electronic"
 	throwforce = 5.0

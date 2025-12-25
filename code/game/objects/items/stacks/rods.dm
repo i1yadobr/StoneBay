@@ -1,6 +1,10 @@
 /obj/item/stack/rods
 	name = "metal rod"
 	desc = "Some rods. Can be used for building, or something."
+
+	description_info = "Made from metal sheets. You can build a window frame by using it in your hand, or a lattice by clicking on an empty space. \
+	Clicking on a floor without tiles or lattice will create a catwalk. You can make reinforced glass by combining rods and normal glass sheets."
+
 	singular_name = "metal rod"
 	icon_state = "rods"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
@@ -16,7 +20,6 @@
 	center_of_mass = null
 	attack_verb = list("hit", "bludgeoned", "whacked")
 	lock_picking_level = 3
-	description_info = "Made from metal sheets. You can build a window frame by using it in your hand, or a lattice by clicking on an empty space. Clicking on a floor without tiles or lattice will create a catwalk. You can make reinforced glass by combining rods and normal glass sheets."
 
 	drop_sound = SFX_DROP_METALWEAPON
 	pickup_sound = SFX_PICKUP_METALWEAPON
