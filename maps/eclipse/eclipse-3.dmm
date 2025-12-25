@@ -2377,7 +2377,7 @@
 "aWF" = (/obj/machinery/conveyor{dir = 8; id = "merchantbelt2"},/turf/simulated/floor/plating,/area/merchant_station)
 "aWG" = (/obj/machinery/conveyor{dir = 8; id = "merchantbelt1"},/turf/simulated/floor/plating,/area/merchant_station)
 "aWH" = (/obj/structure/flora/pottedplant/tropical,/obj/machinery/vending/wallmed1{pixel_x = 7; pixel_y = 32},/obj/structure/extinguisher_cabinet{pixel_x = -7; pixel_y = 32},/obj/item/storage/secure/safe{pixel_x = -26},/obj/machinery/light{dir = 1},/turf/simulated/floor/trim/wood,/area/shuttle/merchant/home)
-"aWI" = (/obj/item/device/radio/intercom{dir = 8; pixel_x = 22},/obj/structure/closet/secure_closet{name = "merchant's locker"; req_access = list(201)},/obj/machinery/light{dir = 1},/obj/item/gun/energy/gun/taser,/turf/simulated/floor/trim/wood,/area/shuttle/merchant/home)
+"aWI" = (/obj/item/device/radio/intercom{dir = 8; pixel_x = 22},/obj/structure/closet/secure_closet{name = "merchant's locker"; req_access = list(201)},/obj/machinery/light{dir = 1},/obj/item/gun/energy/gun,/turf/simulated/floor/trim/wood,/area/shuttle/merchant/home)
 "aWJ" = (/obj/machinery/atmospherics/pipe/simple/hidden/supply,/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/turf/simulated/floor/tiled,/area/merchant_station)
 "aWK" = (/obj/effect/floor_decal/industrial/warning{dir = 9},/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/obj/machinery/atmospherics/pipe/simple/hidden/supply,/obj/machinery/light/small{dir = 4; pixel_y = 8},/obj/structure/disposalpipe/segment,/turf/simulated/floor/tiled,/area/merchant_station)
 "aWL" = (/obj/effect/decal/cleanable/ash,/obj/machinery/conveyor{dir = 1; id = "merchantbelt1"},/turf/simulated/floor/plating,/area/merchant_station)
