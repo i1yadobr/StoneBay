@@ -9,13 +9,16 @@
 	var/list/ore_turfs = list()
 	var/max_mobs_count = 125 //maximum amount of mobs on the map. Some of the numbers lost in "frame" of the map
 
+// TODO(rufus): test how these work and if they are even necessary, why not just use the
+//   asteroid floor with air directly? I'm really not convinced that these have to be automatas
+//   when they are used for quite static prison mine areas.
 /datum/random_map/automata/cave_system/air
 	floor_type = /turf/simulated/floor/asteroid/air
-	target_turf_type = /turf/unsimulated/mask_air
+	target_turf_type = /turf/unsimulated/mask/air
 
 /datum/random_map/automata/cave_system/prison
 	floor_type = /turf/simulated/floor/asteroid/air/prison
-	target_turf_type = /turf/unsimulated/mask_air
+	target_turf_type = /turf/unsimulated/mask/air/prison
 
 /datum/random_map/automata/cave_system/frozen
 	floor_type = /turf/simulated/floor/natural/frozenground/cave
@@ -23,7 +26,6 @@
 	target_turf_type = /turf/unsimulated/mask/frozen
 	mineral_sparse =  /turf/simulated/mineral/frozen/random
 	mineral_rich = /turf/simulated/mineral/frozen/random/high_chance
-
 
 /datum/random_map/automata/cave_system/get_appropriate_path(value)
 	switch(value)

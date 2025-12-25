@@ -9,19 +9,26 @@
 	icon_state = "bluespace"
 	desc = "Looks like infinity."
 
+// NOTE(rufus): currently these only exist for the convenience of mappers,
+//   but could very well be replaced with a single mask and a bunch of mapping prefabs
+//   with respecitve icon states and variables defining what the mask should be replaced with
+// TODO(rufus): these masks need to be properly organized in terms of theri .dmi files,
+//   right now these are part of walls.dmi, yet asteroid.dmi exists for some reason
 /turf/unsimulated/mask
-	name = "mask - space caves"
+	name = "asteroid cave system mask"
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "rockvault"
+	icon_state = "asteroid_mask"
 
-/turf/unsimulated/mask_air
-	name = "mask"
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "rockairvault"
+/turf/unsimulated/mask/air
+	name = "asteroid cave air mask"
+	icon_state = "asteroid_air_mask"
+
+/turf/unsimulated/mask/air/prison
+	name = "asteroid cave prison air mask"
+	icon_state = "asteroid_prison_air_mask"
 
 /turf/unsimulated/mask/frozen
 	name = "mask - frozen caves"
-
 
 /turf/unsimulated/floor/rescue_base
 	icon_state = "asteroidfloor"
