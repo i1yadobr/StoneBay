@@ -74,7 +74,7 @@
 /obj/item/circuitboard/machine/mining_equipment_vendor
 	name = "circuit board (Mining Equipment Vendor)"
 	icon_state = "id_mod_brown"
-	build_path = /obj/machinery/mineral/equipment_vendor
+	build_path = /obj/machinery/equipment_vendor
 	origin_tech = list(TECH_DATA = 1, TECH_ENGINEERING = 1)
 	req_components = list(/obj/item/stock_parts/console_screen = 1,
 						  /obj/item/stock_parts/matter_bin = 3)
