@@ -421,7 +421,7 @@ Helpers
 		return
 
 	if(config.game.auto_map_vote)
-		SSvote.initiate_vote(/datum/vote/map/end_game, automatic = 1)
+		SSvote.initiate_vote(/datum/vote/map/end_game, forced = TRUE)
 		return
 
 	// Select random map excluding the current
