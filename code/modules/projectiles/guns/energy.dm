@@ -178,7 +178,7 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 		GLOB.registered_weapons -= src
 		return
 
-	audible_message(SPAN("warning", "\The [src] buzzes, refusing unauthorized action."), runechat_message = "*buzz*")
+	audible_message(SPAN("warning", "\The [src] buzzes, refusing unauthorized action."), splash_override = "*buzz*")
 	playsound(loc, 'sound/signals/error1.ogg', 50, 0)
 
 /obj/item/gun/energy/secure/Destroy()
@@ -206,7 +206,7 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 
 /obj/item/gun/energy/secure/special_check()
 	if(!emagged && (!current_mode_authorized() || !registered_owner))
-		audible_message(SPAN("warning", "\The [src] buzzes, refusing to fire."), runechat_message = "*buzz*")
+		audible_message(SPAN("warning", "\The [src] buzzes, refusing to fire."), splash_override = "*buzz*")
 		playsound(loc, 'sound/signals/error1.ogg', 50, 0)
 		return 0
 	// TODO(rufus): refactor special check, as besides checking it also does shooting on clumsy mutation.
