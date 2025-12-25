@@ -8,7 +8,7 @@
 var/datum/evacuation_controller/evacuation_controller
 
 /datum/evacuation_controller
-
+	// TODO(rufus): uncommented variables with obscure meaning
 	var/name = "generic evac controller"
 	var/state = EVAC_IDLE
 	var/deny
@@ -20,6 +20,7 @@ var/datum/evacuation_controller/evacuation_controller
 	var/evac_launch_delay =  3 MINUTES
 	var/evac_transit_delay = 2 MINUTES
 
+	// TODO(rufus): unused variables, even with /datum/evacuation_controller/starship as it's also unused
 	var/autotransfer_prep_additional_delay = 0 MINUTES
 	var/emergency_prep_additional_delay = 0 MINUTES
 	var/transfer_prep_additional_delay = 0 MINUTES
@@ -63,7 +64,7 @@ var/datum/evacuation_controller/evacuation_controller
 
 	var/evac_prep_delay_multiplier = 1
 	if(SSticker.mode)
-		evac_prep_delay_multiplier = SSticker.mode.shuttle_delay
+		evac_prep_delay_multiplier = SSticker.mode.shuttle_delay_mult
 
 	var/additional_delay
 	if(_emergency_evac)
