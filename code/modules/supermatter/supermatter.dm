@@ -71,7 +71,7 @@
 	var/gasefficency = 0.25
 	var/damage = 0
 	var/damage_archived = 0
-	var/safe_alert = "Crystaline hyperstructure returning to safe operating levels."
+	var/safe_alert = "Crystalline hyperstructure returning to safe operating levels."
 	var/safe_warned = 0
 	var/public_alert = 0 //Stick to Engineering frequency except for big warnings when integrity bad
 	var/warning_point = 100
@@ -123,6 +123,35 @@
 	var/datum/radiation_source/rad_source = null
 
 	is_poi = TRUE
+
+	description_info = "The core power element for many stations, Supermatter is a cascading resonance crystalline hyperstructure. \
+	It stays dormant until energized by any source or interaction. Energization typically occurs through high-powered emitter blasts, \
+	but can also happen if something strikes the crystal.<br>\
+	<br>\
+	In its active state, Supermatter crystal emits radiation and heat. If the heat exceeds 5000 Kelvin, it will trigger an alert \
+	and the crystal will start taking integrity damage. Once its integrity falls to zero percent, Supermatter will delaminate, \
+	causing a massive explosion, station-wide radiation spikes, equipment failures, and hallucinations.<br>\
+	<br>\
+	Supermatter is very sensitive to oxygen in the atmosphere, with limited experiments producing unclear results.<br>\
+	It will also rapidly heat up and start taking integrity damage if exposed to vacuum.<br>\
+	<br>\
+	Being near an active Supermatter core is extremely dangerous and requires protective measures. These include:<br>\
+	- Optical meson scanners to prevent hallucinations when viewing the Supermatter.<br>\
+	- A radiation helmet and suit, as Supermatter is radioactive.<br>\
+	<br>\
+	Touching the supermatter will result in *instant death*, leaving no corpse behind! While you can drag the Supermatter, \
+	any other contact will be fatal.<br>\
+	It is advisable to secure some form of life backup before attempting to drag it with bare hands."
+
+	description_antag = "Sabotaging Supermatter is usually achieved by affecting its environment. \
+	This is usually done by exposing the crystal to vacuum via a breach, overheating it, or exposing it to oxygen.<br>\
+	The size of the explosion is based on the amount of energy currently resonating within the crystal, typically accumulated \
+	from consecutive emitter blasts. Throwing massive amounts of any sort of matter into the crystal might also work.<br>\
+	<br>\
+	Besides the explosion, delamination will also emit a massive burst of radiation and cause a station-wide blackout.<br>\
+	<br>\
+	Supermatter is usually installed on a mass-driver, a device designed to quickly eject the Supermatter into outer space \
+	in an emergency. Merely shifting the crystal a few meters away from the mass-driver can cause the emergency ejection to fail."
 
 /obj/machinery/power/supermatter/Initialize()
 	. = ..()
