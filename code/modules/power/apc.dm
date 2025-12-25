@@ -68,6 +68,24 @@
 	name = "area power controller"
 	desc = "A control terminal for the area electrical systems."
 
+	description_info = "An APC (Area Power Controller) regulates and supplies backup power for the area they are in. \
+	The power channels are divided into:<br>\
+	- \"environmental\", machinery that manipulates airflow and temperature, including airlocks<br>\
+	- \"lighting\", self-explanatory<br>\
+	- \"equipment\", all the other machinery<br>\
+	<br>\
+	Power consumption and cell charge can be seen from the interface.<br>\
+	Further controls, like manipulation of the power channels or main breaker, require the APC to be \"unlocked\".<br>\
+	To unlock the APC, swipe an ID with an Engineering access across the panel.<br>\
+	AI and Cyborgs can access the interface regardless of the locked state.<br>"
+
+	description_antag = "APCs can be emagged to unlock them. As a side effect, a blue error screen will be visible.<br>\
+	<br>\
+	Wires can be pulsed remotely with a signaler attached to them.<br>\
+	<br>\
+	A powersink can be used to drain any APCs connected to the same wire the powersink is on, \
+	which is usually at least a full department."
+
 	icon_state = "apc0"
 	anchored = 1
 	use_power = POWER_USE_OFF
@@ -125,23 +143,6 @@
 	var/static/list/status_overlays_environ
 
 	var/static/mutable_appearance/status_overlay_ea
-	description_info = "An APC (Area Power Controller) regulates and supplies backup power for the area they are in. \
-	The power channels are divided into:<br>\
-	- \"environmental\", machinery that manipulates airflow and temperature, including airlocks<br>\
-	- \"lighting\", self-explanatory<br>\
-	- \"equipment\", all the other machinery<br>\
-	<br>\
-	Power consumption and cell charge can be seen from the interface.<br>\
-	Further controls, like manipulation of the power channels or main breaker, require the APC to be \"unlocked\".<br>\
-	To unlock the APC, swipe an ID with an Engineering access across the panel.<br>\
-	AI and Cyborgs can access the interface regardless of the locked state.<br>"
-
-	description_antag = "APCs can be emagged to unlock them. As a side effect, a blue error screen will be visible.<br>\
-	<br>\
-	Wires can be pulsed remotely with a signaler attached to them.<br>\
-	<br>\
-	A powersink can be used to drain any APCs connected to the same wire the powersink is on, \
-	which is usually at least a full department."
 
 /obj/machinery/power/apc/updateDialog()
 	if (stat & (BROKEN|MAINT))

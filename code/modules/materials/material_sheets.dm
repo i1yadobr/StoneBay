@@ -1,5 +1,8 @@
 // Stacked resources. They use a material datum for a lot of inherited values.
 /obj/item/stack/material
+	description_info = "Use a tool on this or use it in your hand to bring up the recipe menu, most times welder or screwdriver will work. \
+	If you have enough sheets, click on something in the list to construct it."
+
 	item_state = "sheet-metal" // Placeholder, since we don't have icons for all the sheets yet. Better than invisible icons, I suppose ~ToTh
 	force = 5.0
 	throwforce = 5
@@ -9,7 +12,6 @@
 	center_of_mass = null
 	randpixel = 3
 	storage_cost_mult = 1.25
-	description_info = "Use a tool on this or use it in your hand to bring up the recipe menu, most times welder or screwdriver will work. If you have enough sheets, click on something in the list to construct it."
 
 	var/default_type = MATERIAL_STEEL
 	var/material/material

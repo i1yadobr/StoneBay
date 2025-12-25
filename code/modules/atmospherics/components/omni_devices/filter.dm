@@ -3,6 +3,10 @@
 //--------------------------------------------
 /obj/machinery/atmospherics/omni/filter
 	name = "omni gas filter"
+
+	description_info = "Filters gas from a custom input direction, with up to two filtered outputs and an 'everything else' \
+	output. The filtered output arrows glow orange."
+
 	icon_state = "map_filter"
 
 	var/list/gas_filters = list()

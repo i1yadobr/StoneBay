@@ -1,9 +1,11 @@
 /obj/machinery/atmospherics/tvalve
-	icon = 'icons/atmos/tvalve.dmi'
-	icon_state = "map_tvalve0"
-
 	name = "manual switching valve"
 	desc = "A pipe valve."
+
+	description_info = "Click on the valve to toggle mode. The direction with the green light is where the gas will flow."
+
+	icon = 'icons/atmos/tvalve.dmi'
+	icon_state = "map_tvalve0"
 
 	level = 1
 	dir = SOUTH

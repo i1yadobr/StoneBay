@@ -1,5 +1,7 @@
 
 /obj/machinery/atmospherics/pipe/simple/heat_exchanging
+	description_info = "This radiates heat from the pipe's gas to space, cooling it down."
+
 	icon = 'icons/atmos/heat.dmi'
 	icon_state = "intact"
 	pipe_icon = "hepipe"

@@ -5,9 +5,13 @@
 /obj/item/wirecutters
 	name = "wirecutters"
 	desc = "A special pair of pliers with cutting edges. Various brackets and manipulators built into the handle allow it to repair severed wiring."
-	description_info = "This tool will cut wiring anywhere you see it - make sure to wear insulated gloves! When used on more complicated machines or airlocks, it can not only cut cables, but repair them, as well."
+
+	description_info = "This tool will cut wiring anywhere you see it - make sure to wear insulated gloves! \
+	When used on more complicated machines or airlocks, it can not only cut cables, but repair them, as well."
 	description_fluff = "With modern alloys, today's wirecutters can snap through cables of astonishing thickness."
-	description_antag = "These cutters can be used to cripple the power anywhere on the ship. All it takes is some creativity, and being in the right place at the right time."
+	description_antag = "These cutters can be used to cripple the power anywhere on the ship. All it takes is some creativity, \
+	and being in the right place at the right time."
+
 	icon = 'icons/obj/tools.dmi'
 	icon_state = "cutters"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE

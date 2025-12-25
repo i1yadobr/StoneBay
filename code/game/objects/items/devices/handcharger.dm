@@ -1,8 +1,12 @@
 /obj/item/device/handcharger
 	name = "hand-crank charger"
 	desc = "A handheld device used for converting your calories into precious electricity."
-	description_info = "You can insert a power cell into this device. The power cell can be charged by using this device multiple times. In fact, using it A LOT. The power cell can be ejected by either a verb, or by alt-clicking."
-	description_fluff = "Truly an ancient technology, a man-powered dynamo, it's pretty much relevant to the day, as electricity is still finite, and humans still have hands."
+
+	description_info = "You can insert a power cell into this device. The power cell can be charged by using this device multiple times. \
+	In fact, using it A LOT. The power cell can be ejected by either a verb, or by alt-clicking."
+	description_fluff = "Truly an ancient technology, a man-powered dynamo, it's pretty much relevant to the day, as electricity is still finite, \
+	and humans still have hands."
+
 	icon_state = "handcharger0"
 	item_state = "multitool"
 	w_class = ITEM_SIZE_NORMAL

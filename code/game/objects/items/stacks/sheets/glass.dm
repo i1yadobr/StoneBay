@@ -128,6 +128,9 @@
  */
 /obj/item/stack/material/glass/reinforced
 	name = "reinforced glass"
+
+	description_info = "Use this in your hand to build a window.  Reinforced glass is much stronger against damage."
+
 	singular_name = "reinforced glass sheet"
 	icon_state = "rglass"
 	default_type = "reinforced glass"
@@ -135,7 +138,6 @@
 	is_reinforced = 1
 	construction_options = list("One Direction", "Full Window", "Windoor")
 	created_windoor_assembly = /obj/structure/windoor_assembly
-	description_info = "Use this in your hand to build a window.  Reinforced glass is much stronger against damage."
 
 /*
  * Plasma Glass sheets
