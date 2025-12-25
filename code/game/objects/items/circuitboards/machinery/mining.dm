@@ -78,3 +78,7 @@
 	origin_tech = list(TECH_DATA = 1, TECH_ENGINEERING = 1)
 	req_components = list(/obj/item/stock_parts/console_screen = 1,
 						  /obj/item/stock_parts/matter_bin = 3)
+
+/obj/item/circuitboard/machine/mining_equipment_vendor/prison
+	name = "circuit board (Mining Prison Equipment Vendor)"
+	build_path = /obj/machinery/equipment_vendor/prison
