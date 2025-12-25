@@ -3,6 +3,17 @@
 	desc = "A fancy bed with built-in injectors, a dialysis machine, and a limited health scanner."
 	icon = 'icons/obj/cryogenic2.dmi'
 	icon_state = "sleeper_0"
+
+	description_info = "The sleeper allows you to clean patient's blood by means of dialysis, \
+	and to administer medication in a controlled environment.<br><br>\
+	Click your target with Grab intent, then click on the sleeper to place them in it. Alternatively, use drag and drop. \
+	Click the green console with an empty hand to open the menu. Click 'Start Dialysis' to begin filtering unwanted chemicals \
+	from the occupant's blood. Contaminated blood will be stored in the attached beaker which will have to be emptied when full.<br><br>\
+	You can also inject common medicines directly into the patient's bloodstream.<br>\
+	Right-click the cell and click 'Eject Occupant' to remove them, or use the respective UI button. \
+	You can enter the cell yourself by right clicking and selecting 'Enter Sleeper'. \
+	Note that you cannot control the sleeper while inside of it."
+
 	density = 1
 	anchored = 1
 	clicksound = 'sound/machines/buttonbeep.ogg'

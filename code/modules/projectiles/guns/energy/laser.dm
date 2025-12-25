@@ -115,6 +115,10 @@
 	icon_state = "caplaser"
 	item_state = "caplaser"
 	desc = "A rare weapon, handcrafted by a now defunct specialty manufacturer on Luna for a small fortune. It's certainly aged well."
+
+	description_info = "This is an energy weapon. To fire the weapon, ensure your intent is *not* set to 'help', have your gun mode set to 'fire', \
+	then click where you want to fire. Can fire through windows harmlessly. Unlike most weapons, this weapon recharges on its own."
+
 	force = 10.0
 	mod_weight = 0.8
 	mod_reach = 0.5
@@ -197,7 +201,13 @@
 
 /obj/item/gun/energy/sniperrifle
 	name = "marksman energy rifle"
-	desc = "The HI DMR 9E is an older design of Hephaestus Industries. A designated marksman rifle capable of shooting powerful ionized beams, this is a weapon to kill from a distance."
+	desc = "The HI DMR 9E is an older design of Hephaestus Industries. A designated marksman rifle capable of shooting powerful ionized beams, \
+	this is a weapon to kill from a distance."
+
+	description_info = "This is an energy weapon. To fire the weapon, ensure your intent is *not* set to 'help', have your gun mode set to 'fire', \
+	then click where you want to fire. Can fire through windows harmlessly. To recharge this weapon, use a weapon recharger. \
+	To use the scope, use the appropriate verb in the Object tab."
+
 	icon_state = "sniper"
 	item_state = "laser"
 	improper_held_icon = TRUE

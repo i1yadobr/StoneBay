@@ -1,7 +1,13 @@
 /obj/item/gun/projectile/heavysniper
 	name = "anti-materiel rifle"
-	desc = "A portable anti-armour rifle fitted with a scope, the HI PTR-7 Rifle was originally designed to used against armoured exosuits. It is capable of punching through windows and non-reinforced walls with ease. Fires armor piercing 14.5mm shells."
-	icon_state = "heavysniper"
+	desc = "A portable anti-armour rifle fitted with a scope, the HI PTR-7 Rifle was originally designed to used against armoured exosuits. \
+	It is capable of punching through windows and non-reinforced walls with ease. Fires armor piercing 14.5mm shells."
+
+	// TODO(rufus): check if the chamber opening/closing description is outdated and update as needed
+	description_info = "This is a ballistic weapon. To fire the weapon, ensure your intent is *not* set to 'help', have your gun mode set to 'fire', \
+	then click where you want to fire. The gun's chamber can be opened or closed by using it in your hand. To reload, open the chamber, add a new bullet \
+	then close it. To use the scope, use the appropriate verb in the object tab."
+
 	item_state = "heavysniper" //sort of placeholder
 	w_class = ITEM_SIZE_HUGE
 	force = 17.5
@@ -70,4 +76,3 @@
 	set popup_menu = 1
 
 	toggle_scope(usr, 2.0)
-

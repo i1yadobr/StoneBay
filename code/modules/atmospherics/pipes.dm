@@ -17,6 +17,11 @@
 
 	var/getting_pipelined = FALSE // A shitty hack, prevents rogue pipelines from getting built and wrecking pipes GCing. Should probably be replaced with something like SSpipes and adequate queues.
 
+	description_info = "This pipe, and all other pipes, can be connected or disconnected by a wrench. The internal pressure of the pipe must \
+	be below 300 kPa to do this.  More pipes can be obtained from the pipe dispenser.\
+	Most pipes and atmospheric devices can be connected or disconnected with a wrench. The pipe's pressure must not be too high, \
+	or if it is a device, it must be turned off first."
+
 /obj/machinery/atmospherics/pipe/drain_power()
 	return -1
 
@@ -357,6 +362,8 @@
 	return null
 
 /obj/machinery/atmospherics/pipe/simple/visible
+	description_info = "This is a special 'scrubber' pipe, which does not connect to 'normal' pipes. \
+	If you want to connect it, use a Universal Pipe Adapter."
 	icon_state = "intact"
 	level = 2
 
@@ -452,6 +459,8 @@
 	icon_state = ""
 	name = "pipe manifold"
 	desc = "A manifold composed of regular pipes."
+
+	description_info = "A normal pipe with three ends to connect to."
 
 	volume = ATMOS_DEFAULT_VOLUME_PIPE * 1.5
 
@@ -717,6 +726,8 @@
 	name = "4-way pipe manifold"
 	desc = "A manifold composed of regular pipes."
 
+	description_info = "This is a four-way pipe."
+
 	volume = ATMOS_DEFAULT_VOLUME_PIPE * 2
 
 	dir = SOUTH
@@ -980,6 +991,11 @@
 /obj/machinery/atmospherics/pipe/cap
 	name = "pipe endcap"
 	desc = "An endcap for pipes."
+
+	// TODO(rufus): check if functional, old description suggested that it's not, but that was 10 years ago.
+	//   Currently the same functionality is achieved via stasis clamps.
+	description_info = "Can be used to cover an open end of the pipe to prevent leaking."
+
 	icon = 'icons/atmos/pipes.dmi'
 	icon_state = ""
 	level = 2
@@ -1363,6 +1379,9 @@
 /obj/machinery/atmospherics/pipe/simple/visible/universal
 	name="Universal pipe adapter"
 	desc = "An adapter for regular, supply and scrubbers pipes."
+
+	description_info = "This allows you to connect 'normal' pipes, red 'scrubber' pipes, and blue 'supply' pipes."
+
 	connect_types = CONNECT_TYPE_REGULAR|CONNECT_TYPE_SUPPLY|CONNECT_TYPE_SCRUBBER
 	icon_state = "map_universal"
 
@@ -1400,6 +1419,9 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/universal
 	name="Universal pipe adapter"
 	desc = "An adapter for regular, supply and scrubbers pipes."
+
+	description_info = "This allows you to connect 'normal' pipes, red 'scrubber' pipes, and blue 'supply' pipes."
+
 	connect_types = CONNECT_TYPE_REGULAR|CONNECT_TYPE_SUPPLY|CONNECT_TYPE_SCRUBBER
 	icon_state = "map_universal"
 

@@ -3,6 +3,9 @@
 	desc = "A gas flow meter."
 	icon = 'icons/obj/meter.dmi'
 	icon_state = "meterX"
+
+	description_info = "Measures the volume and temperature of the pipe under the meter."
+
 	var/atom/target = null //A pipe for the base type
 	anchored = 1.0
 	power_channel = STATIC_ENVIRON

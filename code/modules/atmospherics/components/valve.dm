@@ -1,9 +1,11 @@
 /obj/machinery/atmospherics/valve
-	icon = 'icons/atmos/valve.dmi'
-	icon_state = "map_valve0"
-
 	name = "manual valve"
 	desc = "A pipe valve."
+
+	description_info = "Click the valve to toggle it. If red, the pipes on each end are seperated. Otherwise, they are connected."
+
+	icon = 'icons/atmos/valve.dmi'
+	icon_state = "map_valve0"
 
 	level = 1
 	dir = SOUTH

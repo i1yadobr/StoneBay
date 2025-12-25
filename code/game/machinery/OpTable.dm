@@ -1,10 +1,11 @@
 /obj/machinery/optable
 	name = "Operating Table"
 	desc = "Used for advanced medical procedures."
-
 	icon = 'icons/obj/machines/surgery_table.dmi'
 	icon_state = "surgery_table-idle"
 	base_icon_state = "surgery_table"
+
+	description_info = "Click your target with Grab intent, then click the table to place them on it. You can also use drag and drop."
 
 	density = 1
 	anchored = 1.0

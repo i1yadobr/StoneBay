@@ -10,6 +10,9 @@
 	name = "pressure regulator"
 	desc = "A one-way air valve that can be used to regulate input or output pressure, and flow rate. Does not require power."
 
+	description_info = "This is a one-way regulator, allowing gas to flow only at a specific pressure and flow rate. \
+	If the light is green, it is flowing."
+
 	use_power = POWER_USE_OFF
 	interact_offline = 1
 	var/unlocked = 0	//If 0, then the valve is locked closed, otherwise it is open(-able, it's a one-way valve so it closes if gas would flow backwards).
