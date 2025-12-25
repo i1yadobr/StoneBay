@@ -1,12 +1,12 @@
 /obj/machinery/pipedispenser
 	name = "Pipe Dispenser"
-	icon = 'icons/obj/stationobjs.dmi'
-	icon_state = "pipe_d"
 
 	// TODO(rufus): check if power is actually still required and update as needed.
 	description_info = "Can be moved by using a wrench. You will need to wrench it again when you want to use it. \
 	You can put excess (atmospheric) pipes into the dispenser. The dispenser requires electricity to function."
 
+	icon = 'icons/obj/stationobjs.dmi'
+	icon_state = "pipe_d"
 	layer = BELOW_OBJ_LAYER
 	density = 1
 	anchored = 1

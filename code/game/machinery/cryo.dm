@@ -2,8 +2,6 @@
 
 /obj/machinery/atmospherics/unary/cryo_cell
 	name = "cryo cell"
-	icon = 'icons/obj/cryogenics.dmi' // map only
-	icon_state = "pod_preview"
 
 	description_info = "The cryogenic chamber, or 'cryo', treats most damage types, most notably genetic damage. It also stabilizes patients \
 	in critical condition by placing them in stasis, so they can be treated at a later time.<br><br>\
@@ -18,6 +16,8 @@
 	Press the button on the menu to activate cryo process. Once the patient is healed, right-click the cell and click 'Eject Occupant' to remove them, \
 	or use the respective UI button. Remember to turn the tube off once you've finished, save power and chemicals!"
 
+	icon = 'icons/obj/cryogenics.dmi' // map only
+	icon_state = "pod_preview"
 	density = 1
 	anchored = 1.0
 	interact_offline = 1

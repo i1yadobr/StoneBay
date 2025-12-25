@@ -1,7 +1,5 @@
 /obj/machinery/portable_atmospherics/canister
 	name = "\improper Canister: \[CAUTION\]"
-	icon = 'icons/obj/atmos.dmi'
-	icon_state = "yellow"
 
 	description_info = "The canister can be connected to a connector port with a wrench. Gas tanks (the kind you can hold in your hands) \
 	can be filled by the canister, by using the tank on the canister, increasing the release pressure, then opening the valve until it is full, \
@@ -9,6 +7,8 @@
 	A gas analyzer can be used to check canister's contents."
 	description_antag = "Canisters can be damaged, spilling their contents into the air, or you can just leave the release valve open."
 
+	icon = 'icons/obj/atmos.dmi'
+	icon_state = "yellow"
 	density = 1
 	var/health = 100.0
 	obj_flags = OBJ_FLAG_CONDUCTIBLE

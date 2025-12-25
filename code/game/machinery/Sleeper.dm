@@ -1,8 +1,6 @@
 /obj/machinery/sleeper
 	name = "sleeper"
 	desc = "A fancy bed with built-in injectors, a dialysis machine, and a limited health scanner."
-	icon = 'icons/obj/cryogenic2.dmi'
-	icon_state = "sleeper_0"
 
 	description_info = "The sleeper allows you to clean patient's blood by means of dialysis, \
 	and to administer medication in a controlled environment.<br><br>\
@@ -14,6 +12,8 @@
 	You can enter the cell yourself by right clicking and selecting 'Enter Sleeper'. \
 	Note that you cannot control the sleeper while inside of it."
 
+	icon = 'icons/obj/cryogenic2.dmi'
+	icon_state = "sleeper_0"
 	density = 1
 	anchored = 1
 	clicksound = 'sound/machines/buttonbeep.ogg'

@@ -3,9 +3,6 @@
 
 /obj/item/device/floor_painter
 	name = "floor painter"
-	icon = 'icons/obj/device.dmi'
-	icon_state = "flpainter"
-	item_state = "fl_painter"
 	desc = "A slender and none-too-sophisticated device capable of painting, erasing, and applying decals to most types of floors."
 
 	description_info = "Use this item in your hand to access a menu in which you may change the type of decal, applied direction, and color. \
@@ -13,6 +10,10 @@
 	description_fluff = "This ubiquitous maintenance-grade floor painter isn't as fancy or convenient as modern consumer models, \
 	but with an internal synthesizer it never runs out of pigment!"
 	description_antag = "This thing would be perfect for vandalism. Could you write your name in the halls?"
+
+	icon = 'icons/obj/device.dmi'
+	icon_state = "flpainter"
+	item_state = "fl_painter"
 
 	var/decal =        /obj/effect/floor_decal/reset
 	var/paint_dir =    "precise"

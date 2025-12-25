@@ -1,7 +1,5 @@
 /obj/machinery/portable_atmospherics/powered/pump
 	name = "portable air pump"
-	icon = 'icons/obj/atmos.dmi'
-	icon_state = "psiphon:0"
 
 	description_info = "Invaluable for filling air in a room rapidly after a breach repair. The internal gas container can be filled by \
 	connecting it to a connector port. The pump can pump the air in (sucking) or out (blowing), at a specific target pressure. \
@@ -9,6 +7,8 @@
 	A gas tank can also be attached, switching the pump from atmosphere to tank operation mode. \
 	This can be used to pressurize tanks or siphon out their contents into the pump's internal container."
 
+	icon = 'icons/obj/atmos.dmi'
+	icon_state = "psiphon:0"
 	density = 1
 	w_class = ITEM_SIZE_NORMAL
 	turf_height_offset = 18
