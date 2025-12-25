@@ -1,3 +1,6 @@
+// TODO(rufus): while some random hostile drones are cool, they are basically more dangerous space carps
+//   at the moment. Review the code of drones themselves and make them more interactive and sophisticated.
+//   After all, this is an organized swarm of hostile military drones, there *has* to be more to it.
 /datum/event/rogue_drones
 	id = "rogue_drones"
 	name = "Rogue Drones"
@@ -14,9 +17,6 @@
 	. = ..()
 
 	add_think_ctx("end", CALLBACK(src, nameof(.proc/end)), 0)
-
-/datum/event/rogue_drones/get_conditions_description()
-	. = "<em>Rogue Drones</em> should not be <em>running</em>.<br>"
 
 /datum/event/rogue_drones/check_conditions()
 	. = SSevents.evars["rogue_drones_running"] != TRUE

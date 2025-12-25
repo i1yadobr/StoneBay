@@ -1,14 +1,12 @@
-#define LOC_KITCHEN 0
-#define LOC_ATMOS 1
-#define LOC_INCIN 2
-#define LOC_CHAPEL 3
-#define LOC_LIBRARY 4
-#define LOC_HYDRO 5
-#define LOC_VAULT 6
-#define LOC_CONSTR 7
-#define LOC_TECH 8
-#define LOC_TACTICAL 9
-
+// TODO(rufus): while Cael did a great job keeping janitors busy back in 2013, this event is too basic
+//   for the modern build. Just a bunch of vermins spawning in a room all of a sudden looks janky and
+//   doesn't make a good impression of the event system.
+//   Needs to be reimplemented with better dynamic logic, modern code and maybe some interactivity.
+//   Some examples: the code should check if anyone is in the room, have more types of vermin,
+//   have a chance at rare creatures, provide an announcement to allow crew to weld vents and scrubbers,
+//   thus creating an interaction with engineers, have some species carry diseases, cause wire breakages
+//   for applicable vermin types, spawn over neighbouring areas, make vermins steal food and so on.
+//   The more dynamic and creative this system will be, the better.
 #define VERM_MICE 0
 #define VERM_LIZARDS 1
 #define VERM_SPIDERS 2
@@ -111,16 +109,6 @@
 		log_debug("Vermin infestation failed to find viable turfs in \the [location].")
 		return
 	return vermin_turfs
-
-#undef LOC_KITCHEN
-#undef LOC_ATMOS
-#undef LOC_INCIN
-#undef LOC_CHAPEL
-#undef LOC_LIBRARY
-#undef LOC_HYDRO
-#undef LOC_VAULT
-#undef LOC_TECH
-#undef LOC_TACTICAL
 
 #undef VERM_MICE
 #undef VERM_LIZARDS

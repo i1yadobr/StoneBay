@@ -1,3 +1,9 @@
+// TODO(rufus): disabled event (unticked from .dme), ignored by players and not engaging.
+//   Disabling this until the laws are reviewed, as well as other mechanics.
+//   Current laws are quite often ignored by synthetics because they are just not fun to
+//   play with. The laws should give enough freedom to the AI to pick their own playstyle,
+//   yet introduce an interesting twist to their behavior. Instead a lot of these laws
+//   are just a mundane nuisance forcing synthetics players to keep track of some useless condition.
 /datum/event/ion_storm
 	id = "ion_storm"
 	name = "Ion Storm"

@@ -1,3 +1,8 @@
+// TODO(rufus): for this event the concept is there, but the implementation is rather basic and sudden.
+//   It works fine for humans and immediately obliterates every other lifeform with no chance of escaping.
+//   It's ok to just address the immediate obliteration of other players, but this event could use
+//   some attention to make it a bit more complex and involved instead of just being a flat damage application
+//   once a round. The increased solar output is a nice touch, but solars are not used a lot in the modern gameplay.
 /datum/event/solar_storm
 	id = "solar_storm"
 	name = "Solar Storm"
