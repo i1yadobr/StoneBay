@@ -8,6 +8,7 @@
 	dynamic_lighting = 0
 	temperature = 20 CELSIUS
 	thermal_conductivity = OPEN_HEAT_TRANSFER_COEFFICIENT
+	explosion_resistance = 3
 	var/dirt = 0
 
 	rad_resist_type = /datum/rad_resist/none
