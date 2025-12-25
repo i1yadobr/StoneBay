@@ -125,6 +125,11 @@ SUBSYSTEM_DEF(ticker)
 		log_and_message_admins(": All antagonists are deceased or the gamemode has ended.") //Outputs as "Event: All antagonists are deceased or the gamemode has ended."
 		SSvote.initiate_vote(/datum/vote/transfer, forced = 1)
 
+	var/global/map_switched
+	if(!map_switched && evacuation_controller.state == EVAC_PREPPING && evacuation_controller.get_eta() <= 60)
+		roundend_map_switching()
+		map_switched = TRUE
+
 /datum/controller/subsystem/ticker/proc/post_game_tick()
 	switch(end_game_state)
 		if(END_GAME_AWAITING_MAP)
@@ -410,3 +415,18 @@ Helpers
 
 	Master.SetRunLevel(RUNLEVEL_SETUP)
 	return 1
+
+/datum/controller/subsystem/ticker/proc/roundend_map_switching()
+	if(!config.game.map_switching || GLOB.all_maps.len <= 1)
+		return
+
+	if(config.game.auto_map_vote)
+		SSvote.initiate_vote(/datum/vote/map/end_game, automatic = 1)
+		return
+
+	// Select random map excluding the current
+	var/next_map_name = pick(GLOB.all_maps - GLOB.using_map.name)
+	var/datum/map/next_map = GLOB.all_maps[next_map_name]
+	fdel("data/use_map")
+	text2file("[next_map.type]", "data/use_map")
+	to_world(SPAN("notice", "Map has been changed to: <b>[next_map.name]</b>"))
