@@ -11,7 +11,7 @@
 // TODO(rufus): review the list of equipment and see if more junk could be added to it.
 //   Ideally there should be a separate list of stuff that can drop randomly but is not on the main list,
 //   see the "refurbished" reference in the description. The prices might need adjustment, depending on the mapgen amount of ore.
-/obj/machinery/mineral/equipment_vendor/prison
+/obj/machinery/equipment_vendor/prison
 	name = "prison mining gear dispenser"
 	desc = "A dusty refurbished vending machine. Originally developed for the prison labor program, this \"Old Betsy\" is now full of mining equipment, occasional junk, and frequent disappointment. Points earned from ore processing can be exchanged here for tools, gear, and some questionable consumables."
 	icon_state = "mining-prison"
