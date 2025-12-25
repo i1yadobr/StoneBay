@@ -1,3 +1,8 @@
+// TODO(rufus): currently only adds a random order to the "shopping list" with a null reason,
+//   which is then quickly discarded by anyone with access because everyone understands it's a randomevent.
+//   Consider adding random semi-realistic reasons, more possibilities like orders being automatically accepted,
+//   maybe automatic shuttle calls, maybe ordering something with a negative price which would result in extra
+//   points added to cargo balance, and so on. Anything to brigten up the current implementation.
 /datum/event/shipping_error
 	id = "shipping_error"
 	name = "Shipping Error"

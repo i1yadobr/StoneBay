@@ -1,3 +1,10 @@
+// TODO(rufus): disabled event (unticked from .dme), not balanced and annoying.
+//   Currently this event is just a nuisance with no way for the crew to react.
+//   The only action the crew can do is set up shields, so basically this results in
+//   "install shields or get tons of routine clicking for engineers and annoyance of the crew".
+//   The whole event needs to be reviewed and refactored, potentially even removed if there's no point in it.
+// TODO(rufus): figure out how /datum/event/electrical_storm_base and /datum/event/electrical_storm are connected
+//   and document it.
 /datum/event/electrical_storm_base
 	id = "electrical_storm_base"
 	name = "Electrical Storm Incoming"
@@ -39,9 +46,6 @@
 
 /datum/event/electrical_storm_base/get_description()
 	return "An electric storm is approaching [station_name()]"
-
-/datum/event/electrical_storm_base/get_conditions_description()
-	. = "<em>Electrical Storm</em> should not be <em>running</em>.<br>"
 
 /datum/event/electrical_storm_base/get_mtth()
 	. = ..()

@@ -1,3 +1,6 @@
+// TODO(rufus): review to which derelicts can the wormholes go and improve the derelicts in some way
+//   to give stranded people a chance at returning. Maybe some equipment, maybe a mech, maybe a slightly torn
+//   space suit and a piece of duct tape hidden nearby, etc.
 /datum/event/wormholes
 	id = "wormholes"
 	name = "Wormholes"
@@ -9,6 +12,7 @@
 	var/list/pick_turfs = list()
 	var/shift_frequency = 5 SECONDS // How often wormhole batches should spawn
 	var/number_of_wormholes = 400 // Overall number of wormholes spawned, might randomize a bit
+	// TODO(rufus): make this use some sort of station size/turfs parameter instead of hardcoding a value
 	var/total_duration = 90 SECONDS // Total duration of the wormholes event, 90 sec on average
 	var/end_time = 0
 
@@ -17,9 +21,6 @@
 
 	add_think_ctx("announce", CALLBACK(src, nameof(.proc/announce)), 0)
 	add_think_ctx("end", CALLBACK(src, nameof(.proc/end)), 0)
-
-/datum/event/wormholes/get_conditions_description()
-	. = "<em>Wormholes</em> should not be <em>running</em>.<br>"
 
 /datum/event/wormholes/check_conditions()
 	. = SSevents.evars["wormholes_running"] != TRUE
