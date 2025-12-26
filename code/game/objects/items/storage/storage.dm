@@ -1,4 +1,4 @@
-/obj/item/storage/obj/item/storage
+/obj/item/storage
 	name = "storage"
 	icon = 'icons/obj/storage.dmi'
 	// List of object types that this item can store and their quantity limits.
