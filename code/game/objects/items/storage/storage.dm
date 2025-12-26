@@ -1,39 +1,49 @@
-// To clarify:
-// For use_to_pickup and allow_quick_gather functionality,
-// see item/attackby() (/game/objects/items.dm)
-// Do not remove this functionality without good reason, cough reagent_containers cough.
-// -Sayu
-
-/obj/item/storage
+/obj/item/storage/obj/item/storage
 	name = "storage"
-	icon = 'icons/obj/storage/misc.dmi'
-	w_class = ITEM_SIZE_NORMAL
-	var/list/can_hold = new /list() //List of objects which this item can store (if set, it can't store anything else)
-	var/list/cant_hold = new /list() //List of objects which this item can't store (in effect only if can_hold isn't set)
+	icon = 'icons/obj/storage.dmi'
+	// List of object types that this item can store and their quantity limits.
+	// Optional associative value can be set to limit the number of items per type.
+	// Examples:
+	//  can_hold = list(/obj/item/reagent_containers/food/donut/normal) // can only hold donuts, any amount
+	//  can_hold = list(/obj/item/card/emag = 2) // can only hold up to two emags
+	var/list/can_hold
+	// List of object types that this item explicitly cannot store.
+	var/list/cant_hold
 
-	var/locked = FALSE // Locked storage won't open, but will still register clicks, provide feedback, and receive fingerprints
-	var/max_w_class = ITEM_SIZE_SMALL //Max size of objects that this object can store (in effect only if can_hold isn't set)
-	var/max_storage_space = null //Total storage cost of items this can hold. Will be autoset based on storage_slots if left null.
-	var/storage_slots = null //The number of storage slots in this container.
-	var/list/override_w_class // List of items that can bypass the max_w_class restriction
-
-	// Allows to pick up items from a tile by clicking with the object on the floor.
-	var/use_to_pickup = FALSE
-	/// Allows to dump all the contents of the object on the floor.
-	var/allow_quick_empty = FALSE
-	/// Allows to quickly collect all items from a tile .
-	var/allow_quick_gather = FALSE
-	var/collection_mode = 1;  //0 = pick one at a time, 1 = pick all on tile
-	var/use_sound = SFX_SEARCH_CASE	//sound played when used. null for no sound.
-
-	//initializes the contents of the storage with some items based on an assoc list. The assoc key must be an item path,
-	//the assoc value can either be the quantity, or a list whose first value is the quantity and the rest are args.
+	// Locked storage won't open, but will still register clicks, provide feedback, and receive fingerprints.
+	var/locked = FALSE
+	// Maximum size of objects that this item can store.
+	// Note: Ensure items specified in can_hold fit within this size limit.
+	var/max_w_class = ITEM_SIZE_SMALL
+	// List of object types that can bypass the max_w_class restriction.
+	var/list/override_w_class
+	// Total storage capacity of this item. Automatically calculated at initialization if not set.
+	var/max_storage_space
+	// Total number of individual item slots this storage has.
+	// Note: storage space limit is still calculated for slot-based inventories,
+	// so make sure to take that into account if you're using can_store/override_w_class.
+	var/storage_slots
+	// Sound effect or name of the sound effect group to use. May be null for no sound.
+	var/use_sound = SFX_SEARCH_CASE
+	// Initial set of objects this item contains. Use associative values for quantity.
+	// Examples:
+	//  startswith = list(/obj/item/card/emag)
+	//  startswith = list(/obj/item/reagent_containers/food/donut/normal = 6)
 	var/list/startswith
+	// Enable "Empty Contents" verb for this storage, allowing to quickly dump all the contents below the user.
+	var/allow_quick_empty = FALSE
+	// Reference to the storage interface that will be shown to users who have this storage open.
 	var/datum/storage_ui/storage_ui = /datum/storage_ui/default
 
-	/// FALSE = no overlay, TRUE = uses 'icon_state + "-open"', string = lets the thing's update_icon() deal with its own shit. Easy.
-	var/inspect_state = FALSE
-	var/being_inspected = FALSE
+	// NOTE: variables from this section are also referenced outside of this file, e.g. in /obj/item/attackby()
+	// TODO(rufus): this shouldn't be the case, check if access to these variables can be limited to this file,
+	//   and helper functions or getters can be used instead.
+	// Allow this storage to pick up items by clicking on them.
+	var/use_to_pickup = FALSE
+	// Allow this storage to switch gathering mode from "single item" to "everything on tile".
+	var/allow_quick_gather = FALSE
+	// Current quick gather mode. Applied only in combination with enabled use_to_pickup.
+	var/quick_gather = TRUE
 
 /obj/item/storage/Initialize()
 	. = ..()
@@ -456,8 +466,8 @@
 	set name = "Switch Gathering Method"
 	set category = "Object"
 
-	collection_mode = !collection_mode
-	switch (collection_mode)
+	quick_gather = !quick_gather
+	switch (quick_gather)
 		if(1)
 			to_chat(usr, "\The [src] now picks up all items in a tile at once.")
 		if(0)
@@ -497,7 +507,10 @@
 /obj/item/storage/proc/make_exact_fit()
 	storage_slots = contents.len
 
-	can_hold.Cut()
+	if(isnull(can_hold))
+		can_hold = list()
+	else
+		can_hold.Cut()
 	max_w_class = 0
 	max_storage_space = 0
 	for(var/obj/item/I in src)

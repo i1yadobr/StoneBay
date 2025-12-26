@@ -17,7 +17,6 @@
 	use_to_pickup = TRUE
 	allow_quick_empty = TRUE
 	allow_quick_gather = TRUE
-	collection_mode = TRUE
 	var/obj/item/storage/laundry_basket/offhand/linked
 
 /obj/item/storage/laundry_basket/attack_hand(mob/user)
