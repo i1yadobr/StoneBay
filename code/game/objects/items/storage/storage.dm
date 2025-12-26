@@ -251,7 +251,7 @@
 			stop_messages = 1
 			return 0
 
-	if(cant_hold.len && is_type_in_list(W, cant_hold))
+	if(length(cant_hold) && is_type_in_list(W, cant_hold))
 		if(!stop_messages)
 			to_chat(user, "<span class='notice'>\The [src] cannot hold \the [W].</span>")
 		return 0
@@ -467,11 +467,7 @@
 	set category = "Object"
 
 	quick_gather = !quick_gather
-	switch (quick_gather)
-		if(1)
-			to_chat(usr, "\The [src] now picks up all items in a tile at once.")
-		if(0)
-			to_chat(usr, "\The [src] now picks up one item at a time.")
+	to_chat(usr, SPAN("notice", "\The [src] now picks up [quick_gather ? "all items in a tile at once." : "one item at a time"]."))
 
 /obj/item/storage/verb/quick_empty()
 	set name = "Empty Contents"
