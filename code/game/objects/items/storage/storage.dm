@@ -11,6 +11,7 @@
 	var/list/can_hold = new /list() //List of objects which this item can store (if set, it can't store anything else)
 	var/list/cant_hold = new /list() //List of objects which this item can't store (in effect only if can_hold isn't set)
 
+	var/locked = FALSE // Locked storage won't open, but will still register clicks, provide feedback, and receive fingerprints
 	var/max_w_class = ITEM_SIZE_SMALL //Max size of objects that this object can store (in effect only if can_hold isn't set)
 	var/max_storage_space = null //Total storage cost of items this can hold. Will be autoset based on storage_slots if left null.
 	var/storage_slots = null //The number of storage slots in this container.
@@ -146,6 +147,9 @@
 		storage_ui.hide_from(user)
 
 /obj/item/storage/proc/open(mob/user)
+	if(locked)
+		to_chat(usr, SPAN("warning", "\The [src] is locked and cannot be opened!"))
+		return
 	if(src.use_sound)
 		playsound(src.loc, src.use_sound, 50, 1, -5)
 	if(isrobot(user) && user.hud_used)
@@ -194,6 +198,12 @@
 
 	if(src.loc == W)
 		return 0 //Means the item is already in the storage item
+
+	if(locked)
+		if(!stop_messages)
+			to_chat(user, SPAN("warning", "\The [src] is locked."))
+		return 0
+
 	if(storage_slots != null && contents.len >= storage_slots)
 		if(!stop_messages)
 			to_chat(user, "<span class='notice'>\The [src] is full, make some space.</span>")
@@ -295,6 +305,10 @@
 /obj/item/storage/proc/remove_from_storage(obj/item/W as obj, atom/new_location, NoUpdate = 0)
 	if(!istype(W))
 		return 0
+	if(locked)
+		to_chat(usr, SPAN("warning", "\The [W] cannot be removed because [src] is locked."))
+		return 0
+
 	new_location = new_location || get_turf(src)
 
 	if(storage_ui)
