@@ -79,12 +79,14 @@
 	QDEL_NULL(storage_ui)
 	. = ..()
 
+// TODO(rufus): refactor this function into a cleaner execution flow
 /obj/item/storage/MouseDrop(obj/over_object as obj)
 	if(!canremove)
 		return
 
 	if(((ishuman(usr) || isrobot(usr) || issmall(usr)) && (!isxenomorph(usr) && !islarva(usr)))  && !usr.incapacitated())
 		if(over_object == usr && Adjacent(usr)) // this must come before the screen objects only block
+			// TODO(rufus): move fingerprints to open()
 			src.add_fingerprint(usr)
 			src.open(usr)
 			return TRUE
@@ -209,6 +211,9 @@
 			to_chat(user, "<span class='notice'>\The [src] is full, make some space.</span>")
 		return 0 //Storage item is full
 
+
+	// TODO(rufus): move anchored check before the storage check, as it doesn't make sense to report
+	//   that storage is full if item cannot be picked up anyways.
 	if(W.anchored)
 		return 0
 
@@ -232,6 +237,7 @@
 	if(istype(W, /obj/item/implanter/compressed))
 		var/obj/item/implanter/compressed/impr = W
 		if(!impr.safe)
+			// TODO(rufus): remove redundant variable change
 			stop_messages = 1
 			return 0
 
@@ -259,6 +265,7 @@
 
 	return 1
 
+// TODO(rufus): replace `stop_warning` in the comment below with the current variable name, `prevent_warning`
 //This proc handles items being inserted. It does not perform any checks of whether an item can or can't be inserted. That's done by can_be_inserted()
 //The stop_warning parameter will stop the insertion message from being displayed. It is intended for cases where you are inserting multiple items at once,
 //such as when picking up all the items on a tile with one click.
@@ -285,6 +292,9 @@
 		if(!NoUpdate)
 			update_ui_after_item_insertion()
 
+
+	// TODO(rufus): check if sound should be played based on prevent_warning.
+	//   Or replace prevent_warning and NoUpdate with a single user_feedback parameter if splitting them is redundant.
 	if(use_sound)
 		playsound(loc, use_sound, 50, 1, -5)
 
@@ -302,6 +312,8 @@
 		storage_ui.on_post_remove(usr)
 
 //Call this proc to handle the removal of an item from the storage item. The item will be moved to the atom sent as new_target
+// TODO(rufus): replace `NoUpdate` with an inverse `update` parameter and update respective checks to use (!update).
+//   This would remove double semantic negation in conditionals, e.g. if(not no update), which causes mental overhead
 /obj/item/storage/proc/remove_from_storage(obj/item/W as obj, atom/new_location, NoUpdate = 0)
 	if(!istype(W))
 		return 0
@@ -405,6 +417,7 @@
 				H.r_store = null
 			return
 
+	// TODO(rufus): normalize the flow of this section
 	if(loc == user)
 		open(user)
 	else
@@ -419,10 +432,12 @@
 	var/failure = 0
 
 	for(var/obj/item/I in T)
+		// TODO(rufus): remove outdated comment
 		if(!can_be_inserted(I, user, 0))	// Note can_be_inserted still makes noise when the answer is no
 			failure = 1
 			continue
 		success = 1
+		// TODO(rufus): replace with named parameters
 		handle_item_insertion(I, 1, 1) // First 1 is no messages, second 1 is no ui updates
 	if(success && !failure)
 		to_chat(user, "<span class='notice'>You put everything into \the [src].</span>")
@@ -458,10 +473,13 @@
 	var/turf/T = get_turf(src)
 	hide_from(usr)
 	for(var/obj/item/I in contents)
+		// TODO(rufus): break the loop if removal failed
 		remove_from_storage(I, T, 1)
 	finish_bulk_removal()
 
 /obj/item/storage/emp_act(severity)
+	// TODO(rufus): invert the check
+	// Mobs process EMP of their contents on their own by recursively fetching all the contents via get_contents()
 	if(!istype(src.loc, /mob/living))
 		for(var/obj/O in contents)
 			O.emp_act(severity)
@@ -469,7 +487,9 @@
 
 /obj/item/storage/attack_self(mob/user)
 	//Clicking on itself will empty it, if it has the verb to do that.
+	// TODO(rufus): replace redundant check
 	if(user.get_active_hand() == src)
+		// TODO(rufus): replace with allow_quick_empty check
 		if(src.verbs.Find(/obj/item/storage/verb/quick_empty))
 			quick_empty()
 			return 1
