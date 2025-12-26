@@ -11,7 +11,6 @@
 	use_to_pickup = 1
 	allow_quick_gather = 1
 	allow_quick_empty = 1
-	collection_mode = 1
 	max_w_class = ITEM_SIZE_NORMAL
 	max_storage_space = 100
 	var/active = TRUE
@@ -30,7 +29,6 @@
 	use_to_pickup = FALSE
 	allow_quick_gather = FALSE
 	allow_quick_empty = FALSE
-	collection_mode = 0
 	var/wasted = FALSE
 
 /obj/item/storage/part_replacer/mini/post_usage()
