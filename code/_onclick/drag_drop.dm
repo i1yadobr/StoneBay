@@ -22,7 +22,7 @@
 		return
 
 	spawn(0)
-		over.MouseDrop_T(src,usr, params)
+		over.MouseDrop_T(src, usr, params)
 
 // Receive a mouse drop
 /atom/proc/MouseDrop_T(atom/dropping, mob/user, params)
