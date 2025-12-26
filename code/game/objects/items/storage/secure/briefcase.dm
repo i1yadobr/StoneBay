@@ -12,18 +12,3 @@
 	mod_handy = 1.0
 	max_w_class = ITEM_SIZE_NORMAL
 	max_storage_space = DEFAULT_BACKPACK_STORAGE
-
-/obj/item/storage/secure/briefcase/attack_hand(mob/user)
-	if(loc == user && locked)
-		show_splash_text(user, "locked!", SPAN("warning", "\The [src] is locked!"))
-
-	else if(loc == user && !locked)
-		open(user)
-
-	else
-		..()
-		for(var/mob/M in range(1))
-			if(M.s_active == src)
-				close(M)
-
-	add_fingerprint(user)

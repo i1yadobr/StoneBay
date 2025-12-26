@@ -12,7 +12,7 @@
 	/// Holds lock overlay of this storage.
 	var/image/lock_overlay
 
-	var/locked = TRUE
+	locked = TRUE
 	/// The number currently sitting in the briefcase's panel.
 	var/numeric_input
 	/// The code that will open this safe, set by usually players.
@@ -96,20 +96,6 @@
 		return
 
 	// -> storage/attackby() what with handle insertion, etc
-	return ..()
-
-/obj/item/storage/secure/MouseDrop(over_object, src_location, over_location)
-	if(locked)
-		add_fingerprint(usr)
-		return
-
-	return ..()
-
-/obj/item/storage/secure/AltClick(mob/usr)
-	if(locked)
-		add_fingerprint(usr)
-		return
-
 	return ..()
 
 /obj/item/storage/secure/attack_self(mob/user)
