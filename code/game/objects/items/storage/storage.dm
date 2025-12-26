@@ -1,6 +1,6 @@
 /obj/item/storage
 	name = "storage"
-	icon = 'icons/obj/storage.dmi'
+	icon = 'icons/obj/storage/misc.dmi'
 	// List of object types that this item can store and their quantity limits.
 	// Optional associative value can be set to limit the number of items per type.
 	// Examples:
@@ -44,6 +44,10 @@
 	var/allow_quick_gather = FALSE
 	// Current quick gather mode. Applied only in combination with enabled use_to_pickup.
 	var/quick_gather = TRUE
+
+	/// FALSE = no overlay, TRUE = uses 'icon_state + "-open"', string = lets the thing's update_icon() deal with its own shit. Easy.
+	var/inspect_state = FALSE
+	var/being_inspected = FALSE
 
 /obj/item/storage/Initialize()
 	. = ..()
