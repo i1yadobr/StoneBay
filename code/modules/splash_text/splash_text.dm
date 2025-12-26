@@ -60,7 +60,7 @@
 
 	var/lifetime_mult = 1 + max(0, length(strip_html_properly(text)) - SPLASH_TEXT_LIFETIME_INCREASE_MIN) * SPLASH_TEXT_LIFETIME_PER_CHAR_MULT
 
-	flick_overlay(splash_image, viewer_client, SPLASH_TEXT_TOTAL_LIFETIME(lifetime_mult))
+	flick_image_to_clients(splash_image, viewer_client, SPLASH_TEXT_TOTAL_LIFETIME(lifetime_mult))
 
 	animate(
 		splash_image,
