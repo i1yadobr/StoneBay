@@ -44,7 +44,7 @@
 	new /datum/flick_overlay(image_to_show, show_to, duration)
 
 // Flicks a certain overlay onto an atom, handling icon_state strings.
-/atom/proc/flick_overlay(image_to_show, list/show_to, duration, layer)
+/atom/proc/flick_image_to_clients(image_to_show, list/show_to, duration, layer)
 	var/image/passed_image = istext(image_to_show) ? image(icon, src, image_to_show, layer) : image_to_show
 	flick_overlay_global(passed_image, show_to, duration)
 
@@ -55,4 +55,4 @@
 		if(observer.client)
 			LAZYADD(observers, observer)
 
-	flick_overlay(image_to_show, observers, duration)
+	flick_image_to_clients(image_to_show, observers, duration)
