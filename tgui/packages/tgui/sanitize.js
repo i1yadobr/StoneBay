@@ -19,7 +19,7 @@ const defTag = [
   "ol",
   "p",
   "pre",
-  SPAN",
+  "span",
   "table",
   "td",
   "th",

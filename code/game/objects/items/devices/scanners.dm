@@ -154,7 +154,7 @@ REAGENT SCANNER
 
 	// Other general warnings.
 	if(H.getOxyLoss() > 50)
-		status_data += "<span class='info'><b>Severe oxygen deprivation detected.</b></span>"
+		status_data += SPAN("info", "<b>Severe oxygen deprivation detected.</b>")
 
 	var/toxLoss = H.getToxLoss()
 	if(toxLoss > 80)
