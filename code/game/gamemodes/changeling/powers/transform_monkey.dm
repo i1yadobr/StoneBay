@@ -23,9 +23,9 @@
 		return
 
 	changeling.chem_charges--
-	H.visible_message(SPAN("war")[H] transforms!"))
+	H.visible_message(SPAN("warning", "[H] transforms!"))
 	changeling.set_genome_damage(30)
-	to_chat(H, SPAN("warnin") genes cry out!"))
+	to_chat(H, SPAN("warning", "Our genes cry out!!"))
 	H = H.monkeyize()
 	if(istype(H))
 		H.setup_changeling_biostructure()
@@ -60,7 +60,7 @@
 
 	changeling.chem_charges--
 	C.remove_all_changeling_powers()
-	C.visible_message(SPAN("war")[C] transforms!"))
+	C.visible_message(SPAN("warning", "[C] transforms!"))
 	C.dna = chosen_dna.Clone()
 
 	var/list/implants = list()

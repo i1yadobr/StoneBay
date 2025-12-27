@@ -24,7 +24,6 @@ GLOBAL_LIST_EMPTY(common_report)
 				parts += "<div class='panel greenborder'>"
 				parts += SPAN("greentext", "You got through just another workday on [station_name()] as [Player.real_name].")
 
-
 		else
 			var/mob/observer/ghost/O = Player
 			if (!istype(Player) || !O.started_as_observer)
