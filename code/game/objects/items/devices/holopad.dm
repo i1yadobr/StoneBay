@@ -98,7 +98,7 @@
 			icon_state = "holopad_in_call"
 			set_next_think(world.time + 1)
 
-			audible_message("[SPAN("name", "[voice]")] transmits, \"Connection established\"", hearing_distance = 1, runechat_message = "Connection established")
+			audible_message("[SPAN("name", "[voice]")] transmits, \"Connection established\"", hearing_distance = 1, splash_override = "Connection established")
 		else
 			call_state = CALL_NONE
 			icon_state = initial(icon_state)
@@ -110,7 +110,7 @@
 		icon_state = "holopad_in_call"
 		set_next_think(world.time + 1)
 
-		audible_message("[SPAN("name", "[voice]")] transmits, \"Connection established\"", hearing_distance = 1, runechat_message = "Connection established")
+		audible_message("[SPAN("name", "[voice]")] transmits, \"Connection established\"", hearing_distance = 1, splash_override = "Connection established")
 
 /obj/item/device/holopad/proc/hangUp(remote = 0)
 	if(!remote && abonent)

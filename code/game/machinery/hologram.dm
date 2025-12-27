@@ -202,7 +202,7 @@ For the other part of the code, check silicon say.dm. Particularly robot talk.*/
 	if(sourcepad) //If this is a pad receiving a call
 		if(name_used==caller_id||text==last_message||findtext(text, "Holopad received")) //prevent echoes
 			return
-		sourcepad.audible_message("<i>[SPAN("game say", "Holopad received, [SPAN("name", "[name_used]")] [speaking.format_message(text, verb)]")]</i>", runechat_message = text)
+		sourcepad.audible_message("<i>[SPAN("game say", "Holopad received, [SPAN("name", "[name_used]")] [speaking.format_message(text, verb)]")]</i>", splash_override = text)
 
 /obj/machinery/hologram/holopad/see_emote(mob/living/M, text)
 	if(M)

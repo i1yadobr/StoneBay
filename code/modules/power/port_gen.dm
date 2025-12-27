@@ -486,10 +486,10 @@
 		var/obj/item/reagent_containers/R = O
 		if(R.standard_pour_into(src,user))
 			if(reagents.has_reagent("vodka"))
-				audible_message(SPAN("notice", "[src] blips happily"), runechat_message = "*blip!*")
+				audible_message(SPAN("notice", "[src] blips happily"), splash_override = "*blip!*")
 				playsound(src,'sound/machines/synth_yes.ogg', 50, 0)
 			else
-				audible_message(SPAN("warning", "[src] blips in disappointment"), runechat_message = "*blip...*")
+				audible_message(SPAN("warning", "[src] blips in disappointment"), splash_override = "*blip...*")
 				playsound(src, 'sound/machines/synth_no.ogg', 50, 0)
 		return
 	..()
