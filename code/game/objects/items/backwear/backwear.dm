@@ -200,12 +200,12 @@
 	. = ..()
 	if(get_dist(src, user) > 2)
 		return
-	. += "<span class='notice'>It contains:</span>"
+	. += SPAN("notice", "It contains:")
 	if(reagents.reagent_list.len) // OOP be cool
 		for(var/datum/reagent/R in reagents.reagent_list)
-			. += "<span class='notice'>[R.volume] ml of [R.name]</span>"
+			. += SPAN("notice", "[R.volume] ml of [R.name]")
 	else
-		. += "<span class='notice'>Nothing.</span>"
+		. += SPAN("notice", "Nothing.")
 
 /obj/item/backwear/reagent/verb/set_APTFT() //set amount_per_transfer_from_this
 	set name = "Set transfer amount"

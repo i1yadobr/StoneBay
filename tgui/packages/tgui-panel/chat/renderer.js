@@ -49,7 +49,7 @@ const findNearestScrollableParent = (startingNode) => {
 };
 
 const createHighlightNode = (text, color) => {
-  const node = document.createElement("span");
+  const node = document.createElement(SPAN");
   node.className = "Chat__highlight";
   node.setAttribute("style", "background-color:" + color);
   node.textContent = text;

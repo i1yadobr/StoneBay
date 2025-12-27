@@ -103,7 +103,7 @@
 
 /obj/item/gun/launcher/crossbow/consume_next_projectile(mob/user=null)
 	if(tension <= 0)
-		to_chat(user, "<span class='warning'>\The [src] is not drawn back!</span>")
+		to_chat(user, SPAN("warning", "\The [src] is not drawn back!"))
 		return null
 	return bolt
 
@@ -138,12 +138,12 @@
 		return
 
 	current_user = user
-	user.visible_message("[user] begins to draw back the string of [src].","<span class='notice'>You begin to draw back the string of [src].</span>")
+	user.visible_message("[user] begins to draw back the string of [src].",SPAN("notice", "You begin to draw back the string of [src]."))
 	tension = 1
 
 	while(bolt && tension && loc == current_user)
 		if(!do_after(user, 25, src)) //crossbow strings don't just magically pull back on their own.
-			user.visible_message("[usr] stops drawing and relaxes the string of [src].","<span class='warning'>You stop drawing back and relax the string of [src].</span>")
+			user.visible_message("[usr] stops drawing and relaxes the string of [src].",SPAN("warning", "You stop drawing back and relax the string of [src]."))
 			tension = 0
 			update_icon()
 			return
@@ -160,7 +160,7 @@
 			to_chat(usr, "[src] clunks as you draw the string to its maximum tension!")
 			return
 
-		user.visible_message("[usr] draws back the string of [src]!","<span class='notice'>You continue drawing back the string of [src]!</span>")
+		user.visible_message("[usr] draws back the string of [src]!",SPAN("notice", "You continue drawing back the string of [src]!"))
 
 /obj/item/gun/launcher/crossbow/proc/increase_tension(mob/user as mob)
 
@@ -192,19 +192,19 @@
 			if(!user.drop(W, src))
 				return
 			cell = W
-			to_chat(user, "<span class='notice'>You jam [cell] into [src] and wire it to the firing coil.</span>")
+			to_chat(user, SPAN("notice", "You jam [cell] into [src] and wire it to the firing coil."))
 			superheat_rod(user)
 		else
-			to_chat(user, "<span class='notice'>[src] already has a cell installed.</span>")
+			to_chat(user, SPAN("notice", "[src] already has a cell installed."))
 
 	else if(isScrewdriver(W))
 		if(cell)
 			var/obj/item/C = cell
 			C.dropInto(user.loc)
-			to_chat(user, "<span class='notice'>You jimmy [cell] out of [src] with [W].</span>")
+			to_chat(user, SPAN("notice", "You jimmy [cell] out of [src] with [W]."))
 			cell = null
 		else
-			to_chat(user, "<span class='notice'>[src] doesn't have a cell installed.</span>")
+			to_chat(user, SPAN("notice", "[src] doesn't have a cell installed."))
 
 	else
 		..()
@@ -215,7 +215,7 @@
 	if(bolt.throwforce >= 15) return
 	if(!istype(bolt,/obj/item/arrow/rod)) return
 
-	to_chat(user, "<span class='notice'>[bolt] plinks and crackles as it begins to glow red-hot.</span>")
+	to_chat(user, SPAN("notice", "[bolt] plinks and crackles as it begins to glow red-hot."))
 	bolt.throwforce = 15
 	bolt.icon_state = "metal-rod-superheated"
 	cell.use(500)
@@ -262,11 +262,11 @@
 		if(buildstate == 0)
 			var/obj/item/stack/rods/R = W
 			if(R.use(3))
-				to_chat(user, "<span class='notice'>You assemble a backbone of rods around the wooden stock.</span>")
+				to_chat(user, SPAN("notice", "You assemble a backbone of rods around the wooden stock."))
 				buildstate++
 				update_icon()
 			else
-				to_chat(user, "<span class='notice'>You need at least three rods to complete this task.</span>")
+				to_chat(user, SPAN("notice", "You need at least three rods to complete this task."))
 			return
 	else if(isWelder(W))
 		if(buildstate == 1)
@@ -274,7 +274,7 @@
 			if(!WT.use_tool(src, user, amount = 10))
 				return
 
-			to_chat(user, "<span class='notice'>You weld the rods into place.</span>")
+			to_chat(user, SPAN("notice", "You weld the rods into place."))
 			buildstate++
 			update_icon()
 		return
@@ -282,33 +282,33 @@
 		var/obj/item/stack/cable_coil/C = W
 		if(buildstate == 2)
 			if(C.use(5))
-				to_chat(user, "<span class='notice'>You wire a crude cell mount into the top of the crossbow.</span>")
+				to_chat(user, SPAN("notice", "You wire a crude cell mount into the top of the crossbow."))
 				buildstate++
 				update_icon()
 			else
-				to_chat(user, "<span class='notice'>You need at least five segments of cable coil to complete this task.</span>")
+				to_chat(user, SPAN("notice", "You need at least five segments of cable coil to complete this task."))
 			return
 		else if(buildstate == 4)
 			if(C.use(5))
-				to_chat(user, "<span class='notice'>You string a steel cable across the crossbow's lath.</span>")
+				to_chat(user, SPAN("notice", "You string a steel cable across the crossbow's lath."))
 				buildstate++
 				update_icon()
 			else
-				to_chat(user, "<span class='notice'>You need at least five segments of cable coil to complete this task.</span>")
+				to_chat(user, SPAN("notice", "You need at least five segments of cable coil to complete this task."))
 			return
 	else if(istype(W,/obj/item/stack/material) && W.get_material_name() == MATERIAL_PLASTIC)
 		if(buildstate == 3)
 			var/obj/item/stack/material/P = W
 			if(P.use(3))
-				to_chat(user, "<span class='notice'>You assemble and install a heavy plastic lath onto the crossbow.</span>")
+				to_chat(user, SPAN("notice", "You assemble and install a heavy plastic lath onto the crossbow."))
 				buildstate++
 				update_icon()
 			else
-				to_chat(user, "<span class='notice'>You need at least three plastic sheets to complete this task.</span>")
+				to_chat(user, SPAN("notice", "You need at least three plastic sheets to complete this task."))
 			return
 	else if(isScrewdriver(W))
 		if(buildstate == 5)
-			to_chat(user, "<span class='notice'>You secure the crossbow's various parts.</span>")
+			to_chat(user, SPAN("notice", "You secure the crossbow's various parts."))
 			new /obj/item/gun/launcher/crossbow(get_turf(src))
 			qdel(src)
 		return

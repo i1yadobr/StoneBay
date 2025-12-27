@@ -182,16 +182,16 @@
 		layer = ABOVE_HUMAN_LAYER
 		visible_message("\The [M] was caught in [src]!")
 	else
-		to_chat(M,"<span class='warning'>You are free of the net!</span>")
+		to_chat(M,SPAN("warning", "You are free of the net!"))
 		reset_plane_and_layer()
 
 /obj/effect/energy_net/proc/healthcheck()
 	if(health <=0)
 		set_density(0)
 		if(countdown <= 0)
-			visible_message("<span class='warning'>\The [src] fades away!</span>")
+			visible_message(SPAN("warning", "\The [src] fades away!"))
 		else
-			visible_message("<span class='danger'>\The [src] is torn apart!</span>")
+			visible_message(SPAN("danger", "\The [src] is torn apart!"))
 		qdel(src)
 
 /obj/effect/energy_net/bullet_act(obj/item/projectile/Proj)
@@ -218,7 +218,7 @@
 	else
 		health -= rand(5,8)
 
-	to_chat(H,"<span class='danger'>You claw at the energy net.</span>")
+	to_chat(H,SPAN("danger", "You claw at the energy net."))
 
 	healthcheck()
 	return
@@ -233,8 +233,8 @@
 
 /obj/effect/energy_net/proc/escape_net(mob/user as mob)
 	visible_message(
-		"<span class='warning'>\The [user] attempts to free themselves from \the [src]!</span>",
-		"<span class='warning'>You attempt to free yourself from \the [src]!</span>"
+		SPAN("warning", "\The [user] attempts to free themselves from \the [src]!"),
+		SPAN("warning", "You attempt to free yourself from \the [src]!")
 		)
 	if(do_after(user, rand(min_free_time, max_free_time), src, incapacitation_flags = INCAPACITATION_DISABLED))
 		health = 0

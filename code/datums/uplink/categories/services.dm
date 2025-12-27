@@ -81,13 +81,13 @@
 
 /obj/item/device/uplink_service/attack_self(mob/user)
 	if(state != AWAITING_ACTIVATION)
-		to_chat(user, "<span class='warning'>\The [src] won't activate again.</span>")
+		to_chat(user, SPAN("warning", "\The [src] won't activate again."))
 		return
 	if(!enable())
 		return
 	state = CURRENTLY_ACTIVE
 	update_icon()
-	user.visible_message("<span class='notice'>\The [user] activates \the [src].</span>", "<span class='notice'>You activate \the [src].</span>")
+	user.visible_message(SPAN("notice", "\The [user] activates \the [src]."), SPAN("notice", "You activate \the [src]."))
 	log_and_message_admins("has activated the service '[service_label]'", user)
 
 	if(service_duration)
@@ -105,7 +105,7 @@
 	state = HAS_BEEN_ACTIVATED
 	update_icon()
 	playsound(loc, SFX_SPARK, 50, 1)
-	visible_message("<span class='warning'>\The [src] shuts down with a spark.</span>")
+	visible_message(SPAN("warning", "\The [src] shuts down with a spark."))
 
 /obj/item/device/uplink_service/on_update_icon()
 	switch(state)
@@ -185,9 +185,9 @@
 
 /obj/item/device/uplink_service/fake_update_announcement/enable(mob/user = usr)
 	if(state != AWAITING_ACTIVATION)
-		to_chat(user, "<span class='warning'>\The [src] won't activate again.</span>")
+		to_chat(user, SPAN("warning", "\The [src] won't activate again."))
 		return
-	user.visible_message("<span class='notice'>\The [user] activates \the [src].</span>", "<span class='notice'>You activate \the [src].</span>")
+	user.visible_message(SPAN("notice", "\The [user] activates \the [src]."), SPAN("notice", "You activate \the [src]."))
 	log_and_message_admins("has activated the service '[service_label]'", user)
 	state = CURRENTLY_ACTIVE
 	var/input = sanitize(input(user, "Please enter anything you want. Anything. Serious.", "What?", "") as message|null, extra = 0)

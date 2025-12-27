@@ -154,12 +154,6 @@
 /obj/proc/hear_talk(mob/M as mob, text, verb, datum/language/speaking)
 	if(talking_atom)
 		talking_atom.catchMessage(text, M)
-/*
-	var/mob/mo = locate(/mob) in src
-	if(mo)
-		var/rendered = "<span class='game say'><span class='name'>[M.name]: </span> <span class='message'>[text]</span></span>"
-		mo.show_message(rendered, 2)
-		*/
 	return
 
 /obj/proc/see_emote(mob/M as mob, text, emote_type)
@@ -203,7 +197,7 @@
 	if(do_after(user, delay, src))
 		if(!src)
 			return 0
-		to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
+		to_chat(user, SPAN("notice", "You [anchored? "un" : ""]secured \the [src]!"))
 		anchored = !anchored
 		return 1
 	return 0

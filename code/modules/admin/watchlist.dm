@@ -26,7 +26,7 @@
 		target_ckey = new_ckey
 
 	if (Check(target_ckey))
-		to_chat(usr, "<span class='redtext'>[target_ckey] is already on the watchlist.</span>")
+		to_chat(usr, SPAN("redtext", "[target_ckey] is already on the watchlist."))
 		return
 
 	var/reason = sanitize(input(usr, "Please State Reason", "Reason"))
@@ -204,12 +204,12 @@
 
 	C.watchlist_warn = watchlist.Check(C.ckey)
 	if (C.watchlist_warn)
-		message_admins("<font color='red'><B>WATCHLIST: </B></font><span class='info'>[key_name_admin(C)] has just connected - Reason: [C.watchlist_warn]</span>")
+		message_admins("<font color='red'><B>WATCHLIST: </B></font>[SPAN("info", "[key_name_admin(C)] has just connected - Reason: [C.watchlist_warn]")]")
 
 	if (check_rights((R_ADMIN|R_MOD), 0, C))
 		for(var/client/player in GLOB.clients)
 			if (player.watchlist_warn)
-				to_chat(C, "<span class=\"log_message\"><font color='red'><B>WATCHLIST: </B></font><span class='info'>[key_name_admin(player)] is playing - Reason: [player.watchlist_warn]</span></span>")
+				to_chat(C, SPAN("log_message", "<font color='red'><B>WATCHLIST: </B></font>[SPAN("info", "[key_name_admin(player)] is playing - Reason: [player.watchlist_warn]")]"))
 
 /datum/watchlist/proc/AdminTopicProcess(datum/admins/source, list/href_list)
 	if(href_list["watchadd"])

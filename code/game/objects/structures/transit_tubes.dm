@@ -1,4 +1,3 @@
-
 // Basic transit tubes. Straight pieces, curved sections,
 //  and basic splits/joins (no routing logic).
 // Mappers: you can use "Generate Instances from Icon-states"
@@ -20,7 +19,6 @@
 	//  this continues to work.
 	var/global/list/tube_dir_list = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
 
-
 // A place where tube pods stop, and people can get in or out.
 // Mappers: use "Generate Instances from Directions" for this
 //  one.
@@ -35,8 +33,6 @@
 	var/const/OPEN_DURATION = 6
 	var/const/CLOSE_DURATION = 6
 
-
-
 /obj/structure/transit_tube_pod
 	icon = 'icons/obj/pipes/transit_tube_pod.dmi'
 	icon_state = "pod"
@@ -45,8 +41,6 @@
 	density = 1
 	var/moving = 0
 	var/datum/gas_mixture/air_contents = new()
-
-
 
 /obj/structure/transit_tube_pod/Destroy()
 	for(var/atom/movable/AM in contents)
@@ -75,8 +69,6 @@
 		if(3.0)
 			return
 
-
-
 /obj/structure/transit_tube_pod/New(loc)
 	..(loc)
 
@@ -87,41 +79,33 @@
 	spawn(5)
 		follow_tube()
 
-
-
 /obj/structure/transit_tube/New(loc)
 	..(loc)
 
 	if(tube_dirs == null)
 		init_dirs()
 
-
-
 /obj/structure/transit_tube/Bumped(mob/AM as mob|obj)
 	var/obj/structure/transit_tube/T = locate() in AM.loc
 	if(T)
-		to_chat(AM, "<span class='warning'>The tube's support pylons block your way.</span>")
+		to_chat(AM, SPAN("warning", "The tube's support pylons block your way."))
 		return ..()
 	else
 		AM.forceMove(loc)
-		to_chat(AM, "<span class='info'>You slip under the tube.</span>")
-
+		to_chat(AM, SPAN("info", "You slip under the tube."))
 
 /obj/structure/transit_tube/station/New(loc)
 	..(loc)
-
-
 
 /obj/structure/transit_tube/station/Bumped(mob/AM as mob|obj)
 	if(!pod_moving && icon_state == "open" && istype(AM, /mob))
 		for(var/obj/structure/transit_tube_pod/pod in loc)
 			if(pod.contents.len)
-				to_chat(AM, "<span class='notice'>The pod is already occupied.</span>")
+				to_chat(AM, SPAN("notice", "The pod is already occupied."))
 				return
 			else if(!pod.moving && (pod.dir in directions()))
 				AM.forceMove(pod)
 				return
-
 
 /obj/structure/transit_tube/station/attack_hand(mob/user as mob)
 	if(!pod_moving)
@@ -133,8 +117,6 @@
 				else if(icon_state == "open")
 					close_animation()
 
-
-
 /obj/structure/transit_tube/station/proc/open_animation()
 	if(icon_state == "closed")
 		icon_state = "opening"
@@ -142,16 +124,12 @@
 			if(icon_state == "opening")
 				icon_state = "open"
 
-
-
 /obj/structure/transit_tube/station/proc/close_animation()
 	if(icon_state == "open")
 		icon_state = "closing"
 		spawn(CLOSE_DURATION)
 			if(icon_state == "closing")
 				icon_state = "closed"
-
-
 
 /obj/structure/transit_tube/station/proc/launch_pod()
 	for(var/obj/structure/transit_tube_pod/pod in loc)
@@ -184,18 +162,12 @@
 /obj/structure/transit_tube/proc/should_stop_pod(pod, from_dir)
 	return 0
 
-
-
 /obj/structure/transit_tube/station/should_stop_pod(pod, from_dir)
 	return 1
-
-
 
 // Called when a pod stops in this tube section.
 /obj/structure/transit_tube/proc/pod_stopped(pod, from_dir)
 	return
-
-
 
 /obj/structure/transit_tube/station/pod_stopped(obj/structure/transit_tube_pod/pod, from_dir)
 	pod_moving = 1
@@ -217,15 +189,11 @@
 
 			launch_pod()
 
-
-
 // Returns a /list of directions this tube section can connect to.
 //  Tubes that have some sort of logic or changing direction might
 //  override it with additional logic.
 /obj/structure/transit_tube/proc/directions()
 	return tube_dirs
-
-
 
 /obj/structure/transit_tube/proc/has_entrance(from_dir)
 	from_dir = turn(from_dir, 180)
@@ -236,16 +204,12 @@
 
 	return 0
 
-
-
 /obj/structure/transit_tube/proc/has_exit(in_dir)
 	for(var/direction in directions())
 		if(direction == in_dir)
 			return 1
 
 	return 0
-
-
 
 // Searches for an exit direction within 45 degrees of the
 //  specified dir. Returns that direction, or 0 if none match.
@@ -266,8 +230,6 @@
 
 	return near_dir
 
-
-
 // Return how many BYOND ticks to wait before entering/exiting
 //  the tube section. Default action is to return the value of
 //  a var, which wouldn't need a proc, but it makes it possible
@@ -278,8 +240,6 @@
 
 /obj/structure/transit_tube/proc/enter_delay(pod, to_dir)
 	return enter_delay
-
-
 
 /obj/structure/transit_tube_pod/proc/follow_tube()
 	if(moving)
@@ -428,14 +388,10 @@
 		if(copytext(icon_state, 1, 3) == "D-" || findtextEx(icon_state, "Pass"))
 			set_density(0)
 
-
-
 // Tube station directions are simply 90 to either side of
 //  the exit.
 /obj/structure/transit_tube/station/init_dirs()
 	tube_dirs = list(turn(dir, 90), turn(dir, -90))
-
-
 
 // Initialize dirs by searching for tubes that do/might connect
 //  on nearby turfs. Create corner pieces if nessecary.
@@ -466,8 +422,6 @@
 	generate_automatic_corners(tube_dirs)
 	select_automatic_icon_state(tube_dirs)
 
-
-
 // Given a list of directions, look a pair that forms a 180 or
 //  135 degree angle, and return a list containing the pair.
 //  If none exist, return list(connected[1], turn(connected[1], 180)
@@ -485,13 +439,9 @@
 
 	return list(connected[1], turn(connected[1], 180))
 
-
-
 /obj/structure/transit_tube/proc/select_automatic_icon_state(directions)
 	if(length(directions) == 2)
 		icon_state = "[dir2text_short(directions[1])]-[dir2text_short(directions[2])]"
-
-
 
 // Look for diagonal directions, generate the decorative corners in each.
 /obj/structure/transit_tube/proc/generate_automatic_corners(directions)
@@ -509,8 +459,6 @@
 			else
 				create_automatic_decorative_corner(get_step(loc, WEST), direction ^ 12)
 
-
-
 // Generate a corner, if one doesn't exist for the direction on the turf.
 /obj/structure/transit_tube/proc/create_automatic_decorative_corner(location, direction)
 	var/state = "D-[dir2text_short(direction)]"
@@ -522,8 +470,6 @@
 	var/obj/structure/transit_tube/tube = new(location)
 	tube.icon_state = state
 	tube.init_dirs()
-
-
 
 // Uses a list() to cache return values. Since they should
 //  never be edited directly, all tubes with a certain
@@ -558,8 +504,6 @@
 	direction_table[text] = directions
 	return directions
 
-
-
 // A copy of text2dir, extended to accept one and two letter
 //  directions, and to clearly return 0 otherwise.
 /obj/structure/transit_tube/proc/text2dir_extended(direction)
@@ -580,9 +524,8 @@
 			return 6
 		if("SOUTHWEST", "SW")
 			return 10
+		else
 	return 0
-
-
 
 // A copy of dir2text, which returns the short one or two letter
 //  directions used in tube icon states.
@@ -604,4 +547,5 @@
 			return "NW"
 		if(10)
 			return "SW"
+		else
 	return

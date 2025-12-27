@@ -10,25 +10,26 @@ GLOBAL_LIST_EMPTY(common_report)
 			if(evacuation_controller.round_over() && evacuation_controller.emergency_evacuation)
 				if(!isAdminLevel(playerTurf.z))
 					parts += "<div class='panel stationborder'>"
-					parts += "<span class='marooned'>You managed to survive, but were marooned on [station_name()] as [Player.real_name]...</span>"
+					parts += SPAN("redtext", "You managed to survive, but were marooned on [station_name()] as [Player.real_name]...")
 				else
 					parts += "<div class='panel greenborder'>"
-					parts += "<span class='greentext'>You managed to survive the events on [station_name()] as [Player.real_name].</span>"
+					parts += SPAN("greentext", "You managed to survive the events on [station_name()] as [Player.real_name].")
 			else if(isAdminLevel(playerTurf.z))
 				parts += "<div class='panel greenborder'>"
-				parts += "<span class='greentext'>You successfully underwent crew transfer after events on [station_name()] as [Player.real_name].</span>"
+				parts += SPAN("greentext", "You successfully underwent crew transfer after events on [station_name()] as [Player.real_name].")
 			else if(issilicon(Player))
 				parts += "<div class='panel greenborder'>"
-				parts += "<span class='greentext'>You remain operational after the events on [station_name()] as [Player.real_name].</span>"
+				parts += SPAN("greentext", "You remain operational after the events on [station_name()] as [Player.real_name].")
 			else
 				parts += "<div class='panel greenborder'>"
-				parts += "<span class='greentext'>You got through just another workday on [station_name()] as [Player.real_name].</span>"
+				parts += SPAN("greentext", "You got through just another workday on [station_name()] as [Player.real_name].")
+
 
 		else
 			var/mob/observer/ghost/O = Player
 			if (!istype(Player) || !O.started_as_observer)
 				parts += "<div class='panel redborder'>"
-				parts += "<span class='redtext'>You did not survive the events on [station_name()]...</span>"
+				parts += SPAN("redtext", "You did not survive the events on [station_name()]...")
 	else
 		parts += "<div class='panel stationborder'>"
 	parts += "<br>"
@@ -107,8 +108,7 @@ GLOBAL_LIST_EMPTY(common_report)
 		else if(data[2] in typesof(/mob/living/silicon/robot))
 			var/mob/living/silicon/robot/robo = silicon_ref?.resolve()
 			if (!robo.connected_ai)
-				parts += "[borg_spacer?"<br>":""]<b>[data[1]]</b> (Played by: <b>[M.key]</b>) [(!robo || robo?.is_ooc_dead()) ? "was <span class='redtext'>unable to survive</span> the rigors of being a cyborg." : "<span class='greentext'>survived</span> as borg!"]\
-				It was [robo?.connected_ai ? "[robo?.connected_ai.name]'s loyal minion" : "AI-less, independent machine"]. Its laws were:"
+				parts += "[borg_spacer?"<br>":""]<b>[robo.name]</b> (Played by: <b>[robo.mind.key]</b>) [(robo?.is_ooc_dead())? "[SPAN("greentext", "survived")] as an AI-less borg!" : "was [SPAN("redtext", "unable to survive")] the rigors of being a cyborg without an AI."] Its laws were:"
 
 				if(robo) //How the hell do we lose robo between here and the world messages directly above this?
 					parts += robo.laws?.print_laws()
@@ -166,7 +166,7 @@ GLOBAL_LIST_EMPTY(common_report)
 
 	var/list/parts = list()
 
-	parts += "<div class='panel stationborder'><span class='marooned'><b>Last words of the first victims:</b></span><br>"
+	parts += "<div class='panel stationborder'>[SPAN("redtext", "<b>Last words of the first victims:</b>")]<br>"
 
 	for(var/index = 1 to min(length(GLOB.last_words), 4))
 		var/datum/last_words_data/data = GLOB.last_words[index]

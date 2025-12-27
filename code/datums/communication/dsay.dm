@@ -30,7 +30,7 @@
 		if(!speech_method.can_receive(communicator, M))
 			continue
 		var/sent_message = speech_method.get_message(communicator, M, message)
-		receive_communication(communicator, M, "<span class='deadsay'>" + create_text_tag("dead", "DEAD") + " [sent_message]</span>")
+		receive_communication(communicator, M, SPAN("deadsay", "" + create_text_tag("dead", "DEAD") + " [sent_message]"))
 
 /decl/communication_channel/dsay/get_message_type()
 	return MESSAGE_TYPE_DEADCHAT
@@ -39,7 +39,7 @@
 	if(!istype(communicator))
 		return FALSE
 	if(!communicator.mob.is_ooc_dead())
-		to_chat(communicator, "<span class='warning'>You're not sufficiently dead to use DSAY!</span>")
+		to_chat(communicator, SPAN("warning", "You're not sufficiently dead to use DSAY!"))
 		return FALSE
 	return DSAY_ASK_BASE
 
@@ -87,14 +87,14 @@
 			lname = "[keyname] ([name])"
 		else										// Everyone else (dead people who didn't ghost yet, etc.)
 			lname = name
-	return "<span class='name'>[lname]</span>"
+	return SPAN("name", "[lname]")
 
 /decl/dsay_communication/proc/get_message(client/C, mob/M, message)
 	var/say_verb = pick("complains","moans","whines","laments","blubbers")
-	return "[get_name(C, M)] [say_verb], <span class='message linkify'>\"[message]\"</span>"
+	return "[get_name(C, M)] [say_verb], [SPAN("message linkify", "\"[message]\"")]"
 
 /decl/dsay_communication/emote/get_message(client/C, mob/M, message)
-	return "[get_name(C, M)] <span class='message linkify'>[message]</span>"
+	return "[get_name(C, M)] [SPAN("message linkify", "[message]")]"
 
 /decl/dsay_communication/proc/adjust_channel(decl/communication_channel/dsay)
 	dsay.flags |= COMMUNICATION_ADMIN_FOLLOW|COMMUNICATION_GHOST_FOLLOW // Add admin and ghost follow
@@ -111,13 +111,12 @@
 	if(!istype(communicator))
 		return FALSE
 	if(!communicator.holder)
-		to_chat(communicator, "<span class='warning'>You do not have sufficent permissions to use DSAY!</span>")
+		to_chat(communicator, SPAN("warning", "You do not have sufficent permissions to use DSAY!"))
 		return FALSE
 	return DSAY_ASK_BASE
 
 /decl/dsay_communication/admin/get_message(client/communicator, mob/M, message)
-	var/stafftype = uppertext(communicator.holder.rank)
-	return "<span class='name'>[stafftype]([communicator.key])</span> says, <span class='message'>\"[message]\"</span>"
+	return "[SPAN("name", "[communicator.key]")] says, [SPAN("message", "\"[message]\"")]"
 
 /decl/dsay_communication/admin/adjust_channel(decl/communication_channel/dsay)
 	dsay.log_proc = /proc/log_say

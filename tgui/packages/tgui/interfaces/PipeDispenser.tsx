@@ -53,7 +53,7 @@ export const PipeDispenser = (props: any, context: any) => {
                 {categories.map((category, i) => (
                   <Stack.Item>
                     <Button
-                      as="span"
+                      as=SPAN"
                       color="transparent"
                       icon={ICON_BY_CATEGORY_NAME[category.cat_name]}
                       key={category.cat_name}

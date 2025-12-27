@@ -85,14 +85,14 @@
 	if(!istype(H.head, /obj/item/clothing/head/helmet/space/vox/pressure))
 		return
 	if(!(world.time > last_used))
-		to_chat(H, "<span class='danger'>[src] is recharging.</span>")
+		to_chat(H, SPAN("danger", "[src] is recharging."))
 		return
 	last_used = world.time + tool_delay
 	spawn_vox_rcd(H)
 
 /obj/item/clothing/suit/space/vox/pressure/proc/spawn_vox_rcd(mob/living/carbon/human/H)
 	if(H.l_hand && H.r_hand)
-		to_chat(H, "<span class='danger'>Your hands are full.</span>")
+		to_chat(H, SPAN("danger", "Your hands are full."))
 		return
 
 	var/obj/item/I = new /obj/item/vox_rcd(H)
@@ -114,21 +114,21 @@
 	switch(mode)
 		if(1)
 			mode = 2
-			to_chat(user, "<span class='notice'>Changed mode to construct</span>")
+			to_chat(user, SPAN("notice", "Changed mode to construct"))
 		if(2)
 			mode = 3
-			to_chat(user, "<span class='notice'>Changed mode to construct doors</span>")
+			to_chat(user, SPAN("notice", "Changed mode to construct doors"))
 		if(3)
 			mode = 1
-			to_chat(user, "<span class='notice'>Changed mode to deconstruct</span>")
+			to_chat(user, SPAN("notice", "Changed mode to deconstruct"))
 
 /obj/item/vox_rcd/afterattack(atom/A, mob/user, proximity)
 	if(!proximity)
 		return
 	if(charge == 0)
-		user.visible_message("<span class='warning'>With a slight hiss, the [src] dissolves.</span>",
-		"<span class='notice'>You turn off your device.</span>",
-		"<span class='italics'>You hear a faint hiss.</span>")
+		user.visible_message(SPAN("warning", "With a slight hiss, the [src] dissolves."),
+		SPAN("notice", "You turn off your device."),
+		SPAN("italics", "You hear a faint hiss."))
 		playsound(src, 'sound/effects/flare.ogg', 30, 1)
 		spawn(1)
 			if(src)
@@ -158,22 +158,23 @@
 				charge--
 	playsound(src, 'sound/effects/flare.ogg', 30, 1)
 	if(charge == 0)
-		user.visible_message("<span class='warning'>With a slight hiss, the [src] dissolves.</span>",
-		"<span class='notice'>You turn off your device.</span>",
-		"<span class='italics'>You hear a faint hiss.</span>")
+		user.visible_message(SPAN("warning", "With a slight hiss, the [src] dissolves."),
+		SPAN("notice", "You turn off your device."),
+		SPAN("italics", "You hear a faint hiss."))
 		spawn(1)
 			if(src)
 				qdel(src)
 		return
 
 /obj/item/vox_rcd/dropped(mob/user)
-	user.visible_message("<span class='warning'>With a slight hiss, the [src] dissolves.</span>",
-	"<span class='notice'>You turn off our device.</span>",
-	"<span class='italics'>You hear a faint hiss.</span>")
+	user.visible_message(SPAN("warning", "With a slight hiss, the [src] dissolves."),
+	SPAN("notice", "You turn off our device."),
+	SPAN("italics", "You hear a faint hiss."))
 	playsound(src, 'sound/effects/flare.ogg', 30, 1)
 	spawn(1)
 		if(src)
 			qdel(src)
+
 //RCD/////////////////////
 
 /obj/item/alien_med_device
@@ -195,16 +196,16 @@
 		if(istype(V, /mob/living/carbon/human/vox))
 			playsound(V.loc, 'sound/effects/flare.ogg', 30, 1)
 			V.reagents.add_reagent(/datum/reagent/peridaxon, 5)
-			to_chat(V, "<span class='notice'>You feel a tiny prick!</span>")
+			to_chat(V, SPAN("notice", "You feel a tiny prick!"))
 			ammo--
 		else
 			playsound(V.loc, 'sound/weapons/bite.ogg', 30, 1)
 			V.reagents.add_reagent(/datum/reagent/toxin/amatoxin, 5)
-			to_chat(V, "<span class='notice'>You were bitten!</span>")
+			to_chat(V, SPAN("notice", "You were bitten!"))
 			ammo--
 	else
 		playsound(src, 'sound/voice/alien_roar_larva2.ogg', 30, 1)
-		to_chat(user, "<span class='notice'>[src] is discharged.</span>")
+		to_chat(user, SPAN("notice", "[src] is discharged."))
 
 /obj/item/alien_med_device/Initialize()
 	. = ..()
@@ -245,7 +246,7 @@
 	protection = !protection
 
 	if(protection)
-		to_chat(H, "<span class='notice'>You activate the protection mode.</span>")
+		to_chat(H, SPAN("notice", "You activate the protection mode."))
 		slowdown_per_slot[slot_wear_suit] = PROTECTION_SLOWDOWN
 		armor = list(melee = 80, bullet = 80, laser = 80, energy = 80, bomb = 60, bio = 100)
 		siemens_coefficient = 0.2
@@ -256,7 +257,7 @@
 
 		H.update_equipment_slowdown()
 	else
-		to_chat(H, "<span class='notice'>You deactivate the protection mode.</span>")
+		to_chat(H, SPAN("notice", "You deactivate the protection mode."))
 		slowdown_per_slot[slot_wear_suit] = DEFAULT_SLOWDOWN
 		armor = list(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 60, bio = 100)
 		siemens_coefficient = 0.6
@@ -302,7 +303,7 @@
 		cloak = FALSE
 		return 1
 
-	to_chat(H, "<span class='notice'>Stealth mode enabled.</span>")
+	to_chat(H, SPAN("notice", "Stealth mode enabled."))
 	cloak = TRUE
 	animate(H,alpha = 255, alpha = 20, time = 10)
 
@@ -316,8 +317,8 @@
 		if(!istype(H.head, /obj/item/clothing/head/helmet/space/vox/stealth))
 			remain_cloaked = 0
 	H.invisibility = initial(H.invisibility)
-	H.visible_message("<span class='warning'>[H] suddenly fades in, seemingly from nowhere!</span>",
-	"<span class='notice'>Stealth mode disabled.</span>")
+	H.visible_message(SPAN("warning", "[H] suddenly fades in, seemingly from nowhere!"),
+	SPAN("notice", "Stealth mode disabled."))
 	cloak = FALSE
 
 	animate(H,alpha = 20, alpha = 255, time = 10)
@@ -352,12 +353,12 @@
 	nanobots = !nanobots
 
 	if(nanobots)
-		to_chat(H, "<span class='notice'>Nanobots activated.</span>")
+		to_chat(H, SPAN("notice", "Nanobots activated."))
 		slowdown_per_slot[slot_wear_suit] = PROTECTION_SLOWDOWN
 		set_light(0.5, 0.1, 3, 2, "#e09d37")
 		H.update_equipment_slowdown()
 	else
-		to_chat(H, "<span class='notice'>Nanobots deactivated.</span>")
+		to_chat(H, SPAN("notice", "Nanobots deactivated."))
 		slowdown_per_slot[slot_wear_suit] = DEFAULT_SLOWDOWN
 		set_light(0)
 		H.update_equipment_slowdown()

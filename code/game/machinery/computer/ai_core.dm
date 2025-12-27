@@ -230,7 +230,7 @@
 	transfer.dropInto(get_turf(src))
 	transfer.create_eyeobj()
 	transfer.cancel_camera()
-	to_chat(user, "<span class='notice'>Transfer successful:</span> [transfer.name] ([rand(1000,9999)].exe) downloaded to host terminal. Local copy wiped.")
+	to_chat(user, "[SPAN("notice", "Transfer successful:")] [transfer.name] ([rand(1000,9999)].exe) downloaded to host terminal. Local copy wiped.")
 	to_chat(transfer, "You have been uploaded to a stationary terminal. Remote device connection restored.")
 
 	if(card)
@@ -252,23 +252,23 @@
 		if(transfer)
 			load_ai(transfer,card,user)
 		else
-			to_chat(user, "<span class='danger'>ERROR:</span> Unable to locate artificial intelligence.")
+			to_chat(user, "[SPAN("danger", "ERROR:")] Unable to locate artificial intelligence.")
 		return
 	else if(isWrench(W))
 		if(anchored)
-			user.visible_message("<span class='notice'>\The [user] starts to unbolt \the [src] from the plating...</span>")
+			user.visible_message(SPAN("notice", "\The [user] starts to unbolt \the [src] from the plating..."))
 			if(!do_after(user, 40, src))
-				user.visible_message("<span class='notice'>\The [user] decides not to unbolt \the [src].</span>")
+				user.visible_message(SPAN("notice", "\The [user] decides not to unbolt \the [src]."))
 				return
-			user.visible_message("<span class='notice'>\The [user] finishes unfastening \the [src]!</span>")
+			user.visible_message(SPAN("notice", "\The [user] finishes unfastening \the [src]!"))
 			anchored = 0
 			return
 		else
-			user.visible_message("<span class='notice'>\The [user] starts to bolt \the [src] to the plating...</span>")
+			user.visible_message(SPAN("notice", "\The [user] starts to bolt \the [src] to the plating..."))
 			if(!do_after(user, 40, src))
-				user.visible_message("<span class='notice'>\The [user] decides not to bolt \the [src].</span>")
+				user.visible_message(SPAN("notice", "\The [user] decides not to bolt \the [src]."))
 				return
-			user.visible_message("<span class='notice'>\The [user] finishes fastening down \the [src]!</span>")
+			user.visible_message(SPAN("notice", "\The [user] finishes fastening down \the [src]!"))
 			anchored = 1
 			return
 	else

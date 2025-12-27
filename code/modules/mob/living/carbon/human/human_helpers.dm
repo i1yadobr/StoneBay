@@ -215,17 +215,17 @@
 	set category = "IC"
 
 	if(incapacitated())
-		to_chat(src, "<span class='warning'>You need to recover before you can use this ability.</span>")
+		to_chat(src, SPAN("warning", "You need to recover before you can use this ability."))
 		return
 	if(world.time < next_sonar_ping)
-		to_chat(src, "<span class='warning'>You need another moment to focus.</span>")
+		to_chat(src, SPAN("warning", "You need another moment to focus."))
 		return
 	if(is_deaf() || is_below_sound_pressure(get_turf(src)))
-		to_chat(src, "<span class='warning'>You are for all intents and purposes currently deaf!</span>")
+		to_chat(src, SPAN("warning", "You are for all intents and purposes currently deaf!"))
 		return
 	next_sonar_ping += 10 SECONDS
 	var/heard_something = FALSE
-	to_chat(src, "<span class='notice'>You take a moment to listen in to your environment...</span>")
+	to_chat(src, SPAN("notice", "You take a moment to listen in to your environment..."))
 	var/list/view_sizes = get_view_size(client.view)
 	for(var/mob/living/L in range(max(view_sizes[1], view_sizes[2]), src))
 		var/turf/T = get_turf(L)
@@ -240,7 +240,7 @@
 		image_to(src, ping_image)
 		spawn(8)
 			qdel(ping_image)
-		var/feedback = list("<span class='notice'>There are noises of movement ")
+		var/feedback = "There are noises of movement "
 		var/direction = get_dir(src, L)
 		if(direction)
 			feedback += "towards the [dir2text(direction)], "
@@ -257,10 +257,9 @@
 					feedback += "far away."
 		else // No need to check distance if they're standing right on-top of us
 			feedback += "right on top of you."
-		feedback += "</span>"
-		to_chat(src, jointext(feedback,null))
+		to_chat(src, SPAN("notice", "[feedback]"))
 	if(!heard_something)
-		to_chat(src, "<span class='notice'>You hear no movement but your own.</span>")
+		to_chat(src, SPAN("notice", "You hear no movement but your own."))
 
 /mob/living/carbon/human/reset_layer()
 	if(hiding)
@@ -308,12 +307,12 @@
 	// We don't present the cloaking message if the human was already cloaked just before cleanup.
 	if(!has_uncloaked && LAZYLEN(cloaking_sources) == 1)
 		update_icons()
-		src.visible_message("<span class='warning'>\The [src] seems to disappear before your eyes!</span>", "<span class='notice'>You feel completely invisible.</span>")
+		src.visible_message(SPAN("warning", "\The [src] seems to disappear before your eyes!"), SPAN("notice", "You feel completely invisible."))
 		return TRUE
 	return FALSE
 
-#define CLOAK_APPEAR_OTHER "<span class='warning'>\The [src] appears from thin air!</span>"
-#define CLOAK_APPEAR_SELF "<span class='notice'>You have re-appeared.</span>"
+#define CLOAK_APPEAR_OTHER SPAN("warning", "\The [src] appears from thin air!")
+#define CLOAK_APPEAR_SELF SPAN("notice", "You have re-appeared.")
 
 // Returns true if, and only if, the human has gone from cloaked to uncloaked
 /mob/living/carbon/human/proc/remove_cloaking_source(datum/cloaking_source)

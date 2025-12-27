@@ -562,7 +562,7 @@
 							U.handle_regular_hud_updates()
 
 			if(!modified)
-				to_chat(usr, "<span class='warning'>Unable to locate a data core entry for this person.</span>")
+				to_chat(usr, SPAN("warning", "Unable to locate a data core entry for this person."))
 	if (href_list["secrecord"])
 		if(hasHUD(usr, HUD_SECURITY))
 			var/perpname = "wot"
@@ -589,7 +589,7 @@
 					read = 1
 
 			if(!read)
-				to_chat(usr, "<span class='warning'>Unable to locate a data core entry for this person.</span>")
+				to_chat(usr, SPAN("warning", "Unable to locate a data core entry for this person."))
 	if (href_list["physical"] || href_list["mental"])
 		var/is_physical = href_list["physical"]
 		if(hasHUD(usr, HUD_MEDICAL))
@@ -628,7 +628,7 @@
 							U.handle_regular_hud_updates()
 
 			if(!modified)
-				to_chat(usr, "<span class='warning'>Unable to locate a data core entry for this person.</span>")
+				to_chat(usr, SPAN("warning", "Unable to locate a data core entry for this person."))
 	if (href_list["medrecord"])
 		if(hasHUD(usr, HUD_MEDICAL))
 			var/perpname = "wot"
@@ -657,7 +657,7 @@
 					to_chat(usr, "<b>Medical Background:</b> [pencode2html(E.get_medRecord())]")
 					read = 1
 			if(!read)
-				to_chat(usr, "<span class='warning'>Unable to locate a data core entry for this person.</span>")
+				to_chat(usr, SPAN("warning", "Unable to locate a data core entry for this person."))
 
 	if (href_list["lookitem"])
 		var/obj/item/I = locate(href_list["lookitem"])
@@ -754,7 +754,7 @@
 
 /mob/living/carbon/human/proc/play_xylophone()
 	if(!src.xylophone)
-		visible_message("<span class='warning'>\The [src] begins playing \his ribcage like a xylophone. It's quite spooky.</span>","<span class='notice'>You begin to play a spooky refrain on your ribcage.</span>","<span class='warning'>You hear a spooky xylophone melody.</span>")
+		visible_message(SPAN("warning", "\The [src] begins playing \his ribcage like a xylophone. It's quite spooky."),SPAN("notice", "You begin to play a spooky refrain on your ribcage."),SPAN("warning", "You hear a spooky xylophone melody."))
 		var/song = pick('sound/effects/xylophone1.ogg','sound/effects/xylophone2.ogg','sound/effects/xylophone3.ogg')
 		playsound(loc, song, 50, 1, -1)
 		xylophone = 1
@@ -787,7 +787,7 @@
 
 	var/text_output = temp.generate_taste_message(src)
 	if(text_output != last_taste_text || last_taste_time + 100 < world.time) //We dont want to spam the same message over and over again at the person. Give it a bit of a buffer.
-		to_chat(src, "<span class='notice'>You can taste [text_output].</span>")//no taste means there are too many tastes and not enough flavor.
+		to_chat(src, SPAN("notice", "You can taste [text_output]."))//no taste means there are too many tastes and not enough flavor.
 
 		last_taste_time = world.time
 		last_taste_text = text_output
@@ -868,10 +868,10 @@
 	if(!lastpuke)
 		lastpuke = 1
 		if(!silent)
-			to_chat(src, "<span class='warning'>You feel nauseous...</span>")
+			to_chat(src, SPAN("warning", "You feel nauseous..."))
 		if(level > 1)
 			sleep(150 / timevomit)	//15 seconds until second warning
-			to_chat(src, "<span class='warning'>You feel like you are about to throw up!</span>")
+			to_chat(src, SPAN("warning", "You feel like you are about to throw up!"))
 			if(level > 2)
 				sleep(100 / timevomit)	//and you have 10 more for mad dash to the bucket
 				Stun(3)
@@ -903,7 +903,7 @@
 					// Getting rid of reagents in stomach, randoming from 30 ml to the whole contents
 					stomach.ingested.remove_any(rand(30, stomach.ingested.total_volume))
 
-					src.visible_message("<span class='warning'>[src] throws up!</span>","<span class='warning'>You throw up!</span>")
+					src.visible_message(SPAN("warning", "[src] throws up!"),SPAN("warning", "You throw up!"))
 					playsound(loc, 'sound/effects/splat.ogg', 50, 1)
 
 					var/turf/location = loc
@@ -936,10 +936,10 @@
 
 	var/say = sanitize(input("What do you wish to say"))
 	if(mRemotetalk in target.mutations)
-		target.show_message("<span class='notice'>You hear [src.real_name]'s voice: [say]</span>")
+		target.show_message(SPAN("notice", "You hear [src.real_name]'s voice: [say]"))
 	else
-		target.show_message("<span class='notice'>You hear a voice that seems to echo around the room: [say]</span>")
-	usr.show_message("<span class='notice'>You project your mind into [target.real_name]: [say]</span>")
+		target.show_message(SPAN("notice", "You hear a voice that seems to echo around the room: [say]"))
+	usr.show_message(SPAN("notice", "You project your mind into [target.real_name]: [say]"))
 	log_say("[key_name(usr)] sent a telepathic message to [key_name(target)]: [say]")
 	for(var/mob/observer/ghost/G in world)
 		G.show_message("<i>Telepathic message from <b>[src]</b> to <b>[target]</b>: [say]</i>")
@@ -1055,7 +1055,7 @@
 				if(prob(1))
 					stomach_contents.Remove(O)
 					if(can_feel_pain())
-						to_chat(src, "<span class='danger'>You feel something rip out of your stomach!</span>")
+						to_chat(src, SPAN("danger", "You feel something rip out of your stomach!"))
 						groin.embed(O)
 				else if(prob(5))
 					jossle_internal_object(groin,O)
@@ -1063,12 +1063,12 @@
 /mob/living/carbon/human/proc/jossle_internal_object(obj/item/organ/external/organ, obj/item/O)
 	// All kinds of embedded objects cause bleeding.
 	if(!can_feel_pain())
-		to_chat(src, "<span class='warning'>You feel [O] moving inside your [organ.name].</span>")
+		to_chat(src, SPAN("warning", "You feel [O] moving inside your [organ.name]."))
 	else
 		var/msg = pick( \
-			"<span class='warning'>A spike of pain jolts your [organ.name] as you bump [O] inside.</span>", \
-			"<span class='warning'>Your movement jostles [O] in your [organ.name] painfully.</span>", \
-			"<span class='warning'>Your movement jostles [O] in your [organ.name] painfully.</span>")
+			SPAN("warning", "A spike of pain jolts your [organ.name] as you bump [O] inside."), \
+			SPAN("warning", "Your movement jostles [O] in your [organ.name] painfully."), \
+			SPAN("warning", "Your movement jostles [O] in your [organ.name] painfully."))
 		custom_pain(msg,40,affecting = organ)
 
 	organ.take_external_damage(rand(1,3), 0, 0)
@@ -1088,24 +1088,24 @@
 	if(usr == src)
 		self = 1
 	if(!self)
-		usr.visible_message("<span class='notice'>[usr] kneels down, puts \his hand on [src]'s wrist and begins counting their pulse.</span>",\
+		usr.visible_message(SPAN("notice", "[usr] kneels down, puts \his hand on [src]'s wrist and begins counting their pulse."),\
 		"You begin counting [src]'s pulse")
 	else
-		usr.visible_message("<span class='notice'>[usr] begins counting their pulse.</span>",\
+		usr.visible_message(SPAN("notice", "[usr] begins counting their pulse."),\
 		"You begin counting your pulse.")
 
 	if(pulse())
-		to_chat(usr, "<span class='notice'>[self ? "You have a" : "[src] has a"] pulse! Counting...</span>")
+		to_chat(usr, SPAN("notice", "[self ? "You have a" : "[src] has a"] pulse! Counting..."))
 	else
-		to_chat(usr, "<span class='danger'>[src] has no pulse!</span>")//it is REALLY UNLIKELY that a dead person would check his own pulse
+		to_chat(usr, SPAN("danger", "[src] has no pulse!"))//it is REALLY UNLIKELY that a dead person would check his own pulse
 		return
 
 	to_chat(usr, "You must[self ? "" : " both"] remain still until counting is finished.")
 	if(do_mob(usr, src, 60))
-		var/message = "<span class='notice'>[self ? "Your" : "[src]'s"] pulse is [src.get_pulse(GETPULSE_HAND)].</span>"
+		var/message = SPAN("notice", "[self ? "Your" : "[src]'s"] pulse is [src.get_pulse(GETPULSE_HAND)].")
 		to_chat(usr, message)
 	else
-		to_chat(usr, "<span class='warning'>You failed to check the pulse. Try again.</span>")
+		to_chat(usr, SPAN("warning", "You failed to check the pulse. Try again."))
 
 /mob/living/carbon/human/verb/lookup()
 	set name = "Look up"
@@ -1119,13 +1119,13 @@
 				reset_view(0)
 				return
 			if(istype(above, /turf/simulated/open))
-				to_chat(src, "<span class='notice'>You look up.</span>")
+				to_chat(src, SPAN("notice", "You look up."))
 				if(client)
 					reset_view(shadow)
 				return
-		to_chat(src, "<span class='notice'>You can see \the [above].</span>")
+		to_chat(src, SPAN("notice", "You can see \the [above]."))
 	else
-		to_chat(src, "<span class='notice'>You can't look up right now.</span>")
+		to_chat(src, SPAN("notice", "You can't look up right now."))
 	return
 
 /mob/living/carbon/human/set_species(new_species, default_colour)
@@ -1261,26 +1261,26 @@
 		verbs -= /mob/living/carbon/human/proc/bloody_doodle
 
 	if (src.gloves)
-		to_chat(src, "<span class='warning'>Your [src.gloves] are getting in the way.</span>")
+		to_chat(src, SPAN("warning", "Your [src.gloves] are getting in the way."))
 		return
 
 	var/turf/simulated/T = src.loc
 	if (!istype(T)) //to prevent doodling out of mechs and lockers
-		to_chat(src, "<span class='warning'>You cannot reach the floor.</span>")
+		to_chat(src, SPAN("warning", "You cannot reach the floor."))
 		return
 
 	var/direction = input(src,"Which way?","Tile selection") as anything in list("Here","North","South","East","West")
 	if (direction != "Here")
 		T = get_step(T,text2dir(direction))
 	if (!istype(T))
-		to_chat(src, "<span class='warning'>You cannot doodle there.</span>")
+		to_chat(src, SPAN("warning", "You cannot doodle there."))
 		return
 
 	var/num_doodles = 0
 	for (var/obj/effect/decal/cleanable/blood/writing/W in T)
 		num_doodles++
 	if (num_doodles > 4)
-		to_chat(src, "<span class='warning'>There is no space to write on!</span>")
+		to_chat(src, SPAN("warning", "There is no space to write on!"))
 		return
 
 	var/max_length = bloody_hands * 30 //tweeter style
@@ -1293,7 +1293,7 @@
 
 		if (length(message) > max_length)
 			message += "-"
-			to_chat(src, "<span class='warning'>You ran out of blood to write with!</span>")
+			to_chat(src, SPAN("warning", "You ran out of blood to write with!"))
 		var/obj/effect/decal/cleanable/blood/writing/W = new(T)
 		W.basecolor = (hand_blood_color) ? hand_blood_color : COLOR_BLOOD_HUMAN
 		W.update_icon()
@@ -1306,11 +1306,11 @@
 	var/obj/item/organ/external/affecting = get_organ(target_zone)
 
 	if(!affecting)
-		to_chat(user, "<span class='warning'>They are missing that limb.</span>")
+		to_chat(user, SPAN("warning", "They are missing that limb."))
 		return 0
 
 	if(BP_IS_ROBOTIC(affecting))
-		to_chat(user, "<span class='warning'>That limb is robotic.</span>")
+		to_chat(user, SPAN("warning", "That limb is robotic."))
 		return 0
 
 	. = CAN_INJECT
@@ -1319,7 +1319,7 @@
 			if(istype(C, /obj/item/clothing/suit/space))
 				. = INJECTION_PORT //it was going to block us, but it's a space suit so it doesn't because it has some kind of port
 			else
-				to_chat(user, "<span class='warning'>There is no exposed flesh or thin material on [src]'s [affecting.name] to inject into.</span>")
+				to_chat(user, SPAN("warning", "There is no exposed flesh or thin material on [src]'s [affecting.name] to inject into."))
 				return 0
 
 
@@ -1452,19 +1452,19 @@
 		return
 
 	if(self)
-		to_chat(src, "<span class='warning'>You brace yourself to relocate your [current_limb.joint]...</span>")
+		to_chat(src, SPAN("warning", "You brace yourself to relocate your [current_limb.joint]..."))
 	else
-		to_chat(U, "<span class='warning'>You begin to relocate [S]'s [current_limb.joint]...</span>")
+		to_chat(U, SPAN("warning", "You begin to relocate [S]'s [current_limb.joint]..."))
 	if(!do_after(U, 30, src))
 		return
 	if(!current_limb || !S || !U)
 		return
 
 	if(self)
-		to_chat(src, "<span class='danger'>You pop your [current_limb.joint] back in!</span>")
+		to_chat(src, SPAN("danger", "You pop your [current_limb.joint] back in!"))
 	else
-		to_chat(U, "<span class='danger'>You pop [S]'s [current_limb.joint] back in!</span>")
-		to_chat(S, "<span class='danger'>[U] pops your [current_limb.joint] back in!</span>")
+		to_chat(U, SPAN("danger", "You pop [S]'s [current_limb.joint] back in!"))
+		to_chat(S, SPAN("danger", "[U] pops your [current_limb.joint] back in!"))
 	current_limb.undislocate()
 
 /mob/living/carbon/human/drop(obj/item/W, atom/Target = null, force = null, changing_slots)
@@ -1495,7 +1495,7 @@
 
 	if(incapacitated() || species.species_flags & SPECIES_FLAG_CAN_NAB) return
 	pulling_punches = !pulling_punches
-	to_chat(src, "<span class='notice'>You are now [pulling_punches ? "pulling your punches" : "not pulling your punches"].</span>")
+	to_chat(src, SPAN("notice", "You are now [pulling_punches ? "pulling your punches" : "not pulling your punches"]."))
 	return
 
 // Similar to get_pulse, but returns only integer numbers instead of text.
@@ -1663,8 +1663,8 @@
 		..()
 	else
 		visible_message( \
-			"<span class='notice'>[src] examines [gender==MALE ? "himself" : "herself"].</span>", \
-			"<span class='notice'>You check yourself for injuries.</span>" \
+			SPAN("notice", "[src] examines [gender==MALE ? "himself" : "herself"]."), \
+			SPAN("notice", "You check yourself for injuries.") \
 			)
 
 		for(var/obj/item/organ/external/org in organs)
@@ -1703,9 +1703,9 @@
 			if(!org.is_usable() || org.is_dislocated())
 				status += "dangling uselessly"
 			if(status.len)
-				src.show_message("My [org.name] is <span class='warning'>[english_list(status)].</span>",1)
+				src.show_message("My [org.name] is [SPAN("warning", "[english_list(status)].")]",1)
 			else
-				src.show_message("My [org.name] is <span class='notice'>OK.</span>",1)
+				src.show_message("My [org.name] is [SPAN("notice", "OK.")]",1)
 
 		if((MUTATION_SKELETON in mutations) && (!w_uniform) && (!wear_suit))
 			play_xylophone()
@@ -1765,10 +1765,10 @@
 		if(!weakened && !stunned)
 			if(!blocking)
 				src.useblock_on()
-				to_chat(src, "<span class='notice'>You prepare for blocking!</span>")
+				to_chat(src, SPAN("notice", "You prepare for blocking!"))
 			else
 				src.useblock_off()
-				to_chat(src, "<span class='notice'>You lower your defence.</span>")
+				to_chat(src, SPAN("notice", "You lower your defence."))
 
 /mob/living/carbon/human/proc/useblock_off()
 	src.setClickCooldown(3)
@@ -1788,12 +1788,12 @@
 
 	if(!blocking_hand)
 		blocking_hand = 1
-		to_chat(src, "<span class='notice'>You will use your off hand to block.</span>")
+		to_chat(src, SPAN("notice", "You will use your off hand to block."))
 		if(src.blockswitch_icon)
 			src.blockswitch_icon.icon_state = "act_blockswitch1"
 	else
 		blocking_hand = 0
-		to_chat(src, "<span class='notice'>You will use your main hand to block.</span>")
+		to_chat(src, SPAN("notice", "You will use your main hand to block."))
 		if(src.blockswitch_icon)
 			src.blockswitch_icon.icon_state = "act_blockswitch0"
 

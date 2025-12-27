@@ -97,7 +97,7 @@
 
 	if(istype(I, /obj/item/storage/bag/trash))
 		var/obj/item/storage/bag/trash/T = I
-		to_chat(user, "<span class='notice'>You empty the bag.</span>")
+		to_chat(user, SPAN("notice", "You empty the bag."))
 		for(var/obj/item/O in T.contents)
 			playsound(src, SFX_DISPOSAL, 75, 0)
 			T.remove_from_storage(O,src)
@@ -129,7 +129,7 @@
 					GM.client.eye = src
 				GM.forceMove(src)
 				for(var/mob/C in viewers(src))
-					C.show_message("<span class='warning'>[GM.name] has been placed in the [src] by [user].</span>", 3)
+					C.show_message(SPAN("warning", "[GM.name] has been placed in the [src] by [user]."), 3)
 				qdel(G)
 				admin_attack_log(usr, GM, "Placed the victim into \the [src].", "Was placed into \the [src] by the attacker.", "stuffed \the [src] with")
 		return
@@ -182,11 +182,11 @@
 	src.add_fingerprint(user)
 	var/old_loc = AM.loc
 	if(AM == user)
-		user.visible_message("<span class='warning'>[user] starts climbing into [src].</span>", \
-							 "<span class='notice'>You start climbing into [src].</span>")
+		user.visible_message(SPAN("warning", "[user] starts climbing into \the [src]."), \
+							 SPAN("notice", "You start climbing into \the [src]."))
 	else
-		user.visible_message("<span class='[is_dangerous ? "warning" : "notice"]'>[user] starts stuffing [AM] into [src].</span>", \
-							 "<span class='notice'>You start stuffing [AM] into [src].</span>")
+		user.visible_message(SPAN(is_dangerous ? "warning" : "notice", "[user] starts stuffing [AM] into \the [src]."),
+							 SPAN("notice", "You start stuffing [AM] into \the [src]."))
 
 	if(!do_after(user, 2 SECONDS, src, incapacitation_flags = incapacitation_flags))
 		return
@@ -201,11 +201,11 @@
 
 	// Messages and logging
 	if(AM == user)
-		user.visible_message("<span class='danger'>[user] climbs into [src].</span>", \
-							 "<span class='notice'>You climb into [src].</span>")
+		user.visible_message(SPAN("danger", "[user] climbs into \the [src]."),
+							 SPAN("notice", "You climb into \the [src]."))
 	else
-		user.visible_message("<span class='[is_dangerous ? "danger" : "notice"]'>[user] stuffs [AM] into [src][is_dangerous ? "!" : "."]</span>", \
-							 "<span class='notice'>You stuff [AM] into [src].</span>")
+		user.visible_message(SPAN(is_dangerous ? "danger" : "notice", "[user] stuffs [AM] into \the [src][is_dangerous ? "!" : "."]"),
+							 SPAN("notice", "You stuff [AM] into \the [src]."))
 		if(ismob(M))
 			admin_attack_log(user, M, "Placed the victim into \the [src].", "Was placed into \the [src] by the attacker.", "stuffed \the [src] with")
 			if (M.client)
@@ -1136,7 +1136,7 @@
 			if(O.currTag)// Tag set
 				sort_tag = O.currTag
 				playsound(src.loc, 'sound/signals/ping1.ogg', 75, 0)
-				to_chat(user, "<span class='notice'>Changed tag to '[sort_tag]'.</span>")
+				to_chat(user, SPAN("notice", "Changed tag to '[sort_tag]'."))
 				updatename()
 				updatedesc()
 
@@ -1184,14 +1184,14 @@
 	if(isCrowbar(I))
 		var/obj/item/disposal_switch_construct/C = new /obj/item/disposal_switch_construct(src.loc, id_tag)
 		transfer_fingerprints_to(C)
-		user.visible_message("<span class='notice'>\The [user] deattaches \the [src]</span>")
+		user.visible_message(SPAN("notice", "\The [user] deattaches \the [src]"))
 		qdel(src)
 	else
 		..()
 
 /obj/machinery/disposal_switch/attack_hand(mob/user)
 	if(!allowed(user))
-		to_chat(user, "<span class='warning'>Access denied.</span>")
+		to_chat(user, SPAN("warning", "Access denied."))
 		return
 	on = !on
 	for(var/obj/structure/disposalpipe/diversion_junction/D in junctions)
@@ -1226,7 +1226,7 @@
 			found = 1
 			break
 	if(!found)
-		to_chat(user, "\icon[src]<span class=notice>\The [src] is not linked to any junctions!</span>")
+		to_chat(user, "\icon[src][SPAN("notice", "\The [src] is not linked to any junctions!")]")
 		return
 	var/obj/machinery/disposal_switch/NC = new /obj/machinery/disposal_switch(A, id_tag)
 	transfer_fingerprints_to(NC)
@@ -1281,7 +1281,7 @@
 		if(C.id_tag)
 			id_tag = C.id_tag
 			playsound(src.loc, 'sound/signals/ping1.ogg', 75, 0)
-			user.visible_message("<span class='notice'>\The [user] changes \the [src]'s tag.</span>")
+			user.visible_message(SPAN("notice", "\The [user] changes \the [src]'s tag."))
 
 
 /obj/structure/disposalpipe/diversion_junction/nextdir(fromdir, sortTag)
@@ -1365,7 +1365,7 @@
 			if(O.currTag)// Tag set
 				sortType = O.currTag
 				playsound(src.loc, 'sound/signals/ping1.ogg', 75, 0)
-				to_chat(user, "<span class='notice'>Changed filter to '[sortType]'.</span>")
+				to_chat(user, SPAN("notice", "Changed filter to '[sortType]'."))
 				updatename()
 				updatedesc()
 

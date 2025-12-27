@@ -41,7 +41,7 @@
 
 			if(!seed.growth_stages)
 				var/type_description = is_canonical ? "[seed.canonical_icon] (canonical)" : "[seed.get_trait(TRAIT_PLANT_ICON)]"
-				log_error("<span class='danger'>Seed type [type_description] cannot find a growth stage value.</span>")
+				log_error(SPAN("danger", "Seed type [type_description] cannot find a growth stage value."))
 				return
 
 			var/overlay_stage = get_overlay_stage()

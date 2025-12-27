@@ -66,7 +66,7 @@
 
 /obj/item/gun/projectile/consume_next_projectile()
 	if(!is_jammed && prob(jam_chance))
-		src.visible_message("<span class='danger'>\The [src] jams!</span>")
+		src.visible_message(SPAN("danger", "\The [src] jams!"))
 		is_jammed = 1
 	if(is_jammed)
 		return null
@@ -121,11 +121,11 @@
 		switch(AM.mag_type)
 			if(MAGAZINE)
 				if((ispath(allowed_magazines) && !istype(A, allowed_magazines)) || (islist(allowed_magazines) && !is_type_in_list(A, allowed_magazines)))
-					to_chat(loader, "<span class='warning'>\The [A] won't fit into [src].</span>")
+					to_chat(loader, SPAN("warning", "\The [A] won't fit into [src]."))
 					return
 
 				if(ammo_magazine)
-					to_chat(loader, "<span class='warning'>[src] already has a magazine loaded.</span>")//already a magazine here
+					to_chat(loader, SPAN("warning", "[src] already has a magazine loaded."))//already a magazine here
 					return
 
 				if(ismob(loader))
@@ -135,12 +135,12 @@
 					AM.forceMove(src)
 
 				ammo_magazine = AM
-				loader.visible_message("[loader] inserts [AM] into [src].", "<span class='notice'>You insert [AM] into [src].</span>")
+				loader.visible_message("[loader] inserts [AM] into [src].", SPAN("notice", "You insert [AM] into [src]."))
 				playsound(src.loc, mag_insert_sound, rand(45, 60), FALSE)
 
 			if(SPEEDLOADER)
 				if(loaded.len >= max_shells)
-					to_chat(loader, "<span class='warning'>[src] is full!</span>")
+					to_chat(loader, SPAN("warning", "[src] is full!"))
 					return
 
 				var/count = 0
@@ -155,7 +155,7 @@
 						count++
 
 				if(count)
-					loader.visible_message("[loader] reloads [src].", "<span class='notice'>You load [count] round\s into [src].</span>")
+					loader.visible_message("[loader] reloads [src].", SPAN("notice", "You load [count] round\s into [src]."))
 					playsound(src, mag_insert_sound, rand(50, 75), FALSE)
 
 		AM.update_icon()
@@ -166,7 +166,7 @@
 			return //incompatible
 
 		if(loaded.len >= max_shells)
-			to_chat(loader, "<span class='warning'>[src] is full.</span>")
+			to_chat(loader, SPAN("warning", "[src] is full."))
 			return
 
 		if(ismob(loader))
@@ -176,7 +176,7 @@
 			C.forceMove(src)
 
 		loaded.Insert(1, C) //add to the head of the list
-		loader.visible_message("[loader] inserts \a [C] into [src].", "<span class='notice'>You insert \a [C] into [src].</span>")
+		loader.visible_message("[loader] inserts \a [C] into [src].", SPAN("notice", "You insert \a [C] into [src]."))
 
 		if (istype(C, /obj/item/ammo_casing/shotgun))
 			playsound(loader, SFX_SHELL_INSERT, rand(45, 60), FALSE)
@@ -260,7 +260,7 @@
 		ammo_magazine.dropInto(user.loc)
 		user.visible_message(
 			"[ammo_magazine] falls out and clatters on the floor!",
-			"<span class='notice'>[ammo_magazine] falls out and clatters on the floor!</span>"
+			SPAN("notice", "[ammo_magazine] falls out and clatters on the floor!")
 			)
 		if(auto_eject_sound)
 			playsound(user, auto_eject_sound, 40, 1)

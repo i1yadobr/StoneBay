@@ -76,7 +76,7 @@
 		break
 
 	if(!found)
-		to_chat(usr, "<span class='warning'>Poll question details not found.</span>")
+		to_chat(usr, SPAN("warning", "Poll question details not found."))
 		return
 
 	switch(polltype)
@@ -409,7 +409,7 @@
 		break
 
 	if(!validpoll)
-		to_chat(usr, "<span class='warning'>Poll is not valid.</span>")
+		to_chat(usr, SPAN("warning", "Poll is not valid."))
 		return
 
 	var/DBQuery/select_query2 = sql_query({"
@@ -430,7 +430,7 @@
 		break
 
 	if(!validoption)
-		to_chat(usr, "<span class='warning'>Poll option is not valid.</span>")
+		to_chat(usr, SPAN("warning", "Poll option is not valid."))
 		return
 
 	var/alreadyvoted = 0
@@ -452,11 +452,11 @@
 			break
 
 	if(!multichoice && alreadyvoted)
-		to_chat(usr, "<span class='warning'>You already voted in this poll.</span>")
+		to_chat(usr, SPAN("warning", "You already voted in this poll."))
 		return
 
 	if(multichoice && (alreadyvoted >= multiplechoiceoptions))
-		to_chat(usr, "<span class='warning'>You already have more than [multiplechoiceoptions] logged votes on this poll. Enough is enough. Contact the database admin if this is an error.</span>")
+		to_chat(usr, SPAN("warning", "You already have more than [multiplechoiceoptions] logged votes on this poll. Enough is enough. Contact the database admin if this is an error."))
 		return
 
 	var/adminrank = "Player"
@@ -484,7 +484,7 @@
 			$adminrank)
 		"}, dbcon, list(pollid = pollid, optionid = optionid, ckey = usr.ckey, address = usr.client.address || "127.0.0.1", adminrank = adminrank))
 
-	to_chat(usr, "<span class='notice'>Vote successful.</span>")
+	to_chat(usr, SPAN("notice", "Vote successful."))
 	close_browser(usr, "window=playerpoll")
 
 
@@ -519,7 +519,7 @@
 		break
 
 	if(!validpoll)
-		to_chat(usr, "<span class='warning'>Poll is not valid.</span>")
+		to_chat(usr, SPAN("warning", "Poll is not valid."))
 		return
 
 	var/alreadyvoted = 0
@@ -540,7 +540,7 @@
 		break
 
 	if(alreadyvoted)
-		to_chat(usr, "<span class='warning'>You already sent your feedback for this poll.</span>")
+		to_chat(usr, SPAN("warning", "You already sent your feedback for this poll."))
 		return
 
 	var/adminrank = "Player"
@@ -577,7 +577,7 @@
 			$adminrank)
 		"}, dbcon, list(pollid = pollid, ckey = usr.ckey, address = usr.client.address || "127.0.0.1", replytext = replytext, adminrank = adminrank))
 
-	to_chat(usr, "<span class='notice'>Feedback logging successful.</span>")
+	to_chat(usr, SPAN("notice", "Feedback logging successful."))
 	close_browser(usr, "window=playerpoll")
 
 
@@ -612,7 +612,7 @@
 		break
 
 	if(!validpoll)
-		to_chat(usr, "<span class='warning'>Poll is not valid.</span>")
+		to_chat(usr, SPAN("warning", "Poll is not valid."))
 		return
 
 	var/DBQuery/select_query2 = sql_query({"
@@ -633,7 +633,7 @@
 		break
 
 	if(!validoption)
-		to_chat(usr, "<span class='warning'>Poll option is not valid.</span>")
+		to_chat(usr, SPAN("warning", "Poll option is not valid."))
 		return
 
 	var/alreadyvoted = 0
@@ -654,7 +654,7 @@
 		break
 
 	if(alreadyvoted)
-		to_chat(usr, "<span class='warning'>You already voted in this poll.</span>")
+		to_chat(usr, SPAN("warning", "You already voted in this poll."))
 		return
 
 	var/adminrank = "Player"
@@ -684,5 +684,5 @@
 			[(isnull(rating)) ? "null" : "$rating"])
 		"}, dbcon, list(pollid = pollid, optionid = optionid, ckey = usr.ckey, address = usr.client.address || "127.0.0.1", adminrank = adminrank, rating = rating))
 
-	to_chat(usr, "<span class='notice'>Vote successful.</span>")
+	to_chat(usr, SPAN("notice", "Vote successful."))
 	close_browser(usr, "window=playerpoll")

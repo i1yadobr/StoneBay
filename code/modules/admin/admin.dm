@@ -5,27 +5,26 @@ var/global/floorIsLava = 0
 
 ////////////////////////////////
 /proc/message_admins(msg)
-	msg = "<span class=\"log_message\"><span class=\"prefix\">ADMIN LOG:</span> <span class=\"message\">[msg]</span></span>"
+	msg = SPAN("log_message", "[SPAN("prefix", "ADMIN LOG:")] [SPAN("message", msg)]")
 	log_adminwarn(msg)
 	for(var/client/C in GLOB.admins)
 		if(R_ADMIN & C.holder.rights)
 			to_chat(C, msg, MESSAGE_TYPE_ADMINLOG)
 /proc/message_staff(msg)
-	msg = "<span class=\"log_message\"><span class=\"prefix\">STAFF LOG:</span> <span class=\"message\">[msg]</span></span>"
+	msg = SPAN("log_message", "[SPAN("prefix", "STAFF LOG:")] [SPAN("message", msg)]")
 	log_adminwarn(msg)
 	for(var/client/C in GLOB.admins)
 		if(R_INVESTIGATE & C.holder.rights)
 			to_chat(C, msg, MESSAGE_TYPE_ADMINLOG)
-/proc/msg_admin_attack(text) //Toggleable Attack Messages
-	log_attack(text)
-	var/rendered = "<span class=\"log_message\"><span class=\"prefix\">ATTACK:</span> <span class=\"message\">[text]</span></span>"
+/proc/msg_admin_attack(msg) //Toggleable Attack Messages
+	log_attack(msg)
+	var/rendered = SPAN("log_message", "[SPAN("prefix", "ATTACK:")] [SPAN("message", msg)]")
 	for(var/client/C in GLOB.admins)
 		if(check_rights(R_INVESTIGATE, 0, C))
-			var/msg = rendered
-			to_chat(C, msg, MESSAGE_TYPE_ATTACKLOG)
+			to_chat(C, rendered, MESSAGE_TYPE_ATTACKLOG)
 
 /proc/href_exploit(suspect_ckey, href)
-	var/rendered = "<span class=\"log_message\"><span class=\"prefix\">HREF EXPLOIT POSSIBLE:</span> <span class=\"message\">Suspect: '[suspect_ckey]' || Href: '[href]'</span></span><br>"
+	var/rendered = SPAN("log_message", "[SPAN("prefix", "HREF EXPLOIT POSSIBLE:")] [SPAN("message", "Suspect: '[suspect_ckey]' || Href: '[href]'")]")
 	log_href(rendered)
 	for(var/client/C in GLOB.admins)
 		if(check_rights(R_INVESTIGATE, 0, C))
@@ -638,7 +637,7 @@ var/global/floorIsLava = 0
 		if(!category.can_view(usr))
 			continue
 		if(active_category == category)
-			dat += "<span class='linkOn'>[category.name]</span>"
+			dat += SPAN("linkOn", "[category.name]")
 		else
 			dat += "<A href='?src=\ref[src];admin_secrets_panel=\ref[category]'>[category.name]</A> "
 	dat += "<HR>"
@@ -703,7 +702,7 @@ var/global/floorIsLava = 0
 	if(!check_rights(R_SERVER)) return
 	var/datum/map/M = GLOB.all_maps[input("Select map:","Change map",GLOB.using_map) as null|anything in GLOB.all_maps]
 	if(M)
-		to_world("<span class='notice'>Map has been changed to: <b>[M.name]</b></span>")
+		to_world(SPAN("notice", "Map has been changed to: <b>[M.name]</b>"))
 		log_and_message_admins("[key_name(usr)] changed map to [M.name]")
 		fdel("data/use_map")
 		text2file("[M.type]", "data/use_map")
@@ -718,7 +717,7 @@ var/global/floorIsLava = 0
 	message = sanitize(message, 500, extra = 0)
 	if(message)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
-		to_world("<span class=notice><b>[key_name(usr)] Announces:</b><p style='text-indent: 50px'>[message]</p></span>")
+		to_world(SPAN("notice", "<b>[key_name(usr)] Announces:</b><p style='text-indent: 50px'>[message]</p>"))
 		log_admin("Announce: [key_name(usr)]: [message]")
 	feedback_add_details("admin_verb","A") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
@@ -829,11 +828,11 @@ var/global/floorIsLava = 0
 		return 0
 	if(SSticker.start_now())
 		log_admin("[key_name(usr)] has started the game.")
-		message_admins("<span class='info'>[key_name(usr)] has started the game.</span>")
+		message_admins(SPAN("info", "[key_name(usr)] has started the game."))
 		feedback_add_details("admin_verb","SN") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 		return 1
 	else
-		to_chat(usr, "<span class='warning'>Error: Start Now: Game has already started.</span>")
+		to_chat(usr, SPAN("warning", "Error: Start Now: Game has already started."))
 		return 0
 
 /datum/admins/proc/toggleenter()
@@ -1282,7 +1281,7 @@ var/global/floorIsLava = 0
 		return 1
 	if(tomob.client) //No need to ghostize if there is no client
 		tomob.ghostize(0)
-	message_admins("<span class='adminnotice'>[key_name_admin(usr)] has put [frommob.ckey] in control of [tomob.name].</span>")
+	message_admins(SPAN("danger", "[key_name_admin(usr)] has put [frommob.ckey] in control of [tomob.name]."))
 	log_admin("[key_name(usr)] stuffed [frommob.ckey] into [tomob.name].")
 	feedback_add_details("admin_verb","CGD")
 	tomob.ckey = frommob.ckey
@@ -1437,20 +1436,20 @@ datum/admins/var/obj/item/paper/admin/faxreply // var to hold fax replies in
 
 
 	if(destination.recievefax(P))
-		to_chat(src.owner, "<span class='notice'>Message reply to transmitted successfully.</span>")
+		to_chat(src.owner, SPAN("notice", "Message reply to transmitted successfully."))
 		if(P.sender) // sent as a reply
 			log_admin("[key_name(src.owner)] replied to a fax message from [key_name(P.sender)]")
 			for(var/client/C in GLOB.admins)
 				if((R_ADMIN | R_MOD) & C.holder.rights)
-					to_chat(C, "<span class='log_message'><span class='prefix'>FAX LOG:</span>[key_name_admin(src.owner)] replied to a fax message from [key_name_admin(P.sender)] (<a href='?_src_=holder;AdminFaxView=\ref[rcvdcopy]'>VIEW</a>)</span>")
+					to_chat(C, SPAN("log_message", "[SPAN("prefix", "FAX LOG:")][key_name_admin(src.owner)] replied to a fax message from [key_name_admin(P.sender)] (<a href='byond://?_src_=holder;AdminFaxView=\ref[rcvdcopy]'>VIEW</a>)"))
 		else
 			log_admin("[key_name(src.owner)] has sent a fax message to [destination.department]")
 			for(var/client/C in GLOB.admins)
 				if((R_ADMIN | R_MOD) & C.holder.rights)
-					to_chat(C, "<span class='log_message'><span class='prefix'>FAX LOG:</span>[key_name_admin(src.owner)] has sent a fax message to [destination.department] (<a href='?_src_=holder;AdminFaxView=\ref[rcvdcopy]'>VIEW</a>)</span>")
+					to_chat(C, SPAN("log_message", "[SPAN("prefix", "FAX LOG:")][key_name_admin(src.owner)] has sent a fax message to [destination.department] (<a href='byond://?_src_=holder;AdminFaxView=\ref[rcvdcopy]'>VIEW</a>)"))
 
 	else
-		to_chat(src.owner, "<span class='warning'>Message reply failed.</span>")
+		to_chat(src.owner, SPAN("warning", "Message reply failed."))
 
 	spawn(100)
 		qdel(P)

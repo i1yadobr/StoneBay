@@ -247,18 +247,18 @@
 	var/mob/M = targets[target]
 
 	if(isghost(M) || M.is_ic_dead())
-		to_chat(src, "<span class='warning'>Not even a [src.species.name] can speak to the dead.</span>")
+		to_chat(src, SPAN("warning", "Not even a [src.species.name] can speak to the dead."))
 		return
 
 	log_say("[key_name(src)] communed to [key_name(M)]: [text]")
 
-	to_chat(M, "<span class='notice'>Like lead slabs crashing into the ocean, alien thoughts drop into your mind: <i>[text]</i></span>")
+	to_chat(M, SPAN("notice", "Like lead slabs crashing into the ocean, alien thoughts drop into your mind: <i>[text]</i>"))
 	if(istype(M,/mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M
 		if(H.species.name == src.species.name)
 			return
 		if(prob(75))
-			to_chat(H, "<span class='warning'>Your nose begins to bleed...</span>")
+			to_chat(H, SPAN("warning", "Your nose begins to bleed..."))
 			H.drip(5)
 
 /mob/living/carbon/human/proc/regurgitate()
@@ -271,7 +271,7 @@
 			if(M in stomach_contents)
 				stomach_contents.Remove(M)
 				M.forceMove(loc)
-		src.visible_message("<span class='danger'>[src] hurls out the contents of their stomach!</span>")
+		src.visible_message(SPAN("danger", "[src] hurls out the contents of their stomach!"))
 	return
 
 /mob/living/carbon/human/proc/psychic_whisper(mob/M in oview())
@@ -282,8 +282,8 @@
 	var/msg = sanitize(input("Message:", "Psychic Whisper") as text|null)
 	if(msg)
 		log_say("PsychicWhisper: [key_name(src)]->[M.key]: [msg]")
-		to_chat(M, "<span class='alium'>You hear a strange, alien voice in your head... <i>[msg]</i></span>")
-		to_chat(src, "<span class='alium'>You channel a message: \"[msg]\" to [M]</span>")
+		to_chat(M, SPAN("alium", "You hear a strange, alien voice in your head... <i>[msg]</i>"))
+		to_chat(src, SPAN("alium", "You channel a message: \"[msg]\" to [M]"))
 	return
 
 /***********
@@ -301,9 +301,9 @@
 	set category = "Abilities"
 	innate_heal = !innate_heal
 	if(innate_heal)
-		to_chat(src, "<span class='alium'>You are now using nutrients to regenerate.</span>")
+		to_chat(src, SPAN("alium", "You are now using nutrients to regenerate."))
 	else
-		to_chat(src, "<span class='alium'>You are no longer using nutrients to regenerate.</span>")
+		to_chat(src, SPAN("alium", "You are no longer using nutrients to regenerate."))
 
 /mob/living/carbon/human/proc/diona_split_into_nymphs(number_of_resulting_nymphs)
 	var/turf/T = get_turf(src)
@@ -339,7 +339,7 @@
 	for(var/obj/item/I in src)
 		drop(I, force = TRUE)
 
-	visible_message("<span class='warning'>\The [src] quivers slightly, then splits apart with a wet slithering noise.</span>")
+	visible_message(SPAN("warning", "\The [src] quivers slightly, then splits apart with a wet slithering noise."))
 
 	if(!mind)
 		qdel(src)

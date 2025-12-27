@@ -324,7 +324,7 @@
 
 		if(do_after(user, 20, src))
 			if(!src) return
-			to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
+			to_chat(user, SPAN("notice", "You [anchored? "un" : ""]secured \the [src]!"))
 			anchored = !anchored
 		return
 	else

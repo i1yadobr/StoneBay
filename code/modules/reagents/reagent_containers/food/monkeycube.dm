@@ -20,7 +20,7 @@
 /obj/item/reagent_containers/food/monkeycube/proc/Expand(atom/location)
 	if(!growing)
 		growing = 1
-		src.visible_message("<span class='notice'>\The [src] expands!</span>")
+		src.visible_message(SPAN("notice", "\The [src] expands!"))
 		var/mob/monkey = new monkey_type
 		if(location)
 			monkey.dropInto(location)

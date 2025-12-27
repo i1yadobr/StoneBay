@@ -59,24 +59,20 @@
 	if(istype(user, /mob/living/simple_animal/construct/builder))
 		if(health < maxHealth)
 			adjustBruteLoss(-5)
-			user.visible_message("<span class='notice'>\The [user] mends some of \the [src]'s wounds.</span>")
+			user.visible_message(SPAN("notice", "\The [user] mends some of \the [src]'s wounds."))
 		else
-			to_chat(user, "<span class='notice'>\The [src] is undamaged.</span>")
+			to_chat(user, SPAN("notice", "\The [src] is undamaged."))
 		return
 	return ..()
 
 /mob/living/simple_animal/construct/examinate(atom/to_axamine)
 	. = ..()
 
-	var/msg = "<span class='info'>*---------*\nThis is \icon[src] \a <EM>[src]</EM>!\n"
+	var/msg = "*---------*\nThis is \icon[src] \a <EM>[src]</EM>!\n"
 	if (src.health < src.maxHealth)
-		msg += "<span class='warning'>"
-		if (src.health >= src.maxHealth/2)
-			msg += "It looks slightly dented.\n"
-		else
-			msg += "<B>It looks severely dented!</B>\n"
-		msg += "</span>"
-	msg += "*---------*</span>"
+		msg += SPAN("warning", "[health >= (maxHealth/2) ? "It looks slightly dented." : "<B>It looks severely dented!</B>"]")
+		msg +=  "\n"
+	msg += "*---------*\n"
 
 	. += msg
 
@@ -166,8 +162,8 @@
 		var/reflectchance = 80 - round(P.damage/3)
 		if(prob(reflectchance))
 			adjustBruteLoss(P.damage * 0.5)
-			visible_message("<span class='danger'>The [P.name] gets reflected by [src]'s shell!</span>", \
-							"<span class='userdanger'>The [P.name] gets reflected by [src]'s shell!</span>")
+			visible_message(SPAN("danger", "The [P.name] gets reflected by [src]'s shell!"), \
+							SPAN("danger", "The [P.name] gets reflected by [src]'s shell!"))
 
 			// Find a turf near or on the original location to bounce to
 			if(P.starting)

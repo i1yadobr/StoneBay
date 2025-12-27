@@ -98,7 +98,7 @@
 
 				if(do_after(user, 40, src))
 					if(!src) return
-					to_chat(user, "<span class='notice'>You've secured the windoor assembly!</span>")
+					to_chat(user, SPAN("notice", "You've secured the windoor assembly!"))
 					src.anchored = 1
 					if(src.secure)
 						src.SetName("Secure Anchored Windoor Assembly")
@@ -112,7 +112,7 @@
 
 				if(do_after(user, 40, src))
 					if(!src) return
-					to_chat(user, "<span class='notice'>You've unsecured the windoor assembly!</span>")
+					to_chat(user, SPAN("notice", "You've unsecured the windoor assembly!"))
 					src.anchored = 0
 					if(src.secure)
 						src.SetName("Secure Windoor Assembly")
@@ -123,13 +123,13 @@
 			else if(istype(W, /obj/item/stack/rods) && !secure)
 				var/obj/item/stack/rods/R = W
 				if(R.get_amount() < 4)
-					to_chat(user, "<span class='warning'>You need more rods to do this.</span>")
+					to_chat(user, SPAN("warning", "You need more rods to do this."))
 					return
-				to_chat(user, "<span class='notice'>You start to reinforce the windoor with rods.</span>")
+				to_chat(user, SPAN("notice", "You start to reinforce the windoor with rods."))
 
 				if(do_after(user, 40, src) && !secure)
 					if (R.use(4))
-						to_chat(user, "<span class='notice'>You reinforce the windoor.</span>")
+						to_chat(user, SPAN("notice", "You reinforce the windoor."))
 						src.secure = "secure_"
 						if(src.anchored)
 							src.SetName("Secure Anchored Windoor Assembly")
@@ -143,7 +143,7 @@
 				var/obj/item/stack/cable_coil/CC = W
 				if(do_after(user, 40, src))
 					if (CC.use(1))
-						to_chat(user, "<span class='notice'>You wire the windoor!</span>")
+						to_chat(user, SPAN("notice", "You wire the windoor!"))
 						src.state = "02"
 						if(src.secure)
 							src.SetName("Secure Wired Windoor Assembly")
@@ -162,7 +162,7 @@
 				if(do_after(user, 40, src))
 					if(!src) return
 
-					to_chat(user, "<span class='notice'>You cut the windoor wires.!</span>")
+					to_chat(user, SPAN("notice", "You cut the windoor wires.!"))
 					new /obj/item/stack/cable_coil(get_turf(user), 1)
 					src.state = "01"
 					if(src.secure)
@@ -180,7 +180,7 @@
 						return
 					if(!user.drop(W, src))
 						return
-					to_chat(user, "<span class='notice'>You've installed the airlock electronics!</span>")
+					to_chat(user, SPAN("notice", "You've installed the airlock electronics!"))
 					src.SetName("Near finished Windoor Assembly")
 					src.electronics = W
 				else
@@ -193,7 +193,7 @@
 
 				if(do_after(user, 40, src))
 					if(!src || !src.electronics) return
-					to_chat(user, "<span class='notice'>You've removed the airlock electronics!</span>")
+					to_chat(user, SPAN("notice", "You've removed the airlock electronics!"))
 					if(src.secure)
 						src.SetName("Secure Wired Windoor Assembly")
 					else
@@ -205,7 +205,7 @@
 			//Crowbar to complete the assembly, Step 7 complete.
 			else if(isCrowbar(W))
 				if(!src.electronics)
-					to_chat(usr, "<span class='warning'>The assembly is missing electronics.</span>")
+					to_chat(usr, SPAN("warning", "The assembly is missing electronics."))
 					return
 				close_browser(usr, "window=windoor_access")
 				playsound(src.loc, 'sound/items/Crowbar.ogg', 100, 1)

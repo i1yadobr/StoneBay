@@ -50,9 +50,9 @@
 	if(GAME_STATE <= RUNLEVEL_LOBBY)
 		output += "<a href='byond://?src=\ref[src];predict_manifest=1'>View Crew Manifest Prediction</A><br><br>"
 		if(ready)
-			output += "<p>\[ <span class='linkOn'><b>Ready</b></span> | <a href='byond://?src=\ref[src];ready=0'>Not Ready</a> \]</p>"
+			output += "<p>\[ [SPAN("linkOn", "<b>Ready</b>")] | <a href='byond://?src=\ref[src];ready=0'>Not Ready</a> \]</p>"
 		else
-			output += "<p>\[ <a href='byond://?src=\ref[src];ready=1'>Ready</a> | <span class='linkOn'><b>Not Ready</b></span> \]</p>"
+			output += "<p>\[ <a href='byond://?src=\ref[src];ready=1'>Ready</a> | [SPAN("linkOn", "<b>Not Ready</b>")] \]</p>"
 
 	else
 		output += "<a href='byond://?src=\ref[src];manifest=1'>View the Crew Manifest</A><br><br>"
@@ -110,15 +110,15 @@
 	if(href_list["ready"])
 		if(GAME_STATE <= RUNLEVEL_LOBBY) // Make sure we don't ready up after the round has started
 			if(jobban_isbanned(src, "MALE") && jobban_isbanned(src, "FEMALE"))
-				to_chat(src, "<span class='warning'>Only genderqueers allowed.</span>")
+				to_chat(src, SPAN("warning", "Only genderqueers allowed."))
 				return
 
 			if(jobban_isbanned(src, "MALE") && client.prefs.gender == MALE)
-				to_chat(src, "<span class='warning'>Only traps allowed.</span>")
+				to_chat(src, SPAN("warning", "Only traps allowed."))
 				return
 
 			if(jobban_isbanned(src, "FEMALE") && client.prefs.gender == FEMALE)
-				to_chat(src, "<span class='warning'>No traps allowed.</span>")
+				to_chat(src, SPAN("warning", "No traps allowed."))
 				return
 
 			var/value = text2num(href_list["ready"])
@@ -135,7 +135,7 @@
 
 	if(href_list["observe"])
 		if(GAME_STATE < RUNLEVEL_LOBBY)
-			to_chat(src, "<span class='warning'>Please wait for server initialization to complete...</span>")
+			to_chat(src, SPAN("warning", "Please wait for server initialization to complete..."))
 			return
 
 		if (!SSeams.CheckForAccess(client))
@@ -153,10 +153,10 @@
 			close_spawn_windows()
 			var/obj/O = locate("landmark*Observer")
 			if(istype(O))
-				to_chat(src, "<span class='notice'>Now teleporting.</span>")
+				to_chat(src, SPAN("notice", "Now teleporting."))
 				observer.forceMove(O.loc)
 			else
-				to_chat(src, "<span class='danger'>Could not locate an observer spawn point. Use the Teleport verb to jump to the map.</span>")
+				to_chat(src, SPAN("danger", "Could not locate an observer spawn point. Use the Teleport verb to jump to the map."))
 			observer.timeofdeath = world.time // Set the time of death so that the respawn timer works correctly.
 
 			if(QDELETED(client.holder))
@@ -186,22 +186,22 @@
 	if(href_list["late_join"])
 
 		if(GAME_STATE != RUNLEVEL_GAME)
-			to_chat(usr, "<span class='warning'>The round is either not ready, or has already finished...</span>")
+			to_chat(usr, SPAN("warning", "The round is either not ready, or has already finished..."))
 			return
 
 		if (!SSeams.CheckForAccess(client))
 			return
 
 		if(jobban_isbanned(src, "MALE") && jobban_isbanned(src, "FEMALE"))
-			to_chat(src, "<span class='warning'>Only genderqueers allowed.</span>")
+			to_chat(src, SPAN("warning", "Only genderqueers allowed."))
 			return
 
 		if(jobban_isbanned(src, "MALE") && client.prefs.gender == MALE)
-			to_chat(src, "<span class='warning'>Only traps allowed.</span>")
+			to_chat(src, SPAN("warning", "Only traps allowed."))
 			return
 
 		if(jobban_isbanned(src, "FEMALE") && client.prefs.gender == FEMALE)
-			to_chat(src, "<span class='warning'>No traps allowed.</span>")
+			to_chat(src, SPAN("warning", "No traps allowed."))
 			return
 
 		LateChoices() //show the latejoin job selection menu
@@ -216,7 +216,7 @@
 		var/datum/job/job = job_master.GetJob(href_list["SelectedJob"])
 
 		if(!job)
-			to_chat(usr, "<span class='danger'>The job '[href_list["SelectedJob"]]' doesn't exist!</span>")
+			to_chat(usr, SPAN("danger", "The job '[href_list["SelectedJob"]]' doesn't exist!"))
 			return
 
 		if (!SSeams.CheckForAccess(client))
@@ -226,14 +226,14 @@
 		for (var/mob/living/carbon/human/C in SSmobs.mob_list)
 			var/char_name = client.prefs.real_name
 			if(char_name == C.real_name)
-				to_chat (usr, "<span class='danger'>There is a character that already exists with the same name: <b>[C.real_name]</b>, please join with a different one.</span>")
+				to_chat (usr, SPAN("danger", "There is a character that already exists with the same name: <b>[C.real_name]</b>, please join with a different one."))
 				return
 
 		if(!config.game.enter_allowed)
-			to_chat(usr, "<span class='notice'>There is an administrative lock on entering the game!</span>")
+			to_chat(usr, SPAN("notice", "There is an administrative lock on entering the game!"))
 			return
 		if(SSticker && SSticker.mode && SSticker.mode.explosion_in_progress)
-			to_chat(usr, "<span class='danger'>The [station_name()] is currently exploding. Joining would go poorly.</span>")
+			to_chat(usr, SPAN("danger", "The [station_name()] is currently exploding. Joining would go poorly."))
 			return
 
 		var/datum/species/S = all_species[client.prefs.species]
@@ -324,10 +324,10 @@
 	if(src != usr)
 		return 0
 	if(GAME_STATE != RUNLEVEL_GAME)
-		to_chat(usr, "<span class='warning'>The round is either not ready, or has already finished...</span>")
+		to_chat(usr, SPAN("warning", "The round is either not ready, or has already finished..."))
 		return 0
 	if(!config.game.enter_allowed)
-		to_chat(usr, "<span class='notice'>There is an administrative lock on entering the game!</span>")
+		to_chat(usr, SPAN("notice", "There is an administrative lock on entering the game!"))
 		return 0
 
 	if(!IsJobAvailable(job))

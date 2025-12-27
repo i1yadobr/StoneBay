@@ -97,16 +97,16 @@
 	if(istype(W, /obj/item/stack/material) && W.get_material_name() == MATERIAL_GLASS)
 		var/obj/item/stack/G = W
 		if(bulbs_amt() >= max_uses)
-			to_chat(user, "<span class='warning'>[src.name] is full.</span>")
+			to_chat(user, SPAN("warning", "[src.name] is full."))
 			return
 		else if(G.use(5))
 			bulbs_assoc[DEFAULT_BULB_TYPE] += 2
 			if(prob(50))
 				bulbs_assoc[DEFAULT_BULB_TYPE] += 1
-			to_chat(user, "<span class='notice'>You insert a piece of glass into \the [src.name]. You have [bulbs_amt()] light\s remaining.</span>")
+			to_chat(user, SPAN("notice", "You insert a piece of glass into \the [src.name]. You have [bulbs_amt()] light\s remaining."))
 			return
 		else
-			to_chat(user, "<span class='warning'>You need 5 sheets of glass to replace lights.</span>")
+			to_chat(user, SPAN("warning", "You need 5 sheets of glass to replace lights."))
 
 	if(istype(W, /obj/item/light))
 		var/obj/item/light/L = W
@@ -252,7 +252,7 @@
 	if(!istype(bulb))
 		return
 
-	to_chat(U, "<span class='notice'>You replace the [target.get_fitting_name()] with the [src].</span>")
+	to_chat(U, SPAN("notice", "You replace the [target.get_fitting_name()] with the [src]."))
 
 	if(target.lightbulb)
 		var/obj/item/light/lightbulb = target.remove_bulb()

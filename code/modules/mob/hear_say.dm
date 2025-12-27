@@ -86,7 +86,7 @@
 			if(speaker == src)
 				to_chat(src, SPAN("warning", "You cannot hear yourself speak!"))
 			else if(!is_blind())
-				to_chat(src, "<span class='name'>[speaker_name]</span>[alt_name] talks but you cannot hear \him.")
+				to_chat(src, "[SPAN("name", "[speaker_name]")][alt_name] talks but you cannot hear \him.")
 	else
 		if(isliving(src))
 			var/mob/living/M = src
@@ -111,7 +111,7 @@
 		if(language)
 			var/nverb = null
 			if(!say_understands(speaker,language) || language.name == LANGUAGE_GALCOM) //Check to see if we can understand what the speaker is saying. If so, add the name of the language after the verb. Don't do this for Galactic Common.
-				on_hear_say("<span class='game say'><span class='name'>[speaker_name]</span>[alt_name] [track][language.format_message(message, verb)]</span>")
+				on_hear_say(SPAN("game say", "[SPAN("name", "[speaker_name]")][alt_name] [track][language.format_message(message, verb)]"))
 			else //Check if the client WANTS to see language names.
 				switch(src.get_preference_value(/datum/client_preference/language_display))
 					if(GLOB.PREF_FULL) // Full language name
@@ -120,10 +120,10 @@
 						nverb = "[verb] ([language.shorthand])"
 					if(GLOB.PREF_OFF)//Regular output
 						nverb = verb
-				on_hear_say("<span class='game say'><span class='name'>[speaker_name]</span>[alt_name] [track][language.format_message(message, nverb)]</span>")
+				on_hear_say(SPAN("game say", "[SPAN("name", "[speaker_name]")][alt_name] [track][language.format_message(message, nverb)]"))
 
 		else
-			on_hear_say("<span class='game say'><span class='name'>[speaker_name]</span>[alt_name] [track][verb], <span class='message'><span class='body'>\"[message]\"</span></span></span>")
+			on_hear_say(SPAN("game say", "[SPAN("name", "[speaker_name]")][alt_name] [track][verb], [SPAN("message", SPAN("body", "\"[message]\""))]"))
 		if(speech_sound && speaker && (dist_speech <= world.view && src.z == speaker.z))
 			var/turf/source = get_turf(speaker)
 			src.playsound_local(source, speech_sound, sound_vol, 1)
@@ -258,7 +258,7 @@
 					nverb = verb
 			formatted = language.format_message_radio(message, nverb)
 	else
-		formatted = "[verb], <span class=\"body\">\"[message]\"</span>"
+		formatted = "[verb], [SPAN("body", "\"[message]\"")]"
 	if(sdisabilities & DEAF || ear_deaf)
 		var/mob/living/carbon/human/H = src
 		if(istype(H) && H.has_headset_in_ears() && prob(20))

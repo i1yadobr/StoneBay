@@ -191,7 +191,7 @@
 		user.equip_to_slot(cig, slot_wear_mask)
 
 		reagents.maximum_volume = 5 * contents.len
-		to_chat(user, SPAN_NOTICE("You take a cigarette out of the pack.</span>"))
+		to_chat(user, SPAN("notice", "You take a cigarette out of the pack."))
 		update_icon()
 	else
 		..()

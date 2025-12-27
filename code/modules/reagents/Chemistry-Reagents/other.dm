@@ -222,7 +222,7 @@
 				GLOB.cult.remove_antagonist(usr.mind, 1)
 			if(prob(2))
 				var/obj/structure/spider/spiderling/S = new /obj/structure/spider/spiderling(M.loc)
-				M.visible_message(SPAN_WARNING("\The [M] coughs up \the [S]!</span>"))
+				M.visible_message(SPAN_WARNING("\The [M] coughs up \the [S]!"))
 
 /datum/reagent/water/holywater/touch_mob(mob/living/L, amount)
 	if(!ishuman(L))

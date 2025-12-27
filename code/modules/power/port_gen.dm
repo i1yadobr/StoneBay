@@ -369,8 +369,8 @@
 	dat += text("Power current: [(powernet == null ? "Unconnected" : "[avail()]")]<br>")
 
 	var/tempstr = "Temperature: [temperature]&deg;C<br>"
-	dat += (overheating)? "<span class='danger'>[tempstr]</span>" : tempstr
-	dat += "<br><A href='?src=\ref[src];action=close'>Close</A>"
+	dat += (overheating)? SPAN("danger", "[tempstr]") : tempstr
+	dat += "<br><A href='byond://?src=\ref[src];action=close'>Close</A>"
 	show_browser(user, "[dat]", "window=port_gen")
 	onclose(user, "port_gen")
 */
@@ -469,7 +469,7 @@
 		temperature_gain = 60
 		reagents.remove_any(10)
 		if(prob(2))
-			audible_message("<span class='notice'>[src] churns happily</span>", splash_override = "*churn*")
+			audible_message(SPAN("notice", "[src] churns happily"), splash_override = "*churn*")
 	else
 		rad_power = initial(rad_power)
 		temperature_gain = initial(temperature_gain)
@@ -486,10 +486,10 @@
 		var/obj/item/reagent_containers/R = O
 		if(R.standard_pour_into(src,user))
 			if(reagents.has_reagent("vodka"))
-				audible_message("<span class='notice'>[src] blips happily</span>", splash_override = "*blip!*")
+				audible_message(SPAN("notice", "[src] blips happily"), runechat_message = "*blip!*")
 				playsound(src,'sound/machines/synth_yes.ogg', 50, 0)
 			else
-				audible_message("<span class='warning'>[src] blips in disappointment</span>", splash_override = "*blip...*")
+				audible_message(SPAN("warning", "[src] blips in disappointment"), runechat_message = "*blip...*")
 				playsound(src, 'sound/machines/synth_no.ogg', 50, 0)
 		return
 	..()

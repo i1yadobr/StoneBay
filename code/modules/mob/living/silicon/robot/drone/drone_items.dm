@@ -509,7 +509,7 @@
 
 	for(var/mob/M in T)
 		if(istype(M,/mob/living/simple_animal/lizard) || istype(M,/mob/living/simple_animal/mouse) || istype(M, /mob/living/simple_animal/hamster))
-			src.loc.visible_message("<span class='danger'>[src.loc] sucks [M] into its decompiler. There's a horrible crunching noise.</span>","<span class='danger'>It's a bit of a struggle, but you manage to suck [M] into your decompiler. It makes a series of visceral crunching noises.</span>")
+			src.loc.visible_message(SPAN("danger", "[src.loc] sucks [M] into its decompiler. There's a horrible crunching noise."),SPAN("danger", "It's a bit of a struggle, but you manage to suck [M] into your decompiler. It makes a series of visceral crunching noises."))
 			new /obj/effect/decal/cleanable/blood/splatter(get_turf(src))
 			qdel(M)
 			if(wood)
@@ -525,15 +525,15 @@
 			if(!istype(D))
 				return
 
-			to_chat(D, "<span class='danger'>You begin decompiling [M].</span>")
+			to_chat(D, SPAN("danger", "You begin decompiling [M]."))
 
 			if(!do_after(D,50,M))
-				to_chat(D, "<span class='danger'>You need to remain still while decompiling such a large object.</span>")
+				to_chat(D, SPAN("danger", "You need to remain still while decompiling such a large object."))
 				return
 
 			if(!M || !D) return
 
-			to_chat(D, "<span class='danger'>You carefully and thoroughly decompile [M], storing as much of its resources as you can within yourself.</span>")
+			to_chat(D, SPAN("danger", "You carefully and thoroughly decompile [M], storing as much of its resources as you can within yourself."))
 			qdel(M)
 			new /obj/effect/decal/cleanable/blood/oil(get_turf(src))
 
@@ -612,16 +612,16 @@
 		grabbed_something = 1
 
 	if(grabbed_something)
-		to_chat(user, "<span class='notice'>You deploy your decompiler and clear out the contents of \the [T].</span>")
+		to_chat(user, SPAN("notice", "You deploy your decompiler and clear out the contents of \the [T]."))
 	else
-		to_chat(user, "<span class='danger'>Nothing on \the [T] is useful to you.</span>")
+		to_chat(user, SPAN("danger", "Nothing on \the [T] is useful to you."))
 	return
 
 //PRETTIER TOOL LIST.
 /mob/living/silicon/robot/drone/installed_modules()
 
 	if(weapon_lock)
-		to_chat(src, "<span class='danger'>Weapon lock active, unable to use modules! Count:[weaponlock_time]</span>")
+		to_chat(src, SPAN("danger", "Weapon lock active, unable to use modules! Count:[weaponlock_time]"))
 		return
 
 	if(!module)

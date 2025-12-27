@@ -157,9 +157,9 @@ var/bomb_set
 	else if(deployable)
 		if(removal_stage < 5)
 			src.anchored = 1
-			visible_message("<span class='warning'>With a steely snap, bolts slide out of [src] and anchor it to the flooring!</span>")
+			visible_message(SPAN("warning", "With a steely snap, bolts slide out of [src] and anchor it to the flooring!"))
 		else
-			visible_message("<span class='warning'>\The [src] makes a highly unpleasant crunching noise. It looks like the anchoring bolts have been cut.</span>")
+			visible_message(SPAN("warning", "\The [src] makes a highly unpleasant crunching noise. It looks like the anchoring bolts have been cut."))
 		extended = 1
 		if(!src.lighthack)
 			flick("lock", src)
@@ -214,10 +214,10 @@ var/bomb_set
 		return
 
 	if(deployable)
-		to_chat(usr, "<span class='warning'>You close several panels to make [src] undeployable.</span>")
+		to_chat(usr, SPAN("warning", "You close several panels to make [src] undeployable."))
 		deployable = 0
 	else
-		to_chat(usr, "<span class='warning'>You adjust some panels to make [src] deployable.</span>")
+		to_chat(usr, SPAN("warning", "You adjust some panels to make [src] deployable."))
 		deployable = 1
 	return
 
@@ -265,7 +265,7 @@ var/bomb_set
 		if(yes_code)
 			if(href_list["time"])
 				if(timing)
-					to_chat(usr, "<span class='warning'>Cannot alter the timing during countdown.</span>")
+					to_chat(usr, SPAN("warning", "Cannot alter the timing during countdown."))
 					return
 
 				var/time = text2num(href_list["time"])
@@ -275,13 +275,13 @@ var/bomb_set
 				if(timing == -1)
 					return 1
 				if(!anchored)
-					to_chat(usr, "<span class='warning'>\The [src] needs to be anchored.</span>")
+					to_chat(usr, SPAN("warning", "\The [src] needs to be anchored."))
 					return 1
 				if(safety)
-					to_chat(usr, "<span class='warning'>The safety is still on.</span>")
+					to_chat(usr, SPAN("warning", "The safety is still on."))
 					return 1
 				if(wires.IsIndexCut(NUCLEARBOMB_WIRE_TIMING))
-					to_chat(usr, "<span class='warning'>Nothing happens, something might be wrong with the wiring.</span>")
+					to_chat(usr, SPAN("warning", "Nothing happens, something might be wrong with the wiring."))
 					return 1
 				if(!timing && !safety)
 					start_bomb()
@@ -289,7 +289,7 @@ var/bomb_set
 					check_cutoff()
 			if(href_list["safety"])
 				if (wires.IsIndexCut(NUCLEARBOMB_WIRE_SAFETY))
-					to_chat(usr, "<span class='warning'>Nothing happens, something might be wrong with the wiring.</span>")
+					to_chat(usr, SPAN("warning", "Nothing happens, something might be wrong with the wiring."))
 					return 1
 				safety = !safety
 				if(safety)
@@ -298,18 +298,18 @@ var/bomb_set
 			if(href_list["anchor"])
 				if(removal_stage == 5)
 					anchored = 0
-					visible_message("<span class='warning'>\The [src] makes a highly unpleasant crunching noise. It looks like the anchoring bolts have been cut.</span>")
+					visible_message(SPAN("warning", "\The [src] makes a highly unpleasant crunching noise. It looks like the anchoring bolts have been cut."))
 					return 1
 
 				if(!isinspace())
 					anchored = !anchored
 					if(anchored)
-						visible_message("<span class='warning'>With a steely snap, bolts slide out of \the [src] and anchor it to the flooring.</span>")
+						visible_message(SPAN("warning", "With a steely snap, bolts slide out of \the [src] and anchor it to the flooring."))
 					else
 						secure_device()
-						visible_message("<span class='warning'>The anchoring bolts slide back into the depths of \the [src].</span>")
+						visible_message(SPAN("warning", "The anchoring bolts slide back into the depths of \the [src]."))
 				else
-					to_chat(usr, "<span class='warning'>There is nothing to anchor to!</span>")
+					to_chat(usr, SPAN("warning", "There is nothing to anchor to!"))
 	return 1
 
 /obj/machinery/nuclearbomb/proc/start_bomb()
@@ -501,7 +501,7 @@ var/bomb_set
 
 	if(href_list["time"])
 		if(timing)
-			to_chat(usr, "<span class='warning'>Cannot alter the timing during countdown.</span>")
+			to_chat(usr, SPAN("warning", "Cannot alter the timing during countdown."))
 			return
 		var/time = text2num(href_list["time"])
 		timeleft += time SECONDS
@@ -514,7 +514,7 @@ var/bomb_set
 
 /obj/machinery/nuclearbomb/station/check_cutoff()
 	if(timeleft <= self_destruct_cutoff)
-		visible_message("<span class='warning'>Self-Destruct abort is no longer possible.</span>")
+		visible_message(SPAN("warning", "Self-Destruct abort is no longer possible."))
 		return
 	..()
 

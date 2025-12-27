@@ -29,11 +29,15 @@
 
 	var/datum/gas_mixture/env = T.return_air()
 
-	var/t = "<span class='notice'>Coordinates: [T.x],[T.y],[T.z]</span>\n"
-	t += "<span class='warning'>Temperature: [env.temperature]</span>\n"
-	t += "<span class='warning'>Pressure: [env.return_pressure()]kPa</span>\n"
+	var/t = SPAN("notice", "Coordinates: [T.x],[T.y],[T.z]")
+	t += "\n"
+	t += SPAN("warning", "Temperature: [env.temperature]")
+	t += "\n"
+	t += SPAN("warning", "Pressure: [env.return_pressure()]kPa")
+	t += "\n"
 	for(var/g in env.gas)
-		t += "<span class='notice'>[g]: [env.gas[g]] / [env.gas[g] * R_IDEAL_GAS_EQUATION * env.temperature / env.volume]kPa</span>\n"
+		t += SPAN("notice", "[g]: [env.gas[g]] / [env.gas[g] * R_IDEAL_GAS_EQUATION * env.temperature / env.volume]kPa")
+		t += "\n"
 
 	usr.show_message(t, 1)
 	feedback_add_details("admin_verb","ASL") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!

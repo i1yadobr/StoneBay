@@ -16,23 +16,24 @@
 	var/last_process_worldtime = 0
 	var/report_num = 0
 
+
 /obj/machinery/dnaforensics/attackby(obj/item/W, mob/user as mob)
 
 	if(bloodsamp)
-		to_chat(user, "<span class='warning'>There is already a sample in the machine.</span>")
+		to_chat(user, SPAN("warning", "There is already a sample in the machine."))
 		return
 
 	if(closed)
-		to_chat(user, "<span class='warning'>Open the cover before inserting the sample.</span>")
+		to_chat(user, SPAN("warning", "Open the cover before inserting the sample."))
 		return
 
 	var/obj/item/forensics/swab/swab = W
 	if(istype(swab) && swab.is_used())
 		user.drop(swab, src)
 		bloodsamp = swab
-		to_chat(user, "<span class='notice'>You insert \the [W] into \the [src].</span>")
+		to_chat(user, SPAN("notice", "You insert \the [W] into \the [src]."))
 	else
-		to_chat(user, "<span class='warning'>\The [src] only accepts used swabs.</span>")
+		to_chat(user, SPAN("warning", "\The [src] only accepts used swabs."))
 		return
 
 /obj/machinery/dnaforensics/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
@@ -68,12 +69,13 @@
 					playsound(src.loc, 'sound/signals/processing12.ogg', 25)
 					scanner_progress = 0
 					scanning = 1
-					to_chat(usr, "<span class='notice'>Scan initiated.</span>")
+					to_chat(usr, SPAN("notice", "Scan initiated."))
 					update_icon()
 				else
-					to_chat(usr, "<span class='notice'>Please close sample lid before initiating scan.</span>")
+					to_chat(usr, SPAN("notice", "Please close sample lid before initiating scan."))
 			else
-				to_chat(usr, "<span class='warning'>Insert an item to scan.</span>")
+				to_chat(usr, SPAN("warning", "Insert an item to scan."))
+
 
 	if(href_list["ejectItem"])
 		if(bloodsamp)
@@ -101,7 +103,7 @@
 	last_process_worldtime = world.time
 
 /obj/machinery/dnaforensics/proc/complete_scan()
-	src.visible_message("<span class='notice'>\icon[src] makes an insistent chime.</span>")
+	src.visible_message(SPAN("notice", "\icon[src] makes an insistent chime."))
 	update_icon()
 	if(bloodsamp)
 		var/obj/item/paper/P = new(src)
@@ -113,7 +115,7 @@
 		if(bloodsamp.dna != null)
 			data = "Spectometric analysis on provided sample has determined the presence of [bloodsamp.dna.len] strings of DNA.<br><br>"
 			for(var/blood in bloodsamp.dna)
-				data += "<span class='notice'>Blood type: [bloodsamp.dna[blood]]<br>\nDNA: [blood]</span><br><br>"
+				data += "[SPAN("notice", "Blood type: [bloodsamp.dna[blood]]<br>\nDNA: [blood]")]<br><br>"
 		else
 			data += "No DNA found.<br>"
 		P.info = "<b>[src] analysis report #[report_num]</b><br>"
@@ -139,7 +141,7 @@
 		return
 
 	if(scanning)
-		to_chat(usr, "<span class='warning'>You can't do that while [src] is scanning!</span>")
+		to_chat(usr, SPAN("warning", "You can't do that while [src] is scanning!"))
 		return
 
 	closed = !closed

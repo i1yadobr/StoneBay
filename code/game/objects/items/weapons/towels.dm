@@ -16,7 +16,7 @@
 	pickup_sound = SFX_PICKUP_CLOTH
 
 /obj/item/towel/attack_self(mob/living/user as mob)
-	user.visible_message(text("<span class='notice'>[] uses [] to towel themselves off.</span>", user, src))
+	user.visible_message(SPAN("notice", "[user] uses \the [src] to towel themselves off."))
 	playsound(user, 'sound/weapons/towelwipe.ogg', 25, 1)
 
 /obj/item/towel/random/New()

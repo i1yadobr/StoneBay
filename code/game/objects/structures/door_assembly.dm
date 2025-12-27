@@ -193,19 +193,19 @@
 
 		if(do_after(user, 40, src))
 			if(!src) return
-			to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured the airlock assembly!</span>")
+			to_chat(user, SPAN("notice", "You [anchored? "un" : ""]secured the airlock assembly!"))
 			anchored = !anchored
 
 	else if(isCoil(W) && state == 0 && anchored)
 		var/obj/item/stack/cable_coil/C = W
 		if (C.get_amount() < 1)
-			to_chat(user, "<span class='warning'>You need one length of coil to wire the airlock assembly.</span>")
+			to_chat(user, SPAN("warning", "You need one length of coil to wire the airlock assembly."))
 			return
 		user.visible_message("[user] wires the airlock assembly.", "You start to wire the airlock assembly.")
 		if(do_after(user, 40, src) && state == 0 && anchored)
 			if (C.use(1))
 				src.state = 1
-				to_chat(user, "<span class='notice'>You wire the airlock.</span>")
+				to_chat(user, SPAN("notice", "You wire the airlock."))
 
 	else if(isWirecutter(W) && state == 1 && !in_use)
 		in_use = TRUE
@@ -214,7 +214,7 @@
 
 		if(do_after(user, 40, src))
 			if(!src) return
-			to_chat(user, "<span class='notice'>You cut the airlock wires.!</span>")
+			to_chat(user, SPAN("notice", "You cut the airlock wires.!"))
 			new /obj/item/stack/cable_coil(src.loc, 1)
 			src.state = 0
 		in_use = FALSE
@@ -228,7 +228,7 @@
 				return
 			if(!user.drop(W, src))
 				return
-			to_chat(user, "<span class='notice'>You installed the airlock electronics!</span>")
+			to_chat(user, SPAN("notice", "You installed the airlock electronics!"))
 			src.state = 2
 			src.SetName("Near finished Airlock Assembly")
 			src.electronics = W
@@ -236,7 +236,7 @@
 	else if(isCrowbar(W) && state == 2 && !in_use)
 		//This should never happen, but just in case I guess
 		if (!electronics)
-			to_chat(user, "<span class='notice'>There was nothing to remove.</span>")
+			to_chat(user, SPAN("notice", "There was nothing to remove."))
 			src.state = 1
 			return
 
@@ -246,7 +246,7 @@
 
 		if(do_after(user, 40, src))
 			if(!src) return
-			to_chat(user, "<span class='notice'>You removed the airlock electronics!</span>")
+			to_chat(user, SPAN("notice", "You removed the airlock electronics!"))
 			src.state = 1
 			src.SetName("Wired Airlock Assembly")
 			electronics.dropInto(loc)
@@ -263,7 +263,7 @@
 					user.visible_message("[user] adds [S.name] to the airlock assembly.", "You start to install [S.name] into the airlock assembly.")
 					if(do_after(user, 40, src) && !glass)
 						if (S.use(1))
-							to_chat(user, "<span class='notice'>You installed reinforced glass windows into the airlock assembly.</span>")
+							to_chat(user, SPAN("notice", "You installed reinforced glass windows into the airlock assembly."))
 							glass = 1
 				else if(material_name)
 					// Ugly hack, will suffice for now. Need to fix it upstream as well, may rewrite mineral walls. ~Z
@@ -275,12 +275,12 @@
 						user.visible_message("[user] adds [S.name] to the airlock assembly.", "You start to install [S.name] into the airlock assembly.")
 						if(do_after(user, 40, src) && !glass)
 							if (S.use(2))
-								to_chat(user, "<span class='notice'>You installed [material_display_name(material_name)] plating into the airlock assembly.</span>")
+								to_chat(user, SPAN("notice", "You installed [material_display_name(material_name)] plating into the airlock assembly."))
 								glass = material_name
 
 	else if(isScrewdriver(W) && state == 2 )
 		playsound(src.loc, 'sound/items/Screwdriver.ogg', 100, 1)
-		to_chat(user, "<span class='notice'>Now finishing the airlock.</span>")
+		to_chat(user, SPAN("notice", "Now finishing the airlock."))
 
 		if(do_after(user, 40, src))
 			if(QDELETED(src))

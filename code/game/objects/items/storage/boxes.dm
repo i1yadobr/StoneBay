@@ -551,7 +551,7 @@
 			W.set_light(0.2, 0.5, 2, 3.5, "#e38f46")
 			set_next_think(world.time)
 			playsound(src.loc, 'sound/items/match.ogg', 60, 1, -4)
-			user.visible_message("<span class='notice'>[user] strikes the match on the matchbox.</span>")
+			user.visible_message(SPAN("notice", "[user] strikes the match on the matchbox."))
 		W.update_icon()
 		return
 

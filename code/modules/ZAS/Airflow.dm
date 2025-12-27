@@ -10,10 +10,10 @@ Contains helper procs for airflow, handled in /connection_group.
 	if(last_airflow_stun > world.time - vsc.airflow_stun_cooldown)	return 0
 
 	if(!(status_flags & CANSTUN) && !(status_flags & CANWEAKEN))
-		to_chat(src, "<span class='notice'>You stay upright as the air rushes past you.</span>")
+		to_chat(src, SPAN("notice", "You stay upright as the air rushes past you."))
 		return 0
 	if(buckled)
-		to_chat(src, "<span class='notice'>Air suddenly rushes past you!</span>")
+		to_chat(src, SPAN("notice", "Air suddenly rushes past you!"))
 		return 0
 	if(lying)
 		return 0
@@ -30,7 +30,7 @@ mob/living/carbon/metroid/airflow_stun()
 
 /mob/living/carbon/human/airflow_stun()
 	if(!slip_chance())
-		to_chat(src, "<span class='notice'>Air suddenly rushes past you!</span>")
+		to_chat(src, SPAN("notice", "Air suddenly rushes past you!"))
 		return 0
 	..()
 

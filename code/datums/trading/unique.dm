@@ -56,7 +56,7 @@
 		TRADER_INSULT_BAD         = "Maybe you should c-come here and say that. You'd be worth s-something then.",
 	)
 
-	mob_transfer_message = "<span class='danger'>You are transported to ORIGIN, and with a sickening thud, you fall unconscious, never to wake again.</span>"
+	mob_transfer_message = SPAN("danger", "You are transported to ORIGIN, and with a sickening thud, you fall unconscious, never to wake again.")
 
 /datum/trader/ship/unique/severance/New()
     ..()

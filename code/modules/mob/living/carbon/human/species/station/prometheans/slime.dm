@@ -105,10 +105,10 @@
 	var/jelly_amount = jelly_vessel.stored_jelly
 	var/jelly_volume = round((jelly_amount/H.species.blood_volume)*100)
 
-	H.visible_message("<span class='notice'>[owner] gains a look of \
-		concentration while standing perfectly still.</span>",
-		"<span class='notice'>You focus intently on moving your body while \
-		standing perfectly still...</span>")
+	H.visible_message(SPAN("notice", "[owner] gains a look of \
+		concentration while standing perfectly still."),
+		SPAN("notice", "You focus intently on moving your body while \
+		standing perfectly still..."))
 
 	if(do_after(owner, 6 SECONDS, owner))
 		if(jelly_volume >= BLOOD_VOLUME_SLIME_SPLIT)
@@ -152,10 +152,10 @@
 	spare.modifiers = H.modifiers.Copy()
 
 	if(H.mind.transfer_to(spare))
-		spare.visible_message("<span class='warning'>[H] distorts as a new body \
-			\"steps out\" of [H].</span>",
-			"<span class='notice'>...and after a moment of disorentation, \
-			you're besides yourself!</span>")
+		spare.visible_message(SPAN("warning", "[H] distorts as a new body \
+			\"steps out\" of [H]."),
+			SPAN("notice", "...and after a moment of disorentation, \
+			you're besides yourself!"))
 		spare.update_action_buttons()
 
 
@@ -293,15 +293,15 @@
 	if(!can_swap(dupe)) //sanity check
 		return
 	if(M.current.stat == CONSCIOUS)
-		M.current.visible_message("<span class='notice'>[M.current] \
-			stops moving and starts staring vacantly into space.</span>",
+		M.current.visible_message(SPAN("notice", "[M.current] \
+			stops moving and starts staring vacantly into space."),
 			SPAN_NOTICE("You stop moving this body..."))
 	else
 		to_chat(M.current, SPAN_NOTICE("You abandon this body..."))
 	dupe.modifiers = M.current.modifiers.Copy()
 	M.transfer_to(dupe)
-	dupe.visible_message("<span class='notice'>[dupe] blinks and looks \
-		around.</span>",
+	dupe.visible_message(SPAN("notice", "[dupe] blinks and looks \
+		around."),
 		SPAN_NOTICE("...and move this one instead."))
 	dupe.update_action_buttons()
 

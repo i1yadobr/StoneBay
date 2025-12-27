@@ -153,10 +153,10 @@
 	if(istype(W, /obj/item/ammo_casing) && max_ammo)
 		var/obj/item/ammo_casing/C = W
 		if(C.caliber != caliber)
-			to_chat(user, "<span class='warning'>[C] does not fit into [src].</span>")
+			to_chat(user, SPAN("warning", "[C] does not fit into [src]."))
 			return
 		if(stored_ammo.len >= max_ammo)
-			to_chat(user, "<span class='warning'>[src] is full!</span>")
+			to_chat(user, SPAN("warning", "[src] is full!"))
 			return
 		if(!user.drop(C, src))
 			return
@@ -169,9 +169,9 @@
 
 /obj/item/ammo_magazine/attack_self(mob/user)
 	if(!stored_ammo.len)
-		to_chat(user, "<span class='notice'>[src] is already empty!</span>")
+		to_chat(user, SPAN("notice", "[src] is already empty!"))
 		return
-	to_chat(user, "<span class='notice'>You empty [src].</span>")
+	to_chat(user, SPAN("notice", "You empty [src]."))
 	for(var/obj/item/ammo_casing/C in stored_ammo)
 		C.forceMove(user.loc)
 		C.set_dir(pick(GLOB.alldirs))
@@ -182,12 +182,12 @@
 /obj/item/ammo_magazine/attack_hand(mob/user)
 	if(user.get_inactive_hand() == src)
 		if(!stored_ammo.len)
-			to_chat(user, "<span class='notice'>[src] is already empty!</span>")
+			to_chat(user, SPAN("notice", "[src] is already empty!"))
 		else
 			var/obj/item/ammo_casing/C = stored_ammo[stored_ammo.len]
 			stored_ammo -= C
 			user.pick_or_drop(C, loc)
-			user.visible_message("\The [user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
+			user.visible_message("\The [user] removes \a [C] from [src].", SPAN("notice", "You remove \a [C] from [src]."))
 			playsound(user, "bullet_insert", rand(45, 60), FALSE)
 			update_icon()
 	else

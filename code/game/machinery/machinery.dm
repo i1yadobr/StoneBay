@@ -347,7 +347,7 @@ Class Procs:
 
 /obj/machinery/proc/state(msg)
 	for(var/mob/O in hearers(src, null))
-		O.show_message("\icon[src] <span class = 'notice'>[msg]</span>", 2)
+		O.show_message("\icon[src] [SPAN("notice", "[msg]")]", 2)
 
 /obj/machinery/proc/ping(text=null)
 	if (!text)
@@ -468,9 +468,10 @@ Class Procs:
 		playsound(src, clicksound, clickvol)
 
 /obj/machinery/proc/get_parts_infotext()
-	. = "<span class='notice'>Following parts detected in the machine:</span>"
+	. = SPAN("notice", "Following parts detected in the machine: ")
 	for(var/obj/item/C in component_parts)
-		. += "\n<span class='notice'>	[C.name]</span>"
+		. += "\n"
+		. += SPAN("notice", "[C.name]")
 
 /obj/machinery/examine(mob/user, infix)
 	. = ..()

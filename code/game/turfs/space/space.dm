@@ -62,7 +62,7 @@
 			return L.attackby(C, user)
 		var/obj/item/stack/rods/R = C
 		if (R.use(1))
-			to_chat(user, "<span class='notice'>Constructing support lattice ...</span>")
+			to_chat(user, SPAN("notice", "Constructing support lattice ..."))
 			playsound(src, 'sound/effects/fighting/Genhit.ogg', 50, 1)
 			ReplaceWithLattice()
 		return
@@ -82,7 +82,7 @@
 				ChangeTurf(/turf/simulated/floor/plating/airless)
 			return
 		else
-			to_chat(user, "<span class='warning'>The plating is going to need some support.</span>")
+			to_chat(user, SPAN("warning", "The plating is going to need some support."))
 
 	return ..()
 

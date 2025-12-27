@@ -239,7 +239,7 @@
 		return
 	if(!src.allowed(user))
 		playsound(src.loc, 'sound/signals/error32.ogg', 50)
-		to_chat(user, "<span class='warning'>Access denied.</span>")
+		to_chat(user, SPAN("warning", "Access denied."))
 		return
 	playsound(src.loc, 'sound/effects/using/switch/lever2.ogg', 50)
 	..()
@@ -290,15 +290,15 @@
 	var/datum/gas_mixture/int_air = return_air()
 	var/datum/gas_mixture/env_air = loc.return_air()
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
-	to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
+	to_chat(user, SPAN("notice", "You begin to unfasten \the [src]..."))
 	if (do_after(user, 40, src))
 		user.visible_message( \
-			"<span class='notice'>\The [user] unfastens \the [src].</span>", \
-			"<span class='notice'>You have unfastened \the [src].</span>", \
+			SPAN("notice", "\The [user] unfastens \the [src]."), \
+			SPAN("notice", "You have unfastened \the [src]."), \
 			"You hear a ratchet.")
 		var/obj/item/pipe/P = new(loc, null, null, src)
 		if ((int_air.return_pressure()-env_air.return_pressure()) > 2*ONE_ATMOSPHERE)
-			to_chat(user, "<span class='warning'>\the [src] flies off because of the overpressure in it!</span>")
+			to_chat(user, SPAN("warning", "\the [src] flies off because of the overpressure in it!"))
 			P.throw_at_random(0, round((int_air.return_pressure()-env_air.return_pressure()) / 100), 30)
 		qdel(src)
 

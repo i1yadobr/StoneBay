@@ -117,7 +117,7 @@ REAGENT SCANNER
 					brain_result = SPAN("danger", "ERROR - Hardware fault")
 	else
 		brain_result = SPAN("danger", "ERROR - Nonstandard biology")
-	brain_data += "<span class='notice'>Brain activity:</span> [brain_result]."
+	brain_data += "[SPAN("notice", "Brain activity:")] [brain_result]."
 
 	if(brain && (H.is_ic_dead() || (H.status_flags & FAKEDEATH)))
 		brain_data += SPAN("notice", "<b>Time of Death:</b> [worldtime2stationtime(H.timeofdeath)]")
@@ -134,20 +134,20 @@ REAGENT SCANNER
 		else
 			pulse_result = H.get_pulse(1)
 	else
-		pulse_result = "<span class='danger'>ERROR - Nonstandard biology</span>"
+		pulse_result = SPAN("danger", "ERROR - Nonstandard biology")
 
-	blood_data += "<span class='notice'>Pulse rate: <b>[pulse_result]</b>bpm.</span>"
+	blood_data += SPAN("notice", "Pulse rate: <b>[pulse_result]</b>bpm.")
 
 	// Blood pressure. Based on the idea of a normal blood pressure being 120 over 80.
 	if(H.get_blood_volume() <= 70)
-		blood_data += "<span class='danger'>Severe blood loss detected.</span>"
+		blood_data += SPAN("danger", "Severe blood loss detected.")
 	blood_data += "Blood pressure: <b>[H.get_blood_pressure()] ([H.get_blood_oxygenation()]</b>% blood oxygenation)"
 	if (H.chem_effects[CE_BLOCKAGE])
-		blood_data += "<span class='danger'>Warning: Blood clotting detected, blood transfusion recommended.</span>"
+		blood_data += SPAN("danger", "Warning: Blood clotting detected, blood transfusion recommended.")
 
 	var/status_data = list()
 	// Body temperature.
-	status_data += "<span class='notice'>Body temperature: <b>[CONV_KELVIN_CELSIUS(H.bodytemperature)]&deg;C ([H.bodytemperature*1.8-459.67]&deg;F)</b></span>"
+	status_data += SPAN("notice", "Body temperature: <b>[CONV_KELVIN_CELSIUS(H.bodytemperature)]&deg;C ([H.bodytemperature*1.8-459.67]&deg;F)</b>")
 
 	// Radiation.
 	status_data += SPAN("notice", "Radiation dose: [fmt_siunit(H.radiation, "Sv", 3)]")
@@ -179,22 +179,18 @@ REAGENT SCANNER
 	if(!H.is_ic_dead())
 		// Traumatic shock.
 		if(H.is_asystole())
-			status_data += "<span class='danger'>Patient is suffering from cardiovascular shock. Administer CPR immediately.</span>"
+			status_data += SPAN("danger", "Patient is suffering from cardiovascular shock. Administer CPR immediately.")
 		else if(H.shock_stage > 80)
-			status_data += "<span class='warning'>Patient is at serious risk of going into shock. Pain relief recommended.</span>"
+			status_data += SPAN("warning", "Patient is at serious risk of going into shock. Pain relief recommended.")
 		var/is_bleeding
 		for(var/obj/item/organ/external/E in H.organs)
 			if(E.status & ORGAN_BLEEDING)
 				is_bleeding = TRUE
 				break
 		if(!H.reagents.has_reagent(/datum/reagent/inaprovaline) && (H.is_asystole() || H.shock_stage > 80 || is_bleeding || H.getOxyLoss() > 50))
-			status_data += "<span class='danger'>Patient is unstable, administer a single dose of inaprovaline.</span>"
+			status_data += SPAN("danger", "Patient is unstable, administer a single dose of inaprovaline.")
 		if(H.get_blood_volume() <= 500 && H.nutrition < 150)
-			status_data += "<span class='warning'>Administer food or recommend the patient to eat.</span>"
-		if(H.hydration <= HYDRATION_LOW)
-			status_data += "<span class='warning'>Mild dehydration: administer liquid intake or recommend the patient to drink.</span>"
-		else if(H.hydration <= HYDRATION_NONE)
-			status_data += "<span class='danger'>Severe dehydration! Administer liquid intake immediately.</span>"
+			status_data += SPAN("warning", "Administer food or recommend the patient to eat.")
 
 	var/specific_limb_data = list()
 	var/overall_limbs_data = list()
@@ -209,43 +205,43 @@ REAGENT SCANNER
 
 	// Limb status.
 	if(verbose)
-		specific_limb_data += "<span class='notice'><b>Specific limb damage:</b></span>"
+		specific_limb_data += SPAN("notice", "<b>Specific limb damage:</b>")
 
 		for(var/obj/item/organ/external/E in H.organs)
 			var/limb_damaged	//in some cases we dont need apply this flag cause it already will be applied
 			var/limb_result = "<b>[capitalize(E.name)][(BP_IS_ROBOTIC(E)) ? " (Cybernetic)" : ""]:</b>"
 			if(E.is_stump())
 				limb_damaged = TRUE
-				limb_result = "<span class='danger'><b>[capitalize(E.name)]</b></span>"
+				limb_result = SPAN("danger", "<b>[capitalize(E.name)]</b>")
 				specific_limb_data += limb_result
 				continue
 			if(E.brute_dam > 0)
 				limb_damaged = TRUE
-				limb_result = "[limb_result] \[<span class='scanner_red'><b>[get_wound_severity(E.brute_ratio, (E.limb_flags & ORGAN_FLAG_HEALS_OVERKILL))] physical trauma</b></span>\]"
+				limb_result = "[limb_result] \[[SPAN("scanner_red", "<b>[get_wound_severity(E.brute_ratio, (E.limb_flags & ORGAN_FLAG_HEALS_OVERKILL))] physical trauma</b>")]\]"
 			if(E.burn_dam > 0)
 				limb_damaged = TRUE
-				limb_result = "[limb_result] \[<span class='scanner_yellow'><b>[get_wound_severity(E.burn_ratio, (E.limb_flags & ORGAN_FLAG_HEALS_OVERKILL))] burns</b></span>\]"
+				limb_result = "[limb_result] \[[SPAN("scanner_yellow", "<b>[get_wound_severity(E.burn_ratio, (E.limb_flags & ORGAN_FLAG_HEALS_OVERKILL))] burns</b>")]\]"
 			if(E.status & ORGAN_BLEEDING)
 				limb_damaged = TRUE
-				limb_result = "[limb_result] \[<span class='scanner_red'>bleeding</span>\]"
+				limb_result = "[limb_result] \[[SPAN("scanner_red", "bleeding")]\]"
 			if(E.status & ORGAN_BROKEN)
 				limb_damaged = TRUE
 				if(((E.organ_tag == BP_L_ARM) || (E.organ_tag == BP_R_ARM) || (E.organ_tag == BP_L_LEG) || (E.organ_tag == BP_R_LEG)) && (!E.splinted))
-					limb_result = "[limb_result] \[<span class='danger'>fracture</span>\]"
+					limb_result = "[limb_result] \[[SPAN("danger", "fracture")]\]"
 					found_fracture = TRUE
 				else
 					found_closed_fracture = TRUE
 			for(var/datum/wound/W in E.wounds)
 				if (W.damage_type == CUT && W.current_stage <= W.max_bleeding_stage && !W.bandaged)
-					limb_result = "[limb_result] \[<span class='danger'>open wound</span>\]"
+					limb_result = "[limb_result] \[[SPAN("danger", "open wound")]\]"
 					break
 			if(E.has_infected_wound())
 				limb_damaged = TRUE
 				if(E.germ_level >= INFECTION_LEVEL_THREE)
-					limb_result = "[limb_result] \[<span class='danger'>extreme infection</span>\]"
+					limb_result = "[limb_result] \[[SPAN("danger", "extreme infection")]\]"
 					found_extreme_infection = TRUE
 				else
-					limb_result = "[limb_result] \[<span class='danger'>infection</span>\]"
+					limb_result = "[limb_result] \[[SPAN("danger", "infection")]\]"
 			if(!found_bleed && (E.status & ORGAN_ARTERY_CUT))
 				found_bleed = TRUE
 			if(!found_tendon && (E.status & ORGAN_TENDON_CUT))
@@ -261,23 +257,23 @@ REAGENT SCANNER
 			specific_limb_data += "No detectable limb injuries."
 
 		if (found_infection)
-			overall_limbs_data += "<span class='warning'>Infected wound detected. Disinfection recommended.</span>"
+			overall_limbs_data += SPAN("warning", "Infected wound detected. Disinfection recommended.")
 		if (found_extreme_infection && !H.reagents.has_reagent(/datum/reagent/spaceacillin,15))
-			overall_limbs_data += "<span class='danger'>Subject has extreme infection. Administering more than 15u of antibiotics or amputation recommended.</span>"
+			overall_limbs_data += SPAN("danger", "Subject has extreme infection. Administering more than 15u of antibiotics or amputation recommended.")
 		if (found_fracture)
-			overall_limbs_data += "<span class='warning'>Unsecured fracture detected. Splinting recommended for transport.</span>"
+			overall_limbs_data += SPAN("warning", "Unsecured fracture detected. Splinting recommended for transport.")
 		if (found_closed_fracture)
-			overall_limbs_data += "<span class='warning'>Closed bone fractures detected. Advanced scanner required for location.</span>"
+			overall_limbs_data += SPAN("warning", "Closed bone fractures detected. Advanced scanner required for location.")
 		if (found_disloc)
-			overall_limbs_data += "<span class='warning'>Dislocation detected. Advanced scanner required for location.</span>"
+			overall_limbs_data += SPAN("warning", "Dislocation detected. Advanced scanner required for location.")
 		if (found_bleed)
-			overall_limbs_data += "<span class='danger'>Arterial bleeding detected. Advanced scanner required for location.</span>"
+			overall_limbs_data += SPAN("danger", "Arterial bleeding detected. Advanced scanner required for location.")
 		if (found_tendon)
-			overall_limbs_data += "<span class='warning'>Tendon or ligament damage detected. Advanced scanner required for location.</span>"
+			overall_limbs_data += SPAN("warning", "Tendon or ligament damage detected. Advanced scanner required for location.")
 
 	var/reagents_data = list()
 	// Reagent data.
-	reagents_data += "<span class='notice'><b>Reagent scan:</b></span>"
+	reagents_data += SPAN("notice", "<b>Reagent scan:</b>")
 
 	var/print_reagent_default_message = TRUE
 	if(H.reagents.total_volume)
@@ -290,19 +286,19 @@ REAGENT SCANNER
 				print_reagent_default_message = FALSE
 				if (R.volume >= R.overdose)
 					is_overdosed = 1
-				reagent_info[R.type] = "<span class='notice'>    [round(H.reagents.get_reagent_amount(R.type), 1)]u <b>[R.name]</b></span>"
+				reagent_info[R.type] = SPAN("notice", "    [round(H.reagents.get_reagent_amount(R.type), 1)]u <b>[R.name]</b>")
 			else
 				unknown++
 		if(reagent_info.len)
 			print_reagent_default_message = FALSE
-			reagents_data += "<span class='notice'>Beneficial reagents detected in subject's blood:</span>"
+			reagents_data += SPAN("notice", "Beneficial reagents detected in subject's blood:")
 			for(var/d in reagent_info)
 				reagents_data += reagent_info[d]
 		if (is_overdosed)
-			reagents_data += "<span class='warning'>Warning: Medicine overdose detected.</span>"
+			reagents_data += SPAN("warning", "Warning: Medicine overdose detected.")
 		if(unknown)
 			print_reagent_default_message = FALSE
-			reagents_data += "<span class='warning'>Warning: Unknown substance[(unknown>1)?"s":""] detected in subject's blood.</span>"
+			reagents_data += SPAN("warning", "Warning: Unknown substance[(unknown>1)?"s":""] detected in subject's blood.")
 
 	var/datum/reagents/ingested = H.get_ingested_reagents()
 	if(ingested && ingested.total_volume)
@@ -313,9 +309,9 @@ REAGENT SCANNER
 				if(H.should_have_organ(BP_STOMACH))
 					var/obj/item/organ/internal/stomach/stomach = H.internal_organs_by_name[BP_STOMACH]
 					if(stomach)
-						reagents_data += "<span class='notice'><b>[R.name]</b> found in subject's stomach.</span>"
+						reagents_data += SPAN("notice", "<b>[R.name]</b> found in subject's stomach.")
 					else
-						reagents_data += "<span class='notice'><b>[R.name]</b> found in subject's alimentary canal.</span>"
+						reagents_data += SPAN("notice", "<b>[R.name]</b> found in subject's alimentary canal.")
 			else
 				++unknown
 		if(unknown)
@@ -323,13 +319,13 @@ REAGENT SCANNER
 			if(H.should_have_organ(BP_STOMACH))
 				var/obj/item/organ/internal/stomach/stomach = H.internal_organs_by_name[BP_STOMACH]
 				if(stomach)
-					reagents_data += "<span class='warning'>Non-medical reagent[(unknown > 1)?"s":""] found in subject's stomach.</span>"
+					reagents_data += SPAN("warning", "Non-medical reagent[(unknown > 1)?"s":""] found in subject's stomach.")
 				else
-					reagents_data += "<span class='notice'>Non-medical reagent[(unknown > 1)?"s":""] found in subject's alimentary canal.</span>"
+					reagents_data += SPAN("notice", "Non-medical reagent[(unknown > 1)?"s":""] found in subject's alimentary canal.")
 	if (H.chem_effects[CE_ALCOHOL])
-		reagents_data += "<span class='warning'>Alcohol byproducts detected in subject's blood.</span>"
+		reagents_data += SPAN("warning", "Alcohol byproducts detected in subject's blood.")
 	if (H.chem_effects[CE_ALCOHOL_TOXIC])
-		reagents_data += "<span class='danger'>Warning: Subject suffering from alcohol intoxication.</span>"
+		reagents_data += SPAN("danger", "Warning: Subject suffering from alcohol intoxication.")
 
 	if(H.chem_traces.len)
 		var/list/chemtraces = list()
@@ -338,14 +334,14 @@ REAGENT SCANNER
 			if(initial(R.scannable))
 				chemtraces += "[initial(R.name)] ([H.chem_traces[T]])"
 		if(chemtraces.len)
-			reagents_data += "<span class='notice'>Metabolism products of [english_list(chemtraces)] found in subject's system.</span>"
+			reagents_data += SPAN("notice", "Metabolism products of [english_list(chemtraces)] found in subject's system.")
 	var/virus_data = list()
 	if(H.virus2.len)
 		for (var/ID in H.virus2)
 			if (ID in virusDB)
 				print_reagent_default_message = FALSE
 				var/datum/computer_file/data/virus_record/V = virusDB[ID]
-				virus_data += "<span class='warning'>Warning: Pathogen <b>[V.fields["name"]]</b> detected in subject's blood. Known antigen : <b>[V.fields["antigen"]]</b></span>"
+				virus_data += SPAN("warning", "Warning: Pathogen <b>[V.fields["name"]]</b> detected in subject's blood. Known antigen : <b>[V.fields["antigen"]]</b>")
 
 	if(print_reagent_default_message)
 
@@ -476,7 +472,7 @@ REAGENT SCANNER
 	if (last_target && dat)
 		var/obj/item/paper/P = new /obj/item/paper/(get_turf(src))
 		P.set_content("<tt>[dat]</tt>", "Body scan report - [last_target]", TRUE)
-		src.visible_message("<span class='notice'>[src] prints out the scan result.</span>")
+		src.visible_message(SPAN("notice", "[src] prints out the scan result."))
 
 
 /obj/item/device/analyzer
@@ -565,7 +561,7 @@ REAGENT SCANNER
 		for(var/datum/reagent/R in reagents.reagent_list)
 			if(R.type != /datum/reagent/blood)
 				reagents.clear_reagents()
-				to_chat(user, "<span class='warning'>The sample was contaminated! Please insert another sample</span>")
+				to_chat(user, SPAN("warning", "The sample was contaminated! Please insert another sample"))
 				return
 			else
 				blood_traces = params2list(R.data["trace_chem"])
@@ -699,7 +695,7 @@ proc/metroid_scan(source, mob/target, mob/user, proximity)
 	user.visible_message("\The [user] scans \the [target] with \the [source]")
 	if(istype(target, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = target
-		user.show_message("<span class='notice'>Data for [H]:</span>")
+		user.show_message(SPAN("notice", "Data for [H]:"))
 		user.show_message("Species:\t[H.species]")
 		user.show_message("Breathes:\t[gas_data.name[H.species.breath_type]]")
 		user.show_message("Exhales:\t[gas_data.name[H.species.exhale_type]]")
@@ -708,20 +704,20 @@ proc/metroid_scan(source, mob/target, mob/user, proximity)
 		user.show_message("Pressure comfort zone:\t[H.species.warning_low_pressure] kPa to [H.species.warning_high_pressure] kPa")
 	else if(istype(target, /mob/living/simple_animal))
 		var/mob/living/simple_animal/A = target
-		user.show_message("<span class='notice'>Data for [A]:</span>")
+		user.show_message(SPAN("notice", "Data for [A]:"))
 		user.show_message("Species:\t[initial(A.name)]")
 		user.show_message("Breathes:\t[list_gases(A.min_gas)]")
 		user.show_message("Known toxins:\t[list_gases(A.max_gas)]")
 		user.show_message("Temperature comfort zone:\t[A.minbodytemp] K to [A.maxbodytemp] K")
 	else if(istype(target, /mob/living/carbon/metroid/))
 		var/mob/living/carbon/metroid/T = target
-		user.show_message("<span class='notice'>Metroid scan result for \the [T]:</span>")
+		user.show_message(SPAN("notice", "Metroid scan result for \the [T]:"))
 		user.show_message("[T.colour] [T.is_adult ? "adult" : "baby"] metroid")
 		user.show_message("Nutrition:\t[T.nutrition]/[T.get_max_nutrition()]")
 		if(T.nutrition < T.get_starve_nutrition())
-			user.show_message("<span class='alert'>Warning:\tthe metroid is starving!</span>")
+			user.show_message(SPAN("alert", "Warning:\tthe metroid is starving!"))
 		else if (T.nutrition < T.get_hunger_nutrition())
-			user.show_message("<span class='warning'>Warning:\tthe metroid is hungry.</span>")
+			user.show_message(SPAN("warning", "Warning:\tthe metroid is hungry."))
 		user.show_message("Electric charge strength:\t[T.powerlevel]")
 		user.show_message("Health:\t[round(T.health / T.maxHealth)]%")
 

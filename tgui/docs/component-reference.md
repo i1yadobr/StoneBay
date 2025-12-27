@@ -115,7 +115,7 @@ needs. It creates a new DOM element, a `<div>` by default that can be changed
 with the `as` property. Let's say you want to use a `<span>` instead:
 
 ```jsx
-<Box as="span" m={1}>
+<Box as=SPAN" m={1}>
   <Button />
 </Box>
 ```

@@ -182,20 +182,20 @@
 								contents += "  [get_access_desc(A)]"
 
 						if(!computer.nano_printer.print_text(contents,"access report", rawhtml = TRUE))
-							to_chat(usr, "<span class='notice'>Hardware error: Printer was unable to print the file. It may be out of paper.</span>")
+							to_chat(usr, SPAN("notice", "Hardware error: Printer was unable to print the file. It may be out of paper."))
 							return
 						else
-							computer.visible_message("<span class='notice'>\The [computer] prints out paper.</span>")
+							computer.visible_message(SPAN("notice", "\The [computer] prints out paper."))
 				else
 					var/contents = {"<h4>Crew Manifest</h4>
 									<br>
 									[html_crew_manifest()]
 									"}
 					if(!computer.nano_printer.print_text(contents,text("crew manifest ([])", stationtime2text()), rawhtml = TRUE))
-						to_chat(usr, "<span class='notice'>Hardware error: Printer was unable to print the file. It may be out of paper.</span>")
+						to_chat(usr, SPAN("notice", "Hardware error: Printer was unable to print the file. It may be out of paper."))
 						return
 					else
-						computer.visible_message("<span class='notice'>\The [computer] prints out paper.</span>")
+						computer.visible_message(SPAN("notice", "\The [computer] prints out paper."))
 		if("eject")
 			if(computer)
 				if(computer.card_slot && computer.card_slot.stored_card)
@@ -215,7 +215,7 @@
 					if(temp_name)
 						id_card.registered_name = temp_name
 					else
-						computer.visible_message("<span class='notice'>[computer] buzzes rudely.</span>")
+						computer.visible_message(SPAN("notice", "[computer] buzzes rudely."))
 				else if(href_list["account"])
 					var/account_num = text2num(input("Enter account number.", "Account", id_card.associated_account_number))
 					id_card.associated_account_number = account_num

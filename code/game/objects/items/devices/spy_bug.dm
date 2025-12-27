@@ -286,8 +286,8 @@
 		return
 
 	if(!cameras.len)
-		to_chat(user, "<span class='warning'>No paired cameras detected!</span>")
-		to_chat(user, "<span class='warning'>Bring a bug in contact with this device to pair the camera.</span>")
+		to_chat(user, SPAN("warning", "No paired cameras detected!"))
+		to_chat(user, SPAN("warning", "Bring a bug in contact with this device to pair the camera."))
 		return
 
 	return 1

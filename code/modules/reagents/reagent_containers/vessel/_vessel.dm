@@ -329,7 +329,7 @@
 	to_chat(user, SPAN("notice", "You [feed_desc] from \the [src]."))
 
 /obj/item/reagent_containers/vessel/other_feed_message_finish(mob/user, mob/target, feed_volume = 0)
-	user.visible_message("<span class='warning'>[user] has fed [target] \the [src]!</span>")
+	user.visible_message(SPAN("warning", "[user] has fed [target] \the [src]!"))
 	var/feed_desc = "drink"
 	switch(feed_volume)
 		if(50.01 to INFINITY)

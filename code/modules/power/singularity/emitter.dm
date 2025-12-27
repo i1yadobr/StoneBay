@@ -177,7 +177,7 @@
 					"You hear a ratchet")
 				anchored = 0
 			if(2)
-				to_chat(user, "<span class='warning'>\The [src] needs to be unwelded from the floor.</span>")
+				to_chat(user, SPAN("warning", "\The [src] needs to be unwelded from the floor."))
 		return
 
 	if(isWelder(W))
@@ -187,7 +187,7 @@
 			return
 		switch(state)
 			if(0)
-				to_chat(user, "<span class='warning'>\The [src] needs to be wrenched to the floor.</span>")
+				to_chat(user, SPAN("warning", "\The [src] needs to be wrenched to the floor."))
 			if(1)
 				user.visible_message("[user.name] starts to weld [src] to the floor.", \
 						"You start to weld [src] to the floor.", \
@@ -214,12 +214,12 @@
 
 	if(istype(W, /obj/item/card/id) || istype(W, /obj/item/device/pda))
 		if(emagged)
-			to_chat(user, "<span class='warning'>The lock seems to be broken.</span>")
+			to_chat(user, SPAN("warning", "The lock seems to be broken."))
 			return
 		if(allowed(user))
 			toggle_lock(user)
 		else
-			to_chat(user, "<span class='warning'>Access denied.</span>")
+			to_chat(user, SPAN("warning", "Access denied."))
 		return
 	..()
 	return
@@ -228,7 +228,7 @@
 	if(!emagged)
 		locked = 0
 		emagged = 1
-		user.visible_message("[user.name] emags [src].","<span class='warning'>You short out the lock.</span>")
+		user.visible_message("[user.name] emags [src].",SPAN("warning", "You short out the lock."))
 		return 1
 
 /obj/machinery/power/emitter/proc/get_initial_fire_delay()

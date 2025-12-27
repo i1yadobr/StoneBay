@@ -232,13 +232,13 @@ var/list/obj/machinery/requests_console/allConsoles = list()
 				announce_sender = ID.assignment ? "[ID.assignment] [ID.registered_name]" : ID.registered_name
 			else
 				reset_message()
-				to_chat(user, "<span class='warning'>You are not authorized to send announcements.</span>")
+				to_chat(user, SPAN("warning", "You are not authorized to send announcements."))
 			updateUsrDialog()
 	if (istype(O, /obj/item/stamp))
 		if(inoperable(MAINT)) return
 		if(screen == RCS_MESSAUTH)
 			var/obj/item/stamp/T = O
-			msgStamped = text("<span class='info'><b>Stamped with the [T.name]</b></span>")
+			msgStamped = SPAN("info", "<b>Stamped with the [T.name]</b>")
 			updateUsrDialog()
 	return
 

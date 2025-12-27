@@ -94,7 +94,7 @@ GLOBAL_DATUM_INIT(wizards, /datum/antagonist/wizard, new)
 		break
 	if(!survivor)
 		feedback_set_details("round_end_result","loss - wizard killed")
-		return "<span class='danger'><font size = 3>The [(current_antagonists.len>1)?"[role_text_plural] have":"[role_text] has"] been killed by the crew! The Space Wizards Federation has been taught a lesson they will not soon forget!</font></span>"
+		return SPAN("danger", "<font size = 3>The [(current_antagonists.len>1)?"[role_text_plural] have":"[role_text] has"] been killed by the crew! The Space Wizards Federation has been taught a lesson they will not soon forget!</font>")
 
 
 /datum/antagonist/wizard/print_player_summary()

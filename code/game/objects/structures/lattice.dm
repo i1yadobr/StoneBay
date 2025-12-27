@@ -76,7 +76,7 @@
 			qdel(src)
 			return
 		else
-			to_chat(user, "<span class='notice'>You require at least two rods to complete the catwalk.</span>")
+			to_chat(user, SPAN("notice", "You require at least two rods to complete the catwalk."))
 			return
 	return
 

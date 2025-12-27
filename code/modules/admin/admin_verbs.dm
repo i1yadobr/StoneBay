@@ -383,7 +383,7 @@ var/list/admin_verbs_mentor = list(
 	verbs.Remove(/client/proc/hide_most_verbs, admin_verbs_hideable)
 	verbs += /client/proc/show_verbs
 
-	to_chat(src, "<span class='interface'>Most of your adminverbs have been hidden.</span>")
+	to_chat(src, SPAN("interface", "Most of your adminverbs have been hidden."))
 	feedback_add_details("admin_verb","HMV") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	return
 
@@ -394,7 +394,7 @@ var/list/admin_verbs_mentor = list(
 	remove_admin_verbs()
 	verbs += /client/proc/show_verbs
 
-	to_chat(src, "<span class='interface'>Almost all of your adminverbs have been hidden.</span>")
+	to_chat(src, SPAN("interface", "Almost all of your adminverbs have been hidden."))
 	feedback_add_details("admin_verb","TAVVH") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	return
 
@@ -405,7 +405,7 @@ var/list/admin_verbs_mentor = list(
 	verbs -= /client/proc/show_verbs
 	add_admin_verbs()
 
-	to_chat(src, "<span class='interface'>All of your adminverbs are now visible.</span>")
+	to_chat(src, SPAN("interface", "All of your adminverbs are now visible."))
 	feedback_add_details("admin_verb","TAVVS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/admin_ghost()
@@ -682,7 +682,7 @@ var/list/admin_verbs_mentor = list(
 		deadmin_holder.reassociate()
 		log_admin("[src] re-admined themself.")
 		message_admins("[src] re-admined themself.", 1)
-		to_chat(src, "<span class='interface'>You now have the keys to control the planet, or atleast a small space station</span>")
+		to_chat(src, SPAN("interface", "You now have the keys to control the planet, or atleast a small space station"))
 		src.verbs -= /client/proc/readmin_self
 
 /client/proc/deadmin_self()
@@ -694,7 +694,7 @@ var/list/admin_verbs_mentor = list(
 			log_admin("[src] deadmined themself.")
 			message_admins("[src] deadmined themself.", 1)
 			deadmin()
-			to_chat(src, "<span class='interface'>You are now a normal player.</span>")
+			to_chat(src, SPAN("interface", "You are now a normal player."))
 			src.verbs |= /client/proc/readmin_self
 	feedback_add_details("admin_verb","DAS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
@@ -936,8 +936,8 @@ var/list/admin_verbs_mentor = list(
 	if(!istype(mob))
 		return
 
-	to_chat(mob, "<span class='notice'><b><font size=3>Man up and deal with it.</font></b></span>")
-	to_chat(mob, "<span class='notice'>Move on.</span>")
+	to_chat(mob, SPAN("notice", "<b><font size=3>Man up and deal with it.</font></b>"))
+	to_chat(mob, SPAN("notice", "Move on."))
 
 	log_and_message_admins("told [key_name(mob)] to man up and deal with it.")
 
@@ -947,7 +947,7 @@ var/list/admin_verbs_mentor = list(
 	set desc = "Tells everyone to man up and deal with it."
 
 	for(var/client/C in GLOB.clients)
-		to_chat(C, "<br><center><span class='notice'><b><font size=4>Man up.<br> Deal with it.</font></b><br>Move on.</span></center><br>")
+		to_chat(C, "<br><center>[SPAN("notice", "<b><font size=4>Man up.<br> Deal with it.</font></b><br>Move on.")]</center><br>")
 		if(C.get_preference_value(/datum/client_preference/play_admin_midis) == GLOB.PREF_YES)
 			sound_to(C, sound('sound/voice/ManUp1.ogg'))
 

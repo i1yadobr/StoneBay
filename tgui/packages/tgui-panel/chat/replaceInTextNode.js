@@ -54,7 +54,7 @@ export const replaceInTextNode = (regex, createNode) => (node) => {
  * Default highlight node.
  */
 const createHighlightNode = (text) => {
-  const node = document.createElement("span");
+  const node = document.createElement(SPAN");
   node.setAttribute("style", "background-color:#fd4;color:#000");
   node.textContent = text;
   return node;

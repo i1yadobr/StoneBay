@@ -154,6 +154,8 @@ SUBSYSTEM_DEF(announce)
 	title = replacetext(title, "%STATION_NAME%", station_name())
 
 	. = "<h2 class='alert'>[title]</h2>"
-	. += "<br><span class='alert'>[text]</span>"
+	. += "<br>"
+	. += SPAN("alert", "[text]")
 	if (sender)
-		. += "<br><span class='alert'> -[html_encode(sender)]</span>"
+		. += "<br>"
+		. += SPAN("alert", " -[html_encode(sender)]")
