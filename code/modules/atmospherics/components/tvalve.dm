@@ -361,7 +361,7 @@
 			SPAN("notice", "\The [user] unfastens \the [src]."), \
 			SPAN("notice", "You have unfastened \the [src]."), \
 			"You hear a ratchet.")
-		new /obj/item/pipe(loc, make_from=src)
+		new /obj/item/pipe(loc, null, null, src)
 		qdel(src)
 
 /obj/machinery/atmospherics/tvalve/mirrored
