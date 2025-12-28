@@ -296,19 +296,17 @@
 /mob/proc/AltRightClickOn(atom/A)
 	A.AltRightClick(src)
 
-/*
-	Middle click
-*/
+// MiddleClickOn of the base mob type makes mob point towards atom A if
+// pointing preference is set to Middle-Click.
+// Otherwise it makes mob change their active hand.
 /mob/proc/MiddleClickOn(atom/A)
-	if(A.MiddleClick(src))
-		return
-
 	if(get_preference_value(/datum/client_preference/pointing) == GLOB.PREF_MIDDLE_CLICK)
 		if(pointed(A))
 			return
 	swap_hand()
-	return
 
+// ShiftMiddleClickOn of the base mob type makes mob point towards atom A if
+// pointing preference is set to Shift-Middle-Click.
 /mob/proc/ShiftMiddleClickOn(atom/A)
 	if(get_preference_value(/datum/client_preference/pointing) == GLOB.PREF_SHIFT_MIDDLE_CLICK)
 		if(pointed(A))

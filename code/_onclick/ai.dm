@@ -84,14 +84,18 @@
 /mob/living/silicon/ai/MouseDrop() //AI cant user crawl
 	return
 
-/*
-	Since the AI handles shift, ctrl, and alt-click differently
-	than anything else in the game, atoms have separate procs
-	for AI shift, ctrl, and alt clicking.
-*/
+// Clicks with modifier buttons are handled in a unique way for AI interactions and atoms implement
+// unique procs for these interactions, e.g. /atom/AICtrlClick(), /atom/AIShiftClick() etc.
+// These procs are expected to return a boolean value indicating if interaction was handled.
+//
+// Interactions that weren't handled by the AI proc fall through to the base /mob/living or /mob
+// click handling functions which handle clicks as if AI was a regular mob, with actual adjacency
+// taken into account.
+//
+// See code/_onclick/click.dm for base click handling implementations and an overview of click handling in general.
 
-/mob/living/silicon/ai/CtrlAltClickOn(atom/A)
-	if(!control_disabled && A.AICtrlAltClick(src))
+/mob/living/silicon/ai/CtrlClickOn(atom/A)
+	if(!control_disabled && A.AICtrlClick(src))
 		return
 	..()
 
