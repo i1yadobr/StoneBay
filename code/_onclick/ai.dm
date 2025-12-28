@@ -114,26 +114,3 @@
 	if(!control_disabled && A.AIMiddleClick(src))
 		return
 	..()
-
-/*
-	The following criminally helpful code is just the previous code cleaned up;
-	I have no idea why it was in atoms.dm instead of respective files.
-*/
-
-/atom/proc/AICtrlAltClick()
-	return
-
-/atom/proc/AICtrlShiftClick()
-	return
-
-/atom/proc/AIShiftClick()
-	return
-
-/atom/proc/AICtrlClick()
-	return
-
-/atom/proc/AIAltClick(atom/A)
-	return AltClick(A)
-
-/atom/proc/AIMiddleClick(mob/living/silicon/user)
-	return 0
