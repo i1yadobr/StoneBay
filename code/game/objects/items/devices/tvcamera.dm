@@ -59,16 +59,16 @@
 	if(href_list["video"])
 		camera.set_status(!camera.status)
 		if(camera.status)
-			to_chat(usr,SPAN("notice", "Video streaming: Activated. Broadcasting on channel: '[channel]'"))
+			to_chat(usr ,SPAN("notice", "Video streaming: Activated. Broadcasting on channel: '[channel]'"))
 		else
-			to_chat(usr,SPAN("notice", "Video streaming: Deactivated."))
+			to_chat(usr ,SPAN("notice", "Video streaming: Deactivated."))
 		update_icon()
 	if(href_list["sound"])
 		radio.ToggleBroadcast()
 		if(radio.broadcasting)
-			to_chat(usr,SPAN("notice", "Audio streaming: Activated. Broadcasting on frequency: [format_frequency(radio.frequency)]."))
+			to_chat(usr ,SPAN("notice", "Audio streaming: Activated. Broadcasting on frequency: [format_frequency(radio.frequency)]."))
 		else
-			to_chat(usr,SPAN("notice", "Audio streaming: Deactivated."))
+			to_chat(usr ,SPAN("notice", "Audio streaming: Deactivated."))
 	if(!href_list["close"])
 		attack_self(usr)
 

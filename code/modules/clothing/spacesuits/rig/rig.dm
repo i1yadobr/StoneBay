@@ -273,13 +273,13 @@
 	sealing = TRUE
 
 	if(!seal_target && !suit_is_deployed())
-		wearer.visible_message(SPAN("danger", "[wearer]'s suit flashes an error light."),SPAN("danger", "Your suit flashes an error light. It can't function properly without being fully deployed."))
+		wearer.visible_message(SPAN("danger", "[wearer]'s suit flashes an error light.") ,SPAN("danger", "Your suit flashes an error light. It can't function properly without being fully deployed."))
 		failed_to_seal = 1
 
 	if(!failed_to_seal)
 
 		if(!instant)
-			wearer.visible_message(SPAN("info", "[wearer]'s suit emits a quiet hum as it begins to adjust its seals."),SPAN("info", "With a quiet hum, the suit begins running checks and adjusting components."))
+			wearer.visible_message(SPAN("info", "[wearer]'s suit emits a quiet hum as it begins to adjust its seals.") ,SPAN("info", "With a quiet hum, the suit begins running checks and adjusting components."))
 			if(seal_delay && !do_after(wearer,seal_delay, src))
 				if(wearer)
 					to_chat(wearer, SPAN("warning", "You must remain still while the suit is adjusting the components."))

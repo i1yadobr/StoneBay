@@ -182,7 +182,7 @@
 		layer = ABOVE_HUMAN_LAYER
 		visible_message("\The [M] was caught in [src]!")
 	else
-		to_chat(M,SPAN("warning", "You are free of the net!"))
+		to_chat(M ,SPAN("warning", "You are free of the net!"))
 		reset_plane_and_layer()
 
 /obj/effect/energy_net/proc/healthcheck()
@@ -218,7 +218,7 @@
 	else
 		health -= rand(5,8)
 
-	to_chat(H,SPAN("danger", "You claw at the energy net."))
+	to_chat(H ,SPAN("danger", "You claw at the energy net."))
 
 	healthcheck()
 	return

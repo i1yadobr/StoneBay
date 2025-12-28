@@ -346,7 +346,7 @@
 		s.set_up(3, 1, src)
 		s.start()
 		new /obj/effect/decal/cleanable/ash(src.loc)
-		src.visible_message(SPAN("warning", "The [src.name] explodes!"),SPAN("warning", "You hear a snap!"))
+		src.visible_message(SPAN("warning", "The [src.name] explodes!") ,SPAN("warning", "You hear a snap!"))
 		playsound(src, 'sound/effects/snap.ogg', 50, 1)
 		qdel(src)
 
@@ -360,7 +360,7 @@
 			s.set_up(2, 0, src)
 			s.start()
 			new /obj/effect/decal/cleanable/ash(src.loc)
-			src.visible_message(SPAN("warning", "The [src.name] explodes!"),SPAN("warning", "You hear a snap!"))
+			src.visible_message(SPAN("warning", "The [src.name] explodes!") ,SPAN("warning", "You hear a snap!"))
 			playsound(src, 'sound/effects/snap.ogg', 50, 1)
 			qdel(src)
 
@@ -723,13 +723,13 @@
 
 /obj/structure/plushie/attack_hand(mob/user)
 	if(user.a_intent == I_HELP)
-		user.visible_message(SPAN("notice", "<b>\The [user]</b> hugs [src]!"),SPAN("notice", "You hug [src]!"))
+		user.visible_message(SPAN("notice", "<b>\The [user]</b> hugs [src]!") ,SPAN("notice", "You hug [src]!"))
 	else if (user.a_intent == I_HURT)
-		user.visible_message(SPAN("warning", "<b>\The [user]</b> punches [src]!"),SPAN("warning", "You punch [src]!"))
+		user.visible_message(SPAN("warning", "<b>\The [user]</b> punches [src]!") ,SPAN("warning", "You punch [src]!"))
 	else if (user.a_intent == I_GRAB)
-		user.visible_message(SPAN("warning", "<b>\The [user]</b> attempts to strangle [src]!"),SPAN("warning", "You attempt to strangle [src]!"))
+		user.visible_message(SPAN("warning", "<b>\The [user]</b> attempts to strangle [src]!") ,SPAN("warning", "You attempt to strangle [src]!"))
 	else
-		user.visible_message(SPAN("notice", "<b>\The [user]</b> pokes the [src]."),SPAN("notice", "You poke the [src]."))
+		user.visible_message(SPAN("notice", "<b>\The [user]</b> pokes the [src].") ,SPAN("notice", "You poke the [src]."))
 		visible_message("[src] says, \"[phrase]\"")
 
 /obj/structure/plushie/ian
@@ -765,13 +765,13 @@
 
 /obj/item/toy/plushie/attack_self(mob/user)
 	if(user.a_intent == I_HELP)
-		user.visible_message(SPAN("notice", "<b>\The [user]</b> hugs [src]!"),SPAN("notice", "You hug [src]!"))
+		user.visible_message(SPAN("notice", "<b>\The [user]</b> hugs [src]!") ,SPAN("notice", "You hug [src]!"))
 	else if (user.a_intent == I_HURT)
-		user.visible_message(SPAN("warning", "<b>\The [user]</b> punches [src]!"),SPAN("warning", "You punch [src]!"))
+		user.visible_message(SPAN("warning", "<b>\The [user]</b> punches [src]!") ,SPAN("warning", "You punch [src]!"))
 	else if (user.a_intent == I_GRAB)
-		user.visible_message(SPAN("warning", "<b>\The [user]</b> attempts to strangle [src]!"),SPAN("warning", "You attempt to strangle [src]!"))
+		user.visible_message(SPAN("warning", "<b>\The [user]</b> attempts to strangle [src]!") ,SPAN("warning", "You attempt to strangle [src]!"))
 	else
-		user.visible_message(SPAN("notice", "<b>\The [user]</b> pokes the [src]."),SPAN("notice", "You poke the [src]."))
+		user.visible_message(SPAN("notice", "<b>\The [user]</b> pokes the [src].") ,SPAN("notice", "You poke the [src]."))
 
 /obj/item/toy/plushie/nymph
 	name = "diona nymph plush"

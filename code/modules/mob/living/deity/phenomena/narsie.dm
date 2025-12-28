@@ -15,7 +15,7 @@
 
 /datum/phenomena/exhude_blood/activate(mob/living/carbon/human/H, mob/living/deity/user)
 	H.vessel.add_reagent(/datum/reagent/blood, 300)
-	to_chat(H,SPAN("notice", "You feel a rush as new blood enters your system."))
+	to_chat(H ,SPAN("notice", "You feel a rush as new blood enters your system."))
 
 
 /datum/phenomena/hellscape

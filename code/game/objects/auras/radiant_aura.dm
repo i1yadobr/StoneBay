@@ -6,7 +6,7 @@
 
 /obj/aura/radiant_aura/New()
 	..()
-	to_chat(user,SPAN("notice", "A bubble of light appears around you, exuding protection and warmth."))
+	to_chat(user ,SPAN("notice", "A bubble of light appears around you, exuding protection and warmth."))
 	set_light(0.6, 1, 6, 2, "#e09d37")
 
 /obj/aura/radiant_aura/Destroy()

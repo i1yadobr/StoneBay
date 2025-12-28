@@ -35,7 +35,7 @@
 		to_chat(user, SPAN("warning", "You can't analyze non-robotic things!"))
 		return
 
-	user.visible_message(SPAN("notice", "\The [user] has analyzed [M]'s components."),SPAN("notice", "You have analyzed [M]'s components."))
+	user.visible_message(SPAN("notice", "\The [user] has analyzed [M]'s components.") ,SPAN("notice", "You have analyzed [M]'s components."))
 	switch(scan_type)
 		if("robot")
 			var/BU = M.getFireLoss() > 50 	? 	"<b>[M.getFireLoss()]</b>" 		: M.getFireLoss()

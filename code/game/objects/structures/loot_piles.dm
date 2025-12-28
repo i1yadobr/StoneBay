@@ -51,7 +51,7 @@ Loot piles can be depleted, if loot_depleted is turned on.  Note that players wh
 			to_chat(L, SPAN("warning", "\The [src] is already being searched."))
 			return
 
-		L.visible_message("[user] searches through \the [src].",SPAN("notice", "You search through \the [src]."))
+		L.visible_message("[user] searches through \the [src]." ,SPAN("notice", "You search through \the [src]."))
 
 		//Do the searching
 		busy = TRUE

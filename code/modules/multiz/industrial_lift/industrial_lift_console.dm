@@ -60,7 +60,7 @@
 
 /obj/machinery/computer/elevator_control/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = 1)
 	if(!elevator_tag)
-		to_chat(user,SPAN("warning", "Unable to establish link with the elevator."))
+		to_chat(user ,SPAN("warning", "Unable to establish link with the elevator."))
 		return
 
 	var/list/data = get_ui_data()

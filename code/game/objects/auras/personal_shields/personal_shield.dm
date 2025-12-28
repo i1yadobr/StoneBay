@@ -8,7 +8,7 @@
 	..()
 	playsound(user,'sound/effects/EMPulse.ogg',35,1)
 	new /obj/effect/sparks(user.loc)
-	to_chat(user,SPAN("notice", "You feel your body prickle as \the [src] comes online."))
+	to_chat(user ,SPAN("notice", "You feel your body prickle as \the [src] comes online."))
 
 /obj/aura/personal_shield/bullet_act(obj/item/projectile/P, def_zone, mob/A)
 	if(user != A)
@@ -31,7 +31,7 @@
 	return AURA_FALSE|AURA_CANCEL
 
 /obj/aura/personal_shield/Destroy()
-	to_chat(user,SPAN("warning", "\The [src] goes offline!"))
+	to_chat(user ,SPAN("warning", "\The [src] goes offline!"))
 	playsound(user,'sound/mecha/internaldmgalarm.ogg',25,1)
 	new /obj/effect/sparks(user.loc)
 	return ..()

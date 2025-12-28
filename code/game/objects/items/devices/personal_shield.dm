@@ -58,7 +58,7 @@
 		QDEL_NULL(shield)
 		active = FALSE
 		holder = null
-		to_chat(loc,SPAN("danger", "\The [src] begins to spark!"))
+		to_chat(loc ,SPAN("danger", "\The [src] begins to spark!"))
 		update_icon()
 		return
 

@@ -437,10 +437,10 @@
 /obj/item/device/flashlight/glowstick/attack_self(mob/user)
 
 	if(!fuel)
-		to_chat(user,SPAN("notice", "\The [src] is spent."))
+		to_chat(user ,SPAN("notice", "\The [src] is spent."))
 		return
 	if(on)
-		to_chat(user,SPAN("notice", "\The [src] is already lit."))
+		to_chat(user ,SPAN("notice", "\The [src] is already lit."))
 		return
 
 	. = ..()

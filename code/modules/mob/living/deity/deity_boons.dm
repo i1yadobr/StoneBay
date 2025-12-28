@@ -21,7 +21,7 @@
 			var/obj/O =  L.equip_to_storage(I)
 			if(O)
 				origin_text = "in \the [O]"
-		to_chat(L,SPAN("notice", "It appears [origin_text]."))
+		to_chat(L ,SPAN("notice", "It appears [origin_text]."))
 
 	to_chat(L, SPAN("cult", "\The [src] grants you a boon of [current_boon]!"))
 	to_chat(src, SPAN("notice", "You give \the [L] a boon of [current_boon]."))

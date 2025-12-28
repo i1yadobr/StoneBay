@@ -155,14 +155,14 @@
 		if(weedlevel > 0)
 			nymph.reagents.add_reagent(/datum/reagent/nutriment/glucose, weedlevel)
 			weedlevel = 0
-			nymph.visible_message(SPAN("info", "<b>[nymph]</b> begins rooting through [src], ripping out weeds and eating them noisily."),SPAN("info", "You begin rooting through [src], ripping out weeds and eating them noisily."))
+			nymph.visible_message(SPAN("info", "<b>[nymph]</b> begins rooting through [src], ripping out weeds and eating them noisily.") ,SPAN("info", "You begin rooting through [src], ripping out weeds and eating them noisily."))
 			playsound(loc, 'sound/effects/plantshake.ogg', rand(50, 75), TRUE)
 		else if(nymph.nutrition > 100 && nutrilevel < 10)
 			nymph.remove_nutrition((10 - nutrilevel) * 5)
 			nutrilevel = 10
-			nymph.visible_message(SPAN("info", "<b>[nymph]</b> secretes a trickle of green liquid, refilling [src]."),SPAN("info", "You secrete a trickle of green liquid, refilling [src]."))
+			nymph.visible_message(SPAN("info", "<b>[nymph]</b> secretes a trickle of green liquid, refilling [src].") ,SPAN("info", "You secrete a trickle of green liquid, refilling [src]."))
 		else
-			nymph.visible_message(SPAN("info", "<b>[nymph]</b> rolls around in [src] for a bit."),SPAN("info", "You roll around in [src] for a bit."))
+			nymph.visible_message(SPAN("info", "<b>[nymph]</b> rolls around in [src] for a bit.") ,SPAN("info", "You roll around in [src] for a bit."))
 		return
 
 /obj/machinery/portable_atmospherics/hydroponics/Initialize()

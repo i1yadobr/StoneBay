@@ -588,7 +588,7 @@
 	cloth_golem.revive()
 	sleep(2 SECONDS)
 	cloth_golem.forceMove(get_turf(src))
-	cloth_golem.visible_message(SPAN_DANGER("[src] rises and reforms into [cloth_golem]!"),SPAN_DANGER("You reform into yourself!"))
+	cloth_golem.visible_message(SPAN_DANGER("[src] rises and reforms into [cloth_golem]!") ,SPAN_DANGER("You reform into yourself!"))
 	cloth_golem = null
 	qdel(src)
 

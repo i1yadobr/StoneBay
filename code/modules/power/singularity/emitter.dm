@@ -228,7 +228,7 @@
 	if(!emagged)
 		locked = 0
 		emagged = 1
-		user.visible_message("[user.name] emags [src].",SPAN("warning", "You short out the lock."))
+		user.visible_message("[user.name] emags [src]." ,SPAN("warning", "You short out the lock."))
 		return 1
 
 /obj/machinery/power/emitter/proc/get_initial_fire_delay()

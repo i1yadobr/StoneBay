@@ -100,7 +100,7 @@ var/list/fusion_cores = list()
 /obj/machinery/power/fusion_core/attackby(obj/item/W, mob/user)
 
 	if(owned_field)
-		to_chat(user,SPAN("warning", "Shut \the [src] off first!"))
+		to_chat(user ,SPAN("warning", "Shut \the [src] off first!"))
 		return
 
 	if(isMultitool(W))

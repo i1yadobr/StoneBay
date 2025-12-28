@@ -22,7 +22,7 @@
 		if(ismob(i))
 			var/mob/M = i
 			M.forceMove(get_turf(cabinet))
-			to_chat(M,SPAN("warning", "You are suddenly flung out of \the [cabinet]!"))
+			to_chat(M ,SPAN("warning", "You are suddenly flung out of \the [cabinet]!"))
 	if(cabinet == a)
 		cabinet.forceMove(null) //Move to null space
 	else
