@@ -181,6 +181,39 @@
 /mob/proc/DblClickOn(atom/A, params)
 	return
 
+/mob/proc/CtrlClickOn(atom/A)
+	A.CtrlClick(src)
+
+/mob/proc/CtrlRightClickOn(atom/A)
+	A.CtrlRightClick(src)
+
+/mob/proc/CtrlShiftClickOn(atom/A)
+	A.CtrlShiftClick(src)
+
+/mob/proc/CtrlShiftRightClickOn(atom/A)
+	A.CtrlShiftRightClick(src)
+
+/mob/proc/CtrlAltClickOn(atom/A)
+	A.CtrlAltClick(src)
+
+/mob/proc/CtrlAltRightClickOn(atom/A)
+	A.CtrlAltRightClick(src)
+
+/mob/proc/ShiftClickOn(atom/A)
+	A.ShiftClick(src)
+
+/mob/proc/ShiftRightClickOn(atom/A)
+	A.ShiftRightClick(src)
+
+/mob/proc/ShiftAltRightClickOn(atom/A)
+	A.ShiftAltRightClick(src)
+
+/mob/proc/AltClickOn(atom/A)
+	A.AltClick(src)
+
+/mob/proc/AltRightClickOn(atom/A)
+	A.AltRightClick(src)
+
 /*
 	Middle click
 */

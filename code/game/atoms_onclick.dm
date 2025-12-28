@@ -2,18 +2,33 @@
 /atom/proc/CtrlClick(mob/user)
 	return
 
+/atom/proc/CtrlRightClick(mob/user)
+	return
+
 // CtrlShiftClick of the base atom type is a no-op.
 /atom/proc/CtrlShiftClick(mob/user)
+	return
+
+/atom/proc/CtrlShiftRightClick(mob/user)
 	return
 
 // CtrlAltClick of the base atom type is a no-op.
 /atom/proc/CtrlAltClick(mob/user)
 	return
 
+/atom/proc/CtrlAltRightClick(mob/user)
+	return
+
 // ShiftClick of the base atom type triggers examination of atom by the user if user can see the atom.
 /atom/proc/ShiftClick(mob/user)
 	if(user.client && (src in view(user.client.eye)))
 		user.examinate(src)
+	return
+
+/atom/proc/ShiftRightClick(mob/user)
+	return
+
+/atom/proc/ShiftAltRightClick(mob/user)
 	return
 
 // AltClick of the base atom type toggles the Turf examination panel for the user if user is adjacent.
@@ -30,6 +45,12 @@
 // AICtrlClick of the base atom type is a no-op that returns FALSE to indicate that interaction wasn't handled.
 /atom/proc/AICtrlClick()
 	return FALSE
+
+/atom/proc/AltRightClick(mob/user)
+	return
+
+/atom/proc/MiddleClick(mob/M)
+	return
 
 // AICtrlShiftClick of the base atom type is a no-op that returns FALSE to indicate that interaction wasn't handled.
 /atom/proc/AICtrlShiftClick()

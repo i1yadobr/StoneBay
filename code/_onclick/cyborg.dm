@@ -150,10 +150,6 @@
 /mob/living/silicon/robot/RangedAttack(atom/A)
 	A.attack_robot(src)
 
-/atom/proc/attack_robot(mob/user as mob)
-	attack_ai(user)
-	return
-
 // QOL feature, clicking on turf can toogle doors
 /turf/BorgCtrlClick(mob/living/silicon/robot/user)
 	AICtrlClick(user)

@@ -42,19 +42,19 @@ var/global/list/sparring_attack_cache = list()
 /datum/unarmed_attack/proc/get_unarmed_damage()
 	return damage
 
-/datum/unarmed_attack/proc/apply_effects(mob/living/carbon/human/user,mob/living/carbon/human/target,armor,attack_damage,zone,specmod = 1)
+/datum/unarmed_attack/proc/apply_effects(mob/living/carbon/human/user, mob/living/carbon/human/target, armor, attack_damage, zone, specmod = 1)
 	if(target.status_flags & GODMODE)
 		return 0
-	if(target.stat == DEAD)
+	if(target.is_ic_dead())
 		return
 
-	var/effective_armor = target.getarmor(zone, "melee")
+	var/effective_armor = target.get_flat_armor(zone, "melee")
 	attack_damage *= specmod
 	target.damage_poise(round(attack_damage*0.5 + attack_damage*0.5*((100-effective_armor)/100),0.1))
 
 	//target.visible_message("Debug \[UNARMED\]: [target] lost [round(attack_damage*0.5 + attack_damage*0.5*((100-effective_armor)/100),0.1)] poise ([target.poise]/[target.poise_pool])") // Debug Message
 
-	if(attack_damage >= 5 && armor < 100 && !(target == user) && target.poise <= attack_damage*3)
+	if(attack_damage >= 5 && armor < 100 && target != user && target.poise <= attack_damage*3 && !target.check_poise_immunity())
 		switch(zone) // strong punches can have effects depending on where they hit
 			if(BP_HEAD, BP_EYES, BP_MOUTH)
 				// Induce blurriness
