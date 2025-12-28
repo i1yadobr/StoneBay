@@ -137,6 +137,28 @@
 
 	tgui_interact(user)
 
+/obj/machinery/turret_control_panel/AICtrlClick() //turns off/on Turrets
+	if(usr.incapacitated())
+		return
+
+	if(world.time >= last_enabled + toggle_cooldown)
+		last_enabled = world.time
+		enabled = !enabled
+		update_turrets()
+		update_icon()
+	else
+		show_splash_text(usr, "Turrets recalibrating!")
+
+	return TRUE
+
+/obj/machinery/turret_control_panel/AIAltClick() //toggles lethal on turrets
+	if(usr.incapacitated())
+		return
+
+	targeting_settings?.lethal_mode = !targeting_settings?.lethal_mode
+	update_turrets()
+	return TRUE
+
 /obj/machinery/turret_control_panel/attack_hand(mob/user)
 	if(isLocked(user))
 		return

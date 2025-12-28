@@ -37,7 +37,7 @@ Thus, the two variables affect pump operation are set in New():
 	var/id = null
 	var/datum/frequency/radio_connection
 
-/obj/machinery/atmospherics/binary/pump/Initialize()
+/obj/machinery/atmospherics/binary/pump/New()
 	. = ..()
 	air1.volume = ATMOS_DEFAULT_VOLUME_PUMP
 	air2.volume = ATMOS_DEFAULT_VOLUME_PUMP
@@ -46,6 +46,10 @@ Thus, the two variables affect pump operation are set in New():
 	if(frequency)
 		set_frequency(frequency)
 	return ..()
+
+/obj/machinery/atmospherics/binary/pump/AIAltClick()
+	Topic(src, list("breaker" = "1"))
+	return TRUE
 
 /obj/machinery/atmospherics/binary/pump/AltClick(mob/user)
 	if(user.is_ic_dead() || user.restrained())

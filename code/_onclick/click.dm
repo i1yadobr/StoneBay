@@ -3,9 +3,6 @@
 	~Sayu
 */
 
-// 1 decisecond click delay (above and beyond mob/next_move)
-/mob/var/next_click = 0
-
 /*
 	Before anything else, defer these calls to a per-mobtype handler.  This allows us to
 	remove istype() spaghetti code, but requires the addition of other handler procs to simplify it.
@@ -105,9 +102,17 @@
 		return M.click_action(A, src)
 
 	if(restrained())
-		setClickCooldown(10)
-		RestrainedClickOn(A)
-		return 1
+		// NOTE(rufus): currently only human clicks are allowed for restrained mobs,
+		//   the rest of the code is not adapted to restrained clicks yet and doesn't
+		//   handle them properly.
+		if(!istype(A, /mob/living/carbon/human))
+			return
+		if(A == src)
+			var/mob/living/carbon/human/H = A
+			H.RestrainedSelfClick()
+			return
+		// the click falls through to regular interaction, attack code will
+		// recognize the restrained state on its own and default to bites/kicks
 
 	if(in_throw_mode)
 		if(isturf(A) || isturf(A.loc))
@@ -136,8 +141,6 @@
 			if(!resolved && A && I)
 				I.afterattack(A, src, 1, params) // 1 indicates adjacency
 		else
-			if(ismob(A)) // No instant mob attacking
-				setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			UnarmedAttack(A, 1)
 
 		trigger_aiming(TARGET_CAN_CLICK)
@@ -162,8 +165,6 @@
 				if(!resolved && A && I)
 					I.afterattack(A, src, 1, params) // 1: clicking something Adjacent
 			else
-				if(ismob(A)) // No instant mob attacking
-					setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 				UnarmedAttack(A, 1)
 
 			trigger_aiming(TARGET_CAN_CLICK)
@@ -177,69 +178,11 @@
 			trigger_aiming(TARGET_CAN_CLICK)
 	return 1
 
-/mob/proc/setClickCooldown(timeout)
-	next_move = max(world.time + timeout, next_move)
-
-/mob/proc/canClick()
-	if(config.misc.no_click_cooldown || next_move <= world.time)
-		return 1
-	return 0
-
-// Default behavior: ignore double clicks, the second click that makes the doubleclick call already calls for a normal click
 /mob/proc/DblClickOn(atom/A, params)
 	return
 
 /*
-	Translates into attack_hand, etc.
-
-	Note: proximity_flag here is used to distinguish between normal usage (flag=1),
-	and usage when clicking on things telekinetically (flag=0).  This proc will
-	not be called at ranged except with telekinesis.
-
-	proximity_flag is not currently passed to attack_hand, and is instead used
-	in human click code to allow glove touches only at melee range.
-*/
-/mob/proc/UnarmedAttack(atom/A, proximity_flag)
-	return
-
-/mob/living/UnarmedAttack(atom/A, proximity_flag)
-
-	if(GAME_STATE < RUNLEVEL_GAME)
-		to_chat(src, "You cannot attack people before the game has started.")
-		return 0
-
-	if(stat)
-		return 0
-
-	return 1
-
-/*
-	Ranged unarmed attack:
-
-	This currently is just a default for all mobs, involving
-	laser eyes and telekinesis.  You could easily add exceptions
-	for things like ranged glove touches, spitting alien acid/neurotoxin,
-	animals lunging, etc.
-*/
-/mob/proc/RangedAttack(atom/A, params)
-	if(!mutations.len) return
-	if((MUTATION_LASER in mutations) && a_intent == I_HURT)
-		LaserEyes(A)
-	else if(MUTATION_TK in mutations)
-		setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		A.attack_tk(src)
-/*
-	Restrained ClickOn
-
-	Used when you are handcuffed and click things.
-	Not currently used by anything but could easily be.
-*/
-/mob/proc/RestrainedClickOn(atom/A)
-	return
-
-/*
 	Middle click
-	Only used for swapping hands
 */
 /mob/proc/MiddleClickOn(atom/A)
 	if(A.MiddleClick(src))
@@ -261,8 +204,6 @@
 
 /*
 	Shift click
-	For most mobs, examine.
-	This is overridden in ai.dm
 */
 /mob/proc/ShiftClickOn(atom/A)
 	A.ShiftClick(src)
@@ -272,12 +213,10 @@
 /atom/proc/ShiftClick(mob/user)
 	if(user.client && (src in view(user.client.eye)))
 		user.examinate(src)
-
 	return
 
 /*
 	Ctrl click
-	For most objects, pull
 */
 /mob/proc/CtrlClickOn(atom/A)
 	A.CtrlClick(src)
@@ -287,13 +226,8 @@
 /atom/proc/CtrlClick(mob/user)
 	return
 
-/atom/movable/CtrlClick(mob/user)
-	if(Adjacent(user))
-		user.start_pulling(src)
-
 /*
 	Alt click
-	Unused except for AI
 */
 /mob/proc/AltClickOn(atom/A)
 	A.AltClick(src)
@@ -314,19 +248,8 @@
 
 	return TRUE
 
-/mob/proc/TurfAdjacent(turf/T)
-	return T.AdjacentQuick(src)
-
-/mob/observer/ghost/TurfAdjacent(turf/T)
-	if(!isturf(loc) || !client)
-		return FALSE
-
-	var/list/view_sizes = get_view_size(client.view)
-	return z == T.z && (get_dist(loc, T) <= max(view_sizes[1], view_sizes[2]))
-
 /*
 	Control+Shift click
-	Unused except for AI
 */
 /mob/proc/CtrlShiftClickOn(atom/A)
 	A.CtrlShiftClick(src)

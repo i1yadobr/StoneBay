@@ -1,16 +1,66 @@
-/mob/living/carbon/human/proc/get_unarmed_attack(mob/living/carbon/human/target, hit_zone)
-	var/obj/item/clothing/gloves/boxing/b_gloves = gloves
-	if(istype(b_gloves))
-		return b_gloves.attack
+// UnarmedAttack of humans applies gloves effects and passes the execution to A's attack_hand() proc with a reference to self.
+// It also applies click cooldown if A is a mob, regardless of the intent.
+// This proc is a no-op if human is currently viewing cameras or is otherwise affected by `machine_visual`.
+//
+// This proc is called directly by the click code from code/_onclick/click.dm when human user doesn't have anything in
+// their hands and is adjacent to A (with the exception of telekinesis, but it's currently not available in the game).
+// See code/_onclick/click.dm for a general overview of click handling.
+//
+// The actual logic of the unarmed attack between humans is resolved in /mob/living/carbon/human/attack_hand() proc,
+// which will be called by UnarmedAttack if A is human.
+/mob/living/carbon/human/UnarmedAttack(atom/A, proximity)
+	if(!..())
+		return
 
-	for(var/datum/unarmed_attack/u_attack in species.unarmed_attacks)
-		if(u_attack.is_usable(src, target, hit_zone))
-			if(pulling_punches)
-				var/datum/unarmed_attack/soft_variant = u_attack.get_sparring_variant()
-				if(soft_variant)
-					return soft_variant
-			return u_attack
-	return null
+	if(machine_visual) // if user is viewing cameras or has some other machinery affect its view, don't allow attacks
+		return
+
+	if(istype(A, /mob))
+		setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+
+	var/obj/item/clothing/gloves/G = gloves
+	if(istype(G) && G.Touch(A, TRUE))
+		return
+
+	A.attack_hand(src)
+
+// RangedAttack of humans handles climbing openspace turfs, triggers laser eyes and telekinesis mutation abilities,
+// and handles special ranged glove touch interactions.
+//
+// This proc is called directly by the click code from code/_onclick/click.dm when human user doesn't have anything in
+// their hands and is not adjacent to A.
+// See code/_onclick/click.dm for a general overview of click handling.
+/mob/living/carbon/human/RangedAttack(atom/A)
+	if((istype(A, /turf/simulated/floor) || istype(A, /turf/unsimulated/floor) || istype(A, /obj/structure/lattice) || istype(A, /obj/structure/catwalk)) && isturf(loc) && shadow && !is_physically_disabled()) //Climbing through openspace
+		var/turf/T = get_turf(A)
+		var/turf/above = shadow.loc
+		if(T.Adjacent(shadow) && above.CanZPass(src, UP)) //Certain structures will block passage from below, others not
+
+			var/area/location = get_area(loc)
+			if(location.has_gravity && !can_overcome_gravity())
+				return
+
+			visible_message(SPAN("notice", "[src] starts climbing onto \the [A]!"), SPAN("notice", "You start climbing onto \the [A]!"))
+			shadow.visible_message(SPAN("notice", "[shadow] starts climbing onto \the [A]!"))
+			if(do_after(src, 50, A))
+				visible_message(SPAN("notice", "[src] climbs onto \the [A]!"), SPAN("notice", "You climb onto \the [A]!"))
+				shadow.visible_message(SPAN("notice", "[shadow] climbs onto \the [A]!"))
+				src.Move(T)
+			else
+				visible_message(SPAN("warning", "[src] gives up on trying to climb onto \the [A]!"), SPAN("warning", "You give up on trying to climb onto \the [A]!"))
+				shadow.visible_message(SPAN("warning", "[shadow] gives up on trying to climb onto \the [A]!"))
+			return
+
+	if(!gloves && !mutations.len) return
+	var/obj/item/clothing/gloves/G = gloves
+	if((MUTATION_LASER in mutations) && a_intent == I_HURT)
+		LaserEyes(A)
+
+	else if(istype(G) && G.Touch(A,0)) // for magic gloves
+		return
+
+	else if(MUTATION_TK in mutations)
+		A.attack_tk(src)
 
 #define FINALIZE_UNARMED(damage, maximize) (damage * (maximize ? 140 : rand(60, 140)) / 100)
 /mob/living/carbon/human/attack_hand(mob/living/M)
@@ -384,3 +434,16 @@
 			user.visible_message("\The [user] stops applying pressure to [src]'s [organ.name]!", "You stop applying pressure to [src]'s [organ.name]!")
 
 	return 1
+
+// get_unarmed_attack is a utility human proc that returns an appropraite /datum/unarmed_attack based on types
+// available to the `species` of the user and selected hit_zone.
+// It also handles light attacks and returns an appropriate variant if user is `pulling_punches`.
+/mob/living/carbon/human/proc/get_unarmed_attack(mob/living/carbon/human/target, hit_zone)
+	for(var/datum/unarmed_attack/u_attack in species.unarmed_attacks)
+		if(u_attack.is_usable(src, target, hit_zone))
+			if(pulling_punches)
+				var/datum/unarmed_attack/soft_variant = u_attack.get_sparring_variant()
+				if(soft_variant)
+					return soft_variant
+			return u_attack
+	return null

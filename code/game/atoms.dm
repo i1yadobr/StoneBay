@@ -531,15 +531,10 @@ its easier to just keep the beam vertical.
 /atom/proc/InsertedContents()
 	return contents
 
+/atom/proc/attack_generic(mob/user as mob)
+	return FALSE
+
 //all things climbable
-
-/atom/attack_hand(mob/user)
-	..()
-	if(LAZYLEN(climbers) && !LAZYISIN(climbers, user))
-		user.visible_message(SPAN("warning", "[user.name] shakes \the [src]."), \
-					SPAN("notice", "You shake \the [src]."))
-		object_shaken()
-
 /atom/proc/climb_on()
 
 	set name = "Climb"
@@ -650,12 +645,15 @@ its easier to just keep the beam vertical.
 			H.UpdateDamageIcon()
 			H.updatehealth()
 
-/atom/MouseDrop_T(atom/movable/target, mob/user)
+// TODO(rufus): check why MouseDrop_T is a separate proc from the default MouseDrop, refactor if it's redundant.
+//
+// MouseDrop_T of the base atom type makes living mob user climb the current atom if they atom is climbable,
+// user can climb the atom and mob/target is the user.
+/atom/proc/MouseDrop_T(mob/target, mob/user)
 	var/mob/living/H = user
 	if(istype(H) && can_climb(H) && target == user)
 		do_climb(target)
-	else
-		return ..()
+		return
 
 // Called after we wrench/unwrench this object
 /obj/proc/wrenched_change()
