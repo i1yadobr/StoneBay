@@ -38,4 +38,4 @@
 	if(!isnull(author))
 		desc +=  isnull(socials) ? " by [author]" : " by <a href='[socials]'>[author]</a>"
 
-	return "<span class='good'>[desc]</span>"
+	return SPAN("good", "[desc]")

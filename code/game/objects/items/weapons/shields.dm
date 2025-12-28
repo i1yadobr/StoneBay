@@ -75,7 +75,7 @@
 	if(istype(W, /obj/item/melee/baton))
 		THROTTLE(cooldown, 25)
 		if(cooldown)
-			user.visible_message("<span class='warning'>[user] bashes [src] with [W]!</span>")
+			user.visible_message(SPAN("warning", "[user] bashes [src] with [W]!"))
 			playsound(user.loc, 'sound/effects/shieldbash.ogg', 50, 1)
 			cooldown = world.time
 	else
@@ -142,7 +142,7 @@
 		to_chat(user, SPAN("warning", "You can't you're pacifist!"))
 		return
 	if((MUTATION_CLUMSY in user.mutations) && prob(50))
-		to_chat(user, "<span class='warning'>You beat yourself in the head with [src].</span>")
+		to_chat(user, SPAN("warning", "You beat yourself in the head with [src]."))
 		user.take_organ_damage(5)
 	active = !active
 	if(active)
@@ -155,7 +155,7 @@
 		mod_shield = 3.0
 		block_tier = BLOCK_TIER_ADVANCED
 		playsound(user, 'sound/weapons/saberon.ogg', 50, 1)
-		to_chat(user, "<span class='notice'>\The [src] is now active.</span>")
+		to_chat(user, SPAN("notice", "\The [src] is now active."))
 	else
 		force = 5
 		update_icon()
@@ -166,7 +166,7 @@
 		mod_shield = initial(mod_shield)
 		block_tier = BLOCK_TIER_MELEE
 		playsound(user, 'sound/weapons/saberoff.ogg', 50, 1)
-		to_chat(user, "<span class='notice'>\The [src] can now be concealed.</span>")
+		to_chat(user, SPAN("notice", "\The [src] can now be concealed."))
 
 	if(istype(user,/mob/living/carbon/human))
 		var/mob/living/carbon/human/H = user

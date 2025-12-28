@@ -70,7 +70,7 @@
 	has_suit.AddOverlays(get_inv_overlay())
 
 	if(user)
-		to_chat(user, "<span class='notice'>You attach \the [src] to \the [has_suit].</span>")
+		to_chat(user, SPAN("notice", "You attach \the [src] to \the [has_suit]."))
 		src.add_fingerprint(user)
 	return TRUE
 

@@ -46,9 +46,9 @@
 		brainwashing = 1
 	var/msg
 	if(brainwashing)
-		msg += "<span class='danger'>The fog in your head clears, and you remember some important things. You hold following things as deep convictions, almost like synthetics' laws:</span><br>"
+		msg += "[SPAN("danger", "The fog in your head clears, and you remember some important things. You hold following things as deep convictions, almost like synthetics' laws:")]<br>"
 	else
-		msg += "<span class='notice'>You hear an annoying voice in the back of your head. The things it keeps reminding you of:</span><br>"
+		msg += "[SPAN("notice", "You hear an annoying voice in the back of your head. The things it keeps reminding you of:")]<br>"
 	for(var/thing in instructions)
 		msg += "- [thing]<br>"
 	to_chat(M, msg)
@@ -61,16 +61,16 @@
 /obj/item/implant/imprinting/think()
 	var/instruction = pick(instructions)
 	if(brainwashing)
-		instruction = "<span class='warning'>You recall one of your beliefs: \"[instruction]\"</span>"
+		instruction = SPAN("warning", "You recall one of your beliefs: \"[instruction]\"")
 	else
-		instruction = "<span class='notice'>You remember suddenly: \"[instruction]\"</span>"
+		instruction = SPAN("notice", "You remember suddenly: \"[instruction]\"")
 	to_chat(imp_in, instruction)
 
 	set_next_think(world.time + 5 MINUTES)
 
 /obj/item/implant/imprinting/removed()
 	if(brainwashing)
-		to_chat(imp_in,"<span class='notice'>You are no longer so sure of those beliefs you've had...</span>")
+		to_chat(imp_in, SPAN("notice", "You are no longer so sure of those beliefs you've had..."))
 	..()
 	set_next_think(0)
 

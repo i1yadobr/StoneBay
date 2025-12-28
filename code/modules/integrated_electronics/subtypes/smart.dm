@@ -150,10 +150,10 @@
 
 /obj/item/integrated_circuit/input/mmi_tank/attackby(obj/item/organ/internal/cerebrum/mmi/O, mob/user)
 	if(!istype(O,/obj/item/organ/internal/cerebrum/mmi))
-		to_chat(user,SPAN("warning", "You can't put that inside."))
+		to_chat(user, SPAN("warning", "You can't put that inside."))
 		return
 	if(installed_brain)
-		to_chat(user,SPAN("warning", "There's already a brain inside."))
+		to_chat(user, SPAN("warning", "There's already a brain inside."))
 		return
 	if(!user.drop(O, src))
 		return
@@ -271,10 +271,10 @@
 
 /obj/item/integrated_circuit/input/pAI_connector/attackby(obj/item/device/paicard/O, mob/user)
 	if(!istype(O,/obj/item/device/paicard))
-		to_chat(user,SPAN("warning", "You can't put that inside."))
+		to_chat(user, SPAN("warning", "You can't put that inside."))
 		return
 	if(installed_pai)
-		to_chat(user,SPAN("warning", "There's already a pAI connected to this."))
+		to_chat(user, SPAN("warning", "There's already a pAI connected to this."))
 		return
 	if(!user.drop(O, src))
 		return

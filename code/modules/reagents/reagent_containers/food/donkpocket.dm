@@ -58,10 +58,10 @@
 
 /obj/item/reagent_containers/food/donkpocket/sinpocket/attack_self(mob/user)
 	if(has_been_heated)
-		to_chat(user, "<span class='notice'>The heating chemicals have already been spent.</span>")
+		to_chat(user, SPAN("notice", "The heating chemicals have already been spent."))
 		return
 	has_been_heated = 1
-	user.visible_message("<span class='notice'>[user] crushes \the [src] package.</span>", "You crush \the [src] package and feel a comfortable heat build up.")
+	user.visible_message(SPAN("notice", "[user] crushes \the [src] package."), "You crush \the [src] package and feel a comfortable heat build up.")
 	set_next_think_ctx("think_heat", world.time + 20 SECONDS)
 
 /obj/item/reagent_containers/food/donkpocket/sinpocket/heat(user)

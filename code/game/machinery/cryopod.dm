@@ -448,7 +448,7 @@
 		// them win or lose based on cryo is silly so we remove the objective.
 		if(O.target == occupant.mind)
 			if(O.owner && O.owner.current)
-				to_chat(O.owner.current, "<span class='warning'>You get the feeling your target is no longer within your reach...</span>")
+				to_chat(O.owner.current, SPAN("warning", "You get the feeling your target is no longer within your reach..."))
 			qdel(O)
 
 	//Handle job slot/tater cleanup.
@@ -482,7 +482,7 @@
 	log_and_message_admins("[key_name(occupant)] ([role_alt_title]) entered cryostorage.")
 
 	announce.autosay("[occupant.real_name], [role_alt_title], [on_store_message]", "[on_store_name]")
-	visible_message("<span class='notice'>\The [initial(name)] hums and hisses as it moves [occupant.real_name] into storage.</span>")
+	visible_message(SPAN("notice", "\The [initial(name)] hums and hisses as it moves [occupant.real_name] into storage."))
 
 	//This should guarantee that ghosts don't spawn.
 	occupant.ckey = null
@@ -526,7 +526,7 @@
 		return
 
 	if(usr != occupant && !allowed(usr) && !emagged)
-		to_chat(usr, "<span class='warning'>Access Denied.</span>")
+		to_chat(usr, SPAN("warning", "Access Denied."))
 		return
 
 	icon_state = base_icon_state
@@ -563,10 +563,10 @@
 	if(stat & (BROKEN|NOPOWER))
 		return
 	if(occupant)
-		to_chat(user, "<span class='warning'>\The [src] is already occupied.</span>")
+		to_chat(user, SPAN("warning", "\The [src] is already occupied."))
 		return
 	if(name == "cryogenic freezer" && M.is_ic_dead())
-		to_chat(user, "<span class='warning'>\The [src]s are not designed to store bodies. Contact the medical unit.</span>")
+		to_chat(user, SPAN("warning", "\The [src]s are not designed to store bodies. Contact the medical unit."))
 		var/area/t = get_area(M)
 		var/location = t.name
 		for(var/channel in list("Security", "Medical"))
@@ -582,10 +582,10 @@
 		if(old_loc != get_turf(M))
 			return
 		if(occupant)
-			to_chat(user, "<span class='warning'>\The [src] is already occupied.</span>")
+			to_chat(user, SPAN("warning", "\The [src] is already occupied."))
 			return
 		if(M.buckled)
-			to_chat(user, "<span class='warning'>Unbuckle [M == user ? "yourself" : M] first.</span>")
+			to_chat(user, SPAN("warning", "Unbuckle [M == user ? "yourself" : M] first."))
 			return FALSE
 
 		M.stop_pulling()
@@ -603,8 +603,8 @@
 
 	occupant.stop_pulling()
 	if(occupant.client)
-		to_chat(occupant, "<span class='notice'>[on_enter_occupant_message]</span>")
-		to_chat(occupant, "<span class='notice'><b>If you ghost, log out or close your client now, your character will shortly be permanently removed from the round.</b></span>")
+		to_chat(occupant, SPAN("notice", "[on_enter_occupant_message]"))
+		to_chat(occupant, SPAN("notice", "<b>If you ghost, log out or close your client now, your character will shortly be permanently removed from the round.</b>"))
 		occupant.client.perspective = EYE_PERSPECTIVE
 		occupant.client.eye = src
 	occupant.forceMove(src)
@@ -629,13 +629,13 @@
 	if(!istype(user) || !istype(target))
 		return
 	if(!check_occupant_allowed(target))
-		to_chat(user, "<span class='warning'>[target] will not fit into the [src].</span>")
+		to_chat(user, SPAN("warning", "[target] will not fit into the [src]."))
 		return
 	if(occupant)
-		to_chat(user, "<span class='warning'>The [src] is already occupied!</span>")
+		to_chat(user, SPAN("warning", "The [src] is already occupied!"))
 		return
 	if(target.buckled)
-		to_chat(user, "<span class='warning'>Unbuckle [target == user ? "yourself" : target] first.</span>")
+		to_chat(user, SPAN("warning", "Unbuckle [target == user ? "yourself" : target] first."))
 		return
 	for(var/mob/living/carbon/metroid/M in range(1,target))
 		if(M.Victim == target)

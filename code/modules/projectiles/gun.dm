@@ -182,7 +182,7 @@
 		to_chat(user, SPAN("warning", "You can't you're pacifist!"))
 		return 0
 	if(MUTATION_HULK in M.mutations)
-		to_chat(M, "<span class='danger'>Your fingers are much too large for the trigger guard!</span>")
+		to_chat(M, SPAN("danger", "Your fingers are much too large for the trigger guard!"))
 		return FALSE
 
 	if(safety())
@@ -194,8 +194,8 @@
 			if(process_projectile(P, user, user, pick(BP_L_FOOT, BP_R_FOOT)))
 				handle_post_fire(user, user)
 				user.visible_message(
-					"<span class='danger'>\The [user] shoots \himself in the foot with \the [src]!</span>",
-					"<span class='danger'>You shoot yourself in the foot with \the [src]!</span>"
+					SPAN("danger", "\The [user] shoots \himself in the foot with \the [src]!"),
+					SPAN("danger", "You shoot yourself in the foot with \the [src]!")
 					)
 				M.drop_active_hand()
 		else
@@ -327,7 +327,7 @@
 //called if there was no projectile to shoot
 /obj/item/gun/proc/handle_click_empty(mob/user)
 	if (user)
-		user.visible_message("*click click*", "<span class='danger'>*click*</span>")
+		user.visible_message("*click click*", SPAN("danger", "*click*"))
 	else
 		src.visible_message("*click click*")
 	playsound(src.loc, 'sound/effects/weapons/gun/gun_empty.ogg', 75)
@@ -341,15 +341,15 @@
 	if(!silenced && (burstfire != -1))
 		if(reflex)
 			firer.visible_message(
-				"<span class='reflex_shoot'><b>\The [firer] fires \the [src][pointblank ? " point blank at \the [target]":""][burstfire == 1 ? " in a burst":""] by reflex!</b></span>",
-				"<span class='reflex_shoot'>You fire \the [src] by reflex!</span>",
-				(ismob(firer) ? "You hear a [fire_sound_text]!" : world.view)
+				SPAN("reflex_shoot", "<b>\The [firer] fires \the [src][pointblank ? " point blank at \the [target]":""][burstfire == 1 ? " in a burst":""] by reflex!</b>"),
+				SPAN("reflex_shoot", "You fire \the [src] by reflex!"),
+				"You hear a [fire_sound_text]!"
 			)
 		else
 			firer.visible_message(
-				"<span class='danger'>\The [firer] fires \the [src][pointblank ? " point blank at \the [target]":""][burstfire == 1 ? " in a burst":""]!</span>",
-				"<span class='warning'>You fire \the [src]!</span>",
-				(ismob(firer) ? "You hear a [fire_sound_text]!" : world.view)
+				SPAN("danger", "\The [firer] fires \the [src][pointblank ? " point blank at \the [target]":""][burstfire == 1 ? " in a burst":""]!"),
+				SPAN("warning", "You fire \the [src]!"),
+				"You hear a [fire_sound_text]!"
 				)
 
 	if(ismob(firer))
@@ -360,24 +360,24 @@
 				switch(one_hand_penalty)
 					if(1)
 						if(prob(50)) //don't need to tell them every single time
-							to_chat(user, "<span class='warning'>Your aim wavers slightly.</span>")
+							to_chat(user, SPAN("warning", "Your aim wavers slightly."))
 					if(2)
-						to_chat(user, "<span class='warning'>Your aim wavers as you fire \the [src] with just one hand.</span>")
+						to_chat(user, SPAN("warning", "Your aim wavers as you fire \the [src] with just one hand."))
 					if(3)
-						to_chat(user, "<span class='warning'>You have trouble keeping \the [src] on target with just one hand.</span>")
+						to_chat(user, SPAN("warning", "You have trouble keeping \the [src] on target with just one hand."))
 					if(4 to INFINITY)
-						to_chat(user, "<span class='warning'>You struggle to keep \the [src] on target with just one hand!</span>")
+						to_chat(user, SPAN("warning", "You struggle to keep \the [src] on target with just one hand!"))
 			else if(!user.can_wield_item(src))
 				switch(one_hand_penalty)
 					if(1)
 						if(prob(50)) //don't need to tell them every single time
-							to_chat(user, "<span class='warning'>Your aim wavers slightly.</span>")
+							to_chat(user, SPAN("warning", "Your aim wavers slightly."))
 					if(2)
-						to_chat(user, "<span class='warning'>Your aim wavers as you try to hold \the [src] steady.</span>")
+						to_chat(user, SPAN("warning", "Your aim wavers as you try to hold \the [src] steady."))
 					if(3)
-						to_chat(user, "<span class='warning'>You have trouble holding \the [src] steady.</span>")
+						to_chat(user, SPAN("warning", "You have trouble holding \the [src] steady."))
 					if(4 to INFINITY)
-						to_chat(user, "<span class='warning'>You struggle to hold \the [src] steady!</span>")
+						to_chat(user, SPAN("warning", "You struggle to hold \the [src] steady!"))
 
 		if(screen_shake)
 			INVOKE_ASYNC(GLOBAL_PROC, /proc/directional_recoil, user, screen_shake+1, Get_Angle(user, target))
@@ -476,9 +476,9 @@
 	var/mob/living/carbon/human/M = user
 
 	mouthshoot = 1
-	M.visible_message("<span class='danger'>[user] sticks their gun in their mouth, ready to pull the trigger...</span>")
+	M.visible_message(SPAN("danger", "[user] sticks their gun in their mouth, ready to pull the trigger..."))
 	if(!do_after(user, 40, src, progress=0))
-		M.visible_message("<span class='notice'>[user] decided life was worth living</span>")
+		M.visible_message(SPAN("notice", "[user] decided life was worth living"))
 		mouthshoot = 0
 		return
 	if(istype(src, /obj/item/gun/flamer))
@@ -491,14 +491,14 @@
 		return
 	var/obj/item/projectile/in_chamber = consume_next_projectile()
 	if (istype(in_chamber) && process_projectile(in_chamber, user, user, BP_MOUTH))
-		user.visible_message("<span class = 'warning'>[user] pulls the trigger.</span>")
+		user.visible_message(SPAN("warning", "[user] pulls the trigger."))
 		var/shot_sound = in_chamber.fire_sound? in_chamber.fire_sound : fire_sound
 		if(silenced)
 			playsound(user, shot_sound, 10, 1)
 		else
 			playsound(user, shot_sound, 50, 1)
 		if(istype(in_chamber, /obj/item/projectile/beam/lasertag))
-			user.show_message("<span class = 'warning'>You feel rather silly, trying to commit suicide with a toy.</span>")
+			user.show_message(SPAN("warning", "You feel rather silly, trying to commit suicide with a toy."))
 			mouthshoot = 0
 			return
 		if(istype(in_chamber, /obj/item/projectile/energy/floramut))
@@ -512,7 +512,7 @@
 			user.apply_damage(in_chamber.damage*2.5, in_chamber.damage_type, BP_HEAD, 0, in_chamber.damage_flags(), used_weapon = "Point blank shot in the mouth with \a [in_chamber]")
 			user.death()
 		else
-			to_chat(user, "<span class = 'notice'>Ow...</span>")
+			to_chat(user, SPAN("notice", "Ow..."))
 			user.apply_effect(110,PAIN,0)
 		QDEL_NULL(in_chamber)
 		mouthshoot = 0
@@ -651,7 +651,7 @@
 /obj/item/gun/attack_self(mob/user)
 	var/datum/firemode/new_mode = switch_firemodes(user)
 	if(new_mode)
-		to_chat(user, "<span class='notice'>\The [src] is now set to [new_mode.name].</span>")
+		to_chat(user, SPAN("notice", "\The [src] is now set to [new_mode.name]."))
 
 /obj/item/gun/proc/can_autofire()
 	return (autofire_enabled && world.time >= next_fire_time)

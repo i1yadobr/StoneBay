@@ -256,8 +256,8 @@ Thus, the two variables affect pump operation are set in New():
 	to_chat(user, SPAN_NOTICE("You begin to unfasten \the [src]..."))
 	if (do_after(user, 40, src))
 		user.visible_message( \
-			SPAN_NOTICE("\The [user] unfastens \the [src]."), \
-			SPAN_NOTICE("You have unfastened \the [src]."), \
-			"You hear ratchet.")
+			SPAN("notice", "\The [user] unfastens \the [src]."), \
+			SPAN("notice", "You have unfastened \the [src]."), \
+			"You hear a ratchet.")
 		new /obj/item/pipe(loc, null, null, src)
 		qdel(src)

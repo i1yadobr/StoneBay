@@ -612,13 +612,13 @@
 		if(istype(P, /obj/item/flame/lighter/zippo))
 			class = "rose"
 
-		user.visible_message("<span class='[class]'>[user] holds \the [P] up to \the [src], it looks like \he's trying to burn it!</span>", \
-		"<span class='[class]'>You hold \the [P] up to \the [src], burning it slowly.</span>")
+		user.visible_message(SPAN("[class]", "[user] holds \the [P] up to \the [src], it looks like \he's trying to burn it!"), \
+		SPAN("[class]", "You hold \the [P] up to \the [src], burning it slowly."))
 
 		spawn(20)
 			if(get_dist(src, user) < 2 && user.get_active_hand() == P && P.lit)
-				user.visible_message("<span class='[class]'>[user] burns right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap.</span>", \
-				"<span class='[class]'>You burn right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap.</span>")
+				user.visible_message(SPAN("[class]", "[user] burns right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap."), \
+				SPAN("[class]", "You burn right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap."))
 
 				if(user.get_inactive_hand() == src)
 					user.drop(src)
@@ -628,7 +628,6 @@
 
 			else
 				to_chat(user, SPAN_WARNING("You must hold \the [P] steady to burn \the [src]."))
-
 
 /obj/item/paper/proc/get_pen()
 	var/obj/item/i = usr.get_active_hand()
@@ -667,7 +666,7 @@
 		var/signature = get_signature(P, usr, signfield_name)
 		if(istype(P, /obj/item/pen/crayon))
 			signature = "<b>[signature]</b>"
-		info = replacetext(info, "<I><span class='sign_field_[signfield]'>sign here</span></I>", "<font face=\"[signfont]\" color=[P.colour]><i>[signature]</i></font>")
+		info = replacetext(info, "<I>[SPAN("sign_field_[signfield]", "sign here")]</I>", "<font face=\"[signfont]\" color=[P.colour]><i>[signature]</i></font>")
 		info_links = replacetext(info_links, "<I><A href='?src=\ref[src];signfield=[signfield]'>sign here</A></I>", "<font face=\"[signfont]\" color=[P.colour]><i>[signature]</i></font>")
 		update_space()
 		var/content = {"

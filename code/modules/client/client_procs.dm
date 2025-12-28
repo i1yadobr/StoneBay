@@ -188,13 +188,13 @@
 		var/player_age = get_player_age(ckey)
 		if(config.multiaccount.panic_server_address && TopicData != "redirect")
 			log_access("Panic Bunker: ([key_name(key, include_name = FALSE)] | age [player_age]) - attempted to connect. Redirected to [config.multiaccount.panic_server_name ? config.multiaccount.panic_server_name : config.multiaccount.panic_server_address]")
-			message_admins(SPAN("adminnotice", "Panic Bunker: ([key] | age [player_age]) - attempted to connect. Redirected to [config.multiaccount.panic_server_name ? config.multiaccount.panic_server_name : config.multiaccount.panic_server_address]"))
+			message_admins(SPAN("danger", "Panic Bunker: ([key] | age [player_age]) - attempted to connect. Redirected to [config.multiaccount.panic_server_name ? config.multiaccount.panic_server_name : config.multiaccount.panic_server_address]"))
 			to_chat(src, SPAN("notice", "Server is already full. Sending you to [config.multiaccount.panic_server_name ? config.multiaccount.panic_server_name : config.multiaccount.panic_server_address]."))
 			winset(src, null, "command=.options")
 			send_link(src, "[config.multiaccount.panic_server_address]?redirect")
 		else
 			log_access("Panic Bunker: ([key_name(key, include_name = FALSE)] | age [player_age]) - attempted to connect. Redirecting is not configured.")
-			message_admins("<span class='adminnotice'>Panic Bunker: ([key] | age [player_age]) - Redirecting is not configured.</span>")
+			message_admins(SPAN("danger", "Panic Bunker: ([key] | age [player_age]) - Redirecting is not configured."))
 		qdel(src)
 		return
 
@@ -217,7 +217,7 @@
 	if(custom_event_msg && custom_event_msg != "")
 		to_chat(src, "<h1 class='alert'>Custom Event</h1>")
 		to_chat(src, "<h2 class='alert'>A custom event is taking place. OOC Info:</h2>")
-		to_chat(src, "<span class='alert'>[custom_event_msg]</span>")
+		to_chat(src, SPAN("alert", "[custom_event_msg]"))
 		to_chat(src, "<br>")
 
 

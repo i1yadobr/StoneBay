@@ -26,7 +26,7 @@
 
 /obj/item/borg/upgrade/proc/action(mob/living/silicon/robot/R)
 	if(R.is_ic_dead())
-		to_chat(usr, "<span class='warning'>The [src] will not function on a deceased robot.</span>")
+		to_chat(usr, SPAN("warning", "The [src] will not function on a deceased robot."))
 		return 1
 	return 0
 

@@ -77,24 +77,24 @@
 // Addition made by Techhead0, thanks for fullfilling the todo!
 /obj/item/melee/baton/proc/examine_cell()
 	if(bcell)
-		return "<span class='notice'>The baton is [round(CELL_PERCENT(bcell))]% charged.</span>"
+		return SPAN("notice", "The baton is [round(CELL_PERCENT(bcell))]% charged.")
 	else
-		return "<span class='warning'>The baton does not have a power source installed.</span>"
+		return SPAN("warning", "The baton does not have a power source installed.")
 
 /obj/item/melee/baton/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/cell/device))
 		if(!bcell && user.drop(W, src))
 			bcell = W
-			to_chat(user, "<span class='notice'>You install a cell into the [src].</span>")
+			to_chat(user, SPAN("notice", "You install a cell into the [src]."))
 			update_icon()
 		else
-			to_chat(user, "<span class='notice'>[src] already has a cell.</span>")
+			to_chat(user, SPAN("notice", "[src] already has a cell."))
 	else if(isScrewdriver(W))
 		if(bcell)
 			bcell.update_icon()
 			bcell.dropInto(loc)
 			bcell = null
-			to_chat(user, "<span class='notice'>You remove the cell from the [src].</span>")
+			to_chat(user, SPAN("notice", "You remove the cell from the [src]."))
 			status = 0
 			update_icon()
 	else
@@ -108,14 +108,14 @@
 	if(bcell && bcell.charge >= hitcost)
 		if(status != newstatus)
 			change_status(newstatus)
-			to_chat(user, "<span class='notice'>[src] is now [status ? "on" : "off"].</span>")
+			to_chat(user, SPAN("notice", "[src] is now [status ? "on" : "off"]."))
 			playsound(loc, pick('sound/effects/electric/spark8.ogg', 'sound/effects/electric/spark9.ogg', 'sound/effects/electric/spark10.ogg'), 70, FALSE, -1)
 	else
 		change_status(0)
 		if(!bcell)
-			to_chat(user, "<span class='warning'>[src] does not have a power source!</span>")
+			to_chat(user, SPAN("warning", "[src] does not have a power source!"))
 		else
-			to_chat(user,  "<span class='warning'>[src] is out of charge.</span>")
+			to_chat(user,  SPAN("warning", "[src] is out of charge."))
 
 // Proc to -actually- change the status, and update the icons as well.
 // Also exists to ease "helpful" admin-abuse in case an bug prevents attack_self
@@ -130,7 +130,7 @@
 		to_chat(user, SPAN("warning", "You can't you're pacifist!"))
 		return
 	if(status && (MUTATION_CLUMSY in user.mutations) && prob(50))
-		to_chat(user, "<span class='danger'>You accidentally hit yourself with the [src]!</span>")
+		to_chat(user, SPAN("danger", "You accidentally hit yourself with the [src]!"))
 		user.Weaken(30)
 		user.Stun(30)
 		deductcharge(hitcost)
@@ -173,14 +173,14 @@
 
 	else if(!status)
 		if(affecting)
-			target.visible_message("<span class='warning'>[target] has been prodded in the [affecting.name] with [src] by [user]. Luckily it was off.</span>")
+			target.visible_message(SPAN("warning", "[target] has been prodded in the [affecting.name] with [src] by [user]. Luckily it was off."))
 		else
-			target.visible_message("<span class='warning'>[target] has been prodded with [src] by [user]. Luckily it was off.</span>")
+			target.visible_message(SPAN("warning", "[target] has been prodded with [src] by [user]. Luckily it was off."))
 	else
 		if(affecting)
-			target.visible_message("<span class='danger'>[target] has been prodded in the [affecting.name] with [src] by [user]!</span>")
+			target.visible_message(SPAN("danger", "[target] has been prodded in the [affecting.name] with [src] by [user]!"))
 		else
-			target.visible_message("<span class='danger'>[target] has been prodded with [src] by [user]!</span>")
+			target.visible_message(SPAN("danger", "[target] has been prodded with [src] by [user]!"))
 		playsound(loc, SFX_STUNSTICK_HIT, 70, FALSE, -1)
 
 	//stun effects
@@ -217,7 +217,8 @@
 
 // Addition made by Techhead0, thanks for fullfilling the todo!
 /obj/item/melee/baton/robot/examine_cell(mob/user, prefix)
-	. += "\n<span class='notice'>The baton is running off an external power supply.</span>"
+	. += "\n"
+	. += SPAN("notice", "The baton is running off an external power supply.")
 
 // Override proc for the stun baton module, found in PC Security synthetics
 // Refactored to fix #14470 - old proc defination increased the hitcost beyond
@@ -229,7 +230,7 @@
 	if (R)
 		return ..()
 	else	// Stop pretending and get out of your cardborg suit, human.
-		to_chat(user, "<span class='warning'>You don't seem to be able interacting with this by yourself..</span>")
+		to_chat(user, SPAN("warning", "You don't seem to be able interacting with this by yourself.."))
 		add_fingerprint(user)
 	return 0
 

@@ -1,11 +1,11 @@
 /obj/proc/analyze_gases(obj/A, mob/user, advanced)
 	playsound(src.loc, 'sound/signals/processing21.ogg', 50)
-	user.visible_message("<span class='notice'>\The [user] has used \an [src] on \the [A].</span>")
+	user.visible_message(SPAN("notice", "\The [user] has used \an [src] on \the [A]."))
 	A.add_fingerprint(user)
 
 	var/air_contents = A.return_air()
 	if(!air_contents)
-		to_chat(user, "<span class='warning'>Your [src] flashes a red light as it fails to analyze \the [A].</span>")
+		to_chat(user, SPAN("warning", "Your [src] flashes a red light as it fails to analyze \the [A]."))
 		return 0
 
 	var/list/result = atmosanalyzer_scan(A, air_contents, advanced)
@@ -49,7 +49,8 @@
 						traits += "contaminates clothing with toxic residue"
 					if(gas_data.flags[mix] & XGM_GAS_FUSION_FUEL)
 						traits += "can be used to fuel fusion reaction"
-					. += "\t" + SPAN_NOTICE("Specific heat: [gas_data.specific_heat[mix]] J/(mol*K), Molar mass: [gas_data.molar_mass[mix]] kg/mol.[traits.len ? "\n\tThis gas [english_list(traits)]" : ""]")
+					. += "\t"
+					. += SPAN("notice", "Specific heat: [gas_data.specific_heat[mix]] J/(mol*K), Molar mass: [gas_data.molar_mass[mix]] kg/mol.[traits.len ? "\n\tThis gas [english_list(traits)]" : ""]")
 			. += SPAN_NOTICE("Temperature: [round(CONV_KELVIN_CELSIUS(mixture.temperature))]&deg;C / [round(mixture.temperature)]K")
 			return
 

@@ -37,24 +37,24 @@
 
 	. += "Large machine with heavy duty switching circuits used for advanced grid control"
 	if(on)
-		. += "<span class='good'>It seems to be online.</span>"
+		. += SPAN("good", "It seems to be online.")
 	else
 		. += SPAN_WARNING("It seems to be offline.")
 
 /obj/machinery/power/breakerbox/attack_ai(mob/user)
 	if(update_locked)
-		to_chat(user, "<span class='warning'>System locked. Please try again later.</span>")
+		to_chat(user, SPAN("warning", "System locked. Please try again later."))
 		return
 
 	if(busy)
-		to_chat(user, "<span class='warning'>System is busy. Please wait until current operation is finished before changing power settings.</span>")
+		to_chat(user, SPAN("warning", "System is busy. Please wait until current operation is finished before changing power settings."))
 		return
 
 	busy = 1
-	to_chat(user, "<span class='good'>Updating power settings..</span>")
+	to_chat(user, SPAN("good", "Updating power settings.."))
 	if(do_after(user, 50, src))
 		set_state(!on)
-		to_chat(user, "<span class='good'>Update Completed. New setting:[on ? "on": "off"]</span>")
+		to_chat(user, SPAN("good", "Update Completed. New setting:[on ? "on": "off"]"))
 		update_locked = 1
 		spawn(600)
 			update_locked = 0
@@ -63,22 +63,22 @@
 
 /obj/machinery/power/breakerbox/attack_hand(mob/user)
 	if(update_locked)
-		to_chat(user, "<span class='warning'>System locked. Please try again later.</span>")
+		to_chat(user, SPAN("warning", "System locked. Please try again later."))
 		return
 
 	if(busy)
-		to_chat(user, "<span class='warning'>System is busy. Please wait until current operation is finished before changing power settings.</span>")
+		to_chat(user, SPAN("warning", "System is busy. Please wait until current operation is finished before changing power settings."))
 		return
 
 	busy = 1
 	for(var/mob/O in viewers(user))
-		O.show_message(text("<span class='warning'>\The [user] started reprogramming \the [src]!</span>"), 1)
+		O.show_message(SPAN("warning", "\The [user] started reprogramming \the [src]!"), VISIBLE_MESSAGE)
 
 	if(do_after(user, 50, src))
 		set_state(!on)
 		user.visible_message(\
-		"<span class='notice'>[user.name] [on ? "enabled" : "disabled"] the breaker box!</span>",\
-		"<span class='notice'>You [on ? "enabled" : "disabled"] the breaker box!</span>")
+		SPAN("notice", "[user.name] [on ? "enabled" : "disabled"] the breaker box!"),\
+		SPAN("notice", "You [on ? "enabled" : "disabled"] the breaker box!"))
 		update_locked = 1
 		spawn(600)
 			update_locked = 0
@@ -89,11 +89,7 @@
 		var/newtag = input(user, "Enter new RCON tag. Use \"NO_TAG\" to disable RCON or leave empty to cancel.", "SMES RCON system") as text
 		if(newtag)
 			RCon_tag = newtag
-			to_chat(user, "<span class='notice'>You changed the RCON tag to: [newtag]</span>")
-
-
-
-
+			to_chat(user, SPAN("notice", "You changed the RCON tag to: [newtag]"))
 
 /obj/machinery/power/breakerbox/proc/set_state(state)
 	on = state

@@ -58,22 +58,22 @@
 		if(H == user)
 			if(!H.can_eat(loaded))
 				return
-			H.visible_message("<span class='notice'>\The [user] eats some [loaded] from \the [src].</span>")
+			H.visible_message(SPAN("notice", "\The [user] eats some [loaded] from \the [src]."))
 		else
-			user.visible_message("<span class='warning'>\The [user] begins to feed \the [H]!</span>")
+			user.visible_message(SPAN("warning", "\The [user] begins to feed \the [H]!"))
 			if(!H.can_force_feed(user, loaded))
 				return
 			if(do_mob(user, H, time = 2 SECONDS))
 				return
 			if(!H.can_force_feed(user, loaded, check_resist = TRUE))
 				return
-			H.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [H] with \the [src].</span>")
+			H.visible_message(SPAN("notice", "\The [user] feeds some [loaded] to \the [H] with \the [src]."))
 		reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
 		playsound(M.loc, 'sound/items/eatfood.ogg', rand(10, 40), 1)
 		ClearOverlays()
 		return
 	else
-		to_chat(user, "<span class='warning'>You don't have anything on \the [src].</span>")//if we have help intent and no food scooped up DON'T STAB OURSELVES WITH THE FORK
+		to_chat(user, SPAN("warning", "You don't have anything on \the [src]."))//if we have help intent and no food scooped up DON'T STAB OURSELVES WITH THE FORK
 		return
 
 /obj/item/material/kitchen/utensil/fork
@@ -180,7 +180,7 @@
 		return
 
 	if((MUTATION_CLUMSY in user.mutations) && prob(50))
-		to_chat(user, "<span class='warning'>\The [src] slips out of your hand and hits your head.</span>")
+		to_chat(user, SPAN("warning", "\The [src] slips out of your hand and hits your head."))
 		user.drop(src, force = TRUE)
 		user.take_organ_damage(10)
 		user.Paralyse(2)

@@ -165,7 +165,8 @@
 				if(isCoil(W))
 					var/obj/item/stack/cable_coil/C = W
 					if (C.use(5))
-						user.visible_message(SPAN("notice", "\The [user] wired \the [src].</span>"), SPAN("notice", "You wire \the [src]."))
+						user.visible_message(SPAN("notice", "\The [user] wired \the [src]."),
+											SPAN("notice", "You wire \the [src]."))
 						buildstage = FIREALARM_COMPLETE
 					else
 						to_chat(user, SPAN("warning", "You need 5 pieces of cable to wire \the [src]."))

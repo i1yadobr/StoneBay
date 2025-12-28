@@ -155,14 +155,14 @@
 		if(weedlevel > 0)
 			nymph.reagents.add_reagent(/datum/reagent/nutriment/glucose, weedlevel)
 			weedlevel = 0
-			nymph.visible_message("<span class='info'><b>[nymph]</b> begins rooting through [src], ripping out weeds and eating them noisily.</span>","<span class='info'>You begin rooting through [src], ripping out weeds and eating them noisily.</span>")
+			nymph.visible_message(SPAN("info", "<b>[nymph]</b> begins rooting through [src], ripping out weeds and eating them noisily."), SPAN("info", "You begin rooting through [src], ripping out weeds and eating them noisily."))
 			playsound(loc, 'sound/effects/plantshake.ogg', rand(50, 75), TRUE)
 		else if(nymph.nutrition > 100 && nutrilevel < 10)
 			nymph.remove_nutrition((10 - nutrilevel) * 5)
 			nutrilevel = 10
-			nymph.visible_message("<span class='info'><b>[nymph]</b> secretes a trickle of green liquid, refilling [src].</span>","<span class='info'>You secrete a trickle of green liquid, refilling [src].</span>")
+			nymph.visible_message(SPAN("info", "<b>[nymph]</b> secretes a trickle of green liquid, refilling [src]."), SPAN("info", "You secrete a trickle of green liquid, refilling [src]."))
 		else
-			nymph.visible_message("<span class='info'><b>[nymph]</b> rolls around in [src] for a bit.</span>","<span class='info'>You roll around in [src] for a bit.</span>")
+			nymph.visible_message(SPAN("info", "<b>[nymph]</b> rolls around in [src] for a bit."), SPAN("info", "You roll around in [src] for a bit."))
 		return
 
 /obj/machinery/portable_atmospherics/hydroponics/Initialize()
@@ -347,7 +347,7 @@
 	pestlevel = 0
 	sampled = 0
 	update_icon()
-	visible_message("<span class='notice'>[src] has been overtaken by [seed.display_name].</span>")
+	visible_message(SPAN("notice", "[src] has been overtaken by [seed.display_name]."))
 
 	return
 
@@ -421,7 +421,7 @@
 	weedlevel = 0
 
 	update_icon()
-	visible_message("<span class='danger'>The </span><span class='notice'>[previous_plant]</span><span class='danger'> has suddenly mutated into </span><span class='notice'>[seed.display_name]!</span>")
+	visible_message("[SPAN("danger", "The ")][SPAN("notice", "[previous_plant]")][SPAN("danger", " has suddenly mutated into ")][SPAN("notice", "[seed.display_name]!")]")
 
 	return
 
@@ -482,11 +482,11 @@
 	else if (istype(O, /obj/item/material/minihoe))  // The minihoe
 
 		if(weedlevel > 0)
-			user.visible_message("<span class='danger'>[user] starts uprooting the weeds.</span>", "<span class='danger'>You remove the weeds from the [src].</span>")
+			user.visible_message(SPAN("danger", "[user] starts uprooting the weeds."), SPAN("danger", "You remove the weeds from the [src]."))
 			weedlevel = 0
 			update_icon()
 		else
-			to_chat(user, "<span class='danger'>This plot is completely devoid of weeds. It doesn't need uprooting.</span>")
+			to_chat(user, SPAN("danger", "This plot is completely devoid of weeds. It doesn't need uprooting."))
 
 	else if (istype(O, /obj/item/storage/plants))
 
@@ -520,7 +520,7 @@
 
 	else if(O.force && seed)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		user.visible_message("<span class='danger'>\The [seed.display_name] has been attacked by [user] with \the [O]!</span>")
+		user.visible_message(SPAN("danger", "\The [seed.display_name] has been attacked by [user] with \the [O]!"))
 		playsound(src, O.hitsound, 100, 1)
 		if(!dead)
 			health -= O.force
@@ -530,7 +530,7 @@
 /obj/machinery/portable_atmospherics/hydroponics/proc/plant_seed(mob/user, obj/item/seeds/S)
 
 	if(seed)
-		to_chat(user, "<span class='warning'>\The [src] already has seeds in it!</span>")
+		to_chat(user, SPAN("warning", "\The [src] already has seeds in it!"))
 		return
 
 	if(!S.seed)
@@ -584,9 +584,9 @@
 	. += "Nutrient: [round(nutrilevel,0.1)]/10"
 
 	if(weedlevel >= 5)
-		. += "\The [src] is <span class='danger'>infested with weeds</span>!"
+		. += "\n\The [src] is [SPAN("danger", "infested with weeds")]!"
 	if(pestlevel >= 5)
-		. += "\The [src] is <span class='danger'>infested with tiny worms</span>!"
+		. += "\n\The [src] is [SPAN("danger", "infested with tiny worms")]!"
 
 	if(dead)
 		. += SPAN_DANGER("The plant is dead.")

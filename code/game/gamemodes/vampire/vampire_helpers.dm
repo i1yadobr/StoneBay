@@ -123,7 +123,7 @@
 
 	show_browser(T, "<HTML><meta charset=\"utf-8\"><center>You feel a strong presence enter your mind. For a moment, you hear nothing but what it says, <b>and are compelled to follow its direction without question or hesitation:</b><br>[command]</center></BODY></HTML>", "window=vampiredominate")
 	to_chat(T, SPAN("notice", "You feel a strong presence enter your mind. For a moment, you hear nothing but what it says, and are compelled to follow its direction without question or hesitation:"))
-	to_chat(T, "<span style='color: green;'><i><em>[command]</em></i></span>")
+	to_chat(T, SPAN("", "<font style='color: green'><i><em>[command]</em></i></font>"))
 	to_chat(my_mob, SPAN("notice", "You command [T], and they will obey."))
 
 	return TRUE

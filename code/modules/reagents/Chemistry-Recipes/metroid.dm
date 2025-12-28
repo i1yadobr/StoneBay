@@ -15,7 +15,7 @@
 	var/obj/item/metroid_extract/T = holder.my_atom
 	T.Uses--
 	if(T.Uses <= 0)
-		T.visible_message("\icon[T]<span class='notice'>\The [T]'s power is consumed in the reaction.</span>")
+		T.visible_message("\icon[T][SPAN("notice", "\The [T]'s power is consumed in the reaction.")]")
 		T.SetName("used metroid extract")
 		T.desc = "This extract has been used up."
 
@@ -28,9 +28,9 @@
 	required = /obj/item/metroid_extract/green
 
 /datum/chemical_reaction/metroid/create/on_reaction(datum/reagents/holder)
-	holder.my_atom.visible_message("<span class='warning'>Infused with plasma, the core begins to quiver and grow, and soon a new baby metroid emerges from it!</span>")
+	holder.my_atom.visible_message(SPAN("warning", "Infused with plasma, the core begins to quiver and grow, and soon a new baby metroid emerges from it!"))
 	var/mob/living/carbon/metroid/S = new /mob/living/carbon/metroid
-	S.forceMove(get_turf(holder.my_atom))
+	S.loc = get_turf(holder.my_atom)
 	..()
 
 /datum/chemical_reaction/metroid/monkey
@@ -239,10 +239,10 @@
 	playsound(holder.my_atom, 'sound/effects/phasein.ogg', 100, 1)
 	for(var/mob/living/M in range (get_turf(holder.my_atom), 7))
 		M.bodytemperature -= 140
-		to_chat(M, "<span class='warning'>You feel a chill!</span>")
+		to_chat(M, SPAN("warning", "You feel a chill!"))
 
 /datum/chemical_reaction/metroid/chill_potion
-	name = "Metroid Ñhill Potion"
+	name = "Metroid  Chill Potion"
 	result = null
 	required_reagents = list(/datum/reagent/water = 1)
 	required = /obj/item/metroid_extract/darkblue
@@ -369,7 +369,7 @@
 	..()
 	for(var/mob/living/carbon/metroid/metroid in viewers(get_turf(holder.my_atom), null))
 		metroid.rabid = 1
-		metroid.visible_message("<span class='warning'>The [metroid] is driven into a frenzy!</span>")
+		metroid.visible_message(SPAN("warning", "The [metroid] is driven into a frenzy!"))
 
 //Pink
 /datum/chemical_reaction/metroid/docility

@@ -652,9 +652,9 @@
 		if(enable_subspace_transmission != subspace_transmission)
 			subspace_transmission = !subspace_transmission
 			if(subspace_transmission)
-				to_chat(usr, "<span class='notice'>Subspace Transmission is enabled</span>")
+				to_chat(usr, SPAN("notice", "Subspace Transmission is enabled"))
 			else
-				to_chat(usr, "<span class='notice'>Subspace Transmission is disabled</span>")
+				to_chat(usr, SPAN("notice", "Subspace Transmission is disabled"))
 
 			if(subspace_transmission == 0)//Simple as fuck, clears the channel list to prevent talking/listening over them if subspace transmission is disabled
 				channels = list()
@@ -667,10 +667,10 @@
 			shut_up = !shut_up
 			if(shut_up)
 				canhear_range = 0
-				to_chat(usr, "<span class='notice'>Loadspeaker disabled.</span>")
+				to_chat(usr, SPAN("notice", "Loadspeaker disabled."))
 			else
 				canhear_range = 3
-				to_chat(usr, "<span class='notice'>Loadspeaker enabled.</span>")
+				to_chat(usr, SPAN("notice", "Loadspeaker enabled."))
 		. = 1
 
 	if(.)

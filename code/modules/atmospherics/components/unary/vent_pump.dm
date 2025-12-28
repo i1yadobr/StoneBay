@@ -379,7 +379,7 @@
 			update_icon()
 			return
 
-		to_chat(user, "<span class='notice'>Now welding \the [src].</span>")
+		to_chat(user, SPAN("notice", "Now welding \the [src]."))
 
 		if(!W.use_tool(src, user, delay = 2 SECONDS, amount = 50))
 			return
@@ -389,8 +389,8 @@
 
 		welded = !welded
 		update_icon()
-		user.visible_message("<span class='notice'>\The [user] [welded ? "welds \the [src] shut" : "unwelds \the [src]"].</span>", \
-			"<span class='notice'>You [welded ? "weld \the [src] shut" : "unweld \the [src]"].</span>", \
+		user.visible_message(SPAN("notice", "\The [user] [welded ? "welds \the [src] shut" : "unwelds \the [src]"]."), \
+			SPAN("notice", "You [welded ? "weld \the [src] shut" : "unweld \the [src]"]."), \
 			"You hear welding.")
 		return 1
 
@@ -423,24 +423,24 @@
 	if(!isWrench(W))
 		return ..()
 	if (!(stat & NOPOWER) && use_power)
-		to_chat(user, "<span class='warning'>You cannot unwrench \the [src], turn it off first.</span>")
+		to_chat(user, SPAN("warning", "You cannot unwrench \the [src], turn it off first."))
 		return 1
 	var/turf/T = src.loc
 	if (node && node.level==1 && isturf(T) && !T.is_plating())
-		to_chat(user, "<span class='warning'>You must remove the plating first.</span>")
+		to_chat(user, SPAN("warning", "You must remove the plating first."))
 		return 1
 	var/datum/gas_mixture/int_air = return_air()
 	var/datum/gas_mixture/env_air = loc.return_air()
 	playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
-	to_chat(user, "<span class='notice'>You begin to unfasten \the [src]...</span>")
+	to_chat(user, SPAN("notice", "You begin to unfasten \the [src]..."))
 	if (do_after(user, 40, src))
 		user.visible_message( \
-			"<span class='notice'>\The [user] unfastens \the [src].</span>", \
-			"<span class='notice'>You have unfastened \the [src].</span>", \
+			SPAN("notice", "\The [user] unfastens \the [src]."), \
+			SPAN("notice", "You have unfastened \the [src]."), \
 			"You hear a ratchet.")
 		var/obj/item/pipe/P = new(loc, null, null, src)
 		if ((int_air.return_pressure()-env_air.return_pressure()) > 2*ONE_ATMOSPHERE)
-			to_chat(user, "<span class='warning'>\the [src] flies off because of the overpressure in it!</span>")
+			to_chat(user, SPAN("warning", "\the [src] flies off because of the overpressure in it!"))
 			P.throw_at_random(0, round((int_air.return_pressure()-env_air.return_pressure()) / 100), 30)
 		qdel(src)
 

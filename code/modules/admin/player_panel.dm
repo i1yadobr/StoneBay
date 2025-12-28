@@ -40,7 +40,7 @@
 								var td = ltd\[0\];
 								var lsearch = td.getElementsByTagName("b");
 								var search = lsearch\[0\];
-								//var inner_span = li.getElementsByTagName("span")\[1\] //Should only ever contain one element.
+								//var inner_span = li.getElementsByTagName(SPAN")\[1\] //Should only ever contain one element.
 								//document.write("<p>"+search.innerText+"<br>"+filter+"<br>"+search.innerText.indexOf(filter))
 								if ( search.innerText.toLowerCase().indexOf(filter) == -1 )
 								{

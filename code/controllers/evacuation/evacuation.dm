@@ -199,6 +199,6 @@ var/datum/evacuation_controller/evacuation_controller
 			while (next_map.type == current_map.type)
 				next_map = GLOB.all_maps[pick(GLOB.all_maps)]
 
-			to_world("<span class='notice'>Map has been changed to: <b>[next_map.name]</b></span>")
+			to_world(SPAN("notice", "Map has been changed to: <b>[next_map.name]</b>"))
 			fdel("data/use_map")
 			text2file("[next_map.type]", "data/use_map")

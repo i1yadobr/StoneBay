@@ -872,7 +872,7 @@
 /obj/item/mecha_parts/mecha_equipment/generator/attackby(weapon,mob/user)
 	var/result = load_fuel(weapon)
 	if(isnull(result))
-		user.visible_message("[user] tries to shove [weapon] into [src]. What a dumb-ass.",SPAN("warning", "[fuel] traces minimal. [weapon] cannot be used as fuel."))
+		user.visible_message("[user] tries to shove [weapon] into [src]. What a dumb-ass.", SPAN("warning", "[fuel] traces minimal. [weapon] cannot be used as fuel."))
 	else if(!result)
 		to_chat(user, "Unit is full.")
 	else

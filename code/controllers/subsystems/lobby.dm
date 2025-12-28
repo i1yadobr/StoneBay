@@ -1,3 +1,5 @@
+#define LOBBY_CONFIG "config/lobby_art/images/"
+
 SUBSYSTEM_DEF(lobby)
 	name = "Lobby Screen"
 	flags = SS_NO_FIRE

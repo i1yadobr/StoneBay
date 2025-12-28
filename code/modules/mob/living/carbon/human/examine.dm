@@ -281,10 +281,10 @@
 						parsedembed.Add("multiple "+embedded.name)
 				wound_flavor_text["[E.name]"] += "The [wound.desc] on [T.his] [E.name] has [english_list(parsedembed)] sticking out of it!<br>"
 
-	msg += "<span class='warning'>"
+	var/wound_flavors = ""
 	for(var/limb in wound_flavor_text)
-		msg += wound_flavor_text[limb]
-	msg += "</span>"
+		wound_flavors += wound_flavor_text[limb]
+	msg += SPAN("warning", "[wound_flavors]")
 
 	for(var/obj/implant in get_visible_implants(0))
 		if(implant in shown_objects)

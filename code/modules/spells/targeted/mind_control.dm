@@ -69,7 +69,7 @@
 		interact(usr)
 
 /datum/magical_imprint
-	var/message = "<span class='danger'>Something crumbles through your brain, changing you, chaining you!</span>"
+	var/message = SPAN("danger", "Something crumbles through your brain, changing you, chaining you!")
 	var/brainwashing = 0
 	var/confirmed = 0
 	var/list/instructions
@@ -84,9 +84,9 @@
 	to_chat(H, message)
 	var/msg = ""
 	if (!H.reagents.has_reagent(/datum/reagent/water/holywater))
-		msg += "<span class='danger'>The fog in your head clears, and you remember some important things. You hold following things as deep convictions, almost like synthetics' laws:</span><br>"
+		msg += "[SPAN("danger", "The fog in your head clears, and you remember some important things. You hold following things as deep convictions, almost like synthetics' laws:")]<br>"
 	else
-		msg = "<span class='notice'>Something tried to crawl into you mind, but you protected yourself!</span><br>"
+		msg = "[SPAN("notice", "Something tried to crawl into you mind, but you protected yourself!")]<br>"
 		to_chat(H, msg)
 		Destroy()
 		return FALSE
@@ -105,7 +105,7 @@
 	if(QDELETED(implanted_in))
 		return
 	else if(implanted_in.reagents.has_reagent(/datum/reagent/water/holywater))
-		var/message_ender = "<span class='danger'>Water frees you from magical influence, you are free now:<br> You no longer have to follow any previous laws!</span>"
+		var/message_ender = SPAN("danger", "Water frees you from magical influence, you are free now:<br> You no longer have to follow any previous laws!")
 		to_chat(implanted_in, message_ender)
 		if(implanted_in.mind)
 			implanted_in.mind.store_memory(message_ender)
@@ -121,7 +121,7 @@
 	last_reminder = world.time
 	var/instruction = pick(instructions)
 
-	instruction = "<span class='warning'>You recall one of your beliefs: \"[instruction]\"</span>"
+	instruction = SPAN("warning", "You recall one of your beliefs: \"[instruction]\"")
 	to_chat(implanted_in, instruction)
 
 	set_next_think_ctx("reminder", world.time + 5 MINUTES)

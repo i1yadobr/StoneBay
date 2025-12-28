@@ -118,7 +118,7 @@
 		if(health < maxHealth)
 			if(open)
 				health = min(maxHealth, health + 10)
-				user.visible_message(SPAN("notice", "\The [user] repairs \the [src]."),SPAN("notice", "You repair \the [src]."))
+				user.visible_message(SPAN("notice", "\The [user] repairs \the [src]."), SPAN("notice", "You repair \the [src]."))
 			else
 				to_chat(user, SPAN("notice", "Unable to repair with the maintenance panel closed."))
 		else

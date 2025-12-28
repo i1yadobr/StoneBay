@@ -47,7 +47,7 @@
 				user.pick_or_drop(I)
 			else
 				I.dropInto(loc)
-			to_chat(user, "<span class='notice'>You find \an [I] in the cistern.</span>")
+			to_chat(user, SPAN("notice", "You find \an [I] in the cistern."))
 			w_items -= I.w_class
 			return
 
@@ -440,10 +440,10 @@
 	if(!usr.Adjacent(src))
 		return ..()
 	if(!thing.reagents || thing.reagents.total_volume == 0)
-		to_chat(usr, "<span class='warning'>\The [thing] is empty.</span>")
+		to_chat(usr, SPAN("warning", "\The [thing] is empty."))
 		return
 	// Clear the vessel.
-	visible_message("<span class='notice'>\The [usr] tips the contents of \the [thing] into \the [src].</span>")
+	visible_message(SPAN("notice", "\The [usr] tips the contents of \the [thing] into \the [src]."))
 	thing.reagents.clear_reagents()
 	thing.update_icon()
 
@@ -454,7 +454,7 @@
 		if (user.hand)
 			temp = H.organs_by_name[BP_L_HAND]
 		if(temp && !temp.is_usable())
-			to_chat(user, "<span class='notice'>You try to move your [temp.name], but cannot!</span>")
+			to_chat(user, SPAN("notice", "You try to move your [temp.name], but cannot!"))
 			return
 
 	if(isrobot(user) || isAI(user))
@@ -464,11 +464,11 @@
 		return
 
 	if(busy)
-		to_chat(user, "<span class='warning'>Someone's already washing here.</span>")
+		to_chat(user, SPAN("warning", "Someone's already washing here."))
 		return
 
 	playsound(loc, 'sound/effects/using/sink/washing1.ogg', 75)
-	to_chat(usr, "<span class='notice'>You start washing your hands.</span>")
+	to_chat(usr, SPAN("notice", "You start washing your hands."))
 
 	busy = TRUE
 	if(!do_after(user, (3 SECONDS), src))
@@ -482,12 +482,12 @@
 	if(ishuman(user))
 		user:update_inv_gloves()
 	for(var/mob/V in viewers(src, null))
-		V.show_message("<span class='notice'>[user] washes their hands using \the [src].</span>")
+		V.show_message(SPAN("notice", "[user] washes their hands using \the [src]."))
 
 
 /obj/structure/sink/attackby(obj/item/O as obj, mob/living/user as mob)
 	if(busy)
-		to_chat(user, "<span class='warning'>Someone's already washing here.</span>")
+		to_chat(user, SPAN("warning", "Someone's already washing here."))
 		return
 
 	var/obj/item/reagent_containers/RG = O
@@ -497,7 +497,7 @@
 			return
 		playsound(loc, 'sound/effects/using/sink/filling1.ogg', 75)
 		RG.reagents.add_reagent(/datum/reagent/water, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-		user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+		user.visible_message(SPAN("notice", "[user] fills \the [RG] using \the [src]."), SPAN("notice", "You fill \the [RG] using \the [src]."))
 		return TRUE
 
 	else if(istype(O, /obj/item/soap))
@@ -519,14 +519,14 @@
 
 				playsound(get_turf(src), GET_SFX(SFX_SPARK_SMALL), 50, TRUE, -1)
 				user.visible_message( \
-					"<span class='danger'>[user] was stunned by \his wet [O]!</span>", \
-					"<span class='userdanger'>[user] was stunned by \his wet [O]!</span>")
+					SPAN("danger", "[user] was stunned by \his wet [O]!"), \
+					SPAN("danger", "[user] was stunned by \his wet [O]!"))
 				return TRUE
 
 	else if(istype(O, /obj/item/mop))
 		playsound(loc, 'sound/effects/using/sink/filling1.ogg', 75)
 		O.reagents.add_reagent(/datum/reagent/water, 300)
-		to_chat(user, "<span class='notice'>You wet \the [O] in \the [src].</span>")
+		to_chat(user, SPAN("notice", "You wet \the [O] in \the [src]."))
 		playsound(loc, 'sound/effects/slosh.ogg', 25, 1)
 		return TRUE
 
@@ -536,7 +536,7 @@
 	var/obj/item/I = O
 	if(!I || !istype(I,/obj/item)) return
 
-	to_chat(usr, "<span class='notice'>You start washing \the [I].</span>")
+	to_chat(usr, SPAN("notice", "You start washing \the [I]."))
 
 	playsound(loc, 'sound/effects/using/sink/washing1.ogg', 75)
 
@@ -558,8 +558,8 @@
 		head.graffiti_style = null
 
 	user.visible_message( \
-		"<span class='notice'>[user] washes \a [I] using \the [src].</span>", \
-		"<span class='notice'>You wash \a [I] using \the [src].</span>")
+		SPAN("notice", "[user] washes \a [I] using \the [src]."), \
+		SPAN("notice", "You wash \a [I] using \the [src]."))
 
 
 /obj/structure/sink/kitchen

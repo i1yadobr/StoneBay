@@ -68,14 +68,14 @@
 					cell = C
 					C.add_fingerprint(user)
 
-					user.visible_message("<span class='notice'>[user] inserts a power cell into [src].</span>", "<span class='notice'>You insert the power cell into [src].</span>")
+					user.visible_message(SPAN("notice", "[user] inserts a power cell into [src]."), SPAN("notice", "You insert the power cell into [src]."))
 					power_change()
 		else
 			to_chat(user, "The hatch must be open to insert a power cell.")
 			return
 	else if(isScrewdriver(I))
 		panel_open = !panel_open
-		user.visible_message("<span class='notice'>[user] [panel_open ? "opens" : "closes"] the hatch on the [src].</span>", "<span class='notice'>You [panel_open ? "open" : "close"] the hatch on the [src].</span>")
+		user.visible_message(SPAN("notice", "[user] [panel_open ? "opens" : "closes"] the hatch on the [src]."), SPAN("notice", "You [panel_open ? "open" : "close"] the hatch on the [src]."))
 		update_icon(1)
 		if(!panel_open && user.machine == src)
 			close_browser(user, "window=spaceheater")

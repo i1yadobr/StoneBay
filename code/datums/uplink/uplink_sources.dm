@@ -34,7 +34,7 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 	P.AddComponent(/datum/component/uplink, M.mind, TRUE, FALSE, null, amount)
 	var/datum/component/uplink/uplink = P.get_component(/datum/component/uplink)
 	uplink.unlock_code = pda_pass
-	to_chat(M, "<span class='notice'>A portable object teleportation relay has been installed in your [P.name]. Simply enter the code \"[pda_pass]\" into the ringtone select to unlock its hidden features.</span>")
+	to_chat(M, SPAN("notice", "A portable object teleportation relay has been installed in your [P.name]. Simply enter the code \"[pda_pass]\" into the ringtone select to unlock its hidden features."))
 	M.mind.store_memory("<B>Uplink Passcode:</B> [pda_pass] ([P.name]).")
 
 /decl/uplink_source/radio
@@ -63,7 +63,7 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 	R.AddComponent(/datum/component/uplink, M.mind, FALSE, FALSE, null, amount)
 	var/datum/component/uplink/uplink = R.get_component(/datum/component/uplink)
 	uplink.traitor_frequency = freq
-	to_chat(M, "<span class='notice'>A portable object teleportation relay has been installed in your [R.name]. Simply dial the frequency [format_frequency(freq)] to unlock its hidden features.</span>")
+	to_chat(M, SPAN("notice", "A portable object teleportation relay has been installed in your [R.name]. Simply dial the frequency [format_frequency(freq)] to unlock its hidden features."))
 	M.mind.store_memory("<B>Radio Freq:</B> [format_frequency(freq)] ([R.name]).")
 
 /decl/uplink_source/implant
@@ -122,11 +122,11 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 /decl/uplink_source/proc/put_on_mob(mob/M, atom/movable/AM, text)
 	var/obj/O = M.equip_to_storage(AM)
 	if(O)
-		to_chat(M, "<span class='notice'>[text] can be found in your [O.name].</span>")
+		to_chat(M, SPAN("notice", "[text] can be found in your [O.name]."))
 	else if(M.pick_or_drop(AM))
-		to_chat(M, "<span class='notice'>[text] appear in your hands.</span>")
+		to_chat(M, SPAN("notice", "[text] appear in your hands."))
 	else
-		to_chat(M, "<span class='notice'>[text] appear at your location.</span>")
+		to_chat(M, SPAN("notice", "[text] appear at your location."))
 
 /proc/setup_uplink_source(mob/M, amount = DEFAULT_TELECRYSTAL_AMOUNT)
 	if(!istype(M) || !M.mind)
@@ -146,7 +146,7 @@ GLOBAL_LIST_INIT(default_uplink_source_priority, list(
 		if(US.setup_uplink_source(M, amount) != SETUP_FAILED)
 			return TRUE
 
-	to_chat(M, "<span class='warning'>Either by choice or circumstance you will be without an uplink.</span>")
+	to_chat(M, SPAN("warning", "Either by choice or circumstance you will be without an uplink."))
 	return FALSE
 
 /proc/check_uplink_sources(mob/M)

@@ -3,7 +3,7 @@
 	set category = null
 	set name = "Admin PM Mob"
 	if(!holder)
-		to_chat(src, "<span class='warning'>Error: Admin-PM-Context: Only administrators may use this command.</span>")
+		to_chat(src, SPAN("warning", "Error: Admin-PM-Context: Only administrators may use this command."))
 		return
 	if( !ismob(M) || !M.client )	return
 	cmd_admin_pm(M.client,null)
@@ -14,7 +14,7 @@
 	set category = "Admin"
 	set name = "Admin PM"
 	if(!holder)
-		to_chat(src, "<span class='warning'>Error: Admin-PM-Panel: Only administrators may use this command.</span>")
+		to_chat(src, SPAN("warning", "Error: Admin-PM-Panel: Only administrators may use this command."))
 		return
 	var/list/client/targets[0]
 	for(var/client/T)

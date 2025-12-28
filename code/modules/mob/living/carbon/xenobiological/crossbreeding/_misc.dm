@@ -76,9 +76,9 @@
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 	if(W.attack_verb.len)
-		visible_message("<span class='warning'>\The [src] have been [pick(W.attack_verb)] with \the [W][(user ? " by [user]." : ".")]</span>")
+		visible_message(SPAN("warning", "\The [src] have been [pick(W.attack_verb)] with \the [W][(user ? " by [user]." : ".")]"))
 	else
-		visible_message("<span class='warning'>\The [src] have been attacked with \the [W][(user ? " by [user]." : ".")]</span>")
+		visible_message(SPAN("warning", "\The [src] have been attacked with \the [W][(user ? " by [user]." : ".")]"))
 
 	var/damage = W.force / 4.0
 

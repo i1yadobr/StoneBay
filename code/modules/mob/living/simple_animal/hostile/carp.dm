@@ -47,7 +47,7 @@
 	if(istype(L))
 		if(prob(15))
 			L.Weaken(3)
-			L.visible_message("<span class='danger'>\The [src] knocks down \the [L]!</span>")
+			L.visible_message(SPAN("danger", "\The [src] knocks down \the [L]!"))
 
 /mob/living/simple_animal/hostile/carp/holographic
 	icon_state = "carp"

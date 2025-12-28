@@ -161,7 +161,7 @@
 
 	else if(ismob(src.loc))
 		if(sensor_mode == 0)
-			user.visible_message("<span class='warning'>[user] disables [src.loc]'s remote sensing equipment.</span>", "You disable [src.loc]'s remote sensing equipment.")
+			user.visible_message(SPAN("warning", "[user] disables [src.loc]'s remote sensing equipment."), "You disable [src.loc]'s remote sensing equipment.")
 		else
 			user.visible_message("[user] adjusts the tracking sensor on [src.loc]'s [src.name].", "You adjust [src.loc]'s sensors.")
 	else
@@ -198,7 +198,7 @@
 
 	update_rolldown_status()
 	if(rolled_down == -1)
-		to_chat(usr, "<span class='notice'>You cannot roll down [src]!</span>")
+		to_chat(usr, SPAN("notice", "You cannot roll down [src]!"))
 	if((rolled_sleeves == 1) && !(rolled_down))
 		rolled_sleeves = 0
 
@@ -223,21 +223,21 @@
 
 	update_rollsleeves_status()
 	if(rolled_sleeves == -1)
-		to_chat(usr, "<span class='notice'>You cannot roll up your [src]'s sleeves!</span>")
+		to_chat(usr, SPAN("notice", "You cannot roll up your [src]'s sleeves!"))
 		return
 	if(rolled_down == 1)
-		to_chat(usr, "<span class='notice'>You must roll up your [src] first!</span>")
+		to_chat(usr, SPAN("notice", "You must roll up your [src] first!"))
 		return
 
 	rolled_sleeves = !rolled_sleeves
 	if(rolled_sleeves)
 		body_parts_covered &= ~(ARMS|HANDS)
 		item_state_slots[slot_w_uniform_str] = "[worn_state]_r"
-		to_chat(usr, "<span class='notice'>You roll up your [src]'s sleeves.</span>")
+		to_chat(usr, SPAN("notice", "You roll up your [src]'s sleeves."))
 	else
 		body_parts_covered = initial(body_parts_covered)
 		item_state_slots[slot_w_uniform_str] = "[worn_state]"
-		to_chat(usr, "<span class='notice'>You roll down your [src]'s sleeves.</span>")
+		to_chat(usr, SPAN("notice", "You roll down your [src]'s sleeves."))
 	update_clothing_icon()
 
 /obj/item/clothing/under/rank/New()

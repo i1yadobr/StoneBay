@@ -27,9 +27,9 @@
 	if(!spider.is_busy)
 		spider.is_busy = TRUE
 		if(web)
-			spider.visible_message(SPAN_NOTICE("[spider] begins to pack more webbing onto the web."),SPAN_NOTICE("You begin to seal the web."))
+			spider.visible_message(SPAN_NOTICE("[spider] begins to pack more webbing onto the web."), SPAN_NOTICE("You begin to seal the web."))
 		else
-			spider.visible_message(SPAN_NOTICE("[spider] begins to secrete a sticky substance."),SPAN_NOTICE("You begin to lay a web."))
+			spider.visible_message(SPAN_NOTICE("[spider] begins to secrete a sticky substance."), SPAN_NOTICE("You begin to lay a web."))
 		spider.stop_automated_movement = TRUE
 		if(do_after(spider, 40 * spider.web_speed, target = spider_turf))
 			if(spider.is_busy && spider.loc == spider_turf)

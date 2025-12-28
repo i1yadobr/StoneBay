@@ -103,7 +103,7 @@
 // Old version of the proc, adds up all the reagents (except nutriments) from the ingredients to the resulting food item.
 /datum/recipe/proc/make_food_legacy(obj/container)
 	if(!result)
-		log_error("<span class='danger'>Recipe [type] is defined without a result, please bug this.</span>")
+		log_error(SPAN("danger", "Recipe [type] is defined without a result, please bug this."))
 
 		return
 	var/obj/result_obj = new result(container)

@@ -27,12 +27,12 @@
 /obj/item/gun/energy/kinetic_accelerator/attack_self(mob/living/user as mob)
 	if(power_supply.charge < power_supply.maxcharge)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		to_chat(user, "<span class='notice'>You begin charging \the [src]...</span>")
+		to_chat(user, SPAN("notice", "You begin charging \the [src]..."))
 		if(do_after(user, 20, src))
 			playsound(src.loc, 'sound/effects/weapons/energy/kinetic_reload.ogg', 60, 1)
 			user.visible_message(
-				"<span class='warning'>\The [user] pumps \the [src]!</span>",
-				"<span class='warning'>You pump \the [src]!</span>"
+				SPAN("warning", "\The [user] pumps \the [src]!"),
+				SPAN("warning", "You pump \the [src]!")
 				)
 			power_supply.charge = power_supply.maxcharge
 
@@ -43,17 +43,17 @@
 		. += "<b>[get_remaining_mod_capacity()]%</b> mod capacity remaining."
 		for(var/A in get_modkits())
 			var/obj/item/borg/upgrade/modkit/M = A
-			. += "<span class='notice'>There is a [M.name] mod installed, using <b>[M.cost]%</b> capacity.</span>"
+			. += SPAN("notice", "There is a [M.name] mod installed, using <b>[M.cost]%</b> capacity.")
 
 /obj/item/gun/energy/kinetic_accelerator/attackby(obj/item/A, mob/user)
 	if(isCrowbar(A))
 		if(modkits.len)
-			to_chat(user, "<span class='notice'>You pry the modifications out.</span>")
+			to_chat(user, SPAN("notice", "You pry the modifications out."))
 			playsound(loc, 100, 1)
 			for(var/obj/item/borg/upgrade/modkit/M in modkits)
 				M.uninstall(src)
 		else
-			to_chat(user, "<span class='notice'>There are no modifications currently installed.</span>")
+			to_chat(user, SPAN("notice", "There are no modifications currently installed."))
 	else if(istype(A, /obj/item/borg/upgrade/modkit))
 		var/obj/item/borg/upgrade/modkit/MK = A
 		MK.install(src, user)
@@ -120,7 +120,7 @@
 	if(mob_aoe)
 		for(var/mob/living/L in range(1, target_turf) - firer - target)
 			L.apply_damage(damage*mob_aoe, damage_type, def_zone, armor)
-			to_chat(L, "<span class='danger'>You're struck by a [name]!</span>")
+			to_chat(L, SPAN("danger", "You're struck by a [name]!"))
 
 
 //Modkits
@@ -165,7 +165,7 @@
 				break
 	if(KA.get_remaining_mod_capacity() >= cost)
 		if(.)
-			to_chat(user, "<span class='notice'>You install the modkit.</span>")
+			to_chat(user, SPAN("notice", "You install the modkit."))
 			playsound(loc, 'sound/items/Screwdriver.ogg', 100, 1)
 			if(loc == user)
 				user.drop(src, KA)
@@ -173,9 +173,9 @@
 				forceMove(KA)
 			KA.modkits += src
 		else
-			to_chat(user, "<span class='notice'>The modkit you're trying to install would conflict with an already installed modkit. Use a crowbar to remove existing modkits.</span>")
+			to_chat(user, SPAN("notice", "The modkit you're trying to install would conflict with an already installed modkit. Use a crowbar to remove existing modkits."))
 	else
-		to_chat(user, "<span class='notice'>You don't have room(<b>[KA.get_remaining_mod_capacity()]%</b> remaining, [cost]% needed) to install this modkit. Use a crowbar to remove existing modkits.</span>")
+		to_chat(user, SPAN("notice", "You don't have room(<b>[KA.get_remaining_mod_capacity()]%</b> remaining, [cost]% needed) to install this modkit. Use a crowbar to remove existing modkits."))
 		. = FALSE
 
 

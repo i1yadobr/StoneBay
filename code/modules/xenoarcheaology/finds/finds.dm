@@ -33,9 +33,9 @@
 		var/obj/item/inside = locate() in src
 		if(inside)
 			inside.forceMove(get_turf(src))
-			visible_message("<span class='info'>\The [src] is brushed away, revealing \the [inside].</span>")
+			visible_message(SPAN("info", "\The [src] is brushed away, revealing \the [inside]."))
 		else
-			visible_message("<span class='info'>\The [src] is brushed away into nothing.</span>")
+			visible_message(SPAN("info", "\The [src] is brushed away into nothing."))
 		qdel(src)
 		return
 
@@ -61,5 +61,5 @@
 	..()
 
 	if(prob(33))
-		src.visible_message("<span class='warning'>[src] crumbles away, leaving some dust and gravel behind.</span>")
+		src.visible_message(SPAN("warning", "[src] crumbles away, leaving some dust and gravel behind."))
 		qdel(src)

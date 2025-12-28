@@ -15,7 +15,7 @@
 		..()
 		return
 	if(user.nutrition < 20)
-		to_chat(user, "<span class='warning'>You need more energy to use the punching bag. Go eat something.</span>")
+		to_chat(user, SPAN("warning", "You need more energy to use the punching bag. Go eat something."))
 	else if(user.hydration <= HYDRATION_NONE)
 		to_chat(user, SPAN("warning", "You can barely move. Go drink some water."))
 	else
@@ -26,7 +26,7 @@
 			user.do_attack_animation(src)
 			user.remove_nutrition(3.5)
 			user.remove_hydration(10.0)
-			to_chat(user, "<span class='warning'>You [pick(hit_message)] \the [src].</span>")
+			to_chat(user, SPAN("warning", "You [pick(hit_message)] \the [src]."))
 
 /obj/structure/fitness/weightlifter
 	name = "weightlifting machine"
@@ -45,16 +45,16 @@
 	if(!istype(user))
 		return
 	if(user.loc != src.loc)
-		to_chat(user, "<span class='warning'>You must be on the weight machine to use it.</span>")
+		to_chat(user, SPAN("warning", "You must be on the weight machine to use it."))
 		return
 	if(user.nutrition < 50)
-		to_chat(user, "<span class='warning'>You need more energy to lift weights. Go eat something.</span>")
+		to_chat(user, SPAN("warning", "You need more energy to lift weights. Go eat something."))
 		return
 	if(user.hydration <= HYDRATION_NONE)
 		to_chat(user, SPAN("warning", "You can barely move. Go drink some water."))
 		return
 	if(being_used)
-		to_chat(user, "<span class='warning'>The weight machine is already in use by somebody else.</span>")
+		to_chat(user, SPAN("warning", "The weight machine is already in use by somebody else."))
 		return
 	else
 		being_used = 1
@@ -78,5 +78,5 @@
 				to_chat(user, SPAN("notice", "You lift the weights [qualifiers[weight]]."))
 			being_used = 0
 		else
-			to_chat(user, "<span class='notice'>Against your previous judgement, perhaps working out is not for you.</span>")
+			to_chat(user, SPAN("notice", "Against your previous judgement, perhaps working out is not for you."))
 			being_used = 0

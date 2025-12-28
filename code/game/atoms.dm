@@ -315,7 +315,7 @@ its easier to just keep the beam vertical.
 		f_name = (gender == PLURAL) ? "some " : "a "
 
 		if(blood_color != SYNTH_BLOOD_COLOUR)
-			f_name += "<span class='danger'>blood-stained</span> [SPAN("info", "<em>[name][infix]</em>")]!"
+			f_name += "[SPAN("danger", "blood-stained")] [SPAN("info", "<em>[name][infix]</em>")]!"
 		else
 			f_name += "oil-stained [name][infix]."
 
@@ -536,8 +536,8 @@ its easier to just keep the beam vertical.
 /atom/attack_hand(mob/user)
 	..()
 	if(LAZYLEN(climbers) && !LAZYISIN(climbers, user))
-		user.visible_message("<span class='warning'>[user.name] shakes \the [src].</span>", \
-					"<span class='notice'>You shake \the [src].</span>")
+		user.visible_message(SPAN("warning", "[user.name] shakes \the [src]."), \
+					SPAN("notice", "You shake \the [src]."))
 		object_shaken()
 
 /atom/proc/climb_on()
@@ -570,12 +570,12 @@ its easier to just keep the beam vertical.
 	if(!Adjacent(user))
 		return 0
 	if (user.restrained() || user.buckled)
-		to_chat(user, "<span class='notice'>You need your hands and legs free for this.</span>")
+		to_chat(user, SPAN("notice", "You need your hands and legs free for this."))
 		return 0
 	if (user.incapacitated())
 		return 0
 	if (issilicon(user))
-		to_chat(user, "<span class='notice'>You need hands for this.</span>")
+		to_chat(user, SPAN("notice", "You need hands for this."))
 		return 0
 	return 1
 
@@ -639,12 +639,12 @@ its easier to just keep the beam vertical.
 				affecting = H.get_organ(pick(limbs))
 
 			if(affecting)
-				to_chat(M, "<span class='danger'>You land heavily on your [affecting.name]!</span>")
+				to_chat(M, SPAN("danger", "You land heavily on your [affecting.name]!"))
 				affecting.take_external_damage(damage, 0)
 				if(affecting.parent)
 					affecting.parent.add_autopsy_data("Misadventure", damage)
 			else
-				to_chat(H, "<span class='danger'>You land heavily!</span>")
+				to_chat(H, SPAN("danger", "You land heavily!"))
 				H.adjustBruteLoss(damage)
 
 			H.UpdateDamageIcon()

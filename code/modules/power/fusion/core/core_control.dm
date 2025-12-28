@@ -39,7 +39,7 @@
 		cur_viewed_device = null
 
 	if(!id_tag)
-		to_chat(user, "<span class='warning'>This console has not been assigned an ident tag. Please contact your system administrator or conduct a manual update with a standard multitool.</span>")
+		to_chat(user, SPAN("warning", "This console has not been assigned an ident tag. Please contact your system administrator or conduct a manual update with a standard multitool."))
 		return
 
 	if(cur_viewed_device && (cur_viewed_device.id_tag != id_tag || get_dist(src, cur_viewed_device) > scan_range))
@@ -104,12 +104,12 @@
 				var/status
 				var/can_access = 1
 				if(!check_core_status(C))
-					status = "<span style='color: red'>Unresponsive</span>"
+					status = SPAN("", "<font style='color: red'>Unresponsive</font>")
 					can_access = 0
 				else if(C.avail() < C.active_power_usage)
-					status = "<span style='color: orange'>Underpowered</span>"
+					status = SPAN("", "<font style='color: orange'>Underpowered</font>")
 				else
-					status = "<span style='color: green'>Good</span>"
+					status = SPAN("", "<font style='color: green'>Good</font>")
 
 				dat += {"
 					<tr>
@@ -130,7 +130,7 @@
 				"}
 
 		else
-			dat += "<span style='color: red'>No electromagnetic field generators connected.</span>"
+			dat += SPAN("", "<font style='color: red'>No electromagnetic field generators connected.</font>")
 
 	var/datum/browser/popup = new(user, "fusion_control", name, 500, 400, src)
 	popup.set_content(dat)

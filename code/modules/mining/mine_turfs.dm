@@ -382,7 +382,7 @@ var/list/mining_floors = list()
 	if(prob(F.prob_delicate))
 		var/obj/effect/suspension_field/S = locate() in src
 		if(!S)
-			visible_message("<span class='danger'>[pick("An object in the rock crumbles away into dust.","Something falls out of the rock and shatters onto the ground.")]</span>")
+			visible_message(SPAN("danger", "[pick("An object in the rock crumbles away into dust.","Something falls out of the rock and shatters onto the ground.")]"))
 			finds.Remove(F)
 			return
 
@@ -612,19 +612,19 @@ var/list/mining_floors = list()
 
 	if(valid_tool)
 		if (dug)
-			to_chat(user, "<span class='warning'>This area has already been dug</span>")
+			to_chat(user, SPAN("warning", "This area has already been dug"))
 			return
 
 		var/turf/T = user.loc
 		if (!(istype(T)))
 			return
 
-		to_chat(user, "<span class='warning'>You start digging.</span>")
+		to_chat(user, SPAN("warning", "You start digging."))
 
 		if(!do_after(user,40, src))
 			return
 
-		to_chat(user, "<span class='notice'>You dug a hole.</span>")
+		to_chat(user, SPAN("notice", "You dug a hole."))
 		gets_dug()
 
 	else if(istype(W,/obj/item/storage/ore))

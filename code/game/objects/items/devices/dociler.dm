@@ -27,15 +27,15 @@
 
 /obj/item/device/dociler/attack(mob/living/L, mob/user)
 	if(!istype(L, /mob/living/simple_animal))
-		to_chat(user, "<span class='warning'>\The [src] cannot not work on \the [L].</span>")
+		to_chat(user, SPAN("warning", "\The [src] cannot not work on \the [L]."))
 		return
 
 	if(!loaded)
-		to_chat(user, "<span class='warning'>\The [src] isn't loaded!</span>")
+		to_chat(user, SPAN("warning", "\")] isn't loaded!"))
 		return
 
 	user.visible_message("\The [user] thrusts \the [src] deep into \the [L]'s head, injecting something!")
-	to_chat(L, "<span class='notice'>You feel pain as \the [user] injects something into you. All of a sudden you feel as if [user] is the friendliest and nicest person you've ever know. You want to be friends with him and all his friends.</span>")
+	to_chat(L, SPAN("notice", "You feel pain as \the [user] injects something into you. All of a sudden you feel as if [user] is the friendliest and nicest person you've ever know. You want to be friends with him and all his friends."))
 	if(mode == "somewhat")
 		L.faction = user.faction
 	else
@@ -45,7 +45,8 @@
 		H.LoseTarget()
 		H.attack_same = 0
 		H.friends += weakref(user)
-	L.desc += "<br><span class='notice'>It looks especially docile.</span>"
+	L.desc += "<br>"
+	L.desc += SPAN("notice", "It looks especially docile.")
 	var/name = input(user, "Would you like to rename \the [L]?", "Dociler", L.name) as text
 	if(length(name))
 		L.real_name = name

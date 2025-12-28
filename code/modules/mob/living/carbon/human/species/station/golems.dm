@@ -20,7 +20,7 @@
 	fixed_mut_color = "#080808"
 	flesh_color = "#080808"
 
-	var/info_text = "As an <span class='danger'>Iron Golem</span>, you don't have any special traits."
+	var/info_text = "As an <font color='red'>Iron Golem</font>, you don't have any special traits."
 	var/prefix = "Iron"
 
 	var/list/special_names = list("Tarkus")
@@ -86,7 +86,7 @@
 /datum/species/golem/adamantine
 	name = SPECIES_GOLEM_ADAMANTINE
 	fixed_mut_color = "#002B2D"
-	info_text = "As an <span class='danger'>Adamantine Golem</span>, you possess special vocal cords allowing you to \"resonate\" messages to all golems. Your unique mineral makeup makes you immune to most types of magic."
+	info_text = "As an <font color='red'>Adamantine Golem</font>, you possess special vocal cords allowing you to \"resonate\" messages to all golems. Your unique mineral makeup makes you immune to most types of magic."
 	prefix = "Adamantine"
 	special_names = null
 	inherent_traits = list(
@@ -109,7 +109,7 @@
 	heat_level_2 = 500
 	heat_level_3 = 1000
 
-	info_text = "As a <span class='danger'>Plasma Golem</span>, you burn easily. Be careful, if you get hot enough while burning, you'll blow up!"
+	info_text = "As a <font color='red'>Plasma Golem</font>, you burn easily. Be careful, if you get hot enough while burning, you'll blow up!"
 	prefix = "Plasma"
 	special_names = list("Flood","Fire","Bar","Man")
 
@@ -172,7 +172,7 @@
 	fixed_mut_color = "#2C797A"
 	brute_mod = 0.45
 	meat_type = /obj/item/stack/material/diamond
-	info_text = "As a <span class='danger'>Diamond Golem</span>, you are more resistant than the average golem."
+	info_text = "As a <font color='red'>Diamond Golem</font>, you are more resistant than the average golem."
 	prefix = "Diamond"
 	special_names = list("Back","Grill")
 
@@ -184,7 +184,7 @@
 	slowdown = -0.5
 	brute_mod = 0.90 //down from 55
 	meat_type = /obj/item/stack/material/gold
-	info_text = "As a <span class='danger'>Gold Golem</span>, you are faster but less resistant than the average golem."
+	info_text = "As a <font color='red'>Gold Golem</font>, you are faster but less resistant than the average golem."
 	prefix = "Golden"
 	special_names = list("Boy")
 
@@ -194,7 +194,7 @@
 	name = SPECIES_GOLEM_SILVER
 	fixed_mut_color = "#5F5F5F"
 	meat_type = /obj/item/stack/material/silver
-	info_text = "As a <span class='danger'>Silver Golem</span>, your attacks have a higher chance of stunning. Being made of silver, your body is immune to spirits of the damned and runic golems."
+	info_text = "As a <font color='red'>Silver Golem</font>, your attacks have a higher chance of stunning. Being made of silver, your body is immune to spirits of the damned and runic golems."
 	prefix = "Silver"
 	special_names = list("Surfer", "Chariot", "Lining")
 
@@ -218,7 +218,7 @@
 	slowdown = 4 //pretty slow
 
 	meat_type = /obj/item/stack/material/plasteel
-	info_text = "As a <span class='danger'>Plasteel Golem</span>, you are slower, but harder to stun, and hit very hard when punching. You also magnetically attach to surfaces and so don't float without gravity and cannot have positions swapped with other beings."
+	info_text = "As a <font color='red'>Plasteel Golem</font>, you are slower, but harder to stun, and hit very hard when punching. You also magnetically attach to surfaces and so don't float without gravity and cannot have positions swapped with other beings."
 	prefix = "Plasteel"
 	special_names = null
 	unarmed_types = list(
@@ -234,7 +234,7 @@
 	name = SPECIES_GOLEM_TITANIUM
 	fixed_mut_color = "#5F5F5F"
 	meat_type = /obj/item/stack/material/plasteel/titanium
-	info_text = "As a <span class='danger'>Titanium Golem</span>, you are slightly more resistant to burn damage."
+	info_text = "As a <font color='red'>Titanium Golem</font>, you are slightly more resistant to burn damage."
 	burn_mod = 0.9
 	prefix = "Titanium"
 	special_names = list("Dioxide")
@@ -243,7 +243,7 @@
 	name = SPECIES_GOLEM_PLASTITANIUM
 	fixed_mut_color = "#262737"
 	meat_type = /obj/item/stack/material/ocp
-	info_text = "As a <span class='danger'>Plastitanium Golem</span>, you are slightly more resistant to burn damage."
+	info_text = "As a <font color='red'>Plastitanium Golem</font>, you are slightly more resistant to burn damage."
 	burn_mod = 0.8
 	prefix = "Plastitanium"
 	special_names = null
@@ -266,7 +266,7 @@
 	//Can burn and take damage from heat
 	brute_mod = 0.8
 	burn_mod = 1.55
-	info_text = "As a <span class='danger'>Wooden Golem</span>, you have plant-like traits: you take damage from extreme temperatures, can be set on fire, and have lower armor than a normal golem. You regenerate when in the light and wither in the darkness."
+	info_text = "As a <font color='red'>Wooden Golem</font>, you have plant-like traits: you take damage from extreme temperatures, can be set on fire, and have lower armor than a normal golem. You regenerate when in the light and wither in the darkness."
 	prefix = "Wooden"
 	species_flags = SPECIES_FLAG_NO_PAIN | SPECIES_FLAG_NO_SCAN | SPECIES_FLAG_NO_POISON | SPECIES_FLAG_NO_BLOOD | SPECIES_FLAG_NO_ANTAG_TARGET | SPECIES_FLAG_NO_MINOR_CUT | SPECIES_FLAG_NO_EMBED | SPECIES_NO_LACE
 	heat_level_1 = 400
@@ -314,7 +314,7 @@
 	name = SPECIES_GOLEM_URANIUM
 	fixed_mut_color = "#295800"
 	meat_type = /obj/item/stack/material/uranium
-	info_text = "As an <span class='danger'>Uranium Golem</span>, your very touch burns and irradiates organic lifeforms. You don't hit as hard as most golems, but you are far more durable against blunt force trauma."
+	info_text = "As an <font color='red'>Uranium Golem</font>, your very touch burns and irradiates organic lifeforms. You don't hit as hard as most golems, but you are far more durable against blunt force trauma."
 	brute_mod = 0.5
 	prefix = "Uranium"
 	special_names = list("Oxide", "Rod", "Meltdown", "235")
@@ -336,7 +336,7 @@
 	meat_type = /obj/item/ore/glass //this is sand
 	burn_mod = 3 //melts easily
 	brute_mod = 0.15
-	info_text = "As a <span class='danger'>Sand Golem</span>, you are immune to physical bullets and take very little brute damage, but are extremely vulnerable to burn damage and energy weapons. You will also turn to sand when dying, preventing any form of recovery."
+	info_text = "As a <font color='red'>Sand Golem</font>, you are immune to physical bullets and take very little brute damage, but are extremely vulnerable to burn damage and energy weapons. You will also turn to sand when dying, preventing any form of recovery."
 	prefix = "Sand"
 	special_names = list("Castle", "Bag", "Dune", "Worm", "Storm")
 
@@ -359,7 +359,7 @@
 	meat_type = /obj/item/material/shard
 	brute_mod = 3 //very fragile
 	burn_mod = 0.25
-	info_text = "As a <span class='danger'>Glass Golem</span>, you reflect lasers and energy weapons, and are very resistant to burn damage. However, you are extremely vulnerable to brute damage. On death, you'll shatter beyond any hope of recovery."
+	info_text = "As a <font color='red'>Glass Golem</font>, you reflect lasers and energy weapons, and are very resistant to burn damage. However, you are extremely vulnerable to brute damage. On death, you'll shatter beyond any hope of recovery."
 	prefix = "Glass"
 	special_names = list("Lens", "Prism", "Fiber", "Bead")
 
@@ -412,7 +412,7 @@
 	name = SPECIES_GOLEM_BLUESPACE
 	fixed_mut_color = "#020284"
 	meat_type = /obj/item/stack/telecrystal/bluespace_crystal
-	info_text = "As a <span class='danger'>Bluespace Golem</span>, you are spatially unstable: You will teleport when hit, and you can teleport manually at a long distance."
+	info_text = "As a <font color='red'>Bluespace Golem</font>, you are spatially unstable: You will teleport when hit, and you can teleport manually at a long distance."
 	prefix = "Bluespace"
 	special_names = list("Crystal", "Polycrystal")
 
@@ -477,7 +477,7 @@
 
 /datum/species/golem/runic
 	name = SPECIES_GOLEM_CULT
-	info_text = "As a <span class='danger'>Runic Golem</span>, you possess eldritch powers granted by the Elder Goddess Nar'Sie."
+	info_text = "As a <font color='red'>Runic Golem</font>, you possess eldritch powers granted by the Elder Goddess Nar'Sie."
 	prefix = "Runic"
 	special_names = null
 	fixed_mut_color = null
@@ -509,7 +509,7 @@
 /datum/species/golem/cloth
 	name = SPECIES_GOLEM_CLOTH
 	icobase = 'icons/mob/human_races/golems/r_cloth.dmi'
-	info_text = "As a <span class='danger'>Cloth Golem</span>, you are able to reform yourself after death, provided your remains aren't burned or destroyed. You are, of course, very flammable. \
+	info_text = "As a <font color='red'>Cloth Golem</font>, you are able to reform yourself after death, provided your remains aren't burned or destroyed. You are, of course, very flammable. \
 	Being made of cloth, your body is immune to spirits of the damned and runic golems. You are faster than that of other golems, but weaker and less resilient."
 	species_flags = SPECIES_FLAG_NO_PAIN | SPECIES_FLAG_NO_SCAN | SPECIES_FLAG_NO_POISON | SPECIES_FLAG_NO_BLOOD | SPECIES_FLAG_NO_ANTAG_TARGET | SPECIES_FLAG_NO_MINOR_CUT | SPECIES_FLAG_NO_EMBED | SPECIES_NO_LACE
 	heat_level_1 = 400
@@ -588,7 +588,7 @@
 	cloth_golem.revive()
 	sleep(2 SECONDS)
 	cloth_golem.forceMove(get_turf(src))
-	cloth_golem.visible_message(SPAN_DANGER("[src] rises and reforms into [cloth_golem]!"),SPAN_DANGER("You reform into yourself!"))
+	cloth_golem.visible_message(SPAN_DANGER("[src] rises and reforms into [cloth_golem]!"), SPAN_DANGER("You reform into yourself!"))
 	cloth_golem = null
 	qdel(src)
 
@@ -643,7 +643,7 @@
 	prefix = "Plastic"
 	special_names = list("Sheet", "Bag", "Bottle")
 	fixed_mut_color = "#0a0a0a"
-	info_text = "As a <span class='danger'>Plastic Golem</span>, you are capable of ventcrawling and passing through plastic flaps as long as you are naked."
+	info_text = "As a <font color='red'>Plastic Golem</font>, you are capable of ventcrawling and passing through plastic flaps as long as you are naked."
 	inherent_verbs = list(
 		/mob/living/proc/ventcrawl
 	)
@@ -656,7 +656,7 @@
 	name = SPECIES_GOLEM_BRONZE
 	prefix = "Bronze"
 	special_names = list("Bell")
-	info_text = "As a <span class='danger'>Bronze Golem</span>, you are very resistant to loud noises, and make loud noises if something hard hits you, however this ability does hurt your hearing."
+	info_text = "As a <font color='red'>Bronze Golem</font>, you are very resistant to loud noises, and make loud noises if something hard hits you, however this ability does hurt your hearing."
 	icobase = 'icons/mob/human_races/golems/r_clock.dmi'
 
 /datum/species/golem/bronze/handle_post_spawn(mob/living/carbon/human/H)
@@ -715,7 +715,7 @@
 	prefix = "Cardboard"
 	special_names = list("Box")
 	icobase = 'icons/mob/human_races/golems/r_cardboard.dmi'
-	info_text = "As a <span class='danger'>Cardboard Golem</span>, you aren't very strong, but you are a bit quicker and can easily create more brethren by using cardboard on yourself. Cardboard makes a poor building material for tongues, so you'll have difficulty speaking."
+	info_text = "As a <font color='red'>Cardboard Golem</font>, you aren't very strong, but you are a bit quicker and can easily create more brethren by using cardboard on yourself. Cardboard makes a poor building material for tongues, so you'll have difficulty speaking."
 	fixed_mut_color = null
 	brute_mod = 0.85
 	burn_mod = 1.25
@@ -777,13 +777,13 @@
 	heat_level_3 = 1000
 	prefix = "Leather"
 	fixed_mut_color = "#2E1600"
-	info_text = "As a <span class='danger'>Leather Golem</span>, you are flammable, but you can grab things with incredible ease, allowing all your grabs to start at a strong level."
+	info_text = "As a <font color='red'>Leather Golem</font>, you are flammable, but you can grab things with incredible ease, allowing all your grabs to start at a strong level."
 
 /datum/species/golem/mhydrogen //Effectively most other metal-based golem types rolled into one - immune to all weather, lava, flashes, and magic, while being just as hardened as diamond golems.
 	name = SPECIES_GOLEM_HYDROGEN
 	fixed_mut_color = "#3A3A55"
 	brute_mod = 0.5
-	info_text = "As a <span class='danger'>Metallic Hydrogen Golem</span>, you were forged in the highest pressures and the highest heats. Your unique material makeup makes you immune to magic and most environmental damage, while helping you resist most other attacks."
+	info_text = "As a <font color='red'>Metallic Hydrogen Golem</font>, you were forged in the highest pressures and the highest heats. Your unique material makeup makes you immune to magic and most environmental damage, while helping you resist most other attacks."
 	prefix = "Metallic Hydrogen"
 	special_names = list("Pressure","Crush")
 

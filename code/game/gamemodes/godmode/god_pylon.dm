@@ -28,14 +28,14 @@
 /obj/structure/deity/pylon/proc/add_intuned(mob/living/L)
 	if(L in intuned)
 		return
-	to_chat(L, "<span class='notice'>You place your hands on \the [src], feeling yourself intune to its vibrations.</span>")
+	to_chat(L, SPAN("notice", "You place your hands on \the [src], feeling yourself intune to its vibrations."))
 	intuned += L
 	register_signal(L, SIGNAL_QDELETING, nameof(/obj/structure/deity/pylon.proc/remove_intuned))
 
 /obj/structure/deity/pylon/proc/remove_intuned(mob/living/L)
 	if(!(L in intuned))
 		return
-	to_chat(L, "<span class='warning'>You no longer feel intuned to \the [src].</span>")
+	to_chat(L, SPAN("warning", "You no longer feel intuned to \the [src]."))
 	intuned -= L
 	unregister_signal(L, SIGNAL_QDELETING)
 
@@ -50,4 +50,4 @@
 			if(P == src || linked_god.pylon == P)
 				continue
 			P.audible_message("<b>\The [P]</b> resonates, \"[text]\"")
-	to_chat(linked_god, "\icon[src] <span class='game say'><span class='name'>[M]</span> (<A href='?src=\ref[linked_god];jump=\ref[src];'>P</A>) [verb], [linked_god.pylon == src ? "<b>" : ""]<span class='message'><span class='body'>\"[text]\"</span></span>[linked_god.pylon == src ? "</b>" : ""]</span>")
+	to_chat(linked_god, "\icon[src] [SPAN("game say", "[SPAN("name", "[M]")] (<A href='byond://?src=\ref[linked_god];jump=\ref[src];'>P</A>) [verb], [linked_god.pylon == src ? "<b>" : ""][SPAN("message", "[SPAN("body", "\"[text]\"")]")][linked_god.pylon == src ? "</b>" : ""]")]")

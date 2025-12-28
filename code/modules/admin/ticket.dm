@@ -30,8 +30,8 @@ var/list/ticket_panels = list()
 	src.status = TICKET_CLOSED
 	src.closed_by = closed_by
 
-	to_chat(client_by_ckey(src.owner.ckey), "<span class='notice'><b>Your ticket has been closed by [closed_by.ckey].</b></span>")
-	message_staff("<span class='notice'><b>[src.owner.key_name(0)]</b>'s ticket has been closed by <b>[closed_by.key_name(0)]</b>.</span>")
+	to_chat(client_by_ckey(src.owner.ckey), SPAN("notice", "<b>Your ticket has been closed by [closed_by.ckey].</b>"))
+	message_staff(SPAN("notice", "<b>[src.owner.key_name(0)]</b>'s ticket has been closed by <b>[closed_by.key_name(0)]</b>."))
 
 	update_ticket_panels()
 
@@ -210,7 +210,7 @@ var/list/ticket_panels = list()
 						usr.client.cmd_admin_pm(admin_client, ticket = ticket)
 						break
 				if(!admin_found)
-					to_chat(usr, "<span class='warning'>Error: Private-Message: Client not found. They may have lost connection, so please be patient!</span>")
+					to_chat(usr, SPAN("warning", "Error: Private-Message: Client not found. They may have lost connection, so please be patient!"))
 			else
 				usr.client.adminhelp(input(usr,"", "adminhelp \"text\"") as text)
 

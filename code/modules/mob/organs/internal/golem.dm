@@ -66,4 +66,4 @@
 
 	owner.say(message)
 	for (var/obj/item/organ/internal/adamantine_resonator in GLOB.golems_resonator)
-		to_chat(adamantine_resonator.owner,FONT_LARGE(SPAN("resonate",SPAN("name","[owner.real_name]</span> <span class='message'>resonates, \"[message]\""))))
+		to_chat(adamantine_resonator.owner, FONT_LARGE(SPAN_DANGER("[owner.real_name] resonates, \"[message]\"")))

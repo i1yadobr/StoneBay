@@ -56,7 +56,7 @@
 			return
 		playsound(loc, SFX_SEARCH_CABINET, 75, 1)
 		add_fingerprint(user)
-		to_chat(user, "<span class='notice'>You put [P] in [src].</span>")
+		to_chat(user, SPAN("notice", "You put [P] in [src]."))
 		icon_state = "[initial(icon_state)]-open"
 		sleep(5)
 		icon_state = initial(icon_state)
@@ -72,7 +72,7 @@
 	playsound(loc, SFX_SEARCH_CABINET, 75, 1)
 
 	if(contents.len <= 0)
-		to_chat(user, "<span class='notice'>\The [src] is empty.</span>")
+		to_chat(user, SPAN("notice", "\The [src] is empty."))
 		return
 
 	user.set_machine(src)
@@ -97,9 +97,9 @@
 			I.dropInto(loc)
 			if(prob(25))
 				step_rand(I)
-			to_chat(user, "<span class='notice'>You pull \a [I] out of [src] at random.</span>")
+			to_chat(user, SPAN("notice", "You pull \a [I] out of [src] at random."))
 			return
-	to_chat(user, "<span class='notice'>You find nothing in [src].</span>")
+	to_chat(user, SPAN("notice", "You find nothing in [src]."))
 
 /obj/structure/filingcabinet/Topic(href, href_list)
 	if(href_list["retrieve"])

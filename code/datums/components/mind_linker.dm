@@ -73,7 +73,7 @@
 	project_action = new(src)
 	project_action.Grant(owner)
 
-	to_chat(owner, SPAN("bold",SPAN_NOTICE("You establish a [network_name], allowing you to link minds to communicate telepathically.")))
+	to_chat(owner, SPAN("bold", SPAN_NOTICE("You establish a [network_name], allowing you to link minds to communicate telepathically.")))
 
 /datum/component/mind_linker/Destroy(force, silent)
 	for(var/mob/living/remaining_mob as anything in linked_mobs)
@@ -155,7 +155,7 @@
 /datum/component/mind_linker/proc/destroy_link(datum/source)
 	if(isliving(source))
 		var/mob/living/owner = source
-		to_chat(owner, SPAN("bold",SPAN_WARNING("Your [network_name] breaks!")))
+		to_chat(owner, SPAN("bold", SPAN_WARNING("Your [network_name] breaks!")))
 
 	qdel(src)
 

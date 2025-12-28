@@ -23,7 +23,7 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 	if(href_list["viewruntime"])
 		var/datum/error_viewer/error_viewer = locate(href_list["viewruntime"])
 		if(!istype(error_viewer))
-			to_chat(usr, "<span class='warning'>That runtime viewer no longer exists.</span>")
+			to_chat(usr, SPAN("warning", "That runtime viewer no longer exists."))
 			return
 
 		if(href_list["viewruntime_backto"])
@@ -177,7 +177,7 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 	if (istype(desclines))
 		for (var/line in desclines)
 			// There's probably a better way to do this than non-breaking spaces...
-			desc += "<span class='runtime_line'>[html_encode(line)]</span><br>"
+			desc += "[SPAN("runtime_line", "[html_encode(line)]")]<br>"
 			info += "\n  " + line
 
 	if (usr)

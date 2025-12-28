@@ -426,7 +426,7 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 	for(var/mob/M in targets)
 		var/turf/targetturf = get_turf(M)
 		if(!sourceturf || (targetturf.z in GetConnectedZlevels(sourceturf.z)))
-			M.show_message("<span class='info'>\icon[icon] [message]</span>", 1)
+			M.show_message(SPAN("info", "\icon[icon] [message]"), 1)
 
 /proc/mobs_in_area(area/A)
 	var/list/mobs = new
@@ -459,9 +459,9 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 		if(C.mob.lastarea)
 			diedat = " at [C.mob.lastarea]"
 		if(joined_ghosts)
-			message = "The ghost of <span class='name'>[name]</span> now [pick("skulks","lurks","prowls","creeps","stalks")] among the dead[diedat]. [message]"
+			message = "The ghost of [SPAN("name", "[name]")] now [pick("skulks","lurks","prowls","creeps","stalks")] among the dead[diedat]. [message]"
 		else
-			message = "<span class='name'>[name]</span> no longer [pick("skulks","lurks","prowls","creeps","stalks")] in the realm of the dead. [message]"
+			message = "[SPAN("name", "[name]")] no longer [pick("skulks","lurks","prowls","creeps","stalks")] in the realm of the dead. [message]"
 		communicate(/decl/communication_channel/dsay, C || O, message, /decl/dsay_communication/direct)
 
 /mob/proc/switch_to_camera(obj/machinery/camera/C)
@@ -624,11 +624,11 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 	if(src.jitteriness >= 400 && prob(5)) //Kills people if they have high jitters.
 		if(prob(1))
 			L.take_internal_damage(L.max_damage / 2, 0)
-			to_chat(src, "<span class='danger'>Something explodes in your heart.</span>")
+			to_chat(src, SPAN("danger", "Something explodes in your heart."))
 			admin_victim_log(src, "has taken <b>lethal heart damage</b> at jitteriness level [src.jitteriness].")
 		else
 			L.take_internal_damage(1, 0)
-			to_chat(src, "<span class='danger'>The jitters are killing you! You feel your heart beating out of your chest.</span>")
+			to_chat(src, SPAN("danger", "The jitters are killing you! You feel your heart beating out of your chest."))
 			admin_victim_log(src, "has taken <i>minor heart damage</i> at jitteriness level [src.jitteriness].")
 	return 1
 

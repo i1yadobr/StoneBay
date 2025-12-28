@@ -6,35 +6,37 @@
 	msg += "\n"
 	msg += examine_all_modules()
 
-	msg += "<span class='warning'>"
+	var/damage_description = ""
 	if (getBruteLoss())
 		if (getBruteLoss() < 75)
-			msg += "It looks slightly dented.\n"
+			damage_description += "It looks slightly dented.\n"
 		else
-			msg += "<B>It looks severely dented!</B>\n"
+			damage_description += "<B>It looks severely dented!</B>\n"
 	if (src.getFireLoss())
 		if (getFireLoss() < 75)
-			msg += "It looks slightly charred.\n"
+			damage_description += "It looks slightly charred.\n"
 		else
-			msg += "<B>It looks severely burnt and heat-warped!</B>\n"
-	msg += "</span>"
+			damage_description += "<B>It looks severely burnt and heat-warped!</B>\n"
+	msg += SPAN("warning", "[damage_description]")
 
 	if(opened)
-		msg += "<span class='warning'>Its cover is open and the power cell is [cell ? "installed" : "missing"].</span>\n"
+		msg += SPAN("warning", "Its cover is open and the power cell is [cell ? "installed" : "missing"].")
 	else
-		msg += "Its cover is closed.\n"
+		msg += "Its cover is closed."
+	msg += "\n"
 
 	if(!has_power)
-		msg += "<span class='warning'>It appears to be running on backup power.</span>\n"
-
+		msg += SPAN("warning", "It appears to be running on backup power.")
+		msg += "\n"
 	switch(stat)
 		if(CONSCIOUS)
 			if (ssd_check())
-				msg += "It appears to be in stand-by mode.\n" //afk
+				msg += "It appears to be in stand-by mode." //afk
 		if(UNCONSCIOUS)
-			msg += "<span class='warning'>It doesn't seem to be responding.</span>\n"
+			msg += SPAN("warning", "It doesn't seem to be responding.")
 		if(DEAD)
-			msg += "<span class='deadsay'>It's broken, but looks repairable.</span>\n"
+			msg += SPAN("deadsay", "It's broken, but looks repairable.")
+	msg += "\n"
 	msg += "*---------*"
 
 	if(print_flavor_text()) msg += "\n[print_flavor_text()]\n"
@@ -48,16 +50,18 @@
 		if (module)
 			msg += "<hr>"
 			var/visors = ""
-			msg += "<b><span class='notice'>Supported upgrades:</b></span>\n"
+			msg += "<b>[SPAN("notice", "Supported upgrades:")]</b>"
+			msg += "\n"
 			for(var/i in module.supported_upgrades)
 				var/atom/tmp = i
 				if(findtext("[tmp]","/obj/item/borg/upgrade/visor/"))
-					visors += "<span class='notice'>	[initial(tmp.name)]<br></span>"
+					visors += SPAN("notice", "	[initial(tmp.name)]<br>")
 				else
-					msg += "<span class='notice'>	[initial(tmp.name)]<br></span>"
-			msg += "<b><span class='notice'>Supported visors:</b></span>\n"
+					msg += SPAN("notice", "	[initial(tmp.name)]<br>")
+			msg += "<b>[SPAN("notice", "Supported visors:")]</b>"
+			msg += "\n"
 			msg += visors
 
-	. += msg
+	. += "\n[msg]"
 	user.showLaws(src)
 	return

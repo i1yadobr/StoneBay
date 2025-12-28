@@ -73,8 +73,8 @@
 		new_splint.dropInto(loc)
 		new_splint.add_fingerprint(user)
 
-		user.visible_message("<span class='notice'>\The [user] constructs \a [new_splint] out of a [singular_name].</span>", \
-				"<span class='notice'>You use make \a [new_splint] out of a [singular_name].</span>")
+		user.visible_message(SPAN("notice", "\The [user] constructs \a [new_splint] out of a [singular_name]."), \
+				SPAN("notice", "You use make \a [new_splint] out of a [singular_name]."))
 		src.use(1)
 		return
 

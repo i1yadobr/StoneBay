@@ -446,15 +446,15 @@
 /mob/proc/warn_flavor_changed()
 	if(flavor_text && flavor_text != "") // don't spam people that don't use it!
 		to_chat(src, "<h2 class='alert'>OOC Warning:</h2>")
-		to_chat(src, "<span class='alert'>Your flavor text is likely out of date! <a href='byond://?src=\ref[src];flavor_change=1'>Change</a></span>")
+		to_chat(src, SPAN("alert", "Your flavor text is likely out of date! <a href='byond://?src=\ref[src];flavor_change=1'>Change</a>"))
 
 /mob/proc/print_flavor_text()
 	if (flavor_text && flavor_text != "")
 		var/msg = replacetext(flavor_text, "\n", " ")
 		if(length(msg) <= 40)
-			. += "<span class='notice'>[msg]</span>"
+			. += SPAN("notice", "[msg]")
 		else
-			. += "<span class='notice'>[copytext_preserve_html(msg, 1, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
+			. += SPAN("notice", "[copytext_preserve_html(msg, 1, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a>")
 
 /mob/verb/cancel_camera()
 	set name = "Cancel Camera View"
@@ -535,21 +535,21 @@
 	AM.on_pulling_try(src)
 
 	if (AM.anchored)
-		to_chat(src, "<span class='warning'>It won't budge!</span>")
+		to_chat(src, SPAN("warning", "It won't budge!"))
 		return
 
 	var/mob/M = AM
 	if(ismob(AM))
 		if(!can_pull_mobs || !can_pull_size)
-			to_chat(src, "<span class='warning'>It won't budge!</span>")
+			to_chat(src, SPAN("warning", "It won't budge!"))
 			return
 
 		if((mob_size < M.mob_size) && (can_pull_mobs != MOB_PULL_LARGER))
-			to_chat(src, "<span class='warning'>It won't budge!</span>")
+			to_chat(src, SPAN("warning", "It won't budge!"))
 			return
 
 		if((mob_size == M.mob_size) && (can_pull_mobs == MOB_PULL_SMALLER))
-			to_chat(src, "<span class='warning'>It won't budge!</span>")
+			to_chat(src, SPAN("warning", "It won't budge!"))
 			return
 
 		// If your size is larger than theirs and you have some
@@ -564,7 +564,7 @@
 	else if(isobj(AM))
 		var/obj/I = AM
 		if(!can_pull_size || can_pull_size < I.w_class)
-			to_chat(src, "<span class='warning'>It won't budge!</span>")
+			to_chat(src, SPAN("warning", "It won't budge!"))
 			return
 
 	if(pulling)
@@ -589,7 +589,7 @@
 	if(ishuman(AM))
 		var/mob/living/carbon/human/H = AM
 		if(H.pull_damage())
-			to_chat(src, "<span class='danger'>Pulling \the [H] in their current condition would probably be a bad idea.</span>")
+			to_chat(src, SPAN("danger", "Pulling \the [H] in their current condition would probably be a bad idea."))
 	//Attempted fix for people flying away through space when cuffed and dragged.
 	if(ismob(AM))
 		var/mob/pulled = AM
@@ -882,18 +882,18 @@
 	var/obj/item/selection = input("What do you want to yank out?", "Embedded objects") in valid_objects
 
 	if(self)
-		to_chat(src, "<span class='warning'>You attempt to get a good grip on [selection] in your body.</span>")
+		to_chat(src, SPAN("warning", "You attempt to get a good grip on [selection] in your body."))
 	else
-		to_chat(U, "<span class='warning'>You attempt to get a good grip on [selection] in [S]'s body.</span>")
+		to_chat(U, SPAN("warning", "You attempt to get a good grip on [selection] in [S]'s body."))
 	if(!do_mob(U, S, (selection.w_class*7), incapacitation_flags = INCAPACITATION_DEFAULT & (~INCAPACITATION_FORCELYING))) //let people pinned to stuff yank it out, otherwise they're stuck... forever!!!
 		return
 	if(!selection || !S || !U)
 		return
 
 	if(self)
-		visible_message("<span class='warning'><b>[src] rips [selection] out of their body.</b></span>","<span class='warning'><b>You rip [selection] out of your body.</b></span>")
+		visible_message(SPAN("warning", "<b>[src] rips [selection] out of their body.</b>"), SPAN("warning", "<b>You rip [selection] out of your body.</b>"))
 	else
-		visible_message("<span class='warning'><b>[usr] rips [selection] out of [src]'s body.</b></span>","<span class='warning'><b>[usr] rips [selection] out of your body.</b></span>")
+		visible_message(SPAN("warning", "<b>[usr] rips [selection] out of [src]'s body.</b>"), SPAN("warning", "<b>[usr] rips [selection] out of your body.</b>"))
 
 	if(ishuman(src))
 		var/mob/living/carbon/human/H = src

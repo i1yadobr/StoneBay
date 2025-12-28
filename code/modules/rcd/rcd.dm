@@ -359,9 +359,9 @@
 	return .
 
 /obj/item/construction/rcd/proc/detonate_pulse()
-	audible_message("<span class='danger'><b>[src] begins to vibrate and \
-		buzz loudly!</b></span>","<span class='danger'><b>[src] begins \
-		vibrating violently!</b></span>")
+	audible_message(SPAN("danger", "<b>[src] begins to vibrate and \
+		buzz loudly!</b>"), SPAN("danger", "<b>[src] begins \
+		vibrating violently!</b>"))
 	set_next_think(world.time + 5 SECONDS)
 
 /obj/item/construction/rcd/think()
