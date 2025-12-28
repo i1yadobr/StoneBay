@@ -1,6 +1,6 @@
 /mob/living/simple_animal/hostile/psychic_glitch
 	name = "???"
-	desc = "You can't be completely sure what this is and whether it's a real thing. <span class='danger'>You feel your sanity slipping away just by looking at it.</span>"
+	desc = "You can't be completely sure what this is and whether it's a real thing. <font color='red'>You feel your sanity slipping away just by looking at it.</font>"
 	icon = 'icons/mob/psychic_glitch.dmi'
 	icon_state = "psychic_glitch"
 	icon_living = "psychic_glitch"
@@ -80,7 +80,7 @@
 
 /obj/structure/psychic_rift
 	name = "wounded reality"
-	desc = "A crack in... Reality? <span class='danger'>You feel your sanity slipping away just by looking at it.</span>"
+	desc = "A crack in... Reality? <font color='red'>You feel your sanity slipping away just by looking at it.</font>"
 	mouse_opacity = 1
 	alpha = 200
 	icon = 'icons/mob/psychic_glitch.dmi'

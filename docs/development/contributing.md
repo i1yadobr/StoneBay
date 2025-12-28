@@ -413,7 +413,7 @@ O.specific_type_funс()
 
 ### Используйте макрос оформления текста SPAN()
 
-Вместо `to_chat(usr, SPAN("warning", "[text]"))` используйте `to_chat(usr, SPAN("warning", text))`.
+Вместо `to_chat(usr, "<span class='warning'>[text]</span>")` используйте `to_chat(usr, SPAN("warning", text))`.
 
 ### Используйте ранний return
 
