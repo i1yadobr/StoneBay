@@ -42,9 +42,9 @@
 	acknowledged = 0
 	if(paged)
 		playsound(src, 'sound/machines/ping.ogg', 60)
-		to_chat(user ,SPAN("notice", "Page received by [paged] devices."))
+		to_chat(user, SPAN("notice", "Page received by [paged] devices."))
 	else
-		to_chat(user ,SPAN("warning", "No valid destinations were found for the page."))
+		to_chat(user, SPAN("warning", "No valid destinations were found for the page."))
 
 /obj/machinery/pager/Topic(href, href_list)
 	if(..())

@@ -27,7 +27,7 @@
 		return // Could be happened hitby()
 	new /obj/effect/decal/cleanable/egg_smudge(src.loc)
 	src.reagents.splash(hit_atom, src.reagents.total_volume)
-	src.visible_message(SPAN("warning", "\The [src] has been squashed!") ,SPAN("warning", "You hear a smack."))
+	src.visible_message(SPAN("warning", "\The [src] has been squashed!"), SPAN("warning", "You hear a smack."))
 	qdel(src)
 
 /obj/item/reagent_containers/food/egg/attackby(obj/item/W, mob/user)

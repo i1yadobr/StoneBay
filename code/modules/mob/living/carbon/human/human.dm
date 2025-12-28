@@ -754,7 +754,7 @@
 
 /mob/living/carbon/human/proc/play_xylophone()
 	if(!src.xylophone)
-		visible_message(SPAN("warning", "\The [src] begins playing \his ribcage like a xylophone. It's quite spooky.") ,SPAN("notice", "You begin to play a spooky refrain on your ribcage.") ,SPAN("warning", "You hear a spooky xylophone melody."))
+		visible_message(SPAN("warning", "\The [src] begins playing \his ribcage like a xylophone. It's quite spooky."), SPAN("notice", "You begin to play a spooky refrain on your ribcage."), SPAN("warning", "You hear a spooky xylophone melody."))
 		var/song = pick('sound/effects/xylophone1.ogg','sound/effects/xylophone2.ogg','sound/effects/xylophone3.ogg')
 		playsound(loc, song, 50, 1, -1)
 		xylophone = 1
@@ -903,7 +903,7 @@
 					// Getting rid of reagents in stomach, randoming from 30 ml to the whole contents
 					stomach.ingested.remove_any(rand(30, stomach.ingested.total_volume))
 
-					src.visible_message(SPAN("warning", "[src] throws up!") ,SPAN("warning", "You throw up!"))
+					src.visible_message(SPAN("warning", "[src] throws up!"), SPAN("warning", "You throw up!"))
 					playsound(loc, 'sound/effects/splat.ogg', 50, 1)
 
 					var/turf/location = loc

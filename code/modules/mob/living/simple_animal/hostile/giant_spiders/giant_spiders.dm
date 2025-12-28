@@ -168,14 +168,14 @@ GLOBAL_LIST_EMPTY(spidermobs) //all sentient spider mobs
 		to_chat(src, SPAN_WARNING("You're a nurse, not a miracle worker."))
 		return
 
-	visible_message(SPAN_NOTICE("[src] begins wrapping the wounds of [hurt_spider].") ,SPAN_NOTICE("You begin wrapping the wounds of [hurt_spider]."))
+	visible_message(SPAN_NOTICE("[src] begins wrapping the wounds of [hurt_spider]."), SPAN_NOTICE("You begin wrapping the wounds of [hurt_spider]."))
 
 	is_busy = TRUE
 
 	if(do_after(src, 20, target = hurt_spider))
 		hurt_spider.heal_overall_damage(20, 20)
 		new /obj/effect/heal(get_turf(hurt_spider), "#80F5FF")
-		visible_message(SPAN_NOTICE("[src] wraps the wounds of [hurt_spider].") ,SPAN_NOTICE("You wrap the wounds of [hurt_spider]."))
+		visible_message(SPAN_NOTICE("[src] wraps the wounds of [hurt_spider]."), SPAN_NOTICE("You wrap the wounds of [hurt_spider]."))
 
 	is_busy = FALSE
 
@@ -326,7 +326,7 @@ GLOBAL_LIST_EMPTY(spidermobs) //all sentient spider mobs
 		to_chat(src, SPAN_WARNING("You're already doing something else!"))
 		return
 	is_busy = TRUE
-	visible_message(SPAN_NOTICE("[src] begins to secrete a sticky substance around [cocoon_target].") ,SPAN_NOTICE("You begin wrapping [cocoon_target] into a cocoon."))
+	visible_message(SPAN_NOTICE("[src] begins to secrete a sticky substance around [cocoon_target]."), SPAN_NOTICE("You begin wrapping [cocoon_target] into a cocoon."))
 	stop_automated_movement = TRUE
 	if(do_after(src, 50, target = cocoon_target))
 		if(is_busy)
@@ -336,7 +336,7 @@ GLOBAL_LIST_EMPTY(spidermobs) //all sentient spider mobs
 				if(ishuman(living_target) && (!living_target.is_ooc_dead() || !consumed_mobs[living_target.tag])) //if they're not dead, you can consume them anyway
 					consumed_mobs[living_target.tag] = TRUE
 					fed++
-					visible_message(SPAN_NOTICE("[src] sticks a proboscis into [living_target] and sucks a viscous substance out.") ,SPAN_NOTICE("You suck the nutriment out of [living_target], feeding you enough to lay a cluster of eggs."))
+					visible_message(SPAN_NOTICE("[src] sticks a proboscis into [living_target] and sucks a viscous substance out."), SPAN_NOTICE("You suck the nutriment out of [living_target], feeding you enough to lay a cluster of eggs."))
 					living_target.death() //you just ate them, they're dead.
 				else
 					to_chat(src, SPAN_WARNING("[living_target] cannot sate your hunger!"))
@@ -471,12 +471,12 @@ GLOBAL_LIST_EMPTY(spidermobs) //all sentient spider mobs
 		if(health >= maxHealth)
 			to_chat(src, SPAN_WARNING("You're not injured, there's no reason to heal."))
 			return
-		visible_message(SPAN_NOTICE("[src] begins mending themselves...") ,SPAN_NOTICE("You begin mending your wounds..."))
+		visible_message(SPAN_NOTICE("[src] begins mending themselves..."), SPAN_NOTICE("You begin mending your wounds..."))
 		is_busy = TRUE
 		if(do_after(src, 20))
 			heal_overall_damage(50, 50)
 			new /obj/effect/heal(get_turf(src), "#80F5FF")
-			visible_message(SPAN_NOTICE("[src]'s wounds mend together.") ,SPAN_NOTICE("You mend your wounds together."))
+			visible_message(SPAN_NOTICE("[src]'s wounds mend together."), SPAN_NOTICE("You mend your wounds together."))
 		is_busy = FALSE
 		return
 	return ..()

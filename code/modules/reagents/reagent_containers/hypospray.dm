@@ -98,11 +98,11 @@
 			loaded_vial = W
 			reagents.maximum_volume = loaded_vial.reagents.maximum_volume
 			loaded_vial.reagents.trans_to_holder(reagents,volume)
-			user.visible_message(SPAN("notice", "[user] has loaded [W] into \the [src].") ,SPAN("notice", "You load \the [W] into \the [src]."))
+			user.visible_message(SPAN("notice", "[user] has loaded [W] into \the [src]."), SPAN("notice", "You load \the [W] into \the [src]."))
 			update_icon()
 			playsound(src.loc, 'sound/weapons/empty.ogg', 50, 1)
 		else
-			to_chat(user ,SPAN("notice", "\The [src] already has a vial."))
+			to_chat(user, SPAN("notice", "\The [src] already has a vial."))
 	else
 		..()
 

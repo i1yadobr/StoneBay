@@ -637,7 +637,7 @@
 
 /obj/item/device/electronic_assembly/proc/screwdriver_act(mob/living/user, obj/item/I)
 	if(sealed || force_sealed)
-		to_chat(user ,SPAN_NOTICE("The assembly is sealed. Any attempt to force it open would break it."))
+		to_chat(user, SPAN_NOTICE("The assembly is sealed. Any attempt to force it open would break it."))
 		return FALSE
 	// some prefabs have invalid sprite after unscrewing
 	if(icon != 'icons/obj/assemblies/electronic_setups.dmi')
@@ -661,10 +661,10 @@
 		if("repair")
 			if(health < max_integrity)
 				health = min(health + 20,max_integrity)
-				to_chat(user ,SPAN_NOTICE("You fix the dents and scratches of the assembly."))
+				to_chat(user, SPAN_NOTICE("You fix the dents and scratches of the assembly."))
 				return TRUE
 			else
-				to_chat(user ,SPAN_NOTICE("The assembly is already in impeccable condition."))
+				to_chat(user, SPAN_NOTICE("The assembly is already in impeccable condition."))
 				return FALSE
 
 		if("seal")
@@ -673,15 +673,15 @@
 					return
 
 				sealed = TRUE
-				to_chat(user ,SPAN_NOTICE("You seal the assembly, making it impossible to be opened."))
+				to_chat(user, SPAN_NOTICE("You seal the assembly, making it impossible to be opened."))
 				return TRUE
 
 			else
-				to_chat(user ,SPAN_NOTICE("You need to close the assembly first before sealing it indefinitely!"))
+				to_chat(user, SPAN_NOTICE("You need to close the assembly first before sealing it indefinitely!"))
 				return FALSE
 
 		if("unseal")
-			to_chat(user ,SPAN_NOTICE("You start unsealing the assembly carefully..."))
+			to_chat(user, SPAN_NOTICE("You start unsealing the assembly carefully..."))
 			if(!I.use_tool(src, user, amount = 30))
 				return
 
@@ -689,7 +689,7 @@
 				if(prob(50))
 					IC.disconnect_all()
 
-			to_chat(user ,SPAN_NOTICE("You unsealed the assembly."))
+			to_chat(user, SPAN_NOTICE("You unsealed the assembly."))
 			sealed = FALSE
 			return TRUE
 
@@ -711,16 +711,16 @@
 			// check if unlocked to lock
 			if(!idlock)
 				idlock = debugger.idlock
-				to_chat(user ,SPAN_NOTICE("You lock \the [src]."))
+				to_chat(user, SPAN_NOTICE("You lock \the [src]."))
 
 			//if locked, unlock if ids match
 			else
 				if(idlock.resolve() == debugger.idlock.resolve())
 					idlock = null
-					to_chat(user ,SPAN_NOTICE("You unlock \the [src]."))
+					to_chat(user, SPAN_NOTICE("You unlock \the [src]."))
 
 				else
-					to_chat(user ,SPAN_NOTICE("The scanned ID doesn't match with \the [src]'s lock."))
+					to_chat(user, SPAN_NOTICE("The scanned ID doesn't match with \the [src]'s lock."))
 
 			debugger.idlock = null
 			return

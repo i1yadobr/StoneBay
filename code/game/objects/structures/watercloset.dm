@@ -497,7 +497,7 @@
 			return
 		playsound(loc, 'sound/effects/using/sink/filling1.ogg', 75)
 		RG.reagents.add_reagent(/datum/reagent/water, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-		user.visible_message(SPAN("notice", "[user] fills \the [RG] using \the [src].") ,SPAN("notice", "You fill \the [RG] using \the [src]."))
+		user.visible_message(SPAN("notice", "[user] fills \the [RG] using \the [src]."), SPAN("notice", "You fill \the [RG] using \the [src]."))
 		return TRUE
 
 	else if(istype(O, /obj/item/soap))

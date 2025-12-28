@@ -30,7 +30,7 @@
 		if(!W.archived)
 			warrants += W.fields["namewarrant"]
 	if(warrants.len == 0)
-		to_chat(user ,SPAN("notice", "There are no warrants available"))
+		to_chat(user, SPAN("notice", "There are no warrants available"))
 		return
 	var/temp
 	temp = input(user, "Which warrant would you like to load?") as null|anything in warrants

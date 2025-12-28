@@ -66,4 +66,4 @@
 
 /obj/item/gun/launcher/alien/slugsling/attack_self(mob/living/user)
 	mode = mode == "Impact" ? "Sentry" : "Impact"
-	to_chat(user ,SPAN("notice", "You switch \the [src]'s mode to \"[mode]\""))
+	to_chat(user, SPAN("notice", "You switch \the [src]'s mode to \"[mode]\""))

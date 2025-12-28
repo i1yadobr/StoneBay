@@ -73,7 +73,7 @@
 /obj/item/metroid_extract/gold/activate(mob/living/carbon/human/user, datum/component/extract_eater/extract_eater_comp, activation_type)
 	switch(activation_type)
 		if(METROID_ACTIVATE_MINOR)
-			user.visible_message(SPAN_WARNING("[user] starts shaking!") ,SPAN_NOTICE("Your [name] starts pulsing gently..."))
+			user.visible_message(SPAN_WARNING("[user] starts shaking!"), SPAN_NOTICE("Your [name] starts pulsing gently..."))
 			if(do_after(user, 40, target = user))
 				var/list/possible_mobs = list(
 					/mob/living/simple_animal/cat,
@@ -91,7 +91,7 @@
 				return 300
 
 		if(METROID_ACTIVATE_MAJOR)
-			user.visible_message(SPAN_WARNING("[user] starts shaking violently!") ,SPAN_WARNING("Your [name] starts pulsing violently..."))
+			user.visible_message(SPAN_WARNING("[user] starts shaking violently!"), SPAN_WARNING("Your [name] starts pulsing violently..."))
 			if(do_after(user, 50, target = user))
 				var/list/possible_mobs = list(
 							/mob/living/simple_animal/hostile/faithless,

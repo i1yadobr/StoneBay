@@ -58,4 +58,4 @@
 	if (imp)
 		imp.interact(user)
 	else
-		to_chat(user ,SPAN("warning", "There's no implant loaded in \the [src]."))
+		to_chat(user, SPAN("warning", "There's no implant loaded in \the [src]."))

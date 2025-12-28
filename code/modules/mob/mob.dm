@@ -891,9 +891,9 @@
 		return
 
 	if(self)
-		visible_message(SPAN("warning", "<b>[src] rips [selection] out of their body.</b>") ,SPAN("warning", "<b>You rip [selection] out of your body.</b>"))
+		visible_message(SPAN("warning", "<b>[src] rips [selection] out of their body.</b>"), SPAN("warning", "<b>You rip [selection] out of your body.</b>"))
 	else
-		visible_message(SPAN("warning", "<b>[usr] rips [selection] out of [src]'s body.</b>") ,SPAN("warning", "<b>[usr] rips [selection] out of your body.</b>"))
+		visible_message(SPAN("warning", "<b>[usr] rips [selection] out of [src]'s body.</b>"), SPAN("warning", "<b>[usr] rips [selection] out of your body.</b>"))
 
 	if(ishuman(src))
 		var/mob/living/carbon/human/H = src

@@ -354,7 +354,7 @@ var/list/tape_roll_applications = list()
 	if(user.a_intent == I_HELP)
 		to_chat(user, SPAN("warning", "You refrain from breaking \the [src]."))
 		return
-	user.visible_message(SPAN("notice", "\The [user] breaks \the [src]!") ,SPAN("notice", "You break \the [src]."))
+	user.visible_message(SPAN("notice", "\The [user] breaks \the [src]!"), SPAN("notice", "You break \the [src]."))
 
 	for (var/obj/item/tape/T in gettapeline())
 		if(T == src)

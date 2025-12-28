@@ -944,7 +944,7 @@
 
 /obj/item/light/proc/shatter()
 	if(status == LIGHT_OK || status == LIGHT_BURNED)
-		src.visible_message(SPAN("warning", "[name] shatters.") ,SPAN("warning", "You hear a small glass object shatter."))
+		src.visible_message(SPAN("warning", "[name] shatters."), SPAN("warning", "You hear a small glass object shatter."))
 		status = LIGHT_BROKEN
 		force = 5
 		sharp = 1

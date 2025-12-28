@@ -212,7 +212,7 @@
 			log_misc("[holder.name] is hallucinating about [talker.name] SAYS : [message]")
 		else
 			to_chat(holder,"<B>[talker.name]</B> points at [holder.name]")
-			to_chat(holder ,SPAN("game say", "[SPAN("name", "[talker.name]")] says something softly."))
+			to_chat(holder, SPAN("game say", "[SPAN("name", "[talker.name]")] says something softly."))
 
 		holder.show_bubble_to_client(holder.bubble_icon, holder.say_test(message), talker, holder.client)
 
@@ -222,7 +222,7 @@
 
 //Spiderling skitters
 /datum/hallucination/skitter/start()
-	to_chat(holder ,SPAN("notice", "The spiderling skitters[pick(" away"," around","")]."))
+	to_chat(holder, SPAN("notice", "The spiderling skitters[pick(" away"," around","")]."))
 
 //Spiders in your body
 /datum/hallucination/spiderbabies
@@ -232,7 +232,7 @@
 	if(istype(holder,/mob/living/carbon/human))
 		var/mob/living/carbon/human/H = holder
 		var/obj/O = pick(H.organs)
-		to_chat(H ,SPAN("warning", "You feel something [pick("moving","squirming","skittering")] inside of your [O.name]!"))
+		to_chat(H, SPAN("warning", "You feel something [pick("moving","squirming","skittering")] inside of your [O.name]!"))
 
 /datum/hallucination/virus
 	duration = 1 MINUTE // Just prevents duplicates for this duration
@@ -323,7 +323,7 @@
 	duration = 20 MINUTES
 
 /datum/hallucination/telepahy/start()
-	to_chat(holder ,SPAN("notice", "You expand your mind outwards."))
+	to_chat(holder, SPAN("notice", "You expand your mind outwards."))
 	holder.verbs += /mob/living/carbon/human/proc/fakeremotesay
 
 /datum/hallucination/telepahy/end()

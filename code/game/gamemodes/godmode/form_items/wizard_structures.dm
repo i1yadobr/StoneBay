@@ -21,4 +21,4 @@
 					spell.charge_counter = min(spell.charge_counter + 1, spell.charge_max)
 		to_chat(hitter, SPAN("notice", "You feel refreshed!"))
 		return
-	to_chat(hitter ,SPAN("warning", "You need to keep in contact with \the [src]!"))
+	to_chat(hitter, SPAN("warning", "You need to keep in contact with \the [src]!"))
