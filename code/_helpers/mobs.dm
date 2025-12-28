@@ -121,14 +121,17 @@
 //checks whether this item is a module of the robot it is located in.
 /proc/is_robot_module(obj/item/thing)
 	if (!thing || !istype(thing.loc, /mob/living/silicon/robot))
-		return 0
+		return FALSE
 	var/mob/living/silicon/robot/R = thing.loc
 	return (thing in R.module.modules)
 
 /proc/get_exposed_defense_zone(atom/movable/target)
 	return pick(BP_HEAD, BP_L_HAND, BP_R_HAND, BP_L_FOOT, BP_R_FOOT, BP_L_ARM, BP_R_ARM, BP_L_LEG, BP_R_LEG, BP_CHEST, BP_GROIN)
 
-/proc/do_mob(atom/movable/affecter, mob/target, time = 30, target_zone = 0, uninterruptible = 0, progress = 1, incapacitation_flags = INCAPACITATION_DEFAULT, can_multitask = FALSE, datum/callback/extra_checks)
+// TODO(rufus): check what is the difference between do_mob and do_after, if it is necessary, if they can be merged
+//   together, rename as needed and document their usage and arguments properly
+// Return value indicates if action was successful. Return value of FALSE means the action was interrupted.
+/proc/do_mob(atom/movable/affecter, mob/target, time = 30, target_zone = 0, uninterruptible = FALSE, progress = TRUE, incapacitation_flags = INCAPACITATION_DEFAULT, can_multitask = FALSE, datum/callback/extra_checks)
 	if(!affecter || !target)
 		return FALSE
 
@@ -158,7 +161,7 @@
 
 	var/endtime = world.time+time
 	var/starttime = world.time
-	. = 1
+	. = TRUE
 	while (world.time < endtime)
 
 		stoplag(1)
@@ -167,22 +170,22 @@
 			progbar.update(world.time - starttime)
 
 		if(!affecter || !target)
-			. = 0
+			. = FALSE
 			break
 
 		if(uninterruptible)
 			continue
 
 		if(!affecter || (is_mob_type && user.incapacitated(incapacitation_flags)) || affecter.loc != user_loc)
-			. = 0
+			. = FALSE
 			break
 
 		if(target.loc != target_loc)
-			. = 0
+			. = FALSE
 			break
 
 		if(affecter.get_active_item() != holding)
-			. = 0
+			. = FALSE
 			break
 
 		if(target_zone && affecter.get_selected_zone() != target_zone)
@@ -196,9 +199,9 @@
 	if(progbar)
 		qdel(progbar)
 
-	if(!can_multitask)
-		LAZYREMOVE(GLOB.domobs, uniqueid)
-
+// TODO(rufus): check what is the difference between do_mob and do_after, if it is necessary, if they can be merged
+//   together, rename as needed and document their usage and arguments properly
+// Return value indicates if action was successful. Return value of FALSE means the action was interrupted.
 /proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, incapacitation_flags = INCAPACITATION_DEFAULT, same_direction = FALSE, can_move = FALSE, can_multitask = FALSE, datum/callback/extra_checks)
 	if(!user)
 		return FALSE
@@ -235,30 +238,26 @@
 
 	var/endtime = world.time + delay
 	var/starttime = world.time
-	. = 1
+	. = TRUE
 	while (world.time < endtime)
 		stoplag(1)
 		if (progress)
 			progbar.update(world.time - starttime)
 
 		if(!user || user.incapacitated(incapacitation_flags) || (user.loc != original_loc && !can_move) || (same_direction && user.dir != original_dir))
-			. = 0
+			. = FALSE
 			break
 
 		if(target_loc && (!target || QDELETED(target) || target_loc != target.loc || target_type != target.type))
-			. = 0
+			. = FALSE
 			break
 
 		if(needhand)
 			if(user.get_active_hand() != holding)
-				. = 0
+				. = FALSE
 				break
 
-		if(extra_checks && !extra_checks.Invoke(user, target))
-			. = FALSE
-			break
-
-	if(progbar)
+	if (progbar)
 		qdel(progbar)
 
 	if(!can_multitask)
@@ -327,7 +326,7 @@
 	return FALSE
 
 //Find a dead mob with a brain and client.
-/proc/find_dead_player(find_key, include_observers = 0)
+/proc/find_dead_player(find_key, include_observers = TRUE)
 	if(isnull(find_key))
 		return
 
@@ -335,7 +334,7 @@
 
 	if(include_observers)
 		for(var/mob/M in GLOB.player_list)
-			if((!M.is_ooc_dead()) || (!M.client))
+			if((M.stat != DEAD) || (!M.client))
 				continue
 			if(M.ckey == find_key)
 				selected = M
@@ -343,7 +342,7 @@
 	else
 		for(var/mob/living/M in GLOB.player_list)
 			//Dead people only thanks!
-			if((!M.is_ooc_dead()) || (!M.client))
+			if((M.stat != DEAD) || (!M.client))
 				continue
 			//They need a brain!
 			if(istype(M, /mob/living/carbon/human))
