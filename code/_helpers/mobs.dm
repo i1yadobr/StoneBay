@@ -199,6 +199,9 @@
 	if(progbar)
 		qdel(progbar)
 
+	if(!can_multitask)
+		LAZYREMOVE(GLOB.domobs, uniqueid)
+
 // TODO(rufus): check what is the difference between do_mob and do_after, if it is necessary, if they can be merged
 //   together, rename as needed and document their usage and arguments properly
 // Return value indicates if action was successful. Return value of FALSE means the action was interrupted.
@@ -256,6 +259,10 @@
 			if(user.get_active_hand() != holding)
 				. = FALSE
 				break
+
+		if(extra_checks && !extra_checks.Invoke(user, target))
+			. = FALSE
+			break
 
 	if (progbar)
 		qdel(progbar)
@@ -334,7 +341,7 @@
 
 	if(include_observers)
 		for(var/mob/M in GLOB.player_list)
-			if((M.stat != DEAD) || (!M.client))
+			if((!M.is_ooc_dead()) || (!M.client))
 				continue
 			if(M.ckey == find_key)
 				selected = M
@@ -342,7 +349,7 @@
 	else
 		for(var/mob/living/M in GLOB.player_list)
 			//Dead people only thanks!
-			if((M.stat != DEAD) || (!M.client))
+			if((!M.is_ooc_dead()) || (!M.client))
 				continue
 			//They need a brain!
 			if(istype(M, /mob/living/carbon/human))

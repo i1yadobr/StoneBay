@@ -15,8 +15,9 @@
 	return TRUE
 
 /proc/print_atmos_analysis(user, list/result)
-	for(var/line in result)
-		to_chat(user, SPAN("notice", "[line]"))
+	if(!length(result))
+		return
+	to_chat(user, EXAMINE_BLOCK(jointext(result, "\n")))
 
 /proc/atmosanalyzer_scan(atom/target, datum/gas_mixture/mixture, advanced)
 	. = list()
