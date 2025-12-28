@@ -224,7 +224,7 @@
 /mob/proc/RangedAttack(atom/A, params)
 	if(!mutations.len) return
 	if((MUTATION_LASER in mutations) && a_intent == I_HURT)
-		LaserEyes(A) // moved into a proc below
+		LaserEyes(A)
 	else if(MUTATION_TK in mutations)
 		setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		A.attack_tk(src)
@@ -410,30 +410,3 @@
 
 /atom/proc/ShiftAltRightClick(mob/user)
 	return
-
-/*
-	Misc helpers
-
-	Laser Eyes: as the name implies, handles this since nothing else does currently
-	face_atom: turns the mob towards what you clicked on
-*/
-/mob/proc/LaserEyes(atom/A)
-	return
-
-/mob/living/LaserEyes(atom/A)
-	setClickCooldown(DEFAULT_QUICK_COOLDOWN)
-	var/turf/T = get_turf(src)
-
-	var/obj/item/projectile/beam/LE = new (T)
-	LE.icon = 'icons/effects/genetics.dmi'
-	LE.icon_state = "eyelasers"
-	playsound(usr.loc, 'sound/effects/weapons/energy/taser2.ogg', 75, 1)
-	LE.launch(A)
-
-/mob/living/carbon/human/LaserEyes()
-	if(nutrition>0)
-		..()
-		remove_nutrition(rand(1, 5))
-		handle_regular_hud_updates()
-	else
-		to_chat(src, SPAN("warning", "You're out of energy!  You need food!"))
