@@ -75,6 +75,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/screen/splash)
 	return ..()
 
 /atom/movable/screen/splash/fake/proc/fade(out)
+	mouse_opacity = 0 // make the game clickable even while splash is fading out to improve perceived responsiveness
 	if(out)
 		animate(src, alpha = 0, time = 30)
 	else
