@@ -531,6 +531,10 @@ its easier to just keep the beam vertical.
 /atom/proc/InsertedContents()
 	return contents
 
+// attack_generic for base atom type is a no-op.
+//
+// This proc is intended for handling actual damaging attack in contrast to other "attack" procs that deal
+// with all sorts of click handling.
 /atom/proc/attack_generic(mob/user as mob)
 	return FALSE
 
