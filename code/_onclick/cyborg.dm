@@ -86,7 +86,7 @@
 /mob/living/silicon/robot/CtrlClickOn(atom/A)
 	if(istype(A, /obj/machinery/door/airlock) \
 	|| istype(A, /obj/machinery/power/apc) \
-	|| istype(A, /obj/machinery/turretid) \
+	|| istype(A, /obj/machinery/turret_control_panel) \
 	|| istype(A, /turf))
 		A.AICtrlClick()
 		return
@@ -110,7 +110,7 @@
 // NOTE: below is a unqiue exception which maps a differnt keybind.
 // If A is an airlock, it calls the AI variant of the **CtrlAltClick** interaction instead.
 /mob/living/silicon/robot/AltClickOn(atom/A)
-	if(istype(A, /obj/machinery/turretid) || istype(A, /turf))
+	if(istype(A, /obj/machinery/turret_control_panel) || istype(A, /turf))
 		A.AIAltClick()
 		return
 	if(istype(A, /obj/machinery/door/airlock))
