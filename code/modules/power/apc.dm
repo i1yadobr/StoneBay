@@ -738,6 +738,10 @@
 	// do APC interaction
 	src.interact(user)
 
+/obj/machinery/power/apc/AICtrlClick() // turns off/on APCs.
+	Topic(src, list("breaker"="1"))
+	return TRUE
+
 /obj/machinery/power/apc/interact(mob/user)
 	if(!user)
 		return

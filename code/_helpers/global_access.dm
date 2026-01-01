@@ -411,8 +411,6 @@
 			return global.join_regular_announcement;
 		if("language_keys")
 			return global.language_keys;
-		if("last_chew")
-			return global.last_chew;
 		if("last_message_id")
 			return global.last_message_id;
 		if("last_round_duration")
@@ -1184,8 +1182,6 @@
 			global.join_regular_announcement=newval;
 		if("language_keys")
 			global.language_keys=newval;
-		if("last_chew")
-			global.last_chew=newval;
 		if("last_message_id")
 			global.last_message_id=newval;
 		if("last_round_duration")
@@ -1772,7 +1768,6 @@
 	"join_motd",
 	"join_regular_announcement",
 	"language_keys",
-	"last_chew",
 	"last_message_id",
 	"last_round_duration",
 	"license_to_url",

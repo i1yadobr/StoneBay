@@ -1,21 +1,87 @@
-/*
-	Click code cleanup
-	~Sayu
-*/
+// click.dm is the main file that is responsible for distributing clicks to their respective procs and handlers.
+// It is the origin point of most click handling in the game.
+// Below is an overview of the main click handling flow to help navigate click code.
+// Also, see the reference section at the end of this comment for additional links and references.
+//
+// The main flow is:
+// BYOND -> /atom/Click() -> /datum/click_handler/OnClick(atom) -> /mob/ClickOn(atom) -> checks/procs
+// All three procs have various overrides and exceptions, but in general this is the path and naming that is used.
+//
+//
+// # Click()
+// All¹ click interactions start at BYOND's native /atom/Click()² proc which is invoked
+// when the client clicks anything in the game. This function is overriden by various atoms in our code,
+// including in this file for the base /atom. This is where we take over from BYOND.
+//
+// Click() calls include so called params³, which include additional information about the click like
+// held modifier keys (ctrl/shift/alt) and position on the atom's icon that was clicked.
+// These params are passed further and don't affect anything at the current stage.
+//
+// Most of the time the Click() proc simply invokes the click_handler (/datum/click_handler)⁸ of the mob who
+// initiated the click, determined by a special usr var⁴.
+// The main exception to this are screen objects (/obj/screen)⁵, special kinds of objects that are only displayed
+// to a specific mob. The main use case for these is the user interface, also known as HUD.
+//
+//
+// # Click handlers⁸
+// Every mob has a stack⁶ (/datum/stack)⁷ structure of click_handlers.
+// Out of this stack, the last added click handler is picked, also known as the "top" click handler of the stack.
+// This click handler's OnClick() function is called with a reference to the atom that was clicked and click params.
+//
+// Most of the time mobs have the default click handler (/datum/click_handler/default) as their top and only one.
+// The only this click_handler does is call ClickOn() proc of the mob who initiated the click, passing it a reference
+// to the clicked atom and click params.
+// Why the detour to click_handler instead of just calling mob's ClickOn()? Because there are certain scenarios
+// where we don't want neither our mob nor clicked atom to handle the click. Instead, we might want to trigger
+// some ability that is pending target. This is exactly the case with non-default click handlers for changelings
+// or spiders, for example.
+//
+// Various mobs also implement their own click handling logic. For example synthetics like AI and Cyborgs handle
+// clicks very differently from the regular "carbon" mobs.
+// Since click handlers keep track of their mob, the ClickOn() function of the correct mob type will be
+// called automatically from here and allow specific mob' code to handle the click however they want.
+//
+//
+// #Mob's ClickOn(atom)
+// This is where the actual bulk of the execution branching happens.
+// Most of the default ClickOn() code can be found in this file.
+//
+// ClickOn() starts applying various checks to the current mob state and click params³ to determine where
+// to pass the click handling next.
+// This includes:
+// - mandatory 1 deciscond check, ensuring no one clicks faster than 10 times per second
+// - handling ctrl/shift/alt clicks or combination of those
+// - determining if something inside the user's inventory was clicked
+// - determining if clicked atom was adjacent (within 1 tile range) or remote
+// - checking if user clicked something with an item in their hands or "unarmed"
+// All the factors above are taken into account to call appropriate "attack" procs which clicked objects
+// use to define their interactive functionality.
+// In case of ctrl/shift/alt clicks, special "CtrlClickOn", "ShiftClickOn" etc. procs are called instead,
+// which other mobtypes can override to handle these types of click in their own way.
+//
+// # Reference and additional information
+// 1. There are exceptions. Double clicks are handled by https://www.byond.com/docs/ref/#/atom/proc/DblClick and
+//    drag and drop interactions are handled by https://www.byond.com/docs/ref/#/atom/proc/MouseDrop.
+//    Both have overrides in our code to define custom behavior for various scenarios.
+// 2. Click(): https://www.byond.com/docs/ref/#/atom/proc/Click
+//    In BYOND it's also possible to handle the /client/Click() (https://www.byond.com/docs/ref/#/client/proc/Click)
+//    which captures clicks on any control in the game window, not only game objects and the HUD.
+//    However, this is not currently used in the codebase (exception: code/modules/admin/callproc/callproc.dm)
+// 3. Click params: https://www.byond.com/docs/ref/#/DM/mouse
+// 4. usr variable: https://www.byond.com/docs/ref/#/proc/var/usr
+// 5. /obj/screen: see code/_onclick/hud/screen_objects.dm
+// 6. Stack concept: https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
+// 7. /datum/stack: see code/__std/stack.dm
+// 8. /datum/click_handler: see code/_onclick/click_handler.dm
 
-// 1 decisecond click delay (above and beyond mob/next_move)
-/mob/var/next_click = 0
 
-/*
-	Before anything else, defer these calls to a per-mobtype handler.  This allows us to
-	remove istype() spaghetti code, but requires the addition of other handler procs to simplify it.
-
-	Alternately, you could hardcode every mob's variation in a flat ClickOn() proc; however,
-	that's a lot of code duplication and is hard to maintain.
-
-	Note that this proc can be overridden, and is in the case of screen objects.
-*/
-
+// Click() and DblClick() are overrides of BYOND's native functions with the same name that act as entrypoints
+// to all click handling (except for /client/Click() used for one specific admin-only function).
+// These functions retrieve the appropriate /datum/click_handler of the user and simply pass the call.
+//
+// Note that some atoms have their own overrides of Click() that take precedence.
+// This is extensively used by /obj/screen elements that are used for user interface, also known as HUD,
+// as they define unique functionality depsite being /obj's just like the rest of the objects in the game.
 /atom/Click(location, control, params) // This is their reaction to being clicked on (standard proc)
 	var/datum/click_handler/click_handler = usr.GetClickHandler()
 	click_handler.OnClick(src, params)
@@ -24,19 +90,32 @@
 	var/datum/click_handler/click_handler = usr.GetClickHandler()
 	click_handler.OnDblClick(src, params)
 
-/*
-	Standard mob ClickOn()
-	Handles exceptions: middle click, modified clicks, mech actions
-
-	After that, mostly just check your state, check whether you're holding an item,
-	check whether you're adjacent to the target, then pass off the click to whoever
-	is recieving it.
-	The most common are:
-	* mob/UnarmedAttack(atom,adjacent) - used here only when adjacent, with no item in hand; in the case of humans, checks gloves
-	* atom/attackby(item,user) - used only when adjacent
-	* item/afterattack(atom,user,adjacent,params) - used both ranged and adjacent
-	* mob/RangedAttack(atom,params) - used only ranged, only used for tk and laser eyes but could be changed
-*/
+// ClickOn() for the base mob type handles multiple checks related to the mob state and click params and forwards
+// the call to the appropriate proc.
+// Main performed checks include:
+// - mandatory 1 deciscond check, ensuring no one clicks faster than 10 times per second
+// - check of the user's click cooldown which might still be active after they clicked something else
+// - check of user state being valid for a click, e.g. not stunned, paralyzed etc.
+// - handling ctrl/shift/alt clicks or combinations of those
+// - determining if something inside the user's inventory was clicked
+// - determining if clicked atom was adjacent (within 1 tile range) or remote
+// - checking if user clicked something with an item in their hands or "unarmed"
+//
+// ClickOn currently distributes click to the following functions:
+// - /mob/CtrlClickOn(), /mob/ShiftClickOn() etc. for clicks with modifier keys held
+// - /obj/mecha/click_action() for clicks on mechs
+// - /mob/living/carbon/human/RestrainedSelfClick() for human actions on self while restrained
+// - /mob/throw_item() for handling item throws
+// - /obj/item/attack_self() for activating items in hands on click
+// - /obj/item/resolve_attackby() for main handling of clicks on atoms within reach using an item
+// - /obj/item/afterattack() for secondary handling of clicks on atoms using an item if click wasn't
+//   handled by resolve_attackby() or if clicked atom is not withing reach
+// - /mob/UnarmedAttack() for main handling of clicks on atoms within reach while not using an item
+// - /mob/RangedAttack() for main handling of clicks on atoms outside of the mob's reach while not using an item
+//
+// ClickOn also changes the direction the mob is facing towards the clicked atom (unless modifier keys are used).
+// Clicks with modifier keys may also change the direction user is facing.
+// If the mob is being aimed at, ClickOn will also trigger the "Click" restriction by calling /mob/trigger_aiming(TARGET_CAN_CLICK).
 /mob/proc/ClickOn(atom/A, params)
 
 	if(world.time <= next_click) // Hard check, before anything else, to avoid crashing
@@ -105,9 +184,17 @@
 		return M.click_action(A, src)
 
 	if(restrained())
-		setClickCooldown(10)
-		RestrainedClickOn(A)
-		return 1
+		// NOTE(rufus): currently only human clicks are allowed for restrained mobs,
+		//   the rest of the code is not adapted to restrained clicks yet and doesn't
+		//   handle them properly.
+		if(!istype(A, /mob/living/carbon/human))
+			return
+		if(A == src)
+			var/mob/living/carbon/human/H = A
+			H.RestrainedSelfClick()
+			return
+		// the click falls through to regular interaction, attack code will
+		// recognize the restrained state on its own and default to bites/kicks
 
 	if(in_throw_mode)
 		if(isturf(A) || isturf(A.loc))
@@ -136,8 +223,6 @@
 			if(!resolved && A && I)
 				I.afterattack(A, src, 1, params) // 1 indicates adjacency
 		else
-			if(ismob(A)) // No instant mob attacking
-				setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			UnarmedAttack(A, 1)
 
 		trigger_aiming(TARGET_CAN_CLICK)
@@ -162,8 +247,6 @@
 				if(!resolved && A && I)
 					I.afterattack(A, src, 1, params) // 1: clicking something Adjacent
 			else
-				if(ismob(A)) // No instant mob attacking
-					setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 				UnarmedAttack(A, 1)
 
 			trigger_aiming(TARGET_CAN_CLICK)
@@ -177,236 +260,54 @@
 			trigger_aiming(TARGET_CAN_CLICK)
 	return 1
 
-/mob/proc/setClickCooldown(timeout)
-	next_move = max(world.time + timeout, next_move)
-
-/mob/proc/canClick()
-	if(config.misc.no_click_cooldown || next_move <= world.time)
-		return 1
-	return 0
-
-// Default behavior: ignore double clicks, the second click that makes the doubleclick call already calls for a normal click
 /mob/proc/DblClickOn(atom/A, params)
 	return
 
-/*
-	Translates into attack_hand, etc.
-
-	Note: proximity_flag here is used to distinguish between normal usage (flag=1),
-	and usage when clicking on things telekinetically (flag=0).  This proc will
-	not be called at ranged except with telekinesis.
-
-	proximity_flag is not currently passed to attack_hand, and is instead used
-	in human click code to allow glove touches only at melee range.
-*/
-/mob/proc/UnarmedAttack(atom/A, proximity_flag)
-	return
-
-/mob/living/UnarmedAttack(atom/A, proximity_flag)
-
-	if(GAME_STATE < RUNLEVEL_GAME)
-		to_chat(src, "You cannot attack people before the game has started.")
-		return 0
-
-	if(stat)
-		return 0
-
-	return 1
-
-/*
-	Ranged unarmed attack:
-
-	This currently is just a default for all mobs, involving
-	laser eyes and telekinesis.  You could easily add exceptions
-	for things like ranged glove touches, spitting alien acid/neurotoxin,
-	animals lunging, etc.
-*/
-/mob/proc/RangedAttack(atom/A, params)
-	if(!mutations.len) return
-	if((MUTATION_LASER in mutations) && a_intent == I_HURT)
-		LaserEyes(A)
-	else if(MUTATION_TK in mutations)
-		setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		A.attack_tk(src)
-/*
-	Restrained ClickOn
-
-	Used when you are handcuffed and click things.
-	Not currently used by anything but could easily be.
-*/
-/mob/proc/RestrainedClickOn(atom/A)
-	return
-
-/*
-	Middle click
-	Only used for swapping hands
-*/
-/mob/proc/MiddleClickOn(atom/A)
-	if(A.MiddleClick(src))
-		return
-
-	if(get_preference_value(/datum/client_preference/pointing) == GLOB.PREF_MIDDLE_CLICK)
-		if(pointed(A))
-			return
-	swap_hand()
-	return
-
-/mob/proc/ShiftMiddleClickOn(atom/A)
-	if(get_preference_value(/datum/client_preference/pointing) == GLOB.PREF_SHIFT_MIDDLE_CLICK)
-		if(pointed(A))
-			return
-
-/atom/proc/MiddleClick(mob/M)
-	return
-
-/*
-	Shift click
-	For most mobs, examine.
-	This is overridden in ai.dm
-*/
-/mob/proc/ShiftClickOn(atom/A)
-	A.ShiftClick(src)
-	SEND_SIGNAL(src, SIGNAL_MOB_SHIFT_CLICK, src, A)
-	return
-
-/atom/proc/ShiftClick(mob/user)
-	if(user.client && (src in view(user.client.eye)))
-		user.examinate(src)
-
-	return
-
-/*
-	Ctrl click
-	For most objects, pull
-*/
 /mob/proc/CtrlClickOn(atom/A)
 	A.CtrlClick(src)
-	SEND_SIGNAL(src, SIGNAL_MOB_CTRL_CLICK, src, A)
-	return
-
-/atom/proc/CtrlClick(mob/user)
-	return
-
-/atom/movable/CtrlClick(mob/user)
-	if(Adjacent(user))
-		user.start_pulling(src)
-
-/*
-	Alt click
-	Unused except for AI
-*/
-/mob/proc/AltClickOn(atom/A)
-	A.AltClick(src)
-
-/atom/proc/AltClick(mob/user)
-	var/cancel = SEND_SIGNAL(src, SIGNAL_ALT_CLICKED, src, user)
-	if(cancel)
-		return
-
-	var/turf/T = get_turf(src)
-
-	if(T && user.TurfAdjacent(T))
-		if(user.listed_turf == T)
-			user.listed_turf = null
-		else
-			user.listed_turf = T
-			user.client.statpanel = "Turf"
-
-	return TRUE
-
-/mob/proc/TurfAdjacent(turf/T)
-	return T.AdjacentQuick(src)
-
-/mob/observer/ghost/TurfAdjacent(turf/T)
-	if(!isturf(loc) || !client)
-		return FALSE
-
-	var/list/view_sizes = get_view_size(client.view)
-	return z == T.z && (get_dist(loc, T) <= max(view_sizes[1], view_sizes[2]))
-
-/*
-	Control+Shift click
-	Unused except for AI
-*/
-/mob/proc/CtrlShiftClickOn(atom/A)
-	A.CtrlShiftClick(src)
-	return
-
-/atom/proc/CtrlShiftClick(mob/user)
-	return
-
-/*
-	Control+Alt click
-*/
-/mob/proc/CtrlAltClickOn(atom/A)
-	A.CtrlAltClick(src)
-	return
-
-/atom/proc/CtrlAltClick(mob/user)
-	var/cancel = SEND_SIGNAL(src, SIGNAL_CTRL_ALT_CLICKED, src, user)
-	if(cancel)
-		return
-
-/*
-	Rclick.
-*/
-
-/*
-	Control+Rclick
-*/
 
 /mob/proc/CtrlRightClickOn(atom/A)
 	A.CtrlRightClick(src)
 
-/atom/proc/CtrlRightClick(mob/user)
-	return
-
-/*
-	Alt+Rclick
-*/
-
-/mob/proc/AltRightClickOn(atom/A)
-	A.AltRightClick(src)
-
-/atom/proc/AltRightClick(mob/user)
-	return
-
-/*
-	Shift+Rclick
-*/
-
-/mob/proc/ShiftRightClickOn(atom/A)
-	A.ShiftRightClick(src)
-
-/atom/proc/ShiftRightClick(mob/user)
-	return
-
-/*
-	Control+Alt+Rclick
-*/
-
-/mob/proc/CtrlAltRightClickOn(atom/A)
-	A.CtrlAltRightClick(src)
-
-/atom/proc/CtrlAltRightClick(mob/user)
-	return
-
-/*
-	Control+Shift+Rclick
-*/
+/mob/proc/CtrlShiftClickOn(atom/A)
+	A.CtrlShiftClick(src)
 
 /mob/proc/CtrlShiftRightClickOn(atom/A)
 	A.CtrlShiftRightClick(src)
 
-/atom/proc/CtrlShiftRightClick(mob/user)
-	return
+/mob/proc/CtrlAltClickOn(atom/A)
+	A.CtrlAltClick(src)
 
-/*
-	Shift+Alt+Rclick
-*/
+/mob/proc/CtrlAltRightClickOn(atom/A)
+	A.CtrlAltRightClick(src)
+
+/mob/proc/ShiftClickOn(atom/A)
+	A.ShiftClick(src)
+
+/mob/proc/ShiftRightClickOn(atom/A)
+	A.ShiftRightClick(src)
 
 /mob/proc/ShiftAltRightClickOn(atom/A)
 	A.ShiftAltRightClick(src)
 
-/atom/proc/ShiftAltRightClick(mob/user)
-	return
+/mob/proc/AltClickOn(atom/A)
+	A.AltClick(src)
+
+/mob/proc/AltRightClickOn(atom/A)
+	A.AltRightClick(src)
+
+// MiddleClickOn of the base mob type makes mob point towards atom A if
+// pointing preference is set to Middle-Click.
+// Otherwise it makes mob change their active hand.
+/mob/proc/MiddleClickOn(atom/A)
+	if(get_preference_value(/datum/client_preference/pointing) == GLOB.PREF_MIDDLE_CLICK)
+		if(pointed(A))
+			return
+	swap_hand()
+
+// ShiftMiddleClickOn of the base mob type makes mob point towards atom A if
+// pointing preference is set to Shift-Middle-Click.
+/mob/proc/ShiftMiddleClickOn(atom/A)
+	if(get_preference_value(/datum/client_preference/pointing) == GLOB.PREF_SHIFT_MIDDLE_CLICK)
+		if(pointed(A))
+			return

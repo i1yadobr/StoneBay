@@ -1,3 +1,5 @@
+// TODO(rufus): update the adjacency proc description below, improve readability, and split it
+// into proper descriptions for each subtype implementation.
 /*
 	Adjacency proc for determining touch range
 
@@ -104,6 +106,20 @@ Quick adjacency (to turf):
 			return loc.Adjacent(neighbor, target, recurse - 1)
 		return FALSE
 	return ..()
+
+// TurfAdjacent of base mob type checks if mob is 1 or less tiles away from turf T and returns a boolean.
+/mob/proc/TurfAdjacent(turf/T)
+	return T.AdjacentQuick(src)
+
+// TurfAdjacent of observer ghosts checks if turf T is withing the view range of the ghost client and returns a boolean.
+/mob/observer/ghost/TurfAdjacent(turf/T)
+	if(!isturf(loc) || !client)
+		return FALSE
+	return z == T.z && (get_dist(loc, T) <= client.view)
+
+// TurfAdjacent of AI checks if turf is visible on any cameras and returns a boolean.
+/mob/living/silicon/ai/TurfAdjacent(turf/T)
+	return (cameranet && cameranet.is_turf_visible(T))
 
 /*
 	This checks if you there is uninterrupted airspace between that turf and this one.
