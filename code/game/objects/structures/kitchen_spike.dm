@@ -43,7 +43,7 @@
 
 /obj/structure/kitchenspike/proc/spike(mob/user, mob/living/victim)
 	user.visible_message(SPAN_DANGER("[user] starts putting [victim] onto \the [src]..."),
-		SPAN("userdanger","[user] starts putting [victim] onto \the [src]..."),
+		SPAN("danger","[user] starts putting [victim] onto \the [src]..."),
 		SPAN("italics", "You hear a squishy wet noise."))
 	if(!do_mob(user, src, time = 120))
 		return
@@ -53,7 +53,7 @@
 		return
 	playsound(src.loc, "sound/effects/splat.ogg", 50, 1)
 	victim.visible_message(SPAN_DANGER("[user] slams [victim] onto \the [src]!"),
-		SPAN("userdanger", "[user] slams [victim] onto \the [src]!"),
+		SPAN("danger", "[user] slams [victim] onto \the [src]!"),
 		SPAN("italics", "You hear a squishy wet noise."))
 	victim.forceMove(src.loc)
 
