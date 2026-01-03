@@ -482,6 +482,7 @@
 	item_state = "egg5"
 	item_state_on = null
 	w_class = ITEM_SIZE_TINY
+	action_button_name = null
 
 	flashlight_max_bright = 1
 	flashlight_inner_range = 0.1
@@ -499,5 +500,8 @@
 /obj/item/device/flashlight/metroid/on_update_icon()
 	return
 
-/obj/item/device/flashlight/metroid/attack_self(mob/user)
-	return //Bio-luminescence does not toggle.
+/obj/item/device/flashlight/metroid/switch_light(mob/user)
+	return
+
+/obj/item/device/flashlight/metroid/toggle(mob/user)
+	return
