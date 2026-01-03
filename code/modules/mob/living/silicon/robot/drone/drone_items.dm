@@ -256,8 +256,8 @@
 
 /obj/item/gripper/attack_self(mob/user)
 	if(wrapped)
+		wrapped.attack_self(user)
 		return
-			wrapped.attack_self(user)
 	else
 		if(length(storage_type))
 			playsound(src.loc, 'sound/effects/pop.ogg', 50, 0)
