@@ -414,7 +414,7 @@ Class Procs:
 				if(istype(B, P) && istype(A, P))
 					if(B.rating > A.rating)
 						R.remove_from_storage(B, src)
-						R.handle_item_insertion(A, 1)
+						R.handle_item_insertion(A, feedback = FALSE)
 						component_parts.Remove(A)
 						component_parts.Add(B)
 						B.forceMove(src)
