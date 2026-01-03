@@ -124,7 +124,7 @@ GLOBAL_LIST_INIT(lawgiver_modes, list(
 /obj/item/gun/projectile/lawgiver/AltClick()
 	if(submit_DNA_sample())
 		return
-	return ..()
+	..()
 
 /obj/item/gun/projectile/lawgiver/verb/erase_DNA_sample()
 	set name = "Erase DNA sample"

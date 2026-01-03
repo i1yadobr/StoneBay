@@ -130,8 +130,8 @@
 /obj/machinery/portable_atmospherics/hydroponics/AltClick()
 	if(mechanical && !usr.incapacitated() && Adjacent(usr))
 		close_lid(usr)
-		return 1
-	return ..()
+		return
+	..()
 
 /obj/machinery/portable_atmospherics/hydroponics/attack_ghost(mob/observer/ghost/user)
 	if(!(harvest && seed && seed.has_mob_product))

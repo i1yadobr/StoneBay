@@ -778,8 +778,8 @@
 /obj/structure/closet/AltClick(mob/user)
 	if(!src.opened)
 		togglelock(user)
-	else
-		return ..()
+		return
+	..()
 
 /obj/structure/closet/CtrlAltClick(mob/user)
 	verb_toggleopen()
