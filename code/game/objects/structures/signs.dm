@@ -522,7 +522,6 @@
 	if(!claimant)
 		to_chat(user, SPAN("notice", "You fill in your name in the blanks with a permanent marker."))
 		claimant = user.real_name
-	..()
 
 /obj/item/sign/medipolma/examine(mob/user, infix)
 	. = ..()

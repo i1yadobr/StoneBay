@@ -52,8 +52,7 @@
 		on = !on
 		to_chat(user, "You [on ? "enable" : "disable"] the helmet light.")
 		update_flashlight(user)
-	else
-		return ..(user)
+		return
 
 /obj/item/clothing/head/proc/update_flashlight(mob/user = null)
 	if(on && !light_applied)

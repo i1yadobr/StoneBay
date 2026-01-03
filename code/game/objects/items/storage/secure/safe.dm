@@ -19,4 +19,5 @@
 	new /obj/item/pen(src)
 
 /obj/item/storage/secure/safe/attack_hand(mob/user)
-	return attack_self(user)
+	attack_self(user)
+	return TRUE

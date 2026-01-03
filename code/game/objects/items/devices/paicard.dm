@@ -225,7 +225,6 @@
 			"}
 	show_browser(user, dat, "window=paicard")
 	onclose(user, "paicard")
-	return
 
 /obj/item/device/paicard/CanUseTopic(mob/user, datum/topic_state/state, href_list)
 	. = ..()

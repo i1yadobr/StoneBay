@@ -22,13 +22,11 @@
 	switchtools()
 	to_chat(user, SPAN("notice", "[src] mode: [tool_c]."))
 	update_icon()
-	return
 
 /obj/item/combotool/on_update_icon()
 	underlays.Cut()
 	underlays += "adv_[tool_c]"
 	..()
-
 
 /obj/item/combotool/advtool
 	name = "Advanced Multitool"
@@ -55,7 +53,6 @@
 	var/obj/item/device/multitool/advpart/multitool = null
 	var/obj/item/screwdriver/advpart/screwdriver = null
 	var/obj/item/wirecutters/advpart/wirecutters = null
-
 
 /obj/item/combotool/advtool/New()
 	..()
@@ -151,7 +148,6 @@
 			to_chat(user, SPAN("warning", "There are already \the [wirecutters] in \the [src]!"))
 	else
 		return ..()
-
 
 /obj/item/device/multitool/advpart
 	name = "compact multitool"

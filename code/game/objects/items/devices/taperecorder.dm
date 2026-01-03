@@ -179,7 +179,6 @@
 	else
 		to_chat(usr, SPAN("notice", "The tape is full."))
 
-
 /obj/item/device/taperecorder/proc/stop_recording()
 	//Sanity checks skipped, should not be called unless actually recording
 	recording = 0
@@ -188,7 +187,6 @@
 	if(ismob(loc))
 		var/mob/M = loc
 		to_chat(M, SPAN("notice", "Recording stopped."))
-
 
 /obj/item/device/taperecorder/verb/stop()
 	set name = "Stop"
@@ -208,7 +206,6 @@
 		return
 	else
 		to_chat(usr, SPAN("notice", "Stop what?"))
-
 
 /obj/item/device/taperecorder/verb/wipe_tape()
 	set name = "Wipe Tape"
@@ -230,7 +227,6 @@
 		mytape.used_capacity = 0
 		to_chat(usr, SPAN("notice", "You wipe the tape."))
 		return
-
 
 /obj/item/device/taperecorder/verb/playback_memory()
 	set name = "Playback Tape"
@@ -305,7 +301,6 @@
 		sleep(10)
 		explode()
 
-
 /obj/item/device/taperecorder/verb/print_transcript()
 	set name = "Print Transcript"
 	set category = "Object"
@@ -338,13 +333,11 @@
 	sleep(300)
 	canprint = 1
 
-
 /obj/item/device/taperecorder/attack_self(mob/user)
 	if(recording || playing)
 		stop()
 	else
 		record()
-
 
 /obj/item/device/taperecorder/on_update_icon()
 	if(!mytape)
@@ -371,12 +364,10 @@
 	var/list/timestamp = new /list()
 	var/ruined = 0
 
-
 /obj/item/device/tape/on_update_icon()
 	ClearOverlays()
 	if(ruined)
 		AddOverlays("ribbonoverlay")
-
 
 /obj/item/device/tape/fire_act()
 	ruin()
@@ -386,27 +377,22 @@
 		to_chat(user, SPAN("notice", "You pull out all the tape!"))
 		ruin()
 
-
 /obj/item/device/tape/proc/ruin()
 	ruined = 1
 	update_icon()
-
 
 /obj/item/device/tape/proc/fix()
 	ruined = 0
 	update_icon()
 
-
 /obj/item/device/tape/proc/record_speech(text)
 	timestamp += used_capacity
 	storedinfo += "\[[time2text(used_capacity*10,"mm:ss")]\] [text]"
-
 
 //shows up on the printed transcript as (Unrecognized sound)
 /obj/item/device/tape/proc/record_noise(text)
 	timestamp += used_capacity
 	storedinfo += "*\[[time2text(used_capacity*10,"mm:ss")]\] [text]"
-
 
 /obj/item/device/tape/attackby(obj/item/I, mob/user, params)
 	if(ruined && isScrewdriver(I))
@@ -430,7 +416,7 @@
 	..()
 
 
-//Random colour tapes
+//Rndom colour tapes
 /obj/item/device/tape/random/New()
 	..()
 	icon_state = "tape_[pick("white", "blue", "red", "yellow", "purple")]"

@@ -181,7 +181,6 @@
 
 /obj/item/weldingtool/attack_self(mob/user as mob)
 	setWelding(!welding, usr)
-	return
 
 /obj/item/weldingtool/proc/refuel_from_obj(obj/O, mob/user)
 	if(!O.reagents)

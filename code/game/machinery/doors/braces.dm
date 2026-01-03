@@ -58,7 +58,6 @@
 /obj/item/airlock_brace/attack_self(mob/user as mob)
 	electronics.attack_self(user)
 
-
 /obj/item/airlock_brace/attackby(obj/item/W as obj, mob/user as mob)
 	..()
 	if (istype(W.get_id_card(), /obj/item/card/id))

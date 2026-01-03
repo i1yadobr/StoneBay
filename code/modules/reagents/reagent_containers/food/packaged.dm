@@ -16,7 +16,7 @@
 		update_icon()
 		playsound(loc, 'sound/items/shpshpsh.ogg', 50, 1)
 		return
-	return ..()
+	..()
 
 /obj/item/reagent_containers/food/packaged/on_update_icon()
 	if(is_open_container())
@@ -26,7 +26,6 @@
 			icon_state = "[initial(icon_state)]1"
 	else
 		icon_state = initial(icon_state)
-
 
 /obj/item/reagent_containers/food/packaged/tweakers
 	name = "Tweakers bar"
@@ -241,7 +240,7 @@
 	if(!is_open_container())
 		trigger_vomit()
 		playsound(loc, 'sound/items/cancrush1.ogg', 50, 1)
-	return ..()
+	..()
 
 /obj/item/reagent_containers/food/packaged/surstromming/proc/trigger_vomit()
 	var/list/mobs = list()

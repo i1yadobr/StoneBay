@@ -164,8 +164,10 @@
 			return
 		if(istype(a_left,a_right.type))//If they are the same type it causes issues due to window code
 			switch(alert("Which side would you like to use?",,"Left","Right"))
-				if("Left")	a_left.attack_self(user)
-				if("Right")	a_right.attack_self(user)
+				if("Left")
+					a_left.attack_self(user)
+				if("Right")
+					a_right.attack_self(user)
 			return
 		else
 			if(!istype(a_left,/obj/item/device/assembly/igniter))
@@ -174,7 +176,8 @@
 				a_right.attack_self(user)
 	else
 		var/turf/T = get_turf(src)
-		if(!T)	return 0
+		if(!T)
+			return
 		if(a_left)
 			a_left.holder = null
 			a_left.forceMove(T)
@@ -188,8 +191,6 @@
 		spawn(0)
 			user.drop(src)
 			qdel(src)
-	return
-
 
 /obj/item/device/assembly_holder/proc/process_activation(obj/D, normal = 1, special = 1)
 	if(!D)

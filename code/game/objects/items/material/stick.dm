@@ -19,7 +19,6 @@
 	user.visible_message(SPAN("warning", "\The [user] snaps [src]."), SPAN("warning", "You snap [src]."))
 	shatter(0)
 
-
 /obj/item/material/stick/attackby(obj/item/W as obj, mob/user as mob)
 	if(W.sharp && W.edge && !sharp)
 		user.visible_message(SPAN("warning", "[user] sharpens [src] with [W]."), SPAN("warning", "You sharpen [src] using [W]."))
@@ -27,7 +26,6 @@
 		SetName("sharpened " + name)
 		update_force()
 	return ..()
-
 
 /obj/item/material/stick/attack(mob/M, mob/user)
 	if(user != M && user.a_intent == I_HELP)

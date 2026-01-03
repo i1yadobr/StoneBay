@@ -22,22 +22,18 @@ GLOBAL_LIST_INIT(megaphone_insults, world.file2list("strings/translation/megapho
 /obj/item/device/megaphone/on_update_icon()
 	icon_state = "megaphone[active ? "_on" : ""]"
 
-
 /obj/item/device/megaphone/Initialize()
 	GLOB.listening_objects |= src
 	return ..()
-
 
 /obj/item/device/megaphone/Destroy()
 	GLOB.listening_objects -= src
 	return ..()
 
-
 /obj/item/device/megaphone/attack_self(mob/living/user)
 	show_splash_text(user, "toggled [active ? "off" : "on"]", "You toggle \the [src] [active ? "off" : "on"].")
 	active = !active
 	update_icon()
-
 
 /obj/item/device/megaphone/hear_talk(mob/M, text, verb, datum/language/speaking)
 	if(!active)
@@ -51,7 +47,6 @@ GLOBAL_LIST_INIT(megaphone_insults, world.file2list("strings/translation/megapho
 		return
 
 	_speak(M, capitalize(text), speaking)
-
 
 /obj/item/device/megaphone/proc/_speak(mob/living/talker, message, datum/language/speaking)
 	var/msg = emagged && prob(50) ? pick(GLOB.megaphone_insults) : message
@@ -67,7 +62,6 @@ GLOBAL_LIST_INIT(megaphone_insults, world.file2list("strings/translation/megapho
 		I.talk_into(talker, msg, verb = "broadcasts", speaking = speaking)
 
 	last_use = world.time
-
 
 /obj/item/device/megaphone/emag_act(remaining_charges, mob/user)
 	if(emagged)

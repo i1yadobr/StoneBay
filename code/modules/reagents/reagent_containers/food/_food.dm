@@ -73,10 +73,8 @@
 	qdel(src)
 	return
 
-
 /obj/item/reagent_containers/food/attack_self(mob/user)
 	return
-
 
 /obj/item/reagent_containers/food/attack(mob/M, mob/user, def_zone)
 	if(!reagents.total_volume)
@@ -202,7 +200,6 @@
 
 	return FALSE
 
-
 /obj/item/reagent_containers/food/proc/get_bitecount()
 	switch(bitecount)
 		if(-INFINITY to 0)
@@ -244,7 +241,6 @@
 	if(H.stat == CONSCIOUS)
 		to_chat(H, SPAN("notice", "You take a bite of [src]."))
 
-
 /obj/item/reagent_containers/food/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/storage))
 		return ..() // -> item/attackby()
@@ -260,9 +256,9 @@
 				to_chat(user, SPAN("warning", "You already have something on your [U]."))
 				return
 
-			user.visible_message( \
-				"\The [user] scoops up some [src] with \the [U]!", \
-				SPAN("notice", "You scoop up some [src] with \the [U]!") \
+			user.visible_message(
+				"\The [user] scoops up some [src] with \the [U]!",
+				SPAN("notice", "You scoop up some [src] with \the [U]!")
 			)
 
 			if(bitecount != -1)
@@ -323,8 +319,6 @@
 					F.recalc_max_volume()
 			qdel(src)
 			return
-	return ..()
-
 
 /obj/item/reagent_containers/food/attack_generic(mob/living/user)
 	if(!isanimal(user) && !isalien(user))

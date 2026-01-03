@@ -38,8 +38,6 @@
 				on_reagent_change()
 		return
 
-
-
 /obj/item/reagent_containers/vessel/condiment/attack_self(mob/user as mob)
 	return
 

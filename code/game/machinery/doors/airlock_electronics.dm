@@ -17,10 +17,10 @@
 	var/locked = 1
 	var/lockable = 1
 
-
 /obj/item/airlock_electronics/attack_self(mob/user as mob)
-	if (!ishuman(user) && !istype(user,/mob/living/silicon/robot))
-		return ..(user)
+	if(!ishuman(user) && !istype(user,/mob/living/silicon/robot))
+		..(user)
+		return
 
 	tgui_interact(user)
 

@@ -174,7 +174,6 @@
 		H.update_inv_r_hand()
 
 	add_fingerprint(user)
-	return
 
 /obj/item/shield/energy/on_update_icon()
 	icon_state = "eshield[active]"
@@ -182,7 +181,6 @@
 		set_light(0.4, 0.1, 1, 2, "#006aff")
 	else
 		set_light(0)
-
 
 /*
  * Security Barrier
@@ -322,4 +320,3 @@
 		return
 	toggle(user)
 	add_fingerprint(user)
-	return

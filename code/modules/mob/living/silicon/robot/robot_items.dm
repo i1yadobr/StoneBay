@@ -332,8 +332,6 @@
 				mode = 1
 			to_chat(user, "Changed printing mode to '[mode == 2 ? "Rename Paper" : "Write Paper"]'")
 
-	return
-
 // Copied over from paper's rename verb
 // see code/modules/paperwork/paper.dm line 62
 
@@ -375,7 +373,6 @@
 /obj/item/form_printer/proc/deploy_paper(turf/T)
 	T.visible_message(SPAN("notice", "\The [src.loc] dispenses a sheet of crisp white paper."))
 	new /obj/item/paper(T)
-
 
 //Personal shielding for the combat module.
 // TODO: add a cool shielding effect

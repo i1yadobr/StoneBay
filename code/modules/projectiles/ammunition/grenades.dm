@@ -97,7 +97,6 @@
 		open(user)
 		add_fingerprint(user)
 		return
-	return ..()
 
 /obj/item/ammo_casing/grenade/loaded/attackby(obj/item/W, mob/user)
 	if(is_spent)

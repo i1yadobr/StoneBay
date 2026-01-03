@@ -55,7 +55,7 @@
 	update_icon()
 
 /obj/item/implantpad/attack_self(mob/user)
-	if (imp)
+	if(imp)
 		imp.interact(user)
 	else
 		to_chat(user, SPAN("warning", "There's no implant loaded in \the [src]."))

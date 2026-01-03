@@ -186,10 +186,9 @@
 	. = ..()
 
 /obj/item/gun/flamer/attack_self(mob/user)
-	return toggle_flame(user)
+	toggle_flame(user)
 
 /obj/item/gun/flamer/proc/toggle_flame(mob/user)
-
 	if(!igniter)
 		to_chat(user, SPAN_WARNING("Install ingiter first!"))
 		playsound(loc, 'sound/signals/warning3.ogg', 50, 0)
@@ -203,6 +202,7 @@
 	if(lit)
 		playsound(user, pick(ignite_sound), 100, 1)
 		set_next_think(world.time)
+	// TODO(rufus): remove redundant return value
 	return TRUE
 
 /obj/item/gun/flamer/Fire(atom/target, mob/living/user, params, pointblank=0, reflex=0, target_zone = BP_CHEST)

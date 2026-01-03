@@ -499,6 +499,7 @@
 /obj/item/orion_ship/attack_self(mob/user)
 	if(active)
 		return
+
 	message_admins("[key_name_admin(usr)] primed an explosive Orion ship for detonation.")
 	log_game("[key_name(usr)] primed an explosive Orion ship for detonation.")
 	to_chat(user, SPAN("warning", "You flip the switch on the underside of [src]."))
