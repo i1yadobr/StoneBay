@@ -41,7 +41,6 @@ LINEN BINS
 		else
 			folded = 0
 			icon_state = initial(icon_state)
-	return
 
 /obj/item/bedsheet/grey
 	icon_state = "sheetgrey"
