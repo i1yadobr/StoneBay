@@ -97,7 +97,7 @@
 
 
 // Modified handle_item_insertion.  Would prefer not to, but...
-/obj/item/storage/sheetsnatcher/handle_item_insertion(obj/item/W, prevent_warning = 0)
+/obj/item/storage/sheetsnatcher/handle_item_insertion(obj/item/W, feedback = TRUE)
 	var/obj/item/stack/material/S = W
 	if(!istype(S))
 		return 0
