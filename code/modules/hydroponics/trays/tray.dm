@@ -627,6 +627,7 @@
 		close_lid(usr)
 	return
 
+// TODO(rufus): rename to "toggle_lid"
 /obj/machinery/portable_atmospherics/hydroponics/proc/close_lid(mob/living/user)
 	closed_system = !closed_system
 	to_chat(user, "You [closed_system ? "close" : "open"] the tray's lid.")
