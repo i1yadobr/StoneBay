@@ -478,7 +478,6 @@
 	color = rgb(rand(50, 255), rand(50, 255), rand(50, 255))
 	..()
 
-
 // Metroid flashlight is a flashlight variant with a weak yellow light that is always on.
 // It is usually obtained by extracting and activating the core of yellow metroids.
 /obj/item/device/flashlight/metroid
