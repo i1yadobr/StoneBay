@@ -49,7 +49,6 @@
 	add_fingerprint(user)
 	playsound(loc, 'sound/signals/ping5.ogg', 50, 0)
 	to_chat(user, "\The [src] doesn't seem to react.")
-	return
 
 /obj/item/device/emag/proc/toggle_reveal(mob/user)
 	revealed = !revealed

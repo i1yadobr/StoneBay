@@ -195,7 +195,6 @@
 	var/charge_detonated = FALSE
 
 /obj/item/handcuffs/syndicate/attack_self(mob/user)
-
 	mode = !mode
 
 	switch(mode)

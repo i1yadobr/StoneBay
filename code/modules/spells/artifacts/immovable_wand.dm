@@ -55,8 +55,6 @@
 			reshape(choice)
 		return
 
-	return ..()
-
 /obj/item/immovable_wand/throw_impact(hit_atom, speed)
 	. = ..()
 	var/pwn_chance = current_shape == IW_BALL ? 100 : 50

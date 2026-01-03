@@ -306,21 +306,16 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	HTML +="</body></html>"
 	show_browser(usr, HTML, "window=log;size=400x444;border=1;can_resize=1;can_close=1;can_minimize=0")
 
-
 /obj/item/device/pda/ai/can_use()
 	return 1
 
-
 /obj/item/device/pda/ai/attack_self(mob/user as mob)
-	if ((honkamt > 0) && (prob(60)))//For clown virus.
+	if((honkamt > 0) && (prob(60)))//For clown virus.
 		honkamt--
 		playsound(loc, 'sound/items/bikehorn.ogg', 30, 1)
-	return
-
 
 /obj/item/device/pda/ai/pai
 	ttone = "assist"
-
 
 /*
  *	The Actual PDA
@@ -576,14 +571,12 @@ var/global/list/obj/item/device/pda/PDAs = list()
 //NOTE: graphic resources are loaded on client login
 /obj/item/device/pda/attack_self(mob/user as mob)
 	user.set_machine(src)
-
 	var/datum/component/uplink/U = get_component(/datum/component/uplink)
 	if(istype(U) && U.active)
 		U.interact(user)
 		return
 
 	ui_interact(user) //NanoUI requires this proc
-	return
 
 /obj/item/device/pda/Topic(href, href_list)
 	if(href_list["cartmenu"] && !QDELETED(cartridge))
@@ -592,7 +585,6 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	if(href_list["radiomenu"] && !QDELETED(cartridge) && !QDELETED(cartridge.radio))
 		cartridge.radio.Topic(href, href_list)
 		return 1
-
 
 	..()
 	var/mob/user = usr

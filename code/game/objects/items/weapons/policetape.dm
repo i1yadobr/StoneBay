@@ -255,7 +255,6 @@ var/list/tape_roll_applications = list()
 		start = null
 		update_icon()
 		to_chat(usr, SPAN("notice", "You finish placing \the [src]."))
-		return
 
 /obj/item/taperoll/afterattack(atom/A, mob/user as mob, proximity)
 	if(!proximity)

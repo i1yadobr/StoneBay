@@ -113,7 +113,6 @@
 	return
 
 /obj/item/device/radio/electropack/attack_self(mob/user as mob, flag1)
-
 	if(!istype(user, /mob/living/carbon/human))
 		return
 	user.set_machine(src)
@@ -134,4 +133,3 @@ Code:
 </TT>"}
 	show_browser(user, dat, "window=radio")
 	onclose(user, "radio")
-	return

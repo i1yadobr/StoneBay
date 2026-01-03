@@ -887,7 +887,6 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 	else
 		to_chat(user, "The paper is full of intelligible symbols!")
 
-
 /obj/item/newspaper/Topic(href, href_list)
 	var/mob/living/U = usr
 	..()

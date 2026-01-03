@@ -28,10 +28,10 @@
 		desc += SPAN_NOTICE("\nThis disk contais following gene data: [english_list(desc_postfix)].")
 
 /obj/item/disk/botany/attack_self(mob/user)
-	if (wipe(user))
+	if(wipe(user))
 		return
 
-	return ..()
+	..()
 
 /obj/item/disk/botany/proc/wipe(mob/user)
 	if (!length(stored_genes))

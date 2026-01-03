@@ -28,7 +28,6 @@
 		src.add_fingerprint(user)
 		spawn(20)
 			spam_flag = 0
-	return
 
 //Oh no
 /obj/item/bikehorn/vuvuzela
@@ -49,9 +48,8 @@
 		src.add_fingerprint(user)
 		spawn(20)
 			spam_flag = 0
-	return
 
-/obj/item/bikehorn/vuvuzela/traitor 
+/obj/item/bikehorn/vuvuzela/traitor
 
 /obj/item/bikehorn/vuvuzela/traitor/attack_self(mob/user)
 	if (spam_flag == 0)
@@ -72,4 +70,3 @@
 					M.Paralyse(4)
 		spawn(50)
 			spam_flag = 0
-	return

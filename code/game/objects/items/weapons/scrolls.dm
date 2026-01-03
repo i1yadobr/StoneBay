@@ -24,7 +24,6 @@
 	dat += "Kind regards,<br>Wizards Federation<br><br>P.S. Don't forget to bring your gear, you'll need it to cast most spells.<HR>"
 	show_browser(user, dat, "window=scroll")
 	onclose(user, "scroll")
-	return
 
 /obj/item/teleportation_scroll/Topic(href, href_list)
 	if(..())

@@ -178,7 +178,6 @@
 	stored_ammo.Cut()
 	update_icon()
 
-
 /obj/item/ammo_magazine/attack_hand(mob/user)
 	if(user.get_inactive_hand() == src)
 		if(!stored_ammo.len)

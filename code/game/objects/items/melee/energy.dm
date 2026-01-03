@@ -75,7 +75,6 @@
 		H.update_inv_r_hand()
 
 	add_fingerprint(user)
-	return
 
 /obj/item/melee/energy/dropped()
 	..()

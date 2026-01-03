@@ -71,7 +71,7 @@
 	if(!stored_name)
 		to_chat(user, "Waving around a holobadge before swiping an ID would be pretty pointless.")
 		return
-	return ..()
+	..()
 
 /obj/item/clothing/accessory/badge/holo/emag_act(remaining_charges, mob/user)
 	if (emagged)

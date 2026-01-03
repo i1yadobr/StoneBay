@@ -121,4 +121,3 @@ Prismatic extracts:
 	if(!newcolor)
 		return
 	paintcolor = newcolor
-	return

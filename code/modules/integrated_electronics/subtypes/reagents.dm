@@ -666,10 +666,8 @@
 	activate_pin(1)
 	activate_pin(3)
 
-
 /obj/item/integrated_circuit/input/beaker_connector/ask_for_input(mob/user)
 	attack_self(user)
-
 
 /obj/item/integrated_circuit/input/beaker_connector/attack_self(mob/user)
 	//Check if no beaker attached
@@ -688,7 +686,6 @@
 	activate_pin(2)
 	activate_pin(3)
 
-
 /obj/item/integrated_circuit/input/beaker_connector/proc/push_vol()
 	var/beakerVolume = 0
 	if(current_beaker)
@@ -696,7 +693,6 @@
 
 	set_pin_data(IC_OUTPUT, 1, beakerVolume)
 	push_data()
-
 
 /obj/item/reagent_containers/vessel/beaker/on_reagent_change()
 	..()

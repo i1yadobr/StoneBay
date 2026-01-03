@@ -45,7 +45,7 @@
 /obj/item/organ/internal/cerebrum/posibrain/attack_self(mob/user)
 	if(!brainmob?.key && !searching)
 		start_search(user)
-	else return ..()
+	..()
 
 /obj/item/organ/internal/cerebrum/posibrain/proc/reset_search()
 	if(!searching || brainmob?.key)

@@ -445,7 +445,7 @@ REAGENT SCANNER
 	return 1
 
 /obj/item/device/healthanalyzer_advanced/attack_self(mob/user)
-	if (last_target && dat)
+	if(last_target && dat)
 		show_browser(user, dat, "window=scanconsole;size=430x600")
 
 /obj/item/device/healthanalyzer_advanced/examine(mob/user, infix)
@@ -501,14 +501,12 @@ REAGENT SCANNER
 		to_chat(user, "You toggle advanced gas analysis [advanced_mode ? "on" : "off"].")
 
 /obj/item/device/analyzer/attack_self(mob/user)
-
-	if (user.incapacitated())
+	if(user.incapacitated())
 		return
-	if (!user.IsAdvancedToolUser())
+	if(!user.IsAdvancedToolUser())
 		return
 
 	analyze_gases(user.loc, user,advanced_mode)
-	return 1
 
 /obj/item/device/analyzer/afterattack(obj/O, mob/user, proximity)
 	if(!proximity)
@@ -551,9 +549,9 @@ REAGENT SCANNER
 		icon_state += "_s"
 
 /obj/item/device/mass_spectrometer/attack_self(mob/user as mob)
-	if (user.incapacitated())
+	if(user.incapacitated())
 		return
-	if (!user.IsAdvancedToolUser())
+	if(!user.IsAdvancedToolUser())
 		return
 	if(reagents.total_volume)
 		var/list/blood_traces = list()
@@ -581,7 +579,6 @@ REAGENT SCANNER
 				dat += "[initial(R.name)] ([blood_doses[T]] ml) "
 		to_chat(user, "[dat]")
 		reagents.clear_reagents()
-	return
 
 /obj/item/device/mass_spectrometer/adv
 	name = "advanced mass spectrometer"

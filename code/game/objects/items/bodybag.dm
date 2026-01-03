@@ -14,7 +14,6 @@
 	R.add_fingerprint(user)
 	qdel(src)
 
-
 /obj/item/storage/box/bodybags
 	name = "body bags"
 	desc = "This box contains body bags."
@@ -29,7 +28,6 @@
 	new /obj/item/bodybag(src)
 	new /obj/item/bodybag(src)
 	new /obj/item/bodybag(src)
-
 
 /obj/structure/closet/body_bag
 	name = "body bag"

@@ -1164,13 +1164,12 @@
 	..()
 
 /obj/item/pizzabox/attack_self( mob/user as mob )
-
-	if( boxes.len > 0 )
+	if(boxes.len > 0)
 		return
 
 	open = !open
 
-	if( open && pizza )
+	if(open && pizza)
 		ismessy = 1
 
 	update_icon()

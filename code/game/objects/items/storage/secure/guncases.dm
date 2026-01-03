@@ -47,7 +47,7 @@
 	return ..()
 
 /obj/item/storage/secure/guncase/attack_self(mob/user)
-	return tgui_interact(user)
+	tgui_interact(user)
 
 /obj/item/storage/secure/guncase/proc/spawn_set(set_name)
 	if(gunspawned)

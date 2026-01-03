@@ -107,7 +107,6 @@
 	transfer_fingerprints_to(B)
 	B.add_fingerprint(user)
 	qdel_self()
-	return
 
 #undef PICK_RANDOM_BALLOON
 
