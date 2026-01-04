@@ -107,22 +107,25 @@
 		open(usr)
 		return
 
-	if(istype(over_object, /atom/movable/screen))
-		if(loc != usr)
-			return
-		if(!canremove)
-			to_chat(usr, "[src] cannot be removed!")
-			return
-		// TODO(rufus): checking by name is not reliable, refactor to something appropriate for type checking
-		switch(over_object.name)
-			if(BP_R_HAND)
-				if(usr.drop(src))
-					usr.put_in_r_hand(src)
-			if(BP_L_HAND)
-				if(usr.drop(src))
-					usr.put_in_l_hand(src)
+	if(!canremove)
+		to_chat(usr, "[src] cannot be removed!")
 		return
-	..()
+
+	if(loc != usr)
+		return
+
+	var/atom/movable/screen/inventory/inv_box = over_object
+	if(!istype(inv_box))
+		return ..()
+
+	// TODO(rufus): checking by name is not reliable, refactor to something appropriate for type checking
+	switch(inv_box.slot_id)
+		if(slot_l_hand)
+			if(usr.drop(src))
+				usr.put_in_l_hand(src)
+		if(slot_r_hand)
+			if(usr.drop(src))
+				usr.put_in_r_hand(src)
 
 /obj/item/storage/AltClick(mob/usr)
 	if(!canremove)
