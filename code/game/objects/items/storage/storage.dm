@@ -97,7 +97,7 @@
 	// TODO(rufus): check if issmall() can be replaced by something more sematically meaningfull
 	if(!(ishuman(usr) || isrobot(usr) || issmall(usr)))
 		return
-	if(usr.incapacitated())
+	if(usr.incapacitated() || isxenomorph(usr) || islarva(usr))
 		return
 
 	if(over_object == usr)
