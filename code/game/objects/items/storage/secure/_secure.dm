@@ -7,7 +7,7 @@
 
 	var/emagged_overlay_icon_state = "secureb"
 	var/emag_sparks_overlay_icon_state = "securespark"
-	var/icon_opened = "secure0"
+	var/opened_overlay_icon_state = "secure0"
 
 	/// Holds lock overlay of this storage.
 	var/image/lock_overlay
@@ -39,7 +39,7 @@
 	if(emagged)
 		lock_overlay = image(icon, emagged_overlay_icon_state)
 	else if(!locked)
-		lock_overlay = image(icon, icon_opened)
+		lock_overlay = image(icon, opened_overlay_icon_state)
 
 	AddOverlays(lock_overlay)
 

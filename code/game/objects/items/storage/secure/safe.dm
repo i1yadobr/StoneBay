@@ -1,7 +1,7 @@
 /obj/item/storage/secure/safe
 	name = "secure safe"
 	icon_state = "safe"
-	icon_opened = "safe0"
+	opened_overlay_icon_state = "safe0"
 	emagged_overlay_icon_state = "safeb"
 	emag_sparks_overlay_icon_state = "safespark"
 	inspect_state = "safe-open"
