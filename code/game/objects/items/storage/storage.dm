@@ -195,9 +195,10 @@
 		storage_ui.close_all()
 
 /obj/item/storage/proc/storage_space_used()
-	. = 0
+	var/used = 0
 	for(var/obj/item/I in contents)
-		. += I.get_storage_cost()
+		used += I.get_storage_cost()
+	return used
 
 //This proc return TRUE if the item can be picked up and FALSE if it can't.
 //Set the stop_messages to stop it from printing messages
