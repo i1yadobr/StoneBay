@@ -91,11 +91,8 @@
 				hacking = FALSE
 
 			return
-		//At this point you have exhausted all the special things to do when locked
-		// ... but it's still locked.
 		return
 
-	// -> storage/attackby() what with handle insertion, etc
 	return ..()
 
 /obj/item/storage/secure/attack_self(mob/user)
