@@ -19,21 +19,6 @@
 	/// An associative list of gun - contents.
 	var/list/gun_spawn = list()
 
-/obj/item/storage/secure/guncase/attack_hand(mob/user)
-	if(loc == user && locked == 1)
-		show_splash_text(user, "locked!", SPAN("warning", "\The [src] is locked!"))
-
-	else if(loc == user && !locked)
-		open(usr)
-
-	else
-		..()
-		for(var/mob/M in range(1))
-			if(M.s_active == src)
-				close(M)
-
-	add_fingerprint(user)
-
 /obj/item/storage/secure/guncase/open(mob/user)
 	tgui_update()
 	return ..()
