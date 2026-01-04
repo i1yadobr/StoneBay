@@ -1,16 +1,12 @@
 /obj/item/storage/secure/guncase
 	name = "guncase"
-	desc = "A heavy-duty container with a digital locking system. Has a thick layer of foam inside."
-	icon_state = "guncase"
-	item_state = "guncase"
-	icon_opened = "guncase0"
 	inspect_state = FALSE
-	force = 8.0
+	force = 8
 	throw_range = 4
 	w_class = ITEM_SIZE_LARGE
 	mod_weight = 1.4
 	mod_reach = 0.7
-	mod_handy = 1.0
+	mod_handy = 1
 	max_w_class = ITEM_SIZE_NORMAL
 	max_storage_space = DEFAULT_BACKPACK_STORAGE
 
