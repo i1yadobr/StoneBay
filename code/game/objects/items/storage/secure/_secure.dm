@@ -5,8 +5,8 @@
 	max_w_class = ITEM_SIZE_SMALL
 	max_storage_space = DEFAULT_BOX_STORAGE
 
-	var/icon_locking = "secureb"
-	var/icon_sparking = "securespark"
+	var/emagged_overlay_icon_state = "secureb"
+	var/emag_sparks_overlay_icon_state = "securespark"
 	var/icon_opened = "secure0"
 
 	/// Holds lock overlay of this storage.
@@ -37,7 +37,7 @@
 
 	icon_state = base_icon_state ? base_icon_state : initial(icon_state)
 	if(emagged)
-		lock_overlay = image(icon, icon_locking)
+		lock_overlay = image(icon, emagged_overlay_icon_state)
 	else if(!locked)
 		lock_overlay = image(icon, icon_opened)
 
@@ -50,12 +50,7 @@
 /obj/item/storage/secure/attackby(obj/item/W, mob/user)
 	if(locked)
 		if(istype(W, /obj/item/melee/energy))
-			emag_act(INFINITY, user, W, "You slice through the lock of \the [src]")
-			var/datum/effect/effect/system/spark_spread/spark_system = new /datum/effect/effect/system/spark_spread()
-			spark_system.set_up(5, 0, loc)
-			spark_system.start()
-			playsound(loc, 'sound/weapons/blade1.ogg', 50, 1)
-			playsound(loc, SFX_SPARK, 50, 1)
+			emag_act(INFINITY, user, W)
 			return
 
 		if(isScrewdriver(W))
@@ -167,21 +162,29 @@
 	)
 	return data
 
-/obj/item/storage/secure/emag_act(remaining_charges, mob/user, emag_source, visual_feedback = "", audible_feedback = "")
-	var/obj/item/melee/energy/WS = emag_source
-	if(WS.active)
-		on_hack_behavior(WS, user)
-		return TRUE
+/obj/item/storage/secure/emag_act(remaining_charges, mob/user, atom/emag_source)
+	if(istype(emag_source, /obj/item/melee/energy))
+		var/obj/item/melee/energy/energy_weapon = emag_source
+		if(!energy_weapon.active)
+			return NO_EMAG_ACT
+	if(emagged || !remaining_charges)
+		// `emag_source.name` is used to prevent automatic article insertion before the name of the emag source.
+		to_chat(user, SPAN("notice", "You swipe your [emag_source.name] through the lock mechanism of \the [src], but nothing happens."))
+		return
+	emagged = TRUE
+	locked = FALSE
+	hack_effects()
+	return TRUE
 
-/obj/item/storage/secure/proc/on_hack_behavior()
-	var/datum/effect/effect/system/spark_spread/spark_system = new /datum/effect/effect/system/spark_spread()
-	spark_system.set_up(5, 0, src.loc)
+/obj/item/storage/secure/proc/hack_effects()
+	var/datum/effect/effect/system/spark_spread/spark_system = new
+	spark_system.set_up(5, 0, src)
 	spark_system.start()
 	playsound(loc, 'sound/weapons/blade1.ogg', 50, 1)
 	playsound(loc, "spark", 50, 1)
 	if(!emagged)
 		emagged = TRUE
-		AddOverlays(image(icon, icon_sparking))
+		AddOverlays(image(icon, emag_sparks_overlay_icon_state))
 		sleep(6)
 		locked = FALSE
 		update_icon()
