@@ -107,7 +107,7 @@
 		open(usr)
 		return
 
-	if(istype(over_object, /obj/screen))
+	if(istype(over_object, /atom/movable/screen))
 		if(loc != usr)
 			return
 		if(!canremove)
