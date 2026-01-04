@@ -2,8 +2,8 @@
 	name = "secure safe"
 	icon_state = "safe"
 	icon_opened = "safe0"
-	icon_locking = "safeb"
-	icon_sparking = "safespark"
+	emagged_overlay_icon_state = "safeb"
+	emag_sparks_overlay_icon_state = "safespark"
 	inspect_state = "safe-open"
 	force = 0
 	w_class = ITEM_SIZE_NO_CONTAINER
