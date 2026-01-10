@@ -361,9 +361,9 @@
 	req_access = list(access_armory)
 
 /obj/item/storage/guncase/warden/spawn_set(set_name)
+	new /obj/item/storage/box/donut(src)
 	new /obj/item/shield/barrier(src)
 	new /obj/item/melee/baton/loaded(src)
-	new /obj/item/handcuffs(src)
 
 	..()
 
