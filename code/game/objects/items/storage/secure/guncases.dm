@@ -84,6 +84,7 @@
 		var/obj/item/melee/energy/energy_weapon = W
 		if(!energy_weapon.active)
 			return ..() // act as a normal item
+		show_splash_text(user, "unlocked", SPAN("notice", "You remove the cover and expose [src] bolts."))
 		get_hacked()
 		return
 
