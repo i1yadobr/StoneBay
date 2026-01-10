@@ -36,6 +36,10 @@
 	// If guncase was hacked and is no longer lockable, set by emag_act.
 	var/hacked = FALSE
 
+/obj/item/storage/guncase/Destroy()
+	QDEL_NULL(lock_overlay)
+	return ..()
+
 // update_icon of the guncase cleans and re-applies the overlays of the LED indicator based on the current state.
 /obj/item/storage/guncase/on_update_icon()
 	CutOverlays(lock_overlay)
@@ -46,6 +50,13 @@
 		lock_overlay = image(icon, opened_overlay_icon_state)
 
 	AddOverlays(lock_overlay)
+
+/obj/item/storage/guncase/examine(mob/user, infix)
+	. = ..()
+	if(hacked)
+		. += "The lock system sparkels. It doesn't seem to be working anymore."
+	else
+		. += "The lock system [locked ? "" : "un"]locked."
 
 /obj/item/storage/guncase/attack_self(mob/user)
 	tgui_interact(user)
@@ -70,6 +81,10 @@
 			spawn_set(selected_option)
 			for(var/obj/item/gun/energy/security/gun in contents)
 				gun.owner = ID.registered_name
+
+		if(hacked)
+			to_chat(user, SPAN("notice", "You swipe your card through the lock system of \the [src], but nothing happens."))
+			return
 
 		show_splash_text(user, "[locked ? "un" : ""]locked", SPAN("notice", "You [locked ? "un" : ""]lock \the [src]."))
 		locked = !locked
@@ -138,16 +153,16 @@
 // The hacking sequence consists of 3-10 attempts to short circuit the lock system, 12 seconds each.
 // Each attempt is a simple `do_after()` call that displays a progress bar to the user, followed by a progress
 // feedback message.
-/obj/item/storage/guncase/proc/multitool_hack(obj/item/device/multitool/mt, mob/user)
-	if(!istype(mt))
-		CRASH("multitool_hack() of the [src] called with wrong tool: expected /obj/item/device/multitool, got [mt.type] ([mt])")
+/obj/item/storage/guncase/proc/multitool_hack(obj/item/device/multitool/tool, mob/user)
+	if(!istype(tool))
+		CRASH("multitool_hack() of the [src] called with wrong tool: expected /obj/item/device/multitool, got [tool.type] ([tool])")
 	if(hacked)
 		to_chat(user, SPAN("warning", "You check the wiring of \the [src] and find the ID system already fried!"))
 		return
-	if(mt.in_use)
+	if(tool.in_use)
 		to_chat(user, SPAN("warning", "This multitool is already in use!"))
 		return
-	mt.in_use = 1
+	tool.in_use = TRUE
 	// Rolling twice in favor of the player to keep things fun and fast, no need to keep them waiting too long.
 	var/required_attempts = min(rand(3, 10), rand(3, 10))
 	for(var/i in 1 to required_attempts)
@@ -157,7 +172,7 @@
 		// matching the amount of time it takes to break out of handcuffs.
 		if(!do_after(user, 12 SECONDS))
 			to_chat(user, SPAN("warning", "You stop manipulating the ID system of \the [src] and it resets itself into a working state!"))
-			mt.in_use = 0
+			tool.in_use = FALSE
 			return
 		if(i == 5 && required_attempts > 5)
 			// Some additional text midway through the attempts so users know the system is working as intended
@@ -165,7 +180,7 @@
 			to_chat(user, SPAN("warning", "Your attempts to crash the ID system caused a failsafe ciruit to activate. \
 			                               This will take some additional time to bypass."))
 	get_hacked()
-	mt.in_use = 0
+	tool.in_use = FALSE
 	user.visible_message(SPAN("warning", "[user] short ciruits ID system of \the [src] with a multitool."),
 	                     SPAN("warning", "You short circuit the ID system of \the [src]."))
 
