@@ -1,5 +1,3 @@
-import { BooleanLike } from "common/react";
-
 import { useBackend } from "../backend";
 import { Button, NoticeBox, Section, Stack } from "../components";
 import { Window } from "../layouts";
@@ -15,7 +13,6 @@ interface Data {
   chosenGunDesc: string;
   items_spawned: boolean;
   possibleGuns: GunData[];
-  hacked: BooleanLike;
 }
 
 export const Guncase = (props: any, context: any) => {

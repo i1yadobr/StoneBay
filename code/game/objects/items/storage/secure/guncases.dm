@@ -193,7 +193,6 @@
 		"chosenGun" = selected_option,
 		"items_spawned" = items_spawned,
 		"possibleGuns",
-		"hacked" = hacked
 	)
 
 	for(var/gun_name in possible_guns)
@@ -218,9 +217,6 @@
 
 	if(action != "chooseGun")
 		return
-
-	if(hacked)
-		return TRUE
 
 	switch(action)
 		if("chooseGun")
