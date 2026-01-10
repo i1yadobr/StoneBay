@@ -218,6 +218,7 @@
 	if(!reagents.total_volume)
 		to_chat(user, SPAN_NOTICE("The syringe is empty."))
 		mode = SYRINGE_DRAW
+		update_icon()
 		return
 	if(istype(target, /obj/item/implantcase/chem))
 		return
