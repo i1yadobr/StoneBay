@@ -87,7 +87,7 @@
 		/obj/item/taperoll/police,
 		/obj/item/device/holowarrant,
 		/obj/item/cartridge/security,
-		/obj/item/storage/guncase/security,
+		/obj/item/storage/guncase/warden,
 		/obj/item/reagent_containers/spray/pepper,
 		/obj/item/device/radio/headset/headset_sec,
 		/obj/item/device/radio/headset/tactical/sec
