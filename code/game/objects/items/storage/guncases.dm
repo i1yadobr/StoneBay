@@ -10,7 +10,7 @@
 	mod_handy = 1
 	locked = TRUE
 	max_w_class = ITEM_SIZE_NORMAL
-	max_storage_space = DEFAULT_BACKPACK_STORAGE
+	storage_slots = 7
 	inspect_state = FALSE
 
 	// icon_state of the overlay that will be drawn over the guncase when it's unlocked.
@@ -249,12 +249,10 @@
 
 /obj/item/storage/guncase/security
 	name = "security hardcase"
-	desc = "A heavy-duty container with an ID-based locking system. This one is painted in NT Security colors."
+	desc = "A robust hardcase painted in the NT Security colors. \
+	        Equipped with an ID-based locking system to ensure that only authorized personnel can access the contents."
 	icon_state = "guncasesec"
 	item_state = "guncase"
-	override_w_class = list(/obj/item/gun/energy/security)
-	max_storage_space = null
-	storage_slots = 7
 	selected_option = "Pistol"
 
 	possible_guns = list(
@@ -303,7 +301,6 @@
 	name = "high command security hardcase"
 	desc = "A heavy-duty container with an ID-based locking system. This one is painted in NT High Command Security colors."
 	icon_state = "guncasehos"
-	override_w_class = list(/obj/item/gun/projectile/lawgiver)
 	selected_option = "Razor"
 
 	possible_guns = list(
@@ -332,13 +329,50 @@
 
 	..()
 
+/obj/item/storage/guncase/warden
+	name = "warden's hardcase"
+	desc = "A heavy-duty security case reserved for handguns, painted in NT Security colors. \
+	      It is specially designed for those responsible for the armory and brig, \
+	      highlighted by distinctive silver accents."
+	icon_state = "guncasewarden"
+	item_state = "guncase"
+	selected_option = "Energy Gun"
+
+	possible_guns = list(
+		"Energy Gun" = "A basic energy-based gun with two settings: Stun and kill.",
+		"VP78" = "The VP78 pistol is a common and reliable sidearm, used by security forces and colonial marshalls all over the world. This one has a sweet wooden grip, among other modifications. Uses .45 rounds."
+	)
+
+	gun_spawn = list(
+		"Energy Gun" = list(
+			/obj/item/gun/energy/egun,
+			/obj/item/handcuffs,
+			/obj/item/handcuffs,
+			/obj/item/storage/box/donut
+		),
+		"VP78" = list(
+			/obj/item/gun/projectile/pistol/vp78/wood,
+			/obj/item/ammo_magazine/c45m/stun,
+			/obj/item/ammo_magazine/c45m/stun,
+			/obj/item/ammo_magazine/c45m/flash
+		)
+	)
+
+	req_access = list(access_armory)
+
+/obj/item/storage/guncase/warden/spawn_set(set_name)
+	new /obj/item/shield/barrier(src)
+	new /obj/item/melee/baton/loaded(src)
+	new /obj/item/handcuffs(src)
+
+	..()
+
 /obj/item/storage/guncase/detective
 	name = "detective's gun case"
-	desc = "A heavy-duty container with a digital locking system. This one has a wooden coating."
+	desc = "An elegantly crafted gun case with a vintage wooden finish and brass-colored locks, \
+	     featuring an ID-based locking system. Combines classic style with modern access control."
 	icon_state = "guncasedet"
 	item_state = "guncasedet"
-	max_storage_space = null
-	storage_slots = 7
 	selected_option = "M1911"
 
 	possible_guns = list(
