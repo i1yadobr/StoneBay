@@ -67,7 +67,7 @@
 		if(isMultitool(W) && open && !hacking)
 			show_splash_text(user, "resetting internal memory...", "You begin resetting \the [src] internal memory...")
 			hacking = TRUE
-			if(!do_after(usr, 100, src, ))
+			if(!do_after(usr, 100, src))
 				return
 
 			if(QDELETED(src))
@@ -82,7 +82,6 @@
 				lock_code = null
 			else
 				show_splash_text(user, "unable to reset internal memory!", SPAN("warning", "You have failed to reset \the [src] internal memory!"))
-				hacking = FALSE
 				hacking = FALSE
 
 			return
