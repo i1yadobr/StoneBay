@@ -1,3 +1,5 @@
+import { BooleanLike } from "common/react";
+
 import { useBackend } from "../backend";
 import { Button, NoticeBox, Section, Stack } from "../components";
 import { Window } from "../layouts";
@@ -11,15 +13,16 @@ interface Data {
   title: string;
   chosenGun: string;
   chosenGunDesc: string;
-  gunSpawned: boolean;
+  items_spawned: boolean;
   possibleGuns: GunData[];
+  hacked: BooleanLike;
 }
 
 export const Guncase = (props: any, context: any) => {
   const { act, data } = useBackend<Data>(context);
 
   return (
-    <Window width={300} height={345}>
+    <Window width={350} height={345}>
       <Window.Content>
         <Stack fill vertical>
           <Stack.Item>
@@ -49,7 +52,7 @@ export const Guncase = (props: any, context: any) => {
                           color={
                             data.chosenGun === gun.gunName ? "good" : "default"
                           }
-                          disabled={data.gunSpawned}
+                          disabled={data.items_spawned}
                         >
                           {gun.gunName}
                         </Button>
