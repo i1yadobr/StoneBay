@@ -55,8 +55,8 @@
 // If nothing of the above is the case, the call is delegated to the parent implementation for regular
 // item-storage interactions.
 /obj/item/storage/guncase/attackby(obj/item/W, mob/user)
-	var/obj/item/card/id/I = W.get_id_card()
-	if(istype(I))
+	var/obj/item/card/id/ID = W.get_id_card()
+	if(istype(ID))
 		if(!allowed(user))
 			show_splash_text(user, "access denied!", SPAN("warning", "\icon[src] Access Denied!"))
 			return
@@ -69,14 +69,22 @@
 			tgui_update()
 			spawn_set(selected_option)
 			for(var/obj/item/gun/energy/security/gun in contents)
-				gun.owner = I.registered_name
+				gun.owner = ID.registered_name
 
 		show_splash_text(user, "[locked ? "un" : ""]locked", SPAN("notice", "You [locked ? "un" : ""]lock \the [src]."))
 		locked = !locked
 		update_icon()
 		return
+
 	else if(istype(W, /obj/item/device/multitool))
 		multitool_hack(W, user)
+		return
+
+	else if(istype(W, /obj/item/melee/energy))
+		var/obj/item/melee/energy/energy_weapon = W
+		if(!energy_weapon.active)
+			return ..() // act as a normal item
+		get_hacked()
 		return
 
 	else return ..()
