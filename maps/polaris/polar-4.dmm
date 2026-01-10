@@ -241,7 +241,7 @@
 "ES" = (/turf/simulated/shuttle/wall/corner/smoothwhite/se,/area/polarplanet/shuttle/arrival/station)
 "ET" = (/obj/structure/closet/crate,/obj/structure/cable{d1 = 4; d2 = 8; icon_state = "4-8"},/obj/effect/floor_decal/rust,/turf/simulated/floor/tiled/dark,/area/polarplanet/tcommsat/computer)
 "EU" = (/obj/structure/cable{d1 = 4; d2 = 8; icon_state = "4-8"},/obj/effect/decal/cleanable/dirt,/turf/simulated/floor/tiled/dark,/area/polarplanet/tcommsat/computer)
-"EW" = (/obj/structure/girder/reinforced,/turf/simulated/floor/natural/frozenground,/area/polarplanet/street)
+"EW" = (/obj/structure/girder,/turf/simulated/floor/natural/frozenground,/area/polarplanet/street)
 "EY" = (/obj/machinery/vending/coffee,/turf/simulated/floor/tiled/dark,/area/polarplanet/tcommsat/computer)
 "Fa" = (/obj/structure/closet/toolcloset,/turf/simulated/floor/plating,/area/polarplanet/tcommsat/chamber)
 "Fm" = (/obj/machinery/telecomms/bus/preset_four,/turf/simulated/floor/grid/bluegrid{name = "Mainframe Base"; temperature = 80},/area/polarplanet/tcommsat/chamber)
