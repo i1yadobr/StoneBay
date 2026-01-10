@@ -42,19 +42,21 @@
 
 // update_icon of the guncase cleans and re-applies the overlays of the LED indicator based on the current state.
 /obj/item/storage/guncase/on_update_icon()
-	CutOverlays(lock_overlay)
+    ClearOverlays()
 
-	if(hacked)
-		lock_overlay = image(icon, hacked_overlay_icon_state)
-	else if(!locked)
-		lock_overlay = image(icon, opened_overlay_icon_state)
+    lock_overlay = null
 
-	AddOverlays(lock_overlay)
+    if(hacked)
+        lock_overlay = image(icon, hacked_overlay_icon_state)
+    else if(!locked)
+        lock_overlay = image(icon, opened_overlay_icon_state)
+
+    AddOverlays(lock_overlay)
 
 /obj/item/storage/guncase/examine(mob/user, infix)
 	. = ..()
 	if(hacked)
-		. += "The lock system sparkels. It doesn't seem to be working anymore."
+		. += "The lock system broken. It doesn't seem to be working anymore."
 	else
 		. += "The lock system [locked ? "" : "un"]locked."
 
@@ -68,6 +70,10 @@
 /obj/item/storage/guncase/attackby(obj/item/W, mob/user)
 	var/obj/item/card/id/ID = W.get_id_card()
 	if(istype(ID))
+		if(hacked)
+			to_chat(user, SPAN("notice", "You swipe your card through the lock system of \the [src], but nothing happens."))
+			return
+
 		if(!allowed(user))
 			show_splash_text(user, "access denied!", SPAN("warning", "\icon[src] Access Denied!"))
 			return
@@ -81,10 +87,6 @@
 			spawn_set(selected_option)
 			for(var/obj/item/gun/energy/security/gun in contents)
 				gun.owner = ID.registered_name
-
-		if(hacked)
-			to_chat(user, SPAN("notice", "You swipe your card through the lock system of \the [src], but nothing happens."))
-			return
 
 		show_splash_text(user, "[locked ? "un" : ""]locked", SPAN("notice", "You [locked ? "un" : ""]lock \the [src]."))
 		locked = !locked
@@ -146,7 +148,7 @@
 	spark_system.start()
 	playsound(src, SFX_SPARK, 50, TRUE)
 	AddOverlays(image(icon, emag_sparks_overlay_icon_state))
-	spawn(6)
+	spawn(0.6 SECOND)
 		update_icon()
 
 // multitool_hack starts a hacking interaction sequence for the user and triggers `get_hacked()` on success.
@@ -253,6 +255,7 @@
 	override_w_class = list(/obj/item/gun/energy/security)
 	max_storage_space = null
 	storage_slots = 7
+	selected_option = "Pistol"
 
 	possible_guns = list(
 		"Pistol" = "A taser pistol. The smallest of all the tasers. It only has a single fire mode, but each shot wields power. Comes with a baton, a handheld barrier, a couple of handcuffs, and a pair of donuts.",
@@ -301,6 +304,7 @@
 	desc = "A heavy-duty container with an ID-based locking system. This one is painted in NT High Command Security colors."
 	icon_state = "guncasehos"
 	override_w_class = list(/obj/item/gun/projectile/lawgiver)
+	selected_option = "Razor"
 
 	possible_guns = list(
 		"Razor" = "Hephaestus Industries G50SE \"Razor\", a cheaper version of G50XS \"Raijin\". It has lethal and stun settings.",
