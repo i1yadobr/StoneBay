@@ -94,7 +94,8 @@
 	SHOULD_CALL_PARENT(TRUE)
 
 	for(var/key in default_choices)
-		choices[key] = 0
+		if(!choices[key])
+			choices[key] = 0
 
 	return TRUE
 
