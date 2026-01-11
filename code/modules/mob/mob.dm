@@ -18,7 +18,6 @@
 	QDEL_NULL(skybox)
 	QDEL_NULL(ability_master)
 	QDEL_NULL(shadow)
-	QDEL_NULL(bugreporter)
 	QDEL_NULL(language_menu)
 
 	LAssailant = null

@@ -264,9 +264,6 @@
 	var/track_blood_type
 	var/feet_blood_color
 
-	/// Holder for a bugreporter datum.
-	var/datum/bugreporter/bugreporter
-
 	/// UI holder for a language menu.
 	var/datum/language_menu/language_menu
 

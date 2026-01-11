@@ -19,12 +19,15 @@
 		to_chat(src, SPAN("warning", "The Discord URL is not set in the server configuration."))
 	return
 
-/client/verb/bugreport()
-	set name = "Report Bug"
-	set desc = "Create bug report to developers."
+/client/verb/github()
+	set name = "Github"
+	set desc = "Visit Github repository of the server."
 	set hidden = 1
-
-	mob?.report_bug() // As per byond documentation verbs are slower than procs, so we execute minimal amount of code here.
+	if( config.link.github )
+		send_link(src, config.link.github)
+	else
+		to_chat(src, SPAN("warning", "The Github URL is not set in the server configuration."))
+	return
 
 /client/verb/hotkeys_help()
 	set name = "Hotkeys Help"
