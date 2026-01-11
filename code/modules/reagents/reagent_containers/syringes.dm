@@ -126,6 +126,7 @@
 
 	icon_state = "[rounded_vol]"
 	item_state = "syringe_[rounded_vol]"
+	update_held_icon()
 
 	if(reagents.total_volume)
 		filling = image('icons/obj/reagentfillings.dmi', src, "syringe10")
