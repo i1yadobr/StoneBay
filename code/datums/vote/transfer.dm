@@ -3,6 +3,7 @@
 	override_question = "End the shift?"
 
 /datum/vote/transfer/can_be_initiated(mob/by_who, forced)
+	. = ..()
 	if(GAME_STATE <= RUNLEVEL_SETUP)
 		return FALSE
 	if(evacuation_controller?.state != EVAC_IDLE)
