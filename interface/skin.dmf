@@ -1144,7 +1144,6 @@ window "infowindow"
 		size = 640x480
 		anchor1 = -1,-1
 		anchor2 = -1,-1
-		background-color = none
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Info"
 		titlebar = false
@@ -1153,17 +1152,12 @@ window "infowindow"
 		can-minimize = false
 		can-resize = false
 		is-pane = true
-		outer-size = 660x500
-		outer-pos = 480,0
-		inner-pos = 10,10
-		screen-size = 2560x1528
 	elem "info"
 		type = CHILD
 		pos = 0,0
 		size = 640x480
 		anchor1 = 0,0
 		anchor2 = 100,100
-		background-color = none
 		saved-params = "splitter"
 		left = "statwindow"
 		right = "outputwindow"
