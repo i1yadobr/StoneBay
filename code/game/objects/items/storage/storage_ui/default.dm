@@ -231,7 +231,7 @@
 			cx = 4
 			cy--
 
-	closer.screen_loc = "[4 + cols + 1]:16,2:16"
+	closer.screen_loc = "[4+cols+1]:16,2:16"
 
 // space_orient_objs creates (or re-creates) storage interface from scratch.
 // This proc is responsible for placing, scaling, combining, and arranging elements that comprise the storage UI.
@@ -297,7 +297,7 @@
 		//
 		// These backgrounds represent the amount of space each item takes via horizontal scaling and
 		// use "item caps" as overlays to complete their appearance.
-		var/atom/movable/screen/item_background = new
+		var/atom/movable/screen/storage/item_background = new
 		item_background.SetName(O.name)
 		item_background.master = O
 		item_background.icon = 'icons/hud/common/screen_storage.dmi'
