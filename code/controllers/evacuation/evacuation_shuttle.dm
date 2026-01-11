@@ -27,8 +27,8 @@
 	if(waiting_to_leave())
 		return
 
-	for (var/datum/shuttle/autodock/ferry/escape_pod/pod in escape_pods)
-		if (!pod.arming_controller || pod.arming_controller.armed)
+	for(var/datum/shuttle/autodock/ferry/escape_pod/pod in escape_pods)
+		if(!pod.arming_controller || pod.arming_controller.armed)
 			pod.move_time = evac_transit_delay
 			pod.launch(src)
 
@@ -65,7 +65,7 @@
 	return 0
 
 /datum/evacuation_controller/shuttle/get_eta()
-	if (shuttle && shuttle.has_arrive_time())
+	if(shuttle && shuttle.has_arrive_time())
 		return (shuttle.arrive_time-world.time)/10
 	return ..()
 
@@ -98,15 +98,15 @@
 	state = EVAC_PREPPING
 
 /datum/evacuation_controller/shuttle/proc/get_long_jump_time()
-	if (shuttle.location)
-		return round(evac_prep_delay/10)/2
+	if(shuttle.location)
+		return round(evac_prep_delay)/2
 	else
-		return round(evac_transit_delay/10)
+		return round(evac_transit_delay)
 
 /datum/evacuation_controller/shuttle/available_evac_options()
-	if (!shuttle.location)
+	if(!shuttle.location)
 		return list()
-	if (is_idle())
+	if(is_idle())
 		return list(evacuation_options[EVAC_OPT_CALL_SHUTTLE])
 	else
 		return list(evacuation_options[EVAC_OPT_RECALL_SHUTTLE])
