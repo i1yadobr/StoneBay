@@ -22,15 +22,12 @@
 	var/x_offset = WORLD_ICON_SIZE / 2
 	var/y_offset = WORLD_ICON_SIZE / 2
 
-	var/storage_cap_width = 2 //length of sprite for start and end of the box representing total storage space
-	var/stored_cap_width = 4 //length of sprite for start and end of the box representing the stored item
-
 	// Screen object that represents UI boxes for storages that use fixed item slots instead of storage space.
 	var/atom/movable/screen/storage/boxes
 
 	// Screen object that represents the total storage space, it is the main background of the storage UI.
 	// It is used for space-based storages and scales horizontally based on capacity of the attached `storage`.
-	var/atom/movable/screen/item_space
+	var/atom/movable/screen/storage/item_space
 	// Tiny sprite of a border that covers start of the `item_space` sprite, used as an overlay.
 	var/image/start_cap
 	// Tiny sprite of a border that covers end of the `item_space` sprite, used as an overlay.
@@ -61,23 +58,25 @@
 	item_space = new /atom/movable/screen/storage()
 	item_space.SetName("storage")
 	item_space.master = storage
+	item_space.icon = 'icons/hud/common/screen_storage.dmi'
 	item_space.icon_state = "storage_continue"
 	// NOTE: all images that are used for overlays get RESET_TRANSFORM appearance flag so they don't
 	// inherit scaling and offsets of the `item_space` or item background objects, and PIXEL_SCALE
 	// as we use fractional offsets and scaling, but want the UI to stay pixel-perfect.
-	start_cap = image(item_space.icon, "storage_start")
+	start_cap = image('icons/hud/common/screen_storage.dmi', "storage_start")
 	start_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
-	end_cap = image(item_space.icon, "storage_end")
+	end_cap = image('icons/hud/common/screen_storage.dmi', "storage_end")
 	end_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
 
-	item_start_cap = image(item_space.icon, "stored_start")
+	item_start_cap = image('icons/hud/common/screen_storage.dmi', "stored_start")
 	item_start_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
-	item_end_cap = image(item_space.icon, "stored_end")
+	item_end_cap = image('icons/hud/common/screen_storage.dmi', "stored_end")
 	item_end_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
 
 	closer = new /atom/movable/screen/close
 	closer.master = storage
-	closer.icon_state = "x"
+	closer.icon = 'icons/hud/common/screen_storage.dmi'
+	closer.icon_state = "closer"
 	closer.layer = HUD_BASE_LAYER
 
 /datum/storage_ui/default/Destroy()
@@ -244,7 +243,7 @@
 // and doesn't hold any reference to the thing itself.
 // As such, storage UI uses multiple snapshots of the same initial images which are offset as needed.
 /datum/storage_ui/default/proc/space_orient_objs()
-	item_space.overlays.Cut()
+	item_space.CutOverlays()
 	QDEL_LIST(item_space.vis_contents)
 
 	var/storage_width = get_storage_space_width()
@@ -299,6 +298,7 @@
 		// These backgrounds represent the amount of space each item takes via horizontal scaling and
 		// use "item caps" as overlays to complete their appearance.
 		var/atom/movable/screen/item_background = new
+		item_background.icon = 'icons/hud/common/screen_storage.dmi'
 		item_background.icon_state = "stored_continue"
 		item_background.master = O
 		item_background.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
