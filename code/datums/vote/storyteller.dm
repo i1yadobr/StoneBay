@@ -2,9 +2,10 @@
 	name = "Select Storyteller"
 
 /datum/vote/storyteller/can_be_initiated(mob/by_who, forced)
-	if(!forced && !is_admin(by_who))
-		return FALSE // Must be an admin.
-
+	if(!forced)
+		return FALSE
+	if(!is_admin(by_who))
+		return FALSE
 	return ..()
 
 /datum/vote/storyteller/New()
