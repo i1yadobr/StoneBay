@@ -10,7 +10,7 @@
 		return FALSE
 	if(automatic)
 		return TRUE
-	if(config.vote.allow_vote_restart || is_admin(creator))
+	if(config.vote.allow_vote_restart || is_admin(by_who))
 		return TRUE
 	return FALSE
 
