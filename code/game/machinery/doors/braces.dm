@@ -1,4 +1,3 @@
-
 // BRACE - Can be installed on airlock to reinforce it and keep it closed.
 /obj/item/airlock_brace
 	name = "airlock brace"
@@ -11,11 +10,9 @@
 	var/obj/machinery/door/airlock/airlock = null
 	var/obj/item/airlock_electronics/brace/electronics
 
-
 /obj/item/airlock_brace/examine(mob/user, infix)
 	. = ..()
 	. += "[examine_health()]"
-
 
 // This is also called from airlock's examine, so it's a different proc to prevent code copypaste.
 /obj/item/airlock_brace/proc/examine_health()
@@ -31,13 +28,11 @@
 		if(99 to INFINITY)
 			return "\The [src] is in excellent condition."
 
-
 /obj/item/airlock_brace/on_update_icon()
 	if(airlock)
 		icon_state = "brace_closed"
 	else
 		icon_state = "brace_open"
-
 
 /obj/item/airlock_brace/New()
 	..()
@@ -52,10 +47,15 @@
 	qdel(electronics)
 	electronics = null
 
-	return..()
+	return ..()
 
 // Interact with the electronics to set access requirements.
 /obj/item/airlock_brace/attack_self(mob/user as mob)
+	// TODO(rufus): this doesn't work and won't open the UI as electronics are inside the brace, and thus are considered
+	//   inacessible to the user as they don't pass the /mob/living/proc/shared_living_ui_distance() check.
+	//   The fix might be an ejectable circuit or a more complex effort on passing some sort of flag to TGUI interactions
+	//   that would indicate that distance checks are not relevant for this object. The latter might already have
+	//   implementations in the codebase, e.g. OOC UIs like settings.
 	electronics.attack_self(user)
 
 /obj/item/airlock_brace/attackby(obj/item/W as obj, mob/user as mob)
@@ -111,7 +111,6 @@
 		unlock_brace(null)
 		qdel(src)
 
-
 /obj/item/airlock_brace/proc/unlock_brace(mob/user)
 	if(!airlock)
 		return
@@ -124,7 +123,6 @@
 	airlock.update_icon()
 	airlock = null
 	update_icon()
-
 
 /obj/item/airlock_brace/proc/health_percentage()
 	if(!max_health)

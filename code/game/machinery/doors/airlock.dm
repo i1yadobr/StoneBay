@@ -641,8 +641,10 @@ About the new airlock wires panel:
 			to_chat(user, "You must close \the [src] before installing \the [B]!")
 			return
 
-		if((!B.req_access.len && !B.req_one_access) && (alert("\the [B]'s 'Access Not Set' light is flashing. Install it anyway?", "Access not set", "Yes", "No") == "No"))
-			return
+		if(!(length(B.req_access) || length(B.req_one_access)))
+			var/answer = alert("\the [B]'s 'Access Not Set' light is flashing. Install it anyway?", "Access not set", "Yes", "No")
+			if(answer == "No")
+				return
 
 		if(do_after(user, 50, src) && density && user.drop(B, src))
 			to_chat(user, "You successfully install \the [B]. \The [src] has been locked.")
