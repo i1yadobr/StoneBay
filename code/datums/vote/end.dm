@@ -3,9 +3,9 @@
 	default_choices = list("End the Round", "Continue Playing")
 
 /datum/vote/end_round/can_be_initiated(mob/by_who, forced)
-	if(GAME_STATE !=  RUNLEVEL_GAME)
+	if(GAME_STATE != RUNLEVEL_GAME)
 		return FALSE
-	if(!forced && !check_rights(R_SERVER, FALSE, by_who))
+	if(!forced && !is_admin(by_who))
 		return FALSE
 	return ..()
 
