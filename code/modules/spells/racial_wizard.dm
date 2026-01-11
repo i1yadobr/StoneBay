@@ -51,7 +51,6 @@
 			src.handle_item_insertion(I, feedback = FALSE)
 	return item_removed
 
-
 //Tajaran
 /datum/spell/messa_shroud
 	name = "Messa's Shroud"
