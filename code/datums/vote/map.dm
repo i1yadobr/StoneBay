@@ -2,10 +2,10 @@
 	name = "Change Map"
 
 /datum/vote/map/can_be_initiated(mob/by_who, forced)
-	if(!config.game.map_switching)
+	if(!forced)
 		return FALSE
-	if(!forced && !is_admin(by_who))
-		return FALSE // Must be an admin.
+	if(!is_admin(by_who)) // manual map votes can only be started by admins
+		return FALSE
 	return ..()
 
 /datum/vote/map/New()
