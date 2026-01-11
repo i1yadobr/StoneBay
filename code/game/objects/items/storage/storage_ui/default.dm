@@ -267,9 +267,9 @@
 		offset_x = -(WORLD_ICON_SIZE / 2) + cap_width + (item_space_width / 2))
 	item_space.screen_loc = "4:[x_offset],2:[y_offset]"
 
-	item_space.overlays += start_cap
+	item_space.AddOverlays(start_cap)
 	end_cap.pixel_x = cap_width + item_space_width
-	item_space.overlays += end_cap
+	item_space.AddOverlays(end_cap)
 
 	var/start_pixel = cap_width
 	var/end_pixel
@@ -312,10 +312,10 @@
 		)
 
 		item_start_cap.SetTransform(offset_x = start_pixel)
-		item_background.overlays += item_start_cap
+		item_background.AddOverlays(item_start_cap)
 
 		item_end_cap.SetTransform(offset_x = start_pixel + item_cap_width + item_background_width)
-		item_background.overlays += item_end_cap
+		item_background.AddOverlays(item_end_cap)
 
 		// Rather than appearing on the users screen on its own, item background objects are attached to the item space.
 		// This allows item space to be a single object representing all the storage UI graphics.
