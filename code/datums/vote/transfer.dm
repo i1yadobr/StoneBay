@@ -4,8 +4,6 @@
 
 /datum/vote/transfer/can_be_initiated(mob/by_who, forced)
 	. = ..()
-	if(!(. = ..()))
-		return
 	if(evacuation_controller?.state != EVAC_IDLE)
 		return FALSE
 	if(!forced && (!config.vote.allow_vote_restart || !is_admin(by_who)))
