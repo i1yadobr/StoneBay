@@ -301,6 +301,11 @@
 	name = "high command security hardcase"
 	desc = "A heavy-duty container with an ID-based locking system. This one is painted in NT High Command Security colors."
 	icon_state = "guncasehos"
+
+	opened_overlay_icon_state = "guncaseheavy0"
+	emag_sparks_overlay_icon_state = "guncaseheavyspark"
+	hacked_overlay_icon_state = "guncaseheavyb"
+
 	selected_option = "Razor"
 
 	possible_guns = list(
@@ -366,6 +371,45 @@
 	new /obj/item/melee/baton/loaded(src)
 
 	..()
+
+/obj/item/storage/guncase/wardenheavy
+	name = "warden's heavy weapons hardcase"
+	desc = "A large, durable hardcase designed for heavy weaponry. \
+        This one is specifically for the warden's use, as denoted by the distinctive silver accents."
+	icon_state = "guncaseheavywarden"
+	item_state = "guncase"
+
+	opened_overlay_icon_state = "guncaseheavy0"
+	emag_sparks_overlay_icon_state = "guncaseheavyspark"
+	hacked_overlay_icon_state = "guncaseheavyb"
+
+	selected_option = "Non-lethal combo"
+
+	possible_guns = list(
+		"Non-lethal combo" = "A combination of a stun rifle and the pepperspray's big brother, the CrowdBuster kit. \
+	        Let officers handle the dirty part, your job is to stop an odd permabrig escapee. \
+	        Unfortunately, pepperspray refills are not included. \
+	        NOTE: By selecting the Non-lethal combo™, you agree to NanoTrasen's \"Non-lethal\" liability waiver.",
+		"Shotgun" = "A reliable pump-action shotgun, perfect for those moments when subtlety is optional. \
+	        Comes with supplementary ammunition: two boxes of (relatively) non-lethal beanbags, \
+	        two boxes of slightly-more-lethal shells, and a box of heavy-duty slugs, just in case. \
+	        Limited time offer: select Shotgun set™ now and get your very own bandolier! \
+	        Only 1 package left! Offer expires in 2 minutes!"
+	)
+
+	gun_spawn = list(
+		"Non-lethal combo" = list(
+			/obj/item/gun/energy/stunrevolver/rifle,
+			/obj/item/backwear/reagent/pepper
+		),
+		"Shotgun" = list(
+		/obj/item/gun/projectile/shotgun/pump,
+		/obj/item/storage/box/shotgun/beanbags = 2,
+		/obj/item/storage/box/shotgun/shells = 2,
+		/obj/item/storage/box/shotgun/slugs,
+		/obj/item/clothing/accessory/storage/bandolier
+		)
+	)
 
 /obj/item/storage/guncase/detective
 	name = "detective's gun case"
