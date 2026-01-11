@@ -6,7 +6,7 @@
 	. = ..()
 	if(!(. = ..()))
 		return
-	if(!evacuation_controller || !evacuation_controller.should_call_autotransfer_vote())
+	if(evacuation_controller?.state != EVAC_IDLE)
 		return FALSE
 	if(!forced && (!config.vote.allow_vote_restart || !is_admin(by_who)))
 		return FALSE // Admins and autovotes bypass the config setting.
