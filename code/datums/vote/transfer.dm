@@ -12,10 +12,6 @@
 		return FALSE // Admins and autovotes bypass the config setting.
 	if(check_rights(R_INVESTIGATE, 0, by_who))
 		return //Mods bypass further checks.
-	var/decl/security_state/security_state = decls_repository.get_decl(GLOB.using_map.security_state)
-	if (!forced && security_state.current_security_level_is_same_or_higher_than(security_state.high_security_level))
-		to_chat(by_who, "The current alert status is too high to call for a crew transfer!")
-		return FALSE
 	if(GAME_STATE <= RUNLEVEL_SETUP)
 		to_chat(by_who, "The crew transfer button has been disabled!")
 		return FALSE
