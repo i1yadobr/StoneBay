@@ -255,7 +255,9 @@
 
 		BITSET(target.hud_updateflag, IMPLOYAL_HUD)
 
-		implanted_item.dropInto(target.loc)
+		// It is important to forcibly drop the item instead of forceMove()'ing it as `drop()` does
+		// visibility and layers cleanup which includes important removal from the `client.screen`.
+		target.drop(obj, target.loc, TRUE)
 		implanted_item.add_blood(target)
 		implanted_item.update_icon()
 		if(istype(implanted_item, /obj/item/implant))
