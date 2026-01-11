@@ -51,7 +51,6 @@
 /mob/observer/ghost/Initialize()
 	see_in_dark = 100
 
-	verbs += /mob/proc/toggle_antag_pool
 	verbs += /mob/proc/join_as_actor
 	verbs += /mob/proc/join_response_team
 

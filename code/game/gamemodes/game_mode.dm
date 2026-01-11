@@ -1,6 +1,3 @@
-var/global/antag_add_finished // Used in antag type voting.
-var/global/list/additional_antag_types = list()
-
 /datum/game_mode
 	var/name = "invalid"
 	var/round_description = "How did you even vote this in?"
@@ -96,9 +93,8 @@ var/global/list/additional_antag_types = list()
 			to_chat(usr, "Cannot remove core mode antag type.")
 			return
 		var/datum/antagonist/antag = GLOB.all_antag_types_[href_list["remove_antag_type"]]
-		if(antag_templates && antag_templates.len && antag && (antag in antag_templates) && (antag.id in additional_antag_types))
+		if(antag_templates && antag_templates.len && antag && (antag in antag_templates))
 			antag_templates -= antag
-			additional_antag_types -= antag.id
 			message_admins("Admin [key_name_admin(usr)] removed [antag.role_text] template from game mode.")
 	else if(href_list["add_antag_type"])
 		var/choice = input("Which type do you wish to add?") as null|anything in GLOB.all_antag_types_
