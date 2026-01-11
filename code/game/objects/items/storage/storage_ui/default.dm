@@ -1,13 +1,51 @@
+// `default` storage UI represents the main storage interface system in the game.
+// It supports two modes, slot-based storage and space-based storage.
+//
+// Slot-based storage uses item slots, where each item takes exactly one slot.
+// It is rendered as a series of 32x32 boxes that are arranged into rows.
+// Each row contains up to 7 slots. If there are more than 7 slots in a storage
+// and they are occupied, additional rows will be stacked vertically until all the
+// items are placed.
+//
+// Space-based storage uses a single storage space with fixed capacity denominated in "storage cost".
+// Items take space based on their storage cost which grows exponentially with their "w_class".
+// This means that you can either store a lot of small items or a couple of larger item, e.g. 6 syringes or 1 crowbar.
+// Space-based storage is rendered as a single horizontally scaled screen object that represents total storage,
+// and a series of smaller horizontally scaled screen objects representing space taken by each stored item.
 /datum/storage_ui/default
-	var/list/is_seeing = new /list() //List of mobs which are currently seeing the contents of this item's storage
+	// List of mobs who are currently seeing this storage UI.
+	var/list/is_seeing = new /list()
 
+	// Pixel offsets of the UI from the default screen loc positions.
+	// This is used to center the UI on the user screen and to avoid overlap
+	// with tiles underneath which wouldn't look good from player perspective.
+	var/x_offset = WORLD_ICON_SIZE / 2
+	var/y_offset = WORLD_ICON_SIZE / 2
+
+	var/storage_cap_width = 2 //length of sprite for start and end of the box representing total storage space
+	var/stored_cap_width = 4 //length of sprite for start and end of the box representing the stored item
+
+	// Screen object that represents UI boxes for storages that use fixed item slots instead of storage space.
 	var/atom/movable/screen/storage/boxes
-	var/atom/movable/screen/storage/storage_start //storage UI
-	var/atom/movable/screen/storage/storage_continue
-	var/atom/movable/screen/storage/storage_end
-	var/atom/movable/screen/stored/stored_start
-	var/atom/movable/screen/stored/stored_continue
-	var/atom/movable/screen/stored/stored_end
+
+	// Screen object that represents the total storage space, it is the main background of the storage UI.
+	// It is used for space-based storages and scales horizontally based on capacity of the attached `storage`.
+	var/atom/movable/screen/item_space
+	// Tiny sprite of a border that covers start of the `item_space` sprite, used as an overlay.
+	var/image/start_cap
+	// Tiny sprite of a border that covers end of the `item_space` sprite, used as an overlay.
+	var/image/end_cap
+	// Pixel width of `item_space` caps.
+	var/const/cap_width = 2
+
+	// Tiny sprite of a border that covers start of the individual stored item's background sprite, used as an overlay.
+	var/image/item_start_cap
+	// Tiny sprite of a border that covers end of the individual stored item's background sprite, used as an overlay.
+	var/image/item_end_cap
+	// Pixel width of individual stored item's background caps.
+	var/const/item_cap_width = 4
+
+	// Screen object representing a button to close storage UI.
 	var/atom/movable/screen/close/closer
 
 /datum/storage_ui/default/New(storage)
@@ -20,63 +58,35 @@
 	boxes.screen_loc = "7,7 to 10,8"
 	boxes.layer = HUD_BASE_LAYER
 
-	storage_start = new /atom/movable/screen/storage()
-	storage_start.SetName("storage")
-	storage_start.master = storage
-	storage_start.icon = 'icons/hud/common/screen_storage.dmi'
-	storage_start.icon_state = "storage_start"
-	storage_start.screen_loc = "7,7 to 10,8"
-	storage_start.layer = HUD_BASE_LAYER
+	item_space = new /atom/movable/screen/storage()
+	item_space.SetName("storage")
+	item_space.master = storage
+	item_space.icon_state = "storage_continue"
+	// NOTE: all images that are used for overlays get RESET_TRANSFORM appearance flag so they don't
+	// inherit scaling and offsets of the `item_space` or item background objects, and PIXEL_SCALE
+	// as we use fractional offsets and scaling, but want the UI to stay pixel-perfect.
+	start_cap = image(item_space.icon, "storage_start")
+	start_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
+	end_cap = image(item_space.icon, "storage_end")
+	end_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
 
-	storage_continue = new /atom/movable/screen/storage()
-	storage_continue.SetName("storage")
-	storage_continue.master = storage
-	storage_continue.icon = 'icons/hud/common/screen_storage.dmi'
-	storage_continue.icon_state = "storage_continue"
-	storage_continue.screen_loc = "7,7 to 10,8"
-	storage_continue.layer = HUD_BASE_LAYER
+	item_start_cap = image(item_space.icon, "stored_start")
+	item_start_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
+	item_end_cap = image(item_space.icon, "stored_end")
+	item_end_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
 
-	storage_end = new /atom/movable/screen/storage()
-	storage_end.SetName("storage")
-	storage_end.master = storage
-	storage_end.icon = 'icons/hud/common/screen_storage.dmi'
-	storage_end.icon_state = "storage_end"
-	storage_end.screen_loc = "7,7 to 10,8"
-	storage_end.layer = HUD_BASE_LAYER
-
-	stored_start = new /atom/movable/screen/stored()
-	stored_start.icon = 'icons/hud/common/screen_storage.dmi'
-	stored_start.icon_state = "stored_start"
-	stored_start.layer = HUD_BASE_LAYER
-
-	stored_continue = new /atom/movable/screen/stored()
-	stored_continue.icon = 'icons/hud/common/screen_storage.dmi'
-	stored_continue.icon_state = "stored_continue"
-	stored_continue.layer = HUD_BASE_LAYER
-
-	stored_end = new /atom/movable/screen/stored()
-	stored_end.icon = 'icons/hud/common/screen_storage.dmi'
-	stored_end.icon_state = "stored_end"
-	stored_end.layer = HUD_BASE_LAYER
-
-	closer = new /atom/movable/screen/close()
+	closer = new /atom/movable/screen/close
 	closer.master = storage
-	closer.icon = 'icons/hud/common/screen_storage.dmi'
-	closer.icon_state = "closer"
+	closer.icon_state = "x"
 	closer.layer = HUD_BASE_LAYER
 
 /datum/storage_ui/default/Destroy()
 	close_all()
-	is_seeing.Cut() // One can never be sure
 	QDEL_NULL(boxes)
-	QDEL_NULL(storage_start)
-	QDEL_NULL(storage_continue)
-	QDEL_NULL(storage_end)
-	QDEL_NULL(stored_start)
-	QDEL_NULL(stored_continue)
-	QDEL_NULL(stored_end)
+	QDEL_NULL_LIST(item_space.vis_contents)
+	QDEL_NULL(item_space)
 	QDEL_NULL(closer)
-	. = ..()
+	return ..()
 
 /datum/storage_ui/default/on_open(mob/user)
 	user?.s_active?.close(user)
@@ -126,9 +136,7 @@
 	if(!user.client)
 		return
 	user.client.screen -= boxes
-	user.client.screen -= storage_start
-	user.client.screen -= storage_continue
-	user.client.screen -= storage_end
+	user.client.screen -= item_space
 	user.client.screen -= closer
 	user.client.screen -= storage.contents
 	user.client.screen += closer
@@ -136,9 +144,7 @@
 	if(storage.storage_slots)
 		user.client.screen += boxes
 	else
-		user.client.screen += storage_start
-		user.client.screen += storage_continue
-		user.client.screen += storage_end
+		user.client.screen += item_space
 	is_seeing |= user
 	user.s_active = storage
 
@@ -147,9 +153,7 @@
 	if(!user.client)
 		return
 	user.client.screen -= boxes
-	user.client.screen -= storage_start
-	user.client.screen -= storage_continue
-	user.client.screen -= storage_end
+	user.client.screen -= item_space
 	user.client.screen -= closer
 	user.client.screen -= storage.contents
 	if(user.s_active == storage)
@@ -191,7 +195,6 @@
 			cx = tx
 			cy--
 	closer.screen_loc = "[mx+1],[my]"
-	return
 
 //This proc determins the size of the inventory to be displayed. Please touch it only if you know what you're doing.
 /datum/storage_ui/default/proc/slot_orient_objs()
@@ -204,13 +207,13 @@
 	var/row_num = 0
 	var/col_count = min(7, storage.storage_slots) - 1
 	if (adjusted_contents > 7)
-		row_num = round((adjusted_contents-1) / 7) // 7 is the maximum allowed width.
+		row_num = round((adjusted_contents - 1) / 7) // 7 is the maximum allowed width.
 	arrange_item_slots(row_num, col_count)
 
 //This proc draws out the inventory and places the items on it. It uses the standard position.
 /datum/storage_ui/default/proc/arrange_item_slots(rows, cols)
 	var/cx = 4
-	var/cy = 2+rows
+	var/cy = 2 + rows
 	boxes.screen_loc = "4:16,2:16 to [4+cols]:16,[2+rows]:16"
 
 	for(var/obj/O in storage.contents)
@@ -225,61 +228,128 @@
 		click_border["y"]["end"] += (cy - 2) * WORLD_ICON_SIZE + WORLD_ICON_SIZE
 
 		cx++
-		if (cx > (4+cols))
+		if (cx > (4 + cols))
 			cx = 4
 			cy--
 
 	closer.screen_loc = "[4 + cols + 1]:16,2:16"
 
+// space_orient_objs creates (or re-creates) storage interface from scratch.
+// This proc is responsible for placing, scaling, combining, and arranging elements that comprise the storage UI.
+//
+// It utilizes overlays for representing storage UI objects, as well as transforms the elements to
+// properly represent capacity and size.
+//
+// Note: this system utilizes the fact that adding anything as an overlay captures the `appearance` of the thing
+// and doesn't hold any reference to the thing itself.
+// As such, storage UI uses multiple snapshots of the same initial images which are offset as needed.
 /datum/storage_ui/default/proc/space_orient_objs()
+	item_space.overlays.Cut()
+	QDEL_LIST(item_space.vis_contents)
 
-	var/baseline_max_storage_space = DEFAULT_BOX_STORAGE //storage size corresponding to 224 pixels
-	var/storage_cap_width = 2 //length of sprite for start and end of the box representing total storage space
-	var/stored_cap_width = 4 //length of sprite for start and end of the box representing the stored item
-	var/storage_width = min( round( 224 * storage.max_storage_space/baseline_max_storage_space ,1) ,284) //length of sprite for the box representing total storage space
+	var/storage_width = get_storage_space_width()
+	var/item_space_width = storage_width - (cap_width * 2)
 
 	click_border["x"]["start"].Cut()
 	click_border["x"]["end"].Cut()
 	click_border["y"]["start"].Cut()
 	click_border["y"]["end"].Cut()
 
-	storage_start.ClearOverlays()
+	// scale_x:
+	// Item space is scaled to the required pixel size, it initially is WORLD_ICON_SIZE in width, so
+	// we divide by that value to get appropriate factor.
+	// offset_x:
+	// Since scaling is relative to the initial center of the icon, we offset back by half the initial icon size
+	// to basically "reset" the starting point to zero, then shift by `cap_width` so cap has its own space to render,
+	// and then shift by half of the new `item_space_width` to account for scaling that stretched the sprite
+	// in both directions.
+	item_space.SetTransform(
+		scale_x = item_space_width / WORLD_ICON_SIZE,
+		offset_x = -(WORLD_ICON_SIZE / 2) + cap_width + (item_space_width / 2))
+	item_space.screen_loc = "4:[x_offset],2:[y_offset]"
 
-	storage_continue.SetTransform(scale_x = (storage_width - storage_cap_width * 2 + 3) / 32)
+	item_space.overlays += start_cap
+	end_cap.pixel_x = cap_width + item_space_width
+	item_space.overlays += end_cap
 
-	storage_start.screen_loc = "4:16,2:16"
-	storage_continue.screen_loc = "4:[storage_cap_width+(storage_width-storage_cap_width*2)/2+2],2:16"
-	storage_end.screen_loc = "4:[19+storage_width-storage_cap_width],2:16"
-
-	var/startpoint = 0
-	var/endpoint = 1
+	var/start_pixel = cap_width
+	var/end_pixel
 
 	for(var/obj/item/O in storage.contents)
-		startpoint = endpoint + 1
-		endpoint += storage_width * O.get_storage_cost()/storage.max_storage_space
+		var/fraction_of_storage_used = O.get_storage_cost() / storage.max_storage_space
+		// We shrink the space that item takes by one pixel to accomodate for the "spacer" between
+		// the items that is added at the end of this loop. Otherwise the more items there are
+		// the more spacers will be added in-between the items, and that will eventually cause
+		// item backgrounds to visually overflow the storage container.
+		// It is a hacky approach and calculating the fraction of used storage space including
+		// the spacer is technically more correct, but that would complicate the logic unnecessarily
+		// and produce the exact same result as just subtracting the number of pixels used for spacing.
+		end_pixel = start_pixel + (item_space_width * fraction_of_storage_used) - 1
 
-		click_border["x"]["start"].Add(startpoint)
-		click_border["x"]["end"].Add(endpoint)
+		click_border["x"]["start"].Add(start_pixel)
+		click_border["x"]["end"].Add(end_pixel)
 
 		click_border["y"]["start"].Add(0)
 		click_border["y"]["end"].Add(WORLD_ICON_SIZE)
 
-		stored_start.SetTransform(offset_x = startpoint)
-		stored_end.SetTransform(offset_x = endpoint - stored_cap_width)
-		stored_continue.SetTransform(
-			offset_x = startpoint + stored_cap_width + (endpoint - startpoint - stored_cap_width * 2) / 2 - 16,
-			scale_x = (endpoint - startpoint - stored_cap_width * 2) / 32
+		// A new item background screen object is constructed, and the item is assigned as its master.
+		// This allows this background to relay clicks to the item, basically making it a functional
+		// part of the item rather than a purely visual underlay background for the item.
+		//
+		// These backgrounds represent the amount of space each item takes via horizontal scaling and
+		// use "item caps" as overlays to complete their appearance.
+		var/atom/movable/screen/item_background = new
+		item_background.icon_state = "stored_continue"
+		item_background.master = O
+		item_background.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
+		item_background.SetName(O.name)
+		var/item_background_width = (end_pixel - start_pixel) - (item_cap_width * 2)
+		// These transforms follow the same pattern as item space transforms above, with the only exception
+		// of `start_pixel` being added to adjust for each item's placement.
+		item_background.SetTransform(
+			scale_x = item_background_width / WORLD_ICON_SIZE,
+			offset_x = start_pixel - (WORLD_ICON_SIZE / 2) + item_cap_width + (item_background_width / 2)
 		)
 
-		storage_start.AddOverlays(stored_start)
-		storage_start.AddOverlays(stored_continue)
-		storage_start.AddOverlays(stored_end)
+		item_start_cap.SetTransform(offset_x = start_pixel)
+		item_background.overlays += item_start_cap
 
-		O.screen_loc = "4:[round((startpoint+endpoint)/2)+2],2:16"
+		item_end_cap.SetTransform(offset_x = start_pixel + item_cap_width + item_background_width)
+		item_background.overlays += item_end_cap
+
+		// Rather than appearing on the users screen on its own, item background objects are attached to the item space.
+		// This allows item space to be a single object representing all the storage UI graphics.
+		// It also allows us to not create a new list for every storage to keep track of item backgrounds for
+		// cleanup purposes, utilizing the BYOND's native vis_contents list instead.
+		item_space.vis_contents += item_background
+
+		var/storage_placement_offset = round((start_pixel + end_pixel) / 2)
+		var/item_centering_offset = x_offset + storage_placement_offset - (WORLD_ICON_SIZE / 2)
+		O.screen_loc = "4:[item_centering_offset],2:[y_offset]"
 		O.maptext = ""
 		O.hud_layerise()
 
-	closer.screen_loc = "4:[storage_width+19],2:16"
+		// offset by a pixel so there's a spacer between items
+		start_pixel = end_pixel + 1
+
+	closer.screen_loc = "4:[storage_width+x_offset],2:[y_offset]"
+
+// get_storage_space_width returns the pixel width that storage space screen object should take based on
+// the capacity of storage item this UI is attached to.
+// This is only used for space-based storage UIs.
+//
+// The UI should use the returned width to fit both decorative and interactive elements.
+// For example, UI of width 288 and with 2 pixel decorative overlays on both sides will have 284 pixels
+// left for rendering it's contents.
+//
+// Each unit of storage space is represented by 16 pixels up to a limit of 18. Storages with capacity over 18
+// are capped at 288 pixels width (16 pixels * 18), at which point the extra capacity will be represented by
+// stored items themselves visually taking less space in the UI.
+//
+// The 288 pixel limit is based on the constraints of user's HUD, it allows to view as much storage as possible
+// without overlapping with other HUD objects.
+/datum/storage_ui/default/proc/get_storage_space_width()
+	return min(storage.max_storage_space * 16, 288)
 
 // Sets up numbered display to show the stack size of each stored mineral
 // NOTE: numbered display is turned off currently because it's broken
@@ -287,9 +357,9 @@
 	var/adjusted_contents = storage.contents.len
 
 	var/row_num = 0
-	var/col_count = min(7,storage.storage_slots) -1
-	if (adjusted_contents > 7)
-		row_num = round((adjusted_contents-1) / 7) // 7 is the maximum allowed width.
+	var/col_count = min(7,storage.storage_slots) - 1
+	if(adjusted_contents > 7)
+		row_num = round((adjusted_contents - 1) / 7) // 7 is the maximum allowed width.
 	arrange_item_slots(row_num, col_count)
 	if(user && user.s_active)
 		user.s_active.show_to(user)
