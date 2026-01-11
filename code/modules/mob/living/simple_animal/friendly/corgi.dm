@@ -101,7 +101,6 @@
 					update_hat() // Too bad, it'll be better to optimize.
 					sleep(1)
 
-
 /mob/living/simple_animal/corgi/handle_regular_hud_updates()
 	if(!..())
 		return FALSE
@@ -192,9 +191,6 @@
 						wear_hat(item_to_add)
 						usr.visible_message(SPAN_WARNING("[usr] puts \the [item_to_add] on [name]."))
 
-
-
-/mob/living/simple_animal/corgi/attackby(obj/item/O as obj, mob/user as mob)  // Marker -Agouri
 /mob/living/simple_animal/corgi/attackby(obj/item/O, mob/user)  // Marker -Agouri
 	if(user.a_intent == I_HELP && istype(O, /obj/item/clothing/head)) 	// Equiping corgi with a cool hat!
 		if(istype(O, /obj/item/clothing/head/helmet)) 					// Looks too bad on corgi
@@ -222,6 +218,7 @@
 					sleep(1)
 	else
 		..()
+
 ///////////////////
 //// HAT STUFF ////
 //////////////////
@@ -272,6 +269,7 @@
 		hat_offset_y = -8
 	ClearOverlays()
 	AddOverlays(get_hat_icon(hat, hat_offset_x, hat_offset_y))
+
 ///////////////////////
 // END OF HAT STUFF //
 /////////////////////
@@ -338,7 +336,6 @@
 				if(near_camera(src) || near_camera(ian))
 					return
 				new /mob/living/simple_animal/corgi/puppy(loc)
-
 
 		if(prob(1))
 			visible_emote(pick("dances around.","chases her tail."))
