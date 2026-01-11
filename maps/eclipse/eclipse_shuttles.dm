@@ -208,7 +208,7 @@
 /datum/shuttle/autodock/ferry/research
 	name = "Research"
 	warmup_time = 10
-	move_time = 10
+	move_time = 10 SECONDS
 	location = 1
 	shuttle_area = /area/shuttle/research/station
 	dock_target = "research_shuttle"
@@ -238,7 +238,7 @@
 /datum/shuttle/autodock/ferry/engie
 	name = "Engineering"
 	warmup_time = 10
-	move_time = 10
+	move_time = 10 SECONDS
 	location = 0
 	shuttle_area = /area/shuttle/constructionsite
 	dock_target = "engineering_shuttle"
@@ -268,7 +268,7 @@
 /datum/shuttle/autodock/ferry/mining
 	name = "Mining"
 	warmup_time = 10
-	move_time = 10
+	move_time = 10 SECONDS
 	location = 0
 	shuttle_area = /area/shuttle/mining
 	dock_target = "mining_shuttle"
@@ -298,7 +298,7 @@
 /datum/shuttle/autodock/ferry/security
 	name = "Security"
 	warmup_time = 10
-	move_time = 10
+	move_time = 10 SECONDS
 	location = 0
 	shuttle_area = /area/shuttle/security
 	dock_target = "security_shuttle"
@@ -343,7 +343,7 @@
 	current_location = "nav_rescue_start"
 	landmark_transition = "nav_rescue_transition"
 	home_waypoint = "nav_rescue_start"
-	move_time = 120
+	move_time = 2 MINUTE
 
 /obj/effect/shuttle_landmark/rescue/start
 	name = "Rescue Base"
@@ -471,7 +471,7 @@
 	landmark_transition = "nav_merc_transition"
 	home_waypoint = "nav_merc_start"
 	cloaked = 0
-	move_time = 120
+	move_time = 2 MINUTE
 	arrival_announce = /datum/announce/nukeops_arrival
 	departure_announce = /datum/announce/nukeops_departure
 	fake_arrival_announce = /datum/announce/merchants_arrival
@@ -533,7 +533,7 @@
 	current_location = "nav_emerc_start"
 	landmark_transition = "nav_emerc_transition"
 	home_waypoint = "nav_emerc_start"
-	move_time = 120
+	move_time = 2 MINUTE
 
 /obj/effect/shuttle_landmark/elite_syndicate/start
 	name = "Elite Syndicate Operative Base"
@@ -576,7 +576,7 @@
 	landmark_transition = "nav_deathsquad_transition"
 	waypoint_station = "nav_deathsquad_centcom"
 	waypoint_offsite = "nav_deathsquad_station"
-	move_time = 120
+	move_time = 2 MINUTE
 
 /obj/effect/shuttle_landmark/deathsquad/centcom
 	name = "Centcom"
@@ -613,7 +613,7 @@
 	dock_target = "merchant_ship_dock"
 	home_waypoint = "nav_merchant_start"
 	cloaked = 0
-	move_time = 60
+	move_time = 1 MINUTE
 	fake_arrival_announce = /datum/announce/nukeops_arrival
 
 /obj/effect/shuttle_landmark/merchant/start
@@ -668,7 +668,7 @@
 	landmark_transition = "nav_skipjack_transition"
 	home_waypoint = "nav_skipjack_start"
 	cloaked = 1
-	move_time = 120
+	move_time = 2 MINUTE
 	arrival_announce = /datum/announce/skipjack_arrival
 	departure_announce = /datum/announce/skipjack_departure
 
