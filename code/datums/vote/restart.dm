@@ -3,9 +3,12 @@
 	default_choices = list("Restart Round","Continue Playing")
 
 /datum/vote/restart/can_be_initiated(mob/by_who, forced)
-	if(!forced && (!config.vote.allow_vote_restart || !is_admin(by_who)))
-		return FALSE // Admins and autovotes bypass the config setting.
-	return ..()
+	. = ..()
+	if(forced)
+		return TRUE
+	if(config.vote.allow_vote_restart || is_admin(by_who))
+		return TRUE
+	return FALSE
 
 /datum/vote/restart/finalize_vote(winning_option)
 	if(..())

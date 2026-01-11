@@ -8,7 +8,7 @@
 		return FALSE
 	if(evacuation_controller?.state != EVAC_IDLE)
 		return FALSE
-	if(automatic)
+	if(forced)
 		return TRUE
 	if(config.vote.allow_vote_restart || is_admin(by_who))
 		return TRUE
