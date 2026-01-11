@@ -257,7 +257,7 @@
 
 		// It is important to forcibly drop the item instead of forceMove()'ing it as `drop()` does
 		// visibility and layers cleanup which includes important removal from the `client.screen`.
-		target.drop(obj, target.loc, TRUE)
+		target.drop(implanted_item, target.loc, TRUE)
 		implanted_item.add_blood(target)
 		implanted_item.update_icon()
 		if(istype(implanted_item, /obj/item/implant))
