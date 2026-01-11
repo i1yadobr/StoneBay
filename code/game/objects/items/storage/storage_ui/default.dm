@@ -243,7 +243,7 @@
 // and doesn't hold any reference to the thing itself.
 // As such, storage UI uses multiple snapshots of the same initial images which are offset as needed.
 /datum/storage_ui/default/proc/space_orient_objs()
-	item_space.CutOverlays()
+	item_space.ClearOverlays()
 	QDEL_LIST(item_space.vis_contents)
 
 	var/storage_width = get_storage_space_width()
@@ -298,11 +298,11 @@
 		// These backgrounds represent the amount of space each item takes via horizontal scaling and
 		// use "item caps" as overlays to complete their appearance.
 		var/atom/movable/screen/item_background = new
+		item_background.SetName(O.name)
+		item_background.master = O
 		item_background.icon = 'icons/hud/common/screen_storage.dmi'
 		item_background.icon_state = "stored_continue"
-		item_background.master = O
 		item_background.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
-		item_background.SetName(O.name)
 		var/item_background_width = (end_pixel - start_pixel) - (item_cap_width * 2)
 		// These transforms follow the same pattern as item space transforms above, with the only exception
 		// of `start_pixel` being added to adjust for each item's placement.
