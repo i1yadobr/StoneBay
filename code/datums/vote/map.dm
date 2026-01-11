@@ -18,7 +18,7 @@
 /datum/vote/map/finalize_vote(winning_option)
 	var/datum/map/M = GLOB.all_maps[winning_option]
 
-	if (M)
+	if(M)
 		to_world(SPAN("notice", "Map has been changed to: <b>[M.name]</b>"))
 		fdel("data/use_map")
 		text2file("[M.type]", "data/use_map")

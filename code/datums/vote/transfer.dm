@@ -20,6 +20,6 @@
 
 /datum/vote/transfer/finalize_vote(winning_option)
 	if(..())
-		return 1
+		return TRUE
 	if(winning_option == "Initiate Crew Transfer")
 		init_autotransfer()
