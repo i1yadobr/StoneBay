@@ -116,7 +116,6 @@
 
 /obj/item/reagent_containers/syringe/on_update_icon()
 	ClearOverlays()
-
 	if(istype(loc, /obj/item/storage))
 		// offset_x is used to center the rotated icon in the storage UI as base syringe icon is not
 		// vertically centered by default, and as a result ends up horizontally offset in the storage
