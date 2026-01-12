@@ -73,7 +73,7 @@
 
 	item_start_cap = image('icons/hud/common/screen_storage.dmi', "stored_start")
 	item_start_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
-	item_background = image(item_space.icon, "stored_continue")
+	item_background = image('icons/hud/common/screen_storage.dmi', "stored_continue")
 	item_background.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
 	item_end_cap = image('icons/hud/common/screen_storage.dmi', "stored_end")
 	item_end_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
