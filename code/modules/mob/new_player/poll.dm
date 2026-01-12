@@ -124,7 +124,7 @@
 			output += "<font size='2'>Poll runs from <b>[pollstarttime]</b> until <b>[pollendtime]</b></font><p>"
 
 			if(!voted)	//Only make this a form if we have not voted yet
-				output += "<form name='cardcomp' action='?src=\ref[src]' method='get'>"
+				output += "<form name='cardcomp' action='byond://?src=\ref[src]' method='get'>"
 				output += "<input type='hidden' name='src' value='\ref[src]'>"
 				output += "<input type='hidden' name='votepollid' value='[pollid]'>"
 				output += "<input type='hidden' name='votetype' value='OPTION'>"
@@ -176,7 +176,7 @@
 			output += "<font size='2'>Feedback gathering runs from <b>[pollstarttime]</b> until <b>[pollendtime]</b></font><p>"
 
 			if(!voted)	//Only make this a form if we have not voted yet
-				output += "<form name='cardcomp' action='?src=\ref[src]' method='get'>"
+				output += "<form name='cardcomp' action='byond://?src=\ref[src]' method='get'>"
 				output += "<input type='hidden' name='src' value='\ref[src]'>"
 				output += "<input type='hidden' name='votepollid' value='[pollid]'>"
 				output += "<input type='hidden' name='votetype' value='TEXT'>"
@@ -187,7 +187,7 @@
 				output += "<p><input type='submit' value='Submit'>"
 				output += "</form>"
 
-				output += "<form name='cardcomp' action='?src=\ref[src]' method='get'>"
+				output += "<form name='cardcomp' action='byond://?src=\ref[src]' method='get'>"
 				output += "<input type='hidden' name='src' value='\ref[src]'>"
 				output += "<input type='hidden' name='votepollid' value='[pollid]'>"
 				output += "<input type='hidden' name='votetype' value='TEXT'>"
@@ -231,7 +231,7 @@
 				output += "<br><b>[optiontext] - [rating]</b>"
 
 			if(!voted)	//Only make this a form if we have not voted yet
-				output += "<form name='cardcomp' action='?src=\ref[src]' method='get'>"
+				output += "<form name='cardcomp' action='byond://?src=\ref[src]' method='get'>"
 				output += "<input type='hidden' name='src' value='\ref[src]'>"
 				output += "<input type='hidden' name='votepollid' value='[pollid]'>"
 				output += "<input type='hidden' name='votetype' value='NUMVAL'>"
@@ -346,7 +346,7 @@
 			output += "<font size='2'>Poll runs from <b>[pollstarttime]</b> until <b>[pollendtime]</b></font><p>"
 
 			if(!voted)	//Only make this a form if we have not voted yet
-				output += "<form name='cardcomp' action='?src=\ref[src]' method='get'>"
+				output += "<form name='cardcomp' action='byond://?src=\ref[src]' method='get'>"
 				output += "<input type='hidden' name='src' value='\ref[src]'>"
 				output += "<input type='hidden' name='votepollid' value='[pollid]'>"
 				output += "<input type='hidden' name='votetype' value='MULTICHOICE'>"

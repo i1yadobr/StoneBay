@@ -40,7 +40,7 @@
 	. += "span.color_holder_box{display: inline-block; width: 20px; height: 8px; border:1px solid #000; padding: 0px;}<"
 	. += "a.Organs_active {background: #cc5555;}</style>"
 
-	. +=  "<script language='javascript'> [js_byjax] function set(param, value) {window.location='?src=\ref[src];'+param+'='+value;}</script>"
+	. +=  "<script language='javascript'> [js_byjax] function set(param, value) {window.location='byond://?src=\ref[src];'+param+'='+value;}</script>"
 	. += "<table style='max-height:400px;height:410px; margin-left:250px; margin-right:250px'>"
 	. += "<tr style='vertical-align:top'>"
 	. += "<td><div style='max-width:230px;width:230px;height:100%;overflow-y:auto;border-right:1px solid;padding:3px'>"
@@ -68,14 +68,14 @@
 		selectable_organs -= BP_BRAIN
 
 	for(var/organ in selectable_limbs)
-		. += "<a href='?src=\ref[src];organ=[organ]'><b>[capitalize(GLOB.organ_tag_to_name[organ])]</b></a>"
+		. += "<a href='byond://?src=\ref[src];organ=[organ]'><b>[capitalize(GLOB.organ_tag_to_name[organ])]</b></a>"
 		. += "<br>[organ_get_display_name(organ)]<br>"
 
 	. += "</td><td style='width:80px;'>"
 	. += "<td style='width:115px; text-align:left'>"
 
 	for(var/organ in selectable_organs)
-		. += "<a href='?src=\ref[src];organ=[organ]'><b>[capitalize(organ)]</b></a>"
+		. += "<a href='byond://?src=\ref[src];organ=[organ]'><b>[capitalize(organ)]</b></a>"
 		. += "<br><div>[organ_get_display_name(organ)]</div></div>"
 
 	. += "</td></tr></table><hr>"

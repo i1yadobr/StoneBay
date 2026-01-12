@@ -73,12 +73,12 @@
 	user.set_machine(src)
 	var/dat = "<meta charset=\"utf-8\">"
 	dat += "<TT><B>Infrared Laser</B><br>"
-	dat += "<B>Status</B>: <A href='?src=\ref[src];state=1'>[on ? "On" : "Off"]</A><br>"
-	dat += "<B>Visibility</B>: <A href='?src=\ref[src];visible=1'>[visible ? "Visible" : "Invisible"]</A><br>"
-	dat += "<A href='?src=\ref[src];rotate=1'>Rotate</A><br>"
+	dat += "<B>Status</B>: <A href='byond://?src=\ref[src];state=1'>[on ? "On" : "Off"]</A><br>"
+	dat += "<B>Visibility</B>: <A href='byond://?src=\ref[src];visible=1'>[visible ? "Visible" : "Invisible"]</A><br>"
+	dat += "<A href='byond://?src=\ref[src];rotate=1'>Rotate</A><br>"
 	dat += "</TT>"
-	dat += "<BR><BR><A href='?src=\ref[src];refresh=1'>Refresh</A>"
-	dat += "<BR><BR><A href='?src=\ref[src];close=1'>Close</A>"
+	dat += "<BR><BR><A href='byond://?src=\ref[src];refresh=1'>Refresh</A>"
+	dat += "<BR><BR><A href='byond://?src=\ref[src];close=1'>Close</A>"
 	show_browser(user, jointext(dat, null), "window=infra")
 	onclose(user, "infra")
 

@@ -352,7 +352,7 @@
 
 	var/dat = target_human.get_medical_data()
 
-	dat += text("<BR><A href='?src=\ref[];mach_close=scanconsole'>Close</A>", usr)
+	dat += text("<BR><A href='byond://?src=\ref[];mach_close=scanconsole'>Close</A>", usr)
 	show_browser(usr, dat, "window=scanconsole;size=430x600")
 
 /client/proc/cmd_analyse_health_panel()

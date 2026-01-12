@@ -26,7 +26,7 @@
 
 /datum/disease2/disease/get_view_variables_options()
 	return ..() + {"
-		<option value='?src=\ref[src];info=1'>Show info</option>
+		<option value='byond://?src=\ref[src];info=1'>Show info</option>
 	"}
 
 /datum/admins/var/datum/virus2_editor/virus2_editor_datum = new
@@ -76,9 +76,9 @@
 		for(var/i = 1 to 4)
 			var/datum/disease2/effect/Eff = s[i]
 			H += {"
-					<a href='?src=\ref[src];what=effect;stage=[i];effect=1'>[initial(Eff.name)]</a>
-					Chance: <a href='?src=\ref[src];what=effect;stage=[i];chance=1'>[s_chance[i]]</a>
-					Multiplier: <a href='?src=\ref[src];what=effect;stage=[i];multiplier=1'>[s_multiplier[i]]</a>
+					<a href='byond://?src=\ref[src];what=effect;stage=[i];effect=1'>[initial(Eff.name)]</a>
+					Chance: <a href='byond://?src=\ref[src];what=effect;stage=[i];chance=1'>[s_chance[i]]</a>
+					Multiplier: <a href='byond://?src=\ref[src];what=effect;stage=[i];multiplier=1'>[s_multiplier[i]]</a>
 					<br />
 				"}
 		H += {"
@@ -92,7 +92,7 @@
 				continue
 			if(!f) H += " | "
 			else f = 0
-			H += "<a href='?src=\ref[src];what=species;toggle=[k]' style='color:[(k in species) ? "#006600" : "#ff0000"]'>[k]</a>"
+			H += "<a href='byond://?src=\ref[src];what=species;toggle=[k]' style='color:[(k in species) ? "#006600" : "#ff0000"]'>[k]</a>"
 		H += {"
 		<a href="?src=\ref[src];what=species;reset=1" style="color:#0000aa">Reset</a>
 		<br />
@@ -105,7 +105,7 @@
 		for(var/k in ALL_ANTIGENS)
 			if(!f) H += " | "
 			else f = 0
-			H += "<a href='?src=\ref[src];what=antigen;toggle=[k]' style='color:[(k in antigens) ? "#006600" : "#ff0000"]'>[k]</a>"
+			H += "<a href='byond://?src=\ref[src];what=antigen;toggle=[k]' style='color:[(k in antigens) ? "#006600" : "#ff0000"]'>[k]</a>"
 		H += {"
 		<a href="?src=\ref[src];what=antigen;reset=1" style="color:#0000aa">Reset</a>
 		<br />
@@ -212,7 +212,7 @@
 
 				spawned_viruses += D
 
-				message_admins(SPAN("danger", "[key_name_admin(usr)] infected [key_name_admin(infectee)] with a virus (<a href='?src=\ref[D];info=1'>Info</a>)"))
+				message_admins(SPAN("danger", "[key_name_admin(usr)] infected [key_name_admin(infectee)] with a virus (<a href='byond://?src=\ref[D];info=1'>Info</a>)"))
 				log_admin("[key_name_admin(usr)] infected [key_name_admin(infectee)] with a virus!")
 				infect_virus2(infectee, D, forced=1)
 

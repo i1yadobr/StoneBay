@@ -72,7 +72,7 @@
 	. = ..()
 
 	if(basic_info)
-		. += "[basic_info] : <a href='?src=\ref[src];info=1'>More Information</a>"
+		. += "[basic_info] : <a href='byond://?src=\ref[src];info=1'>More Information</a>"
 
 /obj/item/virusdish/OnTopic(user, href_list)
 	if(href_list["info"])

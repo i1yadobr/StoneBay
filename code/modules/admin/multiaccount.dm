@@ -148,7 +148,7 @@
 			c++
 			t1 +="[c]: - [query.item[1]]<BR>"
 		if (c > 1)
-			output+= "Ckey: [C.ckey] <A href='?_src_=holder;showmultiacc=[C.ckey]'>Show</A><BR>" + t1
+			output+= "Ckey: [C.ckey] <A href='byond://?_src_=holder;showmultiacc=[C.ckey]'>Show</A><BR>" + t1
 
 	output+= "<BR><BR><B>Matching computerID</B><BR><BR>"
 
@@ -175,7 +175,7 @@
 			c++
 			t1 +="[c]: [query.item[1]]<BR>"
 		if (c > 1)
-			output+= "Ckey: [C.ckey] <A href='?_src_=holder;showmultiacc=[C.ckey]'>Show</A><BR>" + t1
+			output+= "Ckey: [C.ckey] <A href='byond://?_src_=holder;showmultiacc=[C.ckey]'>Show</A><BR>" + t1
 
 	output+= "<BR><BR><B>Matching cookies</B><BR><BR>"
 

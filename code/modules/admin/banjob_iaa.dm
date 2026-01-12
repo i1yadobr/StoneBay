@@ -85,7 +85,7 @@ GLOBAL_LIST_EMPTY(IAA_approved_list)
 		return
 	ASSERT(status == IAA_STATUS_PENDING)
 	var/action = approved ? IAA_STATUS_APPROVED : IAA_STATUS_DENIED
-	message_admins("IAA jobban <a href='?_src_=holder;iaaj_inspect=[id]'>[id] ([fakeid])</a> was [IAAJ_status_colorize(action, action)] by [ckey] ([comment])")
+	message_admins("IAA jobban <a href='byond://?_src_=holder;iaaj_inspect=[id]'>[id] ([fakeid])</a> was [IAAJ_status_colorize(action, action)] by [ckey] ([comment])")
 	log_admin("IAA jobban [id] ([fakeid]) was [action] by [ckey] ([comment])")
 	var/DBQuery/query
 	if (approved)
@@ -159,7 +159,7 @@ GLOBAL_LIST_EMPTY(IAA_approved_list)
 	ASSERT(query.item[1] == IAA_STATUS_APPROVED)
 	var/fakeid = query.item[2]
 	var/action = IAA_STATUS_CANCELLED
-	message_admins("IAA jobban <a href='?_src_=holder;iaaj_inspect=[id]'>[id] ([fakeid])</a> was [IAAJ_status_colorize(action, action)] by [ckey] ([comment])")
+	message_admins("IAA jobban <a href='byond://?_src_=holder;iaaj_inspect=[id]'>[id] ([fakeid])</a> was [IAAJ_status_colorize(action, action)] by [ckey] ([comment])")
 	log_admin("IAA jobban [id] ([fakeid]) was [action] by [ckey] ([comment])")
 	query = sql_query({"
 		UPDATE
@@ -307,10 +307,10 @@ GLOBAL_LIST_EMPTY(IAA_approved_list)
 	JB.id = query.item[1]
 	JB.expiration_time = query.item[2]
 	GLOB.IAA_active_jobbans_list.Add(JB)
-	message_admins("Complaint <a href='?_src_=holder;iaaj_inspect=[JB.id]'>#[JB.id] ([JB.fakeid])</a> added into database.")
+	message_admins("Complaint <a href='byond://?_src_=holder;iaaj_inspect=[JB.id]'>#[JB.id] ([JB.fakeid])</a> added into database.")
 	log_admin("Complaint #[JB.id] ([JB.fakeid]) added into database.")
 	if (IAA_is_trustworthy(iaa_ckey))
-		message_admins("[iaa_ckey] is thrustworthy, complaint <a href='?_src_=holder;iaaj_inspect=[JB.id]'>#[JB.id] ([JB.fakeid])</a> was automatically approved.")
+		message_admins("[iaa_ckey] is thrustworthy, complaint <a href='byond://?_src_=holder;iaaj_inspect=[JB.id]'>#[JB.id] ([JB.fakeid])</a> was automatically approved.")
 		JB.resolve()
 
 /proc/IAAJ_status_colorize(status, text)
@@ -333,7 +333,7 @@ GLOBAL_LIST_EMPTY(IAA_approved_list)
 	var/dat = "<meta charset=\"utf-8\"><B>IAA active Jobans!</B><HR><table border>"
 	dat += "<tr style=\"font-weight:bold\"> <td> ID </td> <td> Who from who by who </td> <td> Expiration date </td> <td> Status </td> </tr>"
 	for (var/datum/IAA_brief_jobban_info/JB in GLOB.IAA_active_jobbans_list)
-		dat += text("<tr><td><a href='?src=\ref[src];iaaj_inspect=[JB.id]'>[JB.id] ([JB.fakeid])</a></td> \
+		dat += text("<tr><td><a href='byond://?src=\ref[src];iaaj_inspect=[JB.id]'>[JB.id] ([JB.fakeid])</a></td> \
 			<td>[JB.ckey] banned from [JB.job] by [JB.iaa_ckey]</td> \
 			<td> [JB.expiration_time] </td> \
 			<td> [IAAJ_status_colorize(JB.status, JB.status)] </td> \
@@ -383,7 +383,7 @@ GLOBAL_LIST_EMPTY(IAA_approved_list)
 		JB.job             = query.item[5]
 		JB.status          = query.item[6]
 		JB.expiration_time = query.item[7]
-		dat += text("<tr><td><a href='?src=\ref[src];iaaj_inspect=[JB.id]'>[JB.id] ([JB.fakeid])</a></td> \
+		dat += text("<tr><td><a href='byond://?src=\ref[src];iaaj_inspect=[JB.id]'>[JB.id] ([JB.fakeid])</a></td> \
 			<td>[JB.ckey] banned from [JB.job] by [JB.iaa_ckey]</td> \
 			<td> [JB.expiration_time] </td> \
 			<td> [IAAJ_status_colorize(JB.status, JB.status)] </td> \
@@ -443,9 +443,9 @@ GLOBAL_LIST_EMPTY(IAA_approved_list)
 	dat += "Status: [IAAJ_status_colorize(status, status)]"
 	switch (status)
 		if (IAA_STATUS_PENDING)
-			dat += "<a href='?src=\ref[src];iaaj_resolve=[id]'> resolve </a>"
+			dat += "<a href='byond://?src=\ref[src];iaaj_resolve=[id]'> resolve </a>"
 		if (IAA_STATUS_APPROVED)
-			dat += "<a href='?src=\ref[src];iaaj_close=[id]'> close </a>"
+			dat += "<a href='byond://?src=\ref[src];iaaj_close=[id]'> close </a>"
 	dat += "<HR>"
 	dat += "Created at [creation_time] <BR>"
 	if (resolve_time)

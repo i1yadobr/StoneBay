@@ -136,11 +136,11 @@
 		dat += "Select an event to trigger:<ul>"
 
 		if(!config.gamemode.ert_admin_only)
-			dat += "<li><A href='?src=\ref[src];triggerevent=[CALL_ERT]'>Emergency Response Team</A></li>"
+			dat += "<li><A href='byond://?src=\ref[src];triggerevent=[CALL_ERT]'>Emergency Response Team</A></li>"
 
-		dat += "<li><A href='?src=\ref[src];triggerevent=[GRANT_MAINT]'>Grant Emergency Maintenance Access</A></li>"
-		dat += "<li><A href='?src=\ref[src];triggerevent=[REVOKE_MAINT]'>Revoke Emergency Maintenance Access</A></li>"
-		dat += "<li><A href='?src=\ref[src];triggerevent=[GRANT_NUCLEAR_CODE]'>Grant Nuclear Authorization Code</A></li>"
+		dat += "<li><A href='byond://?src=\ref[src];triggerevent=[GRANT_MAINT]'>Grant Emergency Maintenance Access</A></li>"
+		dat += "<li><A href='byond://?src=\ref[src];triggerevent=[REVOKE_MAINT]'>Revoke Emergency Maintenance Access</A></li>"
+		dat += "<li><A href='byond://?src=\ref[src];triggerevent=[GRANT_NUCLEAR_CODE]'>Grant Nuclear Authorization Code</A></li>"
 		dat += "</ul>"
 		show_browser(user, dat, "window=keycard_auth;size=500x250")
 	else
@@ -158,7 +158,7 @@
 		dat += "Please swipe your card to authorize the following event: <b>[event]</b>"
 		if (src.event_reason)
 			dat += "<br>Reason: [src.event_reason]<br>"
-		dat += "<p><A href='?src=\ref[src];reset=1'>Back</A>"
+		dat += "<p><A href='byond://?src=\ref[src];reset=1'>Back</A>"
 		show_browser(user, dat, "window=keycard_auth;size=500x250")
 	return
 
@@ -219,7 +219,7 @@
 				visible_message(SPAN_NOTICE("\The [src] displays the message: The request has been created and the process of transferring the request to the emergency response service has been started, the approximate waiting time for processing is 2 minutes."), range=2)
 				set_next_think_ctx("call_ert_context", world.time + 2 MINUTES)
 				ert_context_thinking = TRUE
-				message_admins("An ERT call request was created with the reason:\n[src.event_reason].\nThis call will automatically be approved after 2 minutes. <A href='?src=\ref[src];approve_ert=1'>Approve</a>. <A href='?src=\ref[src];prohibit_ert=1'>Reject</a>.")
+				message_admins("An ERT call request was created with the reason:\n[src.event_reason].\nThis call will automatically be approved after 2 minutes. <A href='byond://?src=\ref[src];approve_ert=1'>Approve</a>. <A href='byond://?src=\ref[src];prohibit_ert=1'>Reject</a>.")
 		if(GRANT_NUCLEAR_CODE)
 			var/obj/machinery/nuclearbomb/nuke = locate(/obj/machinery/nuclearbomb/station) in world
 			if(nuke)
