@@ -127,8 +127,8 @@
 
 /datum/storage_ui/default/show_to(mob/user)
 	if(user.s_active != storage && isliving(user) && user.stat == CONSCIOUS && !user.restrained())
-		for(var/obj/item/I in storage)
-			if(I.on_found(user))
+		for(var/obj/item/item in storage)
+			if(item.on_found(user))
 				return
 	if(user.s_active)
 		user.s_active.hide_from(user)
@@ -186,9 +186,9 @@
 	var/cx = tx
 	var/cy = ty
 	boxes.screen_loc = "[tx]:,[ty] to [mx],[my]"
-	for(var/obj/O in storage.contents)
-		O.screen_loc = "[cx],[cy]"
-		O.hud_layerise()
+	for(var/obj/object in storage.contents)
+		object.screen_loc = "[cx],[cy]"
+		object.hud_layerise()
 		cx++
 		if (cx > mx)
 			cx = tx
@@ -215,10 +215,10 @@
 	var/cy = 2 + rows
 	boxes.screen_loc = "4:16,2:16 to [4+cols]:16,[2+rows]:16"
 
-	for(var/obj/O in storage.contents)
-		O.screen_loc = "[cx]:16,[cy]:16"
-		O.maptext = ""
-		O.hud_layerise()
+	for(var/obj/object in storage.contents)
+		object.screen_loc = "[cx]:16,[cy]:16"
+		object.maptext = ""
+		object.hud_layerise()
 
 		click_border["x"]["start"] += (cx - 4) * WORLD_ICON_SIZE
 		click_border["x"]["end"] += (cx - 4) * WORLD_ICON_SIZE + WORLD_ICON_SIZE
@@ -274,8 +274,8 @@
 	var/start_pixel = cap_width
 	var/end_pixel
 
-	for(var/obj/item/O in storage.contents)
-		var/fraction_of_storage_used = O.get_storage_cost() / storage.max_storage_space
+	for(var/obj/item/object in storage.contents)
+		var/fraction_of_storage_used = object.get_storage_cost() / storage.max_storage_space
 		// We shrink the space that item takes by one pixel to accomodate for the "spacer" between
 		// the items that is added at the end of this loop. Otherwise the more items there are
 		// the more spacers will be added in-between the items, and that will eventually cause
@@ -298,8 +298,8 @@
 		// These backgrounds represent the amount of space each item takes via horizontal scaling and
 		// use "item caps" as overlays to complete their appearance.
 		var/atom/movable/screen/storage/item_background = new
-		item_background.SetName(O.name)
-		item_background.master = O
+		item_background.SetName(object.name)
+		item_background.master = object
 		item_background.icon = 'icons/hud/common/screen_storage.dmi'
 		item_background.icon_state = "stored_continue"
 		item_background.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
@@ -325,9 +325,9 @@
 
 		var/storage_placement_offset = round((start_pixel + end_pixel) / 2)
 		var/item_centering_offset = x_offset + storage_placement_offset - (WORLD_ICON_SIZE / 2)
-		O.screen_loc = "4:[item_centering_offset],2:[y_offset]"
-		O.maptext = ""
-		O.hud_layerise()
+		object.screen_loc = "4:[item_centering_offset],2:[y_offset]"
+		object.maptext = ""
+		object.hud_layerise()
 
 		// offset by a pixel so there's a spacer between items
 		start_pixel = end_pixel + 1
