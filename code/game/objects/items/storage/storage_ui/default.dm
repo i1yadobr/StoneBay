@@ -30,6 +30,9 @@
 	var/atom/movable/screen/storage/item_space
 	// Tiny sprite of a border that covers start of the `item_space` sprite, used as an overlay.
 	var/image/start_cap
+	// Sprite of the individual stored item's background, used as an overlay.
+	// It is scaled horizontally to represent the amount of space an item takes.
+	var/image/item_background
 	// Tiny sprite of a border that covers end of the `item_space` sprite, used as an overlay.
 	var/image/end_cap
 	// Pixel width of `item_space` caps.
@@ -70,6 +73,8 @@
 
 	item_start_cap = image('icons/hud/common/screen_storage.dmi', "stored_start")
 	item_start_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
+	item_background = image(item_space.icon, "stored_continue")
+	item_background.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
 	item_end_cap = image('icons/hud/common/screen_storage.dmi', "stored_end")
 	item_end_cap.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
 
@@ -82,7 +87,6 @@
 /datum/storage_ui/default/Destroy()
 	close_all()
 	QDEL_NULL(boxes)
-	QDEL_NULL_LIST(item_space.vis_contents)
 	QDEL_NULL(item_space)
 	QDEL_NULL(closer)
 	return ..()
@@ -244,7 +248,6 @@
 // As such, storage UI uses multiple snapshots of the same initial images which are offset as needed.
 /datum/storage_ui/default/proc/space_orient_objs()
 	item_space.ClearOverlays()
-	QDEL_LIST(item_space.vis_contents)
 
 	var/storage_width = get_storage_space_width()
 	var/item_space_width = storage_width - (cap_width * 2)
@@ -291,18 +294,9 @@
 		click_border["y"]["start"].Add(0)
 		click_border["y"]["end"].Add(WORLD_ICON_SIZE)
 
-		// A new item background screen object is constructed, and the item is assigned as its master.
-		// This allows this background to relay clicks to the item, basically making it a functional
-		// part of the item rather than a purely visual underlay background for the item.
-		//
-		// These backgrounds represent the amount of space each item takes via horizontal scaling and
-		// use "item caps" as overlays to complete their appearance.
-		var/atom/movable/screen/storage/item_background = new
-		item_background.SetName(object.name)
-		item_background.master = object
-		item_background.icon = 'icons/hud/common/screen_storage.dmi'
-		item_background.icon_state = "stored_continue"
-		item_background.appearance_flags = RESET_TRANSFORM | PIXEL_SCALE
+		item_start_cap.SetTransform(offset_x = start_pixel)
+		item_space.AddOverlays(item_start_cap)
+
 		var/item_background_width = (end_pixel - start_pixel) - (item_cap_width * 2)
 		// These transforms follow the same pattern as item space transforms above, with the only exception
 		// of `start_pixel` being added to adjust for each item's placement.
@@ -311,17 +305,10 @@
 			offset_x = start_pixel - (WORLD_ICON_SIZE / 2) + item_cap_width + (item_background_width / 2)
 		)
 
-		item_start_cap.SetTransform(offset_x = start_pixel)
-		item_background.AddOverlays(item_start_cap)
+		item_space.AddOverlays(item_background)
 
 		item_end_cap.SetTransform(offset_x = start_pixel + item_cap_width + item_background_width)
-		item_background.AddOverlays(item_end_cap)
-
-		// Rather than appearing on the users screen on its own, item background objects are attached to the item space.
-		// This allows item space to be a single object representing all the storage UI graphics.
-		// It also allows us to not create a new list for every storage to keep track of item backgrounds for
-		// cleanup purposes, utilizing the BYOND's native vis_contents list instead.
-		item_space.vis_contents += item_background
+		item_space.AddOverlays(item_end_cap)
 
 		var/storage_placement_offset = round((start_pixel + end_pixel) / 2)
 		var/item_centering_offset = x_offset + storage_placement_offset - (WORLD_ICON_SIZE / 2)
