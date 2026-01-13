@@ -128,15 +128,15 @@
 	var/minute = (time - second) / 60
 	var/dat = "<meta charset=\"utf-8\">"
 	dat += "<TT><B>Proximity Sensor</B><br>"
-	dat += "<A href='?src=\ref[src];time=1'>[timing ? "Timing":"Not timing"]</A><br>"
-	dat += "<A href='?src=\ref[src];tp=-30'>-</A> <A href='?src=\ref[src];tp=-1'>-</A>"
+	dat += "<A href='byond://?src=\ref[src];time=1'>[timing ? "Timing":"Not timing"]</A><br>"
+	dat += "<A href='byond://?src=\ref[src];tp=-30'>-</A> <A href='byond://?src=\ref[src];tp=-1'>-</A>"
 	dat += " [minute]:[second] "
-	dat += "<A href='?src=\ref[src];tp=1'>+</A> <A href='?src=\ref[src];tp=30'>+</A><br>"
+	dat += "<A href='byond://?src=\ref[src];tp=1'>+</A> <A href='byond://?src=\ref[src];tp=30'>+</A><br>"
 	dat += "</TT>"
-	dat += "<BR>Range: <A href='?src=\ref[src];range=-1'>-</A> [range] <A href='?src=\ref[src];range=1'>+</A>"
-	dat += "<BR><A href='?src=\ref[src];scanning=1'>[scanning ? "Armed":"Unarmed"]</A> (Movement sensor active when armed!)"
-	dat += "<BR><BR><A href='?src=\ref[src];refresh=1'>Refresh</A>"
-	dat += "<BR><BR><A href='?src=\ref[src];close=1'>Close</A>"
+	dat += "<BR>Range: <A href='byond://?src=\ref[src];range=-1'>-</A> [range] <A href='byond://?src=\ref[src];range=1'>+</A>"
+	dat += "<BR><A href='byond://?src=\ref[src];scanning=1'>[scanning ? "Armed":"Unarmed"]</A> (Movement sensor active when armed!)"
+	dat += "<BR><BR><A href='byond://?src=\ref[src];refresh=1'>Refresh</A>"
+	dat += "<BR><BR><A href='byond://?src=\ref[src];close=1'>Close</A>"
 	show_browser(user, dat, "window=prox")
 	onclose(user, "prox")
 	return

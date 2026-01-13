@@ -119,11 +119,11 @@
 	playsound(loc, 'sound/items/countdown.ogg', 75, 1, -3)
 	if(ismob(imp_in))
 		imp_in.audible_message(SPAN("warning", "Something beeps inside [imp_in][part ? "'s [part.name]" : ""]!"))
-		message_admins("Explosive implant triggered in [imp_in] ([imp_in.key]). (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[imp_in.x];Y=[imp_in.y];Z=[imp_in.z]'>JMP</a>) ")
+		message_admins("Explosive implant triggered in [imp_in] ([imp_in.key]). (<A HREF='byond://?_src_=holder;adminplayerobservecoodjump=1;X=[imp_in.x];Y=[imp_in.y];Z=[imp_in.z]'>JMP</a>) ")
 		log_game("Explosive implant triggered in [imp_in] ([imp_in.key]).")
 	else
 		audible_message(SPAN("warning", ")eeps omniously!"), splash_override = "*beeeeeeep*")
-		message_admins("Explosive implant triggered in [T.loc]. (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>) ")
+		message_admins("Explosive implant triggered in [T.loc]. (<A HREF='byond://?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>) ")
 		log_game("Explosive implant triggered in [T.loc].")
 
 	if(!elevel)

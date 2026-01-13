@@ -23,7 +23,7 @@
 			if(C.mob)
 				entry = "\t[C.key]"
 			else
-				entry = "\t[C.key] - <font color='red'><i>HAS NO MOB</i></font> (<A HREF='?_src_=holder;adminmoreinfo=\ref[C]'>?</A>)"
+				entry = "\t[C.key] - <font color='red'><i>HAS NO MOB</i></font> (<A HREF='byond://?_src_=holder;adminmoreinfo=\ref[C]'>?</A>)"
 				lines += entry
 				continue
 
@@ -76,18 +76,18 @@
 			if(C.is_afk())
 				entry += " - <b>AFK: [C.inactivity2text()]</b>"
 
-			entry += " (<A HREF='?_src_=holder;adminmoreinfo=\ref[C.mob]'>?</A>)"
+			entry += " (<A HREF='byond://?_src_=holder;adminmoreinfo=\ref[C.mob]'>?</A>)"
 
 			if(config.external.sql_enabled && watchlist.Check(C.ckey))
-				entry += " (<A HREF='?_src_=holder;adminmoreinfo=\ref[C.mob]'>IN WATCHLIST!</A>)"
+				entry += " (<A HREF='byond://?_src_=holder;adminmoreinfo=\ref[C.mob]'>IN WATCHLIST!</A>)"
 
 			lines += entry
 	else if(rights)
 		for(var/client/C in GLOB.clients)
 			if(C.mob)
-				lines += "\t[C.key] (<A HREF='?_src_=holder;adminmoreinfo=\ref[C.mob]'>?</A>) "
+				lines += "\t[C.key] (<A HREF='byond://?_src_=holder;adminmoreinfo=\ref[C.mob]'>?</A>) "
 			else
-				lines += "\t[C.key] - <font color='red'><i>HAS NO MOB</i></font> (<A HREF='?_src_=holder;adminmoreinfo=\ref[C]'>?</A>)"
+				lines += "\t[C.key] - <font color='red'><i>HAS NO MOB</i></font> (<A HREF='byond://?_src_=holder;adminmoreinfo=\ref[C]'>?</A>)"
 	else
 		for(var/client/C in GLOB.clients)
 			if(!C.is_stealthed())

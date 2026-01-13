@@ -73,12 +73,12 @@
 	var/minute = (time - second) / 60
 	var/dat = "<meta charset=\"utf-8\"><TT>"
 	dat += "<B>Timing Unit</B><br>"
-	dat += "<A href='?src=\ref[src];time=1'>[timing ? "Timing" : "Not timing"]</A><br>"
-	dat += "<A href='?src=\ref[src];tp=-30'>-</A> <A href='?src=\ref[src];tp=-1'>-</A>"
+	dat += "<A href='byond://?src=\ref[src];time=1'>[timing ? "Timing" : "Not timing"]</A><br>"
+	dat += "<A href='byond://?src=\ref[src];tp=-30'>-</A> <A href='byond://?src=\ref[src];tp=-1'>-</A>"
 	dat += " [minute]:[second] "
-	dat += "<A href='?src=\ref[src];tp=1'>+</A> <A href='?src=\ref[src];tp=30'>+</A><br></TT>"
-	dat += "<BR><BR><A href='?src=\ref[src];refresh=1'>Refresh</A>"
-	dat += "<BR><BR><A href='?src=\ref[src];close=1'>Close</A>"
+	dat += "<A href='byond://?src=\ref[src];tp=1'>+</A> <A href='byond://?src=\ref[src];tp=30'>+</A><br></TT>"
+	dat += "<BR><BR><A href='byond://?src=\ref[src];refresh=1'>Refresh</A>"
+	dat += "<BR><BR><A href='byond://?src=\ref[src];close=1'>Close</A>"
 	show_browser(user, dat, "window=timer")
 	onclose(user, "timer")
 	return
