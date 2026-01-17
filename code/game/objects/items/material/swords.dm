@@ -1,6 +1,10 @@
 /obj/item/material/sword
 	name = "claymore"
 	desc = "What are you standing around staring at this for? Get to killing!"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
 	icon_state = "claymore"
 	item_state = "claymore"
 	slot_flags = SLOT_BELT

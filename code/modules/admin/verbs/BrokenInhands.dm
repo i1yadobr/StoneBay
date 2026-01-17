@@ -1,7 +1,7 @@
 /proc/getbrokeninhands()
-	var/icon/IL = new('icons/mob/onmob/items/lefthand.dmi')
+	var/icon/IL = new('icons/mob/inhands/items_lefthand.dmi')
 	var/list/Lstates = IL.IconStates()
-	var/icon/IR = new('icons/mob/onmob/items/righthand.dmi')
+	var/icon/IR = new('icons/mob/inhands/items_righthand.dmi')
 	var/list/Rstates = IR.IconStates()
 
 
@@ -32,6 +32,3 @@
 		fdel(F)
 		to_file(F, text)
 		log_debug("Completeled successfully and written to [F]")
-
-
-

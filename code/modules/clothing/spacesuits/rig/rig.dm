@@ -576,7 +576,7 @@
 	//TODO: Maybe consider a cache for this (use mob_icon as blank canvas, use suit icon overlay).
 	ClearOverlays()
 	if(!mob_icon || update_mob_icon)
-		var/species_icon = 'icons/mob/onmob/rig_back.dmi'
+		var/species_icon = 'icons/inv_slots/rig/mob.dmi' //TODO: Refactor it, so we can take sprite for fat/slim bodytype
 		// Since setting mob_icon will override the species checks in
 		// update_inv_wear_suit(), handle species checks here.
 		mob_icon = image("icon" = species_icon, "icon_state" = "[icon_state]")
@@ -584,7 +584,7 @@
 	if(installed_modules.len)
 		for(var/obj/item/rig_module/module in installed_modules)
 			if(module.suit_overlay)
-				chest.AddOverlays(image("icon" = 'icons/mob/onmob/rig_modules.dmi', "icon_state" = "[module.suit_overlay]", "dir" = SOUTH))
+				chest.AddOverlays(image("icon" = 'icons/inv_slots/rig/modules.dmi', "icon_state" = "[module.suit_overlay]", "dir" = SOUTH))
 
 	if(wearer)
 		wearer.update_inv_shoes()
@@ -609,7 +609,7 @@
 
 	for(var/obj/item/rig_module/module in installed_modules)
 		if(module.suit_overlay)
-			ret.AddOverlays(image('icons/mob/onmob/rig_modules.dmi', module.suit_overlay))
+			ret.AddOverlays(image('icons/inv_slots/rig/modules.dmi', module.suit_overlay))
 	return ret
 
 /obj/item/rig/proc/check_suit_access(mob/living/carbon/human/user)

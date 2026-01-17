@@ -983,8 +983,8 @@
 	desc = "It's a case, for building medium-sized electronics with. This one resembles a gun, or some type of tool, if you're feeling optimistic. It can fire guns and throw items while the user is holding it."
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
 	item_icons = list(
-		icon_l_hand = 'icons/mob/onmob/items/lefthand_guns.dmi',
-		icon_r_hand = 'icons/mob/onmob/items/righthand_guns.dmi'
+		icon_l_hand = 'icons/mob/inhands/weapons/guns_lefthand.dmi',
+		icon_r_hand = 'icons/mob/inhands/weapons/guns_righthand.dmi'
 		)
 	can_fire_equipped = TRUE
 
