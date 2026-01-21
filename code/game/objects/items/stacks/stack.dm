@@ -10,12 +10,16 @@
  */
 
 /obj/item/stack
+	icon = 'icons/obj/materials.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/sheets_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/sheets_righthand.dmi',
+		)
 	gender = PLURAL
 	origin_tech = list(TECH_MATERIAL = 1)
 	mod_weight = 0.75
 	mod_reach = 0.5
 	mod_handy = 0.5
-	icon = 'icons/obj/materials.dmi'
 	var/list/datum/stack_recipe/recipes
 	var/singular_name
 	var/plural_name

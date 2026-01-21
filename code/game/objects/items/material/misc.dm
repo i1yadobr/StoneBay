@@ -113,6 +113,7 @@
 /obj/item/material/scythe
 	name = "scythe"
 	desc = "A sharp and curved blade on a long fibremetal handle, this tool makes it easy to reap what you sow."
+	icon = 'icons/obj/weapons.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
 		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'

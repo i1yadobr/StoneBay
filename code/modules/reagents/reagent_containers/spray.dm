@@ -2,6 +2,10 @@
 	name = "spray bottle"
 	desc = "A spray bottle, with an unscrewable top."
 	icon = 'icons/obj/janitor.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi',
+		)
 	icon_state = "cleaner"
 	item_state = "cleaner"
 	item_flags = ITEM_FLAG_NO_BLUDGEON
@@ -219,6 +223,10 @@
 	name = "Plant-B-Gone"
 	desc = "Kills those pesky weeds!"
 	icon = 'icons/obj/hydroponics_items.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/hydroponics_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi',
+		)
 	icon_state = "plantbgone"
 	item_state = "plantbgone"
 	startswith = list(/datum/reagent/toxin/plantbgone)
@@ -230,9 +238,9 @@
 
 /obj/item/reagent_containers/spray/noreact
 	name = "stasis spray"
-	icon_state = "cleaner_noreact"
 	desc = "The label says 'Finally, a use for that pesky experimental bluespace technology for the whole house to enjoy!'\n\
 	A disclaimer towards the bottom states <span class = 'warning'>Warning: Do not use around the house, or in proximity of dogs|children|clowns</span>"
+	icon_state = "cleaner_noreact"
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER|ATOM_FLAG_NO_REACT
 	origin_tech = list(TECH_BLUESPACE = 3, TECH_MATERIAL = 5)
 	possible_transfer_amounts = "50;100;250"

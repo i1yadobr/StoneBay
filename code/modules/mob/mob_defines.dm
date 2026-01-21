@@ -267,6 +267,9 @@
 	/// UI holder for a language menu.
 	var/datum/language_menu/language_menu
 
+	// Used to specify the item state for the on-mob overlays.
+	var/item_state = null
+
 /datum/rad_resist/mob
 	alpha_particle_resist = 6 MEGA ELECTRONVOLT
 	beta_particle_resist = 0.1 MEGA ELECTRONVOLT

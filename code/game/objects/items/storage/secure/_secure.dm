@@ -1,6 +1,11 @@
 /obj/item/storage/secure
 	name = "secstorage"
 
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/briefcase_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/briefcase_righthand.dmi',
+		)
+
 	w_class = ITEM_SIZE_NORMAL
 	max_w_class = ITEM_SIZE_SMALL
 	max_storage_space = DEFAULT_BOX_STORAGE

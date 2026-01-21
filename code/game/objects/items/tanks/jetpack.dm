@@ -3,14 +3,18 @@
 /obj/item/tank/jetpack
 	name = "jetpack (empty)"
 	desc = "A tank of compressed gas for use as propulsion in zero-gravity areas. Use with caution."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/jetpack_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/jetpack_righthand.dmi',
+		)
 	icon_state = "jetpack"
+	item_state = "jetpack"
 	gauge_icon = null
 	w_class = ITEM_SIZE_HUGE
 	force = 17.5
 	mod_weight = 1.75
 	mod_reach = 1.0
 	mod_handy = 0.5
-	item_state = "jetpack"
 	distribute_pressure = ONE_ATMOSPHERE*O2STANDARD
 	var/datum/effect/effect/system/trail/ion/ion_trail
 	var/on = 0.0

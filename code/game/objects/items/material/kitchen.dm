@@ -34,8 +34,6 @@
 	if(!istype(M))
 		return ..()
 
-
-
 	if(user.a_intent != I_HELP)
 
 		if(is_pacifist(user))

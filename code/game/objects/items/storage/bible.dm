@@ -1,7 +1,12 @@
 /obj/item/storage/bible
 	name = "bible"
 	desc = "Apply to head repeatedly."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/books_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/books_righthand.dmi',
+		)
 	icon_state = "bible"
+	item_state = "bible"
 	throw_range = 5
 	w_class = ITEM_SIZE_NORMAL
 	max_w_class = ITEM_SIZE_SMALL
@@ -10,9 +15,7 @@
 	var/deity_name = "Christ"
 
 /obj/item/storage/bible/booze
-	name = "bible"
 	desc = "To be applied to the head repeatedly."
-	icon_state = "bible"
 
 	startswith = list(
 		/obj/item/reagent_containers/vessel/bottle/small/beer,

@@ -2,8 +2,13 @@
 //Shoes
 /obj/item/clothing/shoes
 	name = "shoes"
-	icon = 'icons/obj/clothing/shoes.dmi'
 	desc = "Comfortable-looking shoes."
+	icon = 'icons/obj/clothing/shoes.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/clothing/shoes/hand_l_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/shoes/hand_r_default.dmi',
+		)
+	item_state = "shoes"
 	gender = PLURAL //Carn: for grammarically correct text-parsing
 	force = 2
 
@@ -20,10 +25,6 @@
 	drop_sound = SFX_DROP_SHOES
 	pickup_sound = SFX_PICKUP_SHOES
 
-	item_state_slots = list(
-		slot_l_hand_str = "shoes",
-		slot_r_hand_str = "shoes",
-		)
 	valid_accessory_slots = list(ACCESSORY_SLOT_COVER)
 
 	var/overshoes = 0

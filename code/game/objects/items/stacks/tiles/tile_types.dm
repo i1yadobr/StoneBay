@@ -11,11 +11,15 @@
 	name = "tile"
 	singular_name = "tile"
 	desc = "A non-descript floor tile."
+	icon = 'icons/obj/tiles.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/tiles_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/tiles_righthand.dmi',
+		)
 	item_state = "tile"
 	randpixel = 7
 	w_class = ITEM_SIZE_NORMAL
 	max_amount = 100
-	icon = 'icons/obj/tiles.dmi'
 
 	force = 1
 	throwforce = 1
