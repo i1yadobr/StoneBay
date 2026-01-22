@@ -12,6 +12,10 @@ BLIND     // can't see anything
 /obj/item/clothing/glasses
 	name = "glasses"
 	icon = 'icons/obj/clothing/glasses.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/clothing/glasses/hand_l_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/glasses/hand_r_default.dmi',
+		)
 	w_class = ITEM_SIZE_SMALL
 	body_parts_covered = EYES
 	slot_flags = SLOT_EYES
