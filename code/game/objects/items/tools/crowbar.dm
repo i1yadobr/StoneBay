@@ -15,13 +15,17 @@
 	provided that it has no power and has been welded shut."
 
 	icon = 'icons/obj/tools.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi',
+		)
 	icon_state = "crowbar"
+	item_state = "crowbar"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	force = 10.0
 	throwforce = 7.0
 	throw_range = 3
-	item_state = "crowbar"
 	w_class = ITEM_SIZE_NORMAL
 	mod_weight = 1.0
 	mod_reach = 1.0

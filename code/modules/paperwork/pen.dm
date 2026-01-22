@@ -228,6 +228,12 @@
 /obj/item/pen/energy_dagger
 	name = "pen"
 	desc = "It's a black ink pen with a fancy-looking button."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
+	icon_state = "edagger0"
+	item_state = "edagger0"
 	mod_weight = 0.5
 	mod_reach = 0.4
 	mod_handy = 1.25
@@ -235,8 +241,6 @@
 	armor_penetration = 35
 	sharp = TRUE
 	edge = TRUE
-	icon_state = "edagger0"
-	item_state = "edagger0"
 	hitsound = 'sound/effects/fighting/energy1.ogg'
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	check_armour = "laser"

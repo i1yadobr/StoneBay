@@ -419,11 +419,13 @@
 	name = "rubber ducky"
 	desc = "Rubber ducky you're so fine, you make bathtime lots of fuuun. Rubber ducky I'm awfully fooooond of yooooouuuu~"	//thanks doohl
 	icon = 'icons/obj/watercloset.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi',
+		)
 	icon_state = "rubberducky"
 	item_state = "rubberducky"
 	slot_flags = SLOT_HEAD
-
-
 
 /obj/structure/sink
 	name = "sink"
@@ -560,7 +562,6 @@
 	user.visible_message( \
 		SPAN("notice", "[user] washes \a [I] using \the [src]."), \
 		SPAN("notice", "You wash \a [I] using \the [src]."))
-
 
 /obj/structure/sink/kitchen
 	name = "kitchen sink"

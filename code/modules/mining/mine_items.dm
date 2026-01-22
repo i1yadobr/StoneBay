@@ -4,6 +4,12 @@
 	name = "pickaxe"
 	desc = "Pure classics."
 	icon = 'icons/obj/tools.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/mining_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/mining_righthand.dmi',
+		)
+	icon_state = "pickaxe"
+	item_state = "pickaxe"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	force = 14.5
@@ -12,8 +18,6 @@
 	mod_reach = 1.25
 	mod_handy = 0.7
 	armor_penetration = 70
-	icon_state = "pickaxe"
-	item_state = "pickaxe"
 	w_class = ITEM_SIZE_HUGE
 	matter = list(MATERIAL_STEEL = 3750)
 	origin_tech = list(TECH_MATERIAL = 1, TECH_ENGINEERING = 1)

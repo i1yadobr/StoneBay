@@ -13,6 +13,10 @@
 	description_antag = "Not only is this handy tool good for making off with machines, but it even makes a weapon in a pinch!"
 
 	icon = 'icons/obj/tools.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi',
+		)
 	icon_state = "wrench"
 	item_state = "wrench"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE

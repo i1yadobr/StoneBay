@@ -11,6 +11,10 @@ REAGENT SCANNER
 /obj/item/device/healthanalyzer
 	name = "health analyzer"
 	desc = "A hand-held body scanner able to distinguish vital signs of the subject."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "health"
 	item_state = "healthanalyzer"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE

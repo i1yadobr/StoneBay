@@ -468,6 +468,10 @@ var/list/possible_cable_coil_colours
 	name = "multipurpose cable coil"
 	desc = "A coil of wiring, for delicate electronics use aswell as the more basic cable laying."
 	icon = 'icons/obj/power.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi',
+		)
 	icon_state = "coil"
 	randpixel = 2
 	amount = MAXCOIL

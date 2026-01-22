@@ -99,4 +99,3 @@
 
 /obj/item/storage/lunchbox/syndicate/filled
 	filled = TRUE
-

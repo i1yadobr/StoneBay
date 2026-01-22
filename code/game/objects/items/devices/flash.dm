@@ -1,6 +1,10 @@
 /obj/item/device/flash
 	name = "flash"
 	desc = "A device that produces a bright flash of light, designed to stun and disorient an attacker."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/security_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/security_righthand.dmi',
+		)
 	icon_state = "flash"
 	item_state = "flashtool"
 	throwforce = 5

@@ -16,6 +16,10 @@
 	name = "retractor"
 	desc = "Retracts stuff."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "retractor"
 	item_state = "retractor"
 	matter = list(MATERIAL_STEEL = 10000, MATERIAL_GLASS = 5000)
@@ -32,6 +36,10 @@
 	name = "hemostat"
 	desc = "You think you have seen this before."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "hemostat"
 	item_state = "hemostat"
 	matter = list(MATERIAL_STEEL = 5000, MATERIAL_GLASS = 2500)
@@ -56,6 +64,10 @@
 	name = "cautery"
 	desc = "This stops bleeding."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "cautery"
 	item_state = "cautery"
 	matter = list(MATERIAL_STEEL = 5000, MATERIAL_GLASS = 2500)
@@ -73,6 +85,10 @@
 	name = "surgical drill"
 	desc = "You can drill using this item. You dig?"
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "drill"
 	item_state = "drill"
 	hitsound = 'sound/effects/fighting/circsawhit.ogg'
@@ -97,6 +113,10 @@
 	name = "scalpel"
 	desc = "Cut, cut, and once more cut."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "scalpel"
 	item_state = "scalpel"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
@@ -174,6 +194,10 @@
 	name = "circular saw"
 	desc = "For heavy duty cutting."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "saw"
 	item_state = "saw"
 	hitsound = 'sound/effects/fighting/circsawhit.ogg'
@@ -322,6 +346,10 @@
 	name = "bone gel"
 	desc = "A container of bone gel. The protruding nozzle facilitates internal application. Used for bone healing."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "bone_gel"
 	item_state = "bone_gel"
 	force = 0
@@ -334,6 +362,10 @@
 	name = "FixOVein"
 	desc = "A thread bobbin like tool that stores synthetic vein."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "fixovein"
 	item_state = "fixovein"
 	force = 0
@@ -355,6 +387,10 @@
 	name = "bone setter"
 	desc = "A tool to help you put together a puzzle of bones."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
 	icon_state = "bone_setter"
 	item_state = "bone_setter"
 	force = 8.0
@@ -379,6 +415,11 @@
 	name = "organ fixer"
 	desc = "A device used to fix internal organs."
 	icon = 'icons/obj/surgery.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		)
+	icon_state = "organ-fixer"
 	item_state = "organ-fixer"
 	force = 8.0
 	throwforce = 8.0
