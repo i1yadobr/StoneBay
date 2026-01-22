@@ -9,7 +9,6 @@
 		slot_l_hand_str = 'icons/mob/inhands/clothing/gloves/hand_l_default.dmi',
 		slot_r_hand_str = 'icons/mob/inhands/clothing/gloves/hand_r_default.dmi',
 		)
-	item_state = "bgloves"
 	siemens_coefficient = 0.75
 	coverage = 1.0
 	body_parts_covered = HANDS
