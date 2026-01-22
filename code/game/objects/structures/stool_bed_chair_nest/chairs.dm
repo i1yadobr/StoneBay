@@ -103,8 +103,8 @@
 	desc = "A folded chair. Good for smashing noggin-shaped things."
 	icon = 'icons/obj/furniture.dmi'
 	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/items/stool_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/items/stool_righthand.dmi',
+		slot_l_hand_str = 'icons/mob/inhands/items/chairs_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/chairs_righthand.dmi',
 		)
 	icon_state = "folded_chair"
 	item_state = "folded_chair"

@@ -6,8 +6,8 @@ var/global/list/stool_cache = list() //haha stool
 	desc = "Apply butt."
 	icon = 'icons/obj/furniture.dmi'
 	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/items/stool_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/items/stool_righthand.dmi',
+		slot_l_hand_str = 'icons/mob/inhands/items/chairs_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/chairs_righthand.dmi',
 		)
 	icon_state = "stool_preview" //set for the map
 	item_state = "stool"
