@@ -13,8 +13,8 @@
 	metabolism = 5.0
 	ingest_met = 1.0
 	digest_met = 5.0
-	ingest_absorbability = 0.5
-	digest_absorbability = 1.0
+	ingest_absorbability = 0.0
+	digest_absorbability = 0.0
 	hydration_value = 1.0
 
 	var/nutrition = 0 // Per ml
@@ -29,10 +29,7 @@
 	return
 
 /datum/reagent/drink/affect_ingest(mob/living/carbon/M, alien, removed)
-	if(hydration_value > 0)
-		M.add_hydration(removed * hydration_value)
-	else if(hydration_value < 0)
-		M.remove_hydration(removed * hydration_value)
+	..()
 
 	M.add_nutrition(nutrition * removed * ingest_absorbability) // For hunger and fatness
 
@@ -43,10 +40,7 @@
 	return
 
 /datum/reagent/drink/affect_digest(mob/living/carbon/M, alien, removed)
-	if(hydration_value > 0)
-		M.add_hydration(removed * hydration_value)
-	else if(hydration_value < 0)
-		M.remove_hydration(removed * hydration_value)
+	..()
 
 	M.add_nutrition(nutrition * removed * digest_absorbability)
 
@@ -199,6 +193,7 @@
 
 /datum/reagent/drink/juice/lime/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
+
 	if(alien == IS_DIONA)
 		return
 	M.adjustToxLoss(-0.1 * removed)
@@ -222,6 +217,7 @@
 
 /datum/reagent/drink/juice/orange/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
+
 	if(alien == IS_DIONA)
 		return
 	M.adjustOxyLoss(-0.15 * removed)
@@ -326,6 +322,7 @@
 
 /datum/reagent/drink/juice/tomato/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
+
 	if(alien == IS_DIONA)
 		return
 	M.heal_organ_damage(0, 0.1 * removed)
@@ -366,6 +363,7 @@
 
 /datum/reagent/drink/juice/apple/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
+
 	if(alien == IS_DIONA)
 		return
 	M.heal_organ_damage(0, 0.1 * removed)
@@ -409,6 +407,7 @@
 
 /datum/reagent/drink/milk/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
+
 	if(alien == IS_DIONA)
 		return
 	M.heal_organ_damage(0.5 * removed, 0)
@@ -489,6 +488,7 @@
 
 /datum/reagent/drink/tea/affect_digest(mob/living/carbon/M, alien, removed)
 	..()
+
 	if(alien == IS_DIONA)
 		return
 	M.adjustToxLoss(-0.1 * removed)
