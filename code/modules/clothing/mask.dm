@@ -5,7 +5,7 @@
 	icon = 'icons/obj/clothing/masks.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/masks/hand_l_default.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/clothing/masks/hand_r_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/masks/hand_r_default.dmi'
 		)
 	blood_overlay_type = "maskblood"
 	slot_flags = SLOT_MASK

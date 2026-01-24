@@ -4,7 +4,7 @@
 	desc = "A heavy and bulky backpack-shaped device. It can be used to quickly set up or dismantle pipelines using nothing but electrical power."
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 		)
 	icon_state = "pipe1"
 	item_state = "backwear_rpd"

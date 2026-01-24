@@ -33,7 +33,7 @@
 	desc = "A light and compact fibreglass-framed model fire extinguisher."
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 		)
 	icon_state = "miniFE0"
 	item_state = "miniFE"

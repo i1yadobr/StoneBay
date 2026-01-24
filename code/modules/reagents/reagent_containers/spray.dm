@@ -4,7 +4,7 @@
 	icon = 'icons/obj/janitor.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi'
 		)
 	icon_state = "cleaner"
 	item_state = "cleaner"
@@ -225,7 +225,7 @@
 	icon = 'icons/obj/hydroponics_items.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/hydroponics_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi'
 		)
 	icon_state = "plantbgone"
 	item_state = "plantbgone"

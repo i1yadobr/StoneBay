@@ -3,7 +3,7 @@
 	desc = "Apply to head repeatedly."
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/items/books_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/items/books_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/books_righthand.dmi'
 		)
 	icon_state = "bible"
 	item_state = "bible"

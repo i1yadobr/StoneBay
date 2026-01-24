@@ -6,11 +6,11 @@
 /obj/item/storage/backpack
 	name = "backpack"
 	desc = "You wear this on your back and put items into it."
+	icon = 'icons/obj/storage/backpacks.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/back/hand_l_default.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/clothing/back/hand_r_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/back/hand_r_default.dmi'
 		)
-	icon = 'icons/obj/storage/backpacks.dmi'
 	icon_state = "backpack"
 	inspect_state = TRUE
 	item_state = null

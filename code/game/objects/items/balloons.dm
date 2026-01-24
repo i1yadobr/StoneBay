@@ -334,7 +334,7 @@
 	balloon_type = BALLOON_FORBIDDEN
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/weapons/guns_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/weapons/guns_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/guns_righthand.dmi'
 		)
 
 /obj/item/balloon/item/gun/revolver

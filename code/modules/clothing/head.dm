@@ -5,7 +5,7 @@
 	icon = 'icons/obj/clothing/hats.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/hats/hand_l_default.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/clothing/hats/hand_r_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/hats/hand_r_default.dmi'
 		)
 	body_parts_covered = HEAD
 	slot_flags = SLOT_HEAD

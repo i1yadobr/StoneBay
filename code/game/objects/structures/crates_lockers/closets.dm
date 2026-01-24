@@ -63,7 +63,7 @@
 	icon_state = "steel"
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/shields_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/shields_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/shields_righthand.dmi'
 		)
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	force = 10.0

@@ -5,7 +5,7 @@
 	icon = 'icons/obj/clothing/suits.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/suits/hand_l_default.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/clothing/suits/hand_r_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/suits/hand_r_default.dmi'
 		)
 	w_class = ITEM_SIZE_NORMAL
 

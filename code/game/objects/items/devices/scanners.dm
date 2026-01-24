@@ -13,7 +13,7 @@ REAGENT SCANNER
 	desc = "A hand-held body scanner able to distinguish vital signs of the subject."
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "health"
 	item_state = "healthanalyzer"

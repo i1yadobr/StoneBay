@@ -8,7 +8,7 @@
 	icon = 'icons/obj/janitor.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi'
 		)
 	icon_state = "laundry-empty"
 	item_state = "laundry"

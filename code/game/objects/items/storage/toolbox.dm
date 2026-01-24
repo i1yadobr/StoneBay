@@ -9,7 +9,7 @@
 
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/toolbox_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/toolbox_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/toolbox_righthand.dmi'
 		)
 	icon_state = "red"
 	item_state = "toolbox_red"

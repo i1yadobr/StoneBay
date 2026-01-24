@@ -211,7 +211,7 @@
 	desc = "A very, very heavy duty flashlight."
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/security_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/security_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/security_righthand.dmi'
 		)
 	icon_state = "maglight"
 	item_state = "maglight"
@@ -241,7 +241,7 @@
 	desc = "A mining lantern."
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/mining_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/mining_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/mining_righthand.dmi'
 		)
 	icon_state = "lantern"
 	item_state = "lantern"

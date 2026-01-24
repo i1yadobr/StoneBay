@@ -9,7 +9,7 @@
 	icon = 'icons/obj/bureaucracy.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/law_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/law_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/law_righthand.dmi'
 		)
 	icon_state = "paper"
 	item_state = "paper"

@@ -8,7 +8,7 @@
 	icon = 'icons/obj/items.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/security_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/security_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/security_righthand.dmi'
 		)
 	icon_state = "handcuff"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
@@ -137,7 +137,7 @@
 	desc = "Looks like some cables tied together. Could be used to tie something up."
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 		)
 	icon_state = "cuff_white"
 	item_state = "coil"

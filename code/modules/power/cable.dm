@@ -470,7 +470,7 @@ var/list/possible_cable_coil_colours
 	icon = 'icons/obj/power.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 		)
 	icon_state = "coil"
 	randpixel = 2

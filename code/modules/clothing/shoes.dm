@@ -6,7 +6,7 @@
 	icon = 'icons/obj/clothing/shoes.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/shoes/hand_l_default.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/clothing/shoes/hand_r_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/shoes/hand_r_default.dmi'
 		)
 	gender = PLURAL //Carn: for grammarically correct text-parsing
 	force = 2

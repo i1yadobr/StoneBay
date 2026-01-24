@@ -53,7 +53,7 @@
 	desc = "It's the heavy-duty black polymer kind. Time to take out the trash!"
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi'
 		)
 	icon_state = "trashbag0"
 	item_state = "trashbag"

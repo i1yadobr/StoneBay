@@ -7,7 +7,7 @@
 	icon = 'icons/obj/clothing/gloves.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/gloves/hand_l_default.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/clothing/gloves/hand_r_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/gloves/hand_r_default.dmi'
 		)
 	siemens_coefficient = 0.75
 	coverage = 1.0

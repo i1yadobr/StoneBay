@@ -4,7 +4,7 @@
 	var/radio_desc = ""
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/ears/hand_l_default.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/clothing/ears/hand_r_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/ears/hand_r_default.dmi'
 		)
 	icon_state = "headset"
 	item_state = "headset"

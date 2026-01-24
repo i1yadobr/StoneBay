@@ -5,7 +5,7 @@
 	desc = "A tank of compressed gas for use as propulsion in zero-gravity areas. Use with caution."
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/jetpack_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/jetpack_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/jetpack_righthand.dmi'
 		)
 	icon_state = "jetpack"
 	item_state = "jetpack"

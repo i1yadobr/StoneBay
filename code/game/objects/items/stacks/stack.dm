@@ -13,7 +13,7 @@
 	icon = 'icons/obj/materials.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/items/sheets_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/items/sheets_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/sheets_righthand.dmi'
 		)
 	gender = PLURAL
 	origin_tech = list(TECH_MATERIAL = 1)

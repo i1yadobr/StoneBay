@@ -6,7 +6,7 @@
 	icon_state = "animal_tagger1"
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/weapons/guns_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/weapons/guns_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/guns_righthand.dmi'
 		)
 	item_state = "gun" //TODO: Make a normal sprite for inhand
 	force = 1

@@ -18,7 +18,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "retractor"
 	item_state = "retractor"
@@ -38,7 +38,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "hemostat"
 	item_state = "hemostat"
@@ -66,7 +66,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "cautery"
 	item_state = "cautery"
@@ -87,7 +87,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "drill"
 	item_state = "drill"
@@ -115,7 +115,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "scalpel"
 	item_state = "scalpel"
@@ -196,7 +196,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "saw"
 	item_state = "saw"
@@ -348,7 +348,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "bone_gel"
 	item_state = "bone_gel"
@@ -364,7 +364,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "fixovein"
 	item_state = "fixovein"
@@ -389,7 +389,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "bone_setter"
 	item_state = "bone_setter"
@@ -417,7 +417,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "organ-fixer"
 	item_state = "organ-fixer"

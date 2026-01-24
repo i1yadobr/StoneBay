@@ -7,7 +7,7 @@
 	icon = 'icons/obj/chemical.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "dropper0"
 	amount_per_transfer_from_this = 5

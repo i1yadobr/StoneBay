@@ -7,7 +7,7 @@
 	icon = 'icons/obj/hydroponics_items.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/hydroponics_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi'
 		)
 	icon_state = "plantclippers"
 	item_state = "plantclippers"

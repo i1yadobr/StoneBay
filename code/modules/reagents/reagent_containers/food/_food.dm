@@ -7,7 +7,7 @@
 	icon = 'icons/obj/food.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/items/food_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/items/food_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/food_righthand.dmi'
 		)
 	icon_state = null
 	center_of_mass = "x=16;y=16"

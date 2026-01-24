@@ -14,7 +14,7 @@
 	icon = 'icons/obj/tiles.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/items/tiles_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/items/tiles_righthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/tiles_righthand.dmi'
 		)
 	item_state = "tile"
 	randpixel = 7
