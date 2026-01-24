@@ -471,7 +471,7 @@
 	// High hydratation boosts detox efficiency (if applicible), low hydration slows it down or halts it completely.
 	switch(hydration)
 		if(HYDRATION_NONE)
-			detox_efficiency -= 0.5
+			detox_efficiency -= chem_effects[CE_ANTITOX] ? 0.3 : 0.5
 		if(HYDRATION_NONE+0.01 to HYDRATION_LOW)
 			detox_efficiency -= 0.2
 		if(HYDRATION_HIGH+0.01 to HYDRATION_SUPER)
@@ -502,12 +502,14 @@
 		Paralyse(20)
 
 	if(toxic_severity > TOXLOSS_LETHAL) // tb 280+, we're wrecked, lethal poisoning
-		Weaken(10)
+		if(!chem_effects[CE_TOXBLOCK])
+			adjustInternalLoss(2.5, TRUE)
+			adjustBrainLoss(0.5)
 		adjustInternalLoss(2.5, TRUE)
 		adjustBrainLoss(0.5)
 
 	if(toxic_severity > TOXLOSS_CRITICAL) // tb 210+, we're in immediate danger, critical poisoning
-		if(prob(10))
+		if(prob(10) && !chem_effects[CE_TOXBLOCK])
 			losebreath++
 			adjustInternalLoss(5.0, TRUE)
 
@@ -527,7 +529,7 @@
 		make_dizzy(6)
 		eye_blurry = max(eye_blurry, 5)
 
-		if(prob(10))
+		if(prob(10) && !chem_effects[CE_TOXBLOCK])
 			slurring = max(slurring, 10)
 			adjustInternalLoss(3.0, TRUE)
 
@@ -541,7 +543,7 @@
 	else if(toxic_severity > TOXLOSS_MILD) // tb 70+, we're not feeling well, mild poisoning
 		make_dizzy(6)
 
-		if(prob(10))
+		if(prob(10) && !chem_effects[CE_TOXBLOCK])
 			eye_blurry = max(eye_blurry, 5)
 			adjustInternalLoss(1.5, TRUE)
 
