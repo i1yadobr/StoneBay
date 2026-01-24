@@ -502,11 +502,10 @@
 		Paralyse(20)
 
 	if(toxic_severity > TOXLOSS_LETHAL) // tb 280+, we're wrecked, lethal poisoning
+		Weaken(10)
 		if(!chem_effects[CE_TOXBLOCK])
 			adjustInternalLoss(2.5, TRUE)
 			adjustBrainLoss(0.5)
-		adjustInternalLoss(2.5, TRUE)
-		adjustBrainLoss(0.5)
 
 	if(toxic_severity > TOXLOSS_CRITICAL) // tb 210+, we're in immediate danger, critical poisoning
 		if(prob(10) && !chem_effects[CE_TOXBLOCK])
