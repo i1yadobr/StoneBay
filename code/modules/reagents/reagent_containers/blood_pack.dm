@@ -1,6 +1,6 @@
 /obj/item/storage/box/bloodpacks
-	name = "blood packs box"
-	desc = "This box contains blood packs."
+	name = "IV bags box"
+	desc = "This box contains IV bags."
 	icon_state = "bloodbags"
 	startswith = list(/obj/item/reagent_containers/ivbag = 7)
 
@@ -37,7 +37,6 @@
 		return ..() * 1.5
 	return ..()
 
-
 /obj/item/reagent_containers/ivbag/attack(mob/living/carbon/human/M, mob/living/carbon/human/user, target_zone)
 	if (user == M && M.mind && M.mind.vampire)
 		if (being_feed)
@@ -71,9 +70,6 @@
 
 	if(vampire_marks)
 		. += SPAN_WARNING("There are teeth marks on it.")
-
-/obj/item/reagent_containers/attackby(obj/item/W as obj, mob/user as mob)
-	return
 
 /obj/item/reagent_containers/ivbag/on_update_icon()
 	ClearOverlays()
