@@ -3,8 +3,8 @@
 	desc = "A folder."
 	icon = 'icons/obj/bureaucracy.dmi'
 	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/equipment/law_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/law_righthand.dmi'
+		slot_l_hand_str = 'icons/mob/inhands/equipment/bureaucracy_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/bureaucracy_righthand.dmi'
 		)
 	icon_state = "folder"
 	item_state = "folder"
