@@ -5,6 +5,10 @@
 	gender = PLURAL //Carn: for grammarically correct text-parsing
 	w_class = ITEM_SIZE_SMALL
 	icon = 'icons/obj/clothing/gloves.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/clothing/gloves/hand_l_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/gloves/hand_r_default.dmi'
+		)
 	siemens_coefficient = 0.75
 	coverage = 1.0
 	body_parts_covered = HANDS
@@ -15,11 +19,6 @@
 
 	drop_sound = SFX_DROP_GLOVES
 	pickup_sound = SFX_PICKUP_GLOVES
-
-	item_state_slots = list(
-		slot_l_hand_str = "bgloves",
-		slot_r_hand_str = "bgloves",
-		)
 
 	var/transfer_blood = 0
 	var/mob/living/carbon/human/bloody_hands_mob

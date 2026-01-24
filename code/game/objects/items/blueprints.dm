@@ -2,6 +2,10 @@
 	name = "blueprints"
 	desc = "Blueprints..."
 	icon = 'icons/obj/items.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
+		)
 	icon_state = "blueprints"
 	attack_verb = list("attacked", "bapped", "hit")
 	var/const/AREA_ERRNONE = 0

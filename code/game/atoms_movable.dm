@@ -20,7 +20,6 @@
 	var/throw_spin = TRUE // Should the atom spin when thrown.
 	var/moved_recently = 0
 	var/mob/pulledby = null
-	var/item_state = null // Used to specify the item state for the on-mob overlays.
 	var/pull_sound = null
 
 	/// Either [EMISSIVE_BLOCK_NONE], [EMISSIVE_BLOCK_GENERIC], or [EMISSIVE_BLOCK_UNIQUE]

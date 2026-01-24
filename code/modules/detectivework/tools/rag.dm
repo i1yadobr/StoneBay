@@ -4,7 +4,12 @@
 	desc = "For cleaning up messes, you suppose."
 	w_class = ITEM_SIZE_TINY
 	icon = 'icons/obj/toy.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi'
+		)
 	icon_state = "rag"
+	item_state = "rag"
 	amount_per_transfer_from_this = 5
 	possible_transfer_amounts = "5"
 	volume = 10

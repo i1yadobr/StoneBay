@@ -19,7 +19,12 @@
  * Twohanded
  */
 /obj/item/material/twohanded
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
 	w_class = ITEM_SIZE_HUGE
+
 	var/wielded = 0
 	var/force_wielded = 0
 	var/force_unwielded

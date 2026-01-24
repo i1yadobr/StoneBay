@@ -3,7 +3,12 @@
 	desc = "A cheap bar of soap. Doesn't smell."
 	gender = PLURAL
 	icon = 'icons/obj/items.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi'
+		)
 	icon_state = "soap"
+	item_state = "soap"
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
 	w_class = ITEM_SIZE_SMALL
 	throwforce = 0
@@ -122,9 +127,11 @@
 /obj/item/soap/nanotrasen
 	desc = "A NanoTrasen-brand bar of soap. Smells of plasma."
 	icon_state = "soapnt"
+	item_state = "soapnt"
 
 /obj/item/soap/deluxe
 	icon_state = "soapdeluxe"
+	item_state = "soapdeluxe"
 
 /obj/item/soap/deluxe/New()
 	desc = "A deluxe Waffle Co. brand bar of soap. Smells of [pick("lavender", "vanilla", "strawberry", "chocolate" ,"space")]."
@@ -133,11 +140,14 @@
 /obj/item/soap/syndie
 	desc = "An untrustworthy bar of soap. Smells of fear."
 	icon_state = "soapsyndie"
+	item_state = "soapsyndie"
 
 /obj/item/soap/gold
 	desc = "One true soap to rule them all."
 	icon_state = "soapgold"
+	item_state = "soapgold"
 
 /obj/item/soap/brig
 	desc = "Train your security guards!"
 	icon_state = "soapbrig"
+	item_state = "soapbrig"

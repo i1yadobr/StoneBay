@@ -5,10 +5,10 @@
 	origin_tech = list(TECH_BIO = 5, TECH_MATERIAL = 2)
 	icon_state = "animal_tagger1"
 	item_icons = list(
-		slot_l_hand_str = 'icons/mob/onmob/items/lefthand_guns.dmi',
-		slot_r_hand_str = 'icons/mob/onmob/items/righthand_guns.dmi',
+		slot_l_hand_str = 'icons/mob/inhands/weapons/guns_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/guns_righthand.dmi'
 		)
-	item_state = "gun"
+	item_state = "gun" //TODO: Make a normal sprite for inhand
 	force = 1
 	var/loaded = 1
 	var/mode = "completely"

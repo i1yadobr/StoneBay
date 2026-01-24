@@ -5,6 +5,10 @@ var/list/global/tank_gauge_cache = list()
 /obj/item/tank
 	name = "tank"
 	icon = 'icons/obj/tank.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tanks_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tanks_righthand.dmi'
+		)
 	hitsound = 'sound/effects/fighting/smash.ogg'
 
 	var/gauge_icon = "indicator_tank"

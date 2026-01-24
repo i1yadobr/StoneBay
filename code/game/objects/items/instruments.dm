@@ -1,6 +1,11 @@
 /obj/item/instrument
 	name = "instrument"
 	desc = "You can`t see this, mkay?"
+	icon = 'icons/obj/musician.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/instruments_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/instruments_righthand.dmi'
+		)
 	force = 0
 	var/datum/song/song
 	var/playing = 0
@@ -8,7 +13,6 @@
 	var/edit = 1
 	var/repeat = 0
 	var/InstrumentId = "instrument"
-	icon = 'icons/obj/musician.dmi'
 
 /obj/item/instrument/proc/playnote(note as text)
 //	log_debug("Note: [note]")

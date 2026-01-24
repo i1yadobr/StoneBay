@@ -1,10 +1,14 @@
 /obj/item/material/harpoon
 	name = "harpoon"
-	sharp = 1
-	edge = 1
 	desc = "Tharr she blows!"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
 	icon_state = "harpoon"
 	item_state = "harpoon"
+	sharp = 1
+	edge = 1
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
 	attack_verb = list("jabbed","stabbed","ripped")
 	material_amount = 3
@@ -17,6 +21,10 @@
 	name = "hatchet"
 	desc = "A very sharp axe blade upon a short fibremetal handle. It has a long history of chopping things, but now it is used for chopping wood."
 	icon = 'icons/obj/weapons.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
 	icon_state = "hatchet"
 	force_const = 7.5
 	thrown_force_const = 5
@@ -42,6 +50,10 @@
 	name = "tactical knife"
 	desc = "You'd be killing loads of people if this was Medal of Valor: Heroes of Space."
 	icon = 'icons/obj/weapons.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
 	icon_state = "tacknife"
 	item_state = "knife"
 	force_const = 5.0
@@ -81,6 +93,10 @@
 	name = "mini hoe"
 	desc = "It's used for removing weeds or scratching your back."
 	icon = 'icons/obj/weapons.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
 	icon_state = "hoe"
 	item_state = "hoe"
 	force_const = 5.5
@@ -95,9 +111,14 @@
 	material_amount = 2
 
 /obj/item/material/scythe
-	icon_state = "scythe0"
 	name = "scythe"
 	desc = "A sharp and curved blade on a long fibremetal handle, this tool makes it easy to reap what you sow."
+	icon = 'icons/obj/weapons.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
+	icon_state = "scythe0"
 	force_const = 8.0
 	force_divisor = 0.2 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.25 // 5 with weight 20 (steel)

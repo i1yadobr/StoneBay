@@ -13,10 +13,6 @@
 	down_item_flags = ITEM_FLAG_THICKMATERIAL
 	down_icon_state = "breathdown"
 	pull_mask = 1
-	item_state_slots = list(
-		slot_l_hand_str = "breathmask",
-		slot_r_hand_str = "breathmask",
-		)
 	use_alt_layer = TRUE
 	can_use_alt_layer = TRUE
 

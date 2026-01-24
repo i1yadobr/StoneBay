@@ -3,6 +3,10 @@
 	desc = "A highly-compressed matter cartridge usable in rapid construction (and deconstruction) devices, such as railguns."
 
 	icon = 'icons/obj/ammo.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
+		)
 	icon_state = "rcd"
 	item_state = "rcdammo"
 

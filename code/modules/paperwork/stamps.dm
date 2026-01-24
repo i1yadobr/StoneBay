@@ -2,6 +2,10 @@
 	name = "rubber stamp"
 	desc = "A rubber stamp for stamping important documents."
 	icon = 'icons/obj/bureaucracy.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/bureaucracy_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/bureaucracy_righthand.dmi'
+		)
 	icon_state = "stamp-qm"
 	item_state = "stamp-qm"
 	throwforce = 0

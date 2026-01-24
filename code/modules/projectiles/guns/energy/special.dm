@@ -146,7 +146,10 @@
 	name = "staff of change"
 	desc = "An artefact that spits bolts of coruscating energy which cause the target's very form to reshape itself."
 	icon = 'icons/obj/guns/gun.dmi'
-	item_icons = null
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/staff_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/staff_righthand.dmi'
+		)
 	icon_state = "staffofchange"
 	item_state = "staffofchange"
 	fire_sound = 'sound/effects/weapons/energy/emitter.ogg'

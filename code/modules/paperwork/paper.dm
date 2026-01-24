@@ -7,6 +7,10 @@
 	name = "sheet of paper"
 	gender = NEUTER
 	icon = 'icons/obj/bureaucracy.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/bureaucracy_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/bureaucracy_righthand.dmi'
+		)
 	icon_state = "paper"
 	item_state = "paper"
 	randpixel = 8

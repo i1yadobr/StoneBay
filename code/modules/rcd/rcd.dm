@@ -16,6 +16,10 @@
 	or instantly breach the ship wherever you want."
 
 	icon = 'icons/obj/items.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
+		)
 	icon_state = "rcd-e"
 
 	max_matter = 160

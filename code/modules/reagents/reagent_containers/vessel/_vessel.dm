@@ -12,8 +12,8 @@
 	icon_state = ""
 	item_state = "null"
 	item_icons = list(
-		slot_l_hand_str = 'icons/mob/onmob/items/lefthand_vessels.dmi',
-		slot_r_hand_str = 'icons/mob/onmob/items/righthand_vessels.dmi',
+		slot_l_hand_str = 'icons/mob/inhands/items/vessels_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/vessels_righthand.dmi'
 		)
 
 	volume = 0.5 LITERS

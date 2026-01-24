@@ -23,6 +23,10 @@
 	name = "box"
 	desc = "It's just an ordinary box."
 	icon = 'icons/obj/storage/boxes.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/box_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/box_righthand.dmi'
+		)
 	icon_state = "box"
 	item_state = "box"
 	inspect_state = "box-open"
@@ -86,8 +90,8 @@
 	name = "crew survival kit"
 	desc = "A durable plastic box decorated in warning colors that contains a limited supply of survival tools. The panel and white stripe indicate this one contains oxygen. It has special foldlines, making it able to be folded into an emergency crowbar."
 	icon_state = "survival"
-	inspect_state = "survival-open"
 	item_state = "box_survival"
+	inspect_state = "survival-open"
 	foldable = /obj/item/crowbar/emergency
 	startswith = list(/obj/item/clothing/mask/breath = 1,
 					/obj/item/tank/emergency/oxygen = 1,
@@ -100,8 +104,8 @@
 	name = "vox survival kit"
 	desc = "A durable plastic box decorated in warning colors that contains a limited supply of survival tools. The panel and black stripe indicate this one contains nitrogen. It has special foldlines, making it able to be folded into an emergency crowbar."
 	icon_state = "survivalvox"
-	inspect_state = "survival-open"
 	item_state = "box_survival"
+	inspect_state = "survival-open"
 	foldable = /obj/item/crowbar/emergency/vox
 	startswith = list(/obj/item/clothing/mask/breath = 1,
 					/obj/item/tank/emergency/nitrogen = 1,
@@ -113,8 +117,8 @@
 	name = "engineer survival kit"
 	desc = "A durable plastic box decorated in warning colors that contains a limited supply of survival tools. The panel and orange stripe indicate this one as the engineering variant. It has special foldlines, making it able to be folded into an emergency crowbar."
 	icon_state = "survivaleng"
-	inspect_state = "survival-open"
 	item_state = "box_survival"
+	inspect_state = "survival-open"
 	foldable = /obj/item/crowbar/emergency/eng
 	startswith = list(/obj/item/clothing/mask/breath = 1,
 					/obj/item/tank/emergency/oxygen/engi = 1,
@@ -128,8 +132,8 @@
 	name = "security survival kit"
 	desc = "A durable plastic box decorated in warning colors that contains a limited supply of survival tools. The panel and red & black stripe indicate this one as the security variant. It has special foldlines, making it able to be folded into an emergency crowbar."
 	icon_state = "survivalsec"
-	inspect_state = "survival-open"
 	item_state = "box_survival"
+	inspect_state = "survival-open"
 	foldable = /obj/item/crowbar/emergency/sec
 	startswith = list(/obj/item/clothing/mask/breath = 1,
 					/obj/item/tank/emergency/oxygen = 1,
@@ -152,7 +156,6 @@
 	icon_state = "sterile"
 	startswith = list(/obj/item/clothing/mask/surgical = 7)
 
-
 /obj/item/storage/box/syringes
 	name = "box of syringes"
 	desc = "A box full of syringes."
@@ -164,7 +167,6 @@
 	desc = "A box full of compressed gas cartridges."
 	icon_state = "syringe"
 	startswith = list(/obj/item/syringe_cartridge = 7)
-
 
 /obj/item/storage/box/beakers
 	name = "box of beakers"
@@ -206,27 +208,27 @@
 			AddOverlays(I)
 
 /obj/item/storage/box/shotgun/shells
-	icon_state = "shotgunshells"
 	name = "box of shotgun shells"
 	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
+	icon_state = "shotgunshells"
 	startswith = list(/obj/item/ammo_casing/shotgun/pellet = 20)
 
 /obj/item/storage/box/shotgun/slugs
-	icon_state = "shotgunslugs"
 	name = "box of shotgun slugs"
 	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
+	icon_state = "shotgunslugs"
 	startswith = list(/obj/item/ammo_casing/shotgun = 20)
 
 /obj/item/storage/box/shotgun/beanbags
-	icon_state = "shotgunbeanbag"
 	name = "box of beanbag shells"
 	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
+	icon_state = "shotgunbeanbag"
 	startswith = list(/obj/item/ammo_casing/shotgun/beanbag = 20)
 
 /obj/item/storage/box/shotgun/stunshells
-	icon_state = "shotgunstuns"
 	name = "box of stun shells"
 	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
+	icon_state = "shotgunstuns"
 	startswith = list(/obj/item/ammo_casing/shotgun/stunshell = 20)
 
 /obj/item/storage/box/practiceshells
@@ -235,7 +237,6 @@
 	startswith = list(/obj/item/ammo_casing/shotgun/practice = 7)
 	drop_sound = SFX_DROP_AMMOBOX
 	pickup_sound = SFX_PICKUP_AMMOBOX
-
 
 /obj/item/storage/box/sniperammo
 	name = "box of 14.5mm shells"
@@ -515,8 +516,8 @@
 
 /obj/item/storage/box/pillbottles
 	name = "box of pill bottles"
-	icon_state = "pillbox"
 	desc = "It has pictures of pill bottles on its front."
+	icon_state = "pillbox"
 	startswith = list(/obj/item/storage/pill_bottle = 7)
 
 /obj/item/storage/box/snappops
@@ -564,8 +565,8 @@
 
 /obj/item/storage/box/lights
 	name = "box of replacement bulbs"
-	icon_state = "light"
 	desc = "This box is shaped on the inside so that only light tubes and bulbs fit."
+	icon_state = "light"
 	item_state = "syringe_kit"
 	use_to_pickup = 1 // for picking up broken bulbs, not that most people will try
 
@@ -670,6 +671,10 @@
 	name = "portable freezer"
 	desc = "This nifty shock-resistant device will keep your 'groceries' nice and non-spoiled."
 	icon = 'icons/obj/storage/misc.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
+		)
 	icon_state = "portafreezer"
 	item_state = "portafreezer"
 	inspect_state = TRUE
@@ -757,9 +762,9 @@
 	startswith = list(/obj/item/reagent_containers/food/grown/coffee = 5)
 
 /obj/item/storage/box/coffeepack/robusta
-	icon_state = "robusta_beans"
 	name = "robusta beans"
 	desc = "A bag containing fresh, dry coffee robusta beans. Ethically sourced and packaged by Waffle Corp."
+	icon_state = "robusta_beans"
 	startswith = list(/obj/item/reagent_containers/food/grown/coffee/robusta = 5)
 
 /obj/item/storage/box/coffeemaking_kit

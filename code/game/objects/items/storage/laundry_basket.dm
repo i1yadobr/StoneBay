@@ -6,6 +6,10 @@
 /obj/item/storage/laundry_basket
 	name = "laundry basket"
 	icon = 'icons/obj/janitor.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi'
+		)
 	icon_state = "laundry-empty"
 	item_state = "laundry"
 	desc = "The peak of thousands of years of laundry evolution."

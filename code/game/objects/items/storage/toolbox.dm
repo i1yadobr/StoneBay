@@ -7,6 +7,10 @@
 	and counterfeited for decades."
 	description_antag = "Carrying one of these and being bald tends to instill a certain primal fear in most people."
 
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/toolbox_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/toolbox_righthand.dmi'
+		)
 	icon_state = "red"
 	item_state = "toolbox_red"
 	inspect_state = TRUE

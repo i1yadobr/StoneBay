@@ -80,6 +80,9 @@
 	// Only slot_l_hand/slot_r_hand are implemented at the moment. Others to be implemented as needed.
 	var/list/item_icons
 
+	// Used to specify the item state for the on-mob overlays.
+	var/item_state = null
+
 	var/tmp/sprite_group = null
 
 	// Species-specific sprite sheets for inventory sprites. Used in clothing/refit_for_species() proc.
@@ -134,7 +137,10 @@
 
 /obj/item/device
 	icon = 'icons/obj/device.dmi'
-
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/device_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/device_righthand.dmi'
+		)
 	pickup_sound = SFX_PICKUP_DEVICE
 	drop_sound = SFX_DROP_DEVICE
 

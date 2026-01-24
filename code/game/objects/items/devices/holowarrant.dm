@@ -1,6 +1,10 @@
 /obj/item/device/holowarrant
 	name = "warrant projector"
 	desc = "The practical paperwork replacement for the officer on the go."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/security_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/security_righthand.dmi'
+		)
 	icon_state = "holowarrant"
 	item_state = "holowarrant"
 	throwforce = 5

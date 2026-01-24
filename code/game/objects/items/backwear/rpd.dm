@@ -2,9 +2,13 @@
 /obj/item/backwear/powered/rpd
 	name = "rapid piping pack"
 	desc = "A heavy and bulky backpack-shaped device. It can be used to quickly set up or dismantle pipelines using nothing but electrical power."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
+		)
 	icon_state = "pipe1"
-	base_icon = "pipe"
 	item_state = "backwear_rpd"
+	base_icon = "pipe"
 	hitsound = 'sound/effects/fighting/smash.ogg'
 	gear_detachable = FALSE
 	gear = /obj/item/rpd
@@ -24,8 +28,8 @@
 	name = "rapid piping device"
 	desc = "A device used to rapidly pipe things."
 	icon = 'icons/obj/backwear.dmi'
-	icon_state = "rpd_dispense"
 	item_state = "rpd"
+	icon_state = "rpd_dispense"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	force = 10.0
 	throwforce = 10.0

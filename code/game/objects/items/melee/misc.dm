@@ -1,5 +1,9 @@
 /obj/item/melee
 	icon = 'icons/obj/weapons.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		)
 
 /obj/item/melee/whip
 	name = "whip"
@@ -89,7 +93,7 @@
 			mime.apply_damage(force, BRUTE, BP_HEAD, 0, 0, used_weapon = "very, very sharp baguette")
 			mime.embed(src, BP_HEAD)
 			return
-		
+
 		to_chat(mime, SPAN("notice", "You take a bite of [src], making it even sharper!"))
 		force += rand(5,10)
 		times_consumed += 1

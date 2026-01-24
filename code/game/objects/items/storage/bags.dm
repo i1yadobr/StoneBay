@@ -51,6 +51,10 @@
 /obj/item/storage/bag/trash
 	name = "trash bag"
 	desc = "It's the heavy-duty black polymer kind. Time to take out the trash!"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/custodial_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/custodial_righthand.dmi'
+		)
 	icon_state = "trashbag0"
 	item_state = "trashbag"
 
@@ -65,10 +69,14 @@
 
 /obj/item/storage/bag/trash/on_update_icon()
 	switch(w_class)
-		if(2) icon_state = "trashbag0"
-		if(3) icon_state = "trashbag1"
-		if(4) icon_state = "trashbag2"
-		if(5 to INFINITY) icon_state = "trashbag3"
+		if(2)
+			icon_state = "trashbag0"
+		if(3)
+			icon_state = "trashbag1"
+		if(4)
+			icon_state = "trashbag2"
+		if(5 to INFINITY)
+			icon_state = "trashbag3"
 
 // -----------------------------
 //        Plastic Bag

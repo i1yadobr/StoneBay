@@ -795,7 +795,12 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 	name = "newspaper"
 	desc = "An issue of The Griffon, the space newspaper."
 	icon = 'icons/obj/bureaucracy.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/bureaucracy_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/bureaucracy_righthand.dmi'
+		)
 	icon_state = "newspaper"
+	item_state = "newspaper"
 	w_class = ITEM_SIZE_SMALL	//Let's make it fit in trashbags!
 	attack_verb = list("bapped")
 	var/screen = 0

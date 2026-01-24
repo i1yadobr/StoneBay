@@ -79,9 +79,9 @@
 					if("Scrapbook")
 						B.icon_state = "scrapbook"
 						B.item_state = "scrapbook"
-					if("Creeper")
+					if("Creeper") //TODO: Remove M*necraft reference
 						B.icon_state = "creeper"
-						B.item_state = "syringe_kit"
+						B.item_state = "syringe_kit" //TODO: Make a normal sprite for inhand
 					if("White Bible")
 						B.icon_state = "white"
 						B.item_state = "syringe_kit"
