@@ -8,7 +8,7 @@
 		slot_l_hand_str = 'icons/mob/inhands/weapons/guns_lefthand.dmi',
 		slot_r_hand_str = 'icons/mob/inhands/weapons/guns_righthand.dmi',
 		)
-	item_state = "gun" //Made a normal sprite for hand
+	item_state = "gun" //TODO: Make a normal sprite for inhand
 	force = 1
 	var/loaded = 1
 	var/mode = "completely"

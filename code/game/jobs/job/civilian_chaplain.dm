@@ -81,7 +81,7 @@
 						B.item_state = "scrapbook"
 					if("Creeper")
 						B.icon_state = "creeper"
-						B.item_state = "syringe_kit" //Make normal item_state for this
+						B.item_state = "syringe_kit" //TODO: Make a normal sprite for inhand
 					if("White Bible")
 						B.icon_state = "white"
 						B.item_state = "syringe_kit"
