@@ -18,8 +18,13 @@ var/datum/uplink/uplink = new()
 		filtered_uplink_items[I.category][I.name] = I
 		sale_items += I
 
-	if(allow_sales)
-		create_uplink_sales(6, "Discounted Gear", 1, sale_items, filtered_uplink_items)
+	if(!allow_sales)
+		return filtered_uplink_items
+
+	if(!U.discounted_items)
+		U.discounted_items = create_uplink_sales(6, "Discounted Gear", 1, sale_items, filtered_uplink_items)
+	else
+		filtered_uplink_items["Discounted Gear"] = U.discounted_items
 
 	return filtered_uplink_items
 
@@ -50,6 +55,7 @@ var/datum/uplink/uplink = new()
 		A.desc += " Normally item costs [initial(A.item_cost)] TC. All sales final. [pick(disclaimer)]"
 		A.path = I.path
 		uplink_items[category_name][A.name] = A
+	return uplink_items[category_name]
 
 /datum/uplink
 	var/list/items_assoc
