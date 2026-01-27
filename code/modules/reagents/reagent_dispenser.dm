@@ -301,10 +301,9 @@
 	amount_per_transfer_from_this = 45
 	initial_reagent_types = list(/datum/reagent/capsaicin/condensed = 1)
 
-
 /obj/structure/reagent_dispensers/water_cooler
 	name = "Water-Cooler"
-	desc = "A machine that dispenses water to drink."
+	desc = "A machine that dispenses water to drink. A stand for plastic cups has inexplicably attached itself to its side."
 	amount_per_transfer_from_this = 50
 	icon = 'icons/obj/water_cooler.dmi'
 	icon_state = "water_cooler"
@@ -312,7 +311,29 @@
 	anchored = 1
 	initial_capacity = 5 LITERS
 	initial_reagent_types = list(/datum/reagent/water = 1)
+	var/max_cups = 12
+	var/cups = 12
 
+/obj/structure/reagent_dispensers/water_cooler/New()
+	..()
+	update_icon()
+
+/obj/structure/reagent_dispensers/water_cooler/on_update_icon()
+	ClearOverlays()
+	if(cups >= max_cups)
+		AddOverlays(image(icon, "water_cooler_cup-4"))
+		return
+	AddOverlays(image(icon, "water_cooler_cup-[ceil(cups / (max_cups / 4))]"))
+
+/obj/structure/reagent_dispensers/water_cooler/examine()
+	. = ..()
+
+	if(cups)
+		. += SPAN_NOTICE("There's [cups] cups left.")
+		return
+
+	. += SPAN_NOTICE("Oh no, there's no cups left!")
+	return
 
 /obj/structure/reagent_dispensers/water_cooler/attackby(obj/item/W, mob/user)
 	if(isWrench(W))
@@ -327,8 +348,52 @@
 			to_chat(user, SPAN("notice", "You [anchored? "un" : ""]secured \the [src]!"))
 			anchored = !anchored
 		return
+	else if(istype(W, /obj/item/storage/plastic_cup_bag))
+		if(cups >= max_cups)
+			to_chat(user, SPAN_NOTICE("\The [src]'s stand is full!"))
+			return
+
+		var/obj/item/storage/plastic_cup_bag/cup_bag = W
+		if(cup_bag.contents?.len <= 0)
+			to_chat(user, SPAN_NOTICE("\The [cup_bag] is empty!"))
+			return
+
+		add_fingerprint(user)
+		user.visible_message(SPAN_NOTICE("[user] begins refilling \the [src]'s cup stand from \the [cup_bag]."))
+		if(!do_after(user, 2 SECONDS, src))
+			return
+
+		var/new_cup_amount = min(cups + cup_bag.contents.len, max_cups)
+		var/i = 0 //TODO: Improve var name
+		for(var/obj/item/reagent_containers/vessel/plastic/cup/cup in cup_bag.contents)
+			qdel(cup)
+			i++
+			if(i >= new_cup_amount - cups)
+				break
+		cups = new_cup_amount
+		update_icon()
+		user.visible_message(SPAN_NOTICE("[user] refills \the [src]'s cup stand!"))
+		return
 	else
 		return ..()
+
+/obj/structure/reagent_dispensers/water_cooler/attack_hand(mob/user)
+	..()
+	if(!ishuman(user))
+		to_chat(user, SPAN_NOTICE("No way to grab a cup without proper hands."))
+		return
+	if(cups <= 0)
+		to_chat(user, SPAN_NOTICE("Uh-oh. There's no cups left."))
+		return
+
+	var/mob/living/carbon/human/human_user = user
+	var/obj/item/reagent_containers/vessel/plastic/cup/new_cup = new(get_turf(human_user))
+	if(human_user.put_in_active_hand(new_cup))
+		human_user.visible_message(SPAN_NOTICE("[human_user] grabs a cup from \the [src]'s stand."))
+	else
+		human_user.visible_message(SPAN_NOTICE("[human_user] grabs a cup from \the [src]'s stand but drops it clumsily!"))
+	cups = max(0, cups - 1)
+	update_icon()
 
 /obj/structure/reagent_dispensers/beerkeg
 	name = "beer keg"
