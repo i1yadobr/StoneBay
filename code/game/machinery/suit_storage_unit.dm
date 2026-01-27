@@ -403,9 +403,6 @@
 	if(stat & NOPOWER)
 		to_chat(user, SPAN("warning", "The unit is offline."))
 		return
-	if(isbroken)
-		to_chat(user, SPAN("warning", "The unit doesn't seem to be operational."))
-		return
 	if(occupant && safetieson)
 		to_chat(user, "[SPAN("danger", "WARNING:")][SPAN("warning", " Biological entity detected in the confines of the Unit's storage. Cannot initiate cycle.")]")
 		return
