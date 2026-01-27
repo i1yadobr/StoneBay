@@ -84,8 +84,6 @@ SUBSYSTEM_DEF(open_space)
 			// log_debug("[T] ([T.x],[T.y],[T.z]) queued for update for [src].update_icon()")
 			SSopen_space.add_turf(T, 1)
 
-
-
 //Probably should hook Destroy() If we can think of something more efficient, lets hear it.
 /obj/Destroy()
 	if(!invisibility && isturf(loc))

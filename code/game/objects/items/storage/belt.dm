@@ -26,10 +26,9 @@
 	update_icon()
 
 /obj/item/storage/on_update_icon()
-	if (ismob(src.loc))
+	if(ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_belt()
-
 
 /obj/item/storage/belt/get_mob_overlay(mob/user_mob, slot)
 	. = ..()
