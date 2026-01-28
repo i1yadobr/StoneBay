@@ -293,12 +293,12 @@
 
 /obj/item/grenade/chem_grenade/teargas/Initialize()
 	. = ..()
-	var/obj/item/reagent_containers/vessel/bottle/chemical/big/large/B1 = new(src)
+	var/obj/item/reagent_containers/vessel/bottle/chemical/big/B1 = new(src)
 	B1.reagents.add_reagent(/datum/reagent/phosphorus, 200)
 	B1.reagents.add_reagent(/datum/reagent/potassium, 200)
 	B1.reagents.add_reagent(/datum/reagent/capsaicin/condensed, 100)
 
-	var/obj/item/reagent_containers/vessel/bottle/chemical/big/large/B2 = new(src)
+	var/obj/item/reagent_containers/vessel/bottle/chemical/big/B2 = new(src)
 	B2.reagents.add_reagent(/datum/reagent/sugar, 200)
 	B2.reagents.add_reagent(/datum/reagent/capsaicin/condensed, 300)
 
