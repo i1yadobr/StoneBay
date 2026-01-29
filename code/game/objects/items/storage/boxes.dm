@@ -104,7 +104,7 @@
 	name = "vox survival kit"
 	desc = "A durable plastic box decorated in warning colors that contains a limited supply of survival tools. The panel and black stripe indicate this one contains nitrogen. It has special foldlines, making it able to be folded into an emergency crowbar."
 	icon_state = "survivalvox"
-	item_state = "box_survival"
+	item_state = "box_survivalvox"
 	inspect_state = "survival-open"
 	foldable = /obj/item/crowbar/emergency/vox
 	startswith = list(/obj/item/clothing/mask/breath = 1,
@@ -117,7 +117,7 @@
 	name = "engineer survival kit"
 	desc = "A durable plastic box decorated in warning colors that contains a limited supply of survival tools. The panel and orange stripe indicate this one as the engineering variant. It has special foldlines, making it able to be folded into an emergency crowbar."
 	icon_state = "survivaleng"
-	item_state = "box_survival"
+	item_state = "box_survivaleng"
 	inspect_state = "survival-open"
 	foldable = /obj/item/crowbar/emergency/eng
 	startswith = list(/obj/item/clothing/mask/breath = 1,
@@ -132,7 +132,7 @@
 	name = "security survival kit"
 	desc = "A durable plastic box decorated in warning colors that contains a limited supply of survival tools. The panel and red & black stripe indicate this one as the security variant. It has special foldlines, making it able to be folded into an emergency crowbar."
 	icon_state = "survivalsec"
-	item_state = "box_survival"
+	item_state = "box_survivalsec"
 	inspect_state = "survival-open"
 	foldable = /obj/item/crowbar/emergency/sec
 	startswith = list(/obj/item/clothing/mask/breath = 1,
@@ -154,6 +154,7 @@
 	name = "box of sterile masks"
 	desc = "This box contains masks of sterility."
 	icon_state = "sterile"
+	item_state = "box_glasses"
 	startswith = list(/obj/item/clothing/mask/surgical = 7)
 
 /obj/item/storage/box/syringes
@@ -171,6 +172,7 @@
 /obj/item/storage/box/beakers
 	name = "box of beakers"
 	icon_state = "beaker"
+	item_state = "box_glasses"
 	startswith = list(/obj/item/reagent_containers/vessel/beaker = 7)
 
 /obj/item/storage/box/blanks
@@ -253,6 +255,7 @@
 	name = "box of flashbangs"
 	desc = "A box containing 7 antipersonnel flashbang grenades.<br> WARNING: These devices are extremely dangerous and can cause blindness or deafness from repeated use."
 	icon_state = "flashbang"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/grenade/flashbang = 7)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -262,6 +265,7 @@
 	name = "box of pepperspray grenades"
 	desc = "A box containing 7 tear gas grenades. A gas mask is printed on the label.<br> WARNING: Exposure carries risk of serious injury or death. Keep away from persons with lung conditions."
 	icon_state = "peppers"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/grenade/chem_grenade/teargas = 7)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -271,6 +275,7 @@
 	name = "box of emp grenades"
 	desc = "A box containing 5 military grade EMP grenades.<br> WARNING: Do not use near unshielded electronics or biomechanical augmentations, death or permanent paralysis may occur."
 	icon_state = "EMPs"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/grenade/empgrenade = 5)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -280,6 +285,7 @@
 	name = "box of frag grenades"
 	desc = "A box containing 5 military grade fragmentation grenades.<br> WARNING: Live explosives. Misuse may result in serious injury or death."
 	icon_state = "frags"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/grenade/frag = 5)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -289,6 +295,7 @@
 	name = "box of frag shells"
 	desc = "A box containing 5 military grade fragmentation shells.<br> WARNING: Live explosive munitions. Misuse may result in serious injury or death."
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/grenade/frag/shell = 5)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -298,6 +305,7 @@
 	name = "box of smoke bombs"
 	desc = "A box containing 5 smoke bombs."
 	icon_state = "smokebombs"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/grenade/smokebomb = 5)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -307,6 +315,7 @@
 	name = "box of anti-photon grenades"
 	desc = "A box containing 5 experimental photon disruption grenades."
 	icon_state = "antiphotons"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/grenade/anti_photon = 5)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -316,6 +325,7 @@
 	name = "box of supermatter grenades"
 	desc = "A box containing 5 highly experimental supermatter grenades."
 	icon_state = "radbox"
+	item_state = "radbox"
 	startswith = list(/obj/item/grenade/supermatter = 5)
 	drop_sound = SFX_DROP_AMMOBOX
 	pickup_sound = SFX_PICKUP_AMMOBOX
@@ -324,6 +334,7 @@
 	name = "box of spare grenade shells"
 	desc = "A box containing 6 spare 40mm grenade shells."
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/loaded/empty = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -333,6 +344,7 @@
 	name = "box of HE grenade shells"
 	desc = "A box containing 6 40mm HE grenade shells. <br> WARNING: Live explosives. Misuse may result in serious injury or death."
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/he = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -342,6 +354,7 @@
 	name = "box of HE+ grenade shells"
 	desc = "A box containing 6 40mm HE+ grenade shells. <br> WARNING: Live explosives. Misuse may result in serious injury or death."
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/hep = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -351,6 +364,7 @@
 	name = "box of rubber grenade shells"
 	desc = "A box containing 6 40mm rubber grenade shells."
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/rubber = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -360,6 +374,7 @@
 	name = "box of tear gas grenade shells"
 	desc = "A box containing 6 40mm tear gas grenade shells."
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/loaded/teargas = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -369,6 +384,7 @@
 	name = "box of FRAG grenade shells"
 	desc = "A box containing 6 40mm FRAG grenade shells. <br> WARNING: Live explosives. Misuse may result in serious injury or death."
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/loaded/frag = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -378,6 +394,7 @@
 	name = "box of FRAG+ grenade shells"
 	desc = "A box containing 6 40mm FRAG+ grenade shells. <br> WARNING: Live explosives. Misuse may result in serious injury or death."
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/loaded/frag/better = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -387,6 +404,7 @@
 	name = "box of FRAG++ grenade shells"
 	desc = "A box containing 6 40mm FRAG++ grenade shells. <br> WARNING: Live exp- The rest is unreadable, but who cares?"
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/loaded/frag/best = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -396,6 +414,7 @@
 	name = "box of EMP grenade shells"
 	desc = "A box containing 6 40mm low-yield EMP grenade shells. <br> WARNING: Live exp- The rest is unreadable, but who cares?"
 	icon_state = "fragshells"
+	item_state = "box_grenade"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/ammo_casing/grenade/loaded/empgrenade/low_yield = 6)
 	drop_sound = SFX_DROP_AMMOBOX
@@ -405,6 +424,7 @@
 	name = "boxed tracking implant kit"
 	desc = "Box full of scum-bag tracking utensils."
 	icon_state = "implant"
+	item_state = "box_id"
 	startswith = list(/obj/item/implantcase/tracking = 4,
 		/obj/item/implanter = 1,
 		/obj/item/implantpad = 1,
@@ -414,6 +434,7 @@
 	name = "boxed chemical implant kit"
 	desc = "Box of stuff used to implant chemicals."
 	icon_state = "implant"
+	item_state = "box_id"
 	startswith = list(/obj/item/implantcase/chem = 5,
 					/obj/item/implanter = 1,
 					/obj/item/implantpad = 1)
@@ -422,13 +443,14 @@
 	name = "box of prescription glasses"
 	desc = "This box contains nerd glasses."
 	icon_state = "glasses"
+	item_state = "box_glasses"
 	startswith = list(/obj/item/clothing/glasses/regular = 7)
 
 /obj/item/storage/box/cdeathalarm_kit
 	name = "death alarm kit"
 	desc = "Box of stuff used to implant death alarms."
 	icon_state = "implant"
-	item_state = "syringe_kit"
+	item_state = "box_id"
 	startswith = list(/obj/item/implanter = 1,
 				/obj/item/implantcase/death_alarm = 6)
 
@@ -441,18 +463,21 @@
 	name = "box of paper cups"
 	desc = "It has pictures of paper cups on the front."
 	icon_state = "papercups"
+	item_state = "box_grenade"
 	startswith = list(/obj/item/reagent_containers/vessel/sillycup = 7)
 
 /obj/item/storage/box/donkpockets
 	name = "box of donk-pockets"
 	desc = "<B>Instructions:</B> <I>Heat in microwave. Product will cool if not eaten within seven minutes.</I>"
 	icon_state = "donk_kit"
+	item_state = "donk_kit"
 	startswith = list(/obj/item/reagent_containers/food/donkpocket = 6)
 
 /obj/item/storage/box/sinpockets
 	name = "box of sin-pockets"
 	desc = "<B>Instructions:</B> <I>Crush bottom of package to initiate chemical heating. Wait for 20 seconds before consumption. Product will cool if not eaten within seven minutes.</I>"
 	icon_state = "donk_kit"
+	item_state = "donk_kit"
 	startswith = list(/obj/item/reagent_containers/food/donkpocket/sinpocket = 6)
 
 /obj/item/storage/box/monkeycubes
@@ -483,6 +508,7 @@
 	name = "box of spare IDs"
 	desc = "Has so many empty IDs."
 	icon_state = "id"
+	item_state = "box_id"
 	startswith = list(/obj/item/card/id = 7)
 
 /obj/item/storage/box/large/ids
@@ -495,6 +521,7 @@
 	name = "box of spare R.O.B.U.S.T. Cartridges"
 	desc = "A box full of R.O.B.U.S.T. Cartridges, used by Security."
 	icon_state = "seccarts"
+	item_state = "box_redline"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/cartridge/security = 7)
 
@@ -502,6 +529,7 @@
 	name = "box of spare handcuffs"
 	desc = "A box full of handcuffs."
 	icon_state = "handcuff"
+	item_state = "box_redline"
 	inspect_state = "sec-open"
 	startswith = list(/obj/item/handcuffs = 7)
 
@@ -509,6 +537,7 @@
 	name = "box of Pest-B-Gon mousetraps"
 	desc = "<B><FONT color='red'>WARNING:</FONT></B> <I>Keep out of reach of children</I>."
 	icon_state = "mousetraps"
+	item_state = "mousetraps"
 	startswith = list(/obj/item/device/assembly/mousetrap = 6)
 
 /obj/item/storage/box/mousetraps/empty
@@ -567,7 +596,7 @@
 	name = "box of replacement bulbs"
 	desc = "This box is shaped on the inside so that only light tubes and bulbs fit."
 	icon_state = "light"
-	item_state = "syringe_kit"
+	item_state = "box_orangeline"
 	use_to_pickup = 1 // for picking up broken bulbs, not that most people will try
 
 /obj/item/storage/box/lights/Initialize()

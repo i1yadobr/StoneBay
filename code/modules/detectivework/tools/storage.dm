@@ -2,6 +2,7 @@
 	name = "box of swab kits"
 	desc = "Sterilized equipment within. Do not contaminate."
 	icon_state = "swabs"
+	item_state = "box_brown"
 	inspect_state = "det-open"
 	startswith = list(/obj/item/forensics/swab = DEFAULT_BOX_STORAGE)
 
@@ -9,6 +10,7 @@
 	name = "evidence bag box"
 	desc = "A box claiming to contain evidence bags."
 	icon_state = "evidencebox"
+	item_state = "evidencebox"
 	inspect_state = "det-open"
 	startswith = list(/obj/item/evidencebag = 7)
 
@@ -16,5 +18,6 @@
 	name = "box of fingerprint cards"
 	desc = "Sterilized equipment within. Do not contaminate."
 	icon_state = "detective"
+	item_state = "box_brown"
 	inspect_state = "det-open"
 	startswith = list(/obj/item/sample/print = DEFAULT_BOX_STORAGE)
