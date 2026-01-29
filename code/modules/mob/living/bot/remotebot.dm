@@ -160,7 +160,12 @@
 	name = "Remote-Bot Kit"
 	desc = "The cover says 'control your own cardboard nuclear powered robot. Comes with real plutonium!"
 	icon = 'icons/obj/storage/boxes.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/box_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/box_righthand.dmi'
+		)
 	icon_state = "remotebot"
+	item_state = "remotebot"
 
 /obj/item/device/bot_kit/attack_self(mob/living/user)
 	to_chat(user, "You quickly dismantle the box and retrieve the controller and the remote bot itself.")

@@ -21,6 +21,7 @@
 /obj/item/storage/box/glasses
 	name = "box of glasses"
 	icon_state = "drinking_glasses"
+	item_state = "box_glasses"
 	var/glass_type = /obj/item/reagent_containers/vessel/glass
 	can_hold = list(/obj/item/reagent_containers/vessel/glass)
 

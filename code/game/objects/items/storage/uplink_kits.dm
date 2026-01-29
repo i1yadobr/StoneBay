@@ -2,6 +2,7 @@
 	name = "box"
 	desc = "A sleek, sturdy box."
 	icon_state = "box_of_doom"
+	item_state = "box_of_doom"
 	inspect_state = "doom-open"
 
 //For uplink kits that provide bulkier items
@@ -60,7 +61,7 @@
 	desc = "A sleek, sturdy box. That one has an explosion warning on it."
 	startswith = list(/obj/item/grenade/chem_grenade = 5)
 
-/obj/item/storage/box/syndie_kit/strange_seeds 
+/obj/item/storage/box/syndie_kit/strange_seeds
 	startswith = list(/obj/item/seeds/maneaterseed = 3)
 
 /obj/item/storage/box/syndie_kit/applenades
