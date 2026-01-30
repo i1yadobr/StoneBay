@@ -1,11 +1,16 @@
 /obj/item/device/paicard
 	name = "personal AI device"
 	icon = 'icons/obj/pda.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/pda_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/pda_righthand.dmi'
+		)
 	icon_state = "pai"
-	item_state = "electronic"
+	item_state = "pai-off"
 	w_class = ITEM_SIZE_SMALL
 	slot_flags = SLOT_BELT
 	origin_tech = list(TECH_DATA = 2)
+	var/current_emotion = 1
 	var/obj/item/device/radio/radio
 	var/looking_for_personality = 0
 	var/mob/living/silicon/pai/pai
@@ -281,34 +286,49 @@
 
 /obj/item/device/paicard/proc/setPersonality(mob/living/silicon/pai/personality)
 	pai = personality
+	item_state = "pai-online"
 	AddOverlays("pai-happy")
 
 /obj/item/device/paicard/proc/removePersonality()
 	pai = null
+	item_state = "pai-off"
 	ClearOverlays()
 	AddOverlays("pai-off")
 
-/obj/item/device/paicard
-	var/current_emotion = 1
 /obj/item/device/paicard/proc/setEmotion(emotion)
 	if(pai)
 		ClearOverlays()
 		switch(emotion)
-			if(1) AddOverlays("pai-happy")
-			if(2) AddOverlays("pai-cat")
-			if(3) AddOverlays("pai-extremely-happy")
-			if(4) AddOverlays("pai-face")
-			if(5) AddOverlays("pai-laugh")
-			if(6) AddOverlays("pai-off")
-			if(7) AddOverlays("pai-sad")
-			if(8) AddOverlays("pai-angry")
-			if(9) AddOverlays("pai-what")
-			if(10) AddOverlays("pai-neutral")
-			if(11) AddOverlays("pai-silly")
-			if(12) AddOverlays("pai-nose")
-			if(13) AddOverlays("pai-smirk")
-			if(14) AddOverlays("pai-exclamation")
-			if(15) AddOverlays("pai-question")
+			if(1)
+				AddOverlays("pai-happy")
+			if(2)
+				AddOverlays("pai-cat")
+			if(3)
+				AddOverlays("pai-extremely-happy")
+			if(4)
+				AddOverlays("pai-face")
+			if(5)
+				AddOverlays("pai-laugh")
+			if(6)
+				AddOverlays("pai-off")
+			if(7)
+				AddOverlays("pai-sad")
+			if(8)
+				AddOverlays("pai-angry")
+			if(9)
+				AddOverlays("pai-what")
+			if(10)
+				AddOverlays("pai-neutral")
+			if(11)
+				AddOverlays("pai-silly")
+			if(12)
+				AddOverlays("pai-nose")
+			if(13)
+				AddOverlays("pai-smirk")
+			if(14)
+				AddOverlays("pai-exclamation")
+			if(15)
+				AddOverlays("pai-question")
 		current_emotion = emotion
 
 /obj/item/device/paicard/proc/alertUpdate()
