@@ -1,5 +1,9 @@
 /obj/item/storage/guncase
 	name = "guncase"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/briefcase_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/briefcase_righthand.dmi'
+		)
 	icon_state = "guncase"
 	item_state = "guncase"
 	force = 8
@@ -252,7 +256,7 @@
 	desc = "A robust hardcase painted in the NT Security colors. \
 	        Equipped with an ID-based locking system to ensure that only authorized personnel can access the contents."
 	icon_state = "guncasesec"
-	item_state = "guncase"
+	item_state = "guncasesec"
 	selected_option = "Pistol"
 
 	possible_guns = list(
@@ -301,6 +305,7 @@
 	name = "high command security hardcase"
 	desc = "A heavy-duty container with an ID-based locking system. This one is painted in NT High Command Security colors."
 	icon_state = "guncasehos"
+	item_state = "guncasehos"
 
 	opened_overlay_icon_state = "guncaseheavy0"
 	emag_sparks_overlay_icon_state = "guncaseheavyspark"
@@ -340,7 +345,7 @@
 	      It is specially designed for those responsible for the armory and brig, \
 	      highlighted by distinctive silver accents."
 	icon_state = "guncasewarden"
-	item_state = "guncase"
+	item_state = "guncasewarden"
 	selected_option = "Energy Gun"
 
 	possible_guns = list(
@@ -377,7 +382,7 @@
 	desc = "A large, durable hardcase designed for heavy weaponry. \
         This one is specifically for the warden's use, as denoted by the distinctive silver accents."
 	icon_state = "guncaseheavywarden"
-	item_state = "guncase"
+	item_state = "guncaseheavywarden"
 
 	opened_overlay_icon_state = "guncaseheavy0"
 	emag_sparks_overlay_icon_state = "guncaseheavyspark"

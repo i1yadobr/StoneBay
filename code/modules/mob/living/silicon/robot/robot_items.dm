@@ -402,11 +402,17 @@
 #define INFLATABLE_MODE_WALLS 1
 #define INFLATABLE_MODE_DOORS 2
 #define INFLATABLE_MODE_PANELS 3
+
 /obj/item/inflatable_dispenser
 	name = "inflatables dispenser"
 	desc = "A hand-held device which allows rapid deployment and removal of inflatables."
 	icon = 'icons/obj/storage/misc.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/briefcase_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/briefcase_righthand.dmi'
+		)
 	icon_state = "inf_deployer"
+	item_state = "inf_deployer"
 	w_class = ITEM_SIZE_LARGE
 
 	var/stored_walls = 5
@@ -416,17 +422,6 @@
 	var/max_doors = 2
 	var/max_panels = 2
 	var/mode = INFLATABLE_MODE_WALLS
-
-/obj/item/inflatable_dispenser/robot
-	desc = "A machinery-mounted device which allows rapid deployment and removal of inflatables. Has a higher storage capacity than the hand-held variation."
-	icon_state = "inf_deployer_borg"
-	w_class = ITEM_SIZE_HUGE
-	stored_walls = 10
-	stored_doors = 5
-	stored_panels = 4
-	max_walls = 10
-	max_doors = 5
-	max_panels = 4
 
 /obj/item/inflatable_dispenser/examine(mob/user, infix)
 	. = ..()
@@ -537,10 +532,22 @@
 
 	to_chat(user, "You fail to pick up \the [A] with \the [src]")
 	return
+
 #undef INFLATABLE_MODES
 #undef INFLATABLE_MODE_WALLS
 #undef INFLATABLE_MODE_DOORS
 #undef INFLATABLE_MODE_PANELS
+
+/obj/item/inflatable_dispenser/robot
+	desc = "A machinery-mounted device which allows rapid deployment and removal of inflatables. Has a higher storage capacity than the hand-held variation."
+	icon_state = "inf_deployer_borg"
+	w_class = ITEM_SIZE_HUGE
+	stored_walls = 10
+	stored_doors = 5
+	stored_panels = 4
+	max_walls = 10
+	max_doors = 5
+	max_panels = 4
 
 /obj/item/reagent_containers/spray/cleaner/drone
 	name = "space cleaner"
