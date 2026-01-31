@@ -820,7 +820,7 @@ datum
 						return 20
 
 			nuke_gun
-				steal_target = /obj/item/gun/energy/gun/nuclear
+				steal_target = /obj/item/gun/energy/nuclear
 				explanation_text = "Steal a nuclear powered gun."
 				weight = 20
 

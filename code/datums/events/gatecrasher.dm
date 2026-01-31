@@ -204,7 +204,7 @@
 		/obj/item/gun/energy/mindflayer,
 		/obj/item/gun/energy/plasmastun,
 		/obj/item/gun/energy/retro,
-		/obj/item/gun/energy/gun/nuclear,
+		/obj/item/gun/energy/nuclear,
 		/obj/item/gun/energy/accelerator,
 		/obj/item/gun/energy/sniperrifle,
 		/obj/item/gun/energy/staff/animate,
