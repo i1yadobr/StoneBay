@@ -127,6 +127,7 @@ var/list/admin_verbs_sounds = list(
 var/list/admin_verbs_fun = list(
 	/client/proc/object_talk,
 	/datum/admins/proc/cmd_admin_dress,
+	/datum/admins/proc/equip_mob, //Same as above, but can be used in right-click menu
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/drop_bomb,
 	/client/proc/everyone_random,

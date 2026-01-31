@@ -297,12 +297,34 @@
 	if(!outfit)
 		return
 
-	var/reset_equipment = (outfit.flags&OUTFIT_RESET_EQUIPMENT)
+	var/reset_equipment = (outfit.flags & OUTFIT_RESET_EQUIPMENT)
 	if(!reset_equipment)
 		reset_equipment = alert("Do you wish to delete all current equipment first?", "Delete Equipment?","Yes", "No") == "Yes"
 
 	feedback_add_details("admin_verb","SEQ")
 	dressup_human(H, outfit, reset_equipment)
+
+/datum/admins/proc/equip_mob(mob/living/M as mob in SSmobs.mob_list)
+	set name = "Equip Mob"
+	set category = "Fun"
+
+	if(!check_rights(R_FUN))
+		return
+
+	if(!istype(M))
+		to_chat(usr, "This can only be used on instances of type /mob/living/carbon/human")
+		return
+
+	var/decl/hierarchy/outfit/outfit = input("Select outfit.", "Select equipment.") as null|anything in outfits()
+	if(!outfit)
+		return
+
+	var/reset_equipment = (outfit.flags & OUTFIT_RESET_EQUIPMENT)
+	if(!reset_equipment)
+		reset_equipment = alert("Do you wish to delete all current equipment first?", "Delete Equipment?","Yes", "No") == "Yes"
+
+	feedback_add_details("admin_verb", "SEQ")
+	dressup_human(M, outfit, TRUE)
 
 /proc/dressup_human(mob/living/carbon/human/H, decl/hierarchy/outfit/outfit, undress = TRUE)
 	if(!H || !outfit)
