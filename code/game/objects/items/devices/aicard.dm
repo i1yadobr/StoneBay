@@ -1,8 +1,12 @@
 /obj/item/aicard
 	name = "inteliCard"
 	icon = 'icons/obj/pda.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/pda_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/pda_righthand.dmi'
+		)
 	icon_state = "aicard" // aicard-full
-	item_state = "electronic"
+	item_state = "aicard"
 	w_class = ITEM_SIZE_SMALL
 	slot_flags = SLOT_BELT
 	var/flush = null
@@ -82,10 +86,13 @@
 			AddOverlays(image('icons/obj/pda.dmi', "aicard-on"))
 		if(carded_ai.stat)
 			icon_state = "aicard-404"
+			item_state = "aicard-404"
 		else
 			icon_state = "aicard-full"
+			item_state = "aicard"
 	else
 		icon_state = "aicard"
+		item_state = "aicard"
 
 /obj/item/aicard/proc/grab_ai(mob/living/silicon/ai/ai, mob/living/user)
 	if(!ai.client)

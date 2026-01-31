@@ -3,8 +3,12 @@
 	name = "\improper PDA"
 	desc = "A portable microcomputer by Tricktornic Systems, LTD. Functionality determined by a preprogrammed ROM cartridge."
 	icon = 'icons/obj/pda.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/pda_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/pda_righthand.dmi'
+		)
 	icon_state = "emag0"
-	item_state = "electronic"
+	item_state = "pda"
 	w_class = ITEM_SIZE_SMALL
 	slot_flags = SLOT_ID | SLOT_BELT
 
