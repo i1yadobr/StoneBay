@@ -404,7 +404,7 @@
 
 	gun_spawn = list(
 		"Non-lethal combo" = list(
-			/obj/item/gun/energy/stunrevolver/rifle,
+			/obj/item/gun/energy/taser/rifle,
 			/obj/item/backwear/reagent/pepper
 		),
 		"Shotgun" = list(
