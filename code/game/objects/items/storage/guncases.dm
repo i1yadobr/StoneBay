@@ -457,7 +457,7 @@
 			/obj/item/ammo_magazine/c38
 		),
 		"M2019" = list(
-			/obj/item/gun/projectile/revolver/m2019/detective,
+			/obj/item/gun/projectile/revolver/detective/m2019,
 			/obj/item/ammo_magazine/c38/spec,
 			/obj/item/ammo_magazine/c38/spec,
 			/obj/item/ammo_magazine/c38/spec,
