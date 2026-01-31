@@ -66,7 +66,6 @@
 	mod_handy = 1.0
 	max_shots = 12
 	accuracy = 1
-	max_shots = 12
 	projectile_type = /obj/item/projectile/energy/electrode/stunsphere
 	wielded_item_state = "tasercarbine-wielded"
 
