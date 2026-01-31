@@ -17,21 +17,6 @@
 	mag_insert_sound = 'sound/effects/weapons/gun/spin_cylinder1.ogg'
 	has_safety = FALSE
 
-/obj/item/gun/projectile/revolver/coltpython
-	name = "Colt Python"
-	desc = "The Lumoco Arms Colt Python is a choice revolver for when you absolutely, positively need to put a hole in a criminal. Uses .357 ammo."
-	icon_state = "colt-python"
-	item_state = "revolver"
-	caliber = "357"
-	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 3)
-	handle_casings = CYCLE_CASINGS
-	max_shells = 6
-	mod_weight = 0.7
-	mod_reach = 0.5
-	mod_handy = 1.0
-	fire_delay = 6.75 //Revolvers are naturally slower-firing
-	ammo_type = /obj/item/ammo_casing/a357
-
 /obj/item/gun/projectile/revolver/AltClick()
 	if(CanPhysicallyInteract(usr))
 		spin_cylinder()
@@ -59,6 +44,19 @@
 	chamber_offset = 0
 	return ..()
 
+/obj/item/gun/projectile/revolver/coltpython
+	name = "Colt Python"
+	desc = "The Lumoco Arms Colt Python is a choice revolver for when you absolutely, positively need to put a hole in a criminal. Uses .357 ammo."
+	icon_state = "colt-python"
+	item_state = "revolver"
+	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 3)
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	mod_weight = 0.7
+	mod_reach = 0.5
+	mod_handy = 1.0
+	fire_delay = 6.75 //Revolvers are naturally slower-firing
+
 /obj/item/gun/projectile/revolver/mateba
 	name = "mateba"
 	desc = "The Lumoco Arms HE Colt is a choice revolver for when you absolutely, positively need to put a hole in the other guy. Uses .50 ammo."
@@ -66,40 +64,6 @@
 	caliber = ".50"
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/a50
-
-/obj/item/gun/projectile/revolver/detective
-	name = "Legacy .38"
-	desc = "A cheap Martian knock-off of a Smith & Wesson Model 10. Uses .38-Special rounds."
-	icon_state = "detective"
-	fire_sound = 'sound/effects/weapons/gun/fire_revolver1.ogg'
-	max_shells = 6
-	caliber = ".38"
-	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
-	ammo_type = /obj/item/ammo_casing/c38
-
-/obj/item/gun/projectile/revolver/detective/saw620
-	name = "S&W 620"
-	desc = "A cheap Martian knock-off of a Smith & Wesson Model 620. Uses .38-Special rounds."
-	icon_state = "saw620"
-
-/obj/item/gun/projectile/revolver/detective/verb/rename_gun()
-	set name = "Name Gun"
-	set category = "Object"
-	set desc = "Click to rename your gun. If you're the detective."
-
-	var/mob/M = usr
-	if(!M.mind)	return 0
-	if(!M.mind.assigned_role == "Detective")
-		to_chat(M, SPAN("notice", "You don't feel cool enough to name this gun, chump."))
-		return 0
-
-	var/input = sanitizeSafe(input("What do you want to name the gun?", ,""), MAX_NAME_LEN)
-
-	if(src && input && !M.stat && in_range(M,src))
-		SetName(input)
-		to_chat(M, "You name the gun [input]. Say hello to your new friend.")
-		return 1
-
 
 // Blade Runner pistol.
 /obj/item/gun/projectile/revolver/deckard
@@ -155,6 +119,39 @@
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/c44
 
+/obj/item/gun/projectile/revolver/detective
+	name = "Legacy .38"
+	desc = "A cheap Martian knock-off of a Smith & Wesson Model 10. Uses .38-Special rounds."
+	icon_state = "detective"
+	fire_sound = 'sound/effects/weapons/gun/fire_revolver1.ogg'
+	max_shells = 6
+	caliber = ".38"
+	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
+	ammo_type = /obj/item/ammo_casing/c38
+
+/obj/item/gun/projectile/revolver/detective/verb/rename_gun()
+	set name = "Name Gun"
+	set category = "Object"
+	set desc = "Click to rename your gun. If you're the detective."
+
+	var/mob/M = usr
+	if(!M.mind)	return 0
+	if(!M.mind.assigned_role == "Detective")
+		to_chat(M, SPAN("notice", "You don't feel cool enough to name this gun, chump."))
+		return 0
+
+	var/input = sanitizeSafe(input("What do you want to name the gun?", ,""), MAX_NAME_LEN)
+
+	if(src && input && !M.stat && in_range(M,src))
+		SetName(input)
+		to_chat(M, "You name the gun [input]. Say hello to your new friend.")
+		return 1
+
+/obj/item/gun/projectile/revolver/detective/saw620
+	name = "S&W 620"
+	desc = "A cheap Martian knock-off of a Smith & Wesson Model 620. Uses .38-Special rounds."
+	icon_state = "saw620"
+
 /obj/item/gun/projectile/revolver/detective/m2019
 	name = "M2019 Detective Special"
 	desc = "Though this one resembles a regular NT's M2019, it is definitely a masterpiece. It can use any .38 round, but works best with .38 SPEC and .38 CHEM."
@@ -162,9 +159,7 @@
 	icon_state = "lapd201900"
 	item_state = "lapd2019"
 	max_shells = 5
-	caliber = ".38"
 	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 3)
-	ammo_type = /obj/item/ammo_casing/c38
 	starts_loaded = 0
 	var/chargemode = 1
 	var/shotcost = 20
