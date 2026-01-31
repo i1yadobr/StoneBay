@@ -6,9 +6,9 @@
 	mag_insert_sound = 'sound/effects/weapons/gun/pistol_magin.ogg'
 	mag_eject_sound = 'sound/effects/weapons/gun/pistol_magout.ogg'
 
-/obj/item/gun/projectile/pistol/update_icon()
+/obj/item/gun/projectile/pistol/on_update_icon()
 	..()
-	if(ammo_magazine && ammo_magazine.stored_ammo.len)
+	if(ammo_magazine?.stored_ammo.len)
 		icon_state = initial(icon_state)
 	else
 		icon_state = "[initial(icon_state)]-e"
@@ -141,7 +141,8 @@
 	name = "holdout pistol"
 	desc = "The Lumoco Arms P3 Whisper. A small, easily concealable gun. Uses 9mm rounds."
 	icon_state = "pistol"
-	item_state = null
+	item_state = "pistol"
+	base_icon_state = "pistol"
 	w_class = ITEM_SIZE_SMALL
 	caliber = "9mm"
 	silenced = 0
@@ -183,18 +184,24 @@
 		to_chat(user, SPAN("notice", "You screw [I] onto [src]."))
 		silenced = I	//dodgy?
 		w_class = ITEM_SIZE_NORMAL
-		update_icon()
 		fire_sound = SFX_SILENT_FIRE
+		update_icon()
 		return
 	..()
 
 /obj/item/gun/projectile/pistol/holdout/on_update_icon()
 	if(silenced)
-		icon_state = "pistol-silencer"
+		base_icon_state = "pistol-silencer"
 	else
-		icon_state = "pistol"
-	if(!(ammo_magazine && ammo_magazine.stored_ammo.len))
-		icon_state = "[icon_state]-e"
+		base_icon_state = "pistol"
+
+	item_state = base_icon_state
+
+	if(ammo_magazine?.stored_ammo.len)
+		icon_state = base_icon_state
+	else
+		icon_state = "[base_icon_state]-e"
+	update_held_icon()
 
 /obj/item/silencer
 	name = "silencer"
@@ -252,9 +259,12 @@
 	. = ..()
 
 	switch(buildstate)
-		if(1) . += "It has a barrel loosely fitted to the stock."
-		if(2) . += "It has a barrel that has been secured to the stock with tape."
-		if(3) . += "It has a trigger and firing pin assembly loosely fitted into place."
+		if(1)
+			. += "It has a barrel loosely fitted to the stock."
+		if(2)
+			. += "It has a barrel that has been secured to the stock with tape."
+		if(3)
+			. += "It has a trigger and firing pin assembly loosely fitted into place."
 
 /obj/item/zipgunframe/attackby(obj/item/thing, mob/user)
 	if(istype(thing,/obj/item/pipe) && buildstate == 0)
