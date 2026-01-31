@@ -434,7 +434,7 @@
 	name = "inflatable barriers kit"
 	desc = "Contains inflatable walls and doors."
 	icon_state = "inf_box"
-	item_state = "case"
+	item_state = "inf_box"
 	w_class = ITEM_SIZE_LARGE
 	max_storage_space = null
 	storage_slots = 8

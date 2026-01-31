@@ -1,9 +1,9 @@
 /obj/item/storage/secure/briefcase
 	name = "secure briefcase"
-	icon_state = "secure"
-	item_state = "sec-case"
-	inspect_state = "secure-open"
 	desc = "A large briefcase with a digital locking system."
+	icon_state = "secure"
+	item_state = "secure"
+	inspect_state = "secure-open"
 	force = 8.0
 	throw_range = 4
 	w_class = ITEM_SIZE_HUGE
