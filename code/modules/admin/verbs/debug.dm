@@ -289,7 +289,7 @@
 		return
 
 	if(!istype(chosen_mob))
-		to_chat(usr, "This can only be used on instances of type /mob/living/carbon/human")
+		to_chat(usr, "This can only be used on instances of type /mob/living/carbon/human") //TODO: This message doesn't show up. Fix that if possible.
 		return
 
 	var/decl/hierarchy/outfit/outfit = tgui_input_list(usr, "Select outfit.", "Select equipment.", outfits())
