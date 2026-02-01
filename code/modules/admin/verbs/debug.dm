@@ -292,16 +292,18 @@
 		to_chat(usr, "This can only be used on instances of type /mob/living/carbon/human") //TODO: This message doesn't show up. Fix that if possible.
 		return
 
-	var/decl/hierarchy/outfit/outfit = tgui_input_list(usr, "Select outfit.", "Select equipment.", outfits())
+	var/decl/hierarchy/outfit/outfit = tgui_input_list(usr, "Outfit", "Select equipment", outfits())
 	if(!outfit)
 		return
 
 	var/reset_equipment = tgui_alert(usr, "Do you wish to delete all current equipment first?", "Delete Equipment?", list("Yes", "No"))
-	if(reset_equipment)
+	if(!isnull(reset_equipment))
 		if(reset_equipment == "Yes")
-			reset_equipment = null
+			reset_equipment = TRUE
 		else
-			reset_equipment = (outfit.flags & OUTFIT_RESET_EQUIPMENT)
+			reset_equipment = FALSE
+	else
+		return
 
 	dressup_human(chosen_mob, outfit, reset_equipment)
 
@@ -326,6 +328,7 @@
 		return
 	if(undress)
 		Human.delete_inventory(TRUE)
+	outfit.flags |= OUTFIT_PROTECT_EQUIPMENT
 	outfit.equip(Human)
 	log_and_message_admins("changed the equipment of [key_name(Human)] to [outfit.name].")
 
