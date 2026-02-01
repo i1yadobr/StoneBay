@@ -282,13 +282,13 @@
 	for(var/areatype in areas_without_camera)
 		log_debug("* [areatype]")
 
-/client/proc/equip_mob(mob/living/M as mob in SSmobs.mob_list)
+/client/proc/equip_mob(mob/living/carbon/human/chosen_mob as mob in GLOB.human_mob_list)
 	set name = "Equip Mob"
 
 	if(!check_rights(R_FUN))
 		return
 
-	if(!istype(M))
+	if(!istype(chosen_mob))
 		to_chat(usr, "This can only be used on instances of type /mob/living/carbon/human")
 		return
 
@@ -303,12 +303,12 @@
 		else
 			reset_equipment = (outfit.flags & OUTFIT_RESET_EQUIPMENT)
 
-	dressup_human(M, outfit, reset_equipment)
+	dressup_human(chosen_mob, outfit, reset_equipment)
 
-/client/proc/cmd_admin_dress_context(mob/living/carbon/human/H as mob in GLOB.human_mob_list)
+/client/proc/cmd_admin_dress_context(mob/living/carbon/human/chosen_mob as mob in GLOB.human_mob_list)
 	set name = "Equip Outfit"
 
-	equip_mob(H)
+	equip_mob(chosen_mob)
 	feedback_add_details("admin_verb","SEQ")
 
 /client/proc/cmd_admin_dress()
