@@ -328,6 +328,7 @@
 		return
 	if(undress)
 		Human.delete_inventory(TRUE)
+	outfit.flags |= OUTFIT_PROTECT_EQUIPMENT
 	outfit.equip(Human)
 	log_and_message_admins("changed the equipment of [key_name(Human)] to [outfit.name].")
 

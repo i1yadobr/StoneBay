@@ -63,6 +63,8 @@ var/list/outfits_decls_by_type_
 	dd_insertObjectList(outfits_decls_, src)
 
 /decl/hierarchy/outfit/proc/pre_equip(mob/living/carbon/human/H)
+	if(flags & OUTFIT_PROTECT_EQUIPMENT)
+		return
 	if(flags & OUTFIT_RESET_EQUIPMENT)
 		H.delete_inventory(TRUE)
 

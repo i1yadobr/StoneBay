@@ -3,8 +3,9 @@
 #define OUTFIT_HAS_BACKPACK                  0x0002
 #define OUTFIT_EXTENDED_SURVIVAL             0x0004
 #define OUTFIT_RESET_EQUIPMENT               0x0008
-#define OUTFIT_COMBAT_SURVIVAL               0x0010
-#define OUTFIT_NO_SURVIVAL                   0x0020
+#define OUTFIT_PROTECT_EQUIPMENT             0x0010
+#define OUTFIT_COMBAT_SURVIVAL               0x0020
+#define OUTFIT_NO_SURVIVAL                   0x0040
 
 #define OUTFIT_ADJUSTMENT_SKIP_POST_EQUIP    0x0001
 #define OUTFIT_ADJUSTMENT_SKIP_SURVIVAL_GEAR 0x0002
