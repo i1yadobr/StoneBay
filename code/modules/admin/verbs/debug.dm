@@ -282,31 +282,8 @@
 	for(var/areatype in areas_without_camera)
 		log_debug("* [areatype]")
 
-/datum/admins/proc/cmd_admin_dress()
-	set category = "Fun"
-	set name = "Select equipment"
-
-	if(!check_rights(R_FUN))
-		return
-
-	var/mob/living/carbon/human/H = input("Select mob.", "Select equipment.") as null|anything in GLOB.human_mob_list
-	if(!H)
-		return
-
-	var/decl/hierarchy/outfit/outfit = input("Select outfit.", "Select equipment.") as null|anything in outfits()
-	if(!outfit)
-		return
-
-	var/reset_equipment = (outfit.flags & OUTFIT_RESET_EQUIPMENT)
-	if(!reset_equipment)
-		reset_equipment = alert("Do you wish to delete all current equipment first?", "Delete Equipment?","Yes", "No") == "Yes"
-
-	feedback_add_details("admin_verb","SEQ")
-	dressup_human(H, outfit, reset_equipment)
-
-/datum/admins/proc/equip_mob(mob/living/M as mob in SSmobs.mob_list)
+/client/proc/equip_mob(mob/living/M as mob in SSmobs.mob_list)
 	set name = "Equip Mob"
-	set category = "Fun"
 
 	if(!check_rights(R_FUN))
 		return
@@ -315,24 +292,42 @@
 		to_chat(usr, "This can only be used on instances of type /mob/living/carbon/human")
 		return
 
-	var/decl/hierarchy/outfit/outfit = input("Select outfit.", "Select equipment.") as null|anything in outfits()
+	var/decl/hierarchy/outfit/outfit = tgui_input_list(usr, "Select outfit.", "Select equipment.", outfits())
 	if(!outfit)
 		return
 
-	var/reset_equipment = (outfit.flags & OUTFIT_RESET_EQUIPMENT)
-	if(!reset_equipment)
-		reset_equipment = alert("Do you wish to delete all current equipment first?", "Delete Equipment?","Yes", "No") == "Yes"
+	var/reset_equipment = tgui_alert(usr, "Do you wish to delete all current equipment first?", "Delete Equipment?", list("Yes", "No"))
+	if(reset_equipment)
+		if(reset_equipment == "Yes")
+			reset_equipment = null
+		else
+			reset_equipment = (outfit.flags & OUTFIT_RESET_EQUIPMENT)
 
-	feedback_add_details("admin_verb", "SEQ")
-	dressup_human(M, outfit, TRUE)
+	dressup_human(M, outfit, reset_equipment)
 
-/proc/dressup_human(mob/living/carbon/human/H, decl/hierarchy/outfit/outfit, undress = TRUE)
-	if(!H || !outfit)
+/client/proc/cmd_admin_dress_context(mob/living/carbon/human/H as mob in GLOB.human_mob_list)
+	set name = "Equip Outfit"
+
+	equip_mob(H)
+	feedback_add_details("admin_verb","SEQ")
+
+/client/proc/cmd_admin_dress()
+	set name = "Select Equipment"
+	set category = "Fun"
+
+	var/mob/living/carbon/human/chosen_one = tgui_input_list(usr, "Select mob to equip outfit.", "Select Equipment", GLOB.human_mob_list)
+	if(isnull(chosen_one))
+		return
+
+	equip_mob(chosen_one)
+
+/proc/dressup_human(mob/living/carbon/human/Human, decl/hierarchy/outfit/outfit, undress = TRUE)
+	if(!Human || !outfit)
 		return
 	if(undress)
-		H.delete_inventory(TRUE)
-	outfit.equip(H)
-	log_and_message_admins("changed the equipment of [key_name(H)] to [outfit.name].")
+		Human.delete_inventory(TRUE)
+	outfit.equip(Human)
+	log_and_message_admins("changed the equipment of [key_name(Human)] to [outfit.name].")
 
 /client/proc/cmd_debug_mob_lists()
 	set category = "Debug"
