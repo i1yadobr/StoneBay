@@ -106,7 +106,7 @@
 	holder_type = /obj/item/holder/mini_pig
 
 /mob/living/simple_animal/pig/mini/mykola
-	name = "Mykola"
+	name = "mini Mykola"
 	desc = "Cargo pig, cargo pig, does whatever a cargo pig does. Probably."
 	var/growth_chance = 0.01
 
@@ -122,11 +122,11 @@
 		return
 
 	if(prob(growth_chance))
-		new /mob/living/simple_animal/pig/dzherelo(get_turf(src))
+		new /mob/living/simple_animal/pig/mykola(get_turf(src))
 		qdel(src)
 
-/mob/living/simple_animal/pig/dzherelo
-	name = "Dzherelo"
+/mob/living/simple_animal/pig/mykola
+	name = "Mykola"
 	desc = "If I had words to make a day for you..."
 	icon_state = "pig_maxi"
 	icon_living = "pig_maxi"
