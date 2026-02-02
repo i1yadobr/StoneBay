@@ -78,6 +78,9 @@
 	if(broken)
 		icon_state = "[base_icon_state]_burnt"
 		item_state = "[base_icon_state]_burnt"
+	else
+		icon_state = initial(icon_state)
+		item_state = initial(item_state)
 
 /obj/item/device/flash/attack(mob/living/M, mob/living/user, target_zone)
 	if(!user || !M)
