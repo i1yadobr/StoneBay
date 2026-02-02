@@ -67,22 +67,30 @@
 /atom/movable/screen/storage
 	name = "storage"
 
+// Click of "storage" screen objects passes the call to the insertion logic of the `master` storage or acts
+// as if `master` object was clicked normally if `master` is not a storage item.
+// It is a no-op if screen object doesn't have a master, user currently can't interact, or user is inside a mech.
 /atom/movable/screen/storage/Click(location, control, params)
+	if(!master)
+		return
+
 	if(!usr.canClick())
 		return TRUE
 
 	if(usr.stat || usr.paralysis || usr.stunned || usr.weakened)
 		return TRUE
 
-	if (istype(usr.loc,/obj/mecha)) // stops inventory actions in a mech
+	if(istype(usr.loc, /obj/mecha))
 		return TRUE
-	if(master)
-		var/obj/item/I = usr.get_active_hand()
-		if(I)
-			usr.ClickOn(master)
 
-		var/obj/item/storage/S = master
-		if(!S?.storage_ui)
+	var/obj/item/I = usr.get_active_hand()
+	if(istype(master, /obj/item/storage))
+		var/obj/item/storage/master_storage = master
+		if(I)
+			master_storage.attackby(I, usr)
+			return
+
+		if(!master_storage?.storage_ui)
 			return
 
 		// Tries to find items by their border overlay.
@@ -93,13 +101,14 @@
 		var/click_x = text2num(screen_loc_X[1])*WORLD_ICON_SIZE + text2num(screen_loc_X[2]) - 4.5*WORLD_ICON_SIZE
 		var/click_y = text2num(screen_loc_Y[1])*WORLD_ICON_SIZE + text2num(screen_loc_Y[2]) - 2.5*WORLD_ICON_SIZE
 
-		for(var/i = 1, i <= S.contents.len, i++)
-			if(S.storage_ui.click_border["x"]["start"][i] <= click_x && click_x <= S.storage_ui.click_border["x"]["end"][i])
-				if(S.storage_ui.click_border["y"]["start"][i] <= click_y && click_y <= S.storage_ui.click_border["y"]["end"][i])
-					I = S.contents[i]
+		for(var/i = 1, i <= master_storage.contents.len, i++)
+			if(master_storage.storage_ui.click_border["x"]["start"][i] <= click_x && click_x <= master_storage.storage_ui.click_border["x"]["end"][i])
+				if(master_storage.storage_ui.click_border["y"]["start"][i] <= click_y && click_y <= master_storage.storage_ui.click_border["y"]["end"][i])
+					I = master_storage.contents[i]
 					I?.Click(location, control, params)
 					return
 
+	usr.ClickOn(master)
 	return TRUE
 
 /atom/movable/screen/stored
