@@ -357,7 +357,7 @@
 	if(station_missed < 2)
 		var/intro = cinematic_icon_states[1]
 		if(intro)
-			flick(intro,cinematic_screen)
+			flick(intro, cinematic_screen)
 			sleep(cinematic_icon_states[intro])
 		var/end = cinematic_icon_states[3]
 		var/to_flick = "station_intact_fade_red"
@@ -368,7 +368,7 @@
 				if(is_station_turf(get_turf(M)))
 					M.death()//No mercy
 		if(end)
-			flick(to_flick,cinematic_screen)
+			flick(to_flick, cinematic_screen)
 			cinematic_screen.icon_state = end
 
 	else
