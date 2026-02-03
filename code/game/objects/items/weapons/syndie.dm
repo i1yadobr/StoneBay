@@ -52,16 +52,16 @@
 /*Click it when closed to open, when open to bring up a prompt asking you if you want to close it or press the button.*/
 
 /obj/item/syndie/c4detonator
-	icon_state = "c-4detonator_0"
-	item_state = "c-4detonator"
 	name = "\improper Zippo lighter"  /*Sneaky, thanks Dreyfus.*/
 	desc = "The zippo."
+	icon_state = "c-4detonator_0"
+	item_state = "c-4detonator"
 	w_class = ITEM_SIZE_TINY
 
 	var/obj/item/syndie/c4explosive/bomb
-	var/pr_open = 0  /*Is the "What do you want to do?" prompt open?*/
+	var/pr_open = FALSE  /*Is the "What do you want to do?" prompt open?*/
 
-/obj/item/syndie/c4detonator/attack_self(mob/user as mob)
+/obj/item/syndie/c4detonator/attack_self(mob/user)
 	switch(src.icon_state)
 		if("c-4detonator_0")
 			src.icon_state = "c-4detonator_1"
@@ -69,9 +69,21 @@
 
 		if("c-4detonator_1")
 			if(!pr_open)
-				pr_open = 1
-				switch(alert(user, "What would you like to do?", "Lighter", "Press the button.", "Close the lighter."))
-					if("Press the button.")
+				pr_open = TRUE
+				var/choice = tgui_alert(user, "What would you like to do?", "Lighter", list("Press the button", "Close the lighter"))
+				pr_open = FALSE
+
+				// Validate conditions after alert returns
+				if(!user || user.stat != CONSCIOUS || QDELETED(user))
+					return
+				if(QDELETED(src) || QDELETED(bomb))
+					return
+				if(!(src in user.contents))
+					to_chat(user, SPAN_WARNING("You no longer have \the [src]!"))
+					return
+
+				if(choice)
+					if(choice == "Press the button.")
 						to_chat(user, SPAN("warning", "You press the button."))
 						flick("c-4detonator_click", src)
 						if(src.bomb)
@@ -79,7 +91,6 @@
 							log_admin("[key_name(user)] has triggered [src.bomb] with [src].")
 							message_admins(SPAN("danger", "[key_name_admin(user)] has triggered [src.bomb] with [src]."))
 
-					if("Close the lighter.")
+					else
 						src.icon_state = "c-4detonator_0"
 						to_chat(user, "You close the lighter.")
-				pr_open = 0
