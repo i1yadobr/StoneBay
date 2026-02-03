@@ -12,7 +12,6 @@
 	/// Maximum amount of object's damage points till it breaks apart.
 	var/maxdamage = 100
 
-
 /obj/structure/barricade/attack_hand(mob/user)
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
@@ -33,7 +32,6 @@
 
 	return ..()
 
-
 /obj/structure/barricade/attackby(obj/item/W, mob/user)
 	if(W.force && user.a_intent == I_HURT)
 		attack_generic(user, W.force, "")
@@ -45,11 +43,9 @@
 
 	return ..()
 
-
 /obj/structure/barricade/attack_generic(mob/user, damage, attack_verb, wallbreaker)
 	visible_message(SPAN("danger", "[user] [attack_verb] \the [src]!"))
 	take_damage(damage)
-
 
 /obj/structure/barricade/ex_act(severity)
 	switch(severity)
@@ -60,6 +56,11 @@
 		if(EXPLODE_LIGHT)
 			take_damage(maxdamage * 0.4)
 
+/obj/structure/barricade/bullet_act(obj/item/projectile/P)
+	if(P.damage_type == BRUTE)
+		P.damage = (P.damage / 3) //so bullets make less damage
+	take_damage(P.damage)
+	return PROJECTILE_CONTINUE
 
 /obj/structure/barricade/proc/take_damage(amount)
 	damage = clamp(damage + amount, 0, maxdamage)
@@ -68,10 +69,8 @@
 		Break()
 		qdel(src)
 
-
 /obj/structure/barricade/proc/Break()
 	pass()
-
 
 /obj/structure/barricade/security/CanPass(atom/movable/mover, turf/target)
 	// Extra check that allows bullets to pass through.
