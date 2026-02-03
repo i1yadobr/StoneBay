@@ -33,7 +33,7 @@ export const AlertModal = (props, context) => {
     115 +
     (message.length > 30 ? Math.ceil(message.length / 4) : 0) +
     (message.length && large_buttons ? 5 : 0);
-  const windowWidth = 325 + (buttons.length > 2 ? 55 : 0);
+  const windowWidth = 335 + (buttons.length > 2 ? 55 : 0);
   const onKey = (direction: number) => {
     if (selected === 0 && direction === KEY_DECREMENT) {
       setSelected(buttons.length - 1);
