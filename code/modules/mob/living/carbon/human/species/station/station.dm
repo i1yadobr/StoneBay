@@ -86,7 +86,7 @@
 	icobase = 'icons/mob/human_races/r_tajaran.dmi'
 	tail = "tajtail"
 	var/tail_slim = "tajtail_slim"
-	tail_animation = 'icons/mob/species/tajaran/tail.dmi'
+	tail_animation = 'icons/mob/human_races/tails/t_tajaran.dmi'
 	default_h_style = "Ears"
 	hair_key = SPECIES_TAJARA
 	facial_hair_key = SPECIES_TAJARA

@@ -4,7 +4,7 @@
 	icobase = 'icons/mob/human_races/r_lizard.dmi'
 
 	tail = "sogtail"
-	tail_animation = 'icons/mob/species/unathi/tail.dmi'
+	tail_animation = 'icons/mob/human_races/tails/t_lizard.dmi'
 	hair_key = SPECIES_UNATHI
 
 	unarmed_types = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/tail, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
