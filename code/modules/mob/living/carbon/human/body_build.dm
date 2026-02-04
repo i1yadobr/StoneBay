@@ -23,7 +23,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)
@@ -83,7 +83,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob_slim.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob_slim.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_slim.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand_slim.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand_slim.dmi'
 		)
@@ -129,7 +129,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob_slim.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob_slim.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_slimalt.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand_slim.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand_slim.dmi'
 		)
@@ -157,7 +157,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob_slim_m.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob_slim_m.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_slim_m.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand_slim.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand_slim.dmi'
 		)
@@ -186,7 +186,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob_slim_m.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob_slim_m.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_slim_flat.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand_slim.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand_slim.dmi'
 		)
@@ -215,7 +215,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob_fat.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob_fat.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_fat.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)
@@ -251,7 +251,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob_slim.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob_slim.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_slimalt.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand_slim.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand_slim.dmi'
 		)
@@ -281,7 +281,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_tajaran.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)
@@ -307,7 +307,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob_fat.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob_fat.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_fat.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)
@@ -338,7 +338,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob_unathi.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)
@@ -365,7 +365,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_back"      = 'icons/inv_slots/back/mob.dmi',
 		"slot_tie"       = 'icons/inv_slots/accessories/mob_vox.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)
@@ -374,7 +374,7 @@ var/global/datum/body_build/default_body_build = new
 	name                 = "Monkey"
 
 	clothing_icons       = list(
-		"slot_w_uniform" = 'icons/mob/species/monkey/uniform.dmi',
+		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_monkey.dmi',
 		"slot_suit"      = 'icons/inv_slots/suits/mob.dmi',
 		"slot_gloves"    = 'icons/inv_slots/gloves/mob.dmi',
 		"slot_glasses"   = 'icons/inv_slots/glasses/mob.dmi',,
@@ -386,9 +386,9 @@ var/global/datum/body_build/default_body_build = new
 		"slot_belt"      = 'icons/inv_slots/belts/mob.dmi',
 		"slot_s_store"   = 'icons/inv_slots/suitstorage/mob.dmi',
 		"slot_back"      = 'icons/inv_slots/back/mob.dmi',
-		"slot_tie"       = 'icons/mob/species/monkey/ties.dmi',
+		"slot_tie"       = 'icons/inv_slots/accessories/mob_monkey.dmi',
 		"slot_hidden"    = 'icons/inv_slots/hidden/mob.dmi',
-		"slot_wear_id"   = 'icons/mob/id.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
 		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand.dmi',
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)

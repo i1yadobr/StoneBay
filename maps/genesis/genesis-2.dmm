@@ -2364,7 +2364,7 @@
 "aTx" = (/obj/machinery/light{icon_state = "tube1"; dir = 8},/obj/item/device/radio/intercom{dir = 4; pixel_x = -22},/obj/effect/floor_decal/industrial/warning{dir = 8},/obj/machinery/atmospherics/pipe/simple/hidden,/turf/simulated/floor/tiled,/area/hallway/secondary/entry/port)
 "aTy" = (/obj/machinery/hologram/holopad,/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/obj/machinery/atmospherics/pipe/simple/hidden/supply,/turf/simulated/floor/tiled,/area/hallway/secondary/entry/port)
 "aTz" = (/obj/structure/table/woodentable,/obj/random/single{name = "randomly spawned deck of cards"; icon = 'icons/obj/playing_cards.dmi'; icon_state = "deck"; spawn_nothing_percentage = 50; spawn_object = /obj/item/deck/cards},/turf/simulated/floor/trim/lino,/area/hallway/secondary/entry/starboard)
-"aTA" = (/obj/structure/table/woodentable,/obj/random/single{name = "randomly spawned cola"; icon = 'icons/obj/drinks.dmi'; icon_state = "cola"; spawn_nothing_percentage = 50; spawn_object = /obj/item/reagent_containers/vessel/can/cola},/turf/simulated/floor/trim/carpet,/area/hallway/secondary/entry/starboard)
+"aTA" = (/obj/structure/table/woodentable,/obj/random/single{name = "randomly spawned cola"; icon = 'icons/obj/reagent_containers/cans.dmi'; icon_state = "cola"; spawn_nothing_percentage = 50; spawn_object = /obj/item/reagent_containers/vessel/can/cola},/turf/simulated/floor/trim/carpet,/area/hallway/secondary/entry/starboard)
 "aTB" = (/turf/simulated/floor/trim/carpet,/area/hallway/secondary/entry/starboard)
 "aTC" = (/obj/item/modular_computer/console/preset/civilian,/turf/simulated/floor/trim/lino,/area/hallway/secondary/entry/starboard)
 "aTD" = (/obj/machinery/vending/coffee,/turf/simulated/floor/tiled,/area/hallway/secondary/entry/starboard)
