@@ -26,12 +26,17 @@
 	// If you create a program which is limited to Laptops and Consoles you don't have to add it's icon_state overlay for Tablets too, for example.
 
 	icon = null												// This thing isn't meant to be used on it's own. Subtypes should supply their own icon.
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/modular_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/modular_righthand.dmi'
+		)
 	icon_state = null
 	center_of_mass = null									// No pixelshifting by placing on tables, etc.
 	randpixel = 0											// And no random pixelshifting on-creation either.
 	var/icon_state_unpowered = null							// Icon state when the computer is turned off
 	var/icon_state_menu = "menu"							// Icon state overlay when the computer is turned on, but no program is loaded that would override the screen.
 	var/icon_state_screensaver = null
+	var/item_state_dynamical = FALSE						// Item State use programm screen when true
 	var/max_hardware_size = 0								// Maximal hardware size. Currently, tablets have 1, laptops 2 and consoles 3. Limits what hardware types can be installed.
 	var/steel_sheet_cost = 5								// Amount of steel sheets refunded when disassembling an empty frame of this computer.
 	var/light_strength = 0									// Intensity of light this computer emits. Comparable to numbers light fixtures use.

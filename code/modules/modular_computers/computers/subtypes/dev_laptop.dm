@@ -1,19 +1,21 @@
 /obj/item/modular_computer/laptop
-	anchored = TRUE
 	name = "laptop computer"
 	desc = "A portable computer."
-	hardware_flag = PROGRAM_LAPTOP
-	icon_state_unpowered = "laptop-open"
 	icon = 'icons/obj/modular_laptop.dmi'
 	icon_state = "laptop-open"
+	item_state = "laptop"
+	base_icon_state = "laptop"
+	icon_state_unpowered = "laptop-open"
 	icon_state_screensaver = "standby"
+	w_class = ITEM_SIZE_NORMAL
+	anchored = TRUE
+	hardware_flag = PROGRAM_LAPTOP
 	base_idle_power_usage = 25 WATTS
 	base_active_power_usage = 200 WATTS
 	max_hardware_size = 2
 	light_strength = 3
 	max_damage = 200
 	broken_damage = 100
-	w_class = ITEM_SIZE_NORMAL
 	var/icon_state_closed = "laptop-closed"
 
 /obj/item/modular_computer/laptop/AltClick(mob/user)

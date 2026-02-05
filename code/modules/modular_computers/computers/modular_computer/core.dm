@@ -88,21 +88,28 @@
 
 /obj/item/modular_computer/on_update_icon()
 	icon_state = icon_state_unpowered
+	item_state = base_icon_state
 
 	ClearOverlays()
 	if(bsod)
 		AddOverlays(OVERLAY(icon, "bsod"))
+		if(item_state_dynamical)
+			item_state = "[base_icon_state]_bsod"
+		update_held_icon()
 		return
 	if(!enabled)
 		if(icon_state_screensaver)
 			AddOverlays(OVERLAY(icon, icon_state_screensaver))
 		set_light(0)
+		update_held_icon()
 		return
 	var/light_color = "#ffffff"
 	if(active_program)
 		var/screen_state = active_program.program_icon_state ? active_program.program_icon_state : icon_state_menu
 		AddOverlays(OVERLAY(icon, screen_state))
 		AddOverlays(emissive_appearance(icon, screen_state))
+		if(item_state_dynamical)
+			item_state = "[base_icon_state]_[screen_state]"
 		if(active_program.program_key_state)
 			AddOverlays(OVERLAY(icon, active_program.program_key_state))
 			AddOverlays(emissive_appearance(icon, active_program.program_key_state))
@@ -110,7 +117,10 @@
 	else
 		AddOverlays(OVERLAY(icon, icon_state_menu))
 		AddOverlays(emissive_appearance(icon, icon_state_menu))
+		if(item_state_dynamical)
+			item_state = "[base_icon_state]_[icon_state_menu]"
 	set_light(light_strength * 0.25, 0.5, active_program ? light_strength : light_strength * 0.5, 3.5, l_color = light_color)
+	update_held_icon()
 
 /obj/item/modular_computer/proc/turn_on(mob/user)
 	if(bsod)
