@@ -3,7 +3,7 @@
 	desc = "A wall-mounted touchscreen computer."
 	icon = 'icons/obj/modular_telescreen.dmi'
 	icon_state = "telescreen"
-	icon_state_unpowered = "telescreen"
+	base_icon_state = "telescreen"
 	icon_state_menu = "menu"
 	icon_state_screensaver = "standby"
 	hardware_flag = PROGRAM_TELESCREEN

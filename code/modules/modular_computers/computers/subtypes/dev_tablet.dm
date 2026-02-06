@@ -3,17 +3,19 @@
 	desc = "A small portable microcomputer"
 	icon = 'icons/obj/modular_tablet.dmi'
 	icon_state = "tablet"
-	icon_state_unpowered = "tablet"
+	item_state = "tablet"
+	base_icon_state = "tablet"
 	icon_state_menu = "menu"
+	item_state_dynamical = TRUE
+	w_class = ITEM_SIZE_SMALL
 	hardware_flag = PROGRAM_TABLET
 	max_hardware_size = 1
-	w_class = ITEM_SIZE_SMALL
 	light_strength = 2					// Same as PDAs
 
 /obj/item/modular_computer/tablet/lease
 	desc = "A small portable microcomputer. This one has a gold and blue stripe, and a serial number stamped into the case."
 	icon_state = "tabletsol"
-	icon_state_unpowered = "tabletsol"
+	base_icon_state = "tablet"
 
 /obj/item/modular_computer/tablet/CouldUseTopic(mob/user)
 	..()
