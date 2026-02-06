@@ -5,7 +5,6 @@
 	icon_state = "laptop-open"
 	item_state = "laptop"
 	base_icon_state = "laptop"
-	icon_state_unpowered = "laptop-open"
 	icon_state_screensaver = "standby"
 	w_class = ITEM_SIZE_NORMAL
 	anchored = TRUE
@@ -16,7 +15,6 @@
 	light_strength = 3
 	max_damage = 200
 	broken_damage = 100
-	var/icon_state_closed = "laptop-closed"
 
 /obj/item/modular_computer/laptop/AltClick(mob/user)
 // Prevents carrying of open laptops inhand.
@@ -32,11 +30,12 @@
 
 /obj/item/modular_computer/laptop/on_update_icon()
 	if(anchored)
+		icon_state = "[base_icon_state]-open"
 		..()
 	else
 		set_light(0)
 		ClearOverlays()
-		icon_state = icon_state_closed
+		icon_state = "[base_icon_state]-closed"
 
 /obj/item/modular_computer/laptop/preset
 	anchored = FALSE

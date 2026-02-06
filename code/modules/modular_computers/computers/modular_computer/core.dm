@@ -87,7 +87,6 @@
 		return 1
 
 /obj/item/modular_computer/on_update_icon()
-	icon_state = icon_state_unpowered
 	item_state = base_icon_state
 
 	ClearOverlays()

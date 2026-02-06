@@ -5,7 +5,6 @@
 	icon_state = "tablet"
 	item_state = "tablet"
 	base_icon_state = "tablet"
-	icon_state_unpowered = "tablet"
 	icon_state_menu = "menu"
 	item_state_dynamical = TRUE
 	w_class = ITEM_SIZE_SMALL
@@ -17,7 +16,6 @@
 	desc = "A small portable microcomputer. This one has a gold and blue stripe, and a serial number stamped into the case."
 	icon_state = "tabletsol"
 	base_icon_state = "tablet"
-	icon_state_unpowered = "tabletsol"
 
 /obj/item/modular_computer/tablet/CouldUseTopic(mob/user)
 	..()
