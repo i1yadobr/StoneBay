@@ -3,6 +3,10 @@
 	name = "power cell"
 	desc = "A rechargable electrochemical power cell."
 	icon = 'icons/obj/power.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/cells_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/cells_righthand.dmi'
+		)
 	icon_state = "cell"
 	item_state = "cell"
 	origin_tech = list(TECH_POWER = 1)
@@ -13,6 +17,7 @@
 	var/c_uid			 // Unique ID
 	var/charge			 // Current charge
 	var/maxcharge = 250 // Capacity in Wh
+	var/use_overlay = TRUE // If overlay is not required, set it to FALSE
 	var/overlay_state = 0
 	var/overlay_key = "cell-o"
 	matter = list(MATERIAL_STEEL = 700, MATERIAL_GLASS = 50)
@@ -42,6 +47,8 @@
 	charge = between(0, charge + amount, maxcharge)
 
 /obj/item/cell/on_update_icon()
+	if(!use_overlay)
+		return
 	var/new_overlay_state = 0
 	if(charge / maxcharge >= 0.95)
 		new_overlay_state = 2
@@ -120,7 +127,6 @@
 	use(max((charge / (2 * severity)), (maxcharge/(4 * severity))))
 	..()
 
-
 /obj/item/cell/proc/get_electrocute_damage()
 	switch(charge)
 		if(5000000 to INFINITY) //Ave cells
@@ -140,7 +146,6 @@
 		else
 			return 0
 
-
 // SUBTYPES BELOW
 
 /obj/item/cell/empty
@@ -150,7 +155,8 @@
 /obj/item/cell/device
 	name = "device power cell"
 	desc = "A small power cell designed to power handheld devices."
-	icon_state = "device"
+	icon_state = "cell_device"
+	item_state = "cell_device"
 	w_class = ITEM_SIZE_SMALL
 	force = 0
 	throw_range = 7
@@ -168,7 +174,8 @@
 /obj/item/cell/device/high
 	name = "advanced device power cell"
 	desc = "A small power cell designed to power more energy-demanding devices."
-	icon_state = "hdevice"
+	icon_state = "hcell_device"
+	item_state = "hcell_device"
 	maxcharge = 100
 	matter = list(MATERIAL_STEEL = 70, MATERIAL_GLASS = 6)
 
@@ -198,68 +205,68 @@
 	maxcharge = 500
 	matter = list(MATERIAL_STEEL = 700, MATERIAL_GLASS = 50)
 
-
 /obj/item/cell/high
 	name = "advanced power cell"
 	desc = "An advanced high-grade power cell, for use in important systems."
-	origin_tech = list(TECH_POWER = 2)
 	icon_state = "hcell"
+	item_state = "hcell"
+	origin_tech = list(TECH_POWER = 2)
 	maxcharge = 1000
 	matter = list(MATERIAL_STEEL = 700, MATERIAL_GLASS = 60)
 
 /obj/item/cell/high/empty
 	charge = 0
 
-
 /obj/item/cell/mecha
 	name = "exosuit power cell"
 	desc = "A special power cell designed for heavy-duty use in industrial exosuits."
-	origin_tech = list(TECH_POWER = 3)
 	icon_state = "hcell"
+	item_state = "hcell"
+	origin_tech = list(TECH_POWER = 3)
 	maxcharge = 1500
 	matter = list(MATERIAL_STEEL = 700, MATERIAL_GLASS = 70)
-
 
 /obj/item/cell/super
 	name = "enhanced power cell"
 	desc = "A very advanced power cell with increased energy density, for use in critical applications."
-	origin_tech = list(TECH_POWER = 5)
 	icon_state = "scell"
+	item_state = "scell"
+	origin_tech = list(TECH_POWER = 5)
 	maxcharge = 2000
 	matter = list(MATERIAL_STEEL = 700, MATERIAL_GLASS = 70)
 
 /obj/item/cell/super/empty
 	charge = 0
 
-
 /obj/item/cell/hyper
 	name = "superior power cell"
 	desc = "This very expensive power cell provides the best energy density reachable with conventional electrochemical cells."
-	origin_tech = list(TECH_POWER = 6)
 	icon_state = "hpcell"
+	item_state = "hpcell"
+	origin_tech = list(TECH_POWER = 6)
 	maxcharge = 3000
 	matter = list(MATERIAL_STEEL = 700, MATERIAL_GLASS = 80)
 
 /obj/item/cell/hyper/empty
 	charge = 0
 
-
 /obj/item/cell/apex
 	name = "apex power cell"
 	desc = "Pinnacle of power storage technology, this extremely expensive power cell uses compact superconductors to provide nearly fantastic energy density."
-	origin_tech = list(TECH_POWER = 7, TECH_MATERIAL = 7, TECH_MAGNET = 5, TECH_ENGINEERING = 5)
 	icon_state = "acell"
+	item_state = "acell"
+	origin_tech = list(TECH_POWER = 7, TECH_MATERIAL = 7, TECH_MAGNET = 5, TECH_ENGINEERING = 5)
 	maxcharge = 5000
 	matter = list(MATERIAL_STEEL = 700, MATERIAL_GLASS = 90)
 
 /obj/item/cell/apex/empty
 	charge = 0
 
-
 /obj/item/cell/infinite
 	name = "experimental power cell"
 	desc = "This special experimental power cell has both very large capacity, and ability to recharge itself by draining power from contained bluespace pocket."
 	icon_state = "icell"
+	item_state = "icell"
 	origin_tech =  null
 	maxcharge = 3000
 	matter = list(MATERIAL_STEEL = 700, MATERIAL_GLASS = 80)
@@ -270,22 +277,22 @@
 /obj/item/cell/infinite/use()
 	return 1
 
-
 /obj/item/cell/potato
 	name = "potato battery"
 	desc = "A rechargable starch based power cell."
-	origin_tech = list(TECH_POWER = 1)
-	icon = 'icons/obj/power.dmi'
 	icon_state = "potatocell"
+	item_state = "potatocell"
+	origin_tech = list(TECH_POWER = 1)
 	maxcharge = 50
-
 
 /obj/item/cell/metroid
 	name = "charged metroid core"
 	desc = "A yellow metroid core infused with plasma, it crackles with power."
+	icon = 'icons/mob/metroids.dmi'
+	icon_state = "yellow_metroid_extract"
+	item_state = "yellow_metroid_extract"
+	use_overlay = FALSE
 	origin_tech = list(TECH_POWER = 2, TECH_BIO = 4)
-	icon = 'icons/mob/metroids.dmi' //'icons/obj/harvest.dmi'
-	icon_state = "yellow metroid extract" //"potato_battery"
 	maxcharge = 200
 	matter = null
 
@@ -299,11 +306,11 @@
 	set_next_think(world.time)
 	add_think_ctx("selfcharge", CALLBACK(src, nameof(.proc/selfcharge_think)), world.time)
 
-
 /obj/item/cell/quantum
 	name = "bluespace cell"
 	desc = "This special experimental power cell utilizes bluespace manipulation techniques; it can form a recursive quantum connection with another cell of its kind, making them share their charge through virtually any distance."
 	icon_state = "qcell"
+	item_state = "qcell"
 	origin_tech = list(TECH_POWER = 6, TECH_MATERIAL = 6, TECH_BLUESPACE = 3, TECH_MAGNET = 5)
 	maxcharge = 3000
 	overlay_key = "qcell-o"
