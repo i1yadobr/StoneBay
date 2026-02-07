@@ -674,7 +674,7 @@ REAGENT SCANNER
 	name = "xenolife scanner"
 	desc = "Multipurpose organic life scanner. With spectral breath analyzer you can find out what snacks Ian had! Or what gasses alien life breathes."
 	icon_state = "xenobio"
-	item_state = "analyzer"
+	item_state = "xenobio"
 	slot_flags = SLOT_BELT
 	w_class = ITEM_SIZE_SMALL
 	origin_tech = list(TECH_MAGNET = 1, TECH_BIO = 1)
