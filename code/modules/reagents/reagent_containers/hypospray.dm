@@ -4,7 +4,8 @@
 
 /obj/item/reagent_containers/hypospray //obsolete, use hypospray/vial for the actual hypospray item
 	name = "hypospray"
-	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients."
+	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, \
+			hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients."
 	icon = 'icons/obj/syringe.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
@@ -23,17 +24,19 @@
 	drop_sound = SFX_DROP_GUN
 	pickup_sound = SFX_PICKUP_GUN
 
+	var/obj/item/reagent_containers/vessel/beaker/vial/loaded_vial = null
+
 /obj/item/reagent_containers/hypospray/do_surgery(mob/living/carbon/M, mob/living/user)
 	if(user.a_intent != I_HELP) //in case it is ever used as a surgery tool
 		return ..()
 	attack(M, user)
-	return 1
+	return TRUE
 
-/obj/item/reagent_containers/hypospray/attack(mob/living/M as mob, mob/user as mob)
+/obj/item/reagent_containers/hypospray/attack(mob/living/M, mob/user)
 	if(!reagents.total_volume)
 		to_chat(user, SPAN("warning", "[src] is empty."))
 		return
-	if (!istype(M))
+	if(!istype(M))
 		return
 
 	var/mob/living/carbon/human/H = M
@@ -51,6 +54,7 @@
 	to_chat(user, SPAN("notice", "You inject [M] with [src]."))
 	to_chat(M, SPAN("notice", "You feel a tiny prick!"))
 	user.visible_message(SPAN("warning", "[user] injects [M] with [src]."))
+	playsound(src, GET_SFX(SFX_HYPOSPRAY), 50, TRUE)
 
 	if(M.reagents)
 		var/contained = reagentlist()
@@ -62,28 +66,28 @@
 
 /obj/item/reagent_containers/hypospray/vial
 	name = "hypospray"
-	item_state = "autoinjector"
-	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients. Uses a replacable 30u vial."
-	var/obj/item/reagent_containers/vessel/beaker/vial/loaded_vial
+	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, \
+			hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients. Uses a replacable 50ml vial."
+	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial
 	volume = 0
 
 /obj/item/reagent_containers/hypospray/vial/Initialize()
 	. = ..()
-	loaded_vial = new /obj/item/reagent_containers/vessel/beaker/vial(src)
+	loaded_vial = new loaded_vial(src)
 	volume = loaded_vial.volume
 	reagents.maximum_volume = loaded_vial.reagents.maximum_volume
 
-/obj/item/reagent_containers/hypospray/vial/attack_hand(mob/user as mob)
+/obj/item/reagent_containers/hypospray/vial/attack_hand(mob/user)
 	if(user.get_inactive_hand() == src)
 		if(loaded_vial)
 			reagents.trans_to_holder(loaded_vial.reagents,volume)
 			reagents.maximum_volume = 0
 			loaded_vial.update_icon()
 			user.pick_or_drop(loaded_vial)
+			to_chat(user, "You remove [loaded_vial] from the [src].")
 			loaded_vial = null
-			to_chat(user, "You remove the vial from the [src].")
 			update_icon()
-			playsound(src.loc, 'sound/weapons/flipblade.ogg', 50, 1)
+			playsound(src, 'sound/weapons/flipblade.ogg', 50, 1)
 			return
 		..()
 	else
@@ -104,11 +108,21 @@
 			loaded_vial.reagents.trans_to_holder(reagents,volume)
 			user.visible_message(SPAN("notice", "[user] has loaded [W] into \the [src]."), SPAN("notice", "You load \the [W] into \the [src]."))
 			update_icon()
-			playsound(src.loc, 'sound/weapons/empty.ogg', 50, 1)
+			playsound(src, 'sound/weapons/empty.ogg', 50, 1)
 		else
 			to_chat(user, SPAN("notice", "\The [src] already has a vial."))
 	else
 		..()
+
+/obj/item/reagent_containers/hypospray/vial/combat
+	name = "combat hypospray"
+	//TODO: Make better and, maybe, unique description
+	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, \
+			hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients. Uses a replacable 80ml vial."
+	icon_state = "combat_hypo"
+	item_state = "combat_hypo"
+	possible_transfer_amounts = "1;2.5;5"
+	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial/reinforced
 
 /obj/item/reagent_containers/hypospray/autoinjector
 	name = "autoinjector"
@@ -130,7 +144,7 @@
 		desc += " The label reads, \"[content_desc]\"."
 	return
 
-/obj/item/reagent_containers/hypospray/autoinjector/attack(mob/M as mob, mob/user as mob)
+/obj/item/reagent_containers/hypospray/autoinjector/attack(mob/M, mob/user)
 	..()
 	update_icon()
 	return

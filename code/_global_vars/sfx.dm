@@ -1673,6 +1673,9 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_SUPERMATTER = list(
 		'sound/effects/supermatter.ogg',
 	),
+	SFX_HYPOSPRAY = list(
+		'sound/items/hypospray.ogg',
+	),
 	// DEVICES
 	SFX_GEIGER_LOW = list(
 		'sound/effects/geiger/geiger_low_1.ogg',

@@ -8,6 +8,7 @@
 #define HOURS   HOUR
 #define DAYS    DAY
 
+//TODO: Make MilliLiter, so we don't need to do something like "volume = 0.05 LITERS"
 #define LITER        *1000
 #define WATT         *1
 #define METER        *1
