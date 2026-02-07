@@ -7,7 +7,7 @@
 	You can never be too careful around radiation."
 
 	icon_state = "geiger_off"
-	item_state = "multitool"
+	item_state = "geiger"
 	w_class = ITEM_SIZE_SMALL
 	action_button_name = "Toggle geiger counter"
 	var/scanning = FALSE

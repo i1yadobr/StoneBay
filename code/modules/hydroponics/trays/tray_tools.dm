@@ -16,9 +16,13 @@
 /obj/item/device/analyzer/plant_analyzer
 	name = "plant analyzer"
 	desc = "A hand-held botanical scanner used to analyze plants."
-	icon = 'icons/obj/device.dmi'
+	icon = 'icons/obj/hydroponics_items.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/hydroponics_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi'
+		)
 	icon_state = "hydro"
-	item_state = "analyzer"
+	item_state = "hydro"
 	var/form_title
 	var/last_data
 
