@@ -13,7 +13,12 @@
 	name = "mining satchel"
 	desc = "This sturdy bag can be used to store and transport ores."
 	icon = 'icons/obj/mining.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/satchel_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/satchel_righthand.dmi'
+		)
 	icon_state = "satchel"
+	item_state = "satchel"
 	slot_flags = SLOT_BELT
 	max_storage_space = 200
 	max_w_class = ITEM_SIZE_NORMAL
@@ -32,7 +37,12 @@
 	name = "botanical satchel"
 	desc = "This bag can be used to store all kinds of plant products and botanical specimen."
 	icon = 'icons/obj/hydroponics_items.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/satchel_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/satchel_righthand.dmi'
+		)
 	icon_state = "plantbag"
+	item_state = "plantbag"
 	slot_flags = SLOT_BELT
 	max_storage_space = 100
 	max_w_class = ITEM_SIZE_SMALL
@@ -49,7 +59,12 @@
 	name = "Xenobiology satchel"
 	desc = "This bag can be used to store all kinds of plant products and botanical specimen."
 	icon = 'icons/obj/objects.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/satchel_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/satchel_righthand.dmi'
+		)
 	icon_state = "xenobag"
+	item_state = "xenobag"
 	slot_flags = SLOT_BELT
 	max_storage_space = 100
 	max_w_class = ITEM_SIZE_SMALL
@@ -68,9 +83,14 @@
 
 /obj/item/storage/sheetsnatcher
 	name = "sheet snatcher"
-	icon = 'icons/obj/mining.dmi'
-	icon_state = "sheetsnatcher"
 	desc = "A patented storage system designed for any kind of mineral sheet."
+	icon = 'icons/obj/mining.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/briefcase_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/briefcase_righthand.dmi'
+		)
+	icon_state = "sheetsnatcher"
+	item_state = "sheetsnatcher"
 
 	storage_ui = /datum/storage_ui/default/sheetsnatcher
 
@@ -173,6 +193,7 @@
 /obj/item/storage/sheetsnatcher/borg
 	name = "sheet snatcher 9000"
 	desc = ""
+	icon_state = "sheetsnatcher_borg"
 	capacity = 500//Borgs get more because >specialization
 
 // -----------------------------
