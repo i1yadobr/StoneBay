@@ -65,6 +65,7 @@
 #define DEFAULT_TELECRYSTAL_AMOUNT 12
 #define NUCLEAR_TELECRYSTAL_AMOUNT 15
 #define IMPLANT_TELECRYSTAL_AMOUNT(x) ((x / 2) - 1) // If this cost is ever greater than half of DEFAULT_TELECRYSTAL_AMOUNT then it is possible to buy more TC than you spend
+#define DEBUG_TELECRYSTAL_AMOUNT 999
 
 /////////////////
 ////WIZARD //////

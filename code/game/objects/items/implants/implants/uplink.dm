@@ -20,6 +20,7 @@
 
 	if(U.unlock_emote == emote)
 		U.interact(source)
+
 /obj/item/implanter/uplink
 	name = "implanter (U)"
 	imp = /obj/item/implant/uplink
