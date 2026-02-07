@@ -40,6 +40,7 @@
 	name = "large beaker"
 	desc = "A large beaker."
 	icon_state = "beakerlarge"
+	item_state = "beakerlarge"
 	center_of_mass = "x=17;y=10"
 	force = 6.5
 	mod_weight = 0.65
@@ -59,7 +60,8 @@
 /obj/item/reagent_containers/vessel/beaker/plass
 	name = "plass beaker"
 	desc = "A beaker made of plass, it doesn't allow radiation to pass through."
-	icon_state = "plass_beaker"
+	icon_state = "beaker_plass"
+	item_state = "beaker_plass"
 	matter = list(MATERIAL_PLASS = 2500)
 	brittle = FALSE // Plass be strong
 	rad_resist_type = /datum/rad_resist/beaker_plass
@@ -73,6 +75,7 @@
 	name = "cryostasis beaker"
 	desc = "A cryostasis beaker that allows for chemical storage without reactions."
 	icon_state = "beakernoreact"
+	item_state = "beakernoreact"
 	center_of_mass = "x=17;y=10"
 	matter = list(MATERIAL_GLASS = 2500)
 	brittle = FALSE
@@ -84,6 +87,7 @@
 	name = "bluespace beaker"
 	desc = "A bluespace beaker, powered by experimental bluespace technology."
 	icon_state = "beakerbluespace"
+	item_state = "beakerbluespace"
 	center_of_mass = "x=17;y=10"
 	force = 6.5
 	mod_weight = 0.65
@@ -102,6 +106,7 @@
 	name = "vial"
 	desc = "A small glass vial."
 	icon_state = "vial"
+	item_state = "vial"
 	center_of_mass = "x=16;y=10"
 	force = 2.5
 	mod_weight = 0.35
