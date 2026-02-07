@@ -80,9 +80,13 @@
 //Which in turn has as many as three firing modes.
 /obj/item/gun/energy/taser/rifle
 	name = "taser rifle"
-	desc = "A LAEP38 Thor, a vastly oversized variant of the LAEP20 Zeus. Fires overcharged electrodes to take down hostile armored targets without harming them too much."
+	desc = "A LAEP38 Thor, a vastly oversized variant of the LAEP20 Zeus. \
+			Fires overcharged electrodes to take down hostile armored targets without harming them too much."
 	icon_state = "stunrifle"
-	item_state = "stunrifle"
+	item_state = null
+	modifystate = "stunrifle"
+	wielded_item_state = TRUE
+	improper_held_icon = TRUE
 	w_class = ITEM_SIZE_HUGE
 	slot_flags = SLOT_BACK
 	one_hand_penalty = 6
@@ -91,9 +95,27 @@
 	max_shots = 10
 	accuracy = 1
 	projectile_type = /obj/item/projectile/energy/electrode/stunshot
-	wielded_item_state = "stunrifle-wielded"
 
 	firemodes = list()
+
+/obj/item/gun/energy/taser/rifle/on_update_icon()
+	var/ratio = 0
+	if(power_supply && power_supply.charge >= charge_cost)
+		ratio = max(round(CELL_PERCENT(power_supply), icon_rounder), icon_rounder)
+
+	icon_state = "[modifystate][ratio]"
+
+	var/mob/living/M = loc
+	if(istype(M))
+		if(wielded_item_state && M.can_wield_item(src) && is_held_twohanded(M))
+			item_state_slots[slot_l_hand_str] = "[modifystate][ratio]-wielded"
+			item_state_slots[slot_r_hand_str] = "[modifystate][ratio]-wielded"
+			improper_held_icon = TRUE
+		else
+			item_state_slots[slot_l_hand_str] = "[modifystate][ratio]"
+			item_state_slots[slot_r_hand_str] = "[modifystate][ratio]"
+			improper_held_icon = FALSE
+	update_held_icon()
 
 /obj/item/gun/energy/crossbow
 	name = "mini energy-crossbow"
