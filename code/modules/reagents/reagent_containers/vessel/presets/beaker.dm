@@ -19,3 +19,8 @@
 	start_label = "sulphuric acid"
 	startswith = list(/datum/reagent/acid = 300)
 	override_lid_state = LID_CLOSED
+	name = "adminordrazine bluespace vial"
+	desc = "Suphuric acid is used for printing various circuits. Or melting down people's faces."
+	base_name = "bluespace vial"
+	base_desc = "A bluespace vial."
+	startswith = list(/datum/reagent/adminordrazine = 500)

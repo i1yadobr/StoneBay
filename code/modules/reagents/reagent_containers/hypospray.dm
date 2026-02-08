@@ -67,8 +67,10 @@
 /obj/item/reagent_containers/hypospray/vial
 	name = "hypospray"
 	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, \
-			hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients. Uses a replacable 50ml vial."
+			hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients. \
+			Uses a replacable 50ml vial."
 	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial
+	var/allowed_vial = /obj/item/reagent_containers/vessel/beaker/vial
 	volume = 0
 
 /obj/item/reagent_containers/hypospray/vial/Initialize()
@@ -84,7 +86,7 @@
 			reagents.maximum_volume = 0
 			loaded_vial.update_icon()
 			user.pick_or_drop(loaded_vial)
-			to_chat(user, "You remove [loaded_vial] from the [src].")
+			to_chat(user, "You remove \The [loaded_vial] from \The [src].")
 			loaded_vial = null
 			update_icon()
 			playsound(src, 'sound/weapons/flipblade.ogg', 50, 1)
@@ -96,6 +98,9 @@
 /obj/item/reagent_containers/hypospray/vial/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/reagent_containers/vessel/beaker/vial))
 		if(!loaded_vial)
+			if(W.type != allowed_vial)
+				to_chat(user, "\The [W] doesn't fit into \The [src].")
+				return
 			if(!do_after(user, 10, src) || loaded_vial || !(W in user))
 				return FALSE
 			if(!user.drop(W, src))
@@ -116,13 +121,25 @@
 
 /obj/item/reagent_containers/hypospray/vial/combat
 	name = "combat hypospray"
-	//TODO: Make better and, maybe, unique description
 	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, \
-			hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients. Uses a replacable 80ml vial."
+			combat hypospray is a sterile, modified air-needle autoinjector for rapid administration of drugs to patients. \
+			Uses a replacable 80ml reinforced vial."
 	icon_state = "combat_hypo"
 	item_state = "combat_hypo"
-	possible_transfer_amounts = "1;2.5;5"
+	possible_transfer_amounts = "5;10"
 	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial/reinforced
+	allowed_vial = /obj/item/reagent_containers/vessel/beaker/vial/reinforced
+
+/obj/item/reagent_containers/hypospray/vial/bluespace
+	name = "bluespace hypospray"
+	desc = "Experimental hypospray, powered by bluespace technology, \
+			is a very sterile, modified air-needle autoinjector for rapid administration of drugs to patients. \
+			Uses a replacable 500ml bluespace vial."
+	icon_state = "bluespace_hypo"
+	item_state = "bluespace_hypo"
+	possible_transfer_amounts = "5;10;25;50;75;100"
+	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial/bluespace
+	allowed_vial = /obj/item/reagent_containers/vessel/beaker/vial/bluespace
 
 /obj/item/reagent_containers/hypospray/autoinjector
 	name = "autoinjector"

@@ -131,3 +131,14 @@
 
 	volume = 0.08 LITERS
 	possible_transfer_amounts = "5;10;15;25;40;50;80"
+
+/obj/item/reagent_containers/vessel/beaker/vial/bluespace
+	name = "bluespace vial"
+	desc = "A small bluespace vial."
+	icon_state = "vialbluespace"
+	item_state = "vialbluespace"
+	matter = list(MATERIAL_STEEL = 500, MATERIAL_GLASS = 2500)
+	brittle = FALSE
+
+	volume = 0.5 LITERS
+	possible_transfer_amounts = "5;10;25;50;75;100;250;500"
