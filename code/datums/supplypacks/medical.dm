@@ -129,7 +129,7 @@
 	contains = list(/obj/item/storage/belt/medical,
 					/obj/item/device/radio/headset/heads/cmo,
 					/obj/item/clothing/under/rank/chief_medical_officer,
-					/obj/item/reagent_containers/hypospray/vial,
+					// /obj/item/reagent_containers/hypospray/vial, //TODO: Replace it with something less valueble
 					/obj/item/clothing/accessory/stethoscope,
 					/obj/item/clothing/glasses/hud/one_eyed/oneye/medical,
 					/obj/item/clothing/suit/storage/toggle/labcoat/cmo,

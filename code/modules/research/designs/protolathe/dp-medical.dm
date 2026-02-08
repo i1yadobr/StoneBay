@@ -62,18 +62,8 @@
 	build_path = /obj/item/stack/nanopaste
 	sort_string = "MADAA"
 
-/datum/design/item/medical/hypospray
-	desc = "A sterile, air-needle autoinjector for rapid administration of drugs"
-	id = "hypospray"
-	req_tech = list(TECH_MATERIAL = 4, TECH_BIO = 5)
-	materials = list(MATERIAL_STEEL = 8000, MATERIAL_GLASS = 8000, MATERIAL_SILVER = 2000)
-	build_path = /obj/item/reagent_containers/hypospray/vial
-	sort_string = "MAEAA"
-
 /datum/design/item/beaker
 	category_items = list("Medical")
-
-
 
 /datum/design/item/beaker/plass
 	desc = "A beaker made of plasma-based silicate, it doesn't allow radiation to pass through. Can hold up to 0.3 L."

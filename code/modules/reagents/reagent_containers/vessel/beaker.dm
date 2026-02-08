@@ -114,10 +114,31 @@
 	mod_handy = 0.4
 	matter = list(MATERIAL_GLASS = 1250)
 
-	volume = 50
+	volume = 0.05 LITERS
 	w_class = ITEM_SIZE_TINY
 	amount_per_transfer_from_this = 5
 	possible_transfer_amounts = "5;10;15;25;30;50"
 
-	override_lid_state = LID_OPEN
 	lid_type = /datum/vessel_lid/cork
+
+/obj/item/reagent_containers/vessel/beaker/vial/reinforced
+	name = "reinforced vial"
+	desc = "A small reinforced glass vial."
+	icon_state = "vialreinforced"
+	item_state = "vialreinforced"
+	matter = list(MATERIAL_STEEL = 250, MATERIAL_GLASS = 1250)
+	brittle = FALSE
+
+	volume = 0.08 LITERS
+	possible_transfer_amounts = "5;10;15;25;40;50;80"
+
+/obj/item/reagent_containers/vessel/beaker/vial/bluespace
+	name = "bluespace vial"
+	desc = "A small bluespace vial."
+	icon_state = "vialbluespace"
+	item_state = "vialbluespace"
+	matter = list(MATERIAL_STEEL = 500, MATERIAL_GLASS = 2500)
+	brittle = FALSE
+
+	volume = 0.5 LITERS
+	possible_transfer_amounts = "5;10;25;50;75;100;250;500"
