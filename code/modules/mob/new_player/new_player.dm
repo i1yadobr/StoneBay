@@ -131,10 +131,6 @@
 		new_player_panel_proc()
 
 	if(href_list["observe"])
-		if(GAME_STATE < RUNLEVEL_LOBBY)
-			to_chat(src, SPAN("warning", "Please wait for server initialization to complete..."))
-			return
-
 		if (!SSeams.CheckForAccess(client))
 			return
 
@@ -155,6 +151,8 @@
 			else
 				to_chat(src, SPAN("danger", "Could not locate an observer spawn point. Use the Teleport verb to jump to the map."))
 			observer.timeofdeath = world.time // Set the time of death so that the respawn timer works correctly.
+			if (GAME_STATE < RUNLEVEL_LOBBY)
+				to_chat(usr, "<span class='boldannounce'>The world is still initializing, please be patient and expect visual glitches...")
 
 			if(QDELETED(client.holder))
 				announce_ghost_joinleave(src)
