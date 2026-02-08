@@ -23,6 +23,7 @@
 		)
 	icon_state = "welder_m"
 	item_state = "welder"
+	base_icon_state = "welder"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	center_of_mass = "x=14;y=15"
@@ -182,7 +183,6 @@
 			location.hotspot_expose(700, 50, 1)
 	return
 
-
 /obj/item/weldingtool/attack_self(mob/user as mob)
 	setWelding(!welding, usr)
 
@@ -258,7 +258,7 @@
 /obj/item/weldingtool/on_update_icon()
 	..()
 	ClearOverlays()
-	item_state = welding ? "welder1" : "welder"
+	item_state = welding ? "[base_icon_state]1" : base_icon_state
 
 	if(welding)
 		AddOverlays(image(icon, "[initial(icon_state)]-over"))
@@ -278,7 +278,8 @@
 //Sets the welding state of the welding tool. If you see W.welding = 1 anywhere, please change it to W.setWelding(1)
 //so that the welding tool updates accordingly
 /obj/item/weldingtool/proc/setWelding(set_welding, mob/M)
-	if(!status)	return
+	if(!status)
+		return
 
 	var/turf/T = get_turf(src)
 	//If we're turning it on
@@ -448,9 +449,10 @@
 
 /obj/item/weldingtool/mini
 	name = "miniature welding tool"
-	icon_state = "welder_s"
-	item_state = "welder"
 	desc = "A smaller welder, meant for quick or emergency use."
+	icon_state = "welder_s"
+	item_state = "welder_s"
+	base_icon_state = "welder_s"
 	origin_tech = list(TECH_ENGINEERING = 2)
 	matter = list(MATERIAL_STEEL = 15, MATERIAL_GLASS = 5)
 	w_class = ITEM_SIZE_SMALL
@@ -469,9 +471,10 @@
 
 /obj/item/weldingtool/largetank
 	name = "industrial welding tool"
-	icon_state = "welder_l"
-	item_state = "welder"
 	desc = "A heavy-duty portable welder, made to ensure it won't suddenly go cold on you."
+	icon_state = "welder_l"
+	item_state = "welder_l"
+	base_icon_state = "welder_l"
 	origin_tech = list(TECH_ENGINEERING = 2)
 	matter = list(MATERIAL_STEEL = 70, MATERIAL_GLASS = 60)
 	w_class = ITEM_SIZE_NORMAL
@@ -488,9 +491,10 @@
 
 /obj/item/weldingtool/hugetank
 	name = "upgraded welding tool"
-	icon_state = "welder_h"
-	item_state = "welder"
 	desc = "A sizable welding tool with room to accomodate the largest of fuel tanks."
+	icon_state = "welder_h"
+	item_state = "welder_h"
+	base_icon_state = "welder_h"
 	w_class = ITEM_SIZE_NORMAL
 	mod_weight = 1.45
 	mod_reach = 1.0
@@ -507,9 +511,10 @@
 
 /obj/item/weldingtool/experimental
 	name = "experimental welding tool"
-	icon_state = "welder_l"
-	item_state = "welder"
 	desc = "This welding tool feels heavier in your possession than is normal. There appears to be no external fuel port."
+	icon_state = "welder_l"
+	item_state = "welder_l"
+	base_icon_state = "welder_l"
 	w_class = ITEM_SIZE_NORMAL
 	origin_tech = list(TECH_ENGINEERING = 4, TECH_PLASMA = 3)
 	matter = list(MATERIAL_STEEL = 70, MATERIAL_GLASS = 120)
@@ -538,9 +543,10 @@
 
 /obj/item/weldingtool/old
 	name = "old welding tool"
-	icon_state = "legacywelder"
-	item_state = "welder"
 	desc = "It would go through plasteel just like energy swords go through limbs. But modern welding fuel is but a clown's piss."
+	icon_state = "legacywelder"
+	item_state = "legacywelder"
+	base_icon_state = "legacywelder"
 	matter = list(MATERIAL_PLASTEEL = 70, MATERIAL_GLASS = 60)
 	mod_weight = 1.35
 	mod_reach = 0.75
