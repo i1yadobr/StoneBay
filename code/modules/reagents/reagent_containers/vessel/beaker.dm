@@ -126,7 +126,7 @@
 	desc = "A small reinforced glass vial."
 	icon_state = "vialreinforced"
 	item_state = "vialreinforced"
-	matter = list(MATERIAL_REINFORCED_GLASS = 1250)
+	matter = list(MATERIAL_STEEL = 250, MATERIAL_GLASS = 1250)
 	brittle = FALSE
 
 	volume = 0.08 LITERS

@@ -132,7 +132,7 @@
 		/obj/item/device/flash,
 		/obj/item/melee/telebaton,
 		/obj/item/device/flashlight/pen,
-		/obj/item/reagent_containers/hypospray/vial
+		/obj/item/reagent_containers/hypospray/vial/cmo
 	)
 
 /obj/structure/closet/secure_closet/chemical

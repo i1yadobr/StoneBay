@@ -69,9 +69,9 @@
 	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, \
 			hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients. \
 			Uses a replacable 50ml vial."
-	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial
-	var/allowed_vial = /obj/item/reagent_containers/vessel/beaker/vial
 	volume = 0
+	var/max_vial_volume = 50
+	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial
 
 /obj/item/reagent_containers/hypospray/vial/Initialize()
 	. = ..()
@@ -96,28 +96,35 @@
 		return ..()
 
 /obj/item/reagent_containers/hypospray/vial/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/reagent_containers/vessel/beaker/vial))
+	var/obj/item/reagent_containers/vessel/beaker/vial/used_vial = W
+	if(istype(used_vial))
 		if(!loaded_vial)
-			if(W.type != allowed_vial)
-				to_chat(user, "\The [W] doesn't fit into \The [src].")
+			if(used_vial.volume > max_vial_volume)
+				to_chat(user, "\The [used_vial] doesn't fit into \The [src].")
 				return
-			if(!do_after(user, 10, src) || loaded_vial || !(W in user))
+			if(!do_after(user, 10, src) || loaded_vial || !(used_vial in user))
 				return FALSE
-			if(!user.drop(W, src))
+			if(!user.drop(used_vial, src))
 				return
-			if(W.is_open_container())
-				W.atom_flags ^= ATOM_FLAG_OPEN_CONTAINER
-				W.update_icon()
-			loaded_vial = W
+			if(used_vial.is_open_container())
+				used_vial.atom_flags ^= ATOM_FLAG_OPEN_CONTAINER
+				used_vial.update_icon()
+			loaded_vial = used_vial
 			reagents.maximum_volume = loaded_vial.reagents.maximum_volume
 			loaded_vial.reagents.trans_to_holder(reagents,volume)
-			user.visible_message(SPAN("notice", "[user] has loaded [W] into \the [src]."), SPAN("notice", "You load \the [W] into \the [src]."))
+			user.visible_message(SPAN("notice", "[user] has loaded [loaded_vial] into \the [src]."), SPAN("notice", "You load \the [loaded_vial] into \the [src]."))
 			update_icon()
 			playsound(src, 'sound/weapons/empty.ogg', 50, 1)
 		else
 			to_chat(user, SPAN("notice", "\The [src] already has a vial."))
 	else
 		..()
+
+/obj/item/reagent_containers/hypospray/vial/cmo
+	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, \
+			hypospray is a sterile, air-needle autoinjector for rapid administration of drugs to patients, \
+			special designed for Chief Medical Officer. Uses a replacable 50ml vial."
+	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial/tricordrazine
 
 /obj/item/reagent_containers/hypospray/vial/combat
 	name = "combat hypospray"
@@ -127,8 +134,8 @@
 	icon_state = "combat_hypo"
 	item_state = "combat_hypo"
 	possible_transfer_amounts = "5;10"
+	max_vial_volume = 80
 	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial/reinforced
-	allowed_vial = /obj/item/reagent_containers/vessel/beaker/vial/reinforced
 
 /obj/item/reagent_containers/hypospray/vial/bluespace
 	name = "bluespace hypospray"
@@ -138,8 +145,11 @@
 	icon_state = "bluespace_hypo"
 	item_state = "bluespace_hypo"
 	possible_transfer_amounts = "5;10;25;50;75;100"
+	max_vial_volume = 500
 	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial/bluespace
-	allowed_vial = /obj/item/reagent_containers/vessel/beaker/vial/bluespace
+
+/obj/item/reagent_containers/hypospray/vial/bluespace/loaded
+	loaded_vial = /obj/item/reagent_containers/vessel/beaker/vial/bluespace/adminordrazine
 
 /obj/item/reagent_containers/hypospray/autoinjector
 	name = "autoinjector"

@@ -19,8 +19,17 @@
 	start_label = "sulphuric acid"
 	startswith = list(/datum/reagent/acid = 300)
 	override_lid_state = LID_CLOSED
+
+/obj/item/reagent_containers/vessel/beaker/vial/tricordrazine
+	name = "tricordrazine vial"
+	desc = "Tricordrazine vial is a highly potent stimulant. Can be used to treat a wide range of injuries."
+	base_name = "vial"
+	base_desc = "A small glass vial."
+	startswith = list(/datum/reagent/tricordrazine = 50)
+
+/obj/item/reagent_containers/vessel/beaker/vial/bluespace/adminordrazine
 	name = "adminordrazine bluespace vial"
-	desc = "Suphuric acid is used for printing various circuits. Or melting down people's faces."
+	desc = "It's magic vial. We don't have to explain it."
 	base_name = "bluespace vial"
-	base_desc = "A bluespace vial."
+	base_desc = "A small bluespace vial."
 	startswith = list(/datum/reagent/adminordrazine = 500)
