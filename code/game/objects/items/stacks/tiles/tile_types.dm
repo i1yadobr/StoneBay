@@ -16,7 +16,6 @@
 		slot_l_hand_str = 'icons/mob/inhands/items/tiles_lefthand.dmi',
 		slot_r_hand_str = 'icons/mob/inhands/items/tiles_righthand.dmi'
 		)
-	item_state = "tile"
 	randpixel = 7
 	w_class = ITEM_SIZE_NORMAL
 	max_amount = 100
@@ -66,16 +65,16 @@
 	stacktype = /obj/item/stack/tile/wood
 	build_type = /obj/item/stack/tile/wood
 
-/obj/item/stack/tile/darkwood
+/obj/item/stack/tile/wood/dark
 	name = "darkwood floor tile"
 	singular_name = "darkwood floor tile"
 	desc = "An easy to fit darkwood floor tile."
 	icon_state = "tile-darkwood"
-	item_state = "tile_wood"
-	stacktype = /obj/item/stack/tile/darkwood
-	build_type = /obj/item/stack/tile/darkwood
+	item_state = "tile_darkwood"
+	stacktype = /obj/item/stack/tile/wood/dark
+	build_type = /obj/item/stack/tile/wood/dark
 
-/obj/item/stack/tile/darkwood/fifty
+/obj/item/stack/tile/wood/dark/fifty
 	amount = 50
 
 /obj/item/stack/tile/floor
@@ -83,6 +82,7 @@
 	singular_name = "steel floor tile"
 	desc = "Those could work as a pretty decent throwing weapon." //why?
 	icon_state = "tile"
+	item_state = "tile"
 	force = 6.0
 	matter = list(MATERIAL_STEEL = 937.5)
 	throwforce = 10.5
@@ -95,6 +95,7 @@
 	name = "steel rough floor tile"
 	singular_name = "steel rough floor tile"
 	icon_state = "tile_rough"
+	item_state = "tile_rough"
 
 /obj/item/stack/tile/floor_rough/fifty
 	amount = 50
@@ -103,6 +104,7 @@
 	name = "white floor tile"
 	singular_name = "white floor tile"
 	icon_state = "tile_white"
+	item_state = "tile_white"
 	matter = list(MATERIAL_PLASTIC = 937.5)
 
 /obj/item/stack/tile/floor_white/fifty
@@ -112,6 +114,7 @@
 	name = "white rough floor tile"
 	singular_name = "white rough floor tile"
 	icon_state = "tile_white_rough"
+	item_state = "tile_white_rough"
 
 /obj/item/stack/tile/floor_white_rough/fifty
 	amount = 50
@@ -120,6 +123,7 @@
 	name = "dark floor tile"
 	singular_name = "dark floor tile"
 	icon_state = "fr_tile"
+	item_state = "fr_tile"
 	matter = list(MATERIAL_STEEL = 937.5)
 
 /obj/item/stack/tile/floor_dark/fifty
@@ -129,6 +133,7 @@
 	name = "dark rough floor tile"
 	singular_name = "dark rough floor tile"
 	icon_state = "fr_tile_rough"
+	item_state = "fr_tile_rough"
 
 /obj/item/stack/tile/floor_dark_rough/fifty
 	amount = 50
@@ -137,15 +142,19 @@
 	name = "brown floor tile"
 	singular_name = "brown floor tile"
 	icon_state = "tile_brown"
+	item_state = "tile_brown"
 	matter = list(MATERIAL_PLASTIC = 937.5)
 
 /obj/item/stack/tile/floor_brown/fifty
 	amount = 50
 
+//TODO: Remove/refactor /obj/item/stack/tile/floor_rough or /obj/item/stack/tile/floor_mono
+//They both use the same icon_state
 /obj/item/stack/tile/floor_mono
 	name = "steel mono tile"
 	singular_name = "steel mono tile"
 	icon_state = "tile_rough"
+	item_state = "tile_rough"
 	matter = list(MATERIAL_STEEL = 937.5)
 
 /obj/item/stack/tile/floor_mono/fifty
@@ -155,6 +164,7 @@
 	name = "dark mono tile"
 	singular_name = "dark mono tile"
 	icon_state = "fr_tile_rough"
+	item_state = "fr_tile_rough"
 	matter = list(MATERIAL_STEEL = 937.5)
 
 /obj/item/stack/tile/floor_mono_dark/fifty
@@ -164,6 +174,7 @@
 	name = "white mono tile"
 	singular_name = "white mono tile"
 	icon_state = "tile_white_rough"
+	item_state = "tile_white_rough"
 	matter = list(MATERIAL_PLASTIC = 937.5)
 
 /obj/item/stack/tile/floor_mono_white/fifty
@@ -173,6 +184,7 @@
 	name = "tech floor tile"
 	singular_name = "tech floor tile"
 	icon_state = "tile_techfloor"
+	item_state = "tile_techfloor"
 	matter = list(MATERIAL_PLASTEEL = 937.5)
 
 /obj/item/stack/tile/techfloor/fifty
@@ -182,6 +194,7 @@
 	name = "tech maint tile"
 	singular_name = "tech maint tile"
 	icon_state = "tile_techmaint"
+	item_state = "tile_techmaint"
 
 /obj/item/stack/tile/techfloor/maint/fifty
 	amount = 50
@@ -190,6 +203,7 @@
 	name = "tech grid tile"
 	singular_name = "tech grid tile"
 	icon_state = "tile_techgrid"
+	item_state = "tile_techgrid"
 
 /obj/item/stack/tile/techfloor/grid/fifty
 	amount = 50
@@ -198,6 +212,7 @@
 	name = "tech ridge tile"
 	singular_name = "tech ridge tile"
 	icon_state = "tile_techridge"
+	item_state = "tile_techridge"
 
 /obj/item/stack/tile/techfloor/ridge/fifty
 	amount = 50
@@ -206,6 +221,7 @@
 	name = "freezer floor tile"
 	singular_name = "freezer floor tile"
 	icon_state = "tile_freezer"
+	item_state = "tile_freezer"
 	matter = list(MATERIAL_PLASTIC = 937.5)
 
 /obj/item/stack/tile/floor_freezer/fifty
@@ -236,6 +252,7 @@
 	singular_name = "linoleum"
 	desc = "A piece of linoleum. It is the same size as a normal floor tile!"
 	icon_state = "tile-linoleum"
+	item_state = "tile-linoleum"
 
 /obj/item/stack/tile/linoleum/fifty
 	amount = 50
@@ -248,84 +265,98 @@
 	singular_name = "brown carpet"
 	desc = "A piece of brown carpet."
 	icon_state = "tile_carpetbrown"
+	item_state = "tile_carpetbrown"
 
 /obj/item/stack/tile/carpet/fifty
 	amount = 50
 
 /obj/item/stack/tile/carpetblue
 	name = "blue carpet"
-	desc = "A piece of blue and gold carpet."
 	singular_name = "blue carpet"
+	desc = "A piece of blue and gold carpet."
 	icon_state = "tile_carpetblue"
-
-/obj/item/stack/tile/carpetoldred
-	name = "red carpet"
-	desc = "A piece of red and gold carpet."
-	singular_name = "red carpet"
-	icon_state = "tile_brown"
-
-/obj/item/stack/tile/carpetoldred/fifty
-	amount = 50
+	item_state = "tile_carpetblue"
 
 /obj/item/stack/tile/carpetblue/fifty
 	amount = 50
 
+/obj/item/stack/tile/carpetoldred
+	name = "red carpet"
+	singular_name = "red carpet"
+	desc = "A piece of red and gold carpet."
+	icon_state = "tile_brown"
+	item_state = "tile_brown"
+
+/obj/item/stack/tile/carpetoldred/fifty
+	amount = 50
+
+//TODO: Remove/refactor /obj/item/stack/tile/carpetblue2 or /obj/item/stack/tile/carpetarcade
+//They both use the same icon_state
 /obj/item/stack/tile/carpetblue2
 	name = "pale blue carpet"
-	desc = "A piece of blue and silver carpet."
 	singular_name = "pale blue carpet"
+	desc = "A piece of blue and silver carpet."
 	icon_state = "tile_carpetblue2"
+	item_state = "tile_carpetblue2"
 
 /obj/item/stack/tile/carpetblue2/fifty
 	amount = 50
 
 /obj/item/stack/tile/carpetarcade
 	name = "pale arcade carpet"
-	desc = "A piece of blue and silver carpet."
 	singular_name = "pale arcade carpet"
+	desc = "A piece of blue and silver carpet."
 	icon_state = "tile_carpetblue2"
+	item_state = "tile_carpetblue2"
 
 /obj/item/stack/tile/carpetarcade/fifty
 	amount = 50
 
+//TODO: Remove/refactor /obj/item/stack/tile/carpetpurple or /obj/item/stack/tile/carpetgpurple
+//They both use the same icon_state
 /obj/item/stack/tile/carpetpurple
 	name = "purple carpet"
-	desc = "A piece of purple carpet."
 	singular_name = "purple carpet"
+	desc = "A piece of purple carpet."
 	icon_state = "tile_carpetpurple"
+	item_state = "tile_carpetpurple"
 
 /obj/item/stack/tile/carpetpurple/fifty
 	amount = 50
 
 /obj/item/stack/tile/carpetgpurple
 	name = "purple carpet"
-	desc = "A piece of purple carpet."
 	singular_name = "purple carpet"
+	desc = "A piece of purple carpet."
 	icon_state = "tile_carpetpurple"
+	item_state = "tile_carpetpurple"
 
 /obj/item/stack/tile/carpetorange
 	name = "orange carpet"
-	desc = "A piece of orange carpet."
 	singular_name = "orange carpet"
+	desc = "A piece of orange carpet."
 	icon_state = "tile_carpetorange"
+	item_state = "tile_carpetorange"
 
 /obj/item/stack/tile/carpetorange/fifty
 	amount = 50
 
 /obj/item/stack/tile/carpetgreen
 	name = "green carpet"
-	desc = "A piece of green carpet."
 	singular_name = "green carpet"
+	desc = "A piece of green carpet."
 	icon_state = "tile_carpetgreen"
+	item_state = "tile_carpetgreen"
 
 /obj/item/stack/tile/carpetgreen/fifty
 	amount = 50
 
 /obj/item/stack/tile/carpetred
 	name = "red carpet"
-	desc = "A piece of red carpet."
 	singular_name = "red carpet"
+	desc = "A piece of red carpet."
 	icon_state = "tile_carpetred"
+	item_state = "tile_carpetred"
 
 /obj/item/stack/tile/carpetred/fifty
 	amount = 50

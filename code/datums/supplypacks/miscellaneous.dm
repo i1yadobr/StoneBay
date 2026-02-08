@@ -84,7 +84,7 @@
 
 /decl/hierarchy/supply_pack/miscellaneous/darkwood_tiles
 	name = "Darkwood floor tiles"
-	contains = list(/obj/item/stack/tile/darkwood/fifty)
+	contains = list(/obj/item/stack/tile/wood/dark/fifty)
 	cost = 25
 	containername = "\improper Darkwood floor tile crate"
 
