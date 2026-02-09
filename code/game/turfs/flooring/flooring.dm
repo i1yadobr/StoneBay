@@ -236,7 +236,7 @@ var/list/flooring_types
 	icon_base = "darkwood"
 	damage_temperature = 200 CELSIUS
 	descriptor = "dark planks"
-	build_type = /obj/item/stack/tile/darkwood
+	build_type = /obj/item/stack/tile/wood/dark
 	flags = TURF_CAN_BREAK | TURF_IS_FRAGILE | TURF_REMOVE_SCREWDRIVER
 	can_paint = TRUE
 	footstep_sound = SFX_FOOTSTEP_WOOD

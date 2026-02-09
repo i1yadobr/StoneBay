@@ -173,7 +173,7 @@
 
 /material/darkwood/generate_recipes()
 	..()
-	recipes += new /datum/stack_recipe("darkwood floor tile", /obj/item/stack/tile/darkwood, 1, 4, 20)
+	recipes += new /datum/stack_recipe("darkwood floor tile", /obj/item/stack/tile/wood/dark, 1, 4, 20)
 	recipes += new /datum/stack_recipe("darkwood railing", /obj/structure/railing/darkwood, 2)
 	recipes += new /datum/stack_recipe_list("sofa", list( \
 		new /datum/stack_recipe("left sofa", /obj/structure/bed/couch/left/sofa, 4, time = 50, one_per_turf = 1, on_floor = 1), \

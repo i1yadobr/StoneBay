@@ -3304,7 +3304,7 @@
 "tsv" = (/obj/machinery/power/singularity_beacon/syndicate,/turf/simulated/floor/shuttle/red,/area/syndicate_mothership/elite_squad)
 "ttT" = (/obj/structure/window_frame/grille,/obj/machinery/door/firedoor,/obj/structure/window/syndi{icon_state = "ws4"},/turf/simulated/floor/shuttle/black,/area/syndicate_station/start)
 "ttW" = (/turf/unsimulated/wall{icon_state = "riveted_g"},/area/centcom)
-"tuc" = (/obj/structure/table/rack,/obj/item/stack/tile/darkwood/fifty,/obj/item/stack/tile/carpetarcade/fifty,/obj/item/stack/tile/carpetgreen/fifty,/turf/simulated/floor/tiled/brown,/area/acting/backstage)
+"tuc" = (/obj/structure/table/rack,/obj/item/stack/tile/wood/dark/fifty,/obj/item/stack/tile/carpetarcade/fifty,/obj/item/stack/tile/carpetgreen/fifty,/turf/simulated/floor/tiled/brown,/area/acting/backstage)
 "tue" = (/obj/structure/closet/secure_closet,/obj/effect/floor_decal/corner/brown/three_quarters,/obj/item/clothing/ring/seal/secgen,/obj/item/reagent_containers/vessel/mug/SCG,/obj/item/clothing/accessory/armband/bluegold,/obj/item/stack/flag/solgov,/obj/item/paper/workvisa,/turf/simulated/floor/tiled/dark,/area/centcom/suppy)
 "tuP" = (/turf/unsimulated/wall{icon_state = "riveted_c"; dir = 1},/area/centcom/holding)
 "tvp" = (/turf/simulated/shuttle/wall/syndi{icon_state = "syndiwall_s"},/area/shuttle/administration/centcom)
