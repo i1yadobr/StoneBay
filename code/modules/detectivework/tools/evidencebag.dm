@@ -1,11 +1,14 @@
-//CONTAINS: Evidence bags and fingerprint cards
-
 /obj/item/evidencebag
 	name = "evidence bag"
 	desc = "An empty evidence bag."
 
 	icon = 'icons/obj/storage/misc.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/security_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/security_righthand.dmi'
+		)
 	icon_state = "evidenceobj"
+	item_state = "evidence"
 	base_icon_state = "evidence"
 
 	w_class = ITEM_SIZE_SMALL
@@ -25,8 +28,8 @@
 	if(!istype(I) || I.anchored)
 		return FALSE
 
-	if (isturf(I.loc))
-		if (!user.Adjacent(I))
+	if(isturf(I.loc))
+		if(!user.Adjacent(I))
 			return FALSE
 	else
 		//If it isn't on the floor. Do some checks to see if it's in our hands or a box. Otherwise give up.

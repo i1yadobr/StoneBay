@@ -1,7 +1,12 @@
 /obj/item/forensics/swab
 	name = "swab kit"
 	desc = "A sterilized cotton swab and vial used to take forensic samples."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
+		)
 	icon_state = "swab"
+	item_state = "vial"
 	var/dispenser = 0
 	var/gsr = 0
 	var/list/dna
