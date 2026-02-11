@@ -19,6 +19,9 @@
 // round() acts like floor(x, 1) by default but can't handle other values
 #define FLOOR(x, y) (round((x) / (y)) * (y))
 
+#define IS_POWER_OF_TWO(VAL) ((VAL & (VAL-1)) == 0)
+#define ROUND_UP_TO_POWER_OF_TWO(VAL) (2 ** ceil(log(2,VAL)))
+
 // min is inclusive, max is exclusive
 /proc/Wrap(val, min, max)
 	var/d = max - min

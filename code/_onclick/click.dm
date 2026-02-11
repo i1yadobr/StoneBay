@@ -156,6 +156,8 @@
 	if(modifiers["middle"])
 		if(modifiers["shift"])
 			ShiftMiddleClickOn(A)
+		else if(modifiers["alt"])
+			AltMiddleClickOn(A)
 		else
 			MiddleClickOn(A)
 		return 1
@@ -304,6 +306,9 @@
 		if(pointed(A))
 			return
 	swap_hand()
+
+/mob/proc/AltMiddleClickOn(atom/A)
+	pointed(A)
 
 // ShiftMiddleClickOn of the base mob type makes mob point towards atom A if
 // pointing preference is set to Shift-Middle-Click.

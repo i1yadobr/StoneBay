@@ -416,13 +416,6 @@
 			return
 		created_name = t
 
-/mob/living/bot/secbot/say_verb(message as text)
-	set name = "Say"
-	set category = "IC"
-	set hidden = 1
-
-	to_chat(usr, SPAN("danger", "An arbitrary speech module is not installed in the [src]!"))
-
 /mob/living/bot/secbot/say_verb_fake()
 	set name = "Say Verb"
 	set hidden = 1
