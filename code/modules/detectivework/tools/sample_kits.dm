@@ -131,12 +131,17 @@
 		supplied.fingerprints.Cut()
 
 /obj/item/forensics
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/security_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/security_righthand.dmi'
+		)
 	item_flags = ITEM_FLAG_NO_PRINT
 
 /obj/item/forensics/sample_kit
 	name = "fiber collection kit"
 	desc = "A magnifying glass and tweezers. Used to lift suit fibers."
 	icon_state = "m_glass"
+	item_state = "m_glass"
 	w_class = ITEM_SIZE_SMALL
 	var/evidence_type = "fiber"
 	var/evidence_path = /obj/item/sample/fibers
@@ -166,6 +171,7 @@
 	name = "fingerprint powder"
 	desc = "A jar containing aluminum powder and a specialized brush."
 	icon_state = "dust"
+	item_state = "dust"
 	evidence_type = "fingerprint"
 	evidence_path = /obj/item/sample/print
 
