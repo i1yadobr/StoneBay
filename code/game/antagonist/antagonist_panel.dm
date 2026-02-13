@@ -5,7 +5,7 @@
 	if(is_antagonist(player))
 		dat += "<a href='byond://?src=\ref[player];remove_antagonist=[id]'>\[-\]</a>"
 		dat += "<a href='byond://?src=\ref[player];equip_antagonist=[id]'>\[equip\]</a>"
-		if(starting_locations && starting_locations.len)
+		if(LAZYLEN(starting_locations))
 			dat += "<a href='byond://?src=\ref[player];move_antag_to_spawn=[id]'>\[move to spawn\]</a>"
 		if(extra) dat += "[extra]"
 	else
@@ -19,7 +19,7 @@
 
 /datum/antagonist/proc/get_check_antag_output(datum/admins/caller)
 
-	if(!current_antagonists || !current_antagonists.len)
+	if(!LAZYLEN(current_antagonists))
 		return ""
 
 	var/dat = "<br><table cellspacing=5><tr><td><B>[role_text_plural]</B></td><td></td></tr>"

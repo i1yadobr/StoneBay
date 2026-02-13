@@ -22,7 +22,7 @@
 	var/shorthand = "UL"			  // Shorthand that shows up in chat for this language.
 
 /datum/language/proc/get_random_name(gender, name_count=2, syllable_count=4, syllable_divisor=2)
-	if(!syllables || !syllables.len)
+	if(!LAZYLEN(syllables))
 		if(gender==FEMALE)
 			return capitalize(pick(GLOB.first_names_female)) + " " + capitalize(pick(GLOB.last_names))
 		else
@@ -44,7 +44,7 @@
 
 /datum/language/proc/scramble(input)
 
-	if(!syllables || !syllables.len)
+	if(!LAZYLEN(syllables))
 		return stars(input)
 
 	// If the input is cached already, move it to the end of the cache and return it

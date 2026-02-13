@@ -1049,7 +1049,7 @@
 			if(!istype(O,/obj/item/implant) && O.w_class > 1 && prob(5)) //Moving with things stuck in you could be bad.
 				jossle_internal_object(organ, O)
 	var/obj/item/organ/external/groin = src.get_organ(BP_GROIN)
-	if(groin && stomach_contents && stomach_contents.len)
+	if(LAZYLEN(stomach_contents) && groin)
 		for(var/obj/item/O in stomach_contents)
 			if(O.edge || O.sharp)
 				if(prob(1))

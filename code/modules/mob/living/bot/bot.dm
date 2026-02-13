@@ -255,7 +255,7 @@
 		resetTarget()
 		lookForTargets()
 		if(will_patrol && !pulledby && !target)
-			if(patrol_path && patrol_path.len)
+			if(LAZYLEN(patrol_path))
 				for(var/i = 1 to patrol_speed)
 					sleep(20 / (patrol_speed + 1))
 					handlePatrol()

@@ -111,7 +111,7 @@ obj/item/organ/external/take_general_damage(amount, silent = FALSE)
 			organ_damage_prob *= cur_damage/15
 		if(encased && !(status & ORGAN_BROKEN)) //ribs and skulls protect
 			organ_damage_prob *= 0.5
-		if(internal_organs && internal_organs.len && (cur_damage + damage_amt >= max_damage || damage_amt >= organ_damage_threshold) && prob(organ_damage_prob))
+		if(LAZYLEN(internal_organs) && (cur_damage + damage_amt >= max_damage || damage_amt >= organ_damage_threshold) && prob(organ_damage_prob))
 			// Damage an internal organ
 			var/list/victims = list()
 			for(var/obj/item/organ/internal/I in internal_organs)

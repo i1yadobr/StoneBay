@@ -85,7 +85,7 @@
 
 		var/max_sheets = 0
 
-		if(!R.resources || !R.resources.len)
+		if(!LAZYLEN(R.resources))
 			continue
 
 		for(var/material in R.resources)

@@ -23,7 +23,7 @@
 
 		for(var/i=1, i<=deliveryamt, i++)
 			var/atom/movable/x = new spawner_type
-			if(newvars && length(newvars))
+			if(LAZYLEN(newvars))
 				for(var/v in newvars)
 					x.vars[v] = newvars[v]
 			x.forceMove(T)

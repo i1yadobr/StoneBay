@@ -112,7 +112,7 @@
 		if(is_type_in_list(A,areaType) && !is_type_in_list(A,areaNotType))
 			areas += A
 
-	if(areas && areas.len > 0)
+	if(LAZYLEN(areas) > 0)
 		var/my_department = "[station_name()] firewall subroutines"
 		var/rc_message = "An unknown malicious program has been detected in the [english_list(areaName)] lighting and airlock control systems at [stationtime2text()]. Systems will be fully compromised within approximately three minutes. Direct intervention is required immediately.<br>"
 
@@ -130,7 +130,7 @@
 	set_next_think_ctx("release", world.time + (rand(60, 90) SECONDS))
 
 /datum/event/prison_break/proc/release()
-	if(areas && areas.len > 0)
+	if(LAZYLEN(areas) > 0)
 		var/obj/machinery/power/apc/theAPC = null
 		for(var/area/A in areas)
 			theAPC = A.get_apc()
@@ -141,7 +141,7 @@
 			A.prison_break()
 
 /datum/event/prison_break/proc/announce()
-	if(areas && areas.len > 0)
+	if(LAZYLEN(areas) > 0)
 		SSannounce.play_station_announce(/datum/announce/prison_break,
 			"[pick("Gr3y.T1d3 virus","Malignant trojan")] detected in [station_name()] [(eventDept == "Security")? "imprisonment":"containment"] subroutines. Secure any compromised areas immediately. [station_name()] AI involvement is recommended.",
 			"[eventDept] Alert",

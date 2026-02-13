@@ -358,7 +358,7 @@
 	href_list["charge_type"] = module.charges[charge_index]
 
 /stat_rig_module/charge/CanUse()
-	if(module.charges && module.charges.len)
+	if(LAZYLEN(module.charges))
 		var/datum/rig_charge/charge = module.charges[module.charge_selected]
 		name = "[charge.display_name] ([charge.charges]C) - Change"
 		return 1

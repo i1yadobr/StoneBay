@@ -164,7 +164,7 @@
 			dat += " \[<A href='byond://?src=\ref[src];eject=[i]'>Eject</A>\]<br>"
 
 	if(ammo_magazine)
-		if(ammo_magazine.stored_ammo && ammo_magazine.stored_ammo.len)
+		if(LAZYLEN(ammo_magazine.stored_ammo))
 			dat += "The dart cartridge has [ammo_magazine.stored_ammo.len] shots remaining."
 		else
 			dat += "<font color='red'>The dart cartridge is empty!</font>"

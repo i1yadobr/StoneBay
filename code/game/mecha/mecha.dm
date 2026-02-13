@@ -266,7 +266,7 @@
 			. += "It's heavily damaged."
 		else
 			. += "It's falling apart."
-	if(equipment && equipment.len)
+	if(LAZYLEN(equipment))
 		. += "It's equipped with:"
 		for(var/obj/item/mecha_parts/mecha_equipment/ME in equipment)
 			. += "\icon[ME] [ME]"

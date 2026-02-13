@@ -134,7 +134,7 @@
 		var/target_dna
 		var/target_gsr
 		if(choice == "Blood")
-			if(!A.blood_DNA || !A.blood_DNA.len)
+			if(!LAZYLEN(A.blood_DNA))
 				inuse = 0
 				return
 			target_dna = A.blood_DNA.Copy()

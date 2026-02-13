@@ -112,7 +112,7 @@
 	item_state = icon_state
 	wires = new(src)
 
-	if((!req_access || !req_access.len) && (!req_one_access || !req_one_access.len))
+	if((!LAZYLEN(req_access)) && (!LAZYLEN(req_one_access)))
 		locked = 0
 
 	spark_system = new()
@@ -121,7 +121,7 @@
 
 	set_next_think(world.time)
 
-	if(initial_modules && initial_modules.len)
+	if(LAZYLEN(initial_modules))
 		for(var/path in initial_modules)
 			var/obj/item/rig_module/module = new path(src)
 			installed_modules += module
@@ -548,7 +548,7 @@
 			"damage" =            module.damage
 			)
 
-		if(module.charges && module.charges.len)
+		if(LAZYLEN(module.charges))
 
 			module_data["charges"] = list()
 			var/datum/rig_charge/selected = module.charges[module.charge_selected]

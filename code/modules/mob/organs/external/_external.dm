@@ -497,7 +497,7 @@ This function completely restores a damaged organ to perfect condition.
 		owner.organs_by_name.Remove(organ_tag)
 		owner.organs_by_name -= organ_tag
 		while(null in owner.organs) owner.organs -= null
-	if(children && children.len)
+	if(LAZYLEN(children))
 		for(var/obj/item/organ/external/E in children)
 			if(E) E.remove_rejuv()
 	children.Cut()

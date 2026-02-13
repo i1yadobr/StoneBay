@@ -164,7 +164,7 @@
 	if(!get_trait(TRAIT_STINGS))
 		return
 
-	if(chems && chems.len && target.reagents)
+	if(LAZYLEN(chems) && target.reagents)
 
 		var/obj/item/organ/external/affecting = pick(target.organs)
 
@@ -292,7 +292,7 @@
 
 	var/health_change = 0
 	// Handle gas consumption.
-	if(consume_gasses && consume_gasses.len)
+	if(LAZYLEN(consume_gasses))
 		var/missing_gas = 0
 		for(var/gas in consume_gasses)
 			if(environment && environment.gas && environment.gas[gas] && \
@@ -314,7 +314,7 @@
 		health_change += rand(1,3) * HYDRO_SPEED_MULTIPLIER
 
 	// Handle gas production.
-	if(exude_gasses && exude_gasses.len && !check_only)
+	if(LAZYLEN(exude_gasses) && !check_only)
 		for(var/gas in exude_gasses)
 			environment.adjust_gas(gas, max(1,round((exude_gasses[gas]*(get_trait(TRAIT_POTENCY)/5))/exude_gasses.len)))
 
@@ -529,7 +529,7 @@
 
 //Returns a key corresponding to an entry in the global seed list.
 /datum/seed/proc/get_mutant_variant()
-	if(!mutants || !mutants.len || get_trait(TRAIT_IMMUTABLE) > 0) return 0
+	if(!LAZYLEN(mutants) || get_trait(TRAIT_IMMUTABLE) > 0) return 0
 	return pick(mutants)
 
 //Mutates the plant overall (randomly).

@@ -17,16 +17,16 @@
 
 /obj/item/sample/print/New(newloc, atom/supplied)
 	..(newloc, supplied)
-	if(evidence && evidence.len)
+	if(LAZYLEN(evidence))
 		icon_state = "fingerprint1"
 
 /obj/item/sample/proc/copy_evidence(atom/supplied)
-	if(supplied.suit_fibers && supplied.suit_fibers.len)
+	if(LAZYLEN(supplied.suit_fibers))
 		evidence = supplied.suit_fibers.Copy()
 		supplied.suit_fibers.Cut()
 
 /obj/item/sample/proc/merge_evidence(obj/item/sample/supplied, mob/user)
-	if(!supplied.evidence || !supplied.evidence.len)
+	if(!LAZYLEN(supplied.evidence))
 		return 0
 	evidence |= supplied.evidence
 	SetName("[initial(name)] (combined)")
@@ -34,7 +34,7 @@
 	return 1
 
 /obj/item/sample/print/merge_evidence(obj/item/sample/supplied, mob/user)
-	if(!supplied.evidence || !supplied.evidence.len)
+	if(!LAZYLEN(supplied.evidence))
 		return 0
 	for(var/print in supplied.evidence)
 		if(evidence[print])
@@ -70,7 +70,7 @@
 	item_state = "fingerprint"
 
 /obj/item/sample/print/attack_self(mob/user)
-	if(evidence && evidence.len)
+	if(LAZYLEN(evidence))
 		return
 	if(!ishuman(user))
 		return
@@ -90,7 +90,7 @@
 	if(!ishuman(M))
 		return ..()
 
-	if(evidence && evidence.len)
+	if(LAZYLEN(evidence))
 		return 0
 
 	var/mob/living/carbon/human/H = M
@@ -125,7 +125,7 @@
 	return 0
 
 /obj/item/sample/print/copy_evidence(atom/supplied)
-	if(supplied.fingerprints && supplied.fingerprints.len)
+	if(LAZYLEN(supplied.fingerprints))
 		for(var/print in supplied.fingerprints)
 			evidence[print] = supplied.fingerprints[print]
 		supplied.fingerprints.Cut()

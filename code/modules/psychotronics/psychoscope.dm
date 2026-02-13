@@ -306,7 +306,7 @@
 		util_crash_with("target must be not null")
 		return
 
-	if(!scanned || !scanned.len)
+	if(!LAZYLEN(scanned))
 		return FALSE
 
 	for(var/lifeform_type in scanned)

@@ -49,7 +49,7 @@
 			var/datum/language/L = all_languages[name_language]
 			if(L)
 				name = L.get_random_name(pick(MALE,FEMALE))
-	if(possible_origins && possible_origins.len)
+	if(LAZYLEN(possible_origins))
 		origin = pick(possible_origins)
 
 	if(possible_wanted_items)
@@ -95,7 +95,7 @@
 
 /datum/trader/proc/add_to_pool(list/pool, list/possible, base_chance = 100, force = 0)
 	var/divisor = 1
-	if(pool && pool.len)
+	if(LAZYLEN(pool))
 		divisor = pool.len
 	if(force || prob(base_chance/divisor))
 		var/new_item = get_possible_item(possible)
@@ -103,7 +103,7 @@
 			pool |= new_item
 
 /datum/trader/proc/get_possible_item(list/trading_pool)
-	if(!trading_pool || !trading_pool.len)
+	if(!LAZYLEN(trading_pool))
 		return
 	var/picked = pick(trading_pool)
 	var/atom/A = picked
@@ -148,7 +148,7 @@
 	return make_response(TRADER_TRADE_COMPLETE, "Thank you for your patronage!", -value, TRUE)
 
 /datum/trader/proc/offer_items_for_trade(list/offers, num, turf/location)
-	if(!offers || !offers.len)
+	if(!LAZYLEN(offers))
 		return make_response(TRADER_NOT_ENOUGH, "That's not enough.", 0, FALSE)
 	num = Clamp(num, 1, trading_items.len)
 	var/offer_worth = 0
@@ -159,7 +159,7 @@
 			is_wanted = 2
 		if((trade_flags & TRADER_WANTED_ALL) && is_type_in_list(offer,possible_wanted_items))
 			is_wanted = 1
-		if(blacklisted_trade_items && blacklisted_trade_items.len && is_type_in_list(offer,blacklisted_trade_items))
+		if(LAZYLEN(blacklisted_trade_items) && is_type_in_list(offer,blacklisted_trade_items))
 			return make_response(TRADER_NO_BLACKLISTED, "I refuse to take one of those items.", 0, FALSE)
 
 		if(istype(offer,/obj/item/spacecash))
@@ -266,7 +266,7 @@
 /datum/trader/proc/sell_items(list/offers)
 	if(!(trade_flags & TRADER_GOODS))
 		return make_response(TRADER_GOODS, "I'm not buying.", 0, FALSE)
-	if(!offers || !offers.len)
+	if(!LAZYLEN(offers))
 		return make_response(TRADER_NOT_ENOUGH, "I'm not buying that.", 0, FALSE)
 
 	var/mult = 1
