@@ -341,3 +341,9 @@
 #define OUTSIDE_NO   FALSE
 #define OUTSIDE_YES  TRUE
 #define OUTSIDE_UNCERTAIN null
+
+//Dir macros
+/// Returns true if the dir is diagonal, false otherwise
+#define ISDIAGONALDIR(d) (d&(d-1))
+/// Ditto, but the other way round
+#define ISCARDINALDIR(d) ((d&(d-1)) == 0)
