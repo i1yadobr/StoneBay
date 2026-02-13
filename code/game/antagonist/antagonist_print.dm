@@ -11,7 +11,7 @@
 		if(P.ambitions)
 			text += "<br>Their goals for today were..."
 			text += "<br>[SPAN("notice", "[P.ambitions]")]"
-		if(!global_objectives.len && P.objectives && P.objectives.len)
+		if(!global_objectives.len && LAZYLEN(P.objectives))
 			var/failed
 			var/num = 1
 			for(var/datum/objective/O in P.objectives)
@@ -31,7 +31,7 @@
 			if(P.was_antag_given_by_storyteller)
 				text += "<br><b>This antagonist was spawned by storyteller at [P.antag_was_given_at].</b>"
 
-	if(global_objectives && global_objectives.len)
+	if(LAZYLEN(global_objectives))
 		text += "<BR><FONT size = 2>Their objectives were:</FONT>"
 		var/num = 1
 		for(var/datum/objective/O in global_objectives)

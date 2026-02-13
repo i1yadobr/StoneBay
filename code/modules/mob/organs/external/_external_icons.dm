@@ -309,7 +309,7 @@ var/list/robot_hud_colours = list("#ffffff","#cccccc","#aaaaaa","#888888","#6666
 		else
 			applying.Blend(rgb(-s_tone,  -s_tone,  -s_tone), ICON_SUBTRACT)
 	if(species && species.species_appearance_flags & HAS_SKIN_COLOR)
-		if(s_col && s_col.len >= 3)
+		if(LAZYLEN(s_col) >= 3)
 			applying.Blend(rgb(s_col[1], s_col[2], s_col[3]), s_col_blend)
 
 	return applying

@@ -132,7 +132,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 	var/obj/item/packageWrap/PW = locate() in src.modules
 	if (PW)
 		PW.amount = 25
-	if(!synths || !synths.len)
+	if(!LAZYLEN(synths))
 		return
 
 	for(var/datum/matter_synth/T in synths)

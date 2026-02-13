@@ -173,7 +173,7 @@
 	else if(istype(sample, /obj/item/sample/print))
 		output = "Fingerprint analysis report: [sample.name]<br>"
 		var/obj/item/sample/print/card = sample
-		if(card.evidence && card.evidence.len)
+		if(LAZYLEN(card.evidence))
 			output += "Surface analysis has determined unique fingerprint strings:<br><br>"
 			for(var/prints in card.evidence)
 				output += "Fingerprint string: "

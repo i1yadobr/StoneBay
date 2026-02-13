@@ -53,7 +53,7 @@
 
 /datum/recipe/proc/check_fruit(obj/container)
 	. = 1
-	if(fruit && fruit.len)
+	if(LAZYLEN(fruit))
 		var/list/checklist = list()
 		 // You should trust Copy().
 		checklist = fruit.Copy()

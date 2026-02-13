@@ -17,7 +17,7 @@
 			to_chat(user, SPAN("danger", "It looks like the locking system has been shorted out."))
 			return
 
-		if((!req_access || !req_access.len) && (!req_one_access || !req_one_access.len))
+		if((!LAZYLEN(req_access)) && (!LAZYLEN(req_one_access)))
 			locked = 0
 			to_chat(user, SPAN("danger", "\The [src] doesn't seem to have a locking mechanism."))
 			return
@@ -119,7 +119,7 @@
 
 			var/list/current_mounts = list()
 			if(cell) current_mounts   += "cell"
-			if(installed_modules && installed_modules.len) current_mounts += "system module"
+			if(LAZYLEN(installed_modules)) current_mounts += "system module"
 
 			var/to_remove = input("Which would you like to modify?") as null|anything in current_mounts
 			if(!to_remove)

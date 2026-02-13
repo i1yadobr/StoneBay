@@ -173,7 +173,7 @@ var/global/datum/matchmaker/matchmaker = new()
 			dat += "<br><b>Things you know about them:</b><br>[R.other.info]<br>[R.other.holder.gen_relations_info]"
 		dat += "<hr>"
 
-	if(mind.known_connections && mind.known_connections.len)
+	if(LAZYLEN(mind.known_connections))
 		dat += "<b>Other people:</b>"
 		for(var/I in mind.known_connections)
 			dat += "<br><i>[I]</i>"

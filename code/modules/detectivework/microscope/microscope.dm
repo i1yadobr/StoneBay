@@ -66,7 +66,7 @@
 		report.SetName("Fingerprint report #[report_num]: [sample.name]")
 		report.info = "<b>Fingerprint analysis report #[report_num]</b>: [sample.name]<br>"
 		var/obj/item/sample/print/card = sample
-		if(card.evidence && card.evidence.len)
+		if(LAZYLEN(card.evidence))
 			report.info += "Surface analysis has determined unique fingerprint strings:<br><br>"
 			for(var/prints in card.evidence)
 				report.info += SPAN("notice", "Fingerprint string: ")

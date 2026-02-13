@@ -228,14 +228,14 @@
 
 	supported = 0
 
-	if((!supports || !supports.len) && initial(anchored) == 0)
+	if(!LAZYLEN(supports) && initial(anchored) == 0)
 		icon_state = "mining_drill"
 		anchored = 0
 		active = 0
 	else
 		anchored = 1
 
-	if(supports && supports.len >= braces_needed)
+	if(LAZYLEN(supports) >= braces_needed)
 		supported = 1
 
 	update_icon()

@@ -146,7 +146,7 @@
 	var/enemy_count = 0
 	var/list/all_antag_types = GLOB.all_antag_types_
 
-	if(antag_tags && antag_tags.len)
+	if(LAZYLEN(antag_tags))
 		for(var/antag_tag in antag_tags)
 			var/datum/antagonist/antag = all_antag_types[antag_tag]
 			if(!antag)
@@ -336,7 +336,7 @@
 		antag_scaling_coeff = 0
 
 	var/list/all_antag_types = GLOB.all_antag_types_
-	if(antag_tags && antag_tags.len)
+	if(LAZYLEN(antag_tags))
 		antag_templates = list()
 		for(var/antag_tag in antag_tags)
 			var/datum/antagonist/antag = all_antag_types[antag_tag]

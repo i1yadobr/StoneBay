@@ -1,7 +1,7 @@
 /datum/antagonist/proc/create_global_objectives(override=0)
 	if(config.gamemode.antag_objectives == CONFIG_ANTAG_OBJECTIVES_NONE && !override)
 		return 0
-	if(global_objectives && global_objectives.len)
+	if(LAZYLEN(global_objectives))
 		return 0
 	return 1
 
@@ -19,7 +19,7 @@
 	var/result = 1
 	if(config.gamemode.antag_objectives == CONFIG_ANTAG_OBJECTIVES_NONE)
 		return
-	if(global_objectives && global_objectives.len)
+	if(LAZYLEN(global_objectives))
 		for(var/datum/objective/O in global_objectives)
 			if(!O.completed && !O.check_completion())
 				result = 0

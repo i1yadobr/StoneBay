@@ -638,7 +638,7 @@ var/global/list/all_objectives = list()
 		var/mob/living/carbon/human/H = owner.current
 		S = H.back
 
-	if(!istype(S) || !S.installed_modules || !S.installed_modules.len)
+	if(!istype(S) || !LAZYLEN(S.installed_modules))
 		return 0
 
 	var/obj/item/rig_module/datajack/stolen_data = locate() in S.installed_modules

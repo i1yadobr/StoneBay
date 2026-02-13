@@ -39,10 +39,10 @@ var/list/flooring_cache = list()
 					if(!(istype(T) && T.flooring && T.flooring.name == flooring.name))
 						AddOverlays(get_flooring_overlay("[flooring.icon_base]-corner-[diagonal]", "[flooring.icon_base]_corners", diagonal))
 
-		if(flooring.can_paint && decals && decals.len)
+		if(flooring.can_paint && LAZYLEN(decals))
 			AddOverlays(decals)
 
-	else if(decals && decals.len)
+	else if(LAZYLEN(decals))
 		for(var/image/I in decals)
 			if(I.layer < layer)
 				continue

@@ -16,7 +16,7 @@
 	message_staff(user ? "[key_name_admin(user)] [message]" : "EVENT [message]")
 
 /proc/log_and_message_admins_many(list/mob/users, message)
-	if(!users || !users.len)
+	if(!LAZYLEN(users))
 		return
 
 	var/list/user_keys = list()
@@ -91,7 +91,7 @@
 	return FALSE
 
 /proc/admin_attacker_log_many_victims(mob/attacker, list/mob/victims, attacker_message, victim_message, admin_message)
-	if(!victims || !victims.len)
+	if(!LAZYLEN(victims))
 		return
 
 	for(var/mob/victim in victims)

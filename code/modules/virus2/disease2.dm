@@ -164,7 +164,7 @@ LEGACY_RECORD_STRUCTURE(virus_records, virus_record)
 /datum/disease2/disease/proc/mediummutate()
 	var/list/datum/disease2/effect/mutable_effects = list()
 	for(var/datum/disease2/effect/T in effects)
-		if(T.possible_mutations && T.possible_mutations.len)
+		if(LAZYLEN(T.possible_mutations))
 			mutable_effects += T
 	if(!mutable_effects.len)
 		return 0

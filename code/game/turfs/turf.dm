@@ -344,7 +344,7 @@ var/const/enterloopsanity = 100
 	return
 
 /turf/proc/remove_decals()
-	if(decals && decals.len)
+	if(LAZYLEN(decals))
 		decals.Cut()
 		decals = null
 

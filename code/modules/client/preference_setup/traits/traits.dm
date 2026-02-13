@@ -188,7 +188,7 @@ var/list/trait_categories = list() // The categories available for the trait men
 	return desc
 
 /mob/living/proc/apply_traits()
-	if(!mind || !mind.traits || !mind.traits.len)
+	if(!mind || !LAZYLEN(mind.traits))
 		return
 	for(var/trait in mind.traits)
 		var/datum/trait/T = trait_datums[trait]

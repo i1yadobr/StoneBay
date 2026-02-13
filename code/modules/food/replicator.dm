@@ -45,7 +45,7 @@
 			biomass = Clamp(biomass + round(N.volume*deconstruct_eff),1,biomass_max)
 		qdel(O)
 	else if(istype(O, /obj/item/storage/plants))
-		if(!O.contents || !O.contents.len)
+		if(!LAZYLEN(O.contents))
 			return
 		to_chat(user, "You empty \the [O] into \the [src]")
 		for(var/obj/item/reagent_containers/food/grown/G in O.contents)
@@ -159,7 +159,7 @@
 		start_making = 1
 
 /obj/machinery/food_replicator/Process()
-	if(queued_dishes && queued_dishes.len)
+	if(LAZYLEN(queued_dishes))
 		if(start_making) //want to do this first so that the first dish won't instantly come out
 			src.audible_message("<b>\The [src]</b> rumbles and vibrates.", splash_override = "*brzhrzhrzh*")
 			playsound(src.loc, 'sound/machines/juicer.ogg', 50, 1)
@@ -167,7 +167,7 @@
 			start_making = 0
 		if(world.time > make_time)
 			dispense_food(queued_dishes[1])
-			if(queued_dishes && queued_dishes.len) //more to come
+			if(LAZYLEN(queued_dishes)) //more to come
 				queued_dishes -= queued_dishes[1]
 				start_making = 1
 	..()

@@ -472,7 +472,7 @@
 			updateUsrDialog()
 			return FALSE
 
-	if(holdingitems && holdingitems.len >= limit)
+	if(LAZYLEN(holdingitems) >= limit)
 		to_chat(usr, "The machine cannot hold anymore items.")
 		return TRUE
 
@@ -488,7 +488,7 @@
 			failed = 0
 			bag.remove_from_storage(G, src)
 			holdingitems += G
-			if(holdingitems && holdingitems.len >= limit)
+			if(LAZYLEN(holdingitems) >= limit)
 				break
 
 		if(failed)

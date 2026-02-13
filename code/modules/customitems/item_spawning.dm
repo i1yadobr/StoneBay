@@ -188,7 +188,7 @@
 //gets the relevant list for the key from the listlist if it exists, check to make sure they are meant to have it and then calls the giving function
 /proc/equip_custom_items(mob/living/carbon/human/M)
 	var/list/key_list = custom_items[M.ckey]
-	if(!key_list || key_list.len < 1)
+	if(!LAZYLEN(key_list) < 1)
 		return
 
 	for(var/datum/custom_item/citem in key_list)
@@ -208,7 +208,7 @@
 				continue
 
 		// Check for required job title.
-		if(citem.req_titles && citem.req_titles.len > 0)
+		if(LAZYLEN(citem.req_titles) > 0)
 			var/has_title
 			var/current_title = M.mind.role_alt_title ? M.mind.role_alt_title : M.mind.assigned_role
 			for(var/title in citem.req_titles)
