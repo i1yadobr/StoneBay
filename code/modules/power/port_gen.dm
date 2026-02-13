@@ -267,10 +267,10 @@
 	..()
 
 /obj/machinery/power/port_gen/pacman/emag_act(remaining_charges, mob/user)
-	if (active && prob(25))
+	if(active && prob(25))
 		explode() //if they're foolish enough to emag while it's running
 
-	if (!emagged)
+	if(!emagged)
 		playsound(src.loc, 'sound/effects/computer_emag.ogg', 25)
 		emagged = 1
 		return 1
@@ -295,6 +295,7 @@
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, 1)
 		to_chat(user, SPAN_NOTICE("You [anchored ? "unwrench" : "wrench"] \the [src] [anchored ? "from" : "into"] place."))
 		anchored = !anchored
+		connect_to_network()
 	if(default_deconstruction_screwdriver(user, W))
 		return
 	if(default_deconstruction_crowbar(user, W))
@@ -302,7 +303,7 @@
 
 /obj/machinery/power/port_gen/pacman/attack_hand(mob/user)
 	..()
-	if (!anchored)
+	if(!anchored)
 		return
 	ui_interact(user)
 
@@ -336,8 +337,6 @@
 	data["fuel_capacity"] = round(max_sheets * 1000, 0.1)
 	data["fuel_usage"] = active ? round((power_output / time_per_sheet) * 1000) : 0
 	data["fuel_type"] = sheet_name
-
-
 
 	ui = SSnano.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
@@ -411,7 +410,7 @@
 
 /obj/machinery/power/port_gen/pacman/super/UseFuel()
 	//produces a tiny amount of radiation when in use
-	if (prob(rad_power*power_output))
+	if(prob(rad_power*power_output))
 		var/datum/radiation_source/rad_source = SSradiation.radiate(src, new /datum/radiation/preset/uranium_238(2 * rad_power))
 		rad_source.schedule_decay(5 SECONDS)
 	..()
@@ -429,7 +428,6 @@
 		set_light(0.7, 0.1, rad_power + power_output - max_safe_output, 2, "#3b97ca")
 	else
 		set_light(0)
-
 
 /obj/machinery/power/port_gen/pacman/super/explode()
 	//a nice burst of radiation
