@@ -286,7 +286,8 @@
 /obj/item/clothing/head/fox
 	name = "fox ears"
 	desc = "A pair of fox ears. What does the fox say?"
-	icon_state = "fox"
+	icon_state = "fox_ears"
+	item_state = "fox_ears"
 	slot_flags = SLOT_HEAD | SLOT_EARS
 	body_parts_covered = NO_BODYPARTS
 	siemens_coefficient = 1.5
@@ -304,20 +305,20 @@
 	if(color)
 		hairgb = color
 		color = null
-	var/tail = "fox_tail"
+	var/tail = "fox_ears_tail"
 	if((slot == slot_head || slot == slot_l_ear || slot == slot_r_ear) && istype(user))
 		if(!hairgb)
 			hairgb = rgb(user.r_hair, user.g_hair, user.b_hair)
-		var/icon/ears = icon('icons/inv_slots/hats/mob.dmi', "fox")
+		var/icon/ears = icon('icons/inv_slots/hats/mob.dmi', "fox_ears")
 		switch(user.body_build.name)
 			if("Slim")
-				tail = "fox_tail_slim"
+				tail = "fox_ears_tail_slim"
 			if("Slim Alt")
-				tail = "fox_tail_slim_alt"
+				tail = "fox_ears_tail_slim_alt"
 			if("Fat")
-				tail = "fox_tail_fat"
+				tail = "fox_ears_tail_fat"
 			else
-				tail = "fox_tail"
+				tail = "fox_ears_tail"
 		ears.Blend(icon('icons/inv_slots/hats/mob.dmi', tail), ICON_OVERLAY)
 		ears.Blend(hairgb, ICON_ADD)
 		ears.Blend(icon('icons/inv_slots/hats/mob.dmi', "[tail]_overlay"), ICON_OVERLAY)
