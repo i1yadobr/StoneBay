@@ -52,7 +52,7 @@
 		new /datum/atom_creator/weighted(list(/obj/item/storage/backpack/security, /obj/item/storage/backpack/satchel/sec)),
 		/obj/item/storage/garment/hos,
 		/obj/item/device/flash,
-		/obj/item/shield/riot,
+		/obj/item/shield/riot/tele,
 		/obj/item/gun/energy/egun/elite,
 		/obj/item/melee/telebaton,
 		/obj/item/melee/baton/loaded,

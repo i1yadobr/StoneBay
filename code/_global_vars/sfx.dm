@@ -716,6 +716,9 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/weapons/chisel5.ogg',
 		'sound/weapons/chisel6.ogg'
 	),
+	SFX_USE_TELESCOPIC = list(
+		'sound/weapons/batonextend.ogg'
+	),
 	// PULL
 	SFX_PULL_BODY = list(
 		'sound/effects/pull/pull_body1.ogg',

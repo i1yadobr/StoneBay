@@ -166,6 +166,7 @@
 		/obj/item/gun/energy/taser,
 		/obj/item/gun/energy/taser/revolver ,
 		/obj/item/shield/barrier,
+		/obj/item/shield/riot/tele,
 		/obj/item/flame/lighter,
 		/obj/item/clothing/glasses/hud,
 		/obj/item/device/flashlight,

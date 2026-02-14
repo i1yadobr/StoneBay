@@ -31,6 +31,10 @@
 
 /obj/item/shield
 	name = "shield"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/shields_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/shields_righthand.dmi'
+		)
 
 /* This shit ain't working, guys. Fix it, please. ~Toby
 /obj/item/shield/handle_shield(mob/user, damage, atom/damage_source = null, mob/attacker = null, def_zone = null, attack_text = "the attack")
@@ -70,7 +74,6 @@
 	if(.)
 		playsound(user.loc, 'sound/effects/fighting/Genhit.ogg', 50, 1)
 
-
 /obj/item/shield/riot/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/melee/baton))
 		THROTTLE(cooldown, 25)
@@ -86,6 +89,77 @@
     desc = "An assault composite shield, looks like one of the old Nova-Magnitka models."
     icon_state = "assault"
     item_state = "assault"
+
+/obj/item/shield/riot/tele
+	name = "telescopic shield"
+	desc = "An advanced riot shield made of lightweight materials that collapses for easy storage."
+	icon_state = "teleriot"
+	item_state = "teleriot"
+	base_icon_state = "teleriot"
+	slot_flags = null
+	force = 5
+	throwforce = 3
+	throw_speed = 3
+	throw_range = 4
+	w_class = ITEM_SIZE_SMALL
+	mod_weight = 0.35
+	mod_reach = 0.3
+	mod_handy = 1.0
+	mod_shield = 3.0
+	armor_penetration = 30
+	block_tier = BLOCK_TIER_MELEE
+	var/active = FALSE
+
+/obj/item/shield/riot/tele/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/melee/baton))
+		if(active)
+			THROTTLE(cooldown, 25)
+			if(cooldown)
+				user.visible_message(SPAN("warning", "[user] bashes [src] with [W]!"))
+				playsound(user.loc, 'sound/effects/shieldbash.ogg', 50, 1)
+				cooldown = world.time
+	else
+		..()
+
+/obj/item/shield/riot/tele/attack_self(mob/living/user)
+	if((MUTATION_CLUMSY in user.mutations) && prob(50))
+		to_chat(user, SPAN("warning", "You beat yourself in the head with [src]."))
+		user.take_organ_damage(5)
+	active = !active
+	if(active)
+		slot_flags = SLOT_BACK
+		force = 15
+		w_class = ITEM_SIZE_HUGE
+		mod_weight = 2.0
+		mod_reach = 1.5
+		mod_handy = 1.5
+		mod_shield = 2.0
+		block_tier = BLOCK_TIER_PROJECTILE
+		playsound(user, GET_SFX(SFX_USE_TELESCOPIC), 50, 1)
+		to_chat(user, SPAN("notice", "\The [src] is now active."))
+	else
+		slot_flags = null
+		force = 5
+		w_class = ITEM_SIZE_TINY
+		mod_weight = initial(mod_weight)
+		mod_reach = initial(mod_reach)
+		mod_handy = initial(mod_handy)
+		mod_shield = initial(mod_shield)
+		block_tier = BLOCK_TIER_MELEE
+		playsound(user, GET_SFX(SFX_USE_TELESCOPIC), 50, 1)
+		to_chat(user, SPAN("notice", "\The [src] can now be concealed."))
+
+	update_icon()
+	add_fingerprint(user)
+
+/obj/item/shield/riot/tele/on_update_icon()
+	if(active)
+		icon_state = "[base_icon_state]_on"
+		item_state = "[base_icon_state]_on"
+	else
+		icon_state = base_icon_state
+		item_state = base_icon_state
+	update_held_icon()
 
 /obj/item/shield/buckler
 	name = "buckler"
