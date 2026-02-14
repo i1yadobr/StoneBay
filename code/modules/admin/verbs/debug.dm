@@ -308,6 +308,7 @@
 	dressup_human(chosen_mob, outfit, reset_equipment)
 
 /client/proc/cmd_admin_dress_context(mob/living/carbon/human/chosen_mob as mob in GLOB.human_mob_list)
+	set category = "Debug"
 	set name = "Equip Outfit"
 
 	equip_mob(chosen_mob)
@@ -387,6 +388,7 @@
 	cmd_analyse_health(chosen_one)
 
 /client/proc/cmd_analyse_health_context(mob/living/carbon/human/H as mob in GLOB.human_mob_list)
+	set category = "Debug"
 	set name = "Analyse Human Health"
 
 	cmd_analyse_health(H)
