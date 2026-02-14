@@ -16,7 +16,7 @@
 	icon_state = "glass"
 	var/created_window = /obj/structure/window/basic
 	var/created_windoor_assembly = null
-	var/is_reinforced = 0
+	var/is_reinforced = FALSE
 	var/list/construction_options = list("One Direction", "Full Window")
 	default_type = "glass"
 
@@ -28,7 +28,7 @@
 	if(!is_reinforced)
 		if(isCoil(W))
 			var/obj/item/stack/cable_coil/CC = W
-			if (get_amount() < 1 || CC.get_amount() < 5)
+			if(get_amount() < 1 || CC.get_amount() < 5)
 				to_chat(user, SPAN("warning", "You need five lengths of coil and one sheet of glass to make wired glass."))
 				return
 
@@ -38,7 +38,7 @@
 			new /obj/item/stack/light_w(user.loc)
 		else if(istype(W, /obj/item/stack/rods))
 			var/obj/item/stack/rods/V  = W
-			if (V.get_amount() < 1 || get_amount() < 1)
+			if(V.get_amount() < 1 || get_amount() < 1)
 				to_chat(user, SPAN("warning", "You need one rod and one sheet of glass to make reinforced glass."))
 				return
 
@@ -52,33 +52,38 @@
 			if(!G && replace)
 				user.pick_or_drop(RG)
 
+//TODO: Refactor it, rewrite to something less cursed
 /obj/item/stack/material/glass/proc/construct_window(mob/user as mob)
-	if(!user || !src)	return 0
-	if(!istype(user.loc,/turf)) return 0
+	if(!user || !src)
+		return FALSE
+	if(!istype(user.loc,/turf))
+		return FALSE
 	if(!user.IsAdvancedToolUser())
-		return 0
+		return FALSE
 	var/title = "Sheet-[name]"
 	title += " ([src.get_amount()] sheet\s left)"
 	switch(input(title, "What would you like to construct?") as null|anything in construction_options)
 		if("One Direction")
-			if(!src)	return 1
-			if(src.loc != user)	return 1
+			if(!src)
+				return TRUE
+			if(src.loc != user)
+				return TRUE
 
 			var/list/directions = new /list(cardinal)
 			var/i = 0
-			for (var/obj/structure/window/win in user.loc)
+			for(var/obj/structure/window/win in user.loc)
 				i++
 				if(i >= 4)
 					to_chat(user, SPAN("warning", "There are too many windows in this location."))
-					return 1
+					return TRUE
 				directions-=win.dir
 				if(!(win.dir in cardinal))
 					to_chat(user, SPAN("warning", "Can't let you do that."))
-					return 1
+					return TRUE
 
 			//Determine the direction. It will first check in the direction the person making the window is facing, if it finds an already made window it will try looking at the next cardinal direction, etc.
 			var/dir_to_set = 2
-			for(var/direction in list( user.dir, turn(user.dir,90), turn(user.dir,180), turn(user.dir,270) ))
+			for(var/direction in list(user.dir, turn(user.dir,90), turn(user.dir,180), turn(user.dir,270)))
 				var/found = 0
 				for(var/obj/structure/window/WT in user.loc)
 					if(WT.dir == direction)
@@ -86,41 +91,44 @@
 				if(!found)
 					dir_to_set = direction
 					break
-			new created_window( user.loc, dir_to_set, 1 )
+			new created_window(user.loc, dir_to_set, 1)
 			src.use(1)
 		if("Full Window")
-			if(!src)	return 1
-			if(src.loc != user)	return 1
+			if(!src)
+				return TRUE
+			if(src.loc != user)
+				return TRUE
 			if(src.get_amount() < 4)
 				to_chat(user, SPAN("warning", "You need more glass to do that."))
-				return 1
+				return TRUE
 			if(locate(/obj/structure/window) in user.loc)
 				to_chat(user, SPAN("warning", "There is a window in the way."))
-				return 1
-			new created_window( user.loc, SOUTHWEST, 1 )
+				return TRUE
+			new created_window(user.loc, SOUTHWEST, 1)
 			src.use(4)
 		if("Windoor")
-			if(!is_reinforced) return 1
+			if(!is_reinforced)
+				return TRUE
 
-
-			if(!src || src.loc != user) return 1
+			if(!src || src.loc != user)
+				return TRUE
 
 			if(isturf(user.loc) && locate(/obj/structure/windoor_assembly/, user.loc))
 				to_chat(user, SPAN("warning", "There is already a windoor assembly in that location."))
-				return 1
+				return TRUE
 
 			if(isturf(user.loc) && locate(/obj/machinery/door/window/, user.loc))
 				to_chat(user, SPAN("warning", "There is already a windoor in that location."))
-				return 1
+				return TRUE
 
 			if(src.get_amount() < 5)
 				to_chat(user, SPAN("warning", "You need more glass to do that."))
-				return 1
+				return TRUE
 
 			new created_windoor_assembly(user.loc, user.dir, 1)
 			src.use(5)
 
-	return 0
+	return FALSE
 
 
 /*
@@ -135,7 +143,7 @@
 	icon_state = "rglass"
 	default_type = "reinforced glass"
 	created_window = /obj/structure/window/reinforced
-	is_reinforced = 1
+	is_reinforced = TRUE
 	construction_options = list("One Direction", "Full Window", "Windoor")
 	created_windoor_assembly = /obj/structure/windoor_assembly
 
@@ -151,7 +159,7 @@
 
 /obj/item/stack/material/glass/plass/attackby(obj/item/W, mob/user)
 	..()
-	if( istype(W, /obj/item/stack/rods) )
+	if(istype(W, /obj/item/stack/rods))
 		var/obj/item/stack/rods/V  = W
 		var/obj/item/stack/material/glass/rplass/RG = new (user.loc)
 		RG.add_fingerprint(user)
@@ -176,5 +184,25 @@
 	default_type = "reinforced plass"
 	created_window = /obj/structure/window/plasmareinforced
 	created_windoor_assembly = /obj/structure/windoor_assembly/plasma
-	is_reinforced = 1
+	is_reinforced = TRUE
 	construction_options = list("One Direction", "Full Window", "Windoor")
+
+/obj/item/stack/material/glass/black
+
+	name = "tinted glass"
+	singular_name = "tinted glass sheet"
+	icon_state = "bglass"
+	default_type = "reinforced plass"
+	created_window = /obj/structure/window/bglassbasic
+
+/obj/item/stack/material/glass/rblack
+
+	name = "reinforced tinted glass"
+	singular_name = "reinforced tinted glass sheet"
+	icon_state = "rbglass"
+	default_type = "reinforced plass"
+	created_window = /obj/structure/window/bglassreinforced
+	//TODO: Add tinted glass windoor subtype
+	// created_windoor_assembly = /obj/structure/windoor_assembly/bglass
+	is_reinforced = TRUE
+	// construction_options = list("One Direction", "Full Window", "Windoor")

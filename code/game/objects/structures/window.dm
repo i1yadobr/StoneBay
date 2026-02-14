@@ -60,6 +60,16 @@
 	beta_particle_resist = 4.8 MEGA ELECTRONVOLT
 	hawking_resist = 1 ELECTRONVOLT
 
+/obj/structure/window/Initialize()
+	. = ..()
+	// windows only block while reinforced and fulltile, so we'll use the proc
+	real_explosion_block = explosion_block
+
+	update_nearby_tiles(need_rebuild=1)
+	update_nearby_icons()
+
+	AddElement(/datum/element/simple_rotation)
+
 /obj/structure/window/GetExplosionBlock()
 	return reinf && (state == 5) ? real_explosion_block : 0
 
@@ -127,7 +137,6 @@
 	take_damage(proj_damage)
 	return
 
-
 /obj/structure/window/ex_act(severity)
 	switch(severity)
 		if(1.0)
@@ -184,7 +193,6 @@
 	if((mover_dir & dir) || (turn(mover_dir, -45) & dir) || (turn(mover_dir, 45) & dir))
 		return 0
 	return 1
-
 
 /obj/structure/window/hitby(atom/movable/AM, speed, nomsg)
 	..()
@@ -337,10 +345,10 @@
 	..()
 
 	//player-constructed windows
-	if (constructed)
+	if(constructed)
 		set_anchored(FALSE)
 
-	if (start_dir)
+	if(start_dir)
 		set_dir(start_dir)
 
 	if(is_full_window)
@@ -350,7 +358,6 @@
 
 	ini_dir = dir
 
-
 /obj/structure/window/Destroy()
 	set_density(0)
 	update_nearby_tiles()
@@ -358,7 +365,6 @@
 	. = ..()
 	for(var/obj/structure/window/W in orange(location, 1))
 		W.update_icon()
-
 
 /obj/structure/window/Move(newloc, direct)
 	var/ini_dir = dir
@@ -444,6 +450,13 @@
 	damage_per_fire_tick = 1.0
 	maxhealth = 40.0
 
+/obj/structure/window/bglassbasic
+	name = "tinted glass panel"
+	icon_state = "bwindow"
+	basestate = "bwindow"
+	shardtype = /obj/item/material/shard/bglass
+	glasstype = /obj/item/stack/material/glass/black
+
 /obj/structure/window/plasmareinforced
 	name = "reinforced plass panel"
 	desc = "A plasmasilicate alloy panel, with rods supporting it. It seems to be very strong."
@@ -462,6 +475,18 @@
 	icon_state = "plasmawindow0"
 	is_full_window = TRUE
 
+/obj/structure/window/bglassreinforced
+	name = "tinted glass panel"
+	icon_state = "rbwindow"
+	basestate = "rbwindow"
+	shardtype = /obj/item/material/shard/bglass
+	glasstype = /obj/item/stack/material/glass/rblack
+	maxhealth = 40.0
+	reinf = 1
+	maximal_heat = 750 CELSIUS
+	explosion_block = 1
+	damage_per_fire_tick = 2.0
+
 /obj/structure/window/reinforced
 	name = "reinforced glass panel"
 	desc = "It looks rather strong. Might take a few good hits to shatter it."
@@ -473,24 +498,6 @@
 	explosion_block = 1
 	damage_per_fire_tick = 2.0
 	glasstype = /obj/item/stack/material/glass/reinforced
-
-
-/obj/structure/window/New(Loc, constructed=0)
-	..()
-
-	//player-constructed windows
-	if (constructed)
-		state = 0
-
-/obj/structure/window/Initialize()
-	. = ..()
-	// windows only block while reinforced and fulltile, so we'll use the proc
-	real_explosion_block = explosion_block
-
-	update_nearby_tiles(need_rebuild=1)
-	update_nearby_icons()
-
-	AddElement(/datum/element/simple_rotation)
 
 /obj/structure/window/reinforced/full
 	dir = 5

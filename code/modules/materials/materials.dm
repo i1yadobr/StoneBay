@@ -647,12 +647,13 @@ var/list/name_to_material
 	display_name = "tinted glass"
 	stack_type = /obj/item/stack/material/glass/black
 	icon_colour = "#111919"
+	shard_icon = "bglass"
 	window_icon_base = "blackwindow"
 	reflectance = 30
 	stack_origin_tech = list(TECH_MATERIAL = 2)
+	created_window = /obj/structure/window/bglassbasic
 	rod_product = /obj/item/stack/material/glass/rblack
-	window_options = list()
-	opacity = 1.0
+	opacity = 0.5
 	melting_point = 150 CELSIUS
 
 /material/glass/black/reinforced
@@ -671,9 +672,9 @@ var/list/name_to_material
 	resilience = 9
 	reflectance = 25
 	stack_origin_tech = list(TECH_MATERIAL = 3)
+	created_window = /obj/structure/window/bglassreinforced
 	wire_product = null
 	rod_product = null
-
 
 /material/plastic
 	name = MATERIAL_PLASTIC
