@@ -147,6 +147,7 @@
 #define SFX_USE_CHISEL              "use_chisel"
 #define SFX_KEYBOARD                "use_keyboard"
 #define SFX_USE_KNOB                "use_knob"
+#define SFX_USE_TELESCOPIC          "use_telescopic"
 
 // PULLING
 #define SFX_PULL_BODY               "pull_body"

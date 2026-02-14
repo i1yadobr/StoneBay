@@ -61,10 +61,6 @@
 	desc = "An essential part of a closet. Could it be used as a tower shield?.."
 	icon = 'icons/obj/closet_doors.dmi'
 	icon_state = "steel"
-	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/equipment/shields_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/shields_righthand.dmi'
-		)
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	force = 10.0
 	throwforce = 10.0
