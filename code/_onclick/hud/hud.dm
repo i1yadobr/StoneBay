@@ -20,7 +20,7 @@
 	/// Displayed version of the HUD
 	var/hud_version = HUD_STYLE_STANDART
 
-	/// Used to toggle the hud (F12)
+	/// Used to toggle the hud
 	var/hud_shown = TRUE
 	/// Used to show mob's inventory
 	var/inventory_shown = TRUE
@@ -165,9 +165,8 @@
 /datum/hud/proc/FinalizeInstantiation(ui_style, ui_color, ui_alpha)
 	return
 
-/// Triggered when F12 is pressed (Unless someone changed something in the DMF)
-/mob/verb/button_pressed_F12()
-	set name = "F12"
+/mob/verb/minimize_hud()
+	set name = "Minimize Hud"
 	set hidden = TRUE
 
 	if(!client)

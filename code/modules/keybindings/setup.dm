@@ -39,16 +39,14 @@
 	set category = "OOC"
 	set name = "Fix Keybindings"
 
-	reset_macros()
+	reset_macros(TRUE)
 
-/client/proc/reset_macros(skip_alert = FALSE)
-	var/ans
-	if(!skip_alert)
-		ans = alert(src, "Change your keyboard language to ENG and press Ok", "Reset macros")
-
-	if(skip_alert || ans == "Ok")
-		set_macros()
-		to_chat(src, SPAN_NOTICE("Keybindings were fixed.")) // not yet but set_macros works fast enough
+/client/proc/reset_macros(skip = FALSE)
+	if(!skip)
+		if(alert(src, "Change your keyboard language to ENG and press Ok", "Reset macros") != "Ok")
+			return
+		to_chat(src, SPAN_NOTICE("Keybindings should be fixed now."))
+	set_macros()
 
 /**
  * Manually clears any held keys, in case due to lag or other undefined behavior a key gets stuck.

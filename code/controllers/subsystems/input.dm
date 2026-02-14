@@ -27,7 +27,7 @@ SUBSYSTEM_DEF(input)
 
 /**
  * It feels input's fire should have CHECK_TICK
- * However, stoplag() will probably fuck up all clients' input.
+ * However, stoplag() will probably get down all clients' input.
  */
 
 /datum/controller/subsystem/input/fire()

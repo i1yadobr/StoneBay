@@ -34,7 +34,7 @@ menu "menu"
 		category = "&File"
 		saved-params = "is-checked"
 	elem
-		name = "&Save screenshot as...\tShift+F2"
+		name = "&Save screenshot as..."
 		command = ".screenshot"
 		category = "&File"
 		saved-params = "is-checked"
