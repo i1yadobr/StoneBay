@@ -15,6 +15,7 @@ GLOBAL_LIST_INIT(contracts_steal_items, list(
 	// "a nasa voidsuit" =                              list(CONTRACT_STEAL_OPERATION, /obj/item/clothing/suit/space/void),
 	"a sample of metroid extract" =                     list(CONTRACT_STEAL_SCIENCE, /obj/item/metroid_extract),
 	"a piece of corgi meat" =                           list(CONTRACT_STEAL_OPERATION, /obj/item/reagent_containers/food/meat/corgi),
+	// "a captain fox" =                                list(CONTRACT_STEAL_OPERATION, /mob/living/simple_animal/fox/renault), //TODO: Add Renault to traitor object. For now, if launch STD with Renault, STD qdeling, and fox drop on floor
 	"a research director's jumpsuit" =                  list(CONTRACT_STEAL_UNDERPANTS, /obj/item/clothing/under/rank/research_director),
 	"a chief engineer's jumpsuit" =                     list(CONTRACT_STEAL_UNDERPANTS, /obj/item/clothing/under/rank/chief_engineer),
 	"a chief medical officer's jumpsuit" =              list(CONTRACT_STEAL_UNDERPANTS, /obj/item/clothing/under/rank/chief_medical_officer),

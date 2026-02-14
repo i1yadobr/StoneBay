@@ -138,6 +138,10 @@ var/list/holder_mob_icon_cache = list()
 /obj/item/holder/crab
 	origin_tech = list(TECH_BIO = 3)
 
+/obj/item/holder/fox
+	origin_tech = list(TECH_BIO = 3)
+	slot_flags = SLOT_HEAD
+
 /obj/item/holder/chicken
 	origin_tech = list(TECH_BIO = 2)
 	slot_flags = SLOT_HOLSTER
