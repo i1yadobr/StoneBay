@@ -692,7 +692,7 @@
 					winset(src, "default-\ref[key]", "parent=default;name=[key];command=ooc")
 					communication_hotkeys += key
 				if("say")
-					winset(src, "default-\ref[key]", "parent=default;name=[key];command=.say")
+					winset(src, "default-\ref[key]", "parent=default;name=[key];command=say")
 					communication_hotkeys += key
 				if("me")
 					winset(src, "default-\ref[key]", "parent=default;name=[key];command=me")
