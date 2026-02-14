@@ -51,22 +51,6 @@
 	path = /obj/item/clothing/accessory/corset
 	flags = GEAR_HAS_COLOR_SELECTION
 
-/datum/gear/accessory/ntaward
-	display_name = "NanoTrasen award selection"
-	description = "A medal or ribbon awarded to NanoTrasen personnel for significant accomplishments."
-	path = /obj/item/clothing/accessory/medal
-	cost = 8
-
-/datum/gear/accessory/ntaward/New()
-	..()
-	var/ntawards = list()
-
-	ntawards["sciences medal"] = /obj/item/clothing/accessory/medal/bronze/nanotrasen
-	ntawards["nanotrasen service"] = /obj/item/clothing/accessory/medal/silver/nanotrasen
-	ntawards["command medal"] = /obj/item/clothing/accessory/medal/gold/nanotrasen
-
-	gear_tweaks += new /datum/gear_tweak/path(ntawards)
-
 /datum/gear/accessory/pin
 	display_name = "pin selection"
 	description = "A Nanotrasen holographic pin to show off your loyalty to the company, reminding the crew of your unwavering commitment to whatever NanoTrasen's up to!"

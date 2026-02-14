@@ -43,19 +43,6 @@
 
 	gear_tweaks += new /datum/gear_tweak/path(caps)
 
-/datum/gear/head/captain_alt
-	display_name = "old captain's hat"
-	path = /obj/item/clothing/head/caphat/alt
-	allowed_roles = list(/datum/job/captain)
-
-/datum/gear/head/cardborg
-	display_name = "cardborg hat"
-	path = /obj/item/clothing/head/cardborg
-
-/datum/gear/head/chicken
-	display_name = "chicken head"
-	path = /obj/item/clothing/head/chicken
-
 /datum/gear/head/festive
 	display_name = "festive hat"
 	path = /obj/item/clothing/head/festive
@@ -212,22 +199,9 @@
 	display_name = "rasta hat"
 	path = /obj/item/clothing/head/rasta
 
-/datum/gear/head/richard
-	display_name = "cock head"
-	path = /obj/item/clothing/head/richard
-
-/datum/gear/head/yurihead
-	display_name = "yuri helmet"
-	path = /obj/item/clothing/head/yuri
-
 /datum/gear/head/whitentberet
 	display_name = "beret, NanoTrasen security"
 	path = /obj/item/clothing/head/beret/guard
-
-/datum/gear/head/witchhunter
-	display_name = "witchunter hat"
-	path = /obj/item/clothing/head/witchunter_hat
-	allowed_roles = list(/datum/job/chaplain)
 
 /datum/gear/head/witchwig
 	display_name = "witchwig"

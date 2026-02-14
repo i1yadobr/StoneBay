@@ -28,11 +28,6 @@
 
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(camo)
 
-/datum/gear/uniform/captain_alt
-	display_name = "old captain's uniform"
-	path = /obj/item/clothing/under/rank/captain/alt
-	allowed_roles = list(/datum/job/captain)
-
 /datum/gear/uniform/captain_fly
 	display_name = "rogue's uniform"
 	path = /obj/item/clothing/under/captain_fly
@@ -67,7 +62,6 @@
 		/obj/item/clothing/under/rank/captain/skirt),
 	/datum/job/hos = list(
 		/obj/item/clothing/under/rank/head_of_security/dress,
-		/obj/item/clothing/under/rank/head_of_security/jensen/dress,
 		/obj/item/clothing/under/rank/head_of_security/skirt),
 	/datum/job/warden = list(
 		/obj/item/clothing/under/rank/warden/dress,
@@ -211,11 +205,6 @@
 	display_name = "silky wedding dress"
 	path = /obj/item/clothing/under/wedding/bride_white
 
-/datum/gear/uniform/dress/captain_dress_alt
-	display_name = "captain's formal dress"
-	path = /obj/item/clothing/under/dress/captain_dress_alt
-	allowed_roles = list(/datum/job/captain)
-
 /datum/gear/uniform/dress/cheongsam
 	display_name = "cheongsam dress"
 	path = /obj/item/clothing/under/cheongsam
@@ -282,10 +271,6 @@
 	display_name = "frontier clothes"
 	path = /obj/item/clothing/under/frontier
 
-// /datum/gear/uniform/frontier
-// 	display_name = "frontier clothes"
-// 	path = /obj/item/clothing/under/frontier
-
 /datum/gear/uniform/gladiator
 	display_name = "gladiator uniform"
 	path = /obj/item/clothing/under/gladiator
@@ -301,19 +286,6 @@
 /datum/gear/uniform/hephaestus
 	display_name = "hephaestus jumpsuit"
 	path = /obj/item/clothing/under/hephaestus
-
-/datum/gear/uniform/hosformal
-	display_name = "HoS's formal uniform"
-	allowed_roles = list(/datum/job/hos)
-
-/datum/gear/uniform/hosformal/New()
-	..()
-	var/suits = list()
-
-	suits += /obj/item/clothing/under/hosformalmale
-	suits += /obj/item/clothing/under/hosformalfem
-
-	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(suits)
 
 /datum/gear/uniform/latex_suit
 	display_name = "latex suit"
@@ -342,10 +314,6 @@
 	display_name = "mailman's jumpsuit"
 	path = /obj/item/clothing/under/rank/mailman
 
-/datum/gear/uniform/nasa
-	display_name = "NASA jumpsuit"
-	path = /obj/item/clothing/under/space
-
 /datum/gear/uniform/navy
 	display_name = "navy suit"
 	path = /obj/item/clothing/under/suit_jacket/navy
@@ -361,10 +329,6 @@
 /datum/gear/uniform/psycho
 	display_name = "psycho suit"
 	path = /obj/item/clothing/under/psysuit
-
-/datum/gear/uniform/rank/vice
-	display_name = "vice officer's jumpsuit"
-	path = /obj/item/clothing/under/rank/vice
 
 /datum/gear/uniform/saare
 	display_name = "saare uniform"

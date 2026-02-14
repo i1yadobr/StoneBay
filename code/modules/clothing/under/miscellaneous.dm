@@ -111,17 +111,6 @@
 	armor = list(melee = 20, bullet = 20, laser = 30, energy = 0, bomb = 0, bio = 0)
 	siemens_coefficient = 0.9
 
-/obj/item/clothing/under/space
-	name = "\improper NASA jumpsuit"
-	desc = "It has a NASA logo on it and is made of space-proofed materials."
-	icon_state = "black"
-	w_class = ITEM_SIZE_HUGE//bulky item
-	gas_transfer_coefficient = 0.01
-	permeability_coefficient = 0.02
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
-	cold_protection = UPPER_TORSO | LOWER_TORSO | LEGS | ARMS //Needs gloves and shoes with cold protection to be fully protected.
-	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
-
 /obj/item/clothing/under/acj
 	name = "administrative cybernetic jumpsuit"
 	icon_state = "syndicate"

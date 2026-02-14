@@ -83,8 +83,3 @@
 	earring["dangle, diamond"]  = /obj/item/clothing/ears/earring/single/dangle/diamond
 
 	gear_tweaks += new /datum/gear_tweak/path(earring)
-
-/datum/gear/headphones
-	display_name = "headphones"
-	path = /obj/item/clothing/ears/headphones
-	sort_category = "Earwear"

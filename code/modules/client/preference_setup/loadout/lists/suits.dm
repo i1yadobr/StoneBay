@@ -2,22 +2,10 @@
 	slot = slot_wear_suit
 	sort_category = "Suits"
 
-/datum/gear/suit/bee
-	display_name = "bee suit"
-	path = /obj/item/clothing/suit/storage/hooded/bee
-
 /datum/gear/suit/blueapron
 	display_name = "apron, blue"
 	path = /obj/item/clothing/suit/apron
 	cost = 1
-
-/datum/gear/suit/cardborg
-	display_name = "cardborg suit"
-	path = /obj/item/clothing/suit/cardborg
-
-/datum/gear/suit/chickensuit
-	display_name = "chicken suit"
-	path = /obj/item/clothing/suit/chickensuit
 
 /datum/gear/suit/coat
 	display_name = "coat, colour select"
@@ -103,11 +91,6 @@
 	path = /obj/item/clothing/suit/storage/hooded/hoodie
 	flags = GEAR_HAS_COLOR_SELECTION
 
-/datum/gear/suit/hos_formal
-	display_name = "head of security's formal coat"
-	path = /obj/item/clothing/suit/hos_formal
-	allowed_roles = list(/datum/job/hos)
-
 /datum/gear/suit/medcoat
 	display_name = "medical suit selection"
 	path = /obj/item/clothing/suit
@@ -118,10 +101,6 @@
 		/obj/item/clothing/suit/storage/toggle/fr_jacket,
 		/obj/item/clothing/suit/storage/toggle/labcoat/blue,
 		/obj/item/clothing/suit/surgicalapron)
-
-/datum/gear/suit/monkeysuit
-	display_name = "monkey suit"
-	path = /obj/item/clothing/suit/monkeysuit
 
 /datum/gear/suit/ianshirt
 	display_name = "ian shirt"
@@ -264,11 +243,6 @@
 
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(varsity)
 
-/datum/gear/suit/witchhunter
-	display_name = "witchunter garb"
-	path = /obj/item/clothing/suit/witchhunter
-	allowed_roles = list(/datum/job/chaplain)
-
 /datum/gear/suit/wizrobe_fake
 	display_name = "wizard robe"
 	path = /obj/item/clothing/suit/wizrobe/fake
@@ -276,10 +250,6 @@
 /datum/gear/suit/wizrobe_marisa_fake
 	display_name = "witch robe"
 	path = /obj/item/clothing/suit/wizrobe/marisa/fake
-
-/datum/gear/suit/yuri
-	display_name = "yuri coat"
-	path = /obj/item/clothing/suit/yuri
 
 /datum/gear/suit/ziphoodie
 	display_name = "zip-up hoodie, colour select"
