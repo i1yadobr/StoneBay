@@ -412,7 +412,7 @@
 	name = "tinted glass"
 	singular_name = "tinted glass sheet"
 	icon_state = "bglass"
-	item_state = "sheet-glass"
+	item_state = "sheet-bglass"
 	default_type = MATERIAL_BLACK_GLASS
 
 /obj/item/stack/material/glass/black/ten
@@ -425,7 +425,7 @@
 	name = "reinforced tinted glass"
 	singular_name = "reinforced tinted glass sheet"
 	icon_state = "rbglass"
-	item_state = "sheet-rglass"
+	item_state = "sheet-rbglass"
 	default_type = MATERIAL_REINFORCED_BLACK_GLASS
 
 /obj/item/stack/material/glass/rblack/ten

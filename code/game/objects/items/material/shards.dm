@@ -1,10 +1,13 @@
-// Glass shards
-
 /obj/item/material/shard
 	name = "shard"
-	icon = 'icons/obj/shards.dmi'
 	desc = "Made of nothing. How does this even exist?" // set based on material, if this desc is visible it's a bug (shards default to being made of glass)
+	icon = 'icons/obj/shards.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/sheets_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/sheets_righthand.dmi'
+		)
 	icon_state = "large"
+	item_state = "shard-glass"
 	randpixel = 8
 	sharp = 1
 	edge = 0
@@ -16,7 +19,6 @@
 	thrown_force_const = 1.5
 	force_divisor = 0.1 // 5 with hardness 50 (glass)
 	thrown_force_divisor = 0.4 // 4 with weight 15 (glass)
-	item_state = "shard-glass"
 	attack_verb = list("stabbed", "slashed", "sliced", "cut")
 	default_material = MATERIAL_GLASS
 	unbreakable = 1 //It's already broken.
@@ -24,6 +26,7 @@
 	material_amount = 1
 	var/handcutter = FALSE
 	var/noisystepper = FALSE
+	var/uncoloreble = FALSE
 
 	drop_sound = SFX_DROP_GLASS
 	pickup_sound = SFX_PICKUP_GLASS
@@ -57,6 +60,10 @@
 		qdel(src)
 
 /obj/item/material/shard/on_update_icon()
+	if(uncoloreble)
+		color = null
+		alpha = 255 * (1 - (1 - material.opacity)*(1 - material.opacity))
+		return
 	if(material)
 		color = material.icon_colour
 		// 1-(1-x)^2, so that glass shards with 0.3 opacity end up somewhat visible at 0.51 opacity
@@ -166,5 +173,15 @@
 	icon_state = "shrapnel[pick("large", "medium", "small")]"
 	update_icon()
 
+/obj/item/material/shard/plasma
+	item_state = "shard-plass"
+
 /obj/item/material/shard/plasma/New(loc)
 	..(loc, MATERIAL_PLASS)
+
+/obj/item/material/shard/bglass
+	item_state = "shard-bglass"
+	uncoloreble = TRUE
+
+/obj/item/material/shard/bglass/New(loc)
+	..(loc, MATERIAL_BLACK_GLASS)
