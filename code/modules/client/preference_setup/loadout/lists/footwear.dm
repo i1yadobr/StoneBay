@@ -61,10 +61,6 @@
 
 	gear_tweaks += new /datum/gear_tweak/path/specified_types_list(sandals)
 
-/datum/gear/shoes/slippers
-	display_name = "bunny slippers"
-	path = /obj/item/clothing/shoes/slippers
-
 /datum/gear/shoes/workboots
 	display_name = "workboots"
 	path = /obj/item/clothing/shoes/cheapboots/work
