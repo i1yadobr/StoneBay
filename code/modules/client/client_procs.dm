@@ -485,11 +485,9 @@
 
 		winset(src, "input_alt", "is-visible=true;is-disabled=false;is-default=true")
 		winset(src, "saybutton_alt", "is-visible=true;is-disabled=false;is-default=true")
-		winset(src, "hotkey_toggle_alt", "is-visible=true;is-disabled=false;is-default=true")
 
 		winset(src, "input", "is-visible=false;is-disabled=true;is-default=false")
 		winset(src, "saybutton", "is-visible=false;is-disabled=true;is-default=false")
-		winset(src, "hotkey_toggle", "is-visible=false;is-disabled=true;is-default=false")
 
 	else if(alternate && new_position == GLOB.PREF_MODERN)
 		var/list/game_size = splittext(winget(src, "mainvsplit", "size"), "x")
@@ -507,11 +505,9 @@
 
 		winset(src, "input_alt", "is-visible=false;is-disabled=true;is-default=false")
 		winset(src, "saybutton_alt", "is-visible=false;is-disabled=true;is-default=false")
-		winset(src, "hotkey_toggle_alt", "is-visible=false;is-disabled=true;is-default=false")
 
 		winset(src, "input", "is-visible=true;is-disabled=false;is-default=true")
 		winset(src, "saybutton", "is-visible=true;is-disabled=false;is-default=true")
-		winset(src, "hotkey_toggle", "is-visible=true;is-disabled=false;is-default=true")
 
 #undef VERTICAL_INPUT_MARGIN
 
@@ -664,7 +660,7 @@
  *
  * Handles adding macros for the keys that need it
  * And adding movement keys to the clients movement_keys list
- * At the time of writing this, communication(OOC, Say, IC) require macros
+ * At the time of writing this, communication(OOC, LOOC, Say, Me) require macros
  * Arguments:
  * * direct_prefs - the preference we're going to get keybinds from
  */
@@ -677,26 +673,23 @@
 	for(var/key in D.key_bindings)
 		for(var/kb_name in D.key_bindings[key])
 			switch(kb_name)
-				if("North")
+				if("north")
 					movement_keys[key] = NORTH
-				if("East")
+				if("east")
 					movement_keys[key] = EAST
-				if("West")
+				if("west")
 					movement_keys[key] = WEST
-				if("South")
+				if("south")
 					movement_keys[key] = SOUTH
-				if("Say")
-					winset(src, "default-\ref[key]", "parent=default;name=[key];command=say")
+				if("admin_help")
+					winset(src, "default-\ref[key]", "parent=default;name=[key];command=adminhelp")
 					communication_hotkeys += key
-				if("OOC")
+				if("ooc")
 					winset(src, "default-\ref[key]", "parent=default;name=[key];command=ooc")
-					communication_hotkeys += key
-				if("Me")
-					winset(src, "default-\ref[key]", "parent=default;name=[key];command=me")
 					communication_hotkeys += key
 
 	// winget() does not work for F1 and F2
 	for(var/key in communication_hotkeys)
 		if(!(key in list("F1","F2")) && !winget(src, "default-\ref[key]", "command"))
-			to_chat(src, "You probably entered the game with a different keyboard layout.\n<a href='?src=\ref[src];reset_macros=1'>Please switch to the English layout and click here to fix the communication hotkeys.</a>")
+			to_chat(src, SPAN_WARNING("You probably entered the game with a different keyboard layout.\n<a href='?src=\ref[src];reset_macros=1'>Please switch to the English layout and click here to fix the communication hotkeys.</a>"))
 			break

@@ -4,14 +4,14 @@
 /datum/keybinding/admin/can_use(client/user)
 	return !!user.holder
 
-/datum/keybinding/admin/modchat
+/datum/keybinding/admin/asay
 	hotkey_keys = list("F5")
-	name = "msay"
-	full_name = "ModChat"
-	description = "Talk with other admins."
+	name = "asay"
+	full_name = "Admin Say"
+	description = "Secret chat for admins."
 
-/datum/keybinding/admin/modchat/down(client/user)
-	user.get_mod_say()
+/datum/keybinding/admin/asay/down(client/user)
+	user.cmd_admin_say(input(user, null, "asay \"text\"") as text|null)
 	return TRUE
 
 /datum/keybinding/admin/list_players
@@ -40,18 +40,18 @@
 	full_name = "Banning Panel"
 	description = "Banning Panel for badmins."
 
-/datum/keybinding/admin/banpanel/down(client/user)
-	user.DB_ban_panel()
+/datum/keybinding/admin/modchat
+	hotkey_keys = list("F9")
+	name = "msay"
+	full_name = "ModChat"
+	description = "Talk with other moderators."
+
+/datum/keybinding/admin/modchat/down(client/user)
+	user.cmd_mod_say(input(user, null, "dsay \"text\"") as text|null)
 	return TRUE
 
-/datum/keybinding/admin/asay
-	hotkey_keys = list("F9")
-	name = "asay"
-	full_name = "Admin Say"
-	description = "Secret chat for admins."
-
-/datum/keybinding/admin/asay/down(client/user)
-	user.get_admin_say()
+/datum/keybinding/admin/banpanel/down(client/user)
+	user.DB_ban_panel()
 	return TRUE
 
 /datum/keybinding/admin/aghost
@@ -75,7 +75,7 @@
 	return TRUE
 
 /datum/keybinding/admin/deadmin
-	hotkey_keys = list("None")
+	hotkey_keys = list("Unbound")
 	name = "deadmin"
 	full_name = "De-Admin"
 	description = "Shed your admin powers"
@@ -85,7 +85,7 @@
 	return TRUE
 
 /datum/keybinding/admin/readmin
-	hotkey_keys = list("None")
+	hotkey_keys = list("Unbound")
 	name = "readmin"
 	full_name = "Re-Admin"
 	description = "Regain your admin powers"
@@ -93,11 +93,3 @@
 /datum/keybinding/admin/readmin/down(client/user)
 	user.readmin_self()
 	return TRUE
-
-/client/proc/get_admin_say()
-	var/msg = input(src, null, "asay \"text\"") as text|null
-	cmd_admin_say(msg)
-
-/client/proc/get_mod_say()
-	var/msg = input(src, null, "msay \"text\"") as text|null
-	cmd_mod_say(msg)

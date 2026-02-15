@@ -143,9 +143,8 @@ var/global/list/_client_preferences_by_type
 	category = PREF_CATEGORY_AUDIO
 
 /datum/client_preference/play_lobby_music/changed(mob/preference_mob, new_value)
-	if(new_value == GLOB.PREF_YES)
-		if(isnewplayer(preference_mob) && preference_mob.client)
-			GLOB.lobby_music.play_to(preference_mob.client)
+	if(new_value == GLOB.PREF_YES && isnewplayer(preference_mob) && preference_mob.client)
+		GLOB.lobby_music.play_to(preference_mob.client)
 	else
 		sound_to(preference_mob.client, sound(null, repeat = 0, wait = 0, volume = 85, channel = 1))
 

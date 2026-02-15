@@ -6,13 +6,16 @@
 	set category = "IC"
 	return
 
-/mob/verb/saywrapper(message as text)
-	set name = "Say Wrapper"
+/mob/verb/say_verb(message as text|null)
+	set name = "Say"
 	set category = "IC"
 	set hidden = TRUE
 	ASSERT(client && (usr == src || usr == client))
 
 	client.close_saywindow()
+
+	if(!message)
+		return
 
 	usr.say(message)
 
@@ -22,9 +25,15 @@
 
 	ASSERT(client && (usr == src || usr == client))
 
-	winset(usr, null, "saywindow.is-visible=true;saywindow-input.focus=true;")
+	client.open_saywindow()
 
-/mob/proc/me_emote(message)
+/mob/verb/me_verb(message as text|null)
+	set name = "Me"
+	set hidden = TRUE
+
+	if(!message)
+		return
+
 	message = sanitize(message)
 
 	if(use_me)
@@ -35,6 +44,14 @@
 	client?.spellcheck(message)
 
 	webhook_send_emote(usr.key, usr.name, message)
+
+/mob/verb/me_verb_fake()
+	set name = "Me Verb"
+	set category = "IC"
+
+	ASSERT(client && (usr == src || usr == client))
+
+	me_wrapper()
 
 /mob/proc/say_dead(message)
 	communicate(/decl/communication_channel/dsay, client, message)

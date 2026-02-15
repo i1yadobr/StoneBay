@@ -12,13 +12,13 @@
 	return TRUE
 
 /datum/keybinding/client/screenshot
-	hotkey_keys = list("None")
+	hotkey_keys = list("Unbound")
 	name = "screenshot"
-	full_name = "Screenshot"
+	full_name = "Save screenshot as..."
 	description = "Take a screenshot"
 
 /datum/keybinding/client/screenshot/down(client/user)
-	winset(user, null, "command=.screenshot [!user.keys_held["shift"] ? "auto" : ""]")
+	winset(user, null, "command=.screenshot")
 	return TRUE
 
 /datum/keybinding/client/fit_viewport
@@ -35,18 +35,8 @@
 	hotkey_keys = list("F11")
 	name = "toggle_fullscreen"
 	full_name = "Toggle Fullscreen"
-	description = "Take a screenshot"
+	description = "Toggles fullscreen mode"
 
 /datum/keybinding/client/toggle_fullscreen/down(client/user)
-	user.toggle_fullscreen()
-	return TRUE
-
-/datum/keybinding/client/minimal_hud
-	hotkey_keys = list("F12")
-	name = "minimal_hud"
-	full_name = "Minimal HUD"
-	description = "Hide most HUD features"
-
-/datum/keybinding/client/minimal_hud/down(client/user)
-	user.mob.button_pressed_F12()
+	user.cycle_preference(/datum/client_preference/fullscreen_mode)
 	return TRUE
