@@ -2,8 +2,8 @@ macro "default"
 	elem 
 		name = "Tab"
 		command = ".winset \"input_alt.is-visible ? input_alt.focus=true ? mapwindow.map.focus=true : input_alt.focus=true : input.focus=true ? mapwindow.map.focus=true : input.focus=true \""
-	elem ".winset :map.right-click=false"
-		name = "SHIFT+Shift"
+	elem "SHIFT+Shift"
+		name = ".winset :map.right-click=false"
 	elem 
 		name = "ALT"
 		command = ".winset :map.right-click=true"
@@ -346,7 +346,6 @@ window "statwindow"
 		anchor2 = -1,-1
 		saved-params = "pos;size;is-minimized;is-maximized"
 		is-pane = true
-
 	elem "stat"
 		type = INFO
 		pos = 0,0
