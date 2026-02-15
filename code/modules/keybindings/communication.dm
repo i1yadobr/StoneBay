@@ -7,7 +7,7 @@
 	full_name = "IC Say"
 
 /datum/keybinding/client/communication/say/down(client/user)
-	user.mob.say_verb_fake()
+	user.mob.say_wrapper()
 	return TRUE
 
 /datum/keybinding/client/communication/ooc

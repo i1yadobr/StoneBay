@@ -6,6 +6,7 @@
 	set category = "IC"
 	return
 
+/*
 /mob/verb/saywrapper(message as text)
 	set name = "Say Wrapper"
 	set category = "IC"
@@ -23,6 +24,7 @@
 	ASSERT(client && (usr == src || usr == client))
 
 	winset(usr, null, "saywindow.is-visible=true;saywindow-input.focus=true;")
+*/
 
 /mob/proc/me_emote(message)
 	message = sanitize(message)
