@@ -91,6 +91,8 @@
 
 	remove_all_indicators()
 
+//TODO: Fix cursed say code. No clue how it works, but it works!
+//If someone wish, refactor to something less cursed - i1yadobr
 /mob/verb/say_wrapper(message as text)
 	set name = ".Say"
 	set hidden = TRUE
