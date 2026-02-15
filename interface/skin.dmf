@@ -1,26 +1,30 @@
 macro "default"
+	elem 
+		name = "Tab"
+		command = ".winset \"input_alt.is-visible ? input_alt.focus=true ? mapwindow.map.focus=true : input_alt.focus=true : input.focus=true ? mapwindow.map.focus=true : input.focus=true \""
 	elem ".winset :map.right-click=false"
 		name = "SHIFT+Shift"
-	elem "Shift"
-		name = ""
+	elem 
+		name = "ALT"
+		command = ".winset :map.right-click=true"
 	elem
 		name = "CTRL"
 		command = ".winset :map.right-click=true"
 	elem
-		name = "CTRL+UP"
-		command = ".winset :map.right-click=false"
-	elem
 		name = "SHIFT"
 		command = ".winset :map.right-click=true"
-	elem
-		name = "SHIFT+UP"
-		command = ".winset :map.right-click=false\n.release_shift"
 	elem
 		name = "ALT"
 		command = ".winset :map.right-click=true"
 	elem
 		name = "ALT+UP"
 		command = ".winset :map.right-click=false"
+	elem 
+		name = "CTRL+UP"
+		command = ".winset :map.right-click=false"
+	elem 
+		name = "SHIFT+UP"
+		command = ".winset :map.right-click=false\n.release_shift"
 
 
 menu "menu"
@@ -106,15 +110,10 @@ window "mainwindow"
 		anchor2 = -1,-1
 		is-default = true
 		saved-params = "pos;size;is-minimized;is-maximized"
-		icon = 'icons\\onyxlogo32x32.png'
 		statusbar = false
+		icon = 'icons\\onyxlogo32x32.png'
 		macro = "default"
 		menu = "menu"
-		outer-size = 656x479
-		outer-pos = 291,0
-		inner-size = 640x420
-		inner-pos = 8,51
-		screen-size = 2560x1400
 	elem "asset_cache_browser"
 		type = BROWSER
 		pos = 0,0
@@ -148,12 +147,11 @@ window "mainwindow"
 		size = 40x20
 		anchor1 = 100,100
 		anchor2 = -1,-1
-		background-color = none
 		is-visible = false
 		border = line
 		saved-params = "is-checked"
 		text = "Chat"
-		command = ".winset \"saybutton_alt.is-checked=true?input_alt.command=\"!Say \\\"\" macrobutton.is-checked=false:input_alt.command=\""
+		command = ".winset \"saybutton_alt.is-checked=true?input_alt.command=\"!Say \\\"\" :input_alt.command=\""
 		is-flat = true
 		button-type = pushbox
 
@@ -204,7 +202,6 @@ window "outputwindow"
 		size = 640x480
 		anchor1 = -1,-1
 		anchor2 = -1,-1
-		background-color = none
 		saved-params = "pos;size;is-minimized;is-maximized"
 		titlebar = false
 		statusbar = false
@@ -212,10 +209,6 @@ window "outputwindow"
 		can-minimize = false
 		can-resize = false
 		is-pane = true
-		outer-size = 654x494
-		outer-pos = 291,0
-		inner-pos = 7,7
-		screen-size = 2560x1400
 	elem "browseroutput"
 		type = BROWSER
 		pos = 0,0
@@ -254,7 +247,7 @@ window "outputwindow"
 		border = line
 		saved-params = "is-checked"
 		text = "Chat"
-		command = ".winset \"saybutton.is-checked=true?input.command=\"!say \\\"\" macrobutton.is-checked=false:input.command=\""
+		command = ".winset \"saybutton.is-checked=true?input.command=\"!say \\\"\" :input.command=\""
 		is-flat = true
 		button-type = pushbox
 
@@ -330,7 +323,7 @@ window "saywindow"
 		border = line
 		saved-params = ""
 		text = "OK"
-		command = "saywrapper [[saywindow-input.text]]"
+		command = "say [[saywindow-input.text]]"
 	elem "saywindow-input"
 		type = INPUT
 		pos = 8,16
@@ -339,7 +332,7 @@ window "saywindow"
 		anchor2 = 96,40
 		border = sunken
 		saved-params = ""
-		command = "saywrapper"
+		command = "Say "
 		on-focus = ".add_speech_bubble 1"
 		on-blur = ".remove_speech_bubble"
 
@@ -387,3 +380,4 @@ window "preferences_window"
 		anchor1 = 80,0
 		anchor2 = 100,100
 		right-click = false
+		saved-params = "zoom;letterbox;zoom-mode"

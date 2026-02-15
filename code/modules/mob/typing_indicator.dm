@@ -31,7 +31,11 @@
 	remove_all_indicators()
 	..()
 
-// TO-DO: move on to TGUI say, it's just better. - N
+/client/proc/open_saywindow()
+	// I know it looks weird, believe me I do. But this is the way.
+	if(winget(src, "saywindow", "is-visible") == "false")
+		winset(src, null, "saywindow.is-visible=true;saywindow-input.focus=true")
+
 /client/proc/close_saywindow(return_content = FALSE)
 	winset(src, null, "saywindow.is-visible=false;mapwindow.map.focus=true")
 	if (return_content)
@@ -93,6 +97,8 @@
 
 //TODO: Fix cursed say code. No clue how it works, but it works!
 //If someone wish, refactor to something less cursed - i1yadobr
+
+/*
 /mob/verb/say_wrapper(message as text)
 	set name = ".Say"
 	set hidden = TRUE
@@ -109,6 +115,8 @@
 	usr.say(message)
 	remove_all_indicators()
 
+*/
+
 /mob/verb/me_wrapper()
 	set name = ".Me"
 	set hidden = TRUE
@@ -118,7 +126,7 @@
 	var/message = input("","me (text)") as text
 	remove_all_indicators()
 	if(message)
-		me_emote(message)
+		me_verb(message)
 
 /mob/proc/start_typing()
 	remove_thinking_indicator()

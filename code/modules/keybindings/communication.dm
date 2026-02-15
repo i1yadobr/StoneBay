@@ -7,7 +7,7 @@
 	full_name = "IC Say"
 
 /datum/keybinding/client/communication/say/down(client/user)
-	user.mob.say_wrapper()
+	user.open_saywindow()
 	return TRUE
 
 /datum/keybinding/client/communication/ooc

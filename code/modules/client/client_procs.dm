@@ -485,11 +485,9 @@
 
 		winset(src, "input_alt", "is-visible=true;is-disabled=false;is-default=true")
 		winset(src, "saybutton_alt", "is-visible=true;is-disabled=false;is-default=true")
-		winset(src, "hotkey_toggle_alt", "is-visible=true;is-disabled=false;is-default=true")
 
 		winset(src, "input", "is-visible=false;is-disabled=true;is-default=false")
 		winset(src, "saybutton", "is-visible=false;is-disabled=true;is-default=false")
-		winset(src, "hotkey_toggle", "is-visible=false;is-disabled=true;is-default=false")
 
 	else if(alternate && new_position == GLOB.PREF_MODERN)
 		var/list/game_size = splittext(winget(src, "mainvsplit", "size"), "x")
@@ -507,11 +505,9 @@
 
 		winset(src, "input_alt", "is-visible=false;is-disabled=true;is-default=false")
 		winset(src, "saybutton_alt", "is-visible=false;is-disabled=true;is-default=false")
-		winset(src, "hotkey_toggle_alt", "is-visible=false;is-disabled=true;is-default=false")
 
 		winset(src, "input", "is-visible=true;is-disabled=false;is-default=true")
 		winset(src, "saybutton", "is-visible=true;is-disabled=false;is-default=true")
-		winset(src, "hotkey_toggle", "is-visible=true;is-disabled=false;is-default=true")
 
 #undef VERTICAL_INPUT_MARGIN
 
@@ -690,12 +686,6 @@
 					communication_hotkeys += key
 				if("ooc")
 					winset(src, "default-\ref[key]", "parent=default;name=[key];command=ooc")
-					communication_hotkeys += key
-				if("say")
-					winset(src, "default-\ref[key]", "parent=default;name=[key];command=say")
-					communication_hotkeys += key
-				if("me")
-					winset(src, "default-\ref[key]", "parent=default;name=[key];command=me")
 					communication_hotkeys += key
 
 	// winget() does not work for F1 and F2
