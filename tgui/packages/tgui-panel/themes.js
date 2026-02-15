@@ -63,6 +63,8 @@ export const setClientTheme = (name) => {
       // Say, OOC, me Buttons etc.
       "saybutton.background-color": "none",
       "saybutton.text-color": "#000000",
+      "hotkey_toggle.background-color": "none",
+      "hotkey_toggle.text-color": "#000000",
       "input.background-color": "none",
       "input.text-color": "#000000",
       // Alt variants
@@ -105,11 +107,15 @@ export const setClientTheme = (name) => {
       // Say, OOC, me Buttons etc.
       "saybutton.background-color": COLOR_DARK_BG,
       "saybutton.text-color": COLOR_DARK_TEXT,
+      "hotkey_toggle.background-color": COLOR_DARK_BG,
+      "hotkey_toggle.text-color": COLOR_DARK_TEXT,
       "input.background-color": COLOR_DARK_BG,
       "input.text-color": COLOR_DARK_TEXT,
       // Alt vartiants
       "saybutton_alt.background-color": COLOR_DARK_BG,
       "saybutton_alt.text-color": COLOR_DARK_TEXT,
+      "hotkey_toggle_alt.background-color": COLOR_DARK_BG,
+      "hotkey_toggle_alt.text-color": COLOR_DARK_TEXT,
       "input_alt.background-color": COLOR_DARK_BG,
       "input_alt.text-color": COLOR_DARK_TEXT,
     });
