@@ -323,7 +323,7 @@ window "saywindow"
 		border = line
 		saved-params = ""
 		text = "OK"
-		command = "say [[saywindow-input.text]]"
+		command = "Say [[saywindow-input.text]]"
 	elem "saywindow-input"
 		type = INPUT
 		pos = 8,16
