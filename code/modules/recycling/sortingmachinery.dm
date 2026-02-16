@@ -313,7 +313,7 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "c_tube"
 	throwforce = 1
-	w_class =  ITEM_SIZE_NORMAL
+	w_class = ITEM_SIZE_NORMAL
 	throw_range = 5
 
 /obj/item/packageWrap/afterattack(obj/target as obj, mob/user as mob, proximity)
