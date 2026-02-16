@@ -275,12 +275,27 @@
 	if(!(new_hull.icon_state in icon_states))
 		return
 
+	// NOTE: Personally, I hate boilerplate, but I currently don't have the mental capacity to deal with emotes code - intercepti0n
+	var/datum/robot_hull/old_hull = module_hulls[icontype]
+	for (var/datum/emote/typepath as anything in old_hull?.default_emotes)
+		var/datum/emote/emote_to_remove = GLOB.all_emotes[typepath]
+		clear_emote(emote_to_remove.key)
+		if (!isnull(emote_to_remove.statpanel_proc))
+			verbs -= emote_to_remove.statpanel_proc
+
+	for (var/datum/emote/typepath as anything in new_hull.default_emotes)
+		var/datum/emote/emote_to_add = GLOB.all_emotes[typepath]
+		set_emote(emote_to_add.key, emote_to_add)
+		if (!isnull(emote_to_add.statpanel_proc))
+			verbs |= emote_to_add.statpanel_proc
+
 	icontype = new_icontype
 	icon = new_hull.icon
 	icon_state = new_hull.icon_state
 	footstep_sound = (new_hull.hull_flags & ROBOT_HULL_FLAG_HAS_FOOTSTEPS) ? new_hull.footstep_sound : null
 
 	update_icon()
+	update_transform()
 
 	return TRUE
 
@@ -812,13 +827,18 @@
 
 	ClearOverlays()
 
-	if (!is_ic_dead() && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES))
+	//TODO: Solve the problem where the eyes don't turn on after the battery is inserted into the robot.
+	//It is possible to insert some small timer, since the error is hidden somewhere in '/mob/living/silicon/robot/set_stat(new_stat)'
+	//Because, even though an queue_icon_update() is called there, it either doesn't work,
+	//or due to the delay in changing the robot stat, it doesn't work correctly with the current system.
+	//TODO: (optionally) Add a cool and smooth appearance/disappearance of eyes
+	if(stat == CONSCIOUS && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES))
 		var/eyes_icon_state = "eyes-[using_hull.icon_state]"
 
 		AddOverlays(eyes_icon_state)
 		AddOverlays(emissive_appearance(icon, eyes_icon_state))
 
-	if (opened && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_PANEL))
+	if(opened && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_PANEL))
 		var/panel_icon = using_hull.get_panel_icon()
 		var/panel_icon_state = using_hull.get_panel_icon_state(wires = wiresexposed, cell = !!cell)
 
@@ -1300,5 +1320,5 @@
 /mob/living/silicon/robot/set_stat(new_stat)
 	. = ..()
 
-	if (stat != new_stat)
+	if(stat != new_stat)
 		queue_icon_update()
