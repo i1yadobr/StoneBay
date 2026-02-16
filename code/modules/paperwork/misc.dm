@@ -7,11 +7,23 @@
 
 /obj/item/paper/crumpled
 	name = "paper scrap"
+	icon_state = "scrap"
 	crumpled = TRUE
-	dynamic_icon = TRUE
 
 /obj/item/paper/crumpled/bloody
 	icon_state = "scrap_bloodied"
+
+/obj/item/paper/package
+	name = "package paper"
+	icon_state = "paper_wrapper"
+	base_icon_state = "paper_wrapper"
+	crumpled_state = "scrap_wrapper"
+	override_bgcolor = "#C58C63"
+
+/obj/item/paper/package/crumpled
+	name = "package paper scrap"
+	icon_state = "scrap_wrapper"
+	crumpled = TRUE
 
 /obj/item/paper/eng_wires
 	name = "Airlock Wires"
