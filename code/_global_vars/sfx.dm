@@ -315,6 +315,9 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_MALE_SIGH = list(
 		'sound/effects/emotes/m_sigh.ogg'
 	),
+	SFX_ROBOTIC_MEOW = list(
+		'sound/effects/emotes/r_meow.ogg'
+	),
 	// AMBIENT
 	SFX_AMBIENT_POWERED_GLOBAL = list(
 		'sound/ambient/global/amb2.ogg',
@@ -1798,6 +1801,9 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	),
 	SFX_FOOTSTEP_STAIRS = list(
 		'sound/effects/stairs_step.ogg'
+	),
+	SFX_FOOTSTEP_ROBOT_UNICYCLE = list(
+		'sound/effects/robot_footstep/unicycle01.ogg'
 	),
 	SFX_KEYBOARD = list(
 		'sound/machines/keyboard/keystroke1.ogg',
