@@ -194,7 +194,7 @@
 
 	to_chat(H, SPAN("notice", "Optical disruptor activated."))
 	cloak = TRUE
-	animate(H,alpha = 255, alpha = 85, time = 10)
+	animate(H, alpha = 255, alpha = 85, time = 10, flags = ANIMATION_PARALLEL)
 
 	var/remain_cloaked = TRUE
 	while(remain_cloaked)
@@ -210,7 +210,7 @@
 	SPAN("notice", "Optical disruptor deactivated."))
 	cloak = FALSE
 
-	animate(H,alpha = 85, alpha = 255, time = 10)
+	animate(H, alpha = 85, alpha = 255, time = 10, flags = ANIMATION_PARALLEL)
 
 /obj/item/clothing/head/helmet/space/void/templar
 	name = "templar helmet"

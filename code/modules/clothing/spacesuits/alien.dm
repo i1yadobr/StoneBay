@@ -305,7 +305,7 @@
 
 	to_chat(H, SPAN("notice", "Stealth mode enabled."))
 	cloak = TRUE
-	animate(H,alpha = 255, alpha = 20, time = 10)
+	animate(H,alpha = 255, alpha = 20, time = 10, flags = ANIMATION_PARALLEL)
 
 	var/remain_cloaked = TRUE
 	while(remain_cloaked) //This loop will keep going until the player uncloaks.
@@ -321,7 +321,7 @@
 	SPAN("notice", "Stealth mode disabled."))
 	cloak = FALSE
 
-	animate(H,alpha = 20, alpha = 255, time = 10)
+	animate(H,alpha = 20, alpha = 255, time = 10, flags = ANIMATION_PARALLEL)
 
 /obj/item/clothing/head/helmet/space/vox/medic
 	name = "alien goggled helmet"
