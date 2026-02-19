@@ -55,9 +55,6 @@
 		F.decultify_floor()
 		playsound(F, 'sound/effects/fighting/Genhit.ogg', 25, 1)
 
-
-
-
 /obj/item/energy_net
 	name = "energy net"
 	desc = "It's a net made of green energy."
@@ -75,9 +72,10 @@
 /obj/item/energy_net/dropped()
 	..()
 	spawn(10)
-		if(src) qdel(src)
+		if(src)
+			qdel(src)
 
-/obj/item/energy_net/throw_impact(atom/hit_atom)
+/obj/item/energy_net/throw_impact(atom/hit_atom, datum/thrownthing/TT)
 	..()
 
 	var/mob/living/M = hit_atom
@@ -94,7 +92,8 @@
 
 	// If we miss or hit an obstacle, we still want to delete the net.
 	spawn(10)
-		if(src) qdel(src)
+		if(src)
+			qdel(src)
 
 /obj/effect/energy_net
 	name = "energy net"
@@ -163,7 +162,6 @@
 		buckled_mob.forceMove(loc, unbuckle_mob = FALSE)
 	else
 		countdown = 0
-
 
 /obj/effect/energy_net/proc/capture_mob(mob/living/M)
 	captured = M

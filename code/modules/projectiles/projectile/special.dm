@@ -33,12 +33,13 @@
 	projectile_outer_range = 1.25
 
 /obj/item/projectile/bullet/gyro
-	name ="explosive bolt"
-	icon_state= "bolter"
+	name = "explosive bolt"
+	icon_state = "bolter"
 	damage = 50
 	check_armour = "bullet"
 	sharp = 1
 	edge = 1
+	space_knockback = TRUE
 
 /obj/item/projectile/bullet/gyro/on_hit(atom/target, blocked = 0)
 	explosion(target, -1, 0, 2)
@@ -73,6 +74,7 @@
 	check_armour = "bullet"
 	blockable = FALSE
 	poisedamage = 255 // slammy jammy
+	space_knockback = TRUE
 
 /obj/item/projectile/meteor/Bump(atom/A, forced = FALSE)
 	if(A == firer)
@@ -378,6 +380,7 @@
 	poisedamage = 20.0
 	check_armour = "melee"
 	impact_on_original = TRUE
+	space_knockback = TRUE
 
 /obj/item/projectile/grenade/on_impact(atom/A)
 	if(isfloor(A))

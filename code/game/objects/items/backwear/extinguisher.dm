@@ -106,10 +106,10 @@
 		var/obj/item/clothing/mask/smokable/cig = target
 		cig.die()
 
-	var/direction = get_dir(src,target)
+	var/direction = get_dir(target ,src)
 	if(user.buckled && isobj(user.buckled))
 		spawn(0)
-			propel_object(user.buckled, user, turn(direction,180))
+			propel_object(user.buckled, user, direction)
 
 	var/turf/T = get_turf(target)
 	var/per_particle = min(spray_amount, base_unit.reagents.total_volume)/spray_particles
@@ -123,7 +123,8 @@
 			W.set_color()
 			W.set_up(T)
 
-	if((istype(usr.loc, /turf/space)) || (usr.lastarea.has_gravity == 0))
-		user.inertia_dir = get_dir(target, user)
-		step(user, user.inertia_dir)
+		if(user.can_slip(magboots_only = TRUE))
+			var/old_dir = user.dir
+			step(user, direction)
+			user.set_dir(old_dir)
 	return ..()

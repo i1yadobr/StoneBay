@@ -80,7 +80,7 @@
 						 SPAN("notice", "You throw [src]. It lands on a [result]. [comment]"), \
 						 SPAN("notice", "You hear [src] landing on a [result]. [comment]"))
 
-/obj/item/dice/throw_impact(atom/hit_atom, speed)
+/obj/item/dice/throw_impact(atom/hit_atom, datum/thrownthing/TT)
 	..()
 	var/list/roll_result = roll_die()
 	var/result = roll_result[1]

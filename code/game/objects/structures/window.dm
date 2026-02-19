@@ -194,7 +194,7 @@
 		return 0
 	return 1
 
-/obj/structure/window/hitby(atom/movable/AM, speed, nomsg)
+/obj/structure/window/hitby(atom/movable/AM, datum/thrownthing/TT, nomsg)
 	..()
 	var/tforce = 0
 	if(ismob(AM)) // All mobs have a multiplier and a size according to mob_defines.dm
@@ -321,7 +321,6 @@
 	if(reinf) damage *= 0.5
 	take_damage(damage, sound_effect)
 	return
-
 
 /obj/structure/window/rotate(mob/user)
 	if(is_full_window) // No point in rotating a window if it is full
@@ -627,6 +626,7 @@
 	return
 
 /obj/structure/window/reinforced/crescent/hitby()
+	SHOULD_CALL_PARENT(FALSE)
 	return
 
 /obj/structure/window/reinforced/crescent/take_damage()

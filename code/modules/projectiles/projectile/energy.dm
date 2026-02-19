@@ -124,6 +124,7 @@
 	armor_penetration = 20
 	fire_sound = 'sound/effects/weapons/gun/gunshot.ogg'
 	projectile_inner_range = 0.2
+	space_knockback = TRUE
 
 /obj/item/projectile/energy/electrode/c38
 	name = "shock bullet"
@@ -135,6 +136,7 @@
 	armor_penetration = 20
 	fire_sound = 'sound/effects/weapons/gun/fire_revolver44.ogg'
 	projectile_inner_range = 0.2
+	space_knockback = TRUE
 
 /obj/item/projectile/energy/c38
 	name = "overheated bullet"
@@ -149,6 +151,7 @@
 	projectile_brightness_color = "#ff8c3f"
 	projectile_inner_range = 0.2
 	projectile_outer_range = 1.25
+	space_knockback = TRUE
 
 /obj/item/projectile/energy/declone
 	name = "decloner beam"
@@ -158,7 +161,7 @@
 	damage_type = CLONE
 	projectile_light = TRUE
 	projectile_brightness_color = COLOR_LIME
-
+	space_knockback = TRUE
 
 /obj/item/projectile/energy/dart
 	name = "dart"
@@ -166,7 +169,6 @@
 	damage = 5
 	damage_type = TOX
 	weaken = 5
-
 
 /obj/item/projectile/energy/bolt
 	name = "bolt"
@@ -177,13 +179,11 @@
 	agony = 40
 	stutter = 10
 
-
 /obj/item/projectile/energy/bolt/large
 	name = "largebolt"
 	icon_state = "cbboltl"
 	damage = 85
 	agony = 60
-
 
 /obj/item/projectile/energy/neurotoxin
 	name = "neuro"

@@ -67,9 +67,10 @@
 	mover.fall()
 
 // Called when thrown object lands on this turf.
-/turf/simulated/open/hitby(atom/movable/AM, speed)
-	. = ..()
-	AM.fall()
+/turf/simulated/open/hitby(atom/movable/AM, datum/thrownthing/TT)
+	..()
+	if(!QDELETED(AM))
+		AM.fall()
 
 // override to make sure nothing is hidden
 /turf/simulated/open/levelupdate()
