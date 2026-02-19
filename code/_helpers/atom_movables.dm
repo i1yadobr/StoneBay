@@ -40,8 +40,9 @@
 
 	if(!include_own_turf)
 		turfs -= get_turf(src)
+
 	if(length(turfs))
-		throw_at(pick(turfs), maxrange, speed, src)
+		throw_at(pick(turfs), maxrange, speed)
 
 ///Returns a list of all locations (except the area) the movable is within.
 /proc/get_nested_locs(atom/movable/atom_on_location, include_turf = FALSE)

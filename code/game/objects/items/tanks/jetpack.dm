@@ -26,6 +26,7 @@
 	. = ..()
 	ion_trail = new /datum/effect/effect/system/trail/ion()
 	ion_trail.set_up(src)
+	refresh_ion_trail()
 
 /obj/item/tank/jetpack/Destroy()
 	QDEL_NULL(ion_trail)
@@ -50,12 +51,12 @@
 	on = !on
 	if(on)
 		icon_state = "[icon_state]-on"
-		ion_trail.start()
 	else
 		icon_state = initial(icon_state)
-		ion_trail.stop()
 
-	if (ismob(usr))
+	refresh_ion_trail()
+
+	if(ismob(usr))
 		var/mob/M = usr
 		M.update_inv_back()
 		M.update_action_buttons()
@@ -83,6 +84,17 @@
 /obj/item/tank/jetpack/ui_action_click()
 	toggle()
 
+/obj/item/tank/jetpack/equipped(mob/user, slot)
+	. = ..()
+	refresh_ion_trail()
+
+/obj/item/tank/jetpack/proc/refresh_ion_trail()
+	if(on && isliving(loc))
+		var/mob/living/wearer = loc
+		if(wearer.get_jetpack() == src)
+			ion_trail.start()
+			return
+	ion_trail.stop()
 
 /obj/item/tank/jetpack/void
 	name = "void jetpack (oxygen)"

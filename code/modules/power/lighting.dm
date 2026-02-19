@@ -854,7 +854,7 @@
 		LIGHTMODE_READY = list(l_max_bright = 0.85, l_inner_range = 0.5,  l_outer_range = 4, l_falloff_curve = 4.5, l_color = "#00ff00")
 		)
 
-/obj/item/light/throw_impact(atom/hit_atom)
+/obj/item/light/throw_impact(atom/hit_atom, datum/thrownthing/TT)
 	..()
 	shatter()
 

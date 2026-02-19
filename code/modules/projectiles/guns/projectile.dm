@@ -18,6 +18,7 @@
 	matter = list(MATERIAL_STEEL = 1000)
 	screen_shake = 1
 	combustion = 1
+	space_recoil = TRUE
 
 	var/caliber = "357"		//determines which casings will fit
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled

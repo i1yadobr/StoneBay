@@ -58,7 +58,7 @@
 	slot_flags = SLOT_HOLSTER
 
 // POCKET SAND!
-/obj/item/ore/glass/throw_impact(atom/hit_atom)
+/obj/item/ore/glass/throw_impact(atom/hit_atom, datum/thrownthing/TT)
 	..()
 	var/mob/living/carbon/human/H = hit_atom
 	if(istype(H) && H.has_eyes() && prob(85))

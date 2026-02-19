@@ -21,7 +21,7 @@
 			if(prob(current_size*5) && hand.w_class >= ((11-current_size)/2) && drop(hand))
 				step_towards(hand, S)
 				to_chat(src, SPAN("warning", "\The [S] pulls \the [hand] from your grip!"))
-		if(!lying && (!shoes || !(shoes.item_flags & ITEM_FLAG_NOSLIP)) && (!species || !(species.species_flags & SPECIES_FLAG_NO_SLIP)) && prob(current_size*5))
+		if(prob(current_size * 5) && can_slip())
 			to_chat(src, SPAN("danger", "A strong gravitational force slams you to the ground!"))
 			Weaken(current_size)
 	..()

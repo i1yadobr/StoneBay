@@ -111,12 +111,11 @@
 
 	return FALSE
 
-/obj/item/device/assembly/mousetrap/hitby(atom/movable/A)
-	if(!armed)
-		return ..()
-
-	visible_message(SPAN("warning", "[src] is triggered by [A]."))
-	triggered(null)
+/obj/item/device/assembly/mousetrap/hitby(atom/movable/A, datum/thrownthing/TT)
+	..()
+	if(armed)
+		visible_message("<span class='warning'>[src] is triggered by [A].</span>")
+		triggered(A)
 
 /obj/item/device/assembly/mousetrap/armed
 	icon_state = "mousetraparmed"

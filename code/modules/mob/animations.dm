@@ -87,11 +87,11 @@ note dizziness decrements automatically in the mob's Life() proc.
 /mob/var/floatiness = FALSE
 
 /mob/proc/update_floating()
-	if(anchored || buckled || check_solid_ground())
+	if(anchored || buckled || has_gravity())
 		make_floating(FALSE)
 		return
 
-	if(Check_Shoegrip() && Check_Dense_Object())
+	if(!can_slip(magboots_only = TRUE))
 		make_floating(FALSE)
 		return
 
@@ -118,11 +118,6 @@ note dizziness decrements automatically in the mob's Life() proc.
 
 	var/amplitude = 2 //maximum displacement from original position
 	var/period = 36 //time taken for the mob to go up >> down >> original position, in deciseconds. Should be multiple of 4
-
-	var/top = default_pixel_y + amplitude
-	var/bottom = default_pixel_y - amplitude
-	var/half_period = period / 2
-	var/quarter_period = period / 4
 
 	animate(src, pixel_z = amplitude, time = period/4, easing = SINE_EASING | EASE_OUT, loop = -1, tag = MOB_ANIM_FLOATING, flags = ANIMATION_RELATIVE)		//up
 	animate(pixel_z = amplitude * -2, time = period/2, easing = SINE_EASING, loop = -1, flags = ANIMATION_RELATIVE)						//down

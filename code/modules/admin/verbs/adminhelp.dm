@@ -64,7 +64,7 @@ var/list/adminhelp_ignored_words = list("unknown","the","a","an","of","monkey","
 	msg = pure_msg
 	return msg
 
-/client/verb/adminhelp(msg)
+/client/proc/adminhelp(msg)
 	// handle muting and automuting
 	if(prefs.muted & MUTE_ADMINHELP)
 		to_chat(src, "<font color='red'>Error: Admin-PM: You cannot send adminhelps (Muted).</font>")
