@@ -194,6 +194,17 @@
 // Removes value V and key K from associative list L
 #define LAZYREMOVEASSOC(L, K, V) if(L) { if(L[K]) { L[K] -= V; if(!length(L[K])) L -= K; } if(!length(L)) L = null; }
 
+// Ditto but for alists.
+#define AL_LAZYINITLIST(AL) if (!AL) { AL = alist(); }
+#define AL_LAZYACCESS(L, I) (L ? L[I] : null)
+#define AL_UNSETEMPTY(AL) if(!length(AL)) { AL = null; }
+#define AL_LAZYREMOVE(AL, I) if(AL) { AL -= I; AL_UNSETEMPTY(AL) }
+#define AL_LAZYSET(AL, A, I) if(!AL) { AL = alist(); } AL[A] = I;
+#define AL_LAZYCLEARLIST(AL) if(AL) { AL.Cut(); AL = null; }
+#define AL_LAZYLEN(AL) length(AL)
+#define AL_LAZYADDASSOC(L, K, V) if(!L) { L = alist(); } L[K] += list(V);
+#define AL_LAZYREMOVEASSOC(L, K, V) if(L) { if(L[K]) { L[K] -= V; if(!length(L[K])) L -= K; } if(!length(L)) L = null; }
+
 // Insert an object A into a sorted list using cmp_proc (/code/_helpers/cmp.dm) for comparison.
 #define ADD_SORTED(list, A, cmp_proc) if(!list.len) {list.Add(A)} else {list.Insert(FindElementIndex(A, list, cmp_proc), A)}
 

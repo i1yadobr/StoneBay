@@ -83,11 +83,9 @@ INITIALIZE_IMMEDIATE(/atom/movable/renderer)
 
 /// Creates the mob's renderers on /Login()
 /mob/proc/CreateRenderers()
-	if (!renderers)
-		renderers = list()
 	for (var/atom/movable/renderer/renderer as anything in subtypesof(/atom/movable/renderer))
 		renderer = new renderer (null, src)
-		renderers[renderer.name] = renderer
+		AL_LAZYSET(renderers, renderer.name, renderer)
 		if (renderer.relay)
 			my_client.screen += renderer.relay
 		my_client.screen += renderer
@@ -97,13 +95,12 @@ INITIALIZE_IMMEDIATE(/atom/movable/renderer)
 /mob/proc/RemoveRenderers()
 	if(my_client)
 		for(var/renderer_name as anything in renderers)
-			var/atom/movable/renderer/renderer = renderers[renderer_name]
+			var/atom/movable/renderer/renderer = AL_LAZYACCESS(renderers, renderer_name)
 			my_client.screen -= renderer
 			if (renderer.relay)
 				my_client.screen -= renderer.relay
 			qdel(renderer)
-	if (renderers)
-		renderers.Cut()
+	AL_LAZYCLEARLIST(renderers)
 
 
 /* *

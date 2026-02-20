@@ -320,8 +320,11 @@ var/global/list/_client_preferences_by_type
 	options = list(GLOB.PREF_YES, GLOB.PREF_NO)
 
 /datum/client_preference/ambient_occlusion/changed(mob/preference_mob, new_value)
-	if(preference_mob?.client)
-		var/atom/movable/renderer/R = preference_mob.renderers[GAME_RENDERER]
+	if(isnull(preference_mob.client))
+		return
+
+	var/atom/movable/renderer/R = AL_LAZYACCESS(preference_mob.renderers, GAME_RENDERER)
+	if(istype(R))
 		R.GraphicsUpdate()
 
 /datum/client_preference/graphics_quality
@@ -335,8 +338,9 @@ var/global/list/_client_preferences_by_type
 	if(isnull(preference_mob.client))
 		return
 
-	var/atom/movable/renderer/R = preference_mob.renderers[TEMPERATURE_EFFECT_RENDERER]
-	R.GraphicsUpdate()
+	var/atom/movable/renderer/R = AL_LAZYACCESS(preference_mob.renderers, TEMPERATURE_EFFECT_RENDERER)
+	if(istype(R))
+		R.GraphicsUpdate()
 
 /datum/client_preference/pixel_size
 	description = "Pixel Size"
