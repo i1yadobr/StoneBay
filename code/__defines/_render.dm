@@ -78,7 +78,7 @@ INITIALIZE_IMMEDIATE(/atom/movable/renderer)
 */
 
 /// The list of renderers associated with this mob.
-/mob/var/list/renderers
+/mob/var/alist/renderers
 
 
 /// Creates the mob's renderers on /Login()
