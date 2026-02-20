@@ -198,7 +198,7 @@
 
 // Stop effect
 /datum/movement_handler/mob/stop_effect/DoMove(direction, mob/mover, is_external)
-	if(MayMove(mob/mover, is_external) == MOVEMENT_STOP)
+	if(MayMove(mover, is_external) == MOVEMENT_STOP)
 		return MOVEMENT_HANDLED
 
 /datum/movement_handler/mob/stop_effect/MayMove(mob/mover, is_external)
