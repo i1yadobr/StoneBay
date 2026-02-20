@@ -124,8 +124,8 @@
 /datum/trader/proc/print_trading_items(num)
 	num = Clamp(num,1,trading_items.len)
 	if(trading_items[num])
-		var/atom/movable/M = trading_items[num]
-		return "<b>[initial(M.name)]</b>"
+		var/item_name = get_item_name_for_trading(trading_items[num])
+		return "<b>[item_name]</b>"
 
 /datum/trader/proc/get_item_value(trading_num)
 	if(!trading_items[trading_items[trading_num]])
@@ -257,9 +257,8 @@
 
 	var/datum/trade_response/tr = make_response(TRADER_WHAT_WANT, "Hm, I want", 0, TRUE)
 	var/list/want_english = list()
-	for(var/type in wanted_items)
-		var/atom/a = type
-		want_english += initial(a.name)
+	for(var/obj_path in wanted_items)
+		want_english += get_item_name_for_trading(obj_path)
 	tr.text += " [english_list(want_english)]"
 	return tr
 
@@ -287,3 +286,18 @@
 
 /datum/trader/proc/bribe_to_stay_longer(amt)
 	return make_response(TRADER_BRIBE_FAILURE, "How about no?", 0, FALSE)
+
+// get_item_name_for_trading returns the appropriate name of the item to be displayed
+// in the trading UI, properly handling unique cases like materials, amounts etc.
+//
+// This relies on accessing static values of types using initial(varname) as objects
+// are not instantiated for displaying in the UI, only their type paths are passed.
+/proc/get_item_name_for_trading(obj_path)
+	// TODO(rufus): handle /obj/item/material and other special cases
+	if(ispath(obj_path, /obj/item/clothing/ring/material))
+		var/obj/item/clothing/ring/material/r = obj_path
+		var/material/ring_material = get_material_by_name(initial(r.material_name))
+		return "[ring_material.display_name] ring"
+	// No special handling needed, just using the default name
+	var/atom/a = obj_path
+	return initial(a.name)
