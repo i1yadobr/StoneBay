@@ -11,7 +11,7 @@
 #define CALIBER_145 "14.5mm"
 #define CALIBER_357 ".357"
 #define CALIBER_38 ".38"
-#define CALIBER_44 ".44 magnum"
+#define CALIBER_44 ".44"
 #define CALIBER_45 ".45"
 #define CALIBER_50AE ".50AE"
 #define CALIBER_12G "12g"
