@@ -21,7 +21,7 @@ GLOBAL_LIST_INIT(lawgiver_modes, list(
 	allowed_magazines = /obj/item/ammo_magazine/lawgiver
 	burst = 1
 	screen_shake = 0
-	caliber = "lawgiver"
+	caliber = CALIBER_LAWGIVER
 	var/projectile_type = /obj/item/projectile/energy/electrode/stunsphere
 	var/dna_profile = null
 	var/list/voice_activator

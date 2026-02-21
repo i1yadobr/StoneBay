@@ -318,7 +318,7 @@
 	icon_state = "remington"
 	item_state = "webley"
 	max_shells = 6
-	caliber = ".44"
+	caliber = CALIBER_44
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/c44
 

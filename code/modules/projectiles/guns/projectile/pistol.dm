@@ -19,7 +19,7 @@
 	icon_state = "secguncomp"
 	magazine_type = /obj/item/ammo_magazine/c45m
 	allowed_magazines = /obj/item/ammo_magazine/c45m
-	caliber = ".45"
+	caliber = CALIBER_45
 
 /obj/item/gun/projectile/pistol/secgun/flash
 	name = ".45 signal pistol"
@@ -37,7 +37,7 @@
 	icon_state = "colt"
 	magazine_type = /obj/item/ammo_magazine/c45m
 	allowed_magazines = /obj/item/ammo_magazine/c45m
-	caliber = ".45"
+	caliber = CALIBER_45
 	fire_sound = 'sound/effects/weapons/gun/fire_colt2.ogg'
 
 /obj/item/gun/projectile/pistol/colt/officer
@@ -54,7 +54,7 @@
 	item_state = "vp78"
 	magazine_type = /obj/item/ammo_magazine/c45m/stun
 	allowed_magazines = /obj/item/ammo_magazine/c45m
-	caliber = ".45"
+	caliber = CALIBER_45
 	accuracy = -0.35
 
 /obj/item/gun/projectile/pistol/vp78/wood
@@ -79,7 +79,7 @@
 	icon_state = "silenced_pistol"
 	item_state = "silenced_pistol"
 	w_class = ITEM_SIZE_NORMAL
-	caliber = ".45"
+	caliber = CALIBER_45
 	silenced = 1
 	fire_sound = SFX_SILENT_FIRE
 	mod_weight = 0.7
@@ -98,7 +98,7 @@
 	mod_weight = 0.9
 	mod_reach = 0.65
 	mod_handy = 1.0
-	caliber = ".50"
+	caliber = CALIBER_50AE
 	fire_delay = 12
 	screen_shake = 2
 	magazine_type = /obj/item/ammo_magazine/a50
@@ -110,7 +110,7 @@
 	desc = "A bulky pistol designed to fire self propelled rounds."
 	icon_state = "gyropistol"
 	max_shells = 8
-	caliber = "75"
+	caliber = CALIBER_20MM
 	mod_weight = 0.9
 	mod_reach = 0.65
 	mod_handy = 1.0
@@ -127,7 +127,7 @@
 	desc = "A relatively cheap and reliable knock-off of a Beretta M9. Uses 9mm rounds. Used to be a standart-issue gun in almost every security company."
 	icon_state = "det-m9"
 	w_class = ITEM_SIZE_NORMAL
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	fire_delay = 1
 	mod_weight = 0.65
 	mod_reach = 0.5
@@ -144,7 +144,7 @@
 	item_state = "pistol"
 	base_icon_state = "pistol"
 	w_class = ITEM_SIZE_SMALL
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	silenced = 0
 	fire_delay = 1
 	fire_sound = 'sound/effects/weapons/gun/fire_9mm2.ogg'

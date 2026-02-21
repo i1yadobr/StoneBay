@@ -13,7 +13,7 @@
 	name = "ant-material rifle"
 	desc = "A portable anti-armour rifle fitted with a scope, the HI PTR-7 Rifle was originally designed to used against armoured exosuits. It is capable of punching through windows and non-reinforced walls with ease. Fires armor piercing 14.5mm shells. This replica however fires 9mm rounds."
 	ammo_type = /obj/item/ammo_casing/c9mm
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	fire_sound = 'sound/effects/weapons/gun/fire_colt.ogg'
 
 /obj/item/gun/energy/laser/dogan

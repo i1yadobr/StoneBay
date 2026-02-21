@@ -10,7 +10,7 @@
 	w_class = ITEM_SIZE_TINY
 
 	var/leaves_residue = 1
-	var/caliber = ""					//Which kind of guns it can be loaded into
+	var/caliber = CALIBER_NONE			//Which kind of guns it can be loaded into
 	var/projectile_type					//The bullet type to create when New() is called
 	var/spent_icon = "s-casing-spent"
 	var/is_spent = FALSE
@@ -117,7 +117,7 @@
 
 	var/list/stored_ammo = list()
 	var/mag_type = SPEEDLOADER //ammo_magazines can only be used with compatible guns. This is not a bitflag, the load_method var on guns is.
-	var/caliber = "357"
+	var/caliber = CALIBER_357
 	var/max_ammo = 7
 	var/display_default_ammo_left = TRUE
 

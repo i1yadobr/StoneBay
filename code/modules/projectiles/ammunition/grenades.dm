@@ -4,7 +4,7 @@
 	desc = "A 40mm grenade shell. This one contains no explosives, but may still knock someone's teeth out."
 	icon_state = "40mm"
 	spent_icon = "40mm-spent"
-	caliber = "40mm"
+	caliber = CALIBER_40MM
 	projectile_type = /obj/item/projectile/grenade
 	matter = list(MATERIAL_STEEL = 360)
 	w_class = ITEM_SIZE_SMALL
