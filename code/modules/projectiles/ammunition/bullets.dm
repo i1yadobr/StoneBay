@@ -223,6 +223,7 @@
 	color = "#ff0000"
 	projectile_type = /obj/item/projectile/bullet/pistol/cap
 
+// TODO: Sort them all according to their original calibers. There's no point in keeping them separate
 // EMP ammo.
 /obj/item/ammo_casing/c38/emp
 	icon_state = "empcasing"
