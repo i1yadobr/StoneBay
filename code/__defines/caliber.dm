@@ -36,6 +36,7 @@
 // Caliber Bullet Description
 
 #define CALIBER_BULLET_NONE_DESC ""
+#define CALIBER_BULLET_TOY_DESC " for children"
 #define CALIBER_BULLET_EMP_DESC ", fitted with a single-use ion pulse generator"
 #define CALIBER_BULLET_38_SPEC_DESC ". Made of a soft alloy and acts like a rubber bullet unless charged-up"
 #define CALIBER_BULLET_38_CHEM_DESC " cartridge. Acts like a flash bullet unless charged-up"

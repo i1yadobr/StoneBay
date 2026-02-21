@@ -221,8 +221,9 @@
 	caliber_desc = FALSE
 
 /obj/item/ammo_casing/cap
-	caliber = CALIBER_TOY_CAPS
 	color = "#ff0000"
+	caliber = CALIBER_TOY_CAPS
+	caliber_bullet_desc = CALIBER_BULLET_TOY_DESC
 	projectile_type = /obj/item/projectile/bullet/pistol/cap
 
 // TODO: Sort them all according to their original calibers. There's no point in keeping them separate
