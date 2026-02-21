@@ -459,6 +459,10 @@
 	name = "resonator"
 	desc = "A handheld device that creates small fields of energy that resonate until they detonate, crushing rock. It can also be activated without a target to create a field at the user's location, to act as a delayed time trap. It's more effective in a vacuum."
 	icon = 'icons/obj/mining.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/mining_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/mining_righthand.dmi'
+		)
 	icon_state = "resonator"
 	item_state = "resonator"
 	w_class = ITEM_SIZE_HUGE
