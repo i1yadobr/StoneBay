@@ -25,6 +25,7 @@
 	desc = "A small hardened, hollow dart."
 	icon_state = "dart"
 	caliber = CALIBER_DART
+	caliber_desc = FALSE
 	projectile_type = /obj/item/projectile/bullet/chemdart
 	leaves_residue = 0
 

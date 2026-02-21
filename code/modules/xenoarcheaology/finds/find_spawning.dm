@@ -471,6 +471,7 @@
 			new_gun.loaded += A
 			if(A.caliber != new_gun.caliber)
 				A.caliber = new_gun.caliber
+				A.caliber_desc = FALSE
 				A.desc = "A bullet casing of unknown caliber."
 
 	additional_desc = "This is an antique weapon, you're not sure if it will fire or not."
