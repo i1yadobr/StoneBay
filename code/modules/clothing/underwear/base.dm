@@ -1,4 +1,12 @@
-
+//TODO: '/obj/item/underwear' requires global refactor
+// First -  Pull it up to '/obj/item/clothing', make it part of it
+// Second - Force it to be stored on the mob as '/obj/item/clothing', rather than in 'var/list/worn_underwear'
+// - You should also verify that ‘/obj/structure/undies_wardrobe’ is functioning properly
+// - And don't forget about the inventory menu with clothes, so that everything works as before
+// Third -  Change the operation of '/datum/category_collection/underwear' and make it compatible with the new underwear system
+// - In simpler terms, it also requires refactoring
+// Fourth (optional) - Add the possibility of socks falling off when cutting off the leg, and bottom falling off when cutting off the ass/groin
+// - For more details, see 'obj/item/organ/external/removed' proc
 #define UNDERWEAR_SLOT_FREE       0
 #define UNDERWEAR_SLOT_SOCKS      0x1
 #define UNDERWEAR_SLOT_TOP        0x2
@@ -12,6 +20,10 @@
 /obj/item/underwear
 	w_class = ITEM_SIZE_TINY
 	icon = 'icons/inv_slots/hidden/icon.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/clothing/hidden/hand_l_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/hidden/hand_r_default.dmi'
+		)
 	var/required_slot_flags
 	var/required_free_body_parts
 	var/mob_wear_layer = HO_UNDERWEAR_LAYER

@@ -41,8 +41,9 @@
 	var/is_default = FALSE           // Should this entry be considered the default for its type?
 	var/icon = 'icons/mob/human.dmi' // Which icon to get the underwear from.
 	var/icon_state                   // And the particular item state.
+	var/item_state                   // And the particular inhand state.
 	var/list/tweaks = list()         // Underwear customizations.
-	var/has_color = FALSE
+	var/has_color = FALSE            // Adds the ability to customize underwear color if the value is TRUE.
 
 	var/underwear_name               // The name of the resulting underwear
 	var/underwear_gender = NEUTER    // Singular or plural form?
@@ -69,6 +70,9 @@
 	UW.gender = underwear_gender
 	UW.icon = icon
 	UW.icon_state = icon_state
+	//Note: This may not be the best solution, and we could simply make it pull from icon_state,
+	// since this way we are simply duplicating an existing value, but I will leave it as is for now
+	UW.item_state = item_state
 
 	for(var/datum/gear_tweak/gt in tweaks)
 		gt.tweak_item(UW, metadata && metadata["[gt]"] ? metadata["[gt]"] : gt.get_default())
