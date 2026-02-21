@@ -10,8 +10,10 @@
 	w_class = ITEM_SIZE_TINY
 
 	var/leaves_residue = 1
-	var/caliber = CALIBER_NONE			//Which kind of guns it can be loaded into
-	var/projectile_type					//The bullet type to create when New() is called
+	var/caliber = CALIBER_NONE					//Which kind of guns it can be loaded into
+	var/caliber_bullet = CALIBER_BULLET_NONE	//What type of bullet is in the casing
+	var/caliber_desc = TRUE						//If we do not require additional descriptions.
+	var/projectile_type							//The bullet type to create when New() is called
 	var/spent_icon = "s-casing-spent"
 	var/is_spent = FALSE
 	var/projectile_label
@@ -89,11 +91,17 @@
 /obj/item/ammo_casing/examine(mob/user, infix)
 	. = ..()
 
-	if(caliber)
-		. += "Its caliber is [caliber]."
+	if(!caliber_desc)
+		return
 
-	if(is_spent)
-		. += "This one is spent."
+	if(!in_range(user, src) && !issilicon(user) && !isobserver(user))
+		return
+
+	if(!is_spent)
+		if(caliber)
+			. += "Its caliber is [caliber][caliber_bullet ? " [caliber_bullet]" : ""]."
+	else
+		. += "Its caliber is [caliber]."
 
 //Gun loading types
 #define SINGLE_CASING 	1	//The gun only accepts ammo_casings. ammo_magazines should never have this as their mag_type.

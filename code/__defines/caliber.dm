@@ -1,3 +1,5 @@
+// Caliber Casing
+
 #define CALIBER_NONE ""
 #define CALIBER_9MM "9mm"
 #define CALIBER_10MM "10mm"
@@ -18,3 +20,15 @@
 #define CALIBER_DART "dart"
 #define CALIBER_LAWGIVER "lawgiver"
 #define CALIBER_UNKNOWN "999"
+
+// Caliber Bullet
+
+#define CALIBER_BULLET_NONE ""
+#define CALIBER_BULLET_EMP "EMP, fitted with a single-use ion pulse generator"
+#define CALIBER_BULLET_FLASH "flash"
+#define CALIBER_BULLET_STUN "stun"
+#define CALIBER_BULLET_RUBBER "rubber"
+#define CALIBER_BULLET_PRACTICE "practice"
+#define CALIBER_BULLET_145_APDS "APDS"
+#define CALIBER_BULLET_38_SPEC "SPEC. Made of a soft alloy and acts like a rubber bullet unless charged-up"
+#define CALIBER_BULLET_38_CHEM "CHEM cartridge. Acts like a flash bullet unless charged-up"
