@@ -12,6 +12,7 @@
 	var/leaves_residue = 1
 	var/caliber = CALIBER_NONE					//Which kind of guns it can be loaded into
 	var/caliber_bullet = CALIBER_BULLET_NONE	//What type of bullet is in the casing
+	var/caliber_bullet_desc = ""				//If an additional description of the bullet is required.
 	var/caliber_desc = TRUE						//If we do not require additional descriptions.
 	var/projectile_type							//The bullet type to create when New() is called
 	var/spent_icon = "s-casing-spent"
@@ -99,7 +100,7 @@
 
 	if(!is_spent)
 		if(caliber)
-			. += "Its caliber is [caliber][caliber_bullet ? " [caliber_bullet]" : ""]."
+			. += "Its caliber is [caliber][caliber_bullet ? " [caliber_bullet]" : ""][caliber_bullet_desc]."
 	else
 		. += "Its caliber is [caliber]."
 

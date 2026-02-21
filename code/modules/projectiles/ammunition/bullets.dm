@@ -22,6 +22,7 @@
 
 /obj/item/ammo_casing/c38/spec
 	caliber_bullet = CALIBER_BULLET_38_SPEC
+	caliber_bullet_desc = CALIBER_BULLET_38_SPEC_DESC
 	projectile_type = /obj/item/projectile/bullet/pistol/rubber
 	icon_state = "s-casing"
 	spent_icon = "s-casing-spent"
@@ -34,6 +35,7 @@
 
 /obj/item/ammo_casing/c38/chem
 	caliber_bullet = CALIBER_BULLET_38_CHEM
+	caliber_bullet_desc = CALIBER_BULLET_38_CHEM_DESC
 	projectile_type = /obj/item/projectile/energy/flash/c38
 	icon_state = "empcasing"
 	spent_icon = "s-casing-spent"
@@ -228,24 +230,28 @@
 /obj/item/ammo_casing/c38/emp
 	icon_state = "empcasing"
 	caliber_bullet = CALIBER_BULLET_EMP
+	caliber_bullet_desc = CALIBER_BULLET_EMP_DESC
 	projectile_type = /obj/item/projectile/ion/small
 	matter = list(MATERIAL_STEEL = 130, MATERIAL_URANIUM = 100)
 
 /obj/item/ammo_casing/c44/emp
 	icon_state = "empcasing"
 	caliber_bullet = CALIBER_BULLET_EMP
+	caliber_bullet_desc = CALIBER_BULLET_EMP_DESC
 	projectile_type = /obj/item/projectile/ion/small
 	matter = list(MATERIAL_STEEL = 130, MATERIAL_URANIUM = 100)
 
 /obj/item/ammo_casing/c45/emp
 	icon_state = "empcasing"
 	caliber_bullet = CALIBER_BULLET_EMP
+	caliber_bullet_desc = CALIBER_BULLET_EMP_DESC
 	projectile_type = /obj/item/projectile/ion/small
 	matter = list(MATERIAL_STEEL = 130, MATERIAL_URANIUM = 100)
 
 /obj/item/ammo_casing/a10mm/emp
 	icon_state = "empcasing"
 	caliber_bullet = CALIBER_BULLET_EMP
+	caliber_bullet_desc = CALIBER_BULLET_EMP_DESC
 	projectile_type = /obj/item/projectile/ion/small
 	matter = list(MATERIAL_STEEL = 130, MATERIAL_URANIUM = 100)
 
