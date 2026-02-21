@@ -1,3 +1,5 @@
+//TODO: Add more variety to bra's
+
 /datum/category_item/underwear/top
 	underwear_name = "bra"
 	underwear_type = /obj/item/underwear/top
@@ -14,19 +16,21 @@
 	is_default = TRUE
 	name = "Bra"
 	icon_state = "bra"
+	item_state = "bra"
 	has_color = TRUE
 
 /datum/category_item/underwear/top/bra/is_default(gender)
 	return gender == FEMALE
 
-
 /datum/category_item/underwear/top/halterneck_bra
 	name = "Halterneck bra"
 	icon_state = "halterneck_bra"
+	item_state = "halterneck_bra"
 	has_color = TRUE
 
 /datum/category_item/underwear/top/tube_top
 	name = "Tube Top"
 	underwear_name = "tube top"
 	icon_state = "tubetop"
+	item_state = "tubetop"
 	has_color = TRUE
