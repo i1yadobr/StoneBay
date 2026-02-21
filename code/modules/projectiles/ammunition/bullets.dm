@@ -219,10 +219,7 @@
 	caliber_desc = FALSE
 
 /obj/item/ammo_casing/cap
-	name = "toy cap"
-	desc = "A cap for children toys."
 	caliber = CALIBER_TOY_CAPS
-	caliber_desc = FALSE
 	color = "#ff0000"
 	projectile_type = /obj/item/projectile/bullet/pistol/cap
 
