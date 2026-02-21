@@ -30,11 +30,12 @@
 #define CALIBER_BULLET_RUBBER "rubber"
 #define CALIBER_BULLET_PRACTICE "practice"
 #define CALIBER_BULLET_145_APDS "APDS"
-#define CALIBER_BULLET_38_SPEC "SPEC
-#define CALIBER_BULLET_38_CHEM "CHEM
+#define CALIBER_BULLET_38_SPEC "SPEC"
+#define CALIBER_BULLET_38_CHEM "CHEM"
 
 // Caliber Bullet Description
 
+#define CALIBER_BULLET_NONE_DESC ""
 #define CALIBER_BULLET_EMP_DESC ", fitted with a single-use ion pulse generator"
 #define CALIBER_BULLET_38_SPEC_DESC ". Made of a soft alloy and acts like a rubber bullet unless charged-up"
 #define CALIBER_BULLET_38_CHEM_DESC " cartridge. Acts like a flash bullet unless charged-up"
