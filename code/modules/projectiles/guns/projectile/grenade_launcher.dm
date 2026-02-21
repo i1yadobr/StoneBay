@@ -13,7 +13,7 @@
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	slot_flags = SLOT_BELT
 
-	caliber = "40mm"
+	caliber = CALIBER_40MM
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
 	max_shells = 1

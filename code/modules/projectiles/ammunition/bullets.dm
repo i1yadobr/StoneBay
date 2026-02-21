@@ -1,21 +1,21 @@
 /obj/item/ammo_casing/a357
 	desc = "A .357 bullet casing."
-	caliber = "357"
+	caliber = CALIBER_357
 	projectile_type = /obj/item/projectile/bullet/pistol/strong/revolver
 
 /obj/item/ammo_casing/a50
 	desc = "A .50AE bullet casing."
-	caliber = ".50"
+	caliber = CALIBER_50AE
 	projectile_type = /obj/item/projectile/bullet/pistol/strong
 
 /obj/item/ammo_casing/a75
 	desc = "A 20mm bullet casing."
-	caliber = "75"
+	caliber = CALIBER_20MM
 	projectile_type = /obj/item/projectile/bullet/gyro
 
 /obj/item/ammo_casing/c38
 	desc = "A .38 bullet casing."
-	caliber = ".38"
+	caliber = CALIBER_38
 	projectile_type = /obj/item/projectile/bullet/pistol
 
 /obj/item/ammo_casing/c38/rubber
@@ -50,7 +50,7 @@
 
 /obj/item/ammo_casing/c9mm
 	desc = "A 9mm bullet casing."
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	projectile_type = /obj/item/projectile/bullet/pistol
 
 /obj/item/ammo_casing/c9mm/flash
@@ -69,7 +69,7 @@
 
 /obj/item/ammo_casing/c44
 	desc = "A .44 magnum bullet casing."
-	caliber = ".44"
+	caliber = CALIBER_44
 	projectile_type = /obj/item/projectile/bullet/pistol/medium/revolver
 
 /obj/item/ammo_casing/c44/rubber
@@ -80,7 +80,7 @@
 
 /obj/item/ammo_casing/c45
 	desc = "A .45 bullet casing."
-	caliber = ".45"
+	caliber = CALIBER_45
 	projectile_type = /obj/item/projectile/bullet/pistol/medium
 
 /obj/item/ammo_casing/c45/practice
@@ -103,7 +103,7 @@
 
 /obj/item/ammo_casing/a10mm
 	desc = "A 10mm bullet casing."
-	caliber = "10mm"
+	caliber = CALIBER_10MM
 	projectile_type = /obj/item/projectile/bullet/pistol/medium/smg
 
 /obj/item/ammo_casing/shotgun
@@ -111,7 +111,7 @@
 	desc = "A 12 gauge slug."
 	icon_state = "slshell"
 	spent_icon = "slshell-spent"
-	caliber = "12g"
+	caliber = CALIBER_12G
 	projectile_type = /obj/item/projectile/bullet/shotgun
 	matter = list(MATERIAL_STEEL = 360)
 	fall_sounds = list('sound/effects/weapons/gun/shell_fall.ogg')
@@ -175,7 +175,7 @@
 
 /obj/item/ammo_casing/a556
 	desc = "A 5.56mm bullet casing."
-	caliber = "a556"
+	caliber = CALIBER_556
 	projectile_type = /obj/item/projectile/bullet/rifle/a556
 	icon_state = "rifle-casing"
 	spent_icon = "rifle-casing-spent"
@@ -185,7 +185,7 @@
 	desc = "A 14.5mm shell."
 	icon_state = "lcasing"
 	spent_icon = "lcasing-spent"
-	caliber = "14.5mm"
+	caliber = CALIBER_145
 	projectile_type = /obj/item/projectile/bullet/rifle/a145
 	matter = list(MATERIAL_STEEL = 1250)
 
@@ -196,7 +196,7 @@
 
 /obj/item/ammo_casing/a762
 	desc = "A 7.62mm bullet casing."
-	caliber = "a762"
+	caliber = CALIBER_762
 	projectile_type = /obj/item/projectile/bullet/rifle/a762
 	icon_state = "rifle-casing"
 	spent_icon = "rifle-casing-spent"
@@ -207,7 +207,7 @@
 
 /obj/item/ammo_casing/a792
 	desc = "A 7.92mm bullet casing."
-	caliber = "7.92"
+	caliber = CALIBER_792
 	projectile_type = /obj/item/projectile/bullet/rifle/a792
 	icon_state = "rifle-casing"
 	spent_icon = "rifle-casing-spent"
@@ -218,12 +218,12 @@
 	icon_state = "rocketshell"
 	w_class = ITEM_SIZE_NORMAL
 	projectile_type = /obj/item/missile
-	caliber = "rocket"
+	caliber = CALIBER_ROCKET
 
 /obj/item/ammo_casing/cap
 	name = "cap"
 	desc = "A cap for children toys."
-	caliber = "caps"
+	caliber = CALIBER_TOY_CAPS
 	color = "#ff0000"
 	projectile_type = /obj/item/projectile/bullet/pistol/cap
 

@@ -3,7 +3,7 @@
 	desc = "The Lumoco Arms HE Colt is a choice revolver for when you absolutely, positively need to put a hole in the other guy. Uses .357 ammo."
 	icon_state = "revolver"
 	item_state = "revolver"
-	caliber = "357"
+	caliber = CALIBER_357
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -61,7 +61,7 @@
 	name = "mateba"
 	desc = "The Lumoco Arms HE Colt is a choice revolver for when you absolutely, positively need to put a hole in the other guy. Uses .50 ammo."
 	icon_state = "mateba"
-	caliber = ".50"
+	caliber = CALIBER_50AE
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/a50
 
@@ -70,7 +70,7 @@
 	name = "Deckard .44"
 	desc = "A custom-built revolver, based off the semi-popular Detective Special model."
 	icon_state = "deckard-empty"
-	caliber = ".44"
+	caliber = CALIBER_44
 	ammo_type = /obj/item/ammo_casing/c44/rubber
 
 /obj/item/gun/projectile/revolver/deckard/emp
@@ -94,7 +94,7 @@
 	desc = "Looks almost like the real thing! Ages 8 and up."
 	icon_state = "revolver-toy"
 	item_state = "revolver"
-	caliber = "caps"
+	caliber = CALIBER_TOY_CAPS
 	origin_tech = list(TECH_COMBAT = 1, TECH_MATERIAL = 1)
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
@@ -115,7 +115,7 @@
 	icon_state = "webley"
 	item_state = "webley"
 	max_shells = 6
-	caliber = ".44"
+	caliber = CALIBER_44
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/c44
 
@@ -125,7 +125,7 @@
 	icon_state = "detective"
 	fire_sound = 'sound/effects/weapons/gun/fire_revolver1.ogg'
 	max_shells = 6
-	caliber = ".38"
+	caliber = CALIBER_38
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/c38
 
@@ -307,7 +307,7 @@
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 2)
 	slot_flags = 0
 
-	caliber = "40mm"
+	caliber = CALIBER_40MM
 	handle_casings = HOLD_CASINGS
 	handle_casings = CYCLE_CASINGS
 	ammo_type = /obj/item/ammo_casing/grenade

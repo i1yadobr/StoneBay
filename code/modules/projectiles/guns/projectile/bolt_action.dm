@@ -12,7 +12,7 @@
 	mod_handy = 1.0
 	slot_flags = SLOT_BACK
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
-	caliber = "7.92"
+	caliber = CALIBER_792
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	max_shells = 5

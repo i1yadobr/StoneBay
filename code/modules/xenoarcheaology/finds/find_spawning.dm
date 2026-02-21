@@ -450,18 +450,20 @@
 	icon_state = "gun1"
 	find_type = ARCHAEO_GUN
 
+// TODO: Perform caliber randomization
 /obj/item/archaeological_find/gun/spawn_item()
+	// base gun is revolver which uses .357 by default
 	var/obj/item/gun/projectile/revolver/new_gun = new(loc)
 
 	new_gun.icon = 'icons/obj/xenoarchaeology.dmi'
 	new_gun.icon_state = "gun[rand(1,4)]"
 
-	//33% chance to be able to reload the gun with human ammunition
+	// 66% chance for the gun to use a made-up ammunition caliber instead of .357
 	if(prob(66))
-		new_gun.caliber = "999"
-	//33% chance to fill it with a random amount of bullets
+		new_gun.caliber = CALIBER_UNKNOWN
 	new_gun.max_shells = rand(1,12)
 	new_gun.loaded.Cut()
+	// 33% chance to fill it with a random amount of bullets
 	if(prob(33))
 		var/num_bullets = rand(1, new_gun.max_shells)
 		for(var/i = 1 to num_bullets)

@@ -22,7 +22,7 @@
 	desc = "A protoype lightweight, fast firing gun. Uses .45 rounds."
 	icon_state = "mpistolen"
 	item_state = "mpistolen"
-	caliber = ".45"
+	caliber = CALIBER_45
 	fire_sound = 'sound/effects/weapons/gun/fire1.ogg'
 	ammo_type = /obj/item/ammo_casing/c45
 	magazine_type = /obj/item/ammo_magazine/c45uzi
@@ -65,7 +65,7 @@
 	w_class = ITEM_SIZE_NORMAL
 	load_method = SPEEDLOADER //yup. until someone sprites a magazine for it.
 	max_shells = 22
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/c9mm
 
@@ -82,7 +82,7 @@
 	icon_state = "wt550"
 	item_state = "wt550"
 	wielded_item_state = "wt550-wielded"
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	fire_sound = 'sound/effects/weapons/gun/fire9.ogg'
 	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/c9mm/rubber
@@ -115,7 +115,7 @@
 	mod_weight = 0.9
 	mod_reach = 0.75
 	mod_handy = 1.0
-	caliber = "10mm"
+	caliber = CALIBER_10MM
 	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 2, TECH_ILLEGAL = 8)
 	slot_flags = SLOT_BELT|SLOT_BACK
 	magazine_type = /obj/item/ammo_magazine/a10mm
@@ -149,7 +149,7 @@
 	force = 12.5
 	mod_weight = 1.0
 	mod_reach = 0.8
-	caliber = "a556"
+	caliber = CALIBER_556
 	origin_tech = list(TECH_COMBAT = 6, TECH_MATERIAL = 1, TECH_ILLEGAL = 5)
 	slot_flags = SLOT_BACK
 	magazine_type = /obj/item/ammo_magazine/c556
@@ -191,7 +191,7 @@
 	mod_weight = 1.0
 	mod_reach = 0.8
 	mod_handy = 1.0
-	caliber = "a762"
+	caliber = CALIBER_762
 	origin_tech = list(TECH_COMBAT = 8, TECH_MATERIAL = 3)
 	ammo_type = /obj/item/ammo_casing/a762
 	slot_flags = SLOT_BACK
@@ -273,7 +273,7 @@
 	mod_handy = 1.0
 	slot_flags = 0
 	max_shells = 50
-	caliber = "a556"
+	caliber = CALIBER_556
 	origin_tech = list(TECH_COMBAT = 6, TECH_MATERIAL = 1, TECH_ILLEGAL = 2)
 	slot_flags = 0 //need sprites for SLOT_BACK
 	ammo_type = /obj/item/ammo_casing/a556

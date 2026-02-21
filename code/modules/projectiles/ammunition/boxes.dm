@@ -5,7 +5,7 @@
 	name = "speed loader (.357)"
 	desc = "A speed loader for revolvers."
 	icon_state = "38"
-	caliber = "357"
+	caliber = CALIBER_357
 	ammo_type = /obj/item/ammo_casing/a357
 	matter = list(MATERIAL_STEEL = 1260)
 	max_ammo = 6
@@ -15,7 +15,7 @@
 	name = "speed loader (.50)"
 	desc = "A speed loader for revolvers."
 	icon_state = "38"
-	caliber = ".50"
+	caliber = CALIBER_50AE
 	ammo_type = /obj/item/ammo_casing/a50
 	matter = list(MATERIAL_STEEL = 1260)
 	max_ammo = 6
@@ -25,7 +25,7 @@
 	name = "speed loader (.38)"
 	desc = "A speed loader for revolvers."
 	icon_state = "38"
-	caliber = ".38"
+	caliber = CALIBER_38
 	matter = list(MATERIAL_STEEL = 360)
 	ammo_type = /obj/item/ammo_casing/c38
 	max_ammo = 6
@@ -63,7 +63,7 @@
 	icon_state = "38"
 	ammo_type = /obj/item/ammo_casing/c44
 	matter = list(MATERIAL_STEEL = 450)
-	caliber = ".44"
+	caliber = CALIBER_44
 	max_ammo = 6
 	multiple_sprites = 1
 
@@ -83,7 +83,7 @@
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/c45
 	matter = list(MATERIAL_STEEL = 525) //metal costs are very roughly based around 1 .45 casing = 75 metal
-	caliber = ".45"
+	caliber = CALIBER_45
 	max_ammo = 7
 	multiple_sprites = 1
 
@@ -115,7 +115,7 @@
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/c45
 	matter = list(MATERIAL_STEEL = 1200)
-	caliber = ".45"
+	caliber = CALIBER_45
 	max_ammo = 16
 	multiple_sprites = 1
 
@@ -128,7 +128,7 @@
 	origin_tech = list(TECH_COMBAT = 2)
 	mag_type = MAGAZINE
 	matter = list(MATERIAL_STEEL = 480)
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	ammo_type = /obj/item/ammo_casing/c9mm
 	max_ammo = 10
 	multiple_sprites = 1
@@ -145,7 +145,7 @@
 	icon_state = "9mm"
 	origin_tech = list(TECH_COMBAT = 2)
 	matter = list(MATERIAL_STEEL = 1800)
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	ammo_type = /obj/item/ammo_casing/c9mm
 	max_ammo = 30
 
@@ -158,17 +158,17 @@
 	origin_tech = list(TECH_COMBAT = 2)
 	max_ammo = 10
 	ammo_type = /obj/item/ammo_casing/c38/emp
-	caliber = ".38"
+	caliber = CALIBER_38
 
 /obj/item/ammo_magazine/box/emp/c45
 	name = "ammunition box (.45, haywire)"
 	ammo_type = /obj/item/ammo_casing/c45/emp
-	caliber = ".45"
+	caliber = CALIBER_45
 
 /obj/item/ammo_magazine/box/emp/a10mm
 	name = "ammunition box (10mm, haywire)"
 	ammo_type = /obj/item/ammo_casing/a10mm/emp
-	caliber = "10mm"
+	caliber = CALIBER_10MM
 
 /obj/item/ammo_magazine/mc9mmt
 	name = "top mounted magazine (9mm)"
@@ -176,7 +176,7 @@
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/c9mm
 	matter = list(MATERIAL_STEEL = 1200)
-	caliber = "9mm"
+	caliber = CALIBER_9MM
 	max_ammo = 20
 	multiple_sprites = 1
 
@@ -196,7 +196,7 @@
 	name = "ammunition box (.45)"
 	icon_state = "9mm"
 	origin_tech = list(TECH_COMBAT = 2)
-	caliber = ".45"
+	caliber = CALIBER_45
 	matter = list(MATERIAL_STEEL = 2250)
 	ammo_type = /obj/item/ammo_casing/c45
 	max_ammo = 30
@@ -209,7 +209,7 @@
 	icon_state = "10mm"
 	origin_tech = list(TECH_COMBAT = 2)
 	mag_type = MAGAZINE
-	caliber = "10mm"
+	caliber = CALIBER_10MM
 	matter = list(MATERIAL_STEEL = 1500)
 	ammo_type = /obj/item/ammo_casing/a10mm
 	max_ammo = 20
@@ -223,7 +223,7 @@
 	icon_state = "5.56"
 	origin_tech = list(TECH_COMBAT = 2)
 	mag_type = MAGAZINE
-	caliber = "a762"
+	caliber = CALIBER_762
 	matter = list(MATERIAL_STEEL = 1800)
 	ammo_type = /obj/item/ammo_casing/a762
 	max_ammo = 15 //if we lived in a world where normal mags had 30 rounds, this would be a 20 round mag
@@ -241,7 +241,7 @@
 	icon_state = "50ae"
 	origin_tech = list(TECH_COMBAT = 2)
 	mag_type = MAGAZINE
-	caliber = ".50"
+	caliber = CALIBER_50AE
 	matter = list(MATERIAL_STEEL = 1260)
 	ammo_type = /obj/item/ammo_casing/a50
 	max_ammo = 7
@@ -254,7 +254,7 @@
 	name = "ammo magazine (20mm)"
 	icon_state = "75"
 	mag_type = MAGAZINE
-	caliber = "75"
+	caliber = CALIBER_20MM
 	ammo_type = /obj/item/ammo_casing/a75
 	multiple_sprites = 1
 	max_ammo = 4
@@ -267,7 +267,7 @@
 	icon_state = "a556"
 	origin_tech = list(TECH_COMBAT = 2)
 	mag_type = MAGAZINE
-	caliber = "a556"
+	caliber = CALIBER_556
 	matter = list(MATERIAL_STEEL = 5400)
 	ammo_type = /obj/item/ammo_casing/a556
 	max_ammo = 60
@@ -280,7 +280,7 @@
 	name = "magazine (5.56mm)"
 	icon_state = "c762"
 	mag_type = MAGAZINE
-	caliber = "a556"
+	caliber = CALIBER_556
 	matter = list(MATERIAL_STEEL = 2250)
 	ammo_type = /obj/item/ammo_casing/a556
 	max_ammo = 25
@@ -290,7 +290,7 @@
 	name = "speed loader (caps)"
 	desc = "A cheap plastic speed loader for some kind of revolver."
 	icon_state = "T38"
-	caliber = "caps"
+	caliber = CALIBER_TOY_CAPS
 	color = "#ff0000"
 	ammo_type = /obj/item/ammo_casing/cap
 	matter = list(MATERIAL_STEEL = 600)
@@ -303,7 +303,7 @@
 	icon_state = "lawgiver"
 	mag_type = MAGAZINE
 	ammo_type = null
-	caliber = "lawgiver"
+	caliber = CALIBER_LAWGIVER
 	max_ammo = 0
 	display_default_ammo_left = FALSE
 	var/list/ammo_counters
@@ -349,7 +349,7 @@
 	name = "clip (7.92mm)"
 	icon_state = "c792"
 	mag_type = SPEEDLOADER
-	caliber = "7.92"
+	caliber = CALIBER_792
 	matter = list(MATERIAL_STEEL = 2000)
 	ammo_type = /obj/item/ammo_casing/a792
 	max_ammo = 5
