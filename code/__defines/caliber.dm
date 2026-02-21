@@ -24,7 +24,7 @@
 // Caliber Bullet
 
 #define CALIBER_BULLET_NONE ""
-#define CALIBER_BULLET_EMP "EMP
+#define CALIBER_BULLET_EMP "EMP"
 #define CALIBER_BULLET_FLASH "flash"
 #define CALIBER_BULLET_STUN "stun"
 #define CALIBER_BULLET_RUBBER "rubber"
