@@ -643,43 +643,6 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_USE_CABLE_HANDCUFFS = list(
 		'sound/effects/using/cuffs/cable_use1.ogg'
 	),
-	SFX_USE_OUTFIT = list(
-		'sound/effects/using/outfit/use1.ogg',
-		'sound/effects/using/outfit/use2.ogg',
-		'sound/effects/using/outfit/use3.ogg',
-		'sound/effects/using/outfit/use4.ogg',
-		'sound/effects/using/outfit/use5.ogg',
-		'sound/effects/using/outfit/use6.ogg',
-		'sound/effects/using/outfit/use7.ogg',
-		'sound/effects/using/outfit/use8.ogg',
-		'sound/effects/using/outfit/use9.ogg',
-		'sound/effects/using/outfit/use10.ogg',
-		'sound/effects/using/outfit/use11.ogg',
-		'sound/effects/using/outfit/use12.ogg',
-		'sound/effects/using/outfit/use13.ogg',
-		'sound/effects/using/outfit/use14.ogg',
-		'sound/effects/using/outfit/use15.ogg',
-		'sound/effects/using/outfit/use16.ogg',
-		'sound/effects/using/outfit/use17.ogg',
-		'sound/effects/using/outfit/use18.ogg',
-		'sound/effects/using/outfit/use19.ogg',
-		'sound/effects/using/outfit/use20.ogg',
-		'sound/effects/using/outfit/use21.ogg',
-		'sound/effects/using/outfit/use22.ogg',
-		'sound/effects/using/outfit/use23.ogg',
-		'sound/effects/using/outfit/use24.ogg',
-		'sound/effects/using/outfit/use25.ogg',
-		'sound/effects/using/outfit/use26.ogg',
-		'sound/effects/using/outfit/use27.ogg',
-		'sound/effects/using/outfit/use28.ogg',
-		'sound/effects/using/outfit/use29.ogg',
-		'sound/effects/using/outfit/use30.ogg',
-		'sound/effects/using/outfit/use31.ogg',
-		'sound/effects/using/outfit/use32.ogg',
-		'sound/effects/using/outfit/use33.ogg',
-		'sound/effects/using/outfit/use34.ogg',
-		'sound/effects/using/outfit/use35.ogg'
-	),
 	SFX_USE_SMALL_SWITCH = list(
 		'sound/effects/using/switch/small1.ogg',
 		'sound/effects/using/switch/small2.ogg'
@@ -721,6 +684,47 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	),
 	SFX_USE_TELESCOPIC = list(
 		'sound/weapons/batonextend.ogg'
+	),
+	// EQUIP
+	SFX_EQUIP_OUTFIT = list(
+		'sound/effects/using/outfit/use1.ogg',
+		'sound/effects/using/outfit/use2.ogg',
+		'sound/effects/using/outfit/use3.ogg',
+		'sound/effects/using/outfit/use4.ogg',
+		'sound/effects/using/outfit/use5.ogg',
+		'sound/effects/using/outfit/use6.ogg',
+		'sound/effects/using/outfit/use7.ogg',
+		'sound/effects/using/outfit/use8.ogg',
+		'sound/effects/using/outfit/use9.ogg',
+		'sound/effects/using/outfit/use10.ogg',
+		'sound/effects/using/outfit/use11.ogg',
+		'sound/effects/using/outfit/use12.ogg',
+		'sound/effects/using/outfit/use13.ogg',
+		'sound/effects/using/outfit/use14.ogg',
+		'sound/effects/using/outfit/use15.ogg',
+		'sound/effects/using/outfit/use16.ogg',
+		'sound/effects/using/outfit/use17.ogg',
+		'sound/effects/using/outfit/use18.ogg',
+		'sound/effects/using/outfit/use19.ogg',
+		'sound/effects/using/outfit/use20.ogg',
+		'sound/effects/using/outfit/use21.ogg',
+		'sound/effects/using/outfit/use22.ogg',
+		'sound/effects/using/outfit/use23.ogg',
+		'sound/effects/using/outfit/use24.ogg',
+		'sound/effects/using/outfit/use25.ogg',
+		'sound/effects/using/outfit/use26.ogg',
+		'sound/effects/using/outfit/use27.ogg',
+		'sound/effects/using/outfit/use28.ogg',
+		'sound/effects/using/outfit/use29.ogg',
+		'sound/effects/using/outfit/use30.ogg',
+		'sound/effects/using/outfit/use31.ogg',
+		'sound/effects/using/outfit/use32.ogg',
+		'sound/effects/using/outfit/use33.ogg',
+		'sound/effects/using/outfit/use34.ogg',
+		'sound/effects/using/outfit/use35.ogg'
+	),
+	SFX_EQUIP_TOOLBELT = list(
+		'sound/effects/using/toolbelt_equip.ogg'
 	),
 	// PULL
 	SFX_PULL_BODY = list(
@@ -1207,6 +1211,12 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_TACHOLSTEROUT = list(
 		'sound/effects/holster/tactiholsterout.ogg'
 	),
+	SFX_SABERSHEATHIN = list(
+		'sound/effects/holster/sabersheathin.ogg'
+	),
+	SFX_SABERSHEATHOUT = list(
+		'sound/effects/holster/sabersheathout.ogg'
+	),
 	// DRINK & EAT
 	SFX_DRINK = list(
 		'sound/effects/eating/drink1.ogg'
@@ -1534,6 +1544,9 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/fighting/genhit2.ogg',
 		'sound/effects/fighting/genhit3.ogg'
 	),
+	SFX_FIGHTING_SWING_LEGACY = list(
+		'sound/effects/fighting/Genhit.ogg'
+	),
 	SFX_STUNSTICK_HIT = list(
 		'sound/effects/fighting/stunstick_hit1.ogg',
 		'sound/effects/fighting/stunstick_hit2.ogg',
@@ -1542,6 +1555,15 @@ GLOBAL_LIST_INIT(sfx_list, list(
 		'sound/effects/fall_damage1.ogg',
 		'sound/effects/fall_damage2.ogg',
 		'sound/effects/fall_damage3.ogg',
+	),
+	SFX_PARRY = list(
+		'sound/weapons/parry.ogg'
+	),
+	SFX_SABER_HIT = list(
+		'sound/weapons/saber_hit.ogg'
+	),
+	SFX_SABER_PARRY = list(
+		'sound/weapons/saber_parry.ogg'
 	),
 	// MISC
 	SFX_VENT = list(

@@ -11,7 +11,6 @@
 	var/health = null
 	var/burn_point = null
 	var/burning = null
-	var/hitsound = SFX_FIGHTING_SWING
 	var/slot_flags = 0		//This is used to determine on which slots an item can fit.
 	var/no_attack_log = 0			//If it's an item we don't want to log attack_logs with, set this to 1
 	pass_flags = PASS_FLAG_TABLE
@@ -88,11 +87,23 @@
 	// Species-specific sprite sheets for inventory sprites. Used in clothing/refit_for_species() proc.
 	var/list/sprite_sheets_obj = list()
 
+	/// Played when attack with an item
+	var/hitsound = SFX_FIGHTING_SWING
+
 	/// Played when the item is picked up
 	var/pickup_sound = SFX_PICKUP_GENERIC
 
 	/// Played when the item is dropped or thrown
 	var/drop_sound = SFX_DROP_GENERIC
+
+	/// Played when the item parrying attack
+	var/equip_sound = SFX_EQUIP_OUTFIT
+
+	/// Played when the item parrying attack
+	var/parry_sound = SFX_PARRY
+
+	/// Played when the item blocking attack
+	var/block_sound = SFX_FIGHTING_SWING_LEGACY
 
 	var/ear_protection = 0
 
@@ -224,23 +235,38 @@
 		var/desc_reach
 		var/desc_handy
 
-		if(src.mod_weight < 0.4) desc_weight = "a really light"
-		else if(src.mod_weight < 0.8) desc_weight = "quite light"
-		else if(src.mod_weight < 1.25) desc_weight = "a normal-weight"
-		else if(src.mod_weight < 1.65) desc_weight = "quite heavy"
-		else desc_weight = "a really heavy"
+		if(src.mod_weight < 0.4)
+			desc_weight = "a really light"
+		else if(src.mod_weight < 0.8)
+			desc_weight = "quite light"
+		else if(src.mod_weight < 1.25)
+			desc_weight = "a normal-weight"
+		else if(src.mod_weight < 1.65)
+			desc_weight = "quite heavy"
+		else
+			desc_weight = "a really heavy"
 
-		if(src.mod_reach < 0.4) desc_reach = "extremely short"
-		else if(src.mod_reach < 0.8) desc_reach = "quite short"
-		else if(src.mod_reach < 1.25) desc_reach = "average sized"
-		else if(src.mod_reach < 1.65) desc_reach = "long"
-		else desc_reach = "extremely long"
+		if(src.mod_reach < 0.4)
+			desc_reach = "extremely short"
+		else if(src.mod_reach < 0.8)
+			desc_reach = "quite short"
+		else if(src.mod_reach < 1.25)
+			desc_reach = "average sized"
+		else if(src.mod_reach < 1.65)
+			desc_reach = "long"
+		else
+			desc_reach = "extremely long"
 
-		if(src.mod_handy < 0.4) desc_handy = "unhandy"
-		else if(src.mod_handy < 0.8) desc_handy = "not so handy"
-		else if(src.mod_handy < 1.25) desc_handy = "handy"
-		else if(src.mod_handy < 1.65) desc_handy = "really handy"
-		else desc_handy = "outstandingly handy"
+		if(src.mod_handy < 0.4)
+			desc_handy = "unhandy"
+		else if(src.mod_handy < 0.8)
+			desc_handy = "not so handy"
+		else if(src.mod_handy < 1.25)
+			desc_handy = "handy"
+		else if(src.mod_handy < 1.65)
+			desc_handy = "really handy"
+		else
+			desc_handy = "outstandingly handy"
 
 		. += "<BR>It makes [desc_weight], [desc_reach], and [desc_handy] weapon."
 
@@ -361,7 +387,7 @@
 		if(user.r_hand)
 			user.r_hand.update_twohanding()
 
-	if(!changing_slots && !istype(loc, /obj/item/clothing/accessory))
+	if(!changing_slots && !istype(loc, /obj/item/clothing/accessory) && !istype(loc, /obj/item/storage/belt/sabre))
 		play_drop_sound()
 
 	SEND_SIGNAL(src, SIGNAL_ITEM_UNEQUIPPED, src, user)
@@ -391,8 +417,10 @@
 // note this isn't called during the initial dressing of a player
 /obj/item/proc/equipped(mob/user, slot)
 	hud_layerise()
-	if(user.client)	user.client.screen |= src
-	if(user.pulling == src) user.stop_pulling()
+	if(user.client)
+		user.client.screen |= src
+	if(user.pulling == src)
+		user.stop_pulling()
 
 	//Update two-handing status
 	var/mob/M = loc
@@ -430,10 +458,13 @@ var/list/global/slot_flags_enumeration = list(
 //Should probably move the bulk of this into mob code some time, as most of it is related to the definition of slots and not item-specific
 //set force to ignore blocking overwear and occupied slots
 /obj/item/proc/mob_can_equip(M, slot, disable_warning = 0, force = 0)
-	if(!slot) return 0
-	if(!M) return 0
+	if(!slot)
+		return 0
+	if(!M)
+		return 0
 
-	if(!ishuman(M)) return 0
+	if(!ishuman(M))
+		return 0
 
 	var/mob/living/carbon/human/H = M
 	var/list/mob_equip = list()
@@ -1072,3 +1103,5 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	if(slot == slot_l_hand || slot == slot_r_hand)
 		var/volume = clamp(rand(5, 15) * w_class, PICKUP_SOUND_VOLUME_MIN, PICKUP_SOUND_VOLUME_MAX)
 		playsound(src, pickup_sound, volume, TRUE, extrarange = -5)
+	else
+		playsound(src, equip_sound, 75, TRUE, extrarange = -5)

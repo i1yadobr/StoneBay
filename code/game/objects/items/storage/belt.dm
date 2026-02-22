@@ -17,6 +17,7 @@
 
 	drop_sound = SFX_DROP_TOOLBELT
 	pickup_sound = SFX_PICKUP_TOOLBELT
+	equip_sound = SFX_EQUIP_TOOLBELT
 
 /obj/item/storage/belt/verb/toggle_layer()
 	set name = "Switch Belt Layer"
@@ -26,9 +27,9 @@
 	update_icon()
 
 /obj/item/storage/on_update_icon()
-	if(ismob(src.loc))
-		var/mob/M = src.loc
-		M.update_inv_belt()
+	if(ismob(loc))
+		var/mob/living/M = loc
+		M.update_inv_belt(TRUE)
 
 /obj/item/storage/belt/get_mob_overlay(mob/user_mob, slot)
 	. = ..()
@@ -81,7 +82,6 @@
 		/obj/item/device/robotanalyzer
 		)
 
-
 /obj/item/storage/belt/utility/full/New()
 	..()
 	new /obj/item/screwdriver(src)
@@ -110,7 +110,6 @@
 	new /obj/item/wirecutters/old(src)
 	new /obj/item/device/t_scanner(src)
 	new /obj/item/stack/cable_coil(src, 30, "red")
-
 
 /obj/item/storage/belt/medical
 	name = "medical belt"
@@ -205,7 +204,6 @@
 	new /obj/item/device/soulstone(src)
 	new /obj/item/device/soulstone(src)
 	new /obj/item/device/soulstone(src)
-
 
 /obj/item/storage/belt/champion
 	name = "championship belt"
@@ -342,3 +340,30 @@
 		/obj/item/wrench,
 		/obj/item/crowbar
 		)
+
+/obj/item/storage/belt/sabre
+	name = "sabre sheath"
+	desc = "An ornate sheath designed to hold an officer's blade."
+	icon_state = "sheath"
+	item_state = "sheath"
+	base_icon_state = "sheath"
+	storage_slots = 1
+	w_class = ITEM_SIZE_HUGE
+	max_w_class = ITEM_SIZE_HUGE
+	can_hold = list(/obj/item/melee/sabre)
+
+/obj/item/storage/belt/sabre/Initialize()
+	. = ..()
+	new /obj/item/melee/sabre(src)
+	update_icon()
+
+/obj/item/storage/belt/sabre/on_update_icon()
+	icon_state = initial(base_icon_state)
+	item_state = initial(base_icon_state)
+	if(contents.len)
+		icon_state += "-sabre"
+		item_state += "-sabre"
+
+	if(ismob(loc))
+		var/mob/living/M = loc
+		M.update_inv_belt(FALSE)

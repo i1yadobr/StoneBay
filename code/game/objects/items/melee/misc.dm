@@ -21,7 +21,6 @@
 	origin_tech = list(TECH_COMBAT = 4)
 	attack_verb = list("flicked", "whipped", "lashed")
 
-
 /obj/item/melee/whip/abyssal
 	name = "abyssal whip"
 	desc = "A weapon from the abyss. Requires 70 attack to wield."
@@ -49,7 +48,6 @@
 	item_state = "officersword"
 	slot_flags = SLOT_BELT
 	applies_material_colour = FALSE
-
 /obj/item/material/sword/replica/officersword/marine
 	name = "marine NCO's sword"
 	desc = "A polished sword issued to SCG Marine NCOs."
@@ -104,3 +102,38 @@
 	. = ..()
 	if(times_consumed)
 		.+="\nIt has been sharpened [times_consumed] times."
+
+/obj/item/melee/sabre
+	name = "officer's sabre"
+	desc = "An elegant weapon, its monomolecular edge is capable of cutting through flesh and bone with ease."
+
+	icon_state = "sabre"
+	item_state = "sabre"
+
+	force = 20
+	throwforce = 10
+	w_class = ITEM_SIZE_HUGE
+	mod_weight = 1.75
+	mod_reach = 1.65
+	mod_handy = 1.25
+	armor_penetration = 50
+	sharp = TRUE
+	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
+
+	hitsound = SFX_SABER_HIT
+	drop_sound = SFX_DROP_SWORD
+	block_sound = SFX_SABER_PARRY
+
+/obj/item/melee/sabre/on_exit_storage(obj/item/storage/Storage)
+	..()
+	var/obj/item/storage/belt/sabre/sabre = Storage
+	if(istype(sabre))
+		sabre.update_icon()
+		playsound(src, SFX_SABERSHEATHOUT, 25, TRUE)
+
+/obj/item/melee/sabre/on_enter_storage(obj/item/storage/Storage)
+	..()
+	var/obj/item/storage/belt/sabre/sabre = Storage
+	if(istype(sabre))
+		sabre.update_icon()
+		playsound(src, SFX_SABERSHEATHIN, 25, TRUE)

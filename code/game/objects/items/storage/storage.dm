@@ -163,7 +163,7 @@
 		to_chat(usr, SPAN("warning", "\The [src] is locked and cannot be opened!"))
 		return
 	if(src.use_sound)
-		playsound(src.loc, src.use_sound, 50, TRUE, -5)
+		playsound(src, src.use_sound, 50, TRUE, -5)
 	if(isrobot(user) && user.hud_used)
 		var/mob/living/silicon/robot/robot = user
 		if(robot.shown_robot_modules) //The robot's inventory is open, need to close it first.
@@ -186,7 +186,7 @@
 		storage_ui.after_close(user)
 
 	if(src.use_sound)
-		playsound(src.loc, src.use_sound, 50, TRUE, -5)
+		playsound(src, src.use_sound, 50, TRUE, -5)
 
 	SEND_SIGNAL(src, SIGNAL_STORAGE_CLOSED, src, user)
 
@@ -307,7 +307,7 @@
 					M.show_message(SPAN("notice", "\The [usr] puts [W] into [src]."))
 		update_ui_after_item_insertion()
 		if(use_sound)
-			playsound(loc, use_sound, 50, TRUE, -5)
+			playsound(src, use_sound, 50, TRUE, -5)
 		update_icon()
 	return TRUE
 
@@ -450,12 +450,12 @@
 	if(success && !failure)
 		to_chat(user, SPAN("notice", "You put everything into \the [src]."))
 		if (src.use_sound)
-			playsound(src.loc, src.use_sound, 50, TRUE, -5)
+			playsound(src, src.use_sound, 50, TRUE, -5)
 		update_ui_after_item_insertion()
 	else if(success)
 		to_chat(user, SPAN("notice", "You put some things into \the [src]."))
 		if (src.use_sound)
-			playsound(src.loc, src.use_sound, 50, TRUE, -5)
+			playsound(src, src.use_sound, 50, TRUE, -5)
 		update_ui_after_item_insertion()
 	else
 		to_chat(user, SPAN("notice", "You fail to pick anything up with \the [src]."))
