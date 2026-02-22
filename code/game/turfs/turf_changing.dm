@@ -19,8 +19,10 @@
 
 //Creates a new turf
 /turf/proc/ChangeTurf(turf/N, tell_universe = TRUE, force_lighting_update = FALSE, keep_air = FALSE)
+	var/turf/orig_turf
 	if(!ispath(N))
-		CRASH("Wrong turf-type submitted to ChangeTurf()")
+		orig_turf = N
+		N = orig_turf.type
 
 	// Spawning space in the middle of a multiz stack should just spawn an open turf.
 	if(ispath(N, /turf/space))
@@ -29,7 +31,7 @@
 			var/area/A = get_area(src)
 			N = A?.open_turf || open_turf_type || /turf/simulated/open
 
-	if (!(atom_flags & ATOM_FLAG_INITIALIZED))
+	if(!(atom_flags & ATOM_FLAG_INITIALIZED))
 		return new N(src)
 
 	// This makes sure that turfs are not changed to space when one side is part of a zone
@@ -86,6 +88,16 @@
 	comp_lookup?.Cut()
 	datum_components?.Cut()
 	signal_procs?.Cut()
+
+	if(!isnull(orig_turf))
+		name = orig_turf.name
+		desc = orig_turf.desc
+		if(istype(orig_turf, /turf/simulated/floor))
+			var/turf/simulated/floor/SOF = orig_turf
+			var/turf/simulated/floor/SSF = src
+			SSF.flooring = SOF.flooring
+		icon = orig_turf.icon
+		icon_state = orig_turf.icon_state
 
 	// Run the Destroy() chain.
 	qdel(src)
