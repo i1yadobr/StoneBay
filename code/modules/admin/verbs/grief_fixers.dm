@@ -19,8 +19,7 @@
 	to_chat(usr, "\[1/5\] - Supermatter depowered")
 
 	// Remove all gases from all pipenets
-	for(var/net in SSmachines.machinery)
-		var/datum/pipe_network/PN = net
+	for(var/datum/pipe_network/PN in SSmachines.machinery)
 		for(var/datum/gas_mixture/G in PN.gases)
 			G.gas = list()
 			G.update_values()
