@@ -123,7 +123,7 @@
 
 	if(open && over_object == usr && Adjacent(usr))
 		to_chat(usr, SPAN("notice", "You begin to remove \the [src]..."))
-		if (do_after(usr, 30, src, ))
+		if (do_after(usr, 30, src))
 			to_chat(usr, SPAN("notice", "You have removed \the [src]."))
 			var/obj/item/clamp/C = new /obj/item/clamp(src.loc)
 			C.forceMove(usr.loc)

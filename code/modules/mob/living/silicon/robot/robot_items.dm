@@ -610,7 +610,7 @@
 			playsound(src.loc, deploy_sound, 10, 1)
 		inuse = 1
 		var/obj/item/R = held[length(held)]
-		if(do_after(user,deploy_time,src))
+		if(do_after(user, deploy_time, src))
 			R.forceMove(loc)
 			held -= R
 			if (istype(R, /obj/item/bodybag))
@@ -638,7 +638,7 @@
 					user.visible_message(SPAN("notice", "\The [user] started picking up [O]."))
 					if (pickup_sound)
 						playsound(src.loc, pickup_sound, 20, 1)
-					if(do_after(user,pickup_time,src))
+					if(do_after(user, pickup_time, src))
 						inuse = 0
 						to_chat(user, SPAN("notice", "You collect [O]."))
 						O.forceMove(src)
@@ -864,7 +864,7 @@
 			if (istype(A,T.item_type))
 				inuse = 1
 				user.visible_message(SPAN("notice", "\The [user] starts recycling [A]..."))
-				if(do_after(user,recycling_time,src))
+				if(do_after(user, recycling_time, src))
 					to_chat(user, SPAN("notice", "\The [src] consumes [A] and you get some energy back."))
 					if(istype(A, /obj/structure/closet))
 						var/obj/structure/closet/C = A
@@ -892,7 +892,7 @@
 		playsound(src.loc, activate_sound, 10, 1)
 		to_chat(user, SPAN("notice", "Dispensing [selected.name]..."))
 		inuse = 1
-		if(do_after(user,selected.delay,src))
+		if(do_after(user, selected.delay, src))
 			inuse = 0
 			var/obj/product = null
 			if (selected.item_type == /obj/item/pipe)

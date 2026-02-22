@@ -169,7 +169,7 @@
 	forceMove(get_turf(target))
 	set_next_think(world.time)
 
-	if(do_after(owner,12,target,progress = 0))
+	if(do_after(owner, 12, target, progress = 0))
 		to_chat(target, SPAN("danger", "You now have a gun pointed at you. No sudden moves!"))
 		aiming_with = thing
 		aiming_at = target

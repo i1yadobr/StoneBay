@@ -113,7 +113,7 @@ BORER_STATUS_HUSK = list(\
 	to_chat(H, "Something slimy begins probing at the opening of your ear canal...")
 	to_chat(src, "You slither up [H] and begin probing at their ear canal...")
 
-	if(!do_after(src,30, progress = 0))
+	if(!do_after(src, 30, progress = 0))
 		to_chat(src, "As [H] moves away, you are dislodged and fall to the ground.")
 		return
 

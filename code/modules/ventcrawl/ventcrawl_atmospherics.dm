@@ -73,19 +73,19 @@
 		switch(broken)
 			if(VENT_UNDAMAGED)
 
-				if(do_after(user, 50, src, 1, 1))
+				if(do_after(user, 50, src, TRUE, TRUE))
 					broken = VENT_DAMAGED_STAGE_ONE
 
 			if(VENT_DAMAGED_STAGE_ONE)
-				if(do_after(user, 50, src, 1, 1))
+				if(do_after(user, 50, src, TRUE, TRUE))
 					broken = VENT_DAMAGED_STAGE_TWO
 
 			if(VENT_DAMAGED_STAGE_TWO)
-				if(do_after(user, 40, src, 1, 1))
+				if(do_after(user, 40, src, TRUE, TRUE))
 					broken = VENT_DAMAGED_STAGE_THREE
 
 			if(VENT_DAMAGED_STAGE_THREE)
-				if(do_after(user, 30, src, 1, 1))
+				if(do_after(user, 30, src, TRUE, TRUE))
 					broken = VENT_BROKEN
 					welded = 0
 					update_icon()
@@ -111,19 +111,19 @@
 		switch(broken)
 			if(VENT_UNDAMAGED)
 
-				if(do_after(user, 50, src, 1, 1))
+				if(do_after(user, 50, src, TRUE, TRUE))
 					broken = VENT_DAMAGED_STAGE_ONE
 
 			if(VENT_DAMAGED_STAGE_ONE)
-				if(do_after(user, 50, src, 1, 1))
+				if(do_after(user, 50, src, TRUE, TRUE))
 					broken = VENT_DAMAGED_STAGE_TWO
 
 			if(VENT_DAMAGED_STAGE_TWO)
-				if(do_after(user, 40, src, 1, 1))
+				if(do_after(user, 40, src, TRUE, TRUE))
 					broken = VENT_DAMAGED_STAGE_THREE
 
 			if(VENT_DAMAGED_STAGE_THREE)
-				if(do_after(user, 30, src, 1, 1))
+				if(do_after(user, 30, src, TRUE, TRUE))
 					broken = VENT_BROKEN
 					welded = 0
 					update_icon()
