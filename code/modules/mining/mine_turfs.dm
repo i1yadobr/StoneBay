@@ -316,7 +316,7 @@ var/list/mining_floors = list()
 
 		to_chat(user, SPAN("warning", "You start chiselling [src] into a sculptable block."))
 
-		if(!do_after(user,80))
+		if(!do_after(user, 80))
 			return
 
 		if (!istype(src, /turf/simulated/mineral))

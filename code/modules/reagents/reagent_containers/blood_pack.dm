@@ -114,7 +114,7 @@
 		attached = null
 	else if(ishuman(over_object))
 		visible_message(SPAN_WARNING("\The [usr] starts hooking \the [over_object] up to \the [src]."))
-		if(do_after(usr, 30, ))
+		if(do_after(usr, 30, src))
 			to_chat(usr, "You hook \the [over_object] up to \the [src].")
 			attached = over_object
 			set_next_think(world.time)

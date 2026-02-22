@@ -153,7 +153,7 @@
 	if(emagged)
 		return 0
 
-	if (do_after(user, 6, src))
+	if(do_after(user, 6, src))
 		playsound(src.loc, 'sound/effects/computer_emag.ogg', 25)
 		emagged = TRUE
 		to_chat(user, SPAN("notice", "You emag \the [src]."))

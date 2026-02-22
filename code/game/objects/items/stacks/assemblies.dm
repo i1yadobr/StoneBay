@@ -57,7 +57,7 @@
 				SPAN_NOTICE("You begin assembling \the [singular_name]."))
 		in_use = 1
 
-		if (!do_after(usr, 25, src, ))
+		if (!do_after(usr, 25, src))
 			in_use = 0
 			return
 
@@ -87,7 +87,7 @@
 				SPAN_NOTICE("You begin assembling \the [singular_name]."))
 		in_use = 1
 
-		if (!do_after(usr, 40, src, ))
+		if (!do_after(usr, 40, src))
 			in_use = 0
 			return
 

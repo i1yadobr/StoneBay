@@ -528,7 +528,7 @@
 
 			to_chat(D, SPAN("danger", "You begin decompiling [M]."))
 
-			if(!do_after(D,50,M))
+			if(!do_after(D, 50, M))
 				to_chat(D, SPAN("danger", "You need to remain still while decompiling such a large object."))
 				return
 

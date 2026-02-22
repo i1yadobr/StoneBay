@@ -25,7 +25,7 @@
 			to_chat(user, SPAN("notice", "There's already a grave marker here."))
 		else
 			visible_message(SPAN("notice", "\The [user] starts making a grave marker on top of \the [src]"))
-			if( do_after(user, 50, src) )
+			if(do_after(user, 50, src))
 				visible_message(SPAN("notice", "\The [user] finishes the grave marker"))
 				var/obj/item/stack/material/wood/plank = W
 				plank.use(1)
