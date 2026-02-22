@@ -21,3 +21,6 @@
 
 /// from turf CtrlClickOn(): (/mob)
 #define SIGNAL_MOB_CTRL_CLICK "mob_ctrl_click"
+
+/// Called on `/atom/proc/examine` (atom/target, list/examine_result)
+#define SIGNAL_MOB_EXAMINED "mob_examined"
