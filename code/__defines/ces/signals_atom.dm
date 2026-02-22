@@ -39,3 +39,6 @@
 
 //from SSatoms InitAtom - Only if the  atom was not deleted or failed initialization and has a loc
 #define SIGNAL_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON "atom_init_success_on"
+
+/// Called on `/atom/proc/examine` (mob/user, list/examine_result)
+#define SIGNAL_EXAMINED "examined"
