@@ -26,9 +26,11 @@
 
 	delete_after = TRUE
 
-	var/species = list(SPECIES_HUMAN)                 // List of species to pick from.
-	var/corpse_outfits = list(/decl/hierarchy/outfit) // List of outfits to pick from. Uses util_pick_weight()
+	var/species = list(SPECIES_HUMAN)					// List of species to pick from.
+	var/corpse_outfits = list(/decl/hierarchy/outfit)	// List of outfits to pick from. Uses util_pick_weight()
 	var/spawn_flags = (~0)
+	var/damage = 0										// How badly are they damaged?
+	var/bullet = 0										// Maybe they were shot?
 
 	var/skin_colors_per_species   = list() // Custom skin colors, per species -type-, if any. For example if you want dead Tajaran to always have brown fur, or similar
 	var/skin_tones_per_species    = list() // Custom skin tones, per species -type-, if any. See above as to why.
@@ -42,10 +44,20 @@
 	var/mob/living/carbon/human/M = new /mob/living/carbon/human(loc)
 
 	randomize_appearance(M)
-	equip_outfit(M)
+	//TODO: Add a function that will assign a random death time. For more details, see ‘/mob/proc/death’
+	// At the moment, it sets the time of death based on local time
+	M.death(TRUE)
+	if(bullet)
+		M.bullet_rand_act(bullet)
+	if(damage > 0)
+		if(prob(80))
+			M.adjustBruteLoss(rand(damage * 0.75, damage * 1.25))
+		else
+			M.adjustFireLoss(rand(damage * 0.75, damage * 1.25))
+	else
+		M.adjustOxyLoss(M.maxHealth)
 
-	M.adjustOxyLoss(M.maxHealth) // Cease life functions.
-	M.setBrainLoss(M.maxHealth)
+	equip_outfit(M)
 
 	var/obj/item/organ/internal/heart/corpse_heart = M.internal_organs_by_name[BP_HEART]
 	if(corpse_heart)
@@ -58,6 +70,7 @@
 	var/obj/structure/bed/C = locate() in T
 	if(C)
 		C.buckle_mob(M)
+	M.dir = pick(GLOB.cornerdirs)
 
 	. = ..()
 
@@ -112,6 +125,9 @@
 
 	M.SetName((CORPSE_SPAWNER_RANDOM_NAME & spawn_flags) ? M.species.get_random_name(M.gender) : name)
 	M.real_name = M.name
+	var/new_body_build = pick(M.species.get_body_build_datum_list(M.gender))
+	if(new_body_build)
+		M.change_body_build(new_body_build)
 
 #undef HEX_COLOR_TO_RGB_ARGS
 
@@ -124,9 +140,72 @@
 	var/decl/hierarchy/outfit/corpse_outfit = outfit_by_type(util_pick_weight(corpse_outfits))
 	corpse_outfit.equip(M, equip_adjustments = adjustments)
 
+/obj/effect/landmark/corpse/officer
+	name = "Security Officer"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/security/officer/corpse)
+
+/obj/effect/landmark/corpse/warden
+	name = "Warden"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/security/warden/corpse)
+
+/obj/effect/landmark/corpse/hos
+	name = "Head of security"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/security/hos/corpse)
+
+/obj/effect/landmark/corpse/mining
+	name = "Miner"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/mining/corpse)
+
+/obj/effect/landmark/corpse/mining/rig
+	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/mining/void)
+
+/obj/effect/landmark/corpse/cargo_tech
+	name = "Cargo technical"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/cargo_tech/corpse)
+
+/obj/effect/landmark/corpse/qm
+	name = "Quartermaster"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/qm/corpse)
+
+/obj/effect/landmark/corpse/cmo
+	name = "Chief Medical Officer"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/medical/cmo)
+
+/obj/effect/landmark/corpse/rd
+	name = "Research Director"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/science/rd)
+
+/obj/effect/landmark/corpse/roboticist
+	name = "Roboticist"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/science/roboticist)
+
+/obj/effect/landmark/corpse/bartender
+	name = "Bartender"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/service/bartender)
+
+/obj/effect/landmark/corpse/captain
+	name = "Captain"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/captain)
+
+/obj/effect/landmark/corpse/hop
+	name = "Head of Personal"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/hop)
+
+/obj/effect/landmark/corpse/virologist
+	name = "Virologist"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/medical/virologist)
+
+/obj/effect/landmark/corpse/gardener
+	name = "Gardener"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/service/gardener)
+
 /obj/effect/landmark/corpse/chef
 	name = "Chef"
 	corpse_outfits = list(/decl/hierarchy/outfit/job/service/chef)
+
+/obj/effect/landmark/corpse/prisoner
+	name = "Prisoner"
+	corpse_outfits = list(/decl/hierarchy/outfit/job/prisoner)
 
 /obj/effect/landmark/corpse/doctor
 	name = "Doctor"
@@ -146,13 +225,6 @@
 /obj/effect/landmark/corpse/clown
 	name = "Clown"
 	corpse_outfits = list(/decl/hierarchy/outfit/clown)
-
-/obj/effect/landmark/corpse/miner
-	name = "Miner"
-	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/mining)
-
-/obj/effect/landmark/corpse/miner/rig
-	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/mining/void)
 
 /obj/effect/landmark/corpse/bridgeofficer
 	name = "Bridge Officer"

@@ -81,7 +81,8 @@
 		L.handle_hud_icons_health()
 
 	timeofdeath = world.time
-	if(mind) mind.store_memory("Time of death: [stationtime2text()]", 0)
+	if(mind)
+		mind.store_memory("Time of death: [stationtime2text()]", 0)
 	switch_from_living_to_dead_mob_list()
 
 	update_icon()
