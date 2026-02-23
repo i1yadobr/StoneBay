@@ -1211,11 +1211,11 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_TACHOLSTEROUT = list(
 		'sound/effects/holster/tactiholsterout.ogg'
 	),
-	SFX_SABERSHEATHIN = list(
-		'sound/effects/holster/sabersheathin.ogg'
+	SFX_SABRESHEATHIN = list(
+		'sound/effects/holster/sabresheathin.ogg'
 	),
-	SFX_SABERSHEATHOUT = list(
-		'sound/effects/holster/sabersheathout.ogg'
+	SFX_SABRESHEATHOUT = list(
+		'sound/effects/holster/sabresheathout.ogg'
 	),
 	// DRINK & EAT
 	SFX_DRINK = list(
@@ -1559,11 +1559,11 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_PARRY = list(
 		'sound/weapons/parry.ogg'
 	),
-	SFX_SABER_HIT = list(
-		'sound/weapons/saber_hit.ogg'
+	SFX_SABRE_HIT = list(
+		'sound/weapons/sabre_hit.ogg'
 	),
-	SFX_SABER_PARRY = list(
-		'sound/weapons/saber_parry.ogg'
+	SFX_SABRE_BLOCK = list(
+		'sound/weapons/sabre_block.ogg'
 	),
 	// MISC
 	SFX_VENT = list(

@@ -120,20 +120,20 @@
 	sharp = TRUE
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 
-	hitsound = SFX_SABER_HIT
+	hitsound = SFX_SABRE_HIT
 	drop_sound = SFX_DROP_SWORD
-	block_sound = SFX_SABER_PARRY
+	block_sound = SFX_SABRE_BLOCK
 
 /obj/item/melee/sabre/on_exit_storage(obj/item/storage/Storage)
 	..()
 	var/obj/item/storage/belt/sabre/sabre = Storage
 	if(istype(sabre))
 		sabre.update_icon()
-		playsound(src, SFX_SABERSHEATHOUT, 25, TRUE)
+		playsound(src, SFX_SABRESHEATHOUT, 50, TRUE)
 
 /obj/item/melee/sabre/on_enter_storage(obj/item/storage/Storage)
 	..()
 	var/obj/item/storage/belt/sabre/sabre = Storage
 	if(istype(sabre))
 		sabre.update_icon()
-		playsound(src, SFX_SABERSHEATHIN, 25, TRUE)
+		playsound(src, SFX_SABRESHEATHIN, 50, TRUE)

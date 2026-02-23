@@ -281,8 +281,8 @@
 #define SFX_SHEATHOUT               "sheath_out"
 #define SFX_TACHOLSTERIN            "tacholster_in"
 #define SFX_TACHOLSTEROUT           "tacholster_out"
-#define SFX_SABERSHEATHIN           "sabersheath_in"
-#define SFX_SABERSHEATHOUT          "sabersheath_out"
+#define SFX_SABRESHEATHIN           "sabresheath_in"
+#define SFX_SABRESHEATHOUT          "sabresheath_out"
 
 // DRINK & EAT
 #define SFX_DRINK                   "drink"
@@ -331,8 +331,8 @@
 #define SFX_STUNSTICK_HIT           "stunstick_hit"
 #define SFX_FALL_DAMAGE             "fall_damage"
 #define SFX_PARRY                   "parry"
-#define SFX_SABER_HIT               "saber_hit"
-#define SFX_SABER_PARRY            	"saber_parry"
+#define SFX_SABRE_HIT               "sabre_hit"
+#define SFX_SABRE_BLOCK            	"sabre_block"
 
 // DEVICES
 #define SFX_GEIGER_LOW              "geiger_low"
