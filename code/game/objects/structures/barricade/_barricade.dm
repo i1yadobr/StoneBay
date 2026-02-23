@@ -70,7 +70,7 @@
 		qdel(src)
 
 /obj/structure/barricade/proc/Break()
-	pass()
+	return
 
 /obj/structure/barricade/security/CanPass(atom/movable/mover, turf/target)
 	// Extra check that allows bullets to pass through.

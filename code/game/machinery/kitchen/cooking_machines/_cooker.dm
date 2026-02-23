@@ -207,7 +207,7 @@
 						smoke.set_up(10, 0, loc)
 						smoke.start()
 		if(BURNED)
-			pass()
+			return
 		else
 			stop()
 			CRASH("Something weird happened during product_status() check in [src].")

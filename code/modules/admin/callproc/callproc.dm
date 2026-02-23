@@ -27,17 +27,15 @@
 	var/target = null
 	var/targetselected = 0
 
-	switch(alert("Proc owned by something?",, "Yes", "No", "Cancel"))
+	switch(alert("Proc owned by something?",, "Yes", "No"))
 		if("Yes")
 			targetselected=1
 			target = proc_call_select_target()
 			if(!target)
 				to_chat(usr, "Proc call cancelled.")
 				return
-		if("Cancel")
-			return
 		if("No")
-			pass()
+			return
 
 	callproc_targetpicked(targetselected, target)
 
@@ -144,17 +142,15 @@
 			if("function result")
 				var/target = null
 				var/targetselected = FALSE
-				switch(alert("Proc owned by something?",, "Yes", "No", "Cancel"))
+				switch(alert("Proc owned by something?",, "Yes", "No"))
 					if("Yes")
 						targetselected = TRUE
 						target = proc_call_select_target()
 						if(!target)
 							to_chat(usr, "Proc call cancelled.")
 							return CANCEL
-					if("Cancel")
-						return CANCEL
 					if("No")
-						pass()
+						return CANCEL
 				var/datum/callproc/CP = new(C)
 				current = CP.callproc(targetselected, target)
 				if(isnull(current)) return CANCEL
@@ -200,20 +196,14 @@
 				if(!M) return
 				current = get_area(M)
 				if(!current)
-					switch(alert("\The [M] appears to not have an area; do you want to pass null instead?",, "Yes", "Cancel"))
-						if("Yes")
-							pass()
-						if("Cancel")
-							return CANCEL
+					if(alert("\The [M] appears to not have an area; do you want to pass null instead?",, "Yes", "Cancel") == "Cancel")
+						return CANCEL
 
 			if("marked datum")
 				current = C.holder.marked_datum()
 				if(!current)
-					switch(alert("You do not currently have a marked datum; do you want to pass null instead?",, "Yes", "Cancel"))
-						if("Yes")
-							pass()
-						if("Cancel")
-							return CANCEL
+					if(alert("You do not currently have a marked datum; do you want to pass null instead?",, "Yes", "Cancel") == "Cancel")
+						return CANCEL
 
 			if("click on atom")
 				waiting_for_click = 1
