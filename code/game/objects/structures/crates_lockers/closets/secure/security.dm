@@ -14,6 +14,7 @@
 		/obj/item/storage/garment/captain,
 		/obj/item/device/radio/headset/heads/captain,
 		/obj/item/gun/energy/egun/elite,
+		/obj/item/storage/belt/sabre,
 		/obj/item/melee/telebaton,
 		/obj/item/cartridge/captain,
 	)

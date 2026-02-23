@@ -367,3 +367,65 @@
 	if(ismob(loc))
 		var/mob/living/M = loc
 		M.update_inv_belt(FALSE)
+
+// Same as base storage's proc, but prevents sabre's dropping sound by checking if the action
+// is initiated by a living mob. If it is, the sabre is just pulled out of the sheath and
+// its on_exit_storage() will handle the sound.
+//
+// TODO(rufus): if /obj/item/proc/dropped() is updated to receive the new location and can actually
+// distinguish between user taking the item into hands vs item dropping on the ground, determine if
+// the sound is needed there instead of doing this override.
+/obj/item/storage/belt/sabre/remove_from_storage(obj/item/W as obj, atom/new_location, feedback = TRUE)
+	if(!istype(W))
+		return FALSE
+	if(locked)
+		to_chat(usr, SPAN("warning", "\The [W] cannot be removed because [src] is locked."))
+		return FALSE
+	new_location = new_location || get_turf(src)
+
+	storage_ui?.on_pre_remove(usr, W)
+
+	if(ismob(loc))
+		// Check if usr is a living being and if so, set `changing_slots` to TRUE
+		// so no dropping sound is played, on_exit_storage() will play the unsheathing sound.
+		W.dropped(usr, isliving(usr))
+	if(ismob(new_location))
+		W.hud_layerise()
+	else
+		W.reset_plane_and_layer()
+	W.forceMove(new_location)
+
+	if(feedback)
+		update_ui_after_item_removal()
+		update_icon()
+	W.on_exit_storage(src)
+	return TRUE
+
+// Same as above, an exact copy of the base proc except for passing `changing_slots` variable
+// to the mob's drop() proc so the dropping sound is not played when the sabre is sheathed.
+/obj/item/storage/belt/sabre/handle_item_insertion(obj/item/W, feedback = TRUE)
+	if(QDELETED(W))
+		return FALSE
+	if(ismob(W.loc))
+		var/mob/M = W.loc
+		if(!M.drop(W, changing_slots = TRUE))
+			return FALSE
+	W.forceMove(src)
+	W.on_enter_storage(src)
+	add_fingerprint(usr)
+	if(feedback)
+		if(usr)
+			for(var/mob/M in viewers())
+				if(M == usr)
+					to_chat(usr, SPAN("notice", "You put \the [W] into [src]."))
+				// If someone is standing close enough, they can see the insertion
+				else if(M in range(1))
+					M.show_message(SPAN("notice", "\The [usr] puts [W] into [src]."))
+				// Otherwise, they can only see normal and large items from a distance
+				else if(W && W.w_class >= ITEM_SIZE_NORMAL)
+					M.show_message(SPAN("notice", "\The [usr] puts [W] into [src]."))
+		update_ui_after_item_insertion()
+		if(use_sound)
+			playsound(src, use_sound, 50, TRUE, -5)
+		update_icon()
+	return TRUE

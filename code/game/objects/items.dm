@@ -313,6 +313,9 @@
 	var/old_loc = loc
 
 	var/changing_slots = FALSE
+	// TODO: Change the logic behind this behavior
+	// In this form, it “drops the object on the floor”, and slightly below, the proc 'pickup()' occurs for a moment when the object is picked up
+	// The system itself works, but it's cursed and just bad to leave it as it is
 	// Removing from a storage
 	if(istype(loc, /obj/item/storage))
 		var/obj/item/storage/S = loc
@@ -387,9 +390,10 @@
 		if(user.r_hand)
 			user.r_hand.update_twohanding()
 
-	if(!changing_slots && !istype(loc, /obj/item/clothing/accessory) && !istype(loc, /obj/item/storage/belt/sabre))
+	if(!changing_slots && !istype(loc, /obj/item/clothing/accessory))
 		play_drop_sound()
 
+	update_light()
 	SEND_SIGNAL(src, SIGNAL_ITEM_UNEQUIPPED, src, user)
 
 // TODO(rufus): rename to "before_pickup" or other more descriptive name as this proc doesn't actually pick up anything,

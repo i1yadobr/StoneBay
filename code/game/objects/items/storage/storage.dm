@@ -377,6 +377,8 @@
 	if(isrobot(user) && W == user.get_active_hand())
 		return //Robots can't store their modules.
 
+	// TODO: Check the functionality of this feature
+	// Remove this or move to '/obj/item/device/lightreplacer/attackby' if it works
 	if(istype(W, /obj/item/device/lightreplacer))
 		var/obj/item/device/lightreplacer/LP = W
 		var/amt_inserted = 0
