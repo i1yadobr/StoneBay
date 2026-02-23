@@ -148,6 +148,12 @@
 	// Approximate text height
 	var/static/regex/html_metachars = new(@"&[A-Za-z]{1,7};", "g")
 	var/complete_text = SPAN("center maptext[size ? " [size]" : ""]", "<font style='color: [tgt_color]'>[text]</font>")
+
+	// Apparently, regexes work slow enough to let the client slip away before we reach this point. Luckily, everything below this check seems to be quick enought to not require even more checks. ~ToTh
+	if(QDELETED(owner) || !owner.client)
+		qdel(src)
+		return
+
 	var/mheight = WXH_TO_HEIGHT(owned_by.MeasureText(complete_text, null, CHAT_MESSAGE_WIDTH))
 	approx_lines = max(1, mheight / CHAT_MESSAGE_APPROX_LHEIGHT)
 

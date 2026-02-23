@@ -221,12 +221,12 @@
 	poisedamage = 20.0
 
 /obj/item/projectile/energy/plasmastun/proc/bang(mob/living/carbon/M)
-
+	if(!istype(M))
+		return
 	to_chat(M, SPAN("danger", "You hear a loud roar."))
 	var/ear_safety = 0
-	if(iscarbon(M))
-		if(ishuman(M))
-			ear_safety = M.get_ear_protection()
+	if(ishuman(M))
+		ear_safety = M.get_ear_protection()
 	if(ear_safety == 1)
 		M.make_dizzy(120)
 	else if (ear_safety > 1)
