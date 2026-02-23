@@ -1093,10 +1093,6 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	return
 
 /obj/item/proc/play_drop_sound()
-	log_debug("\n\n[src]'s player_dropped_sound is called")
-	for(var/callee/p = caller, p, p = p.caller)
-		log_debug("[p.name] [p.proc]")
-		if(p.file) log_debug("  [p.file]:[p.line]")
 	if(!drop_sound)
 		return
 
