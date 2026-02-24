@@ -48,6 +48,7 @@
 	item_state = "officersword"
 	slot_flags = SLOT_BELT
 	applies_material_colour = FALSE
+
 /obj/item/material/sword/replica/officersword/marine
 	name = "marine NCO's sword"
 	desc = "A polished sword issued to SCG Marine NCOs."
