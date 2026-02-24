@@ -19,7 +19,7 @@
 
 #define CORPSE_SPAWNER_NO_RANDOMIZATION ~ (CORPSE_SPAWNER_RANDOM_NAME|CORPSE_SPAWNER_RANDOM_SKIN_TONE|CORPSE_SPAWNER_RANDOM_SKIN_COLOR|CORPSE_SPAWNER_RANDOM_HAIR_COLOR|CORPSE_SPAWNER_RANDOM_HAIR_STYLE|CORPSE_SPAWNER_RANDOM_FACIAL_STYLE|CORPSE_SPAWNER_RANDOM_EYE_COLOR)
 
-
+// TODO: Add the ability to attach bullet wounds with shrapnel to corpses
 /obj/effect/landmark/corpse
 	name = "Unknown"
 	icon_state = "landmark_corpse"
@@ -30,7 +30,6 @@
 	var/corpse_outfits = list(/decl/hierarchy/outfit)	// List of outfits to pick from. Uses util_pick_weight()
 	var/spawn_flags = (~0)
 	var/damage = 0										// How badly are they damaged?
-	var/bullet = 0										// Maybe they were shot?
 
 	var/skin_colors_per_species   = list() // Custom skin colors, per species -type-, if any. For example if you want dead Tajaran to always have brown fur, or similar
 	var/skin_tones_per_species    = list() // Custom skin tones, per species -type-, if any. See above as to why.
@@ -47,8 +46,6 @@
 	//TODO: Add a function that will assign a random death time. For more details, see ‘/mob/proc/death’
 	// At the moment, it sets the time of death based on local time
 	M.death(TRUE)
-	if(bullet)
-		M.bullet_rand_act(bullet)
 	if(damage > 0)
 		if(prob(80))
 			M.adjustBruteLoss(rand(damage * 0.75, damage * 1.25))
@@ -140,32 +137,39 @@
 	var/decl/hierarchy/outfit/corpse_outfit = outfit_by_type(util_pick_weight(corpse_outfits))
 	corpse_outfit.equip(M, equip_adjustments = adjustments)
 
+// TODO: Add the ability to assign them several presets that will be selected at random
+// Integrate this function either here or in '/decl/hierarchy/outfit', depending on which is easier/better
+// Don't forget to change the station corpses '/decl/hierarchy/outfit/job',
+// since we don't want players to receive random items, thank you
+
+// TODO: Add various icons for mapping
+// Currently, all landmarks use the same icon, which is not ideal. This needs to be fixed
 /obj/effect/landmark/corpse/officer
 	name = "Security Officer"
-	corpse_outfits = list(/decl/hierarchy/outfit/job/security/officer/corpse)
+	corpse_outfits = list(/decl/hierarchy/outfit/job/security/officer)
 
 /obj/effect/landmark/corpse/warden
 	name = "Warden"
-	corpse_outfits = list(/decl/hierarchy/outfit/job/security/warden/corpse)
+	corpse_outfits = list(/decl/hierarchy/outfit/job/security/warden)
 
 /obj/effect/landmark/corpse/hos
 	name = "Head of security"
-	corpse_outfits = list(/decl/hierarchy/outfit/job/security/hos/corpse)
+	corpse_outfits = list(/decl/hierarchy/outfit/job/security/hos)
 
 /obj/effect/landmark/corpse/mining
 	name = "Miner"
-	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/mining/corpse)
+	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/mining)
 
 /obj/effect/landmark/corpse/mining/rig
 	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/mining/void)
 
 /obj/effect/landmark/corpse/cargo_tech
 	name = "Cargo technical"
-	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/cargo_tech/corpse)
+	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/cargo_tech)
 
 /obj/effect/landmark/corpse/qm
 	name = "Quartermaster"
-	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/qm/corpse)
+	corpse_outfits = list(/decl/hierarchy/outfit/job/cargo/qm)
 
 /obj/effect/landmark/corpse/cmo
 	name = "Chief Medical Officer"
