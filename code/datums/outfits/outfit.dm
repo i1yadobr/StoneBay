@@ -75,6 +75,17 @@ var/list/outfits_decls_by_type_
 			return
 		J.toggle()
 		J.toggle_valve()
+	// Note: Perhaps we should add a check to see if it's a corpse or not
+	// I'm not sure how necessary it is to put blood on the clothes of living humans
+	// But for now, let's leave it as a feature
+	if(H.getBruteLoss() > 50)
+		var/list/clothing_items = list(H.head, H.wear_mask, H.wear_suit, H.w_uniform, H.gloves, H.shoes)
+		for(var/obj/item/C in clothing_items)
+			if(prob(H.getBruteLoss()))
+				C.is_bloodied = TRUE
+				C.blood_color = COLOR_BLOOD_HUMAN
+				C.generate_blood_overlay()
+				C.update_blood_overlay()
 
 // A proc for non-human species, specially Unathi and Tajara, since they e.g.
 // can't normally wear gloves as humans. Correct this issue by trying again, but
