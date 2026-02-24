@@ -141,7 +141,6 @@
 // ITEMS USING
 #define SFX_USE_HANDCUFFS           "use_handcuffs"
 #define SFX_USE_CABLE_HANDCUFFS     "use_cable_handcuffs"
-#define SFX_USE_OUTFIT              "use_outfit"
 #define SFX_USE_SMALL_SWITCH        "use_small_switch"
 #define SFX_USE_LARGE_SWITCH        "use_large_switch"
 #define SFX_USE_PAGE                "use_page"
@@ -151,6 +150,10 @@
 #define SFX_KEYBOARD                "use_keyboard"
 #define SFX_USE_KNOB                "use_knob"
 #define SFX_USE_TELESCOPIC          "use_telescopic"
+
+// ITEMS EQUIPPING
+#define SFX_EQUIP_OUTFIT            "equip_outfit"
+#define SFX_EQUIP_TOOLBELT          "equip_toolbelt"
 
 // PULLING
 #define SFX_PULL_BODY               "pull_body"
@@ -203,7 +206,7 @@
 #define SFX_PICKUP_RING             "pickup_ring"
 #define SFX_PICKUP_RUBBER           "pickup_rubber"
 #define SFX_PICKUP_SCREWDRIVER      "pickup_screwdriver"
-#define SFX_PICKUP_SHEL              "pickup_shelldrop"
+#define SFX_PICKUP_SHEL             "pickup_shelldrop"
 #define SFX_PICKUP_SHOES            "pickup_shoes"
 #define SFX_PICKUP_SHOVEL           "pickup_shovel"
 #define SFX_PICKUP_SODACAN          "pickup_sodacan"
@@ -278,6 +281,8 @@
 #define SFX_SHEATHOUT               "sheath_out"
 #define SFX_TACHOLSTERIN            "tacholster_in"
 #define SFX_TACHOLSTEROUT           "tacholster_out"
+#define SFX_SABRESHEATHIN           "sabresheath_in"
+#define SFX_SABRESHEATHOUT          "sabresheath_out"
 
 // DRINK & EAT
 #define SFX_DRINK                   "drink"
@@ -322,8 +327,12 @@
 #define SFX_FIGHTING_CRUNCH         "fighting_crunch"
 #define SFX_FIGHTING_PUNCH          "fighting_punch"
 #define SFX_FIGHTING_SWING          "fighting_swing"
+#define SFX_FIGHTING_SWING_LEGACY   "fighting_swing_legacy"
 #define SFX_STUNSTICK_HIT           "stunstick_hit"
 #define SFX_FALL_DAMAGE             "fall_damage"
+#define SFX_PARRY                   "parry"
+#define SFX_SABRE_HIT               "sabre_hit"
+#define SFX_SABRE_BLOCK            	"sabre_block"
 
 // DEVICES
 #define SFX_GEIGER_LOW              "geiger_low"
@@ -378,7 +387,6 @@
 #define SFX_VENDING_COFFEE          "vending_coffee"
 #define SFX_VENDING_DROP            "vending_drop"
 #define SFX_VENDING_GENERIC         "vending_generic"
-
 
 // Lighting
 #define SFX_LIGHT_TUBE_ON           "light_tube_on"

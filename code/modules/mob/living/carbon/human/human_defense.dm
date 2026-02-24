@@ -34,7 +34,7 @@ meteor_act
 			var/disarm_chance = sqrt(P.damage+P.agony)*10        // Agony goes into consideration because rubber bullets/stunspheres/etc. are supposed to be disabling ammunition
 			disarm_chance = disarm_chance * (D.w_class/5 + 0.4)  // The bigger an item is, the higher probability of it getting shot
 			if(prob(disarm_chance))
-				playsound(src.loc, 'sound/effects/fighting/Genhit.ogg', 50, 1)
+				playsound(src, SFX_FIGHTING_SWING_LEGACY, 50, 1)
 				D.shot_out(src, P)
 				if(D.w_class > 2)
 					return PROJECTILE_FORCE_BLOCK // Small items don't block the projectile while getting shot out
@@ -457,7 +457,7 @@ meteor_act
 						var/list/holding = list(src.get_active_hand() = 40, src.get_inactive_hand() = 20)
 						for(var/obj/item/D in holding)
 							drop(D)
-						playsound(src.loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
+						playsound(src, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
 
 		//Apply blood
 		attack_bloody(I, user, effective_force, hit_zone)
@@ -670,7 +670,8 @@ meteor_act
 			else if(attacker.poise <= 20)
 				weapon_atk.knocked_out(attacker)
 
-			playsound(loc, 'sound/weapons/parry.ogg', 50, 1, -1) // You know what's gonna happen next, eh?
+			playsound(src, weapon_atk.parry_sound, 50, 1, -1) // You know what's gonna happen next, eh?
+
 			defender.parrying = 0
 			return 1
 		else
@@ -714,7 +715,8 @@ meteor_act
 			else if(defender.poise <= 12.5)
 				weapon_def.knocked_out(defender)
 
-			playsound(loc, 'sound/effects/fighting/Genhit.ogg', 50, 1, -1)
+			playsound(src, weapon_def.block_sound, 50, 1, -1)
+
 		else
 			defender.damage_poise(2.5 + weapon_atk.mod_weight*10 + weapon_atk.mod_reach*5)
 			attacker.damage_poise(weapon_atk.mod_weight*2 + (1-weapon_atk.mod_handy)*2)
@@ -762,7 +764,7 @@ meteor_act
 			else if(defender.poise < 10.0)
 				weapon_def.knocked_out(defender)
 			//visible_message("Debug \[block\]: [attacker] lost [5.0+weapon_def.mod_weight*2+weapon_def.mod_handy*3] poise ([attacker.poise]/[attacker.poise_pool])") // Debug Message
-			playsound(loc, 'sound/effects/fighting/Genhit.ogg', 50, 1, -1)
+			playsound(src, SFX_FIGHTING_SWING_LEGACY, 50, 1, -1)
 		else
 			if(istype(attacker,/mob/living/carbon/human))
 				var/mob/living/carbon/human/human_attacker = attacker
@@ -925,7 +927,7 @@ meteor_act
 				O.throw_at(get_edge_target_turf(src, dir), 1)
 
 				visible_message(SPAN("warning", "[src] blocks [O] with [weapon_def]!"))
-				playsound(src, 'sound/effects/fighting/Genhit.ogg', 50, 1, -1)
+				playsound(src, SFX_FIGHTING_SWING_LEGACY, 50, 1, -1)
 
 				damage_poise(throw_damage / weapon_def.mod_shield)
 				if(poise < throw_damage / weapon_def.mod_shield)

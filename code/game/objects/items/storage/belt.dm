@@ -17,6 +17,7 @@
 
 	drop_sound = SFX_DROP_TOOLBELT
 	pickup_sound = SFX_PICKUP_TOOLBELT
+	equip_sound = SFX_EQUIP_TOOLBELT
 
 /obj/item/storage/belt/verb/toggle_layer()
 	set name = "Switch Belt Layer"
@@ -26,9 +27,9 @@
 	update_icon()
 
 /obj/item/storage/on_update_icon()
-	if(ismob(src.loc))
-		var/mob/M = src.loc
-		M.update_inv_belt()
+	if(ismob(loc))
+		var/mob/living/M = loc
+		M.update_inv_belt(TRUE)
 
 /obj/item/storage/belt/get_mob_overlay(mob/user_mob, slot)
 	. = ..()
@@ -81,7 +82,6 @@
 		/obj/item/device/robotanalyzer
 		)
 
-
 /obj/item/storage/belt/utility/full/New()
 	..()
 	new /obj/item/screwdriver(src)
@@ -110,7 +110,6 @@
 	new /obj/item/wirecutters/old(src)
 	new /obj/item/device/t_scanner(src)
 	new /obj/item/stack/cable_coil(src, 30, "red")
-
 
 /obj/item/storage/belt/medical
 	name = "medical belt"
@@ -205,7 +204,6 @@
 	new /obj/item/device/soulstone(src)
 	new /obj/item/device/soulstone(src)
 	new /obj/item/device/soulstone(src)
-
 
 /obj/item/storage/belt/champion
 	name = "championship belt"
@@ -342,3 +340,92 @@
 		/obj/item/wrench,
 		/obj/item/crowbar
 		)
+
+/obj/item/storage/belt/sabre
+	name = "sabre sheath"
+	desc = "An ornate sheath designed to hold an officer's blade."
+	icon_state = "sheath"
+	item_state = "sheath"
+	base_icon_state = "sheath"
+	storage_slots = 1
+	w_class = ITEM_SIZE_HUGE
+	max_w_class = ITEM_SIZE_HUGE
+	can_hold = list(/obj/item/melee/sabre)
+
+/obj/item/storage/belt/sabre/Initialize()
+	. = ..()
+	new /obj/item/melee/sabre(src)
+	update_icon()
+
+/obj/item/storage/belt/sabre/on_update_icon()
+	icon_state = initial(base_icon_state)
+	item_state = initial(base_icon_state)
+	if(contents.len)
+		icon_state += "-sabre"
+		item_state += "-sabre"
+
+	if(ismob(loc))
+		var/mob/living/M = loc
+		M.update_inv_belt(FALSE)
+
+// Same as base storage's proc, but prevents sabre's dropping sound by checking if the action
+// is initiated by a living mob. If it is, the sabre is just pulled out of the sheath and
+// its on_exit_storage() will handle the sound.
+//
+// TODO(rufus): if /obj/item/proc/dropped() is updated to receive the new location and can actually
+// distinguish between user taking the item into hands vs item dropping on the ground, determine if
+// the sound is needed there instead of doing this override.
+/obj/item/storage/belt/sabre/remove_from_storage(obj/item/W as obj, atom/new_location, feedback = TRUE)
+	if(!istype(W))
+		return FALSE
+	if(locked)
+		to_chat(usr, SPAN("warning", "\The [W] cannot be removed because [src] is locked."))
+		return FALSE
+	new_location = new_location || get_turf(src)
+
+	storage_ui?.on_pre_remove(usr, W)
+
+	if(ismob(loc))
+		// Check if usr is a living being and if so, set `changing_slots` to TRUE
+		// so no dropping sound is played, on_exit_storage() will play the unsheathing sound.
+		W.dropped(usr, isliving(usr))
+	if(ismob(new_location))
+		W.hud_layerise()
+	else
+		W.reset_plane_and_layer()
+	W.forceMove(new_location)
+
+	if(feedback)
+		update_ui_after_item_removal()
+		update_icon()
+	W.on_exit_storage(src)
+	return TRUE
+
+// Same as above, an exact copy of the base proc except for passing `changing_slots` variable
+// to the mob's drop() proc so the dropping sound is not played when the sabre is sheathed.
+/obj/item/storage/belt/sabre/handle_item_insertion(obj/item/W, feedback = TRUE)
+	if(QDELETED(W))
+		return FALSE
+	if(ismob(W.loc))
+		var/mob/M = W.loc
+		if(!M.drop(W, changing_slots = TRUE))
+			return FALSE
+	W.forceMove(src)
+	W.on_enter_storage(src)
+	add_fingerprint(usr)
+	if(feedback)
+		if(usr)
+			for(var/mob/M in viewers())
+				if(M == usr)
+					to_chat(usr, SPAN("notice", "You put \the [W] into [src]."))
+				// If someone is standing close enough, they can see the insertion
+				else if(M in range(1))
+					M.show_message(SPAN("notice", "\The [usr] puts [W] into [src]."))
+				// Otherwise, they can only see normal and large items from a distance
+				else if(W && W.w_class >= ITEM_SIZE_NORMAL)
+					M.show_message(SPAN("notice", "\The [usr] puts [W] into [src]."))
+		update_ui_after_item_insertion()
+		if(use_sound)
+			playsound(src, use_sound, 50, TRUE, -5)
+		update_icon()
+	return TRUE
