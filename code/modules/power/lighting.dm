@@ -442,7 +442,7 @@
 
 		else
 			to_chat(user, "You hit the light!")
-		user.setClickCooldown(W.update_attack_cooldown())
+		W.set_cooldown()
 		user.do_attack_animation(src)
 
 	// attempt to remove the lightbulb out of the fixture with a crowbar
@@ -627,7 +627,7 @@
 		to_chat(user, "You remove the [get_fitting_name()].")
 
 	// create a light tube/bulb item and put it in the user's hand
-	user.put_in_active_hand(remove_bulb())	//puts it in our active hand
+	user.put_in_clicking_hand(remove_bulb())	//puts it in our active hand
 
 /obj/machinery/light/attack_tk(mob/user)
 	if(!lightbulb)

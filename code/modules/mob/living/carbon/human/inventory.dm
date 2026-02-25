@@ -10,7 +10,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	if(ishuman(src))
 		var/mob/living/carbon/human/H = src
-		var/obj/item/I = H.get_active_hand()
+		var/obj/item/I = H.get_clicking_hand()
 		if(!I)
 			to_chat(H, SPAN("notice", "You are not holding anything to equip."))
 			return
@@ -31,17 +31,17 @@ This saves us from having to call add_fingerprint() any time something is put in
 	return null
 
 //Puts the item into our active hand if possible. returns 1 on success.
-/mob/living/carbon/human/put_in_active_hand(obj/item/W)
+/mob/living/carbon/human/put_in_clicking_hand(obj/item/W)
 	return (hand ? put_in_l_hand(W) : put_in_r_hand(W))
 
 //Puts the item into our inactive hand if possible. returns 1 on success.
-/mob/living/carbon/human/put_in_inactive_hand(obj/item/W)
+/mob/living/carbon/human/put_in_passive_hand(obj/item/W)
 	return (hand ? put_in_r_hand(W) : put_in_l_hand(W))
 
 /mob/living/carbon/human/put_in_hands(obj/item/W)
 	if(!W)
 		return 0
-	if(put_in_active_hand(W) || put_in_inactive_hand(W))
+	if(put_in_clicking_hand(W) || put_in_passive_hand(W))
 		W.update_held_icon()
 		return 1
 	return ..()
@@ -347,7 +347,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			W.equipped(src, slot)
 			update_inv_s_store(redraw_mob)
 		if(slot_in_backpack)
-			if(get_active_hand() == W)
+			if(has_in_hands(W))
 				drop(W)
 			W.forceMove(src.back)
 		if(slot_tie)

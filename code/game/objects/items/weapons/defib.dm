@@ -226,7 +226,7 @@
 	var/cooldown = 0
 	var/busy = 0
 
-/obj/item/shockpaddles/proc/set_cooldown(delay)
+/obj/item/shockpaddles/proc/set_charge_cooldown(delay)
 	cooldown = 1
 	update_icon()
 
@@ -366,7 +366,7 @@
 
 	H.visible_message(SPAN("warning", "\The [H]'s body convulses a bit."))
 	playsound(src, 'sound/machines/defib_zap.ogg', 50, 1, -1)
-	set_cooldown(cooldowntime)
+	set_charge_cooldown(cooldowntime)
 
 	error = can_revive(H)
 	if(error)
@@ -385,7 +385,6 @@
 		var/obj/item/cell/C = potato.cell
 		C.give(chargecost)
 	log_and_message_admins("used \a [src] to revive [key_name(H)].")
-
 
 /obj/item/shockpaddles/proc/do_electrocute(mob/living/carbon/human/H, mob/user, target_zone)
 	var/obj/item/organ/external/affecting = H.get_organ(target_zone)
@@ -416,7 +415,7 @@
 	user.visible_message(SPAN("danger", "<i>\The [user] shocks [H] with \the [src]!</i>"), SPAN("warning", "You shock [H] with \the [src]!"))
 	playsound(src, 'sound/machines/defib_zap.ogg', 100, 1, -1)
 	playsound(loc, 'sound/weapons/Egloves.ogg', 100, 1, -1)
-	set_cooldown(cooldowntime)
+	set_charge_cooldown(cooldowntime)
 
 	H.stun_effect_act(2, 120, target_zone)
 	var/burn_damage = H.electrocute_act(burn_damage_amt*2, src, def_zone = target_zone)

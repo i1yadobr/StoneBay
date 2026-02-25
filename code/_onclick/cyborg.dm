@@ -44,7 +44,7 @@
 			to_chat(src, SPAN("danger", "Your camera isn't functional."))
 		return
 
-	var/obj/item/I = get_active_hand()
+	var/obj/item/I = get_clicking_hand()
 
 	// Cyborgs interact with the world remotely when not using an item
 	if(!I)

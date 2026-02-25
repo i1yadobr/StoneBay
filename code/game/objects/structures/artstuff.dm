@@ -149,7 +149,7 @@
 	var/mob/user = usr
 	switch(action)
 		if("paint")
-			var/obj/item/I = user.get_active_hand()
+			var/obj/item/I = user.get_clicking_hand()
 			var/color = get_paint_tool_color(I)
 			if(!color)
 				return FALSE

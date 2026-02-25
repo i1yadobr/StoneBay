@@ -577,10 +577,10 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 	return can_admin_interact() && ..(ghost_multitool)
 
 /mob/living/carbon/human/get_multitool()
-	return ..(get_active_hand())
+	return ..(get_clicking_hand())
 
 /mob/living/silicon/robot/get_multitool()
-	return ..(get_active_hand())
+	return ..(get_clicking_hand())
 
 /mob/living/silicon/ai/get_multitool()
 	return ..(aiMulti)

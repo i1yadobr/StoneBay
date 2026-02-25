@@ -335,7 +335,7 @@
 	if(!in_range(user, A) || istype(A, /obj/machinery/door) || istype(A, /obj/item))
 		return
 
-	if(src != user.get_active_hand()) // If anything took paper
+	if(src != user.get_clicking_hand()) // If anything took paper
 		return
 
 	var/turf/target_turf = get_turf(A)
@@ -432,7 +432,7 @@
 		return
 
 	else if(istype(P, /obj/item/stamp) || istype(P, /obj/item/clothing/ring/seal))
-		if((!in_range(src, user) && loc != user && !( istype(loc, /obj/item/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
+		if((!in_range(src, user) && loc != user && !( istype(loc, /obj/item/clipboard) ) && loc.loc != user && user.get_clicking_hand() != P))
 			return
 
 		stamps += (stamps=="" ? "<hr>" : "<br>") + "<i>This paper has been stamped with the [P.name].</i>"
@@ -623,11 +623,11 @@
 		SPAN("[class]", "You hold \the [P] up to \the [src], burning it slowly."))
 
 		spawn(20)
-			if(get_dist(src, user) < 2 && user.get_active_hand() == P && P.lit)
+			if(get_dist(src, user) < 2 && user.has_in_hands(P) && P.lit)
 				user.visible_message(SPAN("[class]", "[user] burns right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap."), \
 				SPAN("[class]", "You burn right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap."))
 
-				if(user.get_inactive_hand() == src)
+				if(user.has_in_hands(src))
 					user.drop(src)
 
 				new /obj/effect/decal/cleanable/ash(src.loc)

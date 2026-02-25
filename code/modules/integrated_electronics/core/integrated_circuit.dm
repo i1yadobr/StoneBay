@@ -322,7 +322,7 @@ a creative player the means to solve many problems.  Circuits are held inside an
 	var/update = TRUE
 	var/update_to_assembly = FALSE
 
-	var/obj/item/held_item = usr.get_active_hand()
+	var/obj/item/held_item = usr.get_clicking_hand()
 
 	if(href_list["rename"])
 		rename_component(usr)

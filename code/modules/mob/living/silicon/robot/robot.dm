@@ -748,8 +748,8 @@
 
 
 /mob/living/silicon/robot/proc/handle_selfinsert(obj/item/W, mob/user)
-	if ((user == src) && istype(get_active_hand(),/obj/item/gripper))
-		var/obj/item/gripper/H = get_active_hand()
+	if ((user == src) && istype(get_clicking_hand(),/obj/item/gripper))
+		var/obj/item/gripper/H = get_clicking_hand()
 		if (W.loc == H) //if this triggers something has gone very wrong, and it's safest to abort
 			return
 		else if (H.wrapped == W)
@@ -794,11 +794,11 @@
 	if(istype(M, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M
 		//if they are holding or wearing a card that has access, that works
-		if(check_access(H.get_active_hand()) || check_access(H.wear_id))
+		if(check_access(H.get_clicking_hand()) || check_access(H.wear_id))
 			return 1
 	else if(istype(M, /mob/living/silicon/robot))
 		var/mob/living/silicon/robot/R = M
-		if(check_access(R.get_active_hand()) || istype(R.get_active_hand(), /obj/item/card/robot))
+		if(check_access(R.get_clicking_hand()) || istype(R.get_clicking_hand(), /obj/item/card/robot))
 			return 1
 	return 0
 
@@ -1074,7 +1074,7 @@
 	set category = "IC"
 	set src = usr
 
-	var/obj/item/I = get_active_hand()
+	var/obj/item/I = get_clicking_hand()
 	I?.attack_self(src)
 
 	return

@@ -167,7 +167,7 @@
 					held_card = null
 
 				else
-					var/obj/item/I = usr.get_active_hand()
+					var/obj/item/I = usr.get_clicking_hand()
 					if(istype(I, /obj/item/card/id) && usr.drop(I, src))
 						var/obj/item/card/id/C = I
 						held_card = C

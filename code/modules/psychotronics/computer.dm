@@ -530,7 +530,7 @@
 		to_chat(usr, "Console's disk slot is already occupied.")
 		return
 
-	var/obj/item/disk/disk = usr.get_active_hand()
+	var/obj/item/disk/disk = usr.get_clicking_hand()
 
 	if (!disk) return
 
@@ -613,7 +613,7 @@
 	Nothing
 */
 /obj/machinery/computer/neuromod_rnd/proc/InsertNeuromodShell()
-	var/obj/item/reagent_containers/neuromod_shell/neuromod_shell = usr.get_active_hand()
+	var/obj/item/reagent_containers/neuromod_shell/neuromod_shell = usr.get_clicking_hand()
 
 	if (!neuromod_shell || !istype(neuromod_shell)) return
 
@@ -750,7 +750,7 @@
 		to_chat(usr, "Console's beaker slot is already occupied.")
 		return
 
-	var/obj/item/reagent_containers/vessel/beaker/beaker = usr.get_active_hand()
+	var/obj/item/reagent_containers/vessel/beaker/beaker = usr.get_clicking_hand()
 
 	if (beaker)
 		usr.drop_item(beaker)

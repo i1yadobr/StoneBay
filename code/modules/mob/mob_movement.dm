@@ -63,7 +63,7 @@
 /mob/living/carbon/hotkey_drop()
 	if(!can_use_hands)
 		return
-	var/obj/item/I = get_active_hand()
+	var/obj/item/I = get_clicking_hand()
 	if(!I)
 		to_chat(usr, SPAN("warning", "You have nothing to drop in your hand."))
 		return
@@ -113,7 +113,7 @@
 /client/verb/drop_item()
 	set hidden = 1
 	if(!isrobot(mob) && mob.stat == CONSCIOUS && isturf(mob.loc))
-		var/obj/item/I = mob.get_active_hand()
+		var/obj/item/I = mob.get_clicking_hand()
 		if(I && mob.can_unequip(I))
 			mob.drop_active_hand()
 

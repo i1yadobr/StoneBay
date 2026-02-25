@@ -426,7 +426,7 @@
 					if(emagged > 0)
 						to_chat(usr, "\icon[src] [SPAN("warning", "The ATM card reader rejected your ID because this machine has been sabotaged!")]")
 					else
-						var/obj/item/I = usr.get_active_hand()
+						var/obj/item/I = usr.get_clicking_hand()
 						if(istype(I, /obj/item/card/id) && usr.drop(I, src))
 							held_card = I
 				else

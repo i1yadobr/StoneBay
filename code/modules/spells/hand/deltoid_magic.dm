@@ -17,7 +17,7 @@
 	compatible_targets = list(/mob/living/carbon/human)
 
 /datum/spell/hand/deltoid_magic/cast_hand(mob/living/carbon/human/H, mob/living/carbon/user)
-	user.drop(user.get_active_hand())
+	user.drop(user.get_clicking_hand())
 	user.remove_nutrition(50)
 
 	var/obj/item/organ/external/affecting = H.get_organ(ran_zone(user.zone_sel.selecting))

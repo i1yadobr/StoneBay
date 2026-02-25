@@ -161,7 +161,7 @@
 		var/mob/M = AM
 		to_chat(M, SPAN("warning", "\icon[src] Squeek!"))
 		playsound(loc, 'sound/effects/mousesqueek.ogg', 40)
-		resting = 0
+		set_resting(FALSE)
 		icon_state = "mouse_[body_color]"
 		if(prob(50))
 			UnarmedAttack(M)
@@ -180,7 +180,7 @@
 		return ..()
 
 /mob/living/simple_animal/mouse/attackby(obj/item/O, mob/user)
-	if(!holding_item && user.a_intent == I_HELP && istype(user.get_inactive_hand(), /obj/item/tape_roll) && O.w_class == ITEM_SIZE_TINY)
+	if(!holding_item && user.a_intent == I_HELP && istype(user.get_passive_hand(), /obj/item/tape_roll) && O.w_class == ITEM_SIZE_TINY)
 		user.visible_message(SPAN_NOTICE("[user] is trying to attach \a [O] with duct tape to \the [name]."),
 							SPAN_NOTICE("You are trying to attach \a [O] with duct tape to \the [name]."))
 		if(do_after(user, 3 SECONDS, src))

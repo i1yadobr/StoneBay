@@ -447,7 +447,7 @@
 
 
 		if(href_list["scan"])
-			var/obj/item/held_item = usr.get_active_hand()
+			var/obj/item/held_item = usr.get_clicking_hand()
 			if(istype(held_item, /obj/item/device/integrated_electronics/debugger))
 				var/obj/item/device/integrated_electronics/debugger/D = held_item
 				if(D.accepting_refs)
@@ -481,7 +481,7 @@
 				component.assembly.add_allowed_scanner(usr.ckey)
 
 		if(href_list["interact"])
-			var/obj/item/I = usr.get_active_hand()
+			var/obj/item/I = usr.get_clicking_hand()
 			if(istype(I))
 				component.additem(I, usr)
 			else

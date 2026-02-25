@@ -78,7 +78,7 @@
 			return
 
 		src.visible_message(SPAN("danger", "You hear something rumbling inside [src]'s stomach..."))
-		var/obj/item/I = user.get_active_hand()
+		var/obj/item/I = user.get_clicking_hand()
 		var/dmg = (I && I.force) ? rand(round(I.force / 4), I.force) : rand(1, 6) //give a chance to creatures without hands
 		if(istype(src, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = src
@@ -254,8 +254,8 @@
 								  SPAN("notice", "You shake [src], but they do not respond... Maybe they have S.S.D?"))
 			else if(lying || src.sleeping)
 				src.sleeping = max(0,src.sleeping-5)
-				if(src.sleeping == 0)
-					src.resting = 0
+				if(!sleeping)
+					set_resting(FALSE)
 				M.visible_message(SPAN("notice", "[M] shakes [src] trying to wake [t_him] up!"), \
 								  SPAN("notice", "You shake [src] trying to wake [t_him] up!"))
 			else
@@ -316,7 +316,7 @@
 	if(target.type == /atom/movable/screen)
 		return
 
-	var/atom/movable/item = get_active_hand()
+	var/atom/movable/item = get_clicking_hand()
 
 	if(!item)
 		return

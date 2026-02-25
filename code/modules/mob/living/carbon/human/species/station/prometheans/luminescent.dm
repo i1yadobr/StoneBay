@@ -104,7 +104,7 @@
 
 	if(extract_eater_comp.current_extract)
 		var/obj/item/metroid_extract/to_remove = extract_eater_comp.current_extract
-		if(!human_owner.put_in_active_hand(to_remove))
+		if(!human_owner.put_in_clicking_hand(to_remove))
 			to_remove.forceMove(human_owner.drop_location())
 
 		extract_eater_comp.current_extract = null

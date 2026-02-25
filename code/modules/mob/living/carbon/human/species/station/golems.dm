@@ -744,7 +744,7 @@
 /datum/action/cooldown/golem/create_brother
 
 /datum/action/cooldown/golem/create_brother/Activate(atom/target)
-	var/obj/item/I = owner.get_active_hand()
+	var/obj/item/I = owner.get_clicking_hand()
 	if(!istype(I, /obj/item/stack/material/cardboard))
 		to_chat(owner, SPAN_WARNING("You need to hold cardboard in hand!"))
 		return

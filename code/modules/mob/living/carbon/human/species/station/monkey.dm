@@ -80,7 +80,7 @@
 	if(prob(25))
 		H.hand = !(H.hand)
 
-	var/obj/held = H.get_active_hand()
+	var/obj/held = H.get_clicking_hand()
 	if(prob(5) && held)
 		var/turf/T = get_random_turf_in_range(H, 7, 2)
 		if(T && !is_type_in_list(T, no_touchie))

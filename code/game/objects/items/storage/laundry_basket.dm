@@ -33,7 +33,7 @@
 			to_chat(user, SPAN_WARNING("You need two hands to pick this up!"))
 			return
 
-	if(user.get_inactive_hand())
+	if(user.get_passive_hand())
 		to_chat(user, SPAN_WARNING("You need your other hand to be empty."))
 		return
 
@@ -49,7 +49,7 @@
 	O.SetName("[name] - second hand")
 	O.desc = "Your second grip on the [name]."
 	O.linked = src
-	user.put_in_inactive_hand(O)
+	user.put_in_passive_hand(O)
 	linked = O
 
 /obj/item/storage/laundry_basket/on_update_icon()

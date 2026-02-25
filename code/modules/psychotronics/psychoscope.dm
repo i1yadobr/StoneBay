@@ -434,7 +434,7 @@
 			to_chat(usr, "Psychoscope's disk slot is already occupied.")
 			return
 
-	var/obj/item/disk/disk = usr.get_active_hand()
+	var/obj/item/disk/disk = usr.get_clicking_hand()
 
 	if(!disk || !(disk.type in accepts_disks))
 		return

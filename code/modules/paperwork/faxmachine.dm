@@ -97,7 +97,7 @@ GLOBAL_LIST_EMPTY(adminfaxes)	//cache for faxes that have been sent to admins
 					inserted_id.forceMove(loc)
 					inserted_id = null
 			else
-				var/obj/item/I = usr.get_active_hand()
+				var/obj/item/I = usr.get_clicking_hand()
 				if(istype(I, /obj/item/card/id) && usr.drop(I, src))
 					inserted_id = I
 			return TRUE
@@ -107,7 +107,7 @@ GLOBAL_LIST_EMPTY(adminfaxes)	//cache for faxes that have been sent to admins
 				to_chat(usr, SPAN_NOTICE("You take \the [copyitem] out of \the [src]."))
 				copyitem = null
 			else
-				var/obj/item/I = usr.get_active_hand()
+				var/obj/item/I = usr.get_clicking_hand()
 				if(!istype(I, /obj/item/paper) && !istype(I, /obj/item/photo) && !istype(I, /obj/item/paper_bundle) && !istype(copyitem, /obj/item/complaint_folder))
 					return
 

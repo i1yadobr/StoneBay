@@ -54,7 +54,7 @@ Self-sustaining extracts:
 
 	extract.forceMove(user.drop_location())
 	qdel(src)
-	user.put_in_active_hand(extract)
+	user.put_in_clicking_hand(extract)
 	extract.reagents.add_reagent(reagentselect, amount)
 	if(secondary)
 		extract.reagents.add_reagent(secondary, amount)

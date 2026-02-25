@@ -116,8 +116,8 @@
 	return null
 
 /datum/computer_file/program/card_mod/proc/get_photo(mob/user)
-	if(istype(user.get_active_hand(), /obj/item/photo))
-		var/obj/item/photo/photo = user.get_active_hand()
+	if(istype(user.get_clicking_hand(), /obj/item/photo))
+		var/obj/item/photo/photo = user.get_clicking_hand()
 		return photo.img
 	if(istype(user, /mob/living/silicon))
 		var/mob/living/silicon/tempAI = usr
@@ -201,7 +201,7 @@
 				if(computer.card_slot && computer.card_slot.stored_card)
 					computer.proc_eject_id(user)
 				else
-					computer.attackby(user.get_active_hand(), user)
+					computer.attackby(user.get_clicking_hand(), user)
 		if("terminate")
 			if(computer && can_run(user, 1))
 				id_card.assignment = "Terminated"

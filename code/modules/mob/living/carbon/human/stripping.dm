@@ -25,7 +25,7 @@
 
 	// Are we placing or stripping?
 	var/stripping = FALSE
-	var/obj/item/held = user.get_active_hand()
+	var/obj/item/held = user.get_clicking_hand()
 	if(!istype(held) || is_robot_module(held))
 		stripping = TRUE
 
@@ -93,7 +93,7 @@
 			if(isunderwear(located_item))
 				var/obj/item/underwear/UW = located_item
 				if(UW.DelayedRemoveUnderwear(user, src))
-					user.put_in_active_hand(UW)
+					user.put_in_clicking_hand(UW)
 				return
 
 	if(user.strippingActions == 1 && isAggresiveStrip(user) && stripping)
@@ -127,7 +127,7 @@
 		if(drop(target_slot))
 			admin_attack_log(user, src, "Stripped \a [target_slot]", "Was stripped of \a [target_slot].", "stripped \a [target_slot] from")
 			if(!isAggresiveStrip(user) && user.IsAdvancedToolUser(TRUE))
-				user.put_in_active_hand(target_slot)
+				user.put_in_clicking_hand(target_slot)
 		else
 			admin_attack_log(user, src, "Attempted to strip \a [target_slot]", "Target of a failed strip of \a [target_slot].", "attempted to strip \a [target_slot] from")
 	else if(user.drop(held))
@@ -135,7 +135,7 @@
 		if(istype(C) && C.can_attach_accessory(held))
 			C.attach_accessory(user, held)
 		else if(!equip_to_slot_if_possible(held, text2num(slot_to_strip_text), del_on_fail=0, disable_warning=1, redraw_mob=1))
-			user.put_in_active_hand(held)
+			user.put_in_clicking_hand(held)
 
 	show_inv(usr)
 
@@ -160,7 +160,7 @@
 		if(equip_to_slot_if_possible(I, slot_l_store, del_on_fail=0, disable_warning=1, redraw_mob=1))
 			return
 	to_chat(user, SPAN("warning", "You are unable to place [I] in [src]'s pockets."))
-	user.put_in_active_hand(I)
+	user.put_in_clicking_hand(I)
 
 // Modify the current target sensor level.
 /mob/living/carbon/human/proc/toggle_sensors(mob/living/user)
@@ -186,7 +186,7 @@
 			else
 				S.add_fingerprint(user)
 				if(o.remove_splint())
-					user.put_in_active_hand(S)
+					user.put_in_clicking_hand(S)
 					removed_splint = 1
 	if(removed_splint)
 		visible_message(SPAN("danger", "\The [user] removes \the [src]'s splints!"))

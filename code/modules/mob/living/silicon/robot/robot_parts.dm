@@ -144,9 +144,9 @@
 			var/obj/item/secbot_assembly/ed209_assembly/B = new /obj/item/secbot_assembly/ed209_assembly
 			B.forceMove(get_turf(src))
 			to_chat(user, SPAN("notice", "You armed the robot frame."))
-			if (user.get_inactive_hand()==src)
+			if(user.has_in_passive_hand(src))
 				user.drop(src)
-				user.put_in_inactive_hand(B)
+				user.put_in_passive_hand(B)
 			qdel(src)
 		else
 			to_chat(user, SPAN("warning", "You need one sheet of metal to arm the robot frame."))
@@ -327,7 +327,7 @@
 	..()
 	if(istype(W, /obj/item/device/flash))
 		if(istype(user,/mob/living/silicon/robot))
-			var/current_module = user.get_active_hand()
+			var/current_module = user.get_clicking_hand()
 			if(current_module == W)
 				to_chat(user, SPAN("warning", "How do you propose to do that?"))
 				return

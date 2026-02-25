@@ -27,7 +27,7 @@
 	..()
 
 /obj/item/toy/xmas_cracker/attack(mob/target, mob/user)
-	if(!cracked && istype(target,/mob/living/carbon/human) && (target.stat == CONSCIOUS) && !target.get_active_hand())
+	if(!cracked && istype(target,/mob/living/carbon/human) && (target.stat == CONSCIOUS) && !target.get_clicking_hand())
 		target.visible_message(SPAN("notice", "[user] and [target] pop \an [src]! *pop*"), SPAN("notice", "You pull \an [src] with [target]! *pop*"), SPAN("notice", "You hear a *pop*."))
 		var/obj/item/paper/P = new /obj/item/paper(user.loc)
 		P.set_content(

@@ -37,6 +37,18 @@
 	user.mob.swap_hand()
 	return TRUE
 
+/datum/keybinding/carbon/toggle_twohanded_mode
+	hotkey_keys = list("ShiftX")
+	name = "toggle_twohanded_mode"
+	full_name = "Toggle Two-Handed Mode"
+	description = "Choose whether your RMB clicks things with offhand or acts normally."
+
+/datum/keybinding/carbon/toggle_twohanded_mode/down(client/user)
+	var/mob/living/carbon/human/H = user.mob // Human-only for now. Should save us from resetting everyone's custom hotkey once we add carbon-subtype necromorphs and other stuff.
+	if(istype(H))
+		H.toggle_twohanded_mode()
+	return TRUE
+
 /datum/keybinding/mob/holster
 	hotkey_keys = list("H")
 	name = "holster"
@@ -215,6 +227,19 @@
 /datum/keybinding/mob/pull/down(client/user)
 	var/mob/M = user.mob
 	M.stop_pulling()
+	return TRUE
+
+/datum/keybinding/mob/toggle_aim_assist
+	hotkey_keys = list("ShiftC")
+	name = "toggle_aim_assist"
+	full_name = "Toggle Click Mode"
+	description = "Choose whether to click on anything or mobs only."
+
+/datum/keybinding/mob/toggle_aim_assist/down(client/user)
+	var/mob/living/carbon/human/M = user.mob // Human-only for now, TODO: Add HUD icons or something for everybody else
+	M.stop_pulling()
+	if(istype(M))
+		M.toggle_aim_assist()
 	return TRUE
 
 /datum/keybinding/mob/minimal_hud

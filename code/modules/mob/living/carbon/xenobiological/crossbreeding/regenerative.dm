@@ -166,7 +166,7 @@ Regenerative extracts:
 
 /obj/item/metroidcross/regenerative/cerulean/core_effect(mob/living/target, mob/user)
 	var/obj/item/metroidcross/X = new /obj/item/metroidcross/regenerative/green(user.loc)
-	user.put_in_active_hand(X)
+	user.put_in_clicking_hand(X)
 	to_chat(user, SPAN_NOTICE("Some of the milky goo congeals in your hand!"))
 
 /obj/item/metroidcross/regenerative/pyrite

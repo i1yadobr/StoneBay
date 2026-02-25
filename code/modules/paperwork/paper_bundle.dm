@@ -84,11 +84,11 @@
 		SPAN("[class]", "You hold \the [P] up to \the [src], burning it slowly."))
 
 		spawn(20)
-			if(get_dist(src, user) < 2 && user.get_active_hand() == P && P.lit)
+			if(get_dist(src, user) < 2 && user.has_in_hands(P) && P.lit)
 				user.visible_message(SPAN("[class]", "[user] burns right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap."), \
 				SPAN("[class]", "You burn right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap."))
 
-				if(user.get_inactive_hand() == src)
+				if(user.has_in_hands(src))
 					user.drop(src)
 
 				new /obj/effect/decal/cleanable/ash(src.loc)
@@ -157,7 +157,7 @@
 		return 1
 	if((src in usr.contents) || (istype(src.loc, /obj/item/folder) && (src.loc in usr.contents)))
 		usr.set_machine(src)
-		var/obj/item/in_hand = usr.get_active_hand()
+		var/obj/item/in_hand = usr.get_clicking_hand()
 		if(href_list["next_page"])
 			if(in_hand && (istype(in_hand, /obj/item/paper) || istype(in_hand, /obj/item/photo)))
 				insert_sheet_at(usr, page+1, in_hand)
