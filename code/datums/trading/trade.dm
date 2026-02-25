@@ -294,10 +294,17 @@
 // are not instantiated for displaying in the UI, only their type paths are passed.
 /proc/get_item_name_for_trading(obj_path)
 	// TODO(rufus): handle /obj/item/material and other special cases
+	if(ispath(obj_path, /obj/item/material))
+		var/obj/item/material/M = obj_path
+		var/material/item_material = get_material_by_name(initial(M.default_material))
+		return "[item_material.display_name] [M.name]"
 	if(ispath(obj_path, /obj/item/clothing/ring/material))
-		var/obj/item/clothing/ring/material/r = obj_path
-		var/material/ring_material = get_material_by_name(initial(r.material_name))
+		var/obj/item/clothing/ring/material/R = obj_path
+		var/material/ring_material = get_material_by_name(initial(R.material_name))
 		return "[ring_material.display_name] ring"
+	if(ispath(obj_path, /obj/item/ammo_casing))
+		var/obj/item/ammo_casing/A = obj_path
+		return "[A.caliber] [A.caliber_bullet] [A.name]"
 	// No special handling needed, just using the default name
 	var/atom/a = obj_path
 	return initial(a.name)
