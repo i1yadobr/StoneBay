@@ -293,18 +293,27 @@
 // This relies on accessing static values of types using initial(varname) as objects
 // are not instantiated for displaying in the UI, only their type paths are passed.
 /proc/get_item_name_for_trading(obj_path)
-	// TODO(rufus): handle /obj/item/material and other special cases
 	if(ispath(obj_path, /obj/item/material))
-		var/obj/item/material/M = obj_path
-		var/material/item_material = get_material_by_name(initial(M.default_material))
-		return "[item_material.display_name] [M.name]"
+		var/obj/item/material/Material_path = obj_path
+		var/material/item_material = get_material_by_name(initial(Material_path.default_material))
+		return "[item_material.display_name] [Material_path.name]"
 	if(ispath(obj_path, /obj/item/clothing/ring/material))
-		var/obj/item/clothing/ring/material/R = obj_path
-		var/material/ring_material = get_material_by_name(initial(R.material_name))
-		return "[ring_material.display_name] ring"
+		var/obj/item/clothing/ring/material/Ring_path = obj_path
+		var/material/Ring_material = get_material_by_name(initial(Ring_path.material_name))
+		return "[Ring_material.display_name] ring"
 	if(ispath(obj_path, /obj/item/ammo_casing))
-		var/obj/item/ammo_casing/A = obj_path
-		return "[A.caliber] [A.caliber_bullet] [A.name]"
+		var/obj/item/ammo_casing/Ammo_path = obj_path
+		return "[Ammo_path.caliber] [Ammo_path.caliber_bullet] [Ammo_path.name]"
+	if(ispath(obj_path, /obj/item/reagent_containers/chem_disp_cartridge))
+		var/obj/item/reagent_containers/chem_disp_cartridge/Cartridge_path = obj_path
+		var/datum/reagent/Reagent_path = Cartridge_path.spawn_reagent
+		return "[Cartridge_path.name] [Reagent_path.name ? "([Reagent_path.name])" : ""]"
+	if(ispath(obj_path, /obj/item/seeds))
+		var/obj/item/seeds/Seed_path = obj_path
+		return "[Seed_path.name] [Seed_path.seed_type ? "([Seed_path.seed_type])" : ""]"
+	if(ispath(obj_path, /obj/item/stack))
+		var/obj/item/stack/Stack_path = obj_path
+		return "[Stack_path.amount] [Stack_path.name]"
 	// No special handling needed, just using the default name
-	var/atom/a = obj_path
-	return initial(a.name)
+	var/atom/Usual_path = obj_path
+	return initial(Usual_path.name)

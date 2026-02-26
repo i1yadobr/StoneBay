@@ -1,4 +1,5 @@
 //Pouches
+// TODO: Add names with a suffix corresponding to their color
 /obj/item/clothing/accessory/storage/pouches
 	name = "storage pouches"
 	desc = "A collection of black pouches that can be attached to a plate carrier. Carries up to two items."
@@ -24,6 +25,7 @@
 	desc = "A collection of tan pouches that can be attached to a plate carrier. Carries up to two items."
 	icon_state = "pouches_tan"
 
+// TODO: Add names with a suffix corresponding to their color
 /obj/item/clothing/accessory/storage/pouches/large
 	name = "large storage pouches"
 	desc = "A collection of black pouches that can be attached to a plate carrier. Carries up to four items."
@@ -86,6 +88,7 @@
 	coverage = 1.0
 	slot = ACCESSORY_SLOT_ARMOR_A
 
+// TODO: Add names with a suffix corresponding to their color
 /obj/item/clothing/accessory/armguards/blue
 	desc = "A pair of blue arm pads reinforced with armor plating. Attaches to a plate carrier."
 	icon_state = "armguards_blue"
@@ -141,6 +144,7 @@
 	coverage = 1.0
 	slot = ACCESSORY_SLOT_ARMOR_L
 
+// TODO: Add names with a suffix corresponding to their color
 /obj/item/clothing/accessory/legguards/blue
 	desc = "A pair of armored leg pads in blue. Attaches to a plate carrier."
 	icon_state = "legguards_blue"
