@@ -128,10 +128,10 @@
 // message is the message output to anyone who can see e.g. "[src] does something!"
 // self_message (optional) is what the src mob sees  e.g. "You do something!"
 // blind_message (optional) is what blind people will hear e.g. "You hear something!"
-/mob/visible_message(message, self_message, blind_message, range = world.view, checkghosts = null, narrate = FALSE)
+/mob/visible_message(message, self_message, blind_message, range = world.view, check_ghosts = null, narrate = FALSE)
 	var/list/seeing_mobs = list()
 	var/list/seeing_objs = list()
-	get_mobs_and_objs_in_view_fast(get_turf(src), range, seeing_mobs, seeing_objs, checkghosts)
+	get_listeners_in_range(get_turf(src), range, seeing_mobs, seeing_objs, check_ghosts)
 
 	for(var/o in seeing_objs)
 		var/obj/O = o
@@ -171,10 +171,10 @@
 // self_message (optional) is what the src mob hears.
 // deaf_message (optional) is what deaf people will see.
 // hearing_distance (optional) is the range, how many tiles away the message can be heard.
-/mob/audible_message(message, self_message, deaf_message, hearing_distance = world.view, checkghosts = null, narrate = FALSE)
+/mob/audible_message(message, self_message, deaf_message, hearing_distance = world.view, check_ghosts = null, narrate = FALSE)
 	var/list/hearing_mobs = list()
 	var/list/hearing_objs = list()
-	get_mobs_and_objs_in_view_fast(get_turf(src), hearing_distance, hearing_mobs, hearing_objs, checkghosts)
+	get_listeners_in_range(get_turf(src), hearing_distance, hearing_mobs, hearing_objs, check_ghosts)
 
 	for(var/o in hearing_objs)
 		var/obj/O = o
