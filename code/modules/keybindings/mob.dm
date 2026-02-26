@@ -147,6 +147,7 @@
 	description = "Uses whatever item you have in the active hand."
 
 /datum/keybinding/mob/activate_inhand/down(client/user)
+	var/mob/M = user.mob
 	M.use_attack_self()
 	return TRUE
 
@@ -159,6 +160,7 @@
 /datum/keybinding/mob/activate_inhand_2/down(client/user)
 	var/mob/M = user.mob
 	M.use_attack_self(FALSE)
+	return TRUE
 
 /datum/keybinding/mob/target_head_cycle
 	hotkey_keys = list("Numpad8")
