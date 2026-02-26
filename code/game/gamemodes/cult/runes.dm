@@ -578,7 +578,7 @@
 		if(casters.len < 3)
 			break
 		//T.turf_animation('icons/effects/effects.dmi', "rune_sac")
-		victim.victim.adjust_fire_stacks(FIRE_STACKS_MAX)
+		victim.adjust_fire_stacks(FIRE_STACKS_MAX)
 		victim.IgniteMob()
 		victim.take_organ_damage(2 + casters.len, 2 + casters.len) // This is to speed up the process and also damage mobs that don't take damage from being on fire, e.g. borgs
 		if(ishuman(victim))
