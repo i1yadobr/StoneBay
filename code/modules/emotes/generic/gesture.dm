@@ -294,7 +294,7 @@
 
 			if(P.times % 10 == 0)
 				user.visible_message("<i><b>[user]</b> has done \his <b>[P.times]</b> push-up!</i>",
-									 "<i>You've done your <b>[P.times]</b> push-up!</i>", checkghosts = FALSE)
+									 "<i>You've done your <b>[P.times]</b> push-up!</i>", check_ghosts = FALSE)
 			user.remove_nutrition(1)
 			user.remove_hydration(5.0)
 
