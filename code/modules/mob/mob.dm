@@ -374,26 +374,34 @@
 					G.affecting.ret_grab(L)
 	return L
 
-// TODO(rufus): rename mode() proc to an appropriate "activate held object" name.
-//   It is currently named "mode" as historically it was used only for switching modes of the held item.
-/mob/verb/mode()
+/mob/verb/activate_held_object()
 	set name = "Activate Held Object"
 	set category = "Object"
 	set src = usr
 
-	if(istype(loc,/obj/mecha)) return
+	use_attack_self()
+	return
+
+/mob/proc/use_attack_self(is_active_hand = TRUE)
+	if(istype(loc, /obj/mecha))
+		return
 
 	if(hand)
-		var/obj/item/I = l_hand
+		var/obj/item/I = is_active_hand ? l_hand : r_hand
 		if(I)
 			I.attack_self(src)
-			update_inv_l_hand()
+			if(is_active_hand)
+				update_inv_l_hand()
+			else
+				update_inv_r_hand()
 	else
-		var/obj/item/I = r_hand
+		var/obj/item/I = is_active_hand ? r_hand : l_hand
 		if(I)
 			I.attack_self(src)
-			update_inv_r_hand()
-	return
+			if(is_active_hand)
+				update_inv_r_hand()
+			else
+				update_inv_l_hand()
 
 // TODO(rufus): remove unused commented code
 /*

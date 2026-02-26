@@ -1818,8 +1818,8 @@
 			twohanded_mode_icon.icon_state = "act_twohanded0"
 
 	if(my_client)
-		winset(src, "mapwindow.rightclickblocker", "is-visible=[twohanded_mode ? "true" : "false"]") // Please, forgive me for this abomination, but I can't think of a faster, mostly-client-sided way to preserve Shift, Ctrl and Alt macros' behavior.
-		winset(src, "mapwindow.map", "right-click=[twohanded_mode ? "true" : "false"]")
+		winset(my_client, "mapwindow.rightclickblocker", "is-visible=[twohanded_mode ? "true" : "false"]") // Please, forgive me for this abomination, but I can't think of a faster, mostly-client-sided way to preserve Shift, Ctrl and Alt macros' behavior.
+		winset(my_client, "mapwindow.map", "right-click=[twohanded_mode ? "true" : "false"]")
 
 /mob/living/carbon/human/verb/succumb()
 	set hidden = 1

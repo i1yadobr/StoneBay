@@ -92,13 +92,10 @@
 		R.cycle_modules()
 	return
 
-
-
 /client/verb/attack_self()
 	set hidden = 1
 	if(mob)
-		mob.mode()
-
+		mob.use_attack_self()
 
 /client/verb/toggle_throw_mode()
 	set hidden = 1

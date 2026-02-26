@@ -68,9 +68,21 @@
 	hotkey_keys = list("Q", "Northwest")
 	name = "drop_item"
 	full_name = "Drop Item"
+	description = "Drop the currently held item."
 
 /datum/keybinding/mob/drop_item/down(client/user)
 	user.mob.drop_active_hand()
+	return TRUE
+
+/datum/keybinding/living/drop_inactive_item
+	hotkey_keys = list("ShiftQ")
+	name = "drop_inactive_item"
+	full_name = "Drop Inactive Item"
+	description = "Drop the item held in the inactive hand."
+
+/datum/keybinding/living/drop_inactive_item/down(client/user)
+	var/mob/living/L = user.mob
+	L.drop_inactive_hand()
 	return TRUE
 
 /datum/keybinding/mob/select_help_intent
@@ -131,12 +143,22 @@
 /datum/keybinding/mob/activate_inhand
 	hotkey_keys = list("Z", "Y","Southeast") // Southeast = PAGEDOWN
 	name = "activate_inhand"
-	full_name = "Activate In-Hand"
-	description = "Uses whatever item you have inhand"
+	full_name = "Use Held Item"
+	description = "Uses whatever item you have in the active hand."
 
 /datum/keybinding/mob/activate_inhand/down(client/user)
-	user.mob.mode()
+	M.use_attack_self()
 	return TRUE
+
+/datum/keybinding/mob/activate_inactive_inhand
+	hotkey_keys = list("ShiftZ")
+	name = "activate_inactive_inhand"
+	full_name = "Use Inactive Held Item"
+	description = "Uses whatever item you have in the inactive hand."
+
+/datum/keybinding/mob/activate_inhand_2/down(client/user)
+	var/mob/M = user.mob
+	M.use_attack_self(FALSE)
 
 /datum/keybinding/mob/target_head_cycle
 	hotkey_keys = list("Numpad8")
