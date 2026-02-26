@@ -295,8 +295,8 @@
 /proc/get_item_name_for_trading(obj_path)
 	if(ispath(obj_path, /obj/item/material))
 		var/obj/item/material/Material_path = obj_path
-		var/material/item_material = get_material_by_name(initial(Material_path.default_material))
-		return "[item_material.display_name] [Material_path.name]"
+		var/material/Item_material = get_material_by_name(initial(Material_path.default_material))
+		return "[Item_material.display_name] [Material_path.name]"
 	if(ispath(obj_path, /obj/item/clothing/ring/material))
 		var/obj/item/clothing/ring/material/Ring_path = obj_path
 		var/material/Ring_material = get_material_by_name(initial(Ring_path.material_name))
@@ -315,5 +315,5 @@
 		var/obj/item/stack/Stack_path = obj_path
 		return "[Stack_path.amount] [Stack_path.name]"
 	// No special handling needed, just using the default name
-	var/atom/Usual_path = obj_path
-	return initial(Usual_path.name)
+	var/atom/Default_path = obj_path
+	return initial(Default_path.name)
