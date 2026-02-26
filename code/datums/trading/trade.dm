@@ -124,8 +124,8 @@
 /datum/trader/proc/print_trading_items(num)
 	num = Clamp(num,1,trading_items.len)
 	if(trading_items[num])
-		var/atom/movable/M = trading_items[num]
-		return "<b>[initial(M.name)]</b>"
+		var/item_name = get_item_name_for_trading(trading_items[num])
+		return "<b>[item_name]</b>"
 
 /datum/trader/proc/get_item_value(trading_num)
 	if(!trading_items[trading_items[trading_num]])
@@ -257,9 +257,8 @@
 
 	var/datum/trade_response/tr = make_response(TRADER_WHAT_WANT, "Hm, I want", 0, TRUE)
 	var/list/want_english = list()
-	for(var/type in wanted_items)
-		var/atom/a = type
-		want_english += initial(a.name)
+	for(var/obj_path in wanted_items)
+		want_english += get_item_name_for_trading(obj_path)
 	tr.text += " [english_list(want_english)]"
 	return tr
 
@@ -287,3 +286,34 @@
 
 /datum/trader/proc/bribe_to_stay_longer(amt)
 	return make_response(TRADER_BRIBE_FAILURE, "How about no?", 0, FALSE)
+
+// get_item_name_for_trading returns the appropriate name of the item to be displayed
+// in the trading UI, properly handling unique cases like materials, amounts etc.
+//
+// This relies on accessing static values of types using initial(varname) as objects
+// are not instantiated for displaying in the UI, only their type paths are passed.
+/proc/get_item_name_for_trading(obj_path)
+	if(ispath(obj_path, /obj/item/material))
+		var/obj/item/material/Material_path = obj_path
+		var/material/Item_material = get_material_by_name(initial(Material_path.default_material))
+		return "[Item_material.display_name] [Material_path.name]"
+	if(ispath(obj_path, /obj/item/clothing/ring/material))
+		var/obj/item/clothing/ring/material/Ring_path = obj_path
+		var/material/Ring_material = get_material_by_name(initial(Ring_path.material_name))
+		return "[Ring_material.display_name] ring"
+	if(ispath(obj_path, /obj/item/ammo_casing))
+		var/obj/item/ammo_casing/Ammo_path = obj_path
+		return "[Ammo_path.caliber] [Ammo_path.caliber_bullet] [Ammo_path.name]"
+	if(ispath(obj_path, /obj/item/reagent_containers/chem_disp_cartridge))
+		var/obj/item/reagent_containers/chem_disp_cartridge/Cartridge_path = obj_path
+		var/datum/reagent/Reagent_path = Cartridge_path.spawn_reagent
+		return "[Cartridge_path.name] [Reagent_path.name ? "([Reagent_path.name])" : ""]"
+	if(ispath(obj_path, /obj/item/seeds))
+		var/obj/item/seeds/Seed_path = obj_path
+		return "[Seed_path.name] [Seed_path.seed_type ? "([Seed_path.seed_type])" : ""]"
+	if(ispath(obj_path, /obj/item/stack))
+		var/obj/item/stack/Stack_path = obj_path
+		return "[Stack_path.amount] [Stack_path.name]"
+	// No special handling needed, just using the default name
+	var/atom/Default_path = obj_path
+	return initial(Default_path.name)

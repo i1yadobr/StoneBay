@@ -54,7 +54,6 @@
 	//spawn(1)
 //		log_debug("[src] has force [force] and throwforce [throwforce] when made from default material [material.name]")
 
-
 /obj/item/material/proc/set_material(new_material)
 	material = get_material_by_name(new_material)
 	if(!material)
