@@ -1,4 +1,3 @@
-
 GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 /mob/dview
 	invisibility = 101
