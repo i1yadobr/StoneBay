@@ -125,7 +125,7 @@
 				usr.pick_or_drop(inserted_id, loc)
 				inserted_id = null
 		else if(href_list["choice"] == "insert")
-			var/obj/item/card/id/I = usr.get_active_hand()
+			var/obj/item/card/id/I = usr.get_clicking_hand()
 			if(istype(I))
 				if(usr.drop(I, src))
 					inserted_id = I
@@ -150,7 +150,7 @@
 
 /obj/machinery/equipment_vendor/attackby(obj/item/I, mob/user, params)
 	if(istype(I,/obj/item/card/id))
-		var/obj/item/card/id/C = usr.get_active_hand()
+		var/obj/item/card/id/C = usr.get_clicking_hand()
 		if(istype(C) && !istype(inserted_id) && usr.drop(C, src))
 			inserted_id = C
 			interact(user)

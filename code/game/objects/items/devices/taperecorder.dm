@@ -37,7 +37,6 @@
 		mytape = null
 	return ..()
 
-
 /obj/item/device/taperecorder/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/device/tape))
 		if(mytape)
@@ -51,20 +50,17 @@
 		return
 	..()
 
-
 /obj/item/device/taperecorder/fire_act()
 	if(mytape)
 		mytape.ruin() //Fires destroy the tape
 	return ..()
 
-
 /obj/item/device/taperecorder/attack_hand(mob/user)
-	if(user.get_inactive_hand() == src)
+	if(user.has_in_passive_hand(src))
 		if(mytape)
 			eject()
 			return
 	..()
-
 
 /obj/item/device/taperecorder/verb/eject()
 	set name = "Eject Tape"
@@ -86,7 +82,6 @@
 	mytape = null
 	update_icon()
 
-
 /obj/item/device/taperecorder/hear_talk(mob/living/M as mob, msg, verb="says", datum/language/speaking=null)
 	if(mytape && recording)
 
@@ -97,13 +92,11 @@
 		else
 			mytape.record_speech("[M.GetVoice()] [verb], \"[msg]\"")
 
-
 /obj/item/device/taperecorder/see_emote(mob/M as mob, text, emote_type)
 	if(emote_type != AUDIBLE_MESSAGE) //only hearable emotes
 		return
 	if(mytape && recording)
 		mytape.record_speech("[strip_html_properly(text)]")
-
 
 /obj/item/device/taperecorder/show_message(msg, type, alt, alt_type)
 	var/recordedtext

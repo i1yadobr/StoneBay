@@ -90,7 +90,7 @@
 			deactivate()
 		. = TOPIC_REFRESH
 	else if(href_list["insertcard"])
-		var/obj/item/I = user.get_active_hand()
+		var/obj/item/I = user.get_clicking_hand()
 		if(istype(I, /obj/item/card))
 			if(issilicon(user))
 				attackby(I, user)
@@ -108,7 +108,7 @@
 		if(auth_card)
 			if(ishuman(user))
 				auth_card.dropInto(user.loc)
-				if(!user.get_active_hand())
+				if(!user.get_clicking_hand())
 					user.put_in_hands(auth_card)
 				auth_card = null
 			else

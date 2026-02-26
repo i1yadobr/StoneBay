@@ -62,7 +62,7 @@
 		if(!do_mob(user, H))
 			return
 
-		if(!isrobot(user) && user.get_active_hand() != src)
+		if(!isrobot(user) && user.get_clicking_hand() != src)
 			return
 
 		if(!H.can_force_feed(user, src, check_resist = TRUE))

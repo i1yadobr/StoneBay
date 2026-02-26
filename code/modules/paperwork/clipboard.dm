@@ -97,7 +97,7 @@
 
 		else if(href_list["addpen"])
 			if(!haspen)
-				var/obj/item/pen/W = usr.get_active_hand()
+				var/obj/item/pen/W = usr.get_clicking_hand()
 				if(istype(W, /obj/item/pen) && usr.drop(W, src))
 					haspen = W
 					to_chat(usr, SPAN("notice", "You slot the pen into \the [src]."))
@@ -107,7 +107,7 @@
 
 			if(P && (P.loc == src) && istype(P, /obj/item/paper) && (P == toppaper) )
 
-				var/obj/item/I = usr.get_active_hand()
+				var/obj/item/I = usr.get_clicking_hand()
 
 				if(istype(I, /obj/item/pen))
 

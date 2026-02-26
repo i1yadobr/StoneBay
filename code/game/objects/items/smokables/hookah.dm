@@ -131,7 +131,7 @@
 	if(!CanMouseDrop(src, usr))
 		return
 	if(user == usr && (user.contents.Find(src) || in_range(src, user)))
-		if(ishuman(user) && !user.get_active_hand())
+		if(ishuman(user) && !user.get_clicking_hand())
 			var/mob/living/carbon/human/H = user
 			var/obj/item/organ/external/temp = H.organs_by_name[BP_R_HAND]
 			if(H.hand)

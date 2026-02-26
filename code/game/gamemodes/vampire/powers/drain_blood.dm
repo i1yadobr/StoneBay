@@ -11,7 +11,7 @@
 	if(!.)
 		return
 
-	var/obj/item/grab/G = my_mob.get_active_hand()
+	var/obj/item/grab/G = my_mob.get_clicking_hand()
 	if (!istype(G))
 		to_chat(my_mob, SPAN("warning", "You must be grabbing a victim in your active hand to drain their blood."))
 		return

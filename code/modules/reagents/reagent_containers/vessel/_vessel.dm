@@ -445,7 +445,7 @@
 	if(!iscarbon(C))
 		return
 
-	if(!istype(C.get_active_hand(), src))
+	if(!istype(C.get_clicking_hand(), src))
 		to_chat(C, SPAN("warning", "You need to hold \the [src] in hands!"))
 		return
 

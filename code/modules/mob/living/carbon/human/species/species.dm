@@ -657,7 +657,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 		target.w_uniform.add_fingerprint(attacker)
 	var/obj/item/organ/external/affecting = target.get_organ(ran_zone(attacker.zone_sel.selecting))
 
-	var/list/holding = list(target.get_active_hand() = 40, target.get_inactive_hand() = 20)
+	var/list/holding = list(target.get_clicking_hand() = 40, target.get_passive_hand() = 20)
 
 	//See if they have any guns that might go off
 	for(var/obj/item/gun/W in holding)

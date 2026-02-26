@@ -9,7 +9,9 @@
 /mob/proc/setClickCooldown(timeout)
 	next_move = max(world.time + timeout, next_move)
 
-/mob/proc/canClick()
+/mob/proc/canClick(obj/item/I)
+	if(istype(I) && !I.check_cooldown())
+		return FALSE
 	// NOTE: this checks for next_move, which is different from next_click used by
 	//   mob/proc/OnClick() to enforce a 1 decisecond limit
 	if(config.misc.no_click_cooldown || next_move <= world.time)

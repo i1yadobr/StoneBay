@@ -24,6 +24,7 @@
 	var/force = 0
 	var/attack_cooldown = DEFAULT_WEAPON_COOLDOWN // 0.5 second
 	var/attack_cooldown_real //Debug variable
+	var/on_cooldown_until = 0
 	var/mod_handy = 0.25 //Handiness modifier. i.e. 0.5 - pain in the ass to use, 1.0 - decent weapon, 1.5 - specialized for melee combat.
 	var/mod_reach = 0.25 //Length modifier. i.e. 0.35 - knives, 0.75 - toolboxes, 1.0 - crowbars, 1.25 - batons, 1.5 - spears and mops.
 	var/mod_weight = 0.25 //Weight modifier. i.e. 0.33 - knives, 0.67 - hatchets, 1.0 - crowbars and batons, 1.33 - tanks, 1.66 - toolboxes, 2.0 - axes.
@@ -300,9 +301,9 @@
 		if(loc != H && H.IsAdvancedToolUser(TRUE) == FALSE)
 			to_chat(user, SPAN("notice", "I'm not smart enough to do that!"))
 			return
-		var/obj/item/organ/external/temp = H.organs_by_name[BP_R_HAND]
+		var/obj/item/organ/external/temp = H.rightclicked ? H.organs_by_name[BP_L_HAND] : H.organs_by_name[BP_R_HAND]
 		if (user.hand)
-			temp = H.organs_by_name[BP_L_HAND]
+			temp = H.rightclicked ? H.organs_by_name[BP_R_HAND] : H.organs_by_name[BP_L_HAND]
 		if(temp && !temp.is_usable())
 			to_chat(user, SPAN("notice", "You try to move your [temp.name], but cannot!"))
 			return
@@ -340,7 +341,8 @@
 
 	pickup(user, changing_slots)
 
-	if(user.put_in_active_hand(src))
+	var/put_in_hands_result = user.put_in_clicking_hand(src)
+	if(put_in_hands_result)
 		if(isturf(old_loc))
 			var/obj/effect/temporary/item_pickup_ghost/ghost = new /obj/effect/temporary/item_pickup_ghost(old_loc, src)
 			ghost.animate_towards(user)
@@ -658,7 +660,7 @@ var/list/global/slot_flags_enumeration = list(
 		var/poise_dmg = P.damage / (mod_shield * 2.5)
 		if(block_tier != BLOCK_TIER_ADVANCED && P.damage_type == BRUTE)
 			poise_dmg = (P.damage + (P.agony / 1.5)) / (mod_shield * 2.5)
-		poise_dmg *= (src == H.get_active_hand()) ? 1.25 : 2.0
+		poise_dmg *= (src == H.get_clicking_hand()) ? 1.25 : 2.0
 		H.damage_poise(poise_dmg)
 		if(H.poise < poise_dmg)
 			shot_out(H, P)
@@ -830,7 +832,7 @@ GLOBAL_LIST_EMPTY(blood_overlay_cache)
 	set name = "Show Held Item"
 	set category = "Object"
 
-	var/obj/item/I = get_active_hand()
+	var/obj/item/I = get_clicking_hand()
 	if(I && I.simulated)
 		I.showoff(src)
 
@@ -857,7 +859,7 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	else if(!zoom && istype(H) && H.equipment_tint_total >= TINT_MODERATE)
 		to_chat(user, SPAN("warning", "Your visor gets in the way of looking through the [devicename]."))
 		return
-	else if(!zoom && user.get_active_hand() != src)
+	else if(!zoom && user.get_clicking_hand() != src)
 		to_chat(user, SPAN("warning", "You are too distracted to look through the [devicename], perhaps if it was in your active hand this might work better."))
 		return
 
@@ -1077,6 +1079,13 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	res_cd = (attack_cooldown + DEFAULT_WEAPON_COOLDOWN * (mod_weight / mod_handy)) * mod_speed // i.e. Default attack speed for the-most-generic-item is 1 hit/s
 	attack_cooldown_real = res_cd //Debug
 	return res_cd
+
+/obj/item/proc/set_cooldown(override)
+	on_cooldown_until = world.time + (override ? override : update_attack_cooldown())
+	return on_cooldown_until
+
+/obj/item/proc/check_cooldown()
+	return (world.time > on_cooldown_until)
 
 /obj/item/proc/update_weapon_desc()
 	return

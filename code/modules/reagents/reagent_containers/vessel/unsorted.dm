@@ -309,11 +309,11 @@
 	if(C.a_intent == I_GRAB)
 		return ..()
 
-	if(C.l_hand == src && !C.get_active_hand())
+	if(C.l_hand == src && !C.get_clicking_hand())
 		shake(user)
 		return
 
-	else if(C.r_hand == src && !C.get_active_hand())
+	else if(C.r_hand == src && !C.get_clicking_hand())
 		shake(user)
 		return
 

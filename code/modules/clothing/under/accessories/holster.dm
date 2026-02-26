@@ -86,7 +86,7 @@
 	if(!holstered)
 		return
 
-	if(istype(user.get_active_hand(), /obj) && istype(user.get_inactive_hand(), /obj))
+	if(istype(user.get_clicking_hand(), /obj) && istype(user.get_passive_hand(), /obj))
 		to_chat(user, SPAN("warning", "You need an empty hand to draw \the [holstered]!"))
 	else
 		if(user.a_intent == I_HURT)
@@ -163,7 +163,7 @@
 		to_chat(usr, SPAN("warning", "Something is very wrong."))
 
 	if(!H.holstered)
-		var/obj/item/I = usr.get_active_hand()
+		var/obj/item/I = usr.get_clicking_hand()
 		if(!istype(I, /obj/item))
 			to_chat(usr, SPAN("warning", "You're not holding anything to holster."))
 			return

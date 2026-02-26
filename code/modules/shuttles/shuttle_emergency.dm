@@ -251,7 +251,7 @@
 		//They selected an empty entry. Try to scan their id.
 		var/mob/living/carbon/human/H = user
 		if (istype(H))
-			if (!read_authorization(H.get_active_hand()))	//try to read what's in their hand first
+			if (!read_authorization(H.get_clicking_hand()))	//try to read what's in their hand first
 				read_authorization(H.wear_id)
 				. = TOPIC_REFRESH
 

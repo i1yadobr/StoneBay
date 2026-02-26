@@ -133,7 +133,7 @@
 		return ..()
 
 /mob/living/simple_animal/hamster/attackby(obj/item/O, mob/user)
-	if(!holding_item && user.a_intent == I_HELP && istype(user.get_inactive_hand(), /obj/item/tape_roll) && O.w_class == ITEM_SIZE_TINY)
+	if(!holding_item && user.a_intent == I_HELP && istype(user.get_passive_hand(), /obj/item/tape_roll) && O.w_class == ITEM_SIZE_TINY)
 		user.visible_message(SPAN("notice", "[user] is trying to tape \a [O] to \the [name]."),
 							 SPAN("notice", "You are trying to tape \a [O] to \the [name]."))
 		if(do_after(user, 3 SECONDS, src))

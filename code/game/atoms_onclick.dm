@@ -26,20 +26,23 @@
 	return
 
 /atom/proc/ShiftRightClick(mob/user)
-	return
-
-/atom/proc/ShiftAltRightClick(mob/user)
-	return
-
-// AltClick of the base atom type toggles the Turf examination panel for the user if user is adjacent.
-/atom/proc/AltClick(mob/user)
 	var/turf/T = get_turf(src)
+
 	if(T && user.TurfAdjacent(T))
 		if(user.listed_turf == T)
 			user.listed_turf = null
 		else
 			user.listed_turf = T
 			user.client.statpanel = "Turf"
+
+	return TRUE
+
+/atom/proc/ShiftAltRightClick(mob/user)
+	return
+
+// AltClick of the base atom type toggles the Turf examination panel for the user if user is adjacent.
+/atom/proc/AltClick(mob/user)
+	SEND_SIGNAL(src, SIGNAL_ALT_CLICKED, src, user)
 	return
 
 // AICtrlClick of the base atom type is a no-op that returns FALSE to indicate that interaction wasn't handled.

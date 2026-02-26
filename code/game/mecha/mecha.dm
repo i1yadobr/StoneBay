@@ -890,7 +890,7 @@
 	else
 		src.log_message("Attacked by [W]. Attacker - [user]")
 
-		user.setClickCooldown(W.update_attack_cooldown())
+		W.set_cooldown()
 		user.do_attack_animation(src)
 		obj_attack_sound(W)
 
@@ -1328,18 +1328,16 @@
 /////////////////////////
 
 /obj/mecha/proc/operation_allowed(mob/living/carbon/human/H)
-	for(var/atom/ID in list(H.get_active_hand(), H.wear_id, H.belt))
+	for(var/atom/ID in list(H.get_active_hand(), H.get_passive_hand(), H.wear_id, H.belt))
 		if(src.check_access(ID,src.operation_req_access))
-			return 1
-	return 0
-
+			return TRUE
+	return FALSE
 
 /obj/mecha/proc/internals_access_allowed(mob/living/carbon/human/H)
-	for(var/atom/ID in list(H.get_active_hand(), H.wear_id, H.belt))
+	for(var/atom/ID in list(H.get_active_hand(), H.get_passive_hand(), H.wear_id, H.belt))
 		if(src.check_access(ID,src.internals_req_access))
-			return 1
-	return 0
-
+			return TRUE
+	return FALSE
 
 /obj/mecha/check_access(obj/item/card/id/I, list/access_list)
 	if(!istype(access_list))

@@ -374,7 +374,7 @@
 	if(.)
 		return
 
-	if(isrobot(user) && W == user.get_active_hand())
+	if(isrobot(user) && W == user.get_clicking_hand())
 		return //Robots can't store their modules.
 
 	// TODO: Check the functionality of this feature
@@ -419,11 +419,11 @@
 /obj/item/storage/attack_hand(mob/user)
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
-		if(H.l_store == src && !H.get_active_hand())	//Prevents opening if it's in a pocket.
+		if(H.l_store == src && (!H.get_active_hand() || !H.get_inactive_hand()))	//Prevents opening if it's in a pocket.
 			if(H.put_in_hands(src))
 				H.l_store = null
 			return
-		if(H.r_store == src && !H.get_active_hand())
+		if(H.r_store == src && (!H.get_active_hand() || !H.get_inactive_hand()))
 			if(H.put_in_hands(src))
 				H.r_store = null
 			return
@@ -495,7 +495,7 @@
 /obj/item/storage/attack_self(mob/user)
 	//Clicking on itself will empty it, if it has the verb to do that.
 	// TODO(rufus): replace redundant check
-	if(user.get_active_hand() == src)
+	if(user.get_clicking_hand() == src)
 		// TODO(rufus): replace with allow_quick_empty check
 		if(src.verbs.Find(/obj/item/storage/verb/quick_empty))
 			quick_empty()

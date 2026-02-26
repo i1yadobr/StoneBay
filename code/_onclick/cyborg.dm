@@ -9,17 +9,18 @@
 	next_click = world.time + 1
 
 	var/list/modifiers = params2list(params)
-	if(modifiers["shift"] && modifiers["ctrl"])
-		CtrlShiftClickOn(A)
+	if(modifiers["shift"])
+		if(modifiers["ctrl"])
+			CtrlShiftClickOn(A)
+		else if(modifiers["middle"])
+			ShiftMiddleClickOn(A)
+		else if(modifiers["right"])
+			ShiftRightClickOn(A)
+		else
+			ShiftClickOn(A)
 		return
 	if(modifiers["middle"])
-		if(modifiers["shift"])
-			ShiftMiddleClickOn(A)
-		else
-			MiddleClickOn(A)
-		return
-	if(modifiers["shift"])
-		ShiftClickOn(A)
+		MiddleClickOn(A)
 		return
 	if(modifiers["alt"]) // alt and alt-gr (rightalt)
 		AltClickOn(A)
@@ -44,7 +45,7 @@
 			to_chat(src, SPAN("danger", "Your camera isn't functional."))
 		return
 
-	var/obj/item/I = get_active_hand()
+	var/obj/item/I = get_clicking_hand()
 
 	// Cyborgs interact with the world remotely when not using an item
 	if(!I)

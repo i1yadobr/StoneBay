@@ -170,14 +170,14 @@
 /proc/get_multitool(mob/user)
 	var/obj/item/device/multitool/MT = null
 	if(!issilicon(user))
-		if(isMultitool(user.get_active_hand()))
-			MT = user.get_active_hand()
+		if(isMultitool(user.get_clicking_hand()))
+			MT = user.get_clicking_hand()
 	else if(isAI(user))
 		var/mob/living/silicon/ai/AI = user
 		MT = AI.aiMulti
 	else if(isrobot(user))
-		if(isMultitool(user.get_active_hand()))
-			MT = user.get_active_hand()
+		if(isMultitool(user.get_clicking_hand()))
+			MT = user.get_clicking_hand()
 	return MT
 
 // Additional Options for certain machines. Use this when you want to add an option to a specific machine.

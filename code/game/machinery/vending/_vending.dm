@@ -246,7 +246,7 @@
 	else if(W.force >= 10)
 		take_damage(W.force)
 		user.visible_message(SPAN("danger", "\The [src] has been [pick(W.attack_verb)] with [W] by [user]!"))
-		user.setClickCooldown(W.update_attack_cooldown())
+		W.set_cooldown()
 		user.do_attack_animation(src)
 		obj_attack_sound(W)
 		shake_animation(stime = 4)
@@ -573,7 +573,7 @@
 			shut_up = !shut_up
 			return TRUE
 		if("pay")
-			pay(usr.get_active_hand(), usr) || pay(usr.get_inactive_hand(), usr)
+			pay(usr.get_clicking_hand(), usr) || pay(usr.get_passive_hand(), usr)
 			return TRUE
 
 /obj/machinery/vending/proc/vend(datum/stored_items/vending_products/R, mob/user)

@@ -67,9 +67,11 @@
 	bodytemp = null
 	healths = null
 	pains = null
+	resting_icon = null
 	throw_icon = null
 	block_icon = null
-	blockswitch_icon = null
+	aim_assist_icon = null
+	twohanded_mode_icon = null
 	nutrition_icon = null
 	hydration_icon = null
 	pressure = null
@@ -372,26 +374,34 @@
 					G.affecting.ret_grab(L)
 	return L
 
-// TODO(rufus): rename mode() proc to an appropriate "activate held object" name.
-//   It is currently named "mode" as historically it was used only for switching modes of the held item.
-/mob/verb/mode()
+/mob/verb/activate_held_object()
 	set name = "Activate Held Object"
 	set category = "Object"
 	set src = usr
 
-	if(istype(loc,/obj/mecha)) return
+	use_attack_self()
+	return
+
+/mob/proc/use_attack_self(is_active_hand = TRUE)
+	if(istype(loc, /obj/mecha))
+		return
 
 	if(hand)
-		var/obj/item/I = l_hand
+		var/obj/item/I = is_active_hand ? l_hand : r_hand
 		if(I)
 			I.attack_self(src)
-			update_inv_l_hand()
+			if(is_active_hand)
+				update_inv_l_hand()
+			else
+				update_inv_r_hand()
 	else
-		var/obj/item/I = r_hand
+		var/obj/item/I = is_active_hand ? r_hand : l_hand
 		if(I)
 			I.attack_self(src)
-			update_inv_r_hand()
-	return
+			if(is_active_hand)
+				update_inv_r_hand()
+			else
+				update_inv_l_hand()
 
 // TODO(rufus): remove unused commented code
 /*
@@ -843,21 +853,15 @@
 	sleeping = max(sleeping + amount,0)
 	return
 
-/mob/proc/Resting(amount)
-	facing_dir = null
-	resting = max(max(resting,amount),0)
-	return
-
-/mob/proc/SetResting(amount)
-	resting = max(amount,0)
-	return
-
-/mob/proc/AdjustResting(amount)
-	resting = max(resting + amount,0)
-	return
-
 /mob/proc/get_species()
 	return ""
+
+/mob/proc/set_resting(new_state)
+	resting = new_state
+	update_canmove()
+	if(resting_icon)
+		resting_icon.icon_state = "rest[resting]"
+	return
 
 /mob/proc/get_visible_implants(class = 0)
 	var/list/visible_implants = list()

@@ -249,7 +249,7 @@
 
 										for(var/obj/item/organ/internal/heart/I in internal_organs)
 											if(I && istype(I))
-												if(!H.put_in_active_hand(I))
+												if(!H.put_in_clicking_hand(I))
 													return 0
 												I.cut_away(src)
 												O.implants -= I

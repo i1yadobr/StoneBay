@@ -2,7 +2,7 @@
 //as they handle all relevant stuff like adding it to the player's screen and such
 
 //Returns the thing in our active hand (whatever is in our active module-slot, in this case)
-/mob/living/silicon/robot/get_active_hand()
+/mob/living/silicon/robot/get_clicking_hand()
 	return module_active
 
 /mob/living/silicon/robot/drop(obj/item/I, atom/target = null, force = FALSE, changing_slots)

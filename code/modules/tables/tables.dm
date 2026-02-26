@@ -179,7 +179,7 @@
 	return ..()
 
 /obj/structure/table/MouseDrop_T(obj/item/stack/material/what)
-	if(can_reinforce && isliving(usr) && (!usr.stat) && istype(what) && usr.get_active_hand() == what && Adjacent(usr))
+	if(can_reinforce && isliving(usr) && (!usr.stat) && istype(what) && usr.get_clicking_hand() == what && Adjacent(usr))
 		reinforce_table(what, usr)
 	else
 		return ..()

@@ -47,14 +47,14 @@
 	var/has_tome = 0
 	var/has_robes = 0
 	var/cult_ground = 0
-	if(istype(get_active_hand(), /obj/item/book/tome))
-		var/obj/item/book/tome/B = get_active_hand()
+	if(istype(get_clicking_hand(), /obj/item/book/tome))
+		var/obj/item/book/tome/B = get_clicking_hand()
 		if(B.open)
 			has_tome = 1
 		else
 			to_chat(src, SPAN("warning", "You need to open the tome before drawing the rune."))
-	else if(istype(get_inactive_hand(), /obj/item/book/tome))
-		var/obj/item/book/tome/B = get_inactive_hand()
+	else if(istype(get_passive_hand(), /obj/item/book/tome))
+		var/obj/item/book/tome/B = get_passive_hand()
 		if(B.open)
 			has_tome = 1
 		else
@@ -80,11 +80,11 @@
 	var/timer
 	var/damage = 1
 	if(has_tome)
-		if(istype(get_active_hand(), /obj/item/book/tome))
-			var/obj/item/book/tome/B = get_active_hand()
+		if(istype(get_clicking_hand(), /obj/item/book/tome))
+			var/obj/item/book/tome/B = get_clicking_hand()
 			flick("tome-flick", B)
-		else if(istype(get_inactive_hand(), /obj/item/book/tome))
-			var/obj/item/book/tome/B = get_inactive_hand()
+		else if(istype(get_passive_hand(), /obj/item/book/tome))
+			var/obj/item/book/tome/B = get_passive_hand()
 			flick("tome-flick", B)
 		if(has_robes && cult_ground)
 			self = "Feeling greatly empowered, you slice open your finger and make a rune on the engraved floor. It shifts when your blood touches it, and starts vibrating as you begin to chant the ritual that binds your life essence with the dark arcane energies flowing through the surrounding world."

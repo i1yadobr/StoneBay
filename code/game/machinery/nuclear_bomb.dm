@@ -238,7 +238,7 @@ var/bomb_set
 			yes_code = 0
 			auth = null
 		else
-			var/obj/item/I = usr.get_active_hand()
+			var/obj/item/I = usr.get_clicking_hand()
 			if(istype(I, /obj/item/disk/nuclear) && usr.drop(I, src))
 				auth = I
 	if(is_auth(usr))

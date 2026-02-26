@@ -18,18 +18,18 @@
 	if(targets)
 		for(var/target in targets)
 			var/mob/M = target
-			if(M.get_active_hand())
+			if(M.get_clicking_hand())
 				to_chat(user, SPAN("warning", "You need an empty hand to cast this spell."))
 				return 0
 	return 1
 
 /datum/spell/hand/cast(list/targets, mob/user)
 	for(var/mob/M in targets)
-		if(M.get_active_hand())
+		if(M.get_clicking_hand())
 			to_chat(user, SPAN("warning", "You need an empty hand to cast this spell."))
 			return
 		var/obj/item/magic_hand/H = new(src)
-		if(!M.put_in_active_hand(H))
+		if(!M.put_in_clicking_hand(H))
 			qdel(H)
 			return
 	return 1

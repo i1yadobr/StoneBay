@@ -1053,7 +1053,7 @@
 	var/base_pregen = poise_pool * 0.1
 	var/pregen = base_pregen
 
-	for(var/obj/item/grab/G in list(get_active_hand(), get_inactive_hand()))
+	for(var/obj/item/grab/G in list(get_clicking_hand(), get_passive_hand()))
 		pregen -= base_pregen * 0.25
 
 	if(blocking)

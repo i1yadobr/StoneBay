@@ -205,8 +205,8 @@
 		return 1
 
 /datum/nano_module/records/proc/get_photo(mob/user)
-	if(istype(user.get_active_hand(), /obj/item/photo))
-		var/obj/item/photo/photo = user.get_active_hand()
+	if(istype(user.get_clicking_hand(), /obj/item/photo))
+		var/obj/item/photo/photo = user.get_clicking_hand()
 		return photo.img
 	if(istype(user, /mob/living/silicon))
 		var/mob/living/silicon/tempAI = usr

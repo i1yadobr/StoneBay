@@ -214,7 +214,7 @@
 		//Adding things to inventory
 		else if(href_list["add_inv"])
 			var/add_to = href_list["add_inv"]
-			if(!usr.get_active_hand())
+			if(!usr.get_clicking_hand())
 				to_chat(usr, SPAN_WARNING("You have nothing in your hand to put on its [add_to]."))
 				return
 			switch(add_to)
@@ -223,7 +223,7 @@
 						to_chat(usr, SPAN_WARNING("It's already wearing something."))
 						return
 
-					var/obj/item/item_to_add = usr.get_active_hand()
+					var/obj/item/item_to_add = usr.get_clicking_hand()
 					if(!item_to_add)
 						return
 
@@ -260,7 +260,7 @@
 						to_chat(usr, SPAN_WARNING("It's already wearing something."))
 						return
 
-					var/obj/item/item_to_add = usr.get_active_hand()
+					var/obj/item/item_to_add = usr.get_clicking_hand()
 					if(!item_to_add)
 						return
 

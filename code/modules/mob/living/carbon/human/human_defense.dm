@@ -454,7 +454,7 @@ meteor_act
 				if(BP_L_HAND, BP_R_HAND) //Knocking someone down by smashing their hands? Hell no.
 					if(poise <= effective_force/3*I.mod_weight)
 						visible_message(SPAN("danger", "[user] disarms [src] with their [I.name]!"))
-						var/list/holding = list(src.get_active_hand() = 40, src.get_inactive_hand() = 20)
+						var/list/holding = list(src.get_clicking_hand() = 40, src.get_passive_hand() = 20)
 						for(var/obj/item/D in holding)
 							drop(D)
 						playsound(src, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
@@ -545,7 +545,7 @@ meteor_act
 			if(BP_L_HAND, BP_R_HAND)
 				if(poise <= effective_force*I.mod_reach)
 					visible_message(SPAN("danger", "[user] disarms [src] with their [I.name]!"))
-					var/list/holding = list(get_active_hand() = 40, get_inactive_hand() = 20)
+					var/list/holding = list(get_clicking_hand() = 40, get_passive_hand() = 20)
 					for(var/obj/item/D in holding)
 						drop(D)
 					playsound(src.loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
@@ -620,7 +620,7 @@ meteor_act
 /mob/living/carbon/human/parry_with_weapon(obj/item/I, mob/living/user, effective_force, hit_zone)
 	if(istype(user,/mob/living/carbon/human))
 		var/mob/living/carbon/human/A = user
-		A.setClickCooldown(I.update_attack_cooldown()*2)
+		I.set_cooldown(I.update_attack_cooldown()*2)
 		A.parrying = 1
 		A.visible_message(SPAN("warning", "[A] attempts to parry [src]'s attack with their [I]!"))
 		//visible_message("[A] tries to parry [src]'s attack with their [I]! Parry window: [I.mod_handy*8]") //Debug message
@@ -640,8 +640,8 @@ meteor_act
 	var/failing = 0
 	if(istype(attacking_mob,/mob/living/carbon/human))
 		var/mob/living/carbon/human/attacker = attacking_mob
-		if(defender.get_active_hand())
-			var/obj/item/weapon_def = defender.get_active_hand()
+		if(defender.get_clicking_hand())
+			var/obj/item/weapon_def = defender.get_clicking_hand()
 			if(!weapon_def.force)
 				defender.parrying = 0
 				visible_message(SPAN("warning", "[defender] pointlessly attempts to parry [attacker]'s [weapon_atk.name] with their [weapon_def]."))
@@ -660,7 +660,8 @@ meteor_act
 			defender.next_move = world.time+1 //Well I'd prefer to use setClickCooldown but it ain't gonna work here.
 			defender.damage_poise(2.5 + weapon_atk.mod_weight*1.5, TRUE)
 			//visible_message("Debug \[parry\]: Defender [defender] lost [2.5+(weapon_def.mod_weight*2.5)] poise ([defender.poise]/[defender.poise_pool])") // Debug Message
-			attacker.setClickCooldown(weapon_atk.update_attack_cooldown()*2)
+			attacker.setClickCooldown(weapon_atk.update_attack_cooldown()*2) // Also setting regular cooldown because, well, PARRIED
+			weapon_atk.set_cooldown(weapon_atk.update_attack_cooldown()*2)
 			attacker.damage_poise(17.5 + weapon_atk.mod_weight*7.5, TRUE)
 			//visible_message("Debug \[parry\]: Attacker [attacker] lost [20.0+(weapon_atk.mod_weight*5.0)] poise ([defender.poise]/[defender.poise_pool])") // Debug Message
 			visible_message(SPAN("warning", "[defender] parries [attacker]'s [weapon_atk.name] with their [weapon_def.name]."))
@@ -686,11 +687,19 @@ meteor_act
 	var/d_mult = 1
 	if(istype(attacking_mob,/mob/living/carbon/human))
 		var/mob/living/carbon/human/attacker = attacking_mob
-		var/obj/item/weapon_def
-		if(defender.blocking_hand && defender.get_inactive_hand())
-			weapon_def = defender.get_inactive_hand()
-		else if(defender.get_active_hand())
-			weapon_def = defender.get_active_hand()
+
+		// Choosing the best shield
+		var/obj/item/weapon_def = defender.get_inactive_hand()
+		var/obj/item/weapon_def_backup = defender.get_active_hand()
+
+		var/weapon_def_score = istype(weapon_def) ? (weapon_def.mod_weight + weapon_def.mod_reach) * weapon_def.mod_shield : 0
+		var/weapon_def_backup_score = istype(weapon_def_backup) ? (weapon_def_backup.mod_weight + weapon_def_backup.mod_reach) * weapon_def_backup.mod_shield : 0
+
+		if(!weapon_def_score && !weapon_def_backup_score)
+			weapon_def = null
+		else if(weapon_def_backup_score > weapon_def_score) // Offhands get higher priority
+			weapon_def = weapon_def_backup
+
 		if(weapon_def)
 			if(!weapon_def.force)
 				defender.useblock_off()
@@ -698,7 +707,7 @@ meteor_act
 				return 0 //For the case of candles and dices lmao
 
 			if(weapon_def.mod_reach < weapon_atk.mod_reach)
-				if(((weapon_atk.mod_reach + weapon_atk.mod_weight)/2 - weapon_def.mod_reach) > 0)
+				if((weapon_atk.mod_reach + weapon_atk.mod_weight)/2 > weapon_def.mod_reach)
 					d_mult = ((weapon_atk.mod_reach + weapon_atk.mod_weight)/2 - weapon_def.mod_reach)/0.25
 			else if(weapon_def.mod_weight < weapon_atk.mod_weight)
 				d_mult = (weapon_atk.mod_weight - weapon_def.mod_weight)/0.5
@@ -738,14 +747,20 @@ meteor_act
 	var/mob/living/carbon/human/defender = src
 	if(istype(attacking_mob,/mob/living/carbon/human) || istype(attacking_mob,/mob/living/simple_animal))
 		var/mob/living/attacker = attacking_mob
-		var/obj/item/weapon_def
 
-		if(defender.blocking_hand && defender.get_inactive_hand())
-			weapon_def = defender.get_inactive_hand()
-		else if(defender.get_active_hand())
-			weapon_def = defender.get_active_hand()
+		// Choosing the best shield
+		var/obj/item/weapon_def = defender.get_inactive_hand()
+		var/obj/item/weapon_def_backup = defender.get_active_hand()
 
-		if(weapon_def)
+		var/weapon_def_score = istype(weapon_def) ? (weapon_def.mod_handy*1.5 + weapon_def.mod_weight + weapon_def.mod_reach) : 0
+		var/weapon_def_backup_score = istype(weapon_def_backup) ? (weapon_def_backup.mod_handy*1.5 + weapon_def_backup.mod_weight + weapon_def_backup.mod_reach) : 0
+
+		if(!weapon_def_score && !weapon_def_backup_score)
+			weapon_def = null
+		else if(weapon_def_backup_score > weapon_def_score) // Offhands get higher priority
+			weapon_def = weapon_def_backup
+
+		if(istype(weapon_def))
 			if(!weapon_def.force)
 				defender.useblock_off()
 				visible_message(SPAN("warning", "[defender] pointlessly attempts to block [attacker]'s attack with [weapon_def]."))
@@ -904,8 +919,8 @@ meteor_act
 		return
 
 	var/obj/O = AM
-	if(in_throw_mode && !get_active_hand() && TT.speed >= THROWFORCE_SPEED_DIVISOR) // empty active hand and we're in throw mode
-		if(!incapacitated() && isturf(O.loc) && put_in_active_hand(O))
+	if(in_throw_mode && !get_clicking_hand() && TT.speed >= THROWFORCE_SPEED_DIVISOR) // empty active hand and we're in throw mode
+		if(!incapacitated() && isturf(O.loc) && put_in_clicking_hand(O))
 			visible_message(SPAN("warning", "[src] catches [O]!"))
 			throw_mode_off()
 			return
@@ -915,26 +930,32 @@ meteor_act
 
 
 	if(blocking)
-		var/obj/item/weapon_def
-		if(blocking_hand && get_inactive_hand())
-			weapon_def = get_inactive_hand()
-		else if(get_active_hand())
-			weapon_def = get_active_hand()
+		// Choosing the best shield
+		var/obj/item/weapon_def = get_active_hand()
+		if(!weapon_def || !(weapon_def.w_class >= O.w_class || weapon_def.mod_shield > 1))
+			weapon_def = get_passive_hand()
+		else if(get_clicking_hand())
+			weapon_def = get_clicking_hand()
 
-		if(weapon_def)
-			if(weapon_def.force && weapon_def.w_class >= O.w_class)
-				var/dir = get_dir(src,O)
-				O.throw_at(get_edge_target_turf(src, dir), 1)
+		else
+			var/obj/item/weapon_def_backup = get_inactive_hand()
+			if(weapon_def_backup && (weapon_def_backup.w_class > O.w_class || weapon_def_backup.mod_shield > 1))
+				weapon_def = (weapon_def.mod_shield > weapon_def_backup.mod_shield) ? weapon_def : weapon_def_backup
 
-				visible_message(SPAN("warning", "[src] blocks [O] with [weapon_def]!"))
-				playsound(src, SFX_FIGHTING_SWING_LEGACY, 50, 1, -1)
+		// Checking if anything works as a shield
+		if(weapon_def && (weapon_def.w_class >= O.w_class || weapon_def.mod_shield > 1))
+			var/dir = get_dir(src, O)
+			O.throw_at(get_edge_target_turf(src, dir), 1)
 
-				damage_poise(throw_damage / weapon_def.mod_shield)
-				if(poise < throw_damage / weapon_def.mod_shield)
-					visible_message(SPAN("warning", "[src] falls down, unable to keep balance!"))
-					apply_effect(2, WEAKEN, 0)
-					useblock_off()
-				return
+			visible_message(SPAN("warning", "[src] blocks [O] with [weapon_def]!"))
+			playsound(src, SFX_FIGHTING_SWING_LEGACY, 50, 1, -1)
+
+			damage_poise(throw_damage / weapon_def.mod_shield)
+			if(poise < throw_damage / weapon_def.mod_shield)
+				visible_message(SPAN("warning", "[src] falls down, unable to keep balance!"))
+				apply_effect(2, WEAKEN, 0)
+				useblock_off()
+			return
 
 	var/zone = BP_CHEST
 	if(TT.target_zone)

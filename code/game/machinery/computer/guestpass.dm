@@ -151,7 +151,7 @@
 					giver = null
 				accesses.Cut()
 			else
-				var/obj/item/I = usr.get_active_hand()
+				var/obj/item/I = usr.get_clicking_hand()
 				if(istype(I, /obj/item/card/id))
 					if(usr.drop(I, src))
 						giver = I
