@@ -13,6 +13,9 @@
 /mob/get_active_item()
 	return get_clicking_hand()
 
+/mob/get_inactive_item()
+	return get_inactive_hand()
+
 /mob/get_mob()
 	return src
 
@@ -131,7 +134,7 @@
 // TODO(rufus): check what is the difference between do_mob and do_after, if it is necessary, if they can be merged
 //   together, rename as needed and document their usage and arguments properly
 // Return value indicates if action was successful. Return value of FALSE means the action was interrupted.
-/proc/do_mob(atom/movable/affecter, mob/target, time = 30, target_zone = 0, uninterruptible = FALSE, progress = TRUE, incapacitation_flags = INCAPACITATION_DEFAULT, can_multitask = FALSE, datum/callback/extra_checks)
+/proc/do_mob(atom/movable/affecter, mob/target, time = 30, target_zone = 0, uninterruptible = 0, progress = 1, incapacitation_flags = INCAPACITATION_DEFAULT, can_multitask = FALSE, datum/callback/extra_checks, rightclicked = FALSE)
 	if(!affecter || !target)
 		return FALSE
 
@@ -152,12 +155,14 @@
 	if(user.is_space_movement_permitted() == SPACE_MOVE_FORBIDDEN && user.inertia_dir)
 		drifting = TRUE
 
-	var/holding = affecter.get_active_item()
-
-	if(istype(user,/mob/living))
+	if(isliving(user))
 		var/mob/living/L = user
 		for(var/datum/modifier/actionspeed/ASM in L.modifiers)
 			time = time * ASM.actionspeed_coefficient
+		if(L.rightclicked)
+			rightclicked = TRUE
+
+	var/holding = rightclicked ? affecter.get_inactive_item() : affecter.get_active_item()
 
 	var/datum/progressbar/progbar
 	if(is_mob_type && progress)
@@ -192,9 +197,15 @@
 			. = FALSE
 			break
 
-		if(affecter.get_active_item() != holding)
-			. = FALSE
-			break
+		// Not checking via /has_in_hands() since we want to be able to conveniently abort the action by handswapping.
+		if(!rightclicked)
+			if(affecter.get_active_item() != holding)
+				. = 0
+				break
+		else
+			if(affecter.get_inactive_item() != holding)
+				. = 0
+				break
 
 		if(target_zone && affecter.get_selected_zone() != target_zone)
 			. = 0
