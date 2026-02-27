@@ -130,7 +130,7 @@
 /obj/item/storage/AltClick(mob/usr)
 	if(!canremove)
 		return
-	if((((ishuman(usr) || isrobot(usr) || issmall(usr)) && (!isxenomorph(usr) && !islarva(usr))) && !usr.incapacitated() && Adjacent(usr)))
+	if((((ishuman(usr) || isrobot(usr) || issmall(usr)) && (!isxenomorph(usr) && !ischestburster(usr))) && !usr.incapacitated() && Adjacent(usr)))
 		if(usr.s_active == src)
 			close(usr)
 		else
