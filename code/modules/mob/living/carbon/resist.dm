@@ -1,8 +1,6 @@
 /mob/living/carbon/process_resist()
-
 	//drop && roll
 	if(on_fire && !buckled)
-		fire_stacks -= 1.2
 		Weaken(3)
 		spin(32,2)
 		visible_message(
@@ -10,12 +8,12 @@
 			SPAN("notice", "You stop, drop, and roll!")
 			)
 		sleep(30)
-		if(fire_stacks <= 0)
+		adjust_fire_stacks(-25, TRUE)
+		if(!on_fire)
 			visible_message(
 				SPAN("danger", "[src] has successfully extinguished themselves!"),
 				SPAN("notice", "You extinguish yourself.")
 				)
-			ExtinguishMob()
 		return TRUE
 
 	if(istype(buckled, /obj/effect/vine))
