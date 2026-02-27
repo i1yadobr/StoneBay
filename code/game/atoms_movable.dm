@@ -92,6 +92,9 @@
 /atom/movable/proc/get_active_item()
 	return
 
+/atom/movable/proc/get_inactive_item()
+	return get_active_item()
+
 /atom/movable/proc/on_purchase()
 	return
 
