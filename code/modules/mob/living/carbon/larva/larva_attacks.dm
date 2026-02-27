@@ -1,4 +1,4 @@
-/mob/living/carbon/alien/UnarmedAttack(atom/A, proximity)
+/mob/living/carbon/larva/UnarmedAttack(atom/A, proximity)
 	if(!..())
 		return
 

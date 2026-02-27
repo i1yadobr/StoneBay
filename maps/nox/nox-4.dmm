@@ -2310,7 +2310,7 @@
 "nTD" = (/obj/structure/table/marble,/obj/item/material/knife/butch/kitchen/syndie,/obj/item/material/kitchen/rollingpin,/obj/item/material/knife/kitchen,/obj/effect/floor_decal/corner/red/diagonal{dir = 4},/obj/effect/floor_decal/corner/white/diagonal,/turf/simulated/floor/tiled/white,/area/syndicate_mothership/elite_squad)
 "nTQ" = (/turf/simulated/shuttle/wall{icon_state = "whiteship"; dir = 1},/area/centcom/evac)
 "nUj" = (/obj/machinery/computer/camera_advanced,/turf/unsimulated/floor,/area/acting/stage)
-"nUJ" = (/obj/effect/floor_decal/snowedge{dir = 5},/obj/structure/flora/ausbushes/lavendergrass,/mob/living/carbon/alien/diona,/turf/simulated/floor/natural,/area/wizard_station)
+"nUJ" = (/obj/effect/floor_decal/snowedge{dir = 5},/obj/structure/flora/ausbushes/lavendergrass,/mob/living/carbon/larva/diona,/turf/simulated/floor/natural,/area/wizard_station)
 "nUP" = (/obj/structure/catwalk,/obj/structure/window/reinforced/crescent{dir = 8},/turf/simulated/floor/misc/fixed/vox/vox4,/area/skipjack_station/base)
 "nVd" = (/obj/effect/floor_decal/corner/white{dir = 8},/obj/effect/floor_decal/corner/green,/obj/effect/floor_decal/corner/white{dir = 4},/obj/machinery/atmospherics/pipe/simple/hidden/supply,/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/obj/structure/cable{d1 = 1; d2 = 2; icon_state = "1-2"},/obj/structure/disposalpipe/junction{dir = 1; icon_state = "pipe-j2"},/turf/simulated/floor/tiled,/area/merchant_station)
 "nVf" = (/obj/structure/window/syndi,/obj/structure/window_frame/grille,/turf/simulated/floor/shuttle/darkred,/area/shuttle/deathsquad/centcom)

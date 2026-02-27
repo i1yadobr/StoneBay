@@ -1,4 +1,4 @@
-/mob/living/carbon/alien/attack_hand(mob/living/carbon/M as mob)
+/mob/living/carbon/larva/attack_hand(mob/living/carbon/M as mob)
 	..()
 	switch(M.a_intent)
 
@@ -32,7 +32,7 @@
 						O.show_message(SPAN("danger", "\The [M] has attempted to punch \the [src]!"), 1)
 	return
 
-/mob/living/carbon/alien/ex_act(severity)
+/mob/living/carbon/larva/ex_act(severity)
 	if(!blinded)
 		flash_eyes()
 	var/b_loss = 0
@@ -57,18 +57,18 @@
 	adjustBruteLoss(b_loss)
 	adjustFireLoss(f_loss)
 
-/mob/living/carbon/alien/adjustBruteLoss(damage)
+/mob/living/carbon/larva/adjustBruteLoss(damage)
 	..()
 	updatehealth()
 
-/mob/living/carbon/alien/adjustFireLoss(damage)
+/mob/living/carbon/larva/adjustFireLoss(damage)
 	..()
 	updatehealth()
 
-/mob/living/carbon/alien/adjustToxLoss(damage)
+/mob/living/carbon/larva/adjustToxLoss(damage)
 	..()
 	updatehealth()
 
-/mob/living/carbon/alien/adjustOxyLoss(damage)
+/mob/living/carbon/larva/adjustOxyLoss(damage)
 	..()
 	updatehealth()

@@ -1,4 +1,4 @@
-/mob/living/carbon/alien
+/mob/living/carbon/larva
 
 	name = "alien"
 	desc = "What IS that?"
@@ -21,7 +21,7 @@
 	var/adult_name
 	var/instance_num
 
-/mob/living/carbon/alien/New()
+/mob/living/carbon/larva/New()
 
 	time_of_birth = world.time
 
@@ -40,17 +40,17 @@
 
 	..()
 
-/mob/living/carbon/alien/__unequip(obj/W)
+/mob/living/carbon/larva/__unequip(obj/W)
 	return
 
-/mob/living/carbon/alien/Stat()
+/mob/living/carbon/larva/Stat()
 	. = ..()
 
-/mob/living/carbon/alien/restrained()
+/mob/living/carbon/larva/restrained()
 	return 0
 
-/mob/living/carbon/alien/show_inv(mob/user)
+/mob/living/carbon/larva/show_inv(mob/user)
 	return FALSE//Consider adding cuffs and hats to this, for the sake of fun.
 
-/mob/living/carbon/alien/attack_ui(slot_id)
+/mob/living/carbon/larva/attack_ui(slot_id)
 	return //can't equip anything
