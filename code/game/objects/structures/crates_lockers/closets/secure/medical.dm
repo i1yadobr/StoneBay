@@ -130,7 +130,7 @@
 		/obj/item/cartridge/cmo,
 		/obj/item/device/hudmatrix/medical,
 		/obj/item/device/flash,
-		/obj/item/melee/telebaton,
+		/obj/item/melee/telebaton/silver,
 		/obj/item/device/flashlight/pen,
 		/obj/item/reagent_containers/hypospray/vial/cmo
 	)

@@ -15,7 +15,7 @@
 		/obj/item/device/radio/headset/heads/captain,
 		/obj/item/gun/energy/egun/elite,
 		/obj/item/storage/belt/sabre,
-		/obj/item/melee/telebaton,
+		/obj/item/melee/telebaton/gold,
 		/obj/item/cartridge/captain,
 	)
 
@@ -31,7 +31,7 @@
 /obj/structure/closet/secure_closet/hop/WillContain()
 	return list(
 		/obj/item/storage/garment/head_of_personnel,
-		/obj/item/melee/telebaton,
+		/obj/item/melee/telebaton/silver,
 		/obj/item/device/radio/headset/heads/hop,
 		/obj/item/cartridge/hop,
 		/obj/item/storage/box/ids = 2,
@@ -55,7 +55,7 @@
 		/obj/item/device/flash,
 		/obj/item/shield/riot/tele,
 		/obj/item/gun/energy/egun/elite,
-		/obj/item/melee/telebaton,
+		/obj/item/melee/telebaton/silver,
 		/obj/item/melee/baton/loaded,
 		/obj/item/storage/box/flashbangs,
 		/obj/item/storage/belt/security,

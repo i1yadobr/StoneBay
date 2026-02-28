@@ -35,4 +35,5 @@
 		/obj/item/tank/emergency/oxygen,
 		/obj/item/storage/garment/quartermaster,
 		/obj/item/material/coin/silver = 2,
+		/obj/item/melee/telebaton/bronze,
 	)

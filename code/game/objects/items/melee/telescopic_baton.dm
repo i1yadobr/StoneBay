@@ -11,7 +11,13 @@
 	mod_weight = 0.5
 	mod_reach = 0.5
 	mod_handy = 1.0
-	armor_penetration = 15
+	armor_penetration = 10
+	pickup_sound = SFX_PICKUP_TELEBATON_FOLDED
+	drop_sound = SFX_DROP_TELEBATON_FOLDED
+	var/folded_pickup_sound = SFX_PICKUP_TELEBATON_FOLDED
+	var/folded_drop_sound = SFX_DROP_TELEBATON_FOLDED
+	var/unfolded_pickup_sound = SFX_PICKUP_TELEBATON_UNFOLDED
+	var/unfolded_drop_sound = SFX_DROP_TELEBATON_UNFOLDED
 	var/active = FALSE
 
 /obj/item/melee/telebaton/attack_self(mob/user)
@@ -26,6 +32,8 @@
 		mod_reach = 1.0
 		mod_handy = 1.25
 		attack_verb = list("smacked", "struck", "slapped")
+		pickup_sound = unfolded_pickup_sound
+		drop_sound = unfolded_drop_sound
 	else
 		user.visible_message(SPAN("notice", "\The [user] collapses their telescopic baton."),
 		SPAN("notice", "You collapse the baton."),
@@ -36,6 +44,8 @@
 		mod_reach = 0.5
 		mod_handy = 1.0
 		attack_verb = list("hit", "punched")
+		pickup_sound = folded_pickup_sound
+		drop_sound = folded_drop_sound
 
 	playsound(src, GET_SFX(SFX_USE_TELESCOPIC), 50, 1)
 	add_fingerprint(user)
@@ -71,8 +81,6 @@
 	else
 		return ..()
 
-// TODO: Implement different types of telescopic batons into the game
-// Currently, these are admin items
 /obj/item/melee/telebaton/bronze
 	name = "bronze-capped telescopic baton"
 	desc = "A compact yet rebalanced personal defense weapon. \
@@ -80,7 +88,7 @@
 	icon_state = "telebaton_bronze"
 	item_state = "telebaton_bronze"
 	base_icon_state = "telebaton_bronze"
-	armor_penetration = 20
+	armor_penetration = 15
 
 /obj/item/melee/telebaton/silver
 	name = "silver-capped telescopic baton"
@@ -89,7 +97,7 @@
 	icon_state = "telebaton_silver"
 	item_state = "telebaton_silver"
 	base_icon_state = "telebaton_silver"
-	armor_penetration = 25
+	armor_penetration = 20
 
 /obj/item/melee/telebaton/gold
 	name = "gold-capped telescopic baton"
@@ -98,4 +106,4 @@
 	icon_state = "telebaton_gold"
 	item_state = "telebaton_gold"
 	base_icon_state = "telebaton_gold"
-	armor_penetration = 30
+	armor_penetration = 25
