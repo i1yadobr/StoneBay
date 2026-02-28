@@ -1011,6 +1011,12 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	SFX_PICKUP_TOOLBELT = list(
 		'sound/effects/pickup/toolbelt.ogg'
 	),
+	SFX_PICKUP_TELEBATON_FOLDED = list(
+		'sound/effects/pickup/telescopic_baton_folded.ogg'
+	),
+	SFX_PICKUP_TELEBATON_UNFOLDED = list(
+		'sound/effects/pickup/telescopic_baton_unfolded.ogg'
+	),
 	SFX_PICKUP_TOOLBOX = list(
 		'sound/effects/pickup/toolbox.ogg'
 	),
@@ -1170,6 +1176,12 @@ GLOBAL_LIST_INIT(sfx_list, list(
 	),
 	SFX_DROP_SWORD = list(
 		'sound/effects/drop/sword.ogg'
+	),
+	SFX_DROP_TELEBATON_FOLDED = list(
+		'sound/effects/drop/telescopic_baton_folded.ogg'
+	),
+	SFX_DROP_TELEBATON_UNFOLDED = list(
+		'sound/effects/drop/telescopic_baton_unfolded.ogg'
 	),
 	SFX_DROP_TOOLBELT = list(
 		'sound/effects/drop/toolbelt.ogg'

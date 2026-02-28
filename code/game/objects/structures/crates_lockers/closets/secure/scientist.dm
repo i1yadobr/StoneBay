@@ -59,7 +59,7 @@
 		/obj/item/cartridge/rd,
 		/obj/item/device/flash,
 		/obj/item/clipboard,
-		/obj/item/melee/telebaton,
+		/obj/item/melee/telebaton/silver,
 		/obj/item/paper/monitorkey
 	)
 
