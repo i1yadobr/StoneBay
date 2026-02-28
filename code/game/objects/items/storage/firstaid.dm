@@ -122,6 +122,25 @@
 		/obj/item/stack/medical/splint
 		)
 
+/obj/item/storage/firstaid/combat/ert
+	desc = "Contains advanced medical treatments for combat conditions."
+	icon_state = "firstaid-ert"
+	item_state = "firstaid-ert"
+	storage_slots = 10
+
+	startswith = list(
+		/obj/item/stack/medical/advanced/bruise_pack,
+		/obj/item/stack/medical/advanced/ointment,
+		/obj/item/storage/pill_bottle/tricordrazine,
+		/obj/item/storage/pill_bottle/bicaridine,
+		/obj/item/storage/pill_bottle/dermaline,
+		/obj/item/storage/pill_bottle/dexalin_plus,
+		/obj/item/storage/pill_bottle/dylovene,
+		/obj/item/storage/pill_bottle/tramadol,
+		/obj/item/storage/pill_bottle/spaceacillin,
+		/obj/item/stack/medical/splint
+		)
+
 /obj/item/storage/firstaid/antirad
 	name = "radiation first-aid kit"
 	desc = "Individual medkit for treating radiation exposure."
