@@ -32,10 +32,12 @@
 	if(incapacitated())
 		return
 
-	if(!canClick())
-		return
-
 	face_atom(A)
+
+	var/obj/item/I = get_active_hand()
+
+	if(!canClick(I))
+		return
 
 	if(silicon_camera.in_camera_mode)
 		silicon_camera.camera_mode_off()
@@ -44,8 +46,6 @@
 		else
 			to_chat(src, SPAN("danger", "Your camera isn't functional."))
 		return
-
-	var/obj/item/I = get_clicking_hand()
 
 	// Cyborgs interact with the world remotely when not using an item
 	if(!I)
