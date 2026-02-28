@@ -55,7 +55,12 @@
 	desc = "Medium-sized vessel made specifically for watering plants the most efficent way possible. Or not..."
 
 	icon = 'icons/obj/reagent_containers/vessels.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/hydroponics_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi'
+		)
 	icon_state = "watercan"
+	item_state = "watercan"
 
 	possible_transfer_amounts = "30;50;100;150;250;300;500;1500;3000"
 
