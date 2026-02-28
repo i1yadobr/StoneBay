@@ -22,10 +22,11 @@
 	desc = "A very sharp axe blade upon a short fibremetal handle. It has a long history of chopping things, but now it is used for chopping wood."
 	icon = 'icons/obj/weapons.dmi'
 	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		slot_l_hand_str = 'icons/mob/inhands/equipment/hydroponics_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi'
 		)
 	icon_state = "hatchet"
+	item_state = "hatchet"
 	force_const = 7.5
 	thrown_force_const = 5
 	force_divisor = 0.125 // 7.5 with hardness 60 (steel)
@@ -94,8 +95,8 @@
 	desc = "It's used for removing weeds or scratching your back."
 	icon = 'icons/obj/weapons.dmi'
 	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/weapons/melee_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/weapons/melee_righthand.dmi'
+		slot_l_hand_str = 'icons/mob/inhands/equipment/hydroponics_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/hydroponics_righthand.dmi'
 		)
 	icon_state = "hoe"
 	item_state = "hoe"
