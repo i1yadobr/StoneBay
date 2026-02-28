@@ -3,6 +3,10 @@
 	desc = "Patriotic display for office use."
 
 	icon = 'icons/obj/flags/flags-32.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/bannerflag_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/bannerflag_righthand.dmi'
+	)
 	icon_state = "bannerflag_table_empty"
 	base_icon_state = "bannerflag_table"
 
@@ -19,11 +23,6 @@
 
 	attack_verb = list("tapped", "poked", "smacked", "bonked")
 	hitsound = SFX_FIGHTING_SWING
-
-	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/items/lefthand_bannerflag.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/items/righthand_bannerflag.dmi'
-	)
 
 	/// Amount of material given when deconstructed.
 	var/material_amount = 1
