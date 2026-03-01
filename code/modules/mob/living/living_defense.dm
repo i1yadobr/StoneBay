@@ -315,7 +315,7 @@
 
 	src.visible_message(SPAN("danger", "[user] has [attack_message] [src]!"))
 	user.do_attack_animation(src)
-	spawn(1) updatehealth()
+	spawn(1) update_health()
 	return 1
 
 /mob/living/proc/IgniteMob(silent = FALSE)

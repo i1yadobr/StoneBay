@@ -73,7 +73,7 @@
 
 	update_icons()
 
-/mob/living/bot/updatehealth()
+/mob/living/bot/update_health()
 	if(status_flags & GODMODE)
 		health = maxHealth
 		set_stat(CONSCIOUS)

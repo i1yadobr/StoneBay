@@ -141,7 +141,7 @@
 		H.adjustToxLoss(-heal_rate)
 		if(prob(5))
 			to_chat(H, SPAN("alium", "I feel a soothing sensation come over me..."))
-		H.UpdateDamageIcon()
+		H.update_damage_overlays()
 		return TRUE
 
 	//next internal organs

@@ -1821,7 +1821,7 @@
 		O.fireloss = AI.getFireLoss()
 		O.bruteloss = AI.getBruteLoss()
 		O.toxloss = AI.toxloss
-		O.updatehealth()
+		O.update_health()
 		src.occupant = O
 		if(AI.mind)
 			AI.mind.transfer_to(O)
@@ -1839,7 +1839,7 @@
 			AI.fireloss = O.getFireLoss()
 			AI.bruteloss = O.getBruteLoss()
 			AI.toxloss = O.toxloss
-			AI.updatehealth()
+			AI.update_health()
 			qdel(O)
 			if (!AI.stat)
 				AI.icon_state = "ai"
