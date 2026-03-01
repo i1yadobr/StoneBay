@@ -4,6 +4,7 @@
 
 	icon = 'icons/obj/storage/misc.dmi'
 	icon_state = "garment"
+	item_state = "garment"
 
 	can_hold = list(
 		/obj/item/clothing
@@ -24,14 +25,16 @@
 	desc = "A bag for storing multiple clothig items in a better and convenient way! This one belongs to the head of security."
 
 	startswith = list(
+		/obj/item/clothing/head/beret/sec/corporate/hos,
+		/obj/item/clothing/head/HoS,
+		/obj/item/clothing/head/HoS/dermal,
+		/obj/item/clothing/head/helmet,
 		/obj/item/clothing/mask/gas/clear,
 		/obj/item/clothing/glasses/hud/aviators/security,
-		/obj/item/clothing/head/HoS,
-		/obj/item/clothing/head/helmet,
-		/obj/item/clothing/head/HoS/dermal,
-		/obj/item/clothing/head/beret/sec/corporate/hos,
 		/obj/item/clothing/accessory/holster/waist,
 		/obj/item/clothing/accessory/storage/black_vest,
+		/obj/item/clothing/under/hosformalmale,
+		/obj/item/clothing/under/hosformalfem,
 		/obj/item/clothing/under/rank/head_of_security,
 		/obj/item/clothing/under/rank/head_of_security/dress,
 		/obj/item/clothing/under/rank/head_of_security/jensen,
@@ -39,6 +42,7 @@
 		/obj/item/clothing/suit/armor/vest/hos_heavy,
 		/obj/item/clothing/suit/armor/hos,
 		/obj/item/clothing/suit/armor/hos/jensen,
+		/obj/item/clothing/gloves/security,
 		/obj/item/clothing/shoes/jackboots
 	)
 
@@ -47,16 +51,18 @@
 	desc = "A bag for storing multiple clothig items in a better and convenient way! This one belongs to the warden."
 
 	startswith = list(
-		/obj/item/clothing/glasses/hud/aviators/security,
 		/obj/item/clothing/head/warden,
 		/obj/item/clothing/head/warden/drill,
 		/obj/item/clothing/head/beret/sec/corporate/warden,
+		/obj/item/clothing/glasses/hud/aviators/security,
 		/obj/item/clothing/accessory/holster/waist,
 		/obj/item/clothing/accessory/storage/black_vest,
-		/obj/item/clothing/suit/armor/vest/warden_heavy,
-		/obj/item/clothing/suit/armor/vest/warden,
 		/obj/item/clothing/under/rank/warden,
-		/obj/item/clothing/under/rank/warden/dress
+		/obj/item/clothing/under/rank/warden/dress,
+		/obj/item/clothing/suit/armor/vest/warden,
+		/obj/item/clothing/suit/armor/vest/warden_heavy,
+		/obj/item/clothing/gloves/security,
+		/obj/item/clothing/shoes/jackboots
 	)
 
 /obj/item/storage/garment/detective
@@ -64,9 +70,10 @@
 	desc = "A bag for storing multiple clothig items in a better and convenient way! This one belongs to the detective."
 
 	startswith = list(
-		/obj/item/clothing/glasses/sunglasses,
 		/obj/item/clothing/head/det,
 		/obj/item/clothing/head/det/grey,
+		/obj/item/clothing/glasses/sunglasses,
+		/obj/item/clothing/accessory/holster/armpit,
 		/obj/item/clothing/under/rank/det,
 		/obj/item/clothing/under/rank/det/grey,
 		/obj/item/clothing/under/rank/det/black,
@@ -76,8 +83,7 @@
 		/obj/item/clothing/suit/storage/toggle/forensics/blue,
 		/obj/item/clothing/suit/storage/toggle/forensics/red,
 		/obj/item/clothing/suit/armor/vest/detective,
-		/obj/item/clothing/accessory/holster/armpit,
-		/obj/item/clothing/gloves/thick,
+		/obj/item/clothing/gloves/security,
 		/obj/item/clothing/shoes/laceup
 	)
 
@@ -86,14 +92,14 @@
 	desc = "A bag for storing multiple clothig items in a better and convenient way! This one belongs to the head of personnel."
 
 	startswith = list(
-		/obj/item/clothing/glasses/sunglasses,
 		/obj/item/clothing/head/helmet,
 		/obj/item/clothing/head/caphat/hop,
+		/obj/item/clothing/glasses/sunglasses,
 		/obj/item/clothing/accessory/holster/waist,
-		/obj/item/clothing/under/dress/dress_hr,
 		/obj/item/clothing/under/rank/head_of_personnel,
 		/obj/item/clothing/under/rank/head_of_personnel/dress,
 		/obj/item/clothing/under/rank/head_of_personnel/whimsy,
+		/obj/item/clothing/under/dress/dress_hr,
 		/obj/item/clothing/suit/armor/vest,
 		/obj/item/clothing/shoes/black,
 		/obj/item/clothing/shoes/white
@@ -107,16 +113,19 @@
 		/obj/item/clothing/head/caphat/cap,
 		/obj/item/clothing/head/caphat/formal,
 		/obj/item/clothing/head/helmet/captain,
-		/obj/item/clothing/gloves/captain,
 		/obj/item/clothing/accessory/holster/thigh,
 		/obj/item/clothing/under/rank/captain,
 		/obj/item/clothing/under/rank/captain/dress,
 		/obj/item/clothing/under/captainformal,
+		/obj/item/clothing/under/captainformal/captain_formal_alt,
+		/obj/item/clothing/under/dress/captain_dress_alt,
 		/obj/item/clothing/suit/captunic,
 		/obj/item/clothing/suit/captunic/formal,
 		/obj/item/clothing/suit/captunic/capjacket,
 		/obj/item/clothing/suit/armor/vest/capcarapace,
-		/obj/item/clothing/shoes/brown
+		/obj/item/clothing/gloves/captain,
+		/obj/item/clothing/shoes/brown,
+		/obj/item/clothing/shoes/laceup
 	)
 
 /obj/item/storage/garment/chief_engineer
@@ -126,10 +135,10 @@
 	startswith = list(
 		/obj/item/clothing/glasses/welding/superior,
 		/obj/item/clothing/head/hardhat/white,
-		/obj/item/clothing/gloves/insulated,
 		/obj/item/clothing/suit/storage/hazardvest,
 		/obj/item/clothing/under/rank/chief_engineer,
 		/obj/item/clothing/under/rank/chief_engineer/dress,
+		/obj/item/clothing/gloves/insulated,
 		/obj/item/clothing/shoes/brown
 	)
 
@@ -138,11 +147,12 @@
 	desc = "A bag for storing multiple clothig items in a better and convenient way! This one belongs to the quartermaster."
 
 	startswith = list(
-		/obj/item/clothing/glasses/hud/standard/meson,
 		/obj/item/clothing/head/soft,
-		/obj/item/clothing/gloves/thick,
+		/obj/item/clothing/glasses/sunglasses,
+		/obj/item/clothing/glasses/hud/standard/meson,
 		/obj/item/clothing/under/rank/qm,
 		/obj/item/clothing/under/rank/qm/dress,
+		/obj/item/clothing/gloves/thick,
 		/obj/item/clothing/shoes/brown
 	)
 
@@ -154,12 +164,13 @@
 		/obj/item/clothing/mask/gas/clear,
 		/obj/item/clothing/glasses/hud/standard/medical,
 		/obj/item/clothing/accessory/stethoscope,
+		/obj/item/clothing/accessory/storage/white_vest,
 		/obj/item/clothing/under/rank/chief_medical_officer,
 		/obj/item/clothing/under/rank/chief_medical_officer/dress,
 		/obj/item/clothing/suit/storage/toggle/labcoat/cmo,
 		/obj/item/clothing/suit/storage/toggle/labcoat/cmoalt,
-		/obj/item/clothing/accessory/storage/white_vest,
 		/obj/item/clothing/gloves/latex,
+		/obj/item/clothing/gloves/latex/nitrile,
 		/obj/item/clothing/shoes/brown,
 		/obj/item/clothing/shoes/white
 	)
@@ -171,10 +182,11 @@
 	startswith = list(
 		/obj/item/clothing/glasses/welding/superior,
 		/obj/item/clothing/glasses/hud/standard/science,
-		/obj/item/clothing/gloves/latex,
 		/obj/item/clothing/under/rank/research_director,
 		/obj/item/clothing/under/rank/research_director/rdalt,
 		/obj/item/clothing/under/rank/research_director/dress,
 		/obj/item/clothing/suit/storage/toggle/labcoat/rd,
-		/obj/item/clothing/shoes/leather
+		/obj/item/clothing/gloves/latex,
+		/obj/item/clothing/shoes/leather,
+		/obj/item/clothing/shoes/brown
 	)

@@ -316,9 +316,11 @@
 	icon_state = "dress_saloon"
 	item_state = "dress_saloon"
 
+// TODO: Move this to the Captain uniform file
 /obj/item/clothing/under/dress/captain_dress_alt
 	name = "captain's dress uniform"
 	desc = "Feminine fashion for the style concious captain."
+	// TODO: Remove "gloves" from the uniform sprite
 	icon_state = "captain_dress_alt"
 	item_state = "captain_dress_alt"
 
@@ -436,23 +438,29 @@
 	item_state = "sundress_white"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 
+// TODO: Move this to the Captain uniform file
 /obj/item/clothing/under/captainformal
 	name = "captain's formal uniform"
 	desc = "A captain's formal-wear, for special occasions."
 	icon_state = "captain_formal"
 	item_state = "captain_formal"
 
+// TODO: Move this to the Captain uniform file
+// Rename subtype from something not like "captain_formal_alt" to something more descriptive
 /obj/item/clothing/under/captainformal/captain_formal_alt
+	// TODO: Remove "gloves" from the uniform sprite
 	icon_state = "captain_formal_alt"
 	item_state = "captain_formal_alt"
 
-/obj/item/clothing/under/hosformalmale // Opyx shop garbage
+// TODO: Move this to the HoS's/Security uniform file
+/obj/item/clothing/under/hosformalmale
 	name = "head of security's male formal uniform"
 	desc = "A male head of security's formal-wear, for special occasions."
 	icon_state = "hos_formal_male"
 	item_state = "hos_formal_male"
 
-/obj/item/clothing/under/hosformalfem // Opyx shop garbage
+// TODO: Move this to the HoS's/Security uniform file
+/obj/item/clothing/under/hosformalfem
 	name = "head of security's female formal uniform"
 	desc = "A female head of security's formal-wear, for special occasions."
 	icon_state = "hos_formal_fem"
