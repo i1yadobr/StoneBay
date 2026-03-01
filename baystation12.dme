@@ -52,6 +52,7 @@
 #include "code\__defines\filters.dm"
 #include "code\__defines\flags.dm"
 #include "code\__defines\gamemode.dm"
+#include "code\__defines\gradient.dm"
 #include "code\__defines\hydroponics.dm"
 #include "code\__defines\input.dm"
 #include "code\__defines\integrated_circuits.dm"

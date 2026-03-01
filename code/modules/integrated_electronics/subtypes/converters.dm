@@ -315,7 +315,7 @@
 		set_pin_data(IC_OUTPUT, 2, 0)
 		set_pin_data(IC_OUTPUT, 3, 0)
 	else
-		var/list/RGB = ReadRGB(HSVtoRGB(hsv(hue,sat,val)))
+		var/list/RGB = rgb2num(HSVtoRGB(hsv(hue,sat,val)))
 
 		set_pin_data(IC_OUTPUT, 1, RGB[1])
 		set_pin_data(IC_OUTPUT, 2, RGB[2])
@@ -412,7 +412,7 @@
 		set_pin_data(IC_OUTPUT, 2, 0)
 		set_pin_data(IC_OUTPUT, 3, 0)
 	else
-		var/list/RGB = ReadRGB(rgb)
+		var/list/RGB = rgb2num(rgb)
 
 		set_pin_data(IC_OUTPUT, 1, RGB[1])
 		set_pin_data(IC_OUTPUT, 2, RGB[2])
