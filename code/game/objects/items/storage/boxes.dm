@@ -195,6 +195,7 @@
 	drop_sound = SFX_DROP_AMMOBOX
 	pickup_sound = SFX_PICKUP_AMMOBOX
 	inspect_state = FALSE
+	can_hold = list(/obj/item/ammo_casing/shotgun)
 
 /obj/item/storage/box/shotgun/on_update_icon()
 	ClearOverlays()
