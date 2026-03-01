@@ -668,8 +668,8 @@ its easier to just keep the beam vertical.
 				to_chat(H, SPAN("danger", "You land heavily!"))
 				H.adjustBruteLoss(damage)
 
-			H.UpdateDamageIcon()
-			H.updatehealth()
+			H.update_damage_overlays()
+			H.update_health()
 
 // TODO(rufus): check why MouseDrop_T is a separate proc from the default MouseDrop, refactor if it's redundant.
 //

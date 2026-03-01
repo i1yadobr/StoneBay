@@ -38,7 +38,7 @@
 				M.Stun(power/2)
 			else
 				M.visible_message(SPAN("danger", "[src] has tried to pounce at [M]!"), SPAN("danger", "[src] has tried to pounce at you!"))
-			M.updatehealth()
+			M.update_health()
 		if(I_GRAB) // We feed
 			Wrap(M)
 		if(I_HURT) // Attacking
