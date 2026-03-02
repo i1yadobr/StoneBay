@@ -105,6 +105,8 @@
 /obj/machinery/power/smes/Destroy()
 	GLOB.smes_list -= src
 	ClearOverlays()
+	for(var/datum/nano_module/rcon/R in world)
+		R.FindDevices()
 	return ..()
 
 /obj/machinery/power/smes/add_avail(amount)
@@ -112,7 +114,6 @@
 		powernet.smes_newavail += amount
 		return 1
 	return 0
-
 
 /obj/machinery/power/smes/disconnect_terminal(obj/machinery/power/terminal/term)
 	terminals -= term
