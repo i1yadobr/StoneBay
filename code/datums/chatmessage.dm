@@ -154,6 +154,7 @@
 		return
 
 	// Apparently, regexes work slow enough to let the client slip away before we reach this point. Luckily, everything below this check seems to be quick enough to not require even more checks. ~ToTh
+	// OR we can even get deleted by this point, nullifying 'owned_by'. I have no idea.
 	if(QDELETED(owner) || !owner.client || !owned_by)
 		qdel(src)
 		return
