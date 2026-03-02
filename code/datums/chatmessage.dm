@@ -149,8 +149,13 @@
 	var/static/regex/html_metachars = new(@"&[A-Za-z]{1,7};", "g")
 	var/complete_text = SPAN("center maptext[size ? " [size]" : ""]", "<font style='color: [tgt_color]'>[text]</font>")
 
-	// Apparently, regexes work slow enough to let the client slip away before we reach this point. Luckily, everything below this check seems to be quick enought to not require even more checks. ~ToTh
-	if(QDELETED(owner) || !owner.client)
+	// The weirdest things happen when we ASYNC.
+	if(QDELETED(src))
+		return
+
+	// Apparently, regexes work slow enough to let the client slip away before we reach this point. Luckily, everything below this check seems to be quick enough to not require even more checks. ~ToTh
+	// OR we can even get deleted by this point, nullifying 'owned_by'. I have no idea.
+	if(QDELETED(owner) || !owner.client || !owned_by)
 		qdel(src)
 		return
 
