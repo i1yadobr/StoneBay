@@ -7,7 +7,7 @@
 	icon_state = "radial_center"
 
 /atom/movable/screen/radial/persistent/center/Click(location, control, params)
-	if(usr.client == parent.current_user)
+	if(usr == parent.current_user)
 		parent.element_chosen(null,usr)
 
 /atom/movable/screen/radial/persistent/center/MouseEntered(location, control, params)
