@@ -39,6 +39,7 @@
 /datum/category_item/underwear
 	var/always_last = FALSE          // Should this entry be sorte last?
 	var/is_default = FALSE           // Should this entry be considered the default for its type?
+	// TODO: Move the file to the rest of the clothes, in 'icons/obj/clothing/underwear.dmi' and change the icon path
 	var/icon = 'icons/mob/human.dmi' // Which icon to get the underwear from.
 	var/icon_state                   // And the particular item state.
 	var/item_state                   // And the particular inhand state.
