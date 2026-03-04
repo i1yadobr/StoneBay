@@ -8,6 +8,7 @@
 			cardinal_neighbors |= T
 	return cardinal_neighbors
 
+// TODO: Check if this broke after https://github.com/i1yadobr/StoneBay/pull/343 or not
 /obj/effect/vine/proc/get_zlevel_neighbors()
 	var/list/zlevel_neighbors = list()
 	var/turf/start = loc
