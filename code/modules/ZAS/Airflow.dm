@@ -83,7 +83,7 @@ Contains helper procs for airflow, handled in /connection_group.
 		return FALSE
 	return can_slip(magboots_only = TRUE)
 
-/atom/movable/Bump(atom/A)
+/atom/movable/Bump(atom/A, yes)
 	if(airflow_speed > 0 && airflow_dest)
 		if(!istype(A, /obj/item))
 			if(airborne_acceleration > 1)
