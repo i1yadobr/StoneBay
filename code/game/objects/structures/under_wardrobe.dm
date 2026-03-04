@@ -1,5 +1,6 @@
 #define WARDROBE_BLIND_MESSAGE(fool) "\The [src] flashes a light at \the [fool] as it states a message."
 
+// TODO: Rename 'undies_wardrobe' to 'under_wardrobe' or something like that.
 /obj/structure/undies_wardrobe
 	name = "underwear wardrobe"
 	desc = "Holds item of clothing you shouldn't be showing off in the hallways."
