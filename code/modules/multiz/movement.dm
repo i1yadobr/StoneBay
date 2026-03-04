@@ -23,11 +23,6 @@
 		stop_pulling()
 		return 0
 
-	if(!destination.CanZPass(pulling, direction))
-		to_chat(src, SPAN("warning", "The [pulling] you were pulling bumps up against \the [destination]."))
-		stop_pulling()
-		return 0
-
 	for(var/atom/A in destination)
 		if(!A.CanMoveOnto(pulling, start, 1.5, direction))
 			to_chat(src, SPAN("warning", "\The [A] blocks the [pulling] you were pulling."))
@@ -99,7 +94,7 @@
 		return
 
 	var/turf/T = loc
-	if(!T.CanZPass(src, DOWN) || !below.CanZPass(src, DOWN))
+	if(!T.CanZPass(src, DOWN))
 		return
 
 	// No gravity in space, apparently.
