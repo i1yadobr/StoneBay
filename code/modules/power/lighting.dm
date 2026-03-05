@@ -43,9 +43,12 @@
 
 /obj/machinery/light_construct/on_update_icon()
 	switch(stage)
-		if(1) icon_state = "tube-construct-stage1"
-		if(2) icon_state = "tube-construct-stage2"
-		if(3) icon_state = "tube-empty"
+		if(1)
+			icon_state = "tube-construct-stage1"
+		if(2)
+			icon_state = "tube-construct-stage2"
+		if(3)
+			icon_state = "tube-empty"
 
 /obj/machinery/light_construct/examine(mob/user, infix)
 	. = ..()
@@ -54,28 +57,31 @@
 		return
 
 	switch(src.stage)
-		if(1) . += "It's an empty frame."
-		if(2) . += "It's wired."
-		if(3) . += "The casing is closed."
+		if(1)
+			. += "It's an empty frame."
+		if(2)
+			. += "It's wired."
+		if(3)
+			. += "The casing is closed."
 
 /obj/machinery/light_construct/attackby(obj/item/W, mob/user)
 	src.add_fingerprint(user)
 	if(isWrench(W))
-		if (src.stage == 1)
+		if(src.stage == 1)
 			playsound(src.loc, 'sound/items/Ratchet.ogg', 75, 1)
 			to_chat(usr, "You begin deconstructing \a [src].")
-			if (!do_after(usr, 30, src))
+			if(!do_after(usr, 30, src))
 				return
 			new /obj/item/stack/material/steel( get_turf(src.loc), sheets_refunded )
 			user.visible_message("[user.name] deconstructs [src].", \
 				"You deconstruct [src].", "You hear a noise.")
 			playsound(src.loc, 'sound/items/Deconstruct.ogg', 75, 1)
 			qdel(src)
-		if (src.stage == 2)
+		if(src.stage == 2)
 			to_chat(usr, "You have to remove the wires first.")
 			return
 
-		if (src.stage == 3)
+		if(src.stage == 3)
 			to_chat(usr, "You have to unscrew the case first.")
 			return
 
@@ -90,9 +96,10 @@
 		return
 
 	if(isCoil(W))
-		if (src.stage != 1) return
+		if(src.stage != 1)
+			return
 		var/obj/item/stack/cable_coil/coil = W
-		if (coil.use(1))
+		if(coil.use(1))
 			src.stage = 2
 			src.update_icon()
 			user.visible_message("[user.name] adds wires to [src].", \
@@ -100,7 +107,7 @@
 		return
 
 	if(isScrewdriver(W))
-		if (src.stage == 2)
+		if(src.stage == 2)
 			src.stage = 3
 			src.update_icon()
 			user.visible_message("[user.name] closes [src]'s casing.", \
@@ -129,9 +136,33 @@
 
 /obj/machinery/light_construct/small/on_update_icon()
 	switch(stage)
-		if(1) icon_state = "bulb-construct-stage1"
-		if(2) icon_state = "bulb-construct-stage2"
-		if(3) icon_state = "bulb-empty"
+		if(1)
+			icon_state = "bulb-construct-stage1"
+		if(2)
+			icon_state = "bulb-construct-stage2"
+		if(3)
+			icon_state = "bulb-empty"
+
+/obj/machinery/light_construct/floor
+	name = "floor light fixture frame"
+	desc = "A floor light fixture under construction."
+	icon = 'icons/obj/lighting.dmi'
+	icon_state = "floor-construct-stage1"
+	anchored = TRUE
+
+	layer = ABOVE_HUMAN_LAYER
+	stage = 1
+	fixture_type = /obj/machinery/light/small
+	sheets_refunded = 1
+
+/obj/machinery/light_construct/small/on_update_icon()
+	switch(stage)
+		if(1)
+			icon_state = "floor-construct-stage1"
+		if(2)
+			icon_state = "floor-construct-stage2"
+		if(3)
+			icon_state = "floor-empty"
 
 // the standard tube light fixture
 /obj/machinery/light
@@ -231,6 +262,16 @@
 	base_state = "hanginglantern"
 	desc = "Combination of old technologies and electricity."
 	light_type = /obj/item/light/bulb/old
+
+/obj/machinery/light/floor
+	name = "floor light"
+	desc = "A lightbulb you can walk on without breaking it, amazing."
+	icon_state = "floor1"
+	base_state = "floor"
+	light_type = /obj/item/light/bulb
+	construct_type = /obj/machinery/light_construct/floor
+	layer = ABOVE_TILE_LAYER
+	plane = TURF_PLANE
 
 // create a new lighting fixture
 /obj/machinery/light/Initialize(mapload, obj/machinery/light_construct/construct = null)
