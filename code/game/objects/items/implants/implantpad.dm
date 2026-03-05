@@ -5,6 +5,7 @@
 	desc = "Used to reprogramm implants."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "implantpad-0"
+	// TODO: Draw cool inhand icon
 	item_state = "electronic"
 	w_class = ITEM_SIZE_SMALL
 	var/obj/item/implant/imp

@@ -2,6 +2,7 @@
 	name = "invalid_item (archologist pickaxe base path)"
 	icon = 'icons/obj/xenoarchaeology.dmi'
 	icon_state = "pick_hand"
+	// TODO: Remove 'syringe_0' icon state and replace with something more fitting for pickaxes
 	item_state = "syringe_0"
 	force = 5
 	throwforce = 5
@@ -62,6 +63,7 @@
 /obj/item/pickaxe/archaeologist/hand
 	name = "hand pickaxe"
 	icon_state = "pick_hand"
+	// TODO: Remove 'syringe_0' icon state and replace with something more fitting for pickaxes
 	item_state = "syringe_0"
 	desc = "A smaller, more precise version of the pickaxe (30 centimetre excavation depth)."
 	excavation_amount = 30

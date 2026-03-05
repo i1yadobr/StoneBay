@@ -462,7 +462,9 @@
 
 	description_antag = "This more-expensive-than-your-life-is liquid, rumored to be made of mysterious vampire-like creatures, is capable brining dead to life."
 
+	// TODO: Draw cool inhand icon
 	icon_state = "resurrect_serum"
+	//item_state = "resurrect_serum"
 	origin_tech = list(TECH_BIO = 10)
 	amount = 1
 	stack_empty = 1

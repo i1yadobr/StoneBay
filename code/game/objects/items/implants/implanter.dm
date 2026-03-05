@@ -1,8 +1,13 @@
 /obj/item/implanter
 	name = "implanter"
 	icon = 'icons/obj/items.dmi'
-	icon_state = "implanter0"
-	item_state = "syringe_0"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
+		)
+	icon_state = "implanter"
+	item_state = "implanter"
+	base_icon_state = "implanter"
 	throw_range = 5
 	w_class = ITEM_SIZE_SMALL
 	matter = list(MATERIAL_STEEL = 1000, MATERIAL_GLASS = 1000)
@@ -15,10 +20,13 @@
 	update_icon()
 
 /obj/item/implanter/on_update_icon()
-	if (imp)
-		icon_state = "implanter1"
+	if(imp)
+		icon_state = base_icon_state
+		item_state = base_icon_state
 	else
-		icon_state = "implanter0"
+		icon_state = "[base_icon_state]-empty"
+		item_state = "[base_icon_state]-empty"
+	update_held_icon()
 
 /obj/item/implanter/verb/remove_implant()
 	set category = "Object"
@@ -65,9 +73,9 @@
 		..()
 
 /obj/item/implanter/attack(mob/M as mob, mob/user as mob)
-	if (!istype(M, /mob/living/carbon))
+	if(!istype(M, /mob/living/carbon))
 		return
-	if (user && src.imp)
+	if(user && src.imp)
 		M.visible_message(SPAN("warning", "[user] is attempting to implant [M]."))
 
 		user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
