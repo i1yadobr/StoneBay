@@ -1,3 +1,6 @@
+// TODO: Reconsider the possibility of using this type of implant
+// If it's really cool and can be left as is, refactor it, resprite the icons, and implement it into the game
+// Otherwise, delete as unnecessary
 /obj/item/implant/compressed
 	name = "compressed matter implant"
 	desc = "Based on compressed matter technology, can store a single item."
@@ -44,8 +47,8 @@
 
 /obj/item/implanter/compressed
 	name = "implanter (C)"
-	icon_state = "cimplanter1"
 	desc = "The matter compressor safety is on."
+	icon_state = "cimplanter1"
 	var/safe = 1
 	imp = /obj/item/implant/compressed
 
