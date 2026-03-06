@@ -135,6 +135,7 @@
 	if(!..())
 		return
 	var/turf/T = get_turf(user)
+	// TODO: Understand why this check does not work and fix it
 	if(locate(/obj/machinery/light_construct/floor, T))
 		to_chat(user, SPAN("danger", "There's already an item on this floor!"))
 		return
@@ -150,4 +151,6 @@
 
 /obj/item/frame/intercom/do_build(turf/on_wall, mob/user)
 	new /obj/item/intercom_assembly(get_turf(src), get_dir(on_wall, user), src)
+	user.visible_message("[user] attaches \the [src] to \the [on_wall].", \
+		"You attach \the [src] to \the [on_wall].")
 	qdel(src)
