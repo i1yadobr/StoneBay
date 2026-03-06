@@ -68,3 +68,7 @@ GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 204
 #define PASS_FLAG_GLASS  0x2
 #define PASS_FLAG_GRILLE 0x4
 #define PASS_FLAG_MOB    0x8
+
+// Flags for frame_flags.
+#define FRAME_FLAG_SIMFLOOR	(1<<0)
+#define FRAME_FLAG_NOSPACE	(1<<1)

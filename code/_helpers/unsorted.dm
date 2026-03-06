@@ -1085,7 +1085,7 @@ var/list/WALLITEMS = list(
 	for(var/obj/O in get_step(loc, dir))
 		for(var/item in WALLITEMS)
 			if(istype(O, item))
-				if(O.pixel_x == 0 && O.pixel_y == 0)
+				if(abs(O.pixel_x) <= 10 && abs(O.pixel_y) <= 10)
 					return TRUE
 	return FALSE
 

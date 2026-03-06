@@ -15,16 +15,22 @@
 #define LIGHT_ON_DELAY_UPPER 1 SECONDS
 #define LIGHT_ON_DELAY_LOWER 0.5 SECONDS
 
+#define LIGHT_CONSTRUCT_EMPTY_FRAME 1
+#define LIGHT_CONSTRUCT_WIRED 2
+#define LIGHT_CONSTRUCT_COMPLETED 3
+
 /obj/machinery/light_construct
 	name = "light fixture frame"
 	desc = "A light fixture under construction."
 	icon = 'icons/obj/lighting.dmi'
 	icon_state = "tube-construct-stage1"
-	anchored = 1
+	base_icon_state = "tube-construct"
+	anchored = TRUE
 
 	layer = ABOVE_HUMAN_LAYER
 
-	var/stage = 1
+	// Construction stage
+	var/stage = LIGHT_CONSTRUCT_EMPTY_FRAME
 	var/fixture_type = /obj/machinery/light
 	var/sheets_refunded = 2
 
@@ -43,12 +49,12 @@
 
 /obj/machinery/light_construct/on_update_icon()
 	switch(stage)
-		if(1)
-			icon_state = "tube-construct-stage1"
-		if(2)
-			icon_state = "tube-construct-stage2"
-		if(3)
-			icon_state = "tube-empty"
+		if(LIGHT_CONSTRUCT_EMPTY_FRAME)
+			icon_state = "[base_icon_state]-stage1"
+		if(LIGHT_CONSTRUCT_WIRED)
+			icon_state = "[base_icon_state]-stage2"
+		if(LIGHT_CONSTRUCT_COMPLETED)
+			icon_state = "[base_icon_state]-empty"
 
 /obj/machinery/light_construct/examine(mob/user, infix)
 	. = ..()
@@ -57,17 +63,17 @@
 		return
 
 	switch(src.stage)
-		if(1)
+		if(LIGHT_CONSTRUCT_EMPTY_FRAME)
 			. += "It's an empty frame."
-		if(2)
+		if(LIGHT_CONSTRUCT_WIRED)
 			. += "It's wired."
-		if(3)
+		if(LIGHT_CONSTRUCT_COMPLETED)
 			. += "The casing is closed."
 
 /obj/machinery/light_construct/attackby(obj/item/W, mob/user)
 	src.add_fingerprint(user)
 	if(isWrench(W))
-		if(src.stage == 1)
+		if(src.stage == LIGHT_CONSTRUCT_EMPTY_FRAME)
 			playsound(src.loc, 'sound/items/Ratchet.ogg', 75, 1)
 			to_chat(usr, "You begin deconstructing \a [src].")
 			if(!do_after(usr, 30, src))
@@ -77,17 +83,18 @@
 				"You deconstruct [src].", "You hear a noise.")
 			playsound(src.loc, 'sound/items/Deconstruct.ogg', 75, 1)
 			qdel(src)
-		if(src.stage == 2)
+		if(src.stage == LIGHT_CONSTRUCT_WIRED)
 			to_chat(usr, "You have to remove the wires first.")
 			return
 
-		if(src.stage == 3)
+		if(src.stage == LIGHT_CONSTRUCT_COMPLETED)
 			to_chat(usr, "You have to unscrew the case first.")
 			return
 
 	if(isWirecutter(W))
-		if (src.stage != 2) return
-		src.stage = 1
+		if(src.stage != LIGHT_CONSTRUCT_WIRED)
+			return
+		src.stage = LIGHT_CONSTRUCT_EMPTY_FRAME
 		src.update_icon()
 		new /obj/item/stack/cable_coil(get_turf(src.loc), 1, "red")
 		user.visible_message("[user.name] removes the wiring from [src].", \
@@ -96,19 +103,19 @@
 		return
 
 	if(isCoil(W))
-		if(src.stage != 1)
+		if(src.stage != LIGHT_CONSTRUCT_EMPTY_FRAME)
 			return
 		var/obj/item/stack/cable_coil/coil = W
 		if(coil.use(1))
-			src.stage = 2
+			src.stage = LIGHT_CONSTRUCT_WIRED
 			src.update_icon()
 			user.visible_message("[user.name] adds wires to [src].", \
 				"You add wires to [src].")
 		return
 
 	if(isScrewdriver(W))
-		if(src.stage == 2)
-			src.stage = 3
+		if(src.stage == LIGHT_CONSTRUCT_WIRED)
+			src.stage = LIGHT_CONSTRUCT_COMPLETED
 			src.update_icon()
 			user.visible_message("[user.name] closes [src]'s casing.", \
 				"You close [src]'s casing.", "You hear a noise.")
@@ -127,42 +134,24 @@
 	desc = "A small light fixture under construction."
 	icon = 'icons/obj/lighting.dmi'
 	icon_state = "bulb-construct-stage1"
-	anchored = 1
+	base_icon_state = "bulb-construct"
 
-	layer = ABOVE_HUMAN_LAYER
-	stage = 1
 	fixture_type = /obj/machinery/light/small
 	sheets_refunded = 1
-
-/obj/machinery/light_construct/small/on_update_icon()
-	switch(stage)
-		if(1)
-			icon_state = "bulb-construct-stage1"
-		if(2)
-			icon_state = "bulb-construct-stage2"
-		if(3)
-			icon_state = "bulb-empty"
 
 /obj/machinery/light_construct/floor
 	name = "floor light fixture frame"
 	desc = "A floor light fixture under construction."
 	icon = 'icons/obj/lighting.dmi'
 	icon_state = "floor-construct-stage1"
-	anchored = TRUE
+	base_icon_state = "floor-construct"
+	layer = ABOVE_TILE_LAYER
+	plane = TURF_PLANE
+	fixture_type = /obj/machinery/light/floor
 
-	layer = ABOVE_HUMAN_LAYER
-	stage = 1
-	fixture_type = /obj/machinery/light/small
-	sheets_refunded = 1
-
-/obj/machinery/light_construct/small/on_update_icon()
-	switch(stage)
-		if(1)
-			icon_state = "floor-construct-stage1"
-		if(2)
-			icon_state = "floor-construct-stage2"
-		if(3)
-			icon_state = "floor-empty"
+#undef LIGHT_CONSTRUCT_EMPTY_FRAME
+#undef LIGHT_CONSTRUCT_WIRED
+#undef LIGHT_CONSTRUCT_COMPLETED
 
 // the standard tube light fixture
 /obj/machinery/light
@@ -719,10 +708,10 @@
 			qdel(src)
 			return
 		if(2)
-			if (prob(75))
+			if(prob(75))
 				broken()
 		if(3)
-			if (prob(50))
+			if(prob(50))
 				broken()
 
 /obj/machinery/light/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
@@ -975,7 +964,8 @@
 // now only shatter if the intent was harm
 
 /obj/item/light/afterattack(atom/target, mob/user, proximity)
-	if(!proximity) return
+	if(!proximity)
+		return
 	if(istype(target, /obj/machinery/light))
 		return
 	if(user.a_intent != I_HURT)
