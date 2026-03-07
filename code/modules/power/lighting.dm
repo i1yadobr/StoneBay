@@ -173,6 +173,8 @@
 	var/on = TRUE
 	/// Whether bulb is currently asynchronously flickering.
 	var/flickering = FALSE
+	/// Whether light is mounted on floor.
+	var/floor_mounted = FALSE
 	var/light_type = /obj/item/light/tube		// the type of light item
 	var/construct_type = /obj/machinery/light_construct
 	var/pixel_shift = 0
@@ -264,6 +266,7 @@
 	construct_type = /obj/machinery/light_construct/floor
 	layer = ABOVE_TILE_LAYER
 	plane = TURF_PLANE
+	floor_mounted = TRUE
 
 // create a new lighting fixture
 /obj/machinery/light/Initialize(mapload, obj/machinery/light_construct/construct = null)
@@ -340,7 +343,13 @@
 			tone_color = lightbulb.lighting_modes[current_mode]["l_color"]
 			tone_alpha = between(128, (lightbulb.lighting_modes[current_mode]["l_max_bright"] * 1.5 * 255), 255)
 
-		tone_overlay = OVERLAY(icon, "[icon_state]-over", tone_alpha, RESET_COLOR, tone_color, dir, EFFECTS_ABOVE_LIGHTING_PLANE, ABOVE_LIGHTING_LAYER)
+		// TODO: This may not be the best use of the floor_mounted
+		// It is worth creating a separate plane and layer for floor lighting (or use an existing one, if available),
+		// but for now this is a simple way to ensure the overlay appears under mobs and other fixtures
+		if(floor_mounted)
+			tone_overlay = OVERLAY(icon, "[icon_state]-over", tone_alpha, RESET_COLOR, tone_color, dir)
+		else
+			tone_overlay = OVERLAY(icon, "[icon_state]-over", tone_alpha, RESET_COLOR, tone_color, dir, EFFECTS_ABOVE_LIGHTING_PLANE, ABOVE_LIGHTING_LAYER)
 
 		if(isnull(light_eas[icon_state]))
 			light_eas[icon_state] = emissive_appearance(icon, "[icon_state]_ea")
