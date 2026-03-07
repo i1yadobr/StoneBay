@@ -123,7 +123,7 @@
 	if(!handcuffed || a_intent != I_HURT || zone_sel.selecting != BP_MOUTH || wear_mask)
 		return
 
-	var/obj/item/organ/external/O = organs_by_name[(hand ? BP_L_HAND : BP_R_HAND)]
+	var/obj/item/organ/external/O = organs_by_name[(active_hand == ACTIVE_HAND_LEFT ? BP_L_HAND : BP_R_HAND)]
 	if(!O)
 		return
 

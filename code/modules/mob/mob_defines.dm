@@ -122,7 +122,7 @@
 	// It is intended to only be used by the click handling code, which can be found in the code/_onclick folder.
 	// See code/_onclick/click.dm for more information on click handling.
 	var/next_click = 0
-	var/hand = null
+	var/active_hand = ACTIVE_HAND_RIGHT
 	var/real_name = null
 	var/aim_assist = FALSE
 	var/twohanded_mode = FALSE

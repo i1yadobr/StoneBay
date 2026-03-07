@@ -679,7 +679,7 @@ its easier to just keep the beam vertical.
 	var/mob/living/H = user
 	if(istype(H) && can_climb(H) && target == user)
 		do_climb(target)
-		return
+		return TRUE
 
 // Called after we wrench/unwrench this object
 /obj/proc/wrenched_change()

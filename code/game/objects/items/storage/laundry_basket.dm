@@ -23,13 +23,10 @@
 	allow_quick_gather = TRUE
 	var/obj/item/storage/laundry_basket/offhand/linked
 
-/obj/item/storage/laundry_basket/attack_hand(mob/user)
+/obj/item/storage/laundry_basket/handle_pickup(mob/user, certain_hand = -1)
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
-		var/obj/item/organ/external/temp = H.get_organ(BP_R_HAND)
-		if (user.hand)
-			temp = H.get_organ(BP_L_HAND)
-		if(!temp)
+		if(!H.get_organ(BP_R_HAND) || !H.get_organ(BP_L_HAND))
 			to_chat(user, SPAN_WARNING("You need two hands to pick this up!"))
 			return
 
@@ -57,12 +54,6 @@
 		icon_state = "laundry-full"
 	else
 		icon_state = "laundry-empty"
-
-/obj/item/storage/laundry_basket/MouseDrop(obj/over_object)
-	if(over_object == usr)
-		return
-	else
-		return ..()
 
 /obj/item/storage/laundry_basket/dropped(mob/user)
 	if(!QDELETED(linked))
