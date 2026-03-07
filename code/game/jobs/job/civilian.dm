@@ -208,10 +208,10 @@
 	if(H.mind.changeling)
 		return
 	if(.)
-		H.silent += 86400
 		H.rename_self("mime")
 	// Add "Invisible wall" spell
 	H.add_spell(new /datum/spell/aoe_turf/conjure/forcewall/mime, "grey_spell_ready")
+	H.mind.miming = TRUE
 
 /datum/job/merchant
 	title = "Merchant"

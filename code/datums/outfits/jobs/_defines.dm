@@ -40,6 +40,11 @@ backpack_overrides[/decl/backpack_outfit/backpack]      = /obj/item/storage/back
 backpack_overrides[/decl/backpack_outfit/satchel]       = /obj/item/storage/backpack/clown; \
 backpack_overrides[/decl/backpack_outfit/messenger_bag] = /obj/item/storage/backpack/clown;
 
+#define BACKPACK_OVERRIDE_MIME \
+backpack_overrides[/decl/backpack_outfit/backpack]      = /obj/item/storage/backpack/mime; \
+backpack_overrides[/decl/backpack_outfit/satchel]       = /obj/item/storage/backpack/mime; \
+backpack_overrides[/decl/backpack_outfit/messenger_bag] = /obj/item/storage/backpack/mime;
+
 #define BACKPACK_OVERRIDE_HYDRO \
 backpack_overrides[/decl/backpack_outfit/backpack]      = /obj/item/storage/backpack/hydroponics; \
 backpack_overrides[/decl/backpack_outfit/satchel]       = /obj/item/storage/backpack/satchel/hyd; \

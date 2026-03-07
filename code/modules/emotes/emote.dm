@@ -57,7 +57,7 @@ GLOBAL_LIST_INIT(all_emotes, list(); for(var/emotepath in subtypesof(/datum/emot
 	var/mute = FALSE
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
-		if(H.silent > 0)
+		if(H.silent > 0 || H.mind.miming)
 			mute = TRUE
 
 	if(message_miming && mute)
@@ -181,7 +181,7 @@ GLOBAL_LIST_INIT(all_emotes, list(); for(var/emotepath in subtypesof(/datum/emot
 
 	if(isliving(user))
 		var/mob/living/L = user
-		if(L.silent)
+		if(L.silent > 0 || L.mind.miming)
 			return FALSE
 
 	if(!check_cooldown(user.next_audio_emote_produce, intentional))

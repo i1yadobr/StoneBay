@@ -132,11 +132,11 @@
 
 /decl/hierarchy/outfit/job/mime
 	name = OUTFIT_JOB_NAME("Mime")
-	head = /obj/item/clothing/head/beret/classique
+	head = /obj/item/clothing/head/beret/mime
 	uniform = /obj/item/clothing/under/rank/mime
 	id_type = /obj/item/card/id/civilian/mime
 	pda_type = /obj/item/device/pda/mime
-	shoes = /obj/item/clothing/shoes/mime
+	shoes = /obj/item/clothing/shoes/laceup
 	mask = /obj/item/clothing/mask/gas/mime
 	r_pocket = /obj/item/pen/crayon/mime
 	gloves = /obj/item/clothing/gloves/white
@@ -144,3 +144,7 @@
 							 /obj/item/clothing/accessory/suspenders = 1,
 							 /obj/item/reagent_containers/food/baguette = 1,
 							 /obj/item/balloon_box = 1)
+
+/decl/hierarchy/outfit/job/mime/New()
+	..()
+	BACKPACK_OVERRIDE_MIME

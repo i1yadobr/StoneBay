@@ -54,6 +54,8 @@
 
 	var/has_been_rev = 0//Tracks if this mind has been a rev or not
 
+	var/miming = FALSE // Mime's vow of silence
+
 	var/datum/faction/faction 			// Associated faction
 	var/datum/changeling/changeling		// Changeling holder
 	var/datum/vampire/vampire 			// Vampire holder
