@@ -4,12 +4,20 @@
 	icon = 'icons/obj/monitors.dmi'
 	icon_state = "fire_bitem"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
+	// The list of turfs that the frame can be built on
 	var/list/buildon_types = list(/turf/simulated/wall)
+	// Whether the frame can be built on the floor, or only on walls
 	var/allow_floor_mounting = FALSE
+	// The number of sheets refunded when the frame is deconstructed
 	var/sheets_refunded = 2
+	// The type of stack that will be created when the frame is deconstructed
 	var/refund_type = /obj/item/stack/material/steel
+	// The flags that define the properties of the frame, such as whether it can be built on simfloors or in space
 	var/frame_flags = 0
-	var/reverse = FALSE //if resulting object faces opposite its dir (like light fixtures)
+	// Note: This switch works 50/50, and in some cases it breaks the logic of the building
+	// Based on this, either it should be polished and clean up, or the possibility should be removed
+	// Used for light fixtures
+	var/reverse = FALSE
 
 /obj/item/frame/attackby(obj/item/W, mob/user)
 	if(isWrench(W))
@@ -46,6 +54,12 @@
 			to_chat(user, SPAN("danger", "There's already an item on this wall!"))
 			return FALSE
 
+	// Note: This check is here to prevent placing wall-mounted items on the floor when allow_floor_mounting is TRUE,
+	// since gotwallitem() only checks for items on the wall, and not on the floor
+	// However, maybe it should be moved to a separate proc, or this check should be assigned exclusively to /obj/item/frame/light/floor
+	if(locate(/obj/machinery/light_construct/floor, on_wall) || locate(/obj/machinery/light/floor, on_wall))
+		to_chat(user, SPAN("danger", "There's already an item on this floor!"))
+		return FALSE
 	if((frame_flags & FRAME_FLAG_SIMFLOOR) && !isfloorturf(build_turf))
 		to_chat(user, SPAN_WARNING("[src] cannot be placed on this spot."))
 		return FALSE
@@ -111,7 +125,16 @@
 			newlight = new /obj/machinery/light_construct/floor(on_wall)
 		else
 			newlight = new /obj/machinery/light_construct/small(constrloc)
-	newlight.dir = constrdir
+
+	// TODO: If possible, it should be rewritten into something more clear and constructive than this!
+	// Note: It's a very cursed system, but it works like this:
+	// Since gotwallitem() defines an item on the wall using dirs,
+	// we simply assign /obj/item/frame/light/floor its own, third independent, dir
+	// So, floor lighting shouldn't interfere with other types of frames being placed on the wall. I guess...
+	if(allow_floor_mounting)
+		newlight.dir = 16
+	else
+		newlight.dir = constrdir
 	newlight.fingerprints = src.fingerprints
 
 	user.visible_message("[user] attaches \the [src] to \the [on_wall].", \
@@ -128,19 +151,9 @@
 	name = "floor light fixture frame"
 	icon_state = "floor-construct-item"
 	fixture_type = "floor"
+	sheets_refunded = 3
 	buildon_types = list(/turf/simulated/floor)
 	allow_floor_mounting = TRUE
-
-/obj/item/frame/light/floor/try_build(turf/on_wall, mob/user, proximity_flag)
-	if(!..())
-		return
-	var/turf/T = get_turf(user)
-	// TODO: Understand why this check does not work and fix it
-	if(locate(/obj/machinery/light_construct/floor, T))
-		to_chat(user, SPAN("danger", "There's already an item on this floor!"))
-		return
-
-	return TRUE
 
 /obj/item/frame/intercom
 	name = "intercom frame"

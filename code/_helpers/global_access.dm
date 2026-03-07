@@ -101,8 +101,6 @@
 			return global.Tier3Runes;
 		if("Tier4Runes")
 			return global.Tier4Runes;
-		if("WALLITEMS")
-			return global.WALLITEMS;
 		if("_all_globals")
 			return global._all_globals;
 		if("admin_datums")
@@ -864,8 +862,6 @@
 			global.Tier3Runes=newval;
 		if("Tier4Runes")
 			global.Tier4Runes=newval;
-		if("WALLITEMS")
-			global.WALLITEMS=newval;
 		if("_all_globals")
 			global._all_globals=newval;
 		if("admin_datums")
@@ -1582,7 +1578,6 @@
 	"Tier2Runes",
 	"Tier3Runes",
 	"Tier4Runes",
-	"WALLITEMS",
 	"_all_globals",
 	"_client_preferences",
 	"_client_preferences_by_key",

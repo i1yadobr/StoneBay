@@ -1049,44 +1049,23 @@ var/global/list/common_tools = list(
 /*
 Checks if that loc and dir has a item on the wall
 */
-var/list/WALLITEMS = list(
+GLOBAL_LIST_INIT(wall_items, typecacheof(list(
 	/obj/machinery/power/apc, /obj/machinery/alarm, /obj/item/device/radio/intercom,
 	/obj/structure/extinguisher_cabinet, /obj/structure/reagent_dispensers/peppertank,
 	/obj/machinery/status_display, /obj/machinery/requests_console, /obj/machinery/light_switch, /obj/structure/sign,
-	/obj/machinery/newscaster, /obj/machinery/firealarm, /obj/structure/noticeboard,
-	/obj/item/storage/secure/safe, /obj/machinery/door_timer, /obj/machinery/flasher, /obj/machinery/keycard_auth,
-	/obj/structure/mirror, /obj/structure/fireaxecabinet, /obj/structure/filingcabinet/wallcabinet
-	)
+	/obj/machinery/newscaster, /obj/machinery/firealarm, /obj/structure/noticeboard, /obj/item/storage/secure/safe,
+	/obj/machinery/door_timer, /obj/machinery/flasher, /obj/machinery/keycard_auth, /obj/structure/mirror,
+	/obj/structure/fireaxecabinet, /obj/structure/filingcabinet/wallcabinet, /obj/machinery/light, /obj/machinery/light_construct)))
+
 /proc/gotwallitem(loc, dir)
 	for(var/obj/O in loc)
-		for(var/item in WALLITEMS)
-			if(istype(O, item))
-				//Direction works sometimes
-				if(O.dir == dir)
-					return TRUE
-
-				//Some stuff doesn't use dir properly, so we need to check pixel instead
-				switch(dir)
-					if(SOUTH)
-						if(O.pixel_y > 10)
-							return TRUE
-					if(NORTH)
-						if(O.pixel_y < -10)
-							return TRUE
-					if(WEST)
-						if(O.pixel_x > 10)
-							return TRUE
-					if(EAST)
-						if(O.pixel_x < -10)
-							return TRUE
-
+		if(is_type_in_typecache(O, GLOB.wall_items) && dir == O.dir)
+			return TRUE
 
 	//Some stuff is placed directly on the wallturf (signs)
 	for(var/obj/O in get_step(loc, dir))
-		for(var/item in WALLITEMS)
-			if(istype(O, item))
-				if(abs(O.pixel_x) <= 10 && abs(O.pixel_y) <= 10)
-					return TRUE
+		if(is_type_in_typecache(O, GLOB.wall_items))
+			return TRUE
 	return FALSE
 
 /proc/format_text(text)

@@ -132,7 +132,6 @@
 /obj/machinery/light_construct/small
 	name = "small light fixture frame"
 	desc = "A small light fixture under construction."
-	icon = 'icons/obj/lighting.dmi'
 	icon_state = "bulb-construct-stage1"
 	base_icon_state = "bulb-construct"
 
@@ -142,12 +141,14 @@
 /obj/machinery/light_construct/floor
 	name = "floor light fixture frame"
 	desc = "A floor light fixture under construction."
-	icon = 'icons/obj/lighting.dmi'
 	icon_state = "floor-construct-stage1"
 	base_icon_state = "floor-construct"
+
 	layer = ABOVE_TILE_LAYER
 	plane = TURF_PLANE
+
 	fixture_type = /obj/machinery/light/floor
+	sheets_refunded = 3
 
 #undef LIGHT_CONSTRUCT_EMPTY_FRAME
 #undef LIGHT_CONSTRUCT_WIRED
@@ -156,11 +157,11 @@
 // the standard tube light fixture
 /obj/machinery/light
 	name = "light fixture"
+	desc = "A lighting fixture."
 	icon = 'icons/obj/lighting.dmi'
 	var/base_state = "tube"		// base description and icon_state
 	icon_state = "tube1"
-	desc = "A lighting fixture."
-	anchored = 1
+	anchored = TRUE
 
 	layer = ABOVE_HUMAN_LAYER // They were appearing under mobs which is a little weird - Ostaf
 	use_power = POWER_USE_OFF // It resets during initialization anyway, but using other options may cause some initially-unpowered areas to act silly.
@@ -189,9 +190,9 @@
 
 /obj/machinery/light/vox
 	name = "alien light"
+	desc = "A strange lighting fixture."
 	icon_state = "voxlight"
 	base_state = "voxlight"
-	desc = "A strange lighting fixture."
 	light_type = /obj/item/light/tube
 
 /obj/machinery/light/spot
@@ -201,16 +202,16 @@
 
 /obj/machinery/light/he
 	name = "high efficiency light fixture"
+	desc = "An efficient lighting fixture used to reduce strain on the station's power grid."
 	icon_state = "hetube1"
 	base_state = "hetube"
-	desc = "An efficient lighting fixture used to reduce strain on the station's power grid."
 	light_type = /obj/item/light/tube/he
 
 /obj/machinery/light/quartz
 	name = "quartz light fixture"
+	desc = "Light is almost the same as sunlight."
 	icon_state = "qtube1"
 	base_state = "qtube"
-	desc = "Light is almost the same as sunlight."
 	light_type = /obj/item/light/tube/quartz
 
 /obj/machinery/light/nobreak
@@ -218,27 +219,29 @@
 
 // the smaller bulb light fixture
 /obj/machinery/light/small
+	desc = "A small lighting fixture."
 	icon_state = "bulb1"
 	base_state = "bulb"
-	desc = "A small lighting fixture."
 	light_type = /obj/item/light/bulb
 	construct_type = /obj/machinery/light_construct/small
 	pixel_shift = 3
 
 /obj/machinery/light/small/he
 	name = "high efficiency light fixture"
+	desc = "An efficient small lighting fixture used to reduce strain on the station's power grid."
 	icon_state = "hebulb1"
 	base_state = "hebulb"
-	desc = "An efficient small lighting fixture used to reduce strain on the station's power grid."
 	light_type = /obj/item/light/bulb/he
 
 /obj/machinery/light/small/quartz
 	name = "quartz light fixture"
+	desc = "Light is almost the same as sunlight."
 	icon_state = "qbulb1"
 	base_state = "qbulb"
-	desc = "Light is almost the same as sunlight."
 	light_type = /obj/item/light/bulb/quartz
 
+// TODO: Remove one of the subtypes of this light
+// Replace the deleted ones with the one that was left
 /obj/machinery/light/small/emergency
 	light_type = /obj/item/light/bulb/red
 
@@ -247,9 +250,9 @@
 
 /obj/machinery/light/small/hl
 	name = "old light fixture"
+	desc = "Combination of old technologies and electricity."
 	icon_state = "hanginglantern1"
 	base_state = "hanginglantern"
-	desc = "Combination of old technologies and electricity."
 	light_type = /obj/item/light/bulb/old
 
 /obj/machinery/light/floor
