@@ -93,39 +93,14 @@
 	QDEL_NULL(storage_ui)
 	. = ..()
 
-/obj/item/storage/MouseDrop(atom/over_object)
-	// TODO(rufus): check if issmall() can be replaced by something more sematically meaningfull
-	if(!(ishuman(usr) || isrobot(usr) || issmall(usr)))
-		return
-	if(usr.incapacitated() || isxenomorph(usr) || islarva(usr))
-		return
+/obj/item/storage/MouseDrop(atom/over)
+	if(((ishuman(usr) || isrobot(usr) || issmall(usr)) && (!isxenomorph(usr) && !ischestburster(usr))) && !usr.incapacitated())
+		if(over == usr && Adjacent(usr)) // this must come before the screen objects only block
+			add_fingerprint(usr)
+			open(usr)
+			return TRUE
 
-	if(over_object == usr)
-		if(!Adjacent(usr))
-			to_chat(usr, SPAN("warning", "[src] is too far away to open!"))
-			return
-		open(usr)
-		return
-
-	if(!canremove)
-		to_chat(usr, "[src] cannot be removed!")
-		return
-
-	if(loc != usr)
-		return
-
-	var/atom/movable/screen/inventory/inv_box = over_object
-	if(!istype(inv_box))
-		return ..()
-
-	// TODO(rufus): checking by name is not reliable, refactor to something appropriate for type checking
-	switch(inv_box.slot_id)
-		if(slot_l_hand)
-			if(usr.drop(src))
-				usr.put_in_l_hand(src)
-		if(slot_r_hand)
-			if(usr.drop(src))
-				usr.put_in_r_hand(src)
+	return ..()
 
 /obj/item/storage/AltClick(mob/usr)
 	if(!canremove)

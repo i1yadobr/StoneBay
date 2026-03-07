@@ -64,9 +64,7 @@
 		to_chat(user, SPAN("notice", "You arm [src]."))
 	else
 		if((MUTATION_CLUMSY in user.mutations) && prob(50))
-			var/which_hand = BP_L_HAND
-			if(!user.hand)
-				which_hand = BP_R_HAND
+			var/which_hand = (user.active_hand == ACTIVE_HAND_LEFT) ? BP_L_HAND : BP_R_HAND
 			triggered(user, which_hand)
 			user.visible_message(SPAN("warning", "[user] accidentally sets off [src], breaking their fingers."), \
 								 SPAN("warning", "You accidentally trigger [src]!"))
@@ -79,9 +77,7 @@
 /obj/item/device/assembly/mousetrap/attack_hand(mob/living/user as mob)
 	if(armed)
 		if((MUTATION_CLUMSY in user.mutations) && prob(50))
-			var/which_hand = BP_L_HAND
-			if(!user.hand)
-				which_hand = BP_R_HAND
+			var/which_hand = (user.active_hand == ACTIVE_HAND_LEFT) ? BP_L_HAND : BP_R_HAND
 			triggered(user, which_hand)
 			user.visible_message(SPAN("warning", "[user] accidentally sets off [src], breaking their fingers."), \
 								 SPAN("warning", "You accidentally trigger [src]!"))
@@ -106,7 +102,7 @@
 	if(armed)
 		finder.visible_message(SPAN("warning", "[finder] accidentally sets off [src], breaking their fingers."), \
 							   SPAN("warning", "You accidentally trigger [src]!"))
-		triggered(finder, finder.hand ? BP_L_HAND : BP_R_HAND)
+		triggered(finder, (finder.active_hand == ACTIVE_HAND_LEFT) ? BP_L_HAND : BP_R_HAND)
 		return TRUE
 
 	return FALSE

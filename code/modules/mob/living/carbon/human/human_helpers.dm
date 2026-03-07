@@ -78,7 +78,7 @@
 		var/mob/living/carbon/human/H = user // No way it can't be human at this point.
 		var/hitzone = check_zone(H.zone_sel.selecting)
 		var/list/badzones = list(BP_HEAD)
-		if(H.hand)
+		if(H.active_hand == ACTIVE_HAND_LEFT)
 			badzones += BP_L_ARM
 			badzones += BP_L_HAND
 		else
@@ -87,6 +87,30 @@
 
 		if(hitzone in badzones)
 			return FALSE
+
+/mob/living/carbon/human/proc/get_hand_organ(certain_hand = -1)
+	switch(certain_hand)
+		if(-1)
+			if(rightclicked)
+				return (active_hand == ACTIVE_HAND_LEFT) ? organs_by_name[BP_R_HAND] : organs_by_name[BP_L_HAND]
+			return (active_hand == ACTIVE_HAND_LEFT) ? organs_by_name[BP_L_HAND] : organs_by_name[BP_R_HAND]
+		if(ACTIVE_HAND_LEFT)
+			return organs_by_name[BP_L_HAND]
+		if(ACTIVE_HAND_RIGHT)
+			return organs_by_name[BP_R_HAND]
+	return null
+
+/mob/living/carbon/human/proc/is_hand_usable(silent = FALSE, certain_hand = -1)
+	var/_active_hand = certain_hand
+	if(_active_hand == -1)
+		_active_hand = rightclicked ? !active_hand : active_hand
+
+	var/obj/item/organ/external/temp = get_hand_organ(_active_hand)
+	if(istype(temp) && temp.is_usable())
+		return TRUE
+	if(!silent)
+		to_chat(src, SPAN("notice", "You try to move your [(_active_hand == ACTIVE_HAND_LEFT) ? "left" : "right"] hand, but cannot!"))
+	return FALSE
 
 /mob/living/carbon/human/proc/update_equipment_vision()
 	flash_protection = 0

@@ -108,7 +108,7 @@
 	if(!CanMouseDrop(over_object))
 		return
 	if(!ismob(loc))
-		return
+		return ..()
 	if(attached)
 		visible_message("\The [attached] is taken off \the [src]")
 		attached = null

@@ -610,6 +610,14 @@
 					return
 
 				H.show_inventory?.open()
+			// Redirecting to the item equipped into the slot, if any
+			var/obj/item/I = usr.get_equipped_item(slot_id)
+			if(istype(I))
+				var/datum/click_handler/click_handler = usr.GetClickHandler()
+				click_handler.OnClick(I, params)
+				return 1
+
+			// The slot's empty, letting attack_ui() handle the rest
 		else
 			usr.rightclicked = FALSE
 			if(usr.twohanded_mode)
@@ -619,6 +627,8 @@
 			if(usr.attack_ui(slot_id))
 				usr.update_inv_l_hand(0)
 				usr.update_inv_r_hand(0)
+			usr.rightclicked = FALSE
+
 	return 1
 
 /atom/movable/screen/holomap

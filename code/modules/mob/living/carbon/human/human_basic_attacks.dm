@@ -65,13 +65,8 @@
 /mob/living/carbon/human/attack_hand(mob/living/M)
 
 	var/mob/living/carbon/human/H = M
-	if(istype(H))
-		var/obj/item/organ/external/temp = H.organs_by_name[BP_R_HAND]
-		if(H.hand)
-			temp = H.organs_by_name[BP_L_HAND]
-		if(!temp || !temp.is_usable())
-			to_chat(H, SPAN("warning", "You can't use your hand."))
-			return
+	if(!H.is_hand_usable())
+		return
 
 	..()
 
