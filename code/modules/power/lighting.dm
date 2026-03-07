@@ -76,14 +76,14 @@
 	src.add_fingerprint(user)
 	if(isWrench(W))
 		if(src.stage == LIGHT_CONSTRUCT_EMPTY_FRAME)
-			playsound(src.loc, 'sound/items/Ratchet.ogg', 75, 1)
+			playsound(src, 'sound/items/Ratchet.ogg', 75, 1)
 			to_chat(usr, "You begin deconstructing \a [src].")
 			if(!do_after(usr, 30, src))
 				return
 			new /obj/item/stack/material/steel( get_turf(src.loc), sheets_refunded )
 			user.visible_message("[user.name] deconstructs [src].", \
 				"You deconstruct [src].", "You hear a noise.")
-			playsound(src.loc, 'sound/items/Deconstruct.ogg', 75, 1)
+			playsound(src, 'sound/items/Deconstruct.ogg', 75, 1)
 			qdel(src)
 		if(src.stage == LIGHT_CONSTRUCT_WIRED)
 			to_chat(usr, "You have to remove the wires first.")
@@ -101,7 +101,7 @@
 		new /obj/item/stack/cable_coil(get_turf(src.loc), 1, "red")
 		user.visible_message("[user.name] removes the wiring from [src].", \
 			"You remove the wiring from [src].", "You hear a noise.")
-		playsound(src.loc, 'sound/items/Wirecutter.ogg', 100, 1)
+		playsound(src, 'sound/items/Wirecutter.ogg', 100, 1)
 		return
 
 	if(isCoil(W))
@@ -121,7 +121,7 @@
 			src.update_icon()
 			user.visible_message("[user.name] closes [src]'s casing.", \
 				"You close [src]'s casing.", "You hear a noise.")
-			playsound(src.loc, 'sound/items/Screwdriver.ogg', 75, 1)
+			playsound(src, 'sound/items/Screwdriver.ogg', 75, 1)
 
 			var/obj/machinery/light/newlight = new fixture_type(src.loc, src)
 			newlight.set_dir(src.dir)
@@ -516,7 +516,7 @@
 	// attempt to stick weapon into light socket
 	else if(!lightbulb)
 		if(isScrewdriver(W)) //If it's a screwdriver open it.
-			playsound(src.loc, 'sound/items/Screwdriver.ogg', 75, 1)
+			playsound(src, 'sound/items/Screwdriver.ogg', 75, 1)
 			user.visible_message("[user.name] opens [src]'s casing.", "You open [src]'s casing.", "You hear a noise.")
 			new construct_type(src.loc, src.dir, src)
 			qdel(src)
@@ -630,7 +630,7 @@
 		if(H.species.can_shred(H))
 			if(get_status() == LIGHT_BROKEN)
 				return
-			playsound(src.loc, 'sound/weapons/slash.ogg', 100, 1)
+			playsound(src, 'sound/weapons/slash.ogg', 100, 1)
 			user.do_attack_animation(src)
 			user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 			visible_message(SPAN("warning", "[user.name] smashes the light!"))
@@ -694,7 +694,7 @@
 
 	if(!skip_sound_and_sparks)
 		if(lightbulb && !(lightbulb.status == LIGHT_BROKEN))
-			playsound(src.loc, GET_SFX(SFX_GLASS_HIT), 75, 1)
+			playsound(src, GET_SFX(SFX_GLASS_HIT), 75, 1)
 
 		if(powered())
 			s.set_up(3, 1, src)
@@ -993,7 +993,7 @@
 		status = LIGHT_BROKEN
 		force = 5
 		sharp = 1
-		playsound(src.loc, GET_SFX(SFX_GLASS_HIT), 75, 1)
+		playsound(src, GET_SFX(SFX_GLASS_HIT), 75, 1)
 		update_icon()
 
 /obj/item/light/proc/switch_on()
