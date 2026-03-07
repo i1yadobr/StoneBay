@@ -15,17 +15,25 @@
 #define LIGHT_ON_DELAY_UPPER 1 SECONDS
 #define LIGHT_ON_DELAY_LOWER 0.5 SECONDS
 
+#define LIGHT_CONSTRUCT_EMPTY_FRAME 1
+#define LIGHT_CONSTRUCT_WIRED 2
+#define LIGHT_CONSTRUCT_COMPLETED 3
+
 /obj/machinery/light_construct
 	name = "light fixture frame"
 	desc = "A light fixture under construction."
 	icon = 'icons/obj/lighting.dmi'
 	icon_state = "tube-construct-stage1"
-	anchored = 1
+	base_icon_state = "tube-construct"
+	anchored = TRUE
 
 	layer = ABOVE_HUMAN_LAYER
 
-	var/stage = 1
+	// Construction stage
+	var/stage = LIGHT_CONSTRUCT_EMPTY_FRAME
+	// The type of light fixture this will construct once completed. Set by the frame item
 	var/fixture_type = /obj/machinery/light
+	// How many sheets of metal are refunded when deconstructing fixture
 	var/sheets_refunded = 2
 
 /obj/machinery/light_construct/New(atom/newloc, newdir, atom/fixture = null)
@@ -43,9 +51,12 @@
 
 /obj/machinery/light_construct/on_update_icon()
 	switch(stage)
-		if(1) icon_state = "tube-construct-stage1"
-		if(2) icon_state = "tube-construct-stage2"
-		if(3) icon_state = "tube-empty"
+		if(LIGHT_CONSTRUCT_EMPTY_FRAME)
+			icon_state = "[base_icon_state]-stage1"
+		if(LIGHT_CONSTRUCT_WIRED)
+			icon_state = "[base_icon_state]-stage2"
+		if(LIGHT_CONSTRUCT_COMPLETED)
+			icon_state = "[base_icon_state]-empty"
 
 /obj/machinery/light_construct/examine(mob/user, infix)
 	. = ..()
@@ -54,58 +65,63 @@
 		return
 
 	switch(src.stage)
-		if(1) . += "It's an empty frame."
-		if(2) . += "It's wired."
-		if(3) . += "The casing is closed."
+		if(LIGHT_CONSTRUCT_EMPTY_FRAME)
+			. += "It's an empty frame."
+		if(LIGHT_CONSTRUCT_WIRED)
+			. += "It's wired."
+		if(LIGHT_CONSTRUCT_COMPLETED)
+			. += "The casing is closed."
 
 /obj/machinery/light_construct/attackby(obj/item/W, mob/user)
 	src.add_fingerprint(user)
 	if(isWrench(W))
-		if (src.stage == 1)
-			playsound(src.loc, 'sound/items/Ratchet.ogg', 75, 1)
+		if(src.stage == LIGHT_CONSTRUCT_EMPTY_FRAME)
+			playsound(src, 'sound/items/Ratchet.ogg', 75, 1)
 			to_chat(usr, "You begin deconstructing \a [src].")
-			if (!do_after(usr, 30, src))
+			if(!do_after(usr, 30, src))
 				return
 			new /obj/item/stack/material/steel( get_turf(src.loc), sheets_refunded )
 			user.visible_message("[user.name] deconstructs [src].", \
 				"You deconstruct [src].", "You hear a noise.")
-			playsound(src.loc, 'sound/items/Deconstruct.ogg', 75, 1)
+			playsound(src, 'sound/items/Deconstruct.ogg', 75, 1)
 			qdel(src)
-		if (src.stage == 2)
+		if(src.stage == LIGHT_CONSTRUCT_WIRED)
 			to_chat(usr, "You have to remove the wires first.")
 			return
 
-		if (src.stage == 3)
+		if(src.stage == LIGHT_CONSTRUCT_COMPLETED)
 			to_chat(usr, "You have to unscrew the case first.")
 			return
 
 	if(isWirecutter(W))
-		if (src.stage != 2) return
-		src.stage = 1
+		if(src.stage != LIGHT_CONSTRUCT_WIRED)
+			return
+		src.stage = LIGHT_CONSTRUCT_EMPTY_FRAME
 		src.update_icon()
 		new /obj/item/stack/cable_coil(get_turf(src.loc), 1, "red")
 		user.visible_message("[user.name] removes the wiring from [src].", \
 			"You remove the wiring from [src].", "You hear a noise.")
-		playsound(src.loc, 'sound/items/Wirecutter.ogg', 100, 1)
+		playsound(src, 'sound/items/Wirecutter.ogg', 100, 1)
 		return
 
 	if(isCoil(W))
-		if (src.stage != 1) return
+		if(src.stage != LIGHT_CONSTRUCT_EMPTY_FRAME)
+			return
 		var/obj/item/stack/cable_coil/coil = W
-		if (coil.use(1))
-			src.stage = 2
+		if(coil.use(1))
+			src.stage = LIGHT_CONSTRUCT_WIRED
 			src.update_icon()
 			user.visible_message("[user.name] adds wires to [src].", \
 				"You add wires to [src].")
 		return
 
 	if(isScrewdriver(W))
-		if (src.stage == 2)
-			src.stage = 3
+		if(src.stage == LIGHT_CONSTRUCT_WIRED)
+			src.stage = LIGHT_CONSTRUCT_COMPLETED
 			src.update_icon()
 			user.visible_message("[user.name] closes [src]'s casing.", \
 				"You close [src]'s casing.", "You hear a noise.")
-			playsound(src.loc, 'sound/items/Screwdriver.ogg', 75, 1)
+			playsound(src, 'sound/items/Screwdriver.ogg', 75, 1)
 
 			var/obj/machinery/light/newlight = new fixture_type(src.loc, src)
 			newlight.set_dir(src.dir)
@@ -118,29 +134,36 @@
 /obj/machinery/light_construct/small
 	name = "small light fixture frame"
 	desc = "A small light fixture under construction."
-	icon = 'icons/obj/lighting.dmi'
 	icon_state = "bulb-construct-stage1"
-	anchored = 1
+	base_icon_state = "bulb-construct"
 
-	layer = ABOVE_HUMAN_LAYER
-	stage = 1
 	fixture_type = /obj/machinery/light/small
 	sheets_refunded = 1
 
-/obj/machinery/light_construct/small/on_update_icon()
-	switch(stage)
-		if(1) icon_state = "bulb-construct-stage1"
-		if(2) icon_state = "bulb-construct-stage2"
-		if(3) icon_state = "bulb-empty"
+/obj/machinery/light_construct/floor
+	name = "floor light fixture frame"
+	desc = "A floor light fixture under construction."
+	icon_state = "floor-construct-stage1"
+	base_icon_state = "floor-construct"
+
+	layer = ABOVE_TILE_LAYER
+	plane = TURF_PLANE
+
+	fixture_type = /obj/machinery/light/floor
+	sheets_refunded = 3
+
+#undef LIGHT_CONSTRUCT_EMPTY_FRAME
+#undef LIGHT_CONSTRUCT_WIRED
+#undef LIGHT_CONSTRUCT_COMPLETED
 
 // the standard tube light fixture
 /obj/machinery/light
 	name = "light fixture"
+	desc = "A lighting fixture."
 	icon = 'icons/obj/lighting.dmi'
 	var/base_state = "tube"		// base description and icon_state
 	icon_state = "tube1"
-	desc = "A lighting fixture."
-	anchored = 1
+	anchored = TRUE
 
 	layer = ABOVE_HUMAN_LAYER // They were appearing under mobs which is a little weird - Ostaf
 	use_power = POWER_USE_OFF // It resets during initialization anyway, but using other options may cause some initially-unpowered areas to act silly.
@@ -152,6 +175,8 @@
 	var/on = TRUE
 	/// Whether bulb is currently asynchronously flickering.
 	var/flickering = FALSE
+	/// Whether light is mounted on floor.
+	var/floor_mounted = FALSE
 	var/light_type = /obj/item/light/tube		// the type of light item
 	var/construct_type = /obj/machinery/light_construct
 	var/pixel_shift = 0
@@ -169,9 +194,9 @@
 
 /obj/machinery/light/vox
 	name = "alien light"
+	desc = "A strange lighting fixture."
 	icon_state = "voxlight"
 	base_state = "voxlight"
-	desc = "A strange lighting fixture."
 	light_type = /obj/item/light/tube
 
 /obj/machinery/light/spot
@@ -181,16 +206,16 @@
 
 /obj/machinery/light/he
 	name = "high efficiency light fixture"
+	desc = "An efficient lighting fixture used to reduce strain on the station's power grid."
 	icon_state = "hetube1"
 	base_state = "hetube"
-	desc = "An efficient lighting fixture used to reduce strain on the station's power grid."
 	light_type = /obj/item/light/tube/he
 
 /obj/machinery/light/quartz
 	name = "quartz light fixture"
+	desc = "Light is almost the same as sunlight."
 	icon_state = "qtube1"
 	base_state = "qtube"
-	desc = "Light is almost the same as sunlight."
 	light_type = /obj/item/light/tube/quartz
 
 /obj/machinery/light/nobreak
@@ -198,27 +223,29 @@
 
 // the smaller bulb light fixture
 /obj/machinery/light/small
+	desc = "A small lighting fixture."
 	icon_state = "bulb1"
 	base_state = "bulb"
-	desc = "A small lighting fixture."
 	light_type = /obj/item/light/bulb
 	construct_type = /obj/machinery/light_construct/small
 	pixel_shift = 3
 
 /obj/machinery/light/small/he
 	name = "high efficiency light fixture"
+	desc = "An efficient small lighting fixture used to reduce strain on the station's power grid."
 	icon_state = "hebulb1"
 	base_state = "hebulb"
-	desc = "An efficient small lighting fixture used to reduce strain on the station's power grid."
 	light_type = /obj/item/light/bulb/he
 
 /obj/machinery/light/small/quartz
 	name = "quartz light fixture"
+	desc = "Light is almost the same as sunlight."
 	icon_state = "qbulb1"
 	base_state = "qbulb"
-	desc = "Light is almost the same as sunlight."
 	light_type = /obj/item/light/bulb/quartz
 
+// TODO: Remove one of the subtypes of this light
+// Replace the deleted ones with the one that was left
 /obj/machinery/light/small/emergency
 	light_type = /obj/item/light/bulb/red
 
@@ -227,10 +254,21 @@
 
 /obj/machinery/light/small/hl
 	name = "old light fixture"
+	desc = "Combination of old technologies and electricity."
 	icon_state = "hanginglantern1"
 	base_state = "hanginglantern"
-	desc = "Combination of old technologies and electricity."
 	light_type = /obj/item/light/bulb/old
+
+/obj/machinery/light/floor
+	name = "floor light"
+	desc = "A lightbulb you can walk on without breaking it, amazing."
+	icon_state = "floor1"
+	base_state = "floor"
+	light_type = /obj/item/light/bulb
+	construct_type = /obj/machinery/light_construct/floor
+	layer = ABOVE_TILE_LAYER
+	plane = TURF_PLANE
+	floor_mounted = TRUE
 
 // create a new lighting fixture
 /obj/machinery/light/Initialize(mapload, obj/machinery/light_construct/construct = null)
@@ -307,7 +345,13 @@
 			tone_color = lightbulb.lighting_modes[current_mode]["l_color"]
 			tone_alpha = between(128, (lightbulb.lighting_modes[current_mode]["l_max_bright"] * 1.5 * 255), 255)
 
-		tone_overlay = OVERLAY(icon, "[icon_state]-over", tone_alpha, RESET_COLOR, tone_color, dir, EFFECTS_ABOVE_LIGHTING_PLANE, ABOVE_LIGHTING_LAYER)
+		// TODO: This may not be the best use of the floor_mounted
+		// It is worth creating a separate plane and layer for floor lighting (or use an existing one, if available),
+		// but for now this is a simple way to ensure the overlay appears under mobs and other fixtures
+		if(floor_mounted)
+			tone_overlay = OVERLAY(icon, "[icon_state]-over", tone_alpha, RESET_COLOR, tone_color, dir)
+		else
+			tone_overlay = OVERLAY(icon, "[icon_state]-over", tone_alpha, RESET_COLOR, tone_color, dir, EFFECTS_ABOVE_LIGHTING_PLANE, ABOVE_LIGHTING_LAYER)
 
 		if(isnull(light_eas[icon_state]))
 			light_eas[icon_state] = emissive_appearance(icon, "[icon_state]_ea")
@@ -472,7 +516,7 @@
 	// attempt to stick weapon into light socket
 	else if(!lightbulb)
 		if(isScrewdriver(W)) //If it's a screwdriver open it.
-			playsound(src.loc, 'sound/items/Screwdriver.ogg', 75, 1)
+			playsound(src, 'sound/items/Screwdriver.ogg', 75, 1)
 			user.visible_message("[user.name] opens [src]'s casing.", "You open [src]'s casing.", "You hear a noise.")
 			new construct_type(src.loc, src.dir, src)
 			qdel(src)
@@ -586,7 +630,7 @@
 		if(H.species.can_shred(H))
 			if(get_status() == LIGHT_BROKEN)
 				return
-			playsound(src.loc, 'sound/weapons/slash.ogg', 100, 1)
+			playsound(src, 'sound/weapons/slash.ogg', 100, 1)
 			user.do_attack_animation(src)
 			user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 			visible_message(SPAN("warning", "[user.name] smashes the light!"))
@@ -650,7 +694,7 @@
 
 	if(!skip_sound_and_sparks)
 		if(lightbulb && !(lightbulb.status == LIGHT_BROKEN))
-			playsound(src.loc, GET_SFX(SFX_GLASS_HIT), 75, 1)
+			playsound(src, GET_SFX(SFX_GLASS_HIT), 75, 1)
 
 		if(powered())
 			s.set_up(3, 1, src)
@@ -678,10 +722,10 @@
 			qdel(src)
 			return
 		if(2)
-			if (prob(75))
+			if(prob(75))
 				broken()
 		if(3)
-			if (prob(50))
+			if(prob(50))
 				broken()
 
 /obj/machinery/light/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
@@ -934,7 +978,8 @@
 // now only shatter if the intent was harm
 
 /obj/item/light/afterattack(atom/target, mob/user, proximity)
-	if(!proximity) return
+	if(!proximity)
+		return
 	if(istype(target, /obj/machinery/light))
 		return
 	if(user.a_intent != I_HURT)
@@ -948,7 +993,7 @@
 		status = LIGHT_BROKEN
 		force = 5
 		sharp = 1
-		playsound(src.loc, GET_SFX(SFX_GLASS_HIT), 75, 1)
+		playsound(src, GET_SFX(SFX_GLASS_HIT), 75, 1)
 		update_icon()
 
 /obj/item/light/proc/switch_on()

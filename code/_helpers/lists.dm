@@ -137,6 +137,12 @@
 			return TRUE
 	return FALSE
 
+//Checks for specific types in specifically structured (Assoc "type" = TRUE) lists ('typecaches')
+/proc/is_type_in_typecache(atom/A, list/L)
+	if(!L || !length(L) || !A)
+		return FALSE
+	return L[A.type]
+
 /proc/instances_of_type_in_list(atom/A, list/L)
 	var/instances = 0
 	for(var/type in L)

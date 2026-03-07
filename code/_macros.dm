@@ -88,6 +88,8 @@
 
 #define isopenspace(A) istype(A, /turf/simulated/open)
 
+#define isfloorturf(A) istype(A, /turf/simulated/floor)
+
 #define isWrench(A) ((istype(A, /obj/item) && A.tool_behaviour == TOOL_WRENCH) || (istype(A, /obj/item/rpd) && A:interaction_mode == "wrench"))
 
 #define isWelder(A) (istype(A, /obj/item) && A.tool_behaviour == TOOL_WELDER)

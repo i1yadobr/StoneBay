@@ -64,6 +64,7 @@
 
 	return
 
+// TODO: Spellcheck, replace "replacable" with "replaceable" in desc for all hyposprays
 /obj/item/reagent_containers/hypospray/vial
 	name = "hypospray"
 	desc = "The DeForest Medical Corporation, a subsidiary of Zeng-Hu Pharmaceuticals, \

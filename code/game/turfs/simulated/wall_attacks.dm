@@ -364,9 +364,7 @@
 						dismantle_wall(TRUE)
 					return
 
-	if(istype(W,/obj/item/frame))
-		var/obj/item/frame/F = W
-		F.try_build(src)
+	if(istype(W, /obj/item/frame))
 		return
 
 	else if(!istype(W,/obj/item/construction/rcd) && !istype(W, /obj/item/reagent_containers))
