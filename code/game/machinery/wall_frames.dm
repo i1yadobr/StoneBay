@@ -58,15 +58,15 @@
 	// since gotwallitem() only checks for items on the wall, and not on the floor
 	// However, maybe it should be moved to a separate proc, or this check should be assigned to /obj/item/frame/light/floor
 	if(locate(/obj/machinery/light_construct/floor, on_wall) || locate(/obj/machinery/light/floor, on_wall))
-		to_chat(user, SPAN("danger", "There's already an item on this floor!"))
+		to_chat(user, SPAN("warning", "There's already an item on this floor!"))
 		return FALSE
 	if((frame_flags & FRAME_FLAG_SIMFLOOR) && !isfloorturf(build_turf))
-		to_chat(user, SPAN_WARNING("[src] cannot be placed on this spot."))
+		to_chat(user, SPAN("warning", "[src] cannot be placed on this spot."))
 		return FALSE
 	if(frame_flags & FRAME_FLAG_NOSPACE)
 		var/area/my_area = get_area(build_turf)
 		if(!istype(my_area) || !my_area.requires_power || isspace(my_area))
-			to_chat(user, SPAN_WARNING("[src] cannot be placed in this area."))
+			to_chat(user, SPAN("warning", "[src] cannot be placed in this area."))
 			return FALSE
 
 	return TRUE
