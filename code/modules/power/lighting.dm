@@ -31,7 +31,9 @@
 
 	// Construction stage
 	var/stage = LIGHT_CONSTRUCT_EMPTY_FRAME
+	// The type of light fixture this will construct once completed. Set by the frame item
 	var/fixture_type = /obj/machinery/light
+	// How many sheets of metal are refunded when deconstructing fixture
 	var/sheets_refunded = 2
 
 /obj/machinery/light_construct/New(atom/newloc, newdir, atom/fixture = null)
