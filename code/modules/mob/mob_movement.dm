@@ -57,13 +57,13 @@
 		if(NORTHWEST)
 			mob.hotkey_drop()
 
-/mob/proc/hotkey_drop()
+/mob/proc/hotkey_drop(drop_inactive = FALSE)
 	to_chat(usr, SPAN("warning", "This mob type cannot drop items."))
 
-/mob/living/carbon/hotkey_drop()
+/mob/living/carbon/hotkey_drop(drop_inactive = FALSE)
 	if(!can_use_hands)
 		return
-	var/obj/item/I = get_clicking_hand()
+	var/obj/item/I = drop_inactive ? get_inactive_hand() : get_active_hand()
 	if(!I)
 		to_chat(usr, SPAN("warning", "You have nothing to drop in your hand."))
 		return
@@ -71,7 +71,7 @@
 		to_chat(usr, SPAN("warning", "\The [I] cannot be dropped."))
 		return
 	else
-		drop_active_hand(force = TRUE)
+		return drop_inactive ? drop_inactive_hand(force = TRUE) : drop_active_hand(force = TRUE)
 
 //This gets called when you press the delete button.
 /client/verb/delete_key_pressed()

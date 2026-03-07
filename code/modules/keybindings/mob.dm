@@ -71,18 +71,17 @@
 	description = "Drop the currently held item."
 
 /datum/keybinding/mob/drop_item/down(client/user)
-	user.mob.drop_active_hand()
+	user.mob.hotkey_drop()
 	return TRUE
 
-/datum/keybinding/living/drop_inactive_item
+/datum/keybinding/mob/drop_inactive_item
 	hotkey_keys = list("ShiftQ")
 	name = "drop_inactive_item"
 	full_name = "Drop Inactive Item"
 	description = "Drop the item held in the inactive hand."
 
-/datum/keybinding/living/drop_inactive_item/down(client/user)
-	var/mob/living/L = user.mob
-	L.drop_inactive_hand()
+/datum/keybinding/mob/drop_inactive_item/down(client/user)
+	user.mob.hotkey_drop(TRUE)
 	return TRUE
 
 /datum/keybinding/mob/select_help_intent
