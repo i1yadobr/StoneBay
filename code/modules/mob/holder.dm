@@ -5,14 +5,14 @@ var/list/holder_mob_icon_cache = list()
 	name = "holder"
 	desc = "You shouldn't ever see this."
 	icon = 'icons/obj/objects.dmi'
-	icon_state = "blank"
-	slot_flags = SLOT_HEAD | SLOT_HOLSTER
-
-	origin_tech = null
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/holder_lefthand.dmi',
 		slot_r_hand_str = 'icons/mob/inhands/holder_righthand.dmi'
 		)
+	icon_state = "blank"
+	slot_flags = SLOT_HEAD | SLOT_HOLSTER
+
+	origin_tech = null
 	pixel_y = 8
 
 	var/mob/held_mob = null
