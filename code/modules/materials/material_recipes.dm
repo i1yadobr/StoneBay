@@ -93,7 +93,7 @@
 	recipes += new /datum/stack_recipe("grenade casing", /obj/item/grenade/chem_grenade, 2)
 	recipes += new /datum/stack_recipe("light fixture frame", /obj/item/frame/light, 2)
 	recipes += new /datum/stack_recipe("small light fixture frame", /obj/item/frame/light/small, 1)
-	recipes += new /datum/stack_recipe("floor light fixture frame", /obj/item/frame/light/floor, 2)
+	recipes += new /datum/stack_recipe("floor light fixture frame", /obj/item/frame/light/floor, 3)
 	recipes += new /datum/stack_recipe("apc frame", /obj/item/frame/apc, 3)
 	recipes += new /datum/stack_recipe("air alarm frame", /obj/item/frame/air_alarm, 3)
 	recipes += new /datum/stack_recipe("fire alarm frame", /obj/item/frame/fire_alarm, 3)

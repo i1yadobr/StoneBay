@@ -56,7 +56,7 @@
 
 	// Note: This check is here to prevent placing wall-mounted items on the floor when allow_floor_mounting is TRUE,
 	// since gotwallitem() only checks for items on the wall, and not on the floor
-	// However, maybe it should be moved to a separate proc, or this check should be assigned exclusively to /obj/item/frame/light/floor
+	// However, maybe it should be moved to a separate proc, or this check should be assigned to /obj/item/frame/light/floor
 	if(locate(/obj/machinery/light_construct/floor, on_wall) || locate(/obj/machinery/light/floor, on_wall))
 		to_chat(user, SPAN("danger", "There's already an item on this floor!"))
 		return FALSE
