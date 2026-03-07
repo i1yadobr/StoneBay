@@ -32,4 +32,6 @@
 
 /obj/item/frame/apc/do_build(turf/on_wall, mob/user)
 	new /obj/machinery/power/apc(get_turf(src), get_dir(user, on_wall), TRUE)
+	user.visible_message("[user] attaches \the [src] to \the [on_wall].", \
+		"You attach \the [src] to \the [on_wall].")
 	qdel(src)
