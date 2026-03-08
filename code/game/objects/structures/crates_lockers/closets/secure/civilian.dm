@@ -21,6 +21,7 @@
 		/obj/item/clothing/under/rank/mime,
 		/obj/item/clothing/under/rank/mime/skirt,
 		/obj/item/clothing/under/rank/mime/sexy,
+		/obj/item/clothing/gloves/white,
 		/obj/item/clothing/shoes/laceup,
 		/obj/item/clothing/shoes/mime,
 		/obj/item/storage/backpack/mime,
