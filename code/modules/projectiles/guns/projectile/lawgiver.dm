@@ -1,9 +1,9 @@
 GLOBAL_LIST_INIT(lawgiver_modes, list(
-		list(mode_name = "stun",			fire_delay = 6,		ammo_per_shot = 1,		projectile_type = /obj/item/projectile/energy/electrode/stunsphere, burst = 1, screen_shake = 0, voice_activator = list()),
-		list(mode_name = "laser",			fire_delay = 6,		ammo_per_shot = 1,		projectile_type = /obj/item/projectile/beam/laser/small,			burst = 1, screen_shake = 0, voice_activator = list() ),
-		list(mode_name = "rapid",			fire_delay = 6,		ammo_per_shot = 1/3,	projectile_type = /obj/item/projectile/bullet/pistol/lawgiver,		burst = 3, screen_shake = 1, voice_activator = list() ),
-		list(mode_name = "flash",			fire_delay = 6,		ammo_per_shot = 1,		projectile_type = /obj/item/projectile/energy/flash,				burst = 1, screen_shake = 1, voice_activator = list() ),
-		list(mode_name = "armor piercing",	fire_delay = 15,	ammo_per_shot = 1,		projectile_type = /obj/item/projectile/bullet/magnetic/lawgiver,	burst = 1, screen_shake = 1, voice_activator = list()),
+		list(mode_name = "stun",			fire_delay = 0.6 SECONDS,		ammo_per_shot = 1,		projectile_type = /obj/item/projectile/energy/electrode/stunsphere, burst = 1, screen_shake = 0, voice_activator = list()),
+		list(mode_name = "laser",			fire_delay = 0.6 SECONDS,		ammo_per_shot = 1,		projectile_type = /obj/item/projectile/beam/laser/small,			burst = 1, screen_shake = 0, voice_activator = list()),
+		list(mode_name = "rapid",			fire_delay = 0.6 SECONDS,		ammo_per_shot = 1/3,	projectile_type = /obj/item/projectile/bullet/pistol/lawgiver,		burst = 3, screen_shake = 1, voice_activator = list()),
+		list(mode_name = "flash",			fire_delay = 0.6 SECONDS,		ammo_per_shot = 1,		projectile_type = /obj/item/projectile/energy/flash,				burst = 1, screen_shake = 1, voice_activator = list()),
+		list(mode_name = "armor piercing",	fire_delay = 1.5 SECONDS,		ammo_per_shot = 1,		projectile_type = /obj/item/projectile/bullet/magnetic/lawgiver,	burst = 1, screen_shake = 1, voice_activator = list()),
 		))
 
 /obj/item/gun/projectile/lawgiver

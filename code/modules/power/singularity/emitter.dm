@@ -26,7 +26,7 @@
 	var/efficiency = 0.6	// Energy efficiency. 60% at this time, so 50kW+1 load means 30kW+0,6 laser pulses.
 	var/active = 0
 	var/powered = 0
-	var/fire_delay = 100
+	var/fire_delay = 1 SECOND
 	var/max_burst_delay = 100
 	var/min_burst_delay = 20
 	var/burst_shots = 3

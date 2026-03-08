@@ -10,7 +10,7 @@
 	mod_weight = 0.7
 	mod_reach = 0.5
 	mod_handy = 1.0
-	fire_delay = 6.75 //Revolvers are naturally slower-firing
+	fire_delay = 0.8 SECONDS //Revolvers are naturally slower-firing
 	ammo_type = /obj/item/ammo_casing/a357
 	var/chamber_offset = 0 //how many empty chambers in the cylinder until you hit a round
 	fire_sound = 'sound/effects/weapons/gun/fire2.ogg'
@@ -55,13 +55,13 @@
 	mod_weight = 0.7
 	mod_reach = 0.5
 	mod_handy = 1.0
-	fire_delay = 6.75 //Revolvers are naturally slower-firing
 
 /obj/item/gun/projectile/revolver/mateba
 	name = "mateba"
 	desc = "The Lumoco Arms HE Colt is a choice revolver for when you absolutely, positively need to put a hole in the other guy. Uses .50 ammo."
 	icon_state = "mateba"
 	caliber = CALIBER_50AE
+	fire_delay = 1.0 SECONDS
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	ammo_type = /obj/item/ammo_casing/a50
 
@@ -312,7 +312,7 @@
 	handle_casings = CYCLE_CASINGS
 	ammo_type = /obj/item/ammo_casing/grenade
 	max_shells = 6
-	fire_delay = 5
+	fire_delay = 1.2 SECONDS
 	fire_sound = 'sound/effects/weapons/misc/bloop.ogg'
 	one_hand_penalty = 3
 	starts_loaded = FALSE

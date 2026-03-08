@@ -75,7 +75,7 @@
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
 	one_hand_penalty = 0
 	max_shots = 8
-	fire_delay = 5.5
+	fire_delay = 2 SECONDS
 	projectile_type = /obj/item/projectile/bullet/pellet/accelerated/lesser
 	force = 8.5
 	mod_weight = 0.7

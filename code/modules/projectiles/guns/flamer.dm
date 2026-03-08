@@ -28,7 +28,7 @@
 	action_button_name = "Remove fuel tank"
 	var/last_use = 0
 	var/last_fired = 0
-	fire_delay = 35
+	fire_delay = 3.5 SECONDS
 	has_safety = FALSE
 	space_recoil = TRUE
 

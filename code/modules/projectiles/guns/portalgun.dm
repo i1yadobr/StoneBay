@@ -10,7 +10,7 @@
 	slot_flags = SLOT_BELT
 	origin_tech = list(TECH_MATERIAL = 7, TECH_BLUESPACE = 6, TECH_MAGNET = 5)
 	w_class = ITEM_SIZE_NORMAL
-	fire_delay = 2
+	fire_delay = 1 SECOND
 	fire_sound = 'sound/weapons/portalgun_blue.ogg'
 	fire_sound_text = "laser beam"
 	has_safety = FALSE
