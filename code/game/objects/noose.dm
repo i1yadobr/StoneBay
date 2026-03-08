@@ -283,7 +283,7 @@ GLOBAL_LIST_INIT(standing_objects, list(/obj/item/stool, /obj/structure/toilet, 
 
 		buckled_mob.adjustOxyLoss(3)
 		buckled_mob.silent = max(buckled_mob.silent, 10)
-		if(!(H.silent && !H.is_ic_dead()) && prob(10))
+		if(!(H.silent && !H.is_ic_dead() && !H.mind?.miming) && prob(10))
 			buckled_mob.emote("gasp")
 
 	set_next_think(world.time + 1 SECOND)

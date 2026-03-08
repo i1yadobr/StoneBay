@@ -139,7 +139,7 @@
 	if(!iscultist(user))
 		to_chat(user, "You can't mouth the arcane scratchings without fumbling over them.")
 		return
-	if(user.is_muzzled() || user.silent)
+	if(user.is_muzzled() || user.silent || user.mind?.miming)
 		to_chat(user, "You are unable to speak the words of the rune.")
 		return
 	if(GLOB.cult.powerless)

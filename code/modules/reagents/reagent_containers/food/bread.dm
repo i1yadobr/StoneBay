@@ -63,6 +63,8 @@
 	name = "Baguette"
 	desc = "Bon appetit!"
 	icon_state = "baguette"
+	item_state = "baguette"
+	slot_flags = SLOT_BELT
 	filling_color = "#e3d796"
 	center_of_mass = "x=18;y=12"
 	nutriment_desc = list("french bread" = 3)

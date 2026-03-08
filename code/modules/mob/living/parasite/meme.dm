@@ -254,12 +254,14 @@ be able to influence the host through various commands.
 	set name	 = "Mute (250)"
 	set desc     = "Prevents your host from talking for a while."
 
-	if(!src.host) return
+	if(!src.host)
+		return
 //	if(!host.speech_allowed)
 	if(host.silent)
 		to_chat(usr, "\red Your host already can't speak..")
 		return
-	if(!use_points(250)) return
+	if(!use_points(250))
+		return
 
 	spawn
 		// backup the host incase we switch hosts after using the verb
@@ -424,7 +426,7 @@ be able to influence the host through various commands.
 		return
 
 	// Find out whether we can speak
-	if (host.silent || (host.disabilities & 64))
+	if(host.silent || (host.disabilities & 64) || host.mind?.miming)
 		to_chat(src, "<b>Your host can't speak..</b>")
 		return
 
@@ -440,7 +442,8 @@ be able to influence the host through various commands.
 		to_chat(src, "<b>Your target already is possessed by something..</b>")
 		return
 
-	if(!use_points(750)) return
+	if(!use_points(750))
+		return
 
 	src.switch_host(target)
 

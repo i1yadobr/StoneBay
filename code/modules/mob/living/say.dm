@@ -200,7 +200,6 @@ var/list/channel_to_radio_key = new
 	if(message_data["stop_say"])
 		return message_data["say_result"]
 
-
 	var/list/handle_v = handle_speech_sound()
 	message_data["sound"] = handle_v[1]
 	message_data["sound_volume"] = handle_v[2]

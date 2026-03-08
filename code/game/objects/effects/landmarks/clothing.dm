@@ -168,7 +168,7 @@
 /obj/effect/landmark/costume/sexymime
 	spawn_paths = list(
 		/obj/item/clothing/mask/gas/sexymime,
-		/obj/item/clothing/under/sexymime,
+		/obj/item/clothing/under/rank/mime/sexy,
 	)
 
 /obj/effect/landmark/costume/random

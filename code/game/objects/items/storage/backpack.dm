@@ -128,6 +128,11 @@
 	desc = "It's a backpack made by Honk! Co."
 	icon_state = "clownpack"
 
+/obj/item/storage/backpack/mime
+	name = "Parcel Parceaux"
+	desc = "A silent backpack made for those silent workers. Silence Co."
+	icon_state = "mimepack"
+
 /obj/item/storage/backpack/medic
 	name = "medical backpack"
 	desc = "It's a backpack especially designed for use in a sterile environment."

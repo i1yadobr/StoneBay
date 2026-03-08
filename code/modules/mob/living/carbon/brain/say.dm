@@ -1,6 +1,6 @@
 //TODO: Convert this over for languages.
 /mob/living/carbon/brain/say(message)
-	if (silent)
+	if(silent || mind?.miming)
 		return
 
 	message = sanitize(message)

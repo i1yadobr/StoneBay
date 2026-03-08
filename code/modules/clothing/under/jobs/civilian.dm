@@ -304,5 +304,18 @@
 /obj/item/clothing/under/rank/mime
 	name = "mime's outfit"
 	desc = "It's not very colourful."
-	icon_state = "mime" //TODO: Draw a normal sprite, since the current one smells legacy-like, and only then add skirt and dress versions.
+	icon_state = "mime"
 	item_state = "mime"
+
+/obj/item/clothing/under/rank/mime/skirt
+	name = "mime's skirt"
+	icon_state = "mime_skirt"
+	item_state = "mime_skirt"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/rank/mime/sexy
+	name = "mime's sexy outfit"
+	desc = "The only time when you DON'T enjoy looking at someone's rack."
+	icon_state = "mime_sexy"
+	item_state = "mime_sexy"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS

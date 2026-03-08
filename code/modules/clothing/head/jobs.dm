@@ -191,10 +191,13 @@
 	desc = "A simple, solid color beret. This one has no emblems or insignia on it."
 	icon_state = "beret_white"
 
-/obj/item/clothing/head/beret/classique
-	name = "classic beret"
+/obj/item/clothing/head/beret/mime
+	name = "red beret"
 	desc = "For artists only!"
-	icon_state = "beret_classique"
+
+/obj/item/clothing/head/beret/mime/black
+	name = "black beret"
+	icon_state = "beret_black"
 
 //iogacool 's custom item
 /obj/item/clothing/head/beret/sec/tactical
