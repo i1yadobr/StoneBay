@@ -34,7 +34,7 @@
 	icon_state = "secureclown1"
 	icon_closed = "secureclown"
 	icon_locked = "secureclown1"
-	icon_opened = "secureclowneopen"
+	icon_opened = "secureclownopen"
 	icon_off = "secureclownoff"
 	req_access = list(access_clown)
 
