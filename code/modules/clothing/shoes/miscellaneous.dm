@@ -132,28 +132,44 @@
 	name = "orange sandals"
 	color = "#f9863e"
 
-
 /obj/item/clothing/shoes/clown_shoes
-	desc = "The prankster's standard-issue clowning shoes. Damn they're huge!"
 	name = "clown shoes"
-	icon_state = "clown"
+	desc = "The prankster's standard-issue clowning shoes. Damn they're huge!"
+	icon_state = "clown_shoes"
+	item_state = "clown_shoes"
 	force = 0
-	var/footstep = 1	//used for squeeks whilst walking
 	species_restricted = null
 	siemens_coefficient = 0.5 // these things are kinda rubberish, aint they?
-
 	armor = list(melee = 35, bullet = 35, laser = 35, energy = 15, bomb = 25, bio = 30)
-
-	item_state_slots = list(
-		slot_l_hand_str = "clown_shoes",
-		slot_r_hand_str = "clown_shoes",
-		)
+	var/enabled_waddle = TRUE
+	var/footstep = 1	//used for squeeks whilst walking
 
 /obj/item/clothing/shoes/clown_shoes/New()
 	..()
 	slowdown_per_slot[slot_shoes]  = 0
 
+/obj/item/clothing/shoes/clown_shoes/attack_self(mob/user)
+	if(!enabled_waddle)
+		to_chat(user, SPAN("notice", "You switch off the waddle dampeners!"))
+		enabled_waddle = TRUE
+	else
+		to_chat(user, SPAN("notice", "You switch on the waddle dampeners!"))
+		enabled_waddle = FALSE
+
+/obj/item/clothing/shoes/clown_shoes/equipped(mob/user, slot)
+	. = ..()
+	if(slot == slot_shoes)
+		if(enabled_waddle)
+			user.AddElement(/datum/element/waddling)
+
+/obj/item/clothing/shoes/clown_shoes/dropped(mob/user, changing_slots)
+	. = ..()
+	user.RemoveElement(/datum/element/waddling)
+
 /obj/item/clothing/shoes/clown_shoes/handle_movement(turf/walking, running)
+	var/mob/living/carbon/Clown = usr
+	if(Clown.lying)
+		return
 	if(running)
 		if(footstep >= 2)
 			footstep = 0
@@ -162,6 +178,16 @@
 			footstep++
 	else
 		playsound(src, SFX_CLOWN, 20, 1)
+
+/obj/item/clothing/shoes/clown_shoes/jester
+	name = "jester shoes"
+	desc = "A court jester's shoes, updated with modern squeaking technology."
+	icon_state = "jester"
+	item_state = "jester"
+
+/obj/item/clothing/shoes/clown_shoes/jester/alt
+	icon_state = "jester_alt"
+	item_state = "jester_alt"
 
 /obj/item/clothing/shoes/clown_shoes/traitorshoes
 	desc = "The prankster's standard-issue clowning shoes. Damn they're huge! Also, it seems like they have extra hole for something."

@@ -62,13 +62,6 @@
 	icon_state = "mailman"
 	item_state = "mailman"
 
-/obj/item/clothing/under/sexyclown
-	name = "sexy-clown suit"
-	desc = "It makes you look HONKable!"
-	icon_state = "sexyclown"
-	item_state = "sexyclown"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-
 /obj/item/clothing/under/rank/vice
 	name = "vice officer's jumpsuit"
 	desc = "It's the standard issue pretty-boy outfit, as seen on Holo-Vision."

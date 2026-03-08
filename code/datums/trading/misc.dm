@@ -93,7 +93,7 @@
 								/obj/item/clothing/mask/gas/mime 							= TRADER_THIS_TYPE,
 								/obj/item/clothing/shoes/clown_shoes 						= TRADER_THIS_TYPE,
 								/obj/item/clothing/under/rank/clown 						= TRADER_THIS_TYPE,
-								/obj/item/clothing/under/sexyclown 							= TRADER_THIS_TYPE,
+								/obj/item/clothing/under/rank/clown/sexy 				= TRADER_THIS_TYPE,
 								/obj/item/clothing/under/rank/mime 							= TRADER_THIS_TYPE,
 								/obj/item/clothing/under/rank/mime/sexy						= TRADER_THIS_TYPE,
 								/obj/item/device/pda/clown 									= TRADER_THIS_TYPE,

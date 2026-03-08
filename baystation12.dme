@@ -374,6 +374,7 @@
 #include "code\datums\elements\point_of_interest.dm"
 #include "code\datums\elements\preview.dm"
 #include "code\datums\elements\simple_rotation.dm"
+#include "code\datums\elements\waddling.dm"
 #include "code\datums\events\brand_intelligence.dm"
 #include "code\datums\events\camera_damage.dm"
 #include "code\datums\events\carp_migration.dm"

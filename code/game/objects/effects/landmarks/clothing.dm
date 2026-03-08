@@ -162,7 +162,7 @@
 /obj/effect/landmark/costume/sexyclown
 	spawn_paths = list(
 		/obj/item/clothing/mask/gas/sexyclown,
-		/obj/item/clothing/under/sexyclown,
+		/obj/item/clothing/under/rank/clown/sexy,
 	)
 
 /obj/effect/landmark/costume/sexymime
