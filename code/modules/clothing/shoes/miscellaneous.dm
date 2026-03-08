@@ -162,9 +162,10 @@
 		if(enabled_waddle)
 			user.AddElement(/datum/element/waddling)
 
-/obj/item/clothing/shoes/clown_shoes/dropped(mob/user, changing_slots)
+/obj/item/clothing/shoes/clown_shoes/dropped(mob/user, slot, changing_slots)
 	. = ..()
-	user.RemoveElement(/datum/element/waddling)
+	if(slot)
+		user.RemoveElement(/datum/element/waddling)
 
 /obj/item/clothing/shoes/clown_shoes/handle_movement(turf/walking, running)
 	var/mob/living/carbon/Clown = usr
