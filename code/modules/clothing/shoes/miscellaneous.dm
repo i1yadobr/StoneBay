@@ -168,8 +168,8 @@
 		user.RemoveElement(/datum/element/waddling)
 
 /obj/item/clothing/shoes/clown_shoes/handle_movement(turf/walking, running)
-	var/mob/living/carbon/Clown = usr
-	if(Clown.lying)
+	var/mob/living/carbon/Wearer = usr
+	if(Wearer.lying)
 		return
 	if(running)
 		if(footstep >= 2)
