@@ -442,7 +442,7 @@
 	var/mode = 1 //1 - gravsling 2 - gravpush
 
 	var/last_fired = 0  //Concept stolen from guns.
-	var/fire_delay = 10 //Used to prevent spam-brute against humans.
+	var/fire_delay = 1 SECOND //Used to prevent spam-brute against humans.
 
 /obj/item/mecha_parts/mecha_equipment/gravcatapult/action(atom/movable/target)
 	if(world.time >= last_fired + fire_delay)

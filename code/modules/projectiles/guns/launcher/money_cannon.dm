@@ -17,7 +17,7 @@
 	w_class = ITEM_SIZE_SMALL
 	release_force = 80
 	fire_sound_text = "a whoosh and a crisp, papery rustle"
-	fire_delay = 1
+	fire_delay = 1 SECOND
 	fire_sound = 'sound/effects/weapons/misc/money_launcher.ogg'
 	mod_weight = 0.7
 	mod_reach = 0.5

@@ -82,7 +82,7 @@
 	wielded_item_state = "crossbow-solid-wielded"
 	fire_sound = 'sound/weapons/punchmiss.ogg' // TODO: Decent THWOK noise.
 	fire_sound_text = "a solid thunk"
-	fire_delay = 25
+	fire_delay = 2.5 SECONDS
 	mod_weight = 1.0
 	mod_reach = 0.8
 	mod_handy = 1.0

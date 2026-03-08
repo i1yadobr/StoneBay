@@ -319,7 +319,7 @@
 		var/target_zone = ran_zone(check_zone(user.zone_sel.selecting, target))
 		var/obj/item/organ/external/affecting = H.get_organ(target_zone)
 
-		if (!affecting || affecting.is_stump())
+		if(!affecting || affecting.is_stump())
 			to_chat(user, SPAN_DANGER("They are missing that limb!"))
 			return
 
@@ -331,8 +331,9 @@
 		if(target != user && H.get_flat_armor(target_zone, "melee") > 5 && prob(50))
 			for(var/mob/O in viewers(world.view, user))
 				O.show_message((SPAN_DANGER("[user] tries to stab [target] in \the [hit_area] with [src.name], but the attack is deflected by armor!")), 1)
-			qdel(src)
 
+			user.do_attack_animation(target)
+			break_syringe(null, user)
 			admin_attack_log(user, target, "Attacked using \a [src]", "Was attacked with \a [src]", "used \a [src] to attack")
 			return
 
@@ -348,7 +349,8 @@
 	var/syringestab_amount_transferred = rand(0, (reagents.total_volume - 5)) //nerfed by popular demand
 	var/contained_reagents = reagents.get_reagents()
 	var/trans = reagents.trans_to_mob(target, syringestab_amount_transferred, CHEM_BLOOD)
-	if(isnull(trans)) trans = 0
+	if(isnull(trans))
+		trans = 0
 	admin_inject_log(user, target, src, contained_reagents, trans, violent=1)
 	break_syringe(target, user)
 
