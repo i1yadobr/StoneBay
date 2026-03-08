@@ -43,6 +43,10 @@
 	if(mind?.wizard?.lich)
 		mind.wizard.escape_to_lich(mind)
 
+	// Let's give the mime a chance to speak after death?
+	if(mind?.miming)
+		mind.miming = FALSE
+
 	BITSET(hud_updateflag, HEALTH_HUD)
 	BITSET(hud_updateflag, STATUS_HUD)
 	BITSET(hud_updateflag, LIFE_HUD)

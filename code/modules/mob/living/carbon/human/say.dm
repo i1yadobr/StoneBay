@@ -160,7 +160,7 @@
 	return verb
 
 /mob/living/carbon/human/handle_speech_problems(list/message_data)
-	if(silent || (sdisabilities & MUTE))
+	if(silent || (sdisabilities & MUTE) || mind?.miming)
 		message_data["message"] = ""
 		return TRUE
 	if(should_have_organ(BP_TONGUE) && !(message_data["language"]?.language_flags & (NONVERBAL|SIGNLANG)))

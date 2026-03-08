@@ -10,7 +10,7 @@
 	open_sound = null
 	close_sound = null
 
-/obj/structure/closet/secure_closet/medical1/WillContain()
+/obj/structure/closet/secure_closet/mime/WillContain()
 	return list(
 		/obj/item/clothing/head/soft/mime,
 		/obj/item/clothing/head/beret/mime,
