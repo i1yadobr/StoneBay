@@ -190,3 +190,32 @@
 		/obj/item/clothing/shoes/leather,
 		/obj/item/clothing/shoes/brown
 	)
+
+// TODO: Add cool and funny glasses for clown
+/obj/item/storage/garment/clown
+	name = "clown's garment bag"
+	desc = "A bag for storing multiple clothig items in a better and convenient way! This one belongs to the <i>'HONK!'</i>."
+
+	icon_state = "garment_yellow"
+	item_state = "garment_yellow"
+
+	startswith = list(
+		/obj/item/clothing/mask/gas/clown_hat,
+		/obj/item/clothing/mask/gas/clown_hat/rainbow,
+		/obj/item/clothing/mask/gas/clown_hat/dealer,
+		/obj/item/clothing/mask/gas/sexyclown,
+		/obj/item/clothing/under/rank/clown,
+		/obj/item/clothing/under/rank/clown/blue,
+		/obj/item/clothing/under/rank/clown/green,
+		/obj/item/clothing/under/rank/clown/yellow,
+		/obj/item/clothing/under/rank/clown/purple,
+		/obj/item/clothing/under/rank/clown/orange,
+		/obj/item/clothing/under/rank/clown/rainbow,
+		/obj/item/clothing/under/rank/clown/jester,
+		/obj/item/clothing/under/rank/clown/jesteralt,
+		/obj/item/clothing/under/rank/clown/sexy,
+		/obj/item/clothing/gloves/rainbow,
+		/obj/item/clothing/shoes/clown_shoes,
+		/obj/item/clothing/shoes/clown_shoes/jester,
+		/obj/item/clothing/shoes/clown_shoes/jester/alt
+	)

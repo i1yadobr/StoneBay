@@ -127,14 +127,18 @@
 /obj/item/clothing/mask/gas/clown_hat
 	name = "clown wig and mask"
 	desc = "A true prankster's facial attire. A clown is incomplete without their wig and mask."
+	// TODO: Draw a normal sprite for Vox, and draw subtype for them
 	icon_state = "clown"
 	item_state = "clown"
 	istinted = 0
 
-	item_state_slots = list(
-		slot_l_hand_str = "clown_hat",
-		slot_r_hand_str = "clown_hat",
-		)
+/obj/item/clothing/mask/gas/clown_hat/rainbow
+	icon_state = "rainbowclown"
+	item_state = "rainbowclown"
+
+/obj/item/clothing/mask/gas/clown_hat/dealer
+	icon_state = "dealer"
+	item_state = "dealer"
 
 /obj/item/clothing/mask/gas/sexyclown
 	name = "sexy-clown wig and mask"

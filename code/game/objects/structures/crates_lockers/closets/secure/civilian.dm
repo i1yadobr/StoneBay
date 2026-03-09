@@ -28,3 +28,23 @@
 		/obj/item/reagent_containers/vessel/bottle/bottleofnothing,
 		/obj/item/cane
 	)
+
+/obj/structure/closet/secure_closet/clown
+	name = "clown's locker"
+	icon_state = "secureclown1"
+	icon_closed = "secureclown"
+	icon_locked = "secureclown1"
+	icon_opened = "secureclownopen"
+	icon_off = "secureclownoff"
+	req_access = list(access_clown)
+
+/obj/structure/closet/secure_closet/clown/WillContain()
+	return list(
+		/obj/item/storage/garment/clown,
+		/obj/item/storage/backpack/clown,
+		/obj/item/device/radio/headset,
+		/obj/item/reagent_containers/spray/waterflower,
+		/obj/item/seeds/bananaseed,
+		/obj/item/bikehorn,
+		/obj/item/pen/crayon/rainbow
+	)
