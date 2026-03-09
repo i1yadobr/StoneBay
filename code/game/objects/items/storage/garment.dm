@@ -206,6 +206,7 @@
 		/obj/item/clothing/mask/gas/sexyclown,
 		/obj/item/clothing/under/rank/clown,
 		/obj/item/clothing/under/rank/clown/blue,
+		/obj/item/clothing/under/rank/clown/green,
 		/obj/item/clothing/under/rank/clown/yellow,
 		/obj/item/clothing/under/rank/clown/purple,
 		/obj/item/clothing/under/rank/clown/orange,
@@ -216,5 +217,5 @@
 		/obj/item/clothing/gloves/rainbow,
 		/obj/item/clothing/shoes/clown_shoes,
 		/obj/item/clothing/shoes/clown_shoes/jester,
-		/obj/item/clothing/shoes/clown_shoes/jester/alt,
+		/obj/item/clothing/shoes/clown_shoes/jester/alt
 	)
