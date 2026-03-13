@@ -596,6 +596,8 @@ var/global/list/damage_icon_parts = list()
 	if(update_icons)
 		queue_icon_update()
 
+// TODO: Change the layer order. Make sure that the items on the back do not overlap the helmet sprites
+// In any case, the spacesuit helmets are rendered on top of the jetpacks, which looks awkward
 // Back
 /mob/living/carbon/human/update_inv_back(update_icons = TRUE)
 	if(back)
