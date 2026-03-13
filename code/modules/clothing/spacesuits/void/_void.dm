@@ -1,4 +1,3 @@
-//NASA Voidsuit
 /obj/item/clothing/head/helmet/space/void
 	name = "void helmet"
 	desc = "A high-tech dark red space suit helmet. Used for AI satellite maintenance."
@@ -24,12 +23,12 @@
 
 /obj/item/clothing/suit/space/void
 	name = "voidsuit"
+	desc = "A high-tech dark red space suit. Used for AI satellite maintenance."
 	icon_state = "voidsuit"
 	item_state = "voidsuit"
-	w_class = ITEM_SIZE_HUGE//bulky item
-	desc = "A high-tech dark red space suit. Used for AI satellite maintenance."
+	w_class = ITEM_SIZE_HUGE //bulky item
 	armor = list(melee = 40, bullet = 20, laser = 35,energy = 15, bomb = 35, bio = 100)
-	allowed = list(/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit)
+	allowed = list(/obj/item/device/flashlight, /obj/item/tank, /obj/item/device/suit_cooling_unit)
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0.4
@@ -111,13 +110,14 @@ else if(##equipment_var) {\
 
 	var/mob/living/carbon/human/H = M
 
-	if(!istype(H)) return
+	if(!istype(H))
+		return
 
 	if(H.wear_suit != src)
 		return
 
 	if(boots)
-		if (H.equip_to_slot_if_possible(boots, slot_shoes))
+		if(H.equip_to_slot_if_possible(boots, slot_shoes))
 			boots.canremove = 0
 
 	if(helmet)
@@ -166,7 +166,8 @@ else if(##equipment_var) {\
 	set category = "Object"
 	set src in usr
 
-	if(!istype(src.loc,/mob/living)) return
+	if(!istype(src.loc, /mob/living))
+		return
 
 	if(!helmet)
 		to_chat(usr, "There is no helmet installed.")
@@ -174,9 +175,12 @@ else if(##equipment_var) {\
 
 	var/mob/living/carbon/human/H = usr
 
-	if(!istype(H)) return
-	if(H.incapacitated()) return
-	if(H.wear_suit != src) return
+	if(!istype(H))
+		return
+	if(H.incapacitated())
+		return
+	if(H.wear_suit != src)
+		return
 
 	if(H.head == helmet)
 		to_chat(H, SPAN("notice", "You retract your suit helmet."))
@@ -198,7 +202,8 @@ else if(##equipment_var) {\
 	set category = "Object"
 	set src in usr
 
-	if(!istype(src.loc,/mob/living)) return
+	if(!istype(src.loc, /mob/living))
+		return
 
 	if(!tank)
 		to_chat(usr, "There is no tank inserted.")
@@ -206,9 +211,12 @@ else if(##equipment_var) {\
 
 	var/mob/living/carbon/human/H = usr
 
-	if(!istype(H)) return
-	if(H.incapacitated()) return
-	if(H.wear_suit != src) return
+	if(!istype(H))
+		return
+	if(H.incapacitated())
+		return
+	if(H.wear_suit != src)
+		return
 
 	to_chat(H, SPAN("info", "You press the emergency release, ejecting \the [tank] from your suit."))
 	tank.canremove = TRUE
@@ -217,9 +225,10 @@ else if(##equipment_var) {\
 
 /obj/item/clothing/suit/space/void/attackby(obj/item/W as obj, mob/user as mob)
 
-	if(!istype(user,/mob/living)) return
+	if(!istype(user, /mob/living))
+		return
 
-	if(istype(W,/obj/item/clothing/accessory) || istype(W, /obj/item/hand_labeler))
+	if(istype(W, /obj/item/clothing/accessory) || istype(W, /obj/item/hand_labeler))
 		return ..()
 
 	if(user.get_inventory_slot(src) == slot_wear_suit)
@@ -229,7 +238,8 @@ else if(##equipment_var) {\
 	if(isScrewdriver(W))
 		if(helmet || boots || tank)
 			var/choice = input("What component would you like to remove?") as null|anything in list(helmet,boots,tank)
-			if(!choice) return
+			if(!choice)
+				return
 
 			if(choice == tank)	//No, a switch doesn't work here. Sorry. ~Techhead
 				to_chat(user, "You pop \the [tank] out of \the [src]'s storage compartment.")
