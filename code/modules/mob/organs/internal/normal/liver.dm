@@ -61,13 +61,9 @@
 
 	update_coagulation()
 
-	if(germ_level > INFECTION_LEVEL_ONE)
-		if(prob(1))
-			to_chat(owner, SPAN("danger", "Your skin itches."))
-	if(germ_level > INFECTION_LEVEL_TWO)
-		if(prob(1))
-			spawn owner.vomit()
-
+<<<<<<< HEAD
+=======
+>>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 	// Update the filtering efficiency of the liver.
 	filtering_efficiency = 3
 	// Not enough to cease functions, but works at reduced efficiency..
