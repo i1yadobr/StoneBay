@@ -131,7 +131,7 @@
 
 	startswith = list(
 		/obj/item/stack/medical/gel/brute,
-		/obj/item/stack/medical/gel/ointment,
+		/obj/item/stack/medical/gel/burn,
 		/obj/item/storage/pill_bottle/tricordrazine,
 		/obj/item/storage/pill_bottle/bicaridine,
 		/obj/item/storage/pill_bottle/dermaline,
