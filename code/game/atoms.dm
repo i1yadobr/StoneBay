@@ -673,7 +673,7 @@ its easier to just keep the beam vertical.
 //
 // MouseDrop_T of the base atom type makes living mob user climb the current atom if they atom is climbable,
 // user can climb the atom and mob/target is the user.
-/atom/proc/MouseDrop_T(mob/target, mob/user)
+/atom/proc/MouseDrop_T(mob/target, mob/user, params)
 	var/mob/living/H = user
 	if(istype(H) && can_climb(H) && target == user)
 		do_climb(target)

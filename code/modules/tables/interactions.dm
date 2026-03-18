@@ -63,8 +63,14 @@
 
 
 /obj/structure/table/MouseDrop_T(obj/O, mob/user, params)
-	if(!istype(O, /obj/item))
+	if(can_reinforce && (!user.stat) && istype(O, /obj/item/stack/material) && user.has_in_hands(O))
+		reinforce_table(O, user)
+	else if(!slide_object(O, user, params))
 		return ..()
+
+/obj/structure/table/proc/slide_object(obj/O, mob/living/user, params)
+	if(!istype(O, /obj/item))
+		return FALSE
 
 	if(O.anchored)
 		return FALSE
@@ -87,9 +93,32 @@
 	if(do_slide)
 		O.forceMove(loc)
 		auto_align(O, params)
+		return TRUE
+
+	return FALSE
+
+/obj/structure/table/proc/reinforce_table(obj/item/stack/material/S, mob/user)
+	if(reinforced)
+		to_chat(user, SPAN("warning", "\The [src] is already reinforced!"))
 		return
 
-	return ..()
+	if(!can_reinforce)
+		to_chat(user, SPAN("warning", "\The [src] cannot be reinforced!"))
+		return
+
+	if(!material)
+		to_chat(user, SPAN("warning", "Plate \the [src] before reinforcing it!"))
+		return
+
+	if(flipped)
+		to_chat(user, SPAN("warning", "Put \the [src] back in place before reinforcing it!"))
+		return
+
+	reinforced = common_material_add(S, user, "reinforc")
+	if(reinforced)
+		update_desc()
+		update_icon()
+		update_material()
 
 /obj/structure/table/attack_hand(mob/user as mob)
 	if(ishuman(user))
