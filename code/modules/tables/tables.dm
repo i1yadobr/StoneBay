@@ -178,35 +178,6 @@
 
 	return ..()
 
-/obj/structure/table/MouseDrop_T(obj/item/stack/material/what)
-	if(can_reinforce && isliving(usr) && (!usr.stat) && istype(what) && usr.get_clicking_hand() == what && Adjacent(usr))
-		reinforce_table(what, usr)
-	else
-		return ..()
-
-/obj/structure/table/proc/reinforce_table(obj/item/stack/material/S, mob/user)
-	if(reinforced)
-		to_chat(user, SPAN("warning", "\The [src] is already reinforced!"))
-		return
-
-	if(!can_reinforce)
-		to_chat(user, SPAN("warning", "\The [src] cannot be reinforced!"))
-		return
-
-	if(!material)
-		to_chat(user, SPAN("warning", "Plate \the [src] before reinforcing it!"))
-		return
-
-	if(flipped)
-		to_chat(user, SPAN("warning", "Put \the [src] back in place before reinforcing it!"))
-		return
-
-	reinforced = common_material_add(S, user, "reinforc")
-	if(reinforced)
-		update_desc()
-		update_icon()
-		update_material()
-
 /obj/structure/table/proc/update_desc()
 	if(material)
 		name = "[material.display_name] table"
