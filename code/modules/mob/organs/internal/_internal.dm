@@ -27,7 +27,7 @@
 	if(owner)
 		var/obj/item/organ/external/E = owner.get_organ(parent_organ)
 		if(!E)
-			warning("[src] spawned in [owner] without a parent organ: [parent_organ].")
+			log_debug("[src] spawned in [owner] without a parent organ: [parent_organ].")
 			return INITIALIZE_HINT_QDEL
 
 		E.internal_organs |= src
