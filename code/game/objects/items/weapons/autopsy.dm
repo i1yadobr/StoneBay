@@ -180,7 +180,7 @@
 	if(!S)
 		to_chat(usr, SPAN("warning", "You can't scan this body part."))
 		return
-	if(!S.open())
+	if(!S.is_surgically_open(FALSE))
 		to_chat(usr, SPAN("warning", "You have to cut [S] open first!"))
 		return
 	M.visible_message(SPAN("notice", "\The [user] scans the wounds on [M]'s [S.name] with [src]"))

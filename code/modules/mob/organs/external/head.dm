@@ -4,8 +4,8 @@
 	icon_name = "head"
 	name = "head"
 	slot_flags = SLOT_BELT
-	max_damage = 75
-	min_broken_damage = 40
+	max_damage = 80
+	min_broken_damage = 45
 	w_class = ITEM_SIZE_NORMAL
 	body_part = HEAD
 	parent_organ = BP_CHEST
@@ -27,10 +27,6 @@
 	var/list/forehead_stamps = list()
 
 	var/skull_path = /obj/item/skull
-
-/obj/item/organ/external/head/New()
-		. = ..()
-		forehead_stamps = list()
 
 /obj/item/organ/external/head/droplimb(clean, disintegrate = DROPLIMB_EDGE, ignore_children, silent)
 	if(BP_IS_ROBOTIC(src) && disintegrate == DROPLIMB_BURN)

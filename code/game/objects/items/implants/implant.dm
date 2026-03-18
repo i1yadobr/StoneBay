@@ -1,7 +1,6 @@
 #define MALFUNCTION_TEMPORARY 1
 #define MALFUNCTION_PERMANENT 2
 
-
 /obj/item/implant
 	name = "implant"
 	icon = 'icons/obj/device.dmi'
@@ -20,6 +19,7 @@
 
 /obj/item/implant/Destroy()
 	GLOB.implants_list -= src
+	removed()
 	return ..()
 
 /obj/item/implant/proc/trigger(emote, source)
@@ -45,16 +45,19 @@
 	return TRUE
 
 /obj/item/implant/proc/implant_in_mob(mob/M, target_zone)
-	if (ishuman(M))
+	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
 		var/obj/item/organ/external/affected = H.get_organ(target_zone)
 		if(affected)
 			affected.implants += src
 			part = affected
-
+			forceMove(affected)
+		else
+			return FALSE
 		BITSET(H.hud_updateflag, IMPLOYAL_HUD)
+	else
+		forceMove(M)
 
-	forceMove(M)
 	imp_in = M
 	implanted = 1
 	implanted(M)
@@ -63,7 +66,7 @@
 
 /obj/item/implant/proc/removed()
 	imp_in = null
-	if(part)
+	if(istype(part))
 		part.implants -= src
 		part = null
 	implanted = 0
@@ -89,7 +92,7 @@
 
 /obj/item/implant/proc/meltdown()	//breaks it down, making implant unrecongizible
 	to_chat(imp_in, SPAN("warning", "You feel something melting inside [part ? "your [part.name]" : "you"]!"))
-	if (part)
+	if(part)
 		part.take_external_damage(burn = 15, used_weapon = "Electronics meltdown")
 	else
 		var/mob/living/M = imp_in
@@ -98,8 +101,3 @@
 	desc = "Charred circuit in melted plastic case. Wonder what that used to be..."
 	icon_state = "implant_melted"
 	malfunction = MALFUNCTION_PERMANENT
-
-/obj/item/implant/Destroy()
-	if(part)
-		part.implants.Remove(src)
-	return ..()

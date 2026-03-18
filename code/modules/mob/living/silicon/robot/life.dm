@@ -158,9 +158,9 @@
 	if(client)
 		switch(sensor_mode)
 			if(SEC_VISION)
-				process_sec_hud(src, 1)
+				process_sec_hud(src, TRUE, src)
 			if(MED_VISION)
-				process_med_hud(src, 1)
+				process_med_hud(src, TRUE, src)
 
 		if(syndicate)
 			for(var/datum/mind/traitor_mind in GLOB.traitors.current_antagonists)

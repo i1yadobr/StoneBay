@@ -14,10 +14,10 @@
 	handle_regular_hud_updates()
 
 	if(src.secHUD == 1)
-		process_sec_hud(src, 1)
+		process_sec_hud(src, TRUE, src)
 
 	if(src.medHUD == 1)
-		process_med_hud(src, 1)
+		process_med_hud(src, TRUE, src)
 
 	if(silence_time)
 		if(world.timeofday >= silence_time)

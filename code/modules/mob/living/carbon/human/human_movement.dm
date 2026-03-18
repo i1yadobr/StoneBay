@@ -8,7 +8,7 @@
 	if(istype(loc, /turf/space))
 		return (. + human_delay) // It's hard to be slowed down in space by... anything. Except for your shitty physical body restrictions.
 
-	if(embedded_flag || (stomach_contents && stomach_contents.len))
+	if(embedded_flag || (LAZYLEN(stomach_contents)))
 		handle_embedded_and_stomach_objects() //Moving with objects stuck in you can cause bad times.
 
 	for(var/M in mutations)

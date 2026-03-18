@@ -225,8 +225,7 @@
 	icon_state = "comfychair_red_preview"
 
 /obj/structure/bed/chair/comfy/red/New(newloc, newmaterial)
-	..(newloc, MATERIAL_STEEL, MATERIAL_CARPET)
-
+	..(newloc, MATERIAL_STEEL, "red")
 
 /obj/structure/bed/chair/comfy/teal
 	icon_state = "comfychair_teal_preview"
@@ -390,7 +389,7 @@
 	base_icon_state = "shuttle_chaired"
 
 /obj/structure/bed/chair/shuttle/red/New(newloc, newmaterial)
-	..(newloc, MATERIAL_PLASTIC, MATERIAL_CARPET)
+	..(newloc, MATERIAL_PLASTIC, "red")
 
 /obj/structure/bed/chair/shuttle/black
 	icon_state = "shuttle_chairbl_preview"
@@ -404,7 +403,7 @@
 	..(newloc, MATERIAL_STEEL, MATERIAL_LEATHER)
 
 /obj/structure/bed/chair/red/New(newloc, newmaterial)
-	..(newloc, MATERIAL_STEEL, MATERIAL_CARPET)
+	..(newloc, MATERIAL_STEEL, "red")
 
 /obj/structure/bed/chair/teal/New(newloc, newmaterial)
 	..(newloc, MATERIAL_STEEL,"teal")

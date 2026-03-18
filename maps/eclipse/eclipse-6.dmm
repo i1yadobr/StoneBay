@@ -549,7 +549,7 @@
 "kD" = (/obj/structure/table/standard,/obj/item/paper_bin,/obj/item/tape_roll,/turf/simulated/floor/tiled,/area/outpost/research/isolation_monitoring)
 "kE" = (/obj/structure/table/standard,/obj/item/device/taperecorder,/turf/simulated/floor/tiled,/area/outpost/research/isolation_monitoring)
 "kF" = (/obj/structure/table/standard,/obj/item/device/camera,/obj/machinery/button/remote/blast_door{id = "anomaly_isolation_lockdown"; name = "Anomaly Lab Lockdown"},/turf/simulated/floor/tiled,/area/outpost/research/isolation_monitoring)
-"kG" = (/obj/structure/closet/medical_wall{pixel_x = 28},/obj/effect/floor_decal/corner/purple/diagonal,/obj/item/stack/medical/bruise_pack,/obj/item/stack/medical/bruise_pack,/obj/item/stack/medical/ointment,/obj/item/stack/medical/ointment,/turf/simulated/floor/tiled,/area/outpost/research/isolation_monitoring)
+"kG" = (/obj/structure/closet/medical_wall{pixel_x = 28},/obj/effect/floor_decal/corner/purple/diagonal,/obj/item/stack/medical/bandage,/obj/item/stack/medical/bandage,/obj/item/stack/medical/ointment,/obj/item/stack/medical/ointment,/turf/simulated/floor/tiled,/area/outpost/research/isolation_monitoring)
 "kH" = (/obj/machinery/light{dir = 8},/obj/machinery/atmospherics/pipe/simple/hidden/supply,/turf/simulated/floor/plating,/area/outpost/research/emergency_storage)
 "kI" = (/obj/machinery/atmospherics/unary/vent_pump/on{dir = 1},/turf/simulated/floor/tiled/dark,/area/outpost/research/emergency_storage)
 "kJ" = (/turf/simulated/floor/tiled/dark,/area/outpost/research/emergency_storage)

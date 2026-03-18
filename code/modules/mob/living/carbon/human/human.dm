@@ -72,13 +72,14 @@
 
 /mob/living/carbon/human/Destroy()
 	GLOB.human_mob_list -= src
-	worn_underwear = null
-	QDEL_NULL_LIST(organs)
-	QDEL_NULL_LIST(stance_limbs)
-	QDEL_NULL_LIST(grasp_limbs)
-	QDEL_NULL_LIST(bad_external_organs)
 
+	QDEL_NULL_LIST(worn_underwear)
 	QDEL_LIST_ASSOC(hud_list)
+
+	// carbon/Destroy() will handle qdeling the organs, let's just clear the lists.
+	stance_limbs.Cut()
+	grasp_limbs.Cut()
+	bad_external_organs.Cut()
 
 	QDEL_NULL(vessel)
 	return ..()
@@ -952,12 +953,6 @@
 		return NEUTER
 	return ..()
 
-/mob/living/carbon/human/proc/increase_germ_level(n)
-	if(gloves)
-		gloves.germ_level += n
-	else
-		germ_level += n
-
 /mob/living/carbon/human/revive(ignore_prosthetic_prefs = FALSE)
 	if(should_have_organ(BP_HEART))
 		vessel.add_reagent(/datum/reagent/blood, species.blood_volume - vessel.total_volume)
@@ -1016,40 +1011,42 @@
 	if(gloves)
 		if(gloves.clean_blood())
 			update_inv_gloves(0)
-		gloves.germ_level = 0
 	else
 		if(!isnull(bloody_hands))
 			bloody_hands = null
 			update_inv_gloves(0)
-		germ_level = 0
 	update_icons()	//apply the now updated overlays to the mob
 
 /mob/living/carbon/human/get_visible_implants(class = 0)
 	var/list/visible_implants = ..()
 
-	for(var/obj/item/organ/external/organ in src.organs)
+	for(var/obj/item/organ/external/organ in organs)
 		for(var/obj/item/O in organ.implants)
-			if(!istype(O,/obj/item/implant) && (O.w_class > class) && !istype(O,/obj/item/material/shard/shrapnel))
+			if(!istype(O,/obj/item/implant) && (O.w_class > class) && !istype(O, /obj/item/material/shard/shrapnel))
 				visible_implants += O
 
-	return(visible_implants)
+	return visible_implants
 
-/mob/living/carbon/human/embedded_needs_process()
-	for(var/obj/item/organ/external/organ in src.organs)
-		for(var/obj/item/O in organ.implants)
-			if(!istype(O, /obj/item/implant)) //implant type items do not cause embedding effects, see handle_embedded_objects()
-				return 1
-	return 0
+/mob/living/carbon/human/get_embedded_objects(class = 0)
+	var/list/embedded_objects = ..()
+
+	for(var/obj/item/organ/external/organ in organs)
+		for(var/obj/O in organ.embedded_objects)
+			if((O.w_class <= class) || istype(O,/obj/item/material/shard/shrapnel))
+				continue
+			embedded_objects += O
+
+	return embedded_objects
 
 /mob/living/carbon/human/proc/handle_embedded_and_stomach_objects()
 	for(var/obj/item/organ/external/organ in src.organs)
 		if(organ.splinted)
 			continue
 		for(var/obj/item/O in organ.implants)
-			if(!istype(O,/obj/item/implant) && O.w_class > 1 && prob(5)) //Moving with things stuck in you could be bad.
+			if(!istype(O, /obj/item/implant) && O.w_class > 1 && prob(5)) //Moving with things stuck in you could be bad.
 				jossle_internal_object(organ, O)
 	var/obj/item/organ/external/groin = src.get_organ(BP_GROIN)
-	if(LAZYLEN(stomach_contents) && groin)
+	if(groin && stomach_contents && stomach_contents.len)
 		for(var/obj/item/O in stomach_contents)
 			if(O.edge || O.sharp)
 				if(prob(1))
@@ -1058,7 +1055,7 @@
 						to_chat(src, SPAN("danger", "You feel something rip out of your stomach!"))
 						groin.embed(O)
 				else if(prob(5))
-					jossle_internal_object(groin,O)
+					jossle_internal_object(groin, O)
 
 /mob/living/carbon/human/proc/jossle_internal_object(obj/item/organ/external/organ, obj/item/O)
 	// All kinds of embedded objects cause bleeding.
@@ -1069,7 +1066,7 @@
 			SPAN("warning", "A spike of pain jolts your [organ.name] as you bump [O] inside."), \
 			SPAN("warning", "Your movement jostles [O] in your [organ.name] painfully."), \
 			SPAN("warning", "Your movement jostles [O] in your [organ.name] painfully."))
-		custom_pain(msg,40,affecting = organ)
+		custom_pain(msg, 40, affecting = organ)
 
 	organ.take_external_damage(rand(1,3), 0, 0)
 	if(!BP_IS_ROBOTIC(organ) && (should_have_organ(BP_HEART))) //There is no blood in protheses.

@@ -15,8 +15,8 @@
 	min_broken_damage = 30
 	var/isRobotize = 0
 
-/obj/item/organ/internal/eyes/New()
-	..()
+/obj/item/organ/internal/eyes/Initialize()
+	. = ..()
 	if(owner)
 		update_colour()
 
@@ -24,8 +24,8 @@
 	status = ORGAN_ROBOTIC
 	organ_tag = BP_OPTICS
 
-/obj/item/organ/internal/eyes/optics/New()
-	..()
+/obj/item/organ/internal/eyes/optics/Initialize()
+	. = ..()
 	robotize()
 
 /obj/item/organ/internal/eyes/robotize()
@@ -38,8 +38,8 @@
 /obj/item/organ/internal/eyes/robot
 	name = "optical sensor"
 
-/obj/item/organ/internal/eyes/robot/New()
-	..()
+/obj/item/organ/internal/eyes/robot/Initialize()
+	. = ..()
 	robotize()
 
 /obj/item/organ/internal/eyes/replaced(mob/living/carbon/human/target)
@@ -63,7 +63,7 @@
 	if(owner?.mind?.special_role == "Zombie")
 		eye_colour = list(220,220,220)
 
-/obj/item/organ/internal/eyes/take_internal_damage(amount, silent=0)
+/obj/item/organ/internal/eyes/take_internal_damage(amount, silent = FALSE, is_traumatic = FALSE)
 	var/oldbroken = is_broken()
 	. = ..()
 	if(is_broken() && !oldbroken && owner && !owner.stat)

@@ -129,6 +129,18 @@
 			return PROJECTILE_CONTINUE // complete projectile permutation
 	return 0
 
+/obj/item/melee/energy/apply_hit_effect(mob/living/target, mob/living/user, hit_zone)
+	. = ..()
+	if(isnull(.) || !ishuman(target) || user.a_intent != I_HURT)
+		return
+
+	var/mob/living/carbon/human/H = target
+	if(!QDELETED(H))
+		var/obj/item/organ/external/affecting = H.get_organ(hit_zone)
+		if(istype(affecting))
+			affecting.scabbed = affecting.max_bleeding // Cauterizes wounds
+	return
+
 /*
  * Energy Axe
  */
@@ -410,6 +422,7 @@
 			var/mob/living/carbon/human/host = loc
 			if(istype(host))
 				for(var/obj/item/organ/external/organ in host.organs)
+					organ.drop_embedded_object(src)
 					for(var/obj/item/O in organ.implants)
 						if(O == src)
 							organ.implants -= src

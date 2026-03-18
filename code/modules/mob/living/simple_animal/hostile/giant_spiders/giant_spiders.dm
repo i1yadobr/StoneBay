@@ -144,9 +144,7 @@ GLOBAL_LIST_EMPTY(spidermobs) //all sentient spider mobs
 
 /mob/living/simple_animal/hostile/giant_spider/nurse/Life()
 	. = ..()
-	process_med_hud(src)
-
-
+	process_med_hud(src, TRUE, src)
 
 /mob/living/simple_animal/hostile/giant_spider/nurse/UnarmedAttack(atom/target)
 	. = target
