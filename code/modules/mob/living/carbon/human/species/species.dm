@@ -301,19 +301,23 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 				E.internal_organs.Remove(O)
 				H.internal_organs.Remove(O)
 				foreign_organs |= O
-		if(E.implants.len)
+		if(LAZYLEN(E.implants))
 			implants_from_external_organs[E.organ_tag] = list()
-		for(var/I in E.implants)
-			implants_from_external_organs[E.organ_tag] += I
+			for(var/I in E.implants)
+				implants_from_external_organs[E.organ_tag] += I
 
 	for(var/obj/item/organ/organ in H.contents)
 		if((organ in H.organs) || (organ in H.internal_organs))
 			qdel(organ)
 
-	if(H.organs)                  H.organs.Cut()
-	if(H.internal_organs)         H.internal_organs.Cut()
-	if(H.organs_by_name)          H.organs_by_name.Cut()
-	if(H.internal_organs_by_name) H.internal_organs_by_name.Cut()
+	if(H.organs)
+		H.organs.Cut()
+	if(H.internal_organs)
+		H.internal_organs.Cut()
+	if(H.organs_by_name)
+		H.organs_by_name.Cut()
+	if(H.internal_organs_by_name)
+		H.internal_organs_by_name.Cut()
 
 	H.organs = list()
 	H.internal_organs = list()
@@ -427,7 +431,7 @@ The slots that you can use are found in items_clothing.dm and are the inventory 
 			H.visible_message(SPAN("notice", "[H] reaches out for [target]'s face..."), \
 							SPAN("notice", "You reach out for [target]'s face..."))
 			H.next_move = world.time + 15 // In a matter of a second we get subpoenaed for sexual harassment
-			if(!do_after(H,15,target) || target.a_intent != I_HELP)
+			if(!do_after(H, 15, target) || target.a_intent != I_HELP)
 				return
 			H.visible_message(SPAN("notice", "[H] kisses [target]!"), \
 							SPAN("notice", "You kiss [target]!"))

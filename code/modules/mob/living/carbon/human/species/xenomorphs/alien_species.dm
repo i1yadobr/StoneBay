@@ -185,7 +185,7 @@
 
 /datum/species/xenos/handle_vision(mob/living/carbon/human/H)
 	. = ..()
-	process_xeno_hud(H)
+	process_xeno_hud(H, src)
 	return TRUE
 
 /datum/species/monkey/is_eligible_for_antag_spawn(antag_id)

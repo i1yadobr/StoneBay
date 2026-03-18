@@ -1737,7 +1737,7 @@
 "HE" = (/obj/structure/bed/chair/comfy/black{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/simulated/floor/trim/carpet/red,/area/maintenance/underground/security_firefighting)
 "HF" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/obj/machinery/atmospherics/pipe/simple/hidden/supply,/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/obj/structure/spider/stickyweb,/turf/simulated/floor/trim/carpet/red,/area/maintenance/underground/security_firefighting)
 "HG" = (/obj/effect/decal/cleanable/dirt,/obj/structure/spider/stickyweb,/turf/simulated/floor/plating,/area/maintenance/underground/security_firefighting)
-"HH" = (/obj/structure/table/steel,/obj/effect/decal/cleanable/cobweb,/obj/item/stack/medical/bruise_pack,/turf/simulated/floor/plating,/area/maintenance/underground/security_firefighting)
+"HH" = (/obj/structure/table/steel,/obj/effect/decal/cleanable/cobweb,/obj/item/stack/medical/bandage,/turf/simulated/floor/plating,/area/maintenance/underground/security_firefighting)
 "HI" = (/obj/effect/floor_decal/corner/red{dir = 5},/obj/effect/decal/cleanable/dirt,/obj/structure/bed/chair{dir = 1},/turf/simulated/floor/tiled/dark,/area/maintenance/underground/security_firefighting)
 "HJ" = (/obj/effect/floor_decal/corner/red{dir = 5},/obj/effect/decal/cleanable/dirt,/obj/structure/bed/chair{dir = 1},/obj/structure/spider/stickyweb,/turf/simulated/floor/tiled/dark,/area/maintenance/underground/security_firefighting)
 "HK" = (/obj/effect/floor_decal/corner/red{dir = 5},/obj/effect/floor_decal/corner/red{dir = 6},/obj/effect/decal/cleanable/dirt,/obj/structure/spider/stickyweb,/turf/simulated/floor/tiled/dark,/area/maintenance/underground/security_firefighting)

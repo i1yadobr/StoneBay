@@ -6,19 +6,11 @@
 	name = "medical pack"
 	singular_name = "medical pack"
 	icon = 'icons/obj/items.dmi'
-<<<<<<< HEAD
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
 		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	base_icon_state = ""
-=======
-	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
-		)
-	base_icon_state = ""
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 	amount = 10
 	max_amount = 10
 	w_class = ITEM_SIZE_SMALL
@@ -238,26 +230,9 @@
 		to_chat(user, SPAN("notice", "[H]'s [affecting.name] has already been salved."))
 		return 0
 
-<<<<<<< HEAD
-		if(affecting.is_salved())
-			to_chat(user, SPAN("notice", "The wounds on [M]'s [affecting.name] have already been salved."))
-			return 1
-		else
-			user.visible_message(SPAN("notice", "\The [user] starts salving wounds on [M]'s [affecting.name]."), \
-					                      SPAN("notice", "You start salving wounds on [M]'s [affecting.name]."))
-			if(!do_mob(user, M, 10))
-				to_chat(user, SPAN("warning", "You must stand still to salve wounds."))
-				return 1
-			user.visible_message(SPAN("notice", "[user] salved wounds on [M]'s [affecting.name]."), \
-			                        SPAN("notice", "You salved wounds on [M]'s [affecting.name]."))
-			use(1)
-			affecting.salve()
-			affecting.disinfect()
-=======
 	user.visible_message(\
 		SPAN("notice", "\The [user] starts smearing salve over [H]'s [affecting.name]."),\
 		SPAN("notice", "You start smearing salve over [H]'s [affecting.name]."))
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 
 	if(!do_mob(user, H, 2 SECONDS))
 		to_chat(user, SPAN("warning", "You must stand still to apply salve."))
@@ -284,6 +259,7 @@
 	stack_empty = MEDICAL_STACK_FILLED
 	splittable = FALSE
 	stack_full = TRUE
+	max_amount = 20
 	amount = 20
 
 /obj/item/stack/medical/gel/proc/refill(amt = 1)
@@ -490,7 +466,7 @@
 			SPAN("notice", "You start to apply \the [src] to your [limb]."),\
 			SPAN("warning", "You hear something being wrapped."))
 
-	if(!do_after(user, 5 SECONDS, H, luck_check_type = LUCK_CHECK_MED))
+	if(!do_after(user, 5 SECONDS, H))
 		return 0
 
 	if(H == user && prob(75))
@@ -516,42 +492,7 @@
 					SPAN("warning", "You hear something being wrapped."))
 			return 1
 		else
-<<<<<<< HEAD
-			if((user.active_hand == ACTIVE_HAND_RIGHT && (affecting.organ_tag in list(BP_R_ARM, BP_R_HAND)) || \
-				user.active_hand == ACTIVE_HAND_LEFT && (affecting.organ_tag in list(BP_L_ARM, BP_L_HAND)) ))
-				to_chat(user, SPAN("warning", "You can't apply a splint to the arm you're using!"))
-				return
-			user.visible_message(SPAN("notice", "[user] starts to apply \the [src] to their [limb]."), \
-						             SPAN("notice", "You start to apply \the [src] to your [limb]."), \
-						            SPAN("warning", "You hear something being wrapped."))
-		if(do_after(user, 50, M))
-			if(M == user && prob(75))
-				user.visible_message(SPAN("warning", "\The [user] fumbles [src]."), \
-							         SPAN("warning", "You fumble [src]."), \
-							         SPAN("warning", "You hear something being wrapped."))
-				return
-			var/obj/item/stack/medical/splint/S = new /obj/item/stack/medical/splint(user,1)
-			if(S)
-				if(affecting.apply_splint(S))
-					S.forceMove(affecting)
-					if (M != user)
-						user.visible_message(SPAN("notice", "\The [user] finishes applying \the [src] to [M]'s [limb]."), \
-							                           SPAN("notice", "You finish applying \the [src] to [M]'s [limb]."), \
-							   	                      SPAN("warning", "You hear something being wrapped."))
-					else
-						user.visible_message(SPAN("notice", "\The [user] successfully applies \the [src] to their [limb]."), \
-										               SPAN("notice", "You successfully apply \the [src] to your [limb]."), \
-											          SPAN("warning", "You hear something being wrapped."))
-					src.use(1)
-					return
-				S.dropInto(src.loc) //didn't get applied, so just drop it
-			user.visible_message(SPAN("warning", "\The [user] fails to apply [src]."), \
-							              SPAN("warning", "You fail to apply [src]."), \
-							              SPAN("warning", "You hear something being wrapped."))
-		return
-=======
 			S.dropInto(src.loc) //didn't get applied, so just drop it
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 
 	user.visible_message(\
 		SPAN("warning", "\The [user] fails to apply [src]."),\
@@ -624,14 +565,10 @@
 	name = "prototype serum injector"
 	singular_name = "serum dose"
 	desc = "A weird-looking injector with some sort of bloody-red serum inside."
-<<<<<<< HEAD
 
-	description_antag = "This more-expensive-than-your-life-is liquid, rumored to be made of mysterious vampire-like creatures, is capable brining dead to life."
+	description_antag = "This more-expensive-than-your-life-is liquid, rumored to be made from mysterious vampire-like creatures, is capable of bringing the dead back to life."
 
 	// TODO: Draw cool inhand icon
-=======
-	description_antag = "This more-expensive-than-your-life-is liquid, rumored to be made from mysterious vampire-like creatures, is capable of bringing the dead back to life."
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 	icon_state = "resurrect_serum"
 	//item_state = "resurrect_serum"
 	origin_tech = list(TECH_BIO = 10)
@@ -646,15 +583,9 @@
 		to_chat(user, SPAN("notice", "\The [src] quickly retracts its needles as you bring it close to [H]."))
 		return 0
 
-<<<<<<< HEAD
-	to_chat(user, SPAN("notice", "You prepare to inject [M]..."))
-	if(!do_after(user, 100, M))
-		return
-=======
 	to_chat(user, SPAN("notice", "You prepare to inject [H]..."))
-	if(!do_after(user, 10 SECONDS, luck_check_type = LUCK_CHECK_MED))
+	if(!do_after(user, 10 SECONDS))
 		return 0
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 
 	if(!H.is_ic_dead())
 		to_chat(user, SPAN("notice", "\The [src] quickly retracts its needles as soon as you try to inject [H]!"))

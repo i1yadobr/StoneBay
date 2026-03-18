@@ -135,13 +135,8 @@
 	glass_desc = "A nice, strong and refreshing beverage while you are reading."
 
 /datum/reagent/caffeine/coffee/cafe_latte/affect_digest(mob/living/carbon/M, alien, removed)
-<<<<<<< HEAD
 	. = ..()
 	M.add_chemical_effect(CE_BRUTE_REGEN, 0.5)
-=======
-	. = ..()
-	M.add_chemical_effect(CE_BRUTE_REGEN, 0.5)
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 
 /datum/reagent/caffeine/coffee/icecoffee
 	name = "Iced Coffee"

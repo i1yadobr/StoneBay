@@ -13,8 +13,8 @@
 	var/coagulation = COAGULATION_NORMAL
 	var/filtering_efficiency = 3.0
 
-/obj/item/organ/internal/liver/New(mob/living/carbon/holder)
-	..(holder)
+/obj/item/organ/internal/liver/Initialize()
+	. = ..()
 	update_coagulation()
 
 /obj/item/organ/internal/liver/robotize()
@@ -61,9 +61,6 @@
 
 	update_coagulation()
 
-<<<<<<< HEAD
-=======
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 	// Update the filtering efficiency of the liver.
 	filtering_efficiency = 3
 	// Not enough to cease functions, but works at reduced efficiency..

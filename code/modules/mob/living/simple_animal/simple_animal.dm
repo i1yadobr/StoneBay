@@ -218,8 +218,6 @@
 
 /mob/living/simple_animal/attackby(obj/item/O, mob/user)
 	if(istype(O, /obj/item/stack/medical))
-<<<<<<< HEAD
-=======
 		if(is_ooc_dead())
 			to_chat(user, SPAN("notice", "\The [src] is dead, medical items won't bring \him back to life."))
 			return
@@ -229,14 +227,11 @@
 			return
 
 		O.attack(src, user, user.zone_sel.selecting)
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 		return
 
 	if(meat_type && (is_ooc_dead()))	//if the animal has a meat, and if it is dead.
 		if(istype(O, /obj/item/material/knife) || istype(O, /obj/item/material/knife/butch))
 			harvest(user)
-<<<<<<< HEAD
-=======
 			return
 
 	if(!O.force)
@@ -244,7 +239,6 @@
 		return
 
 	O.attack(src, user, user.zone_sel.selecting)
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 
 /mob/living/simple_animal/hit_with_weapon(obj/item/O, mob/living/user, effective_force, hit_zone)
 	visible_message(SPAN("danger", "\The [src] has been [O.attack_verb.len? pick(O.attack_verb) : "attacked"] with \the [O] by [user]!"))

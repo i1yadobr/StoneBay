@@ -114,28 +114,9 @@
 	// HUD element variable, see organ_icon.dm get_damage_hud_image()
 	var/image/hud_damage_image
 
-/obj/item/organ/external/proc/get_fingerprint()
+/obj/item/organ/external/Initialize(mapload, ...)
+	. = ..()
 
-	if((limb_flags & ORGAN_FLAG_FINGERPRINT) && dna && !is_stump() && !BP_IS_ROBOTIC(src))
-		return md5(dna.uni_identity)
-
-	for(var/obj/item/organ/external/E in children)
-		var/print = E.get_fingerprint()
-		if(print)
-			return print
-
-/obj/item/organ/external/organ_eaten(mob/user)
-	for(var/obj/item/organ/external/stump/stump in children)
-		qdel(stump)
-	..()
-
-/obj/item/organ/external/afterattack(atom/A, mob/user, proximity)
-	..()
-	if(proximity && get_fingerprint())
-		A.add_partial_print(get_fingerprint())
-
-/obj/item/organ/external/New(mob/living/carbon/holder)
-	..()
 	if(isnull(pain_disability_threshold))
 		pain_disability_threshold = (max_damage * 0.75)
 	if(owner)
@@ -145,6 +126,7 @@
 			max_pain = min(max_damage * 2.5, owner.species.total_health * 1.5)
 	else if(isnull(max_pain))
 		max_pain = max_damage * 1.5 // Should not ~probably~ happen
+
 	get_overlays()
 
 	if(food_organ in implants)
@@ -167,25 +149,44 @@
 		QDEL_NULL(splinted)
 
 	if(owner)
-		if(limb_flags & ORGAN_FLAG_CAN_GRASP) owner.grasp_limbs -= src
-		if(limb_flags & ORGAN_FLAG_CAN_STAND) owner.stance_limbs -= src
+		if(limb_flags & ORGAN_FLAG_CAN_GRASP)
+			owner.grasp_limbs -= src
+		if(limb_flags & ORGAN_FLAG_CAN_STAND)
+			owner.stance_limbs -= src
 		owner.organs -= src
 		owner.organs_by_name -= organ_tag
 		while(null in owner.organs)
 			owner.organs -= null
-		owner.bad_external_organs.Remove(src)
+		owner.bad_external_organs -= src
 
-<<<<<<< HEAD
-=======
 	drop_embedded_objects()
 
-	QDEL_NULL_LIST(organ_modules)
-
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 	if(autopsy_data)
 		autopsy_data.Cut()
 
 	return ..()
+
+/obj/item/organ/external/proc/get_fingerprint()
+
+	if((limb_flags & ORGAN_FLAG_FINGERPRINT) && dna && !is_stump() && !BP_IS_ROBOTIC(src))
+		return md5(dna.uni_identity)
+
+	for(var/obj/item/organ/external/E in children)
+		var/print = E.get_fingerprint()
+		if(print)
+			return print
+
+/obj/item/organ/external/organ_eaten(mob/user)
+	for(var/obj/item/organ/external/stump/stump in children)
+		qdel(stump)
+	..()
+
+/obj/item/organ/external/afterattack(atom/A, mob/user, proximity)
+	..()
+	if(proximity)
+		var/FP = get_fingerprint()
+		if(FP)
+			A.add_partial_print(FP)
 
 /obj/item/organ/external/set_dna(datum/dna/new_dna)
 	..()
@@ -194,7 +195,7 @@
 
 /obj/item/organ/external/emp_act(severity)
 	var/burn_damage = 0
-	switch (severity)
+	switch(severity)
 		if(1)
 			burn_damage = 15
 		if(2)
@@ -263,65 +264,80 @@
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	switch(stage)
 		if(0)
-			if(W.sharp)
-				if(do_mob(user, src, DEFAULT_ATTACK_COOLDOWN))
-					if(children?.len)
-						var/obj/item/organ/external/external_child = pick(children)
-						status |= ORGAN_CUT_AWAY
-						children.Remove(external_child)
-						external_child.forceMove(get_turf(src))
-						external_child.SetTransform(rotation = rand(180))
-						external_child.compile_icon()
-						compile_icon()
-						user.visible_message(SPAN("danger", "<b>[user]</b> cuts [external_child] from [src] with [W]!"))
-					else
-						user.visible_message(SPAN("danger", "<b>[user]</b> cuts [src] open with [W]!"))
-						stage++
+			if(W.edge)
+				if(!do_mob(user, src, DEFAULT_ATTACK_COOLDOWN))
 					return
-		if(1)
-			if(istype(W))
-				if(do_mob(user, src, DEFAULT_ATTACK_COOLDOWN))
-					user.visible_message(SPAN("danger", "<b>[user]</b> cracks [src] open like an egg with [W]!"))
-					drop_embedded_objects()
+				if(length(children))
+					var/obj/item/organ/external/external_child = pick(children)
+					status |= ORGAN_CUT_AWAY
+					children.Remove(external_child)
+					external_child.forceMove(get_turf(src))
+					external_child.SetTransform(rotation = rand(180))
+					external_child.compile_icon()
+					compile_icon()
+					user.visible_message(SPAN("danger", "<b>[user]</b> cuts [external_child] from [src] with [W]!"))
+				else
+					user.visible_message(SPAN("danger", "<b>[user]</b> cuts [src] open with [W]!"))
 					stage++
+				return
+		if(1)
+			if(istype(W) && W.force >= 5.0)
+				if(!do_mob(user, src, DEFAULT_ATTACK_COOLDOWN))
 					return
+				user.visible_message(SPAN("danger", "<b>[user]</b> cracks [src] open like an egg with [W]!"))
+				drop_embedded_objects()
+				stage++
+				return
 		if(2)
-			if(W.sharp || istype(W, /obj/item/hemostat) || isWirecutter(W))
-				var/list/organs = get_contents_recursive()
-				if(do_mob(user, src, DEFAULT_ATTACK_COOLDOWN))
-					if(organs.len)
-						var/obj/item/removing = pick(organs)
-						var/obj/item/organ/external/current_child = removing.loc
+			if(W.sharp || W.edge || istype(W, /obj/item/hemostat) || isWirecutter(W))
+				var/list/stuff_to_remove = get_contents_recursive()
+				if(!do_mob(user, src, DEFAULT_ATTACK_COOLDOWN))
+					return
 
-						current_child.implants.Remove(removing)
-						current_child.internal_organs.Remove(removing)
+				for(var/obj/item/I in shuffle(stuff_to_remove))
+					var/obj/item/organ/external/current_child = I.loc
+					if(current_child.food_organ == I)
+						continue
 
-						status |= ORGAN_CUT_AWAY
+					if(istype(I, /obj/item/implant))
+						var/obj/item/implant/implant = I
+						implant.removed()
 
-						removing.forceMove(get_turf(src))
-						user.visible_message(SPAN_DANGER("<b>[user]</b> extracts [removing] from [src] with [W]!"))
+					current_child.implants.Remove(I)
+					current_child.internal_organs.Remove(I)
+					LAZYREMOVE(current_child.embedded_objects, I)
+
+					status |= ORGAN_CUT_AWAY
+
+					I.forceMove(get_turf(src))
+					user.visible_message(SPAN_DANGER("<b>[user]</b> extracts [I] from \the [src] with \the [W]!"))
+					return
+
+				if(organ_tag == BP_HEAD && W.edge)
+					var/obj/item/organ/external/head/H = src // yeah yeah this is horrible
+					if(!H.skull_path)
+						user.visible_message(SPAN("danger", "<b>[user]</b> fishes around fruitlessly in \the [src] with \the [W]."))
+						return
+					user.visible_message(SPAN("danger", "<b>[user]</b> rips the skin off [H] with \the [W], revealing a skull."))
+					if(istype(H.loc, /turf))
+						new H.skull_path(H.loc)
+						gibs(H.loc)
 					else
-						if(organ_tag == BP_HEAD && W.sharp)
-							var/obj/item/organ/external/head/H = src // yeah yeah this is horrible
-							if(!H.skull_path)
-								user.visible_message(SPAN("danger", "<b>[user]</b> fishes around fruitlessly in [src] with [W]."))
-								return
-							user.visible_message(SPAN("danger", "<b>[user]</b> rips the skin off [H] with [W], revealing a skull."))
-							if(istype(H.loc, /turf))
-								new H.skull_path(H.loc)
-								gibs(H.loc)
-							else
-								new H.skull_path(user.loc)
-								gibs(user.loc)
-							H.skull_path = null // So no skulls dupe in case of lags
-							qdel(src)
-						else
-							if(src && !QDELETED(src))
-								food_organ.appearance = food_organ_type
-								food_organ.forceMove(get_turf(loc))
-								food_organ = null
-								qdel(src)
-							user.visible_message(SPAN_DANGER("<b>[user]</b> fishes around fruitlessly in [src] with [W]."))
+						new H.skull_path(user.loc)
+						gibs(user.loc)
+					H.skull_path = null // So no skulls dupe in case of lags
+					qdel(src)
+					return
+
+				if(!QDELETED(food_organ) && W.edge)
+					user.visible_message(SPAN("danger", "<b>[user]</b> chops \the [src] up with \the [W]!"))
+					food_organ.appearance = food_organ_type
+					food_organ.forceMove(get_turf(loc))
+					food_organ = null
+					qdel(src)
+					return
+
+				user.visible_message(SPAN_DANGER("<b>[user]</b> fishes around fruitlessly in \the [src] with \the [W]."))
 				return
 	..()
 
@@ -461,34 +477,27 @@ This function completely restores a damaged organ to perfect condition.
 	// remove embedded objects and drop them on the floor
 	drop_embedded_objects()
 
+	// Tidy up unexpected things
 	for(var/obj/implanted_object in implants)
-<<<<<<< HEAD
-		if(!istype(implanted_object,/obj/item/implant))	// We don't want to remove REAL implants. Just shrapnel etc.
-			implanted_object.dropInto(get_turf(src))
+		if(QDELETED(implanted_object))
 			implants -= implanted_object
+			continue
+		if(implanted_object.loc != src)
+			implanted_object.forceMove(src)
 
 	update_damages()
 
-=======
-		if(!istype(implanted_object,/obj/item/implant))	// We don't want to remove REAL implants. Just shrapnel etc.
-			implanted_object.dropInto(get_turf(src))
-			implants -= implanted_object
+	if(!owner)
+		return
 
-	update_damages()
-
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
-	if(owner && !ignore_prosthetic_prefs)
-		if(owner.client && owner.client.prefs && owner.client.prefs.real_name == owner.real_name)
-			var/status = owner.client.prefs.organ_data[organ_tag]
-			if(status == "amputated")
+	if(!ignore_prosthetic_prefs && owner.client && owner.client.prefs && owner.client.prefs.real_name == owner.real_name)
+		switch(owner.client.prefs.organ_data[organ_tag])
+			if("amputated")
 				remove_rejuv()
-			else if(status == "cyborg")
-				var/robodata = owner.client.prefs.rlimb_data[organ_tag]
-				if(robodata)
-					robotize(robodata)
-				else
-					robotize()
-		owner.update_health()
+			if("cyborg")
+				robotize(owner.client.prefs.rlimb_data[organ_tag])
+
+	owner.update_health()
 
 /obj/item/organ/external/remove_rejuv()
 	if(owner)
@@ -503,9 +512,6 @@ This function completely restores a damaged organ to perfect condition.
 		if(I) I.remove_rejuv()
 	..()
 
-<<<<<<< HEAD
-=======
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 /****************************************************
 			   PROCESSING & UPDATING
 ****************************************************/
@@ -573,133 +579,6 @@ This function completely restores a damaged organ to perfect condition.
 	if(BP_IS_ROBOTIC(src)) // T-1000 would NOT be proud.
 		return
 
-<<<<<<< HEAD
-	if(owner.bodytemperature >= 170)	//cryo stops germs from moving and doing their bad stuffs
-		//** Syncing germ levels with external wounds
-		handle_germ_sync()
-
-		//** Handle antibiotics and curing infections
-		handle_antibiotics()
-
-		//** Handle the effects of infections
-		handle_germ_effects()
-
-/obj/item/organ/external/proc/handle_germ_sync()
-	var/antibiotics = owner.reagents.get_reagent_amount(/datum/reagent/spaceacillin)
-	for(var/datum/wound/W in wounds)
-		//Open wounds can become infected
-		if (owner.germ_level > W.germ_level && W.infection_check())
-			W.germ_level++
-
-	if (antibiotics < 5)
-		for(var/datum/wound/W in wounds)
-			//Infected wounds raise the organ's germ level
-			if (W.germ_level > germ_level)
-				germ_level++
-				break	//limit increase to a maximum of one per second
-
-/obj/item/organ/external/handle_germ_effects()
-
-	if(germ_level < INFECTION_LEVEL_TWO)
-		return ..()
-
-	var/antibiotics = owner.reagents.get_reagent_amount(/datum/reagent/spaceacillin)
-
-	if(germ_level >= INFECTION_LEVEL_TWO)
-		//spread the infection to internal organs
-		var/obj/item/organ/target_organ = null	//make internal organs become infected one at a time instead of all at once
-		for (var/obj/item/organ/I in internal_organs)
-			if (I.germ_level > 0 && I.germ_level < min(germ_level, INFECTION_LEVEL_TWO))	//once the organ reaches whatever we can give it, or level two, switch to a different one
-				if (!target_organ || I.germ_level > target_organ.germ_level)	//choose the organ with the highest germ_level
-					target_organ = I
-
-		if (!target_organ)
-			//figure out which organs we can spread germs to and pick one at random
-			var/list/candidate_organs = list()
-			for (var/obj/item/organ/I in internal_organs)
-				if (I.germ_level < germ_level)
-					candidate_organs |= I
-			if (candidate_organs.len)
-				target_organ = pick(candidate_organs)
-
-		if (target_organ)
-			target_organ.germ_level++
-
-		//spread the infection to child and parent organs
-		if (children)
-			for (var/obj/item/organ/external/child in children)
-				if (child.germ_level < germ_level && !BP_IS_ROBOTIC(child))
-					if (child.germ_level < INFECTION_LEVEL_ONE*2 || prob(30))
-						child.germ_level++
-
-		if (parent)
-			if (parent.germ_level < germ_level && !BP_IS_ROBOTIC(parent))
-				if (parent.germ_level < INFECTION_LEVEL_ONE*2 || prob(30))
-					parent.germ_level++
-
-	if(germ_level >= INFECTION_LEVEL_THREE && antibiotics < 15)	//overdosing is necessary to stop severe infections
-		if (!(status & ORGAN_DEAD))
-			status |= ORGAN_DEAD
-			to_chat(owner, SPAN("notice", "You can't feel your [name] anymore..."))
-			owner.update_body(1)
-
-		germ_level++
-		owner.adjustToxLoss(2.0)
-
-//Updating wounds. Handles wound natural I had some free spachealing, internal bleedings and infections
-/obj/item/organ/external/proc/update_wounds()
-
-	if(BP_IS_ROBOTIC(src)) //Robotic limbs don't heal or get worse.
-		for(var/datum/wound/W in wounds) //Repaired wounds disappear though
-			if(W.damage <= 0)  //and they disappear right away
-				qdel(W)        //TODO: robot wounds for robot limbs
-		return
-
-	for(var/datum/wound/W in wounds)
-		// wounds can disappear after 10 minutes at the earliest
-		if(W.damage <= 0 && W.created + (10 MINUTES) <= world.time)
-			qdel(W)
-			. = TRUE
-			continue
-			// let the GC handle the deletion of the wound
-
-		var/dam_type = BRUTE
-		if(W.damage_type == BURN)
-			dam_type = BURN
-		if(!owner.can_autoheal(dam_type))
-			continue
-
-		// slow healing
-		var/heal_amt = 0
-		// if damage >= 50 AFTER treatment then it's probably too severe to heal within the timeframe of a round.
-		if (!owner.chem_effects[CE_TOXIN] && W.wound_damage() && brute_ratio < 0.5 && burn_ratio < 0.5)
-			heal_amt += 0.5
-
-		//we only update wounds once in [wound_update_accuracy] ticks so have to emulate realtime
-		heal_amt = heal_amt * wound_update_accuracy
-		//configurable regen speed woo, no-regen hardcore or instaheal hugbox, choose your destiny
-		heal_amt = heal_amt * config.health.organ_regeneration_multiplier
-		// amount of healing is spread over all the wounds
-		heal_amt = heal_amt / (LAZYLEN(wounds) + 1)
-		// making it look prettier on scanners
-		heal_amt = round(heal_amt,0.1)
-
-		W.heal_damage(heal_amt)
-
-	// sync the organ's damage with its wounds
-	update_damages()
-	. = update_damstate()
-
-//Updates brute_damn and burn_damn from wound damages. Updates BLEEDING status.
-/obj/item/organ/external/proc/update_damages()
-	number_wounds = 0
-	brute_dam = 0
-	burn_dam = 0
-	status &= ~ORGAN_BLEEDING
-	var/clamped = 0
-
-=======
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 	var/mob/living/carbon/human/H
 	if(ishuman(owner))
 		H = owner
@@ -1145,31 +1024,6 @@ This function completely restores a damaged organ to perfect condition.
 /obj/item/organ/external/proc/is_malfunctioning()
 	return (BP_IS_ROBOTIC(src) && (brute_dam + burn_dam) >= 10 && prob(brute_dam + burn_dam))
 
-/obj/item/organ/external/proc/embed(obj/item/W, silent = 0, supplied_message)
-	if(!owner || loc != owner)
-		return FALSE
-	if(W.w_class > ITEM_SIZE_NORMAL)
-		return FALSE
-	if(species.species_flags & SPECIES_FLAG_NO_EMBED)
-		return FALSE
-	if(!silent)
-		if(supplied_message)
-			owner.visible_message(SPAN("danger", "[supplied_message]"))
-		else
-			owner.visible_message(SPAN("danger", "\The [W] sticks in the wound!"))
-
-	LAZYADD(embedded_objects, W)
-	owner.embedded_flag = 1
-	owner.verbs += /mob/proc/yank_out_object
-	W.add_blood(owner)
-	if(ismob(W.loc))
-		var/mob/living/H = W.loc
-		H.drop(W, src, force = TRUE)
-	else
-		W.forceMove(src)
-
-	return TRUE
-
 /obj/item/organ/external/removed(mob/living/user, drop_organ = 1, ignore_children = 0, detach_children_and_internals = 0)
 	if(!owner)
 		return
@@ -1402,7 +1256,9 @@ This function completely restores a damaged organ to perfect condition.
 
 	var/bandages_desc = ""
 	if(max_bleeding)
-		if(bandaged >= max_bleeding)
+		if(clamped)
+			bandages_desc = "<span class='notice'><b>clamped</b></span>, "
+		else if(bandaged >= max_bleeding)
 			bandages_desc += "<span class='notice'><b>bandaged</b></span>, "
 		else if(scabbed >= max_bleeding)
 			bandages_desc += "<span class='notice'><b>scabbed</b></span>, "
@@ -1498,19 +1354,6 @@ This function completely restores a damaged organ to perfect condition.
 		to_chat(user, SPAN("notice", "[owner] is missing that bodypart."))
 		return
 
-<<<<<<< HEAD
-	user.visible_message(SPAN("notice", "[user] starts inspecting [owner]'s [name] carefully."))
-	if(LAZYLEN(wounds))
-		to_chat(user, SPAN("warning", "You find [get_wounds_desc()]"))
-		var/list/stuff = list()
-		for(var/datum/wound/wound in wounds)
-			if(LAZYLEN(wound.embedded_objects))
-				stuff |= wound.embedded_objects
-		if(stuff.len)
-			to_chat(user, SPAN("warning", "There's [english_list(stuff)] sticking out of [owner]'s [name]."))
-	else
-		to_chat(user, SPAN("notice", "You find no visible wounds."))
-=======
 	var/damage_description
 	if(blunt_dam)
 		damage_description = "bruised"
@@ -1531,7 +1374,6 @@ This function completely restores a damaged organ to perfect condition.
 
 	if(LAZYLEN(embedded_objects))
 		to_chat(user, SPAN("warning", "There's [english_list(embedded_objects)] sticking out of [owner]'s [name]."))
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 
 	to_chat(user, SPAN("notice", "Checking skin now..."))
 	if(!do_mob(user, owner, 10))
@@ -1620,6 +1462,31 @@ This function completely restores a damaged organ to perfect condition.
 	else if(BP_IS_ROBOTIC(src))
 		. += max_delay * CLAMP01(damage/max_damage)
 
+/obj/item/organ/external/proc/embed(obj/item/W, silent = 0, supplied_message)
+	if(!owner || loc != owner)
+		return FALSE
+	if(W.w_class > ITEM_SIZE_NORMAL)
+		return FALSE
+	if(species.species_flags & SPECIES_FLAG_NO_EMBED)
+		return FALSE
+	if(!silent)
+		if(supplied_message)
+			owner.visible_message(SPAN("danger", "[supplied_message]"))
+		else
+			owner.visible_message(SPAN("danger", "\The [W] sticks in the wound!"))
+
+	LAZYADD(embedded_objects, W)
+	owner.embedded_flag = 1
+	owner.verbs += /mob/proc/yank_out_object
+	W.add_blood(owner)
+	if(ismob(W.loc))
+		var/mob/living/H = W.loc
+		H.drop(W, src, force = TRUE)
+	else
+		W.forceMove(src)
+
+	return TRUE
+
 /obj/item/organ/external/proc/drop_embedded_objects()
 	if(!LAZYLEN(embedded_objects))
 		return FALSE
@@ -1629,7 +1496,7 @@ This function completely restores a damaged organ to perfect condition.
 		if(owner)
 			owner.embedded -= O
 	LAZYCLEARLIST(embedded_objects)
-	if(owner && length(owner.embedded))
+	if(owner && !owner.get_embedded_objects())
 		owner.verbs -= /mob/proc/yank_out_object
 	return TRUE
 
@@ -1641,10 +1508,8 @@ This function completely restores a damaged organ to perfect condition.
 		if(O == thing)
 			O.forceMove(my_turf)
 			LAZYREMOVE(embedded_objects, O)
-			if(owner)
-				owner.embedded -= O
-				if(!length(owner.embedded))
-					owner.verbs -= /mob/proc/yank_out_object
+			if(owner && !owner.get_embedded_objects())
+				owner.verbs -= /mob/proc/yank_out_object
 			return TRUE
 	return FALSE
 

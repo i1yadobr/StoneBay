@@ -52,15 +52,9 @@ meteor_act
 	// Internal damage
 	// Some day we should make internals deal with blunt and sharp damage differently, but for now it's like this, if 'blocked' is non-zero, then the projectile's already lost its SHARP/EDGE flags and thus we cut the damage accordingly
 	if(length(organ.internal_organs))
-<<<<<<< HEAD
 		var/internal_damage_prob = 100 * blocked_multiplier // 100% for a naked dude/armor fail, 50% if one armor layer's succeeded, etc. The real chance is still a bit lower, though, since each organ has a chance of being damaged.
 		if(organ && P.damage_type == BRUTE)
 			internal_damage_prob *= organ.brute_mod
-=======
-		var/internal_damage_prob = 100 * blocked_multiplier // 100% for a naked dude/armor fail, 50% if one armor layer's succeeded, etc. The real chance is still a bit lower, though, since each organ has a chance of being damaged.
-		if(organ && P.damage_type == BRUTE)
-			internal_damage_prob *= organ.brute_mod
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 
 		// If our bodypart is a pile of shredded meat then it doesn't protect organs well
 		var/organ_total_damage = organ.get_damage()

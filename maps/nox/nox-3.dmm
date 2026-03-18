@@ -905,7 +905,7 @@
 "CC" = (/obj/effect/floor_decal/industrial/warning/asteroid{dir = 10},/obj/effect/floor_decal/rust,/obj/machinery/embedded_controller/radio/airlock/docking_port{dir = 1; pixel_y = -24; id_tag = "security_outpost_airlock"; tag_interior_sensor = "security_outpost_airlock_sensor_inner"; frequency = 1380},/obj/machinery/atmospherics/unary/vent_pump/high_volume{frequency = 1380; dir = 1; id_tag = "security_outpost_airlock_pump"},/obj/machinery/light/small/red,/turf/simulated/floor/tiled,/area/outpost/main_outpost/dock/security)
 "CE" = (/obj/effect/floor_decal/industrial/warning/asteroid,/turf/simulated/floor/asteroid/air/prison,/area/outpost/security/prison)
 "CF" = (/obj/machinery/washing_machine,/turf/simulated/floor/tiled/dirty,/area/outpost/abandoned)
-"CH" = (/obj/effect/floor_decal/corner/green{dir = 8},/obj/effect/floor_decal/oldflood,/obj/item/stack/medical/bruise_pack,/turf/simulated/floor/tiled/dirty,/area/outpost/abandoned)
+"CH" = (/obj/effect/floor_decal/corner/green{dir = 8},/obj/effect/floor_decal/oldflood,/obj/item/stack/medical/bandage,/turf/simulated/floor/tiled/dirty,/area/outpost/abandoned)
 "CI" = (/turf/simulated/wall/iron,/area/mine)
 "CK" = (/obj/effect/floor_decal/spline/fancy/wood/corner{dir = 1},/obj/structure/cable/cyan{d2 = 2; icon_state = "0-2"},/obj/machinery/power/apc{dir = 4; name = "east bump"; pixel_x = 24},/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,/obj/machinery/atmospherics/pipe/simple/hidden/supply,/turf/simulated/floor/trim/lino,/area/outpost/main_outpost/dorms/proom1)
 "CL" = (/obj/effect/decal/cleanable/dirt,/turf/simulated/floor/tiled/white/rough,/area/outpost/research/hallway)

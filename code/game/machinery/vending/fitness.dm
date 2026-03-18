@@ -26,11 +26,7 @@
 		/obj/item/reagent_containers/food/packaged/nutribar = 8,
 		/obj/item/reagent_containers/food/liquidfood = 8,
 		/obj/item/reagent_containers/pill/diet = 8,
-<<<<<<< HEAD
 		/obj/item/stack/medical/bandage = 2,
-=======
-		/obj/item/stack/medical/bandage = 2,
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 		/obj/item/towel/random = 8,
 		/obj/item/clothing/gloves/boxing = 2,
 		/obj/item/clothing/gloves/boxing/blue = 2,
@@ -50,10 +46,7 @@
 		/obj/item/reagent_containers/food/packaged/nutribar = 5,
 		/obj/item/reagent_containers/food/liquidfood = 5,
 		/obj/item/reagent_containers/pill/diet = 25,
-<<<<<<< HEAD
-=======
 		/obj/item/stack/medical/bandage = 20,
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 		/obj/item/towel/random = 40,
 		/obj/item/clothing/gloves/boxing = 50,
 		/obj/item/clothing/gloves/boxing/blue = 50,

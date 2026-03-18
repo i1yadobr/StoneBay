@@ -97,15 +97,9 @@
 
 	startswith = list(
 		/obj/item/device/healthanalyzer,
-<<<<<<< HEAD
 		/obj/item/reagent_containers/hypospray/autoinjector,
 		/obj/item/stack/medical/gel/brute = 2,
 		/obj/item/stack/medical/gel/burn = 2,
-=======
-		/obj/item/reagent_containers/hypospray/autoinjector,
-		/obj/item/stack/medical/gel/brute = 2,
-		/obj/item/stack/medical/gel/burn = 2,
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 		/obj/item/stack/medical/splint
 		)
 
@@ -136,8 +130,8 @@
 	storage_slots = 10
 
 	startswith = list(
-		/obj/item/stack/medical/advanced/bruise_pack,
-		/obj/item/stack/medical/advanced/ointment,
+		/obj/item/stack/medical/gel/brute,
+		/obj/item/stack/medical/gel/ointment,
 		/obj/item/storage/pill_bottle/tricordrazine,
 		/obj/item/storage/pill_bottle/bicaridine,
 		/obj/item/storage/pill_bottle/dermaline,

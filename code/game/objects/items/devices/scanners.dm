@@ -227,20 +227,6 @@ REAGENT SCANNER
 
 			if(E.brute_dam > 0)
 				limb_damaged = TRUE
-<<<<<<< HEAD
-				if(E.blunt_dam > 0)
-					limb_result = "[limb_result] \[<span class='scanner_red'><b>[get_wound_severity(E.blunt_ratio)] blunt trauma</b></span>\]"
-				if(E.cut_dam > 0 || E.pierce_dam > 0)
-					limb_result = "[limb_result] \[<span class='scanner_red'><b>[get_wound_severity(max(E.cut_ratio, E.pierce_ratio))] penetrating trauma</b></span>\]"
-
-			if(E.burn_dam > 0)
-				limb_damaged = TRUE
-				limb_result = "[limb_result] \[<span class='scanner_yellow'><b>[get_wound_severity(E.burn_ratio, (E.limb_flags & ORGAN_FLAG_HEALS_OVERKILL))] burns</b></span>\]"
-
-			if(E.status & ORGAN_BLEEDING)
-				limb_damaged = TRUE
-				limb_result = "[limb_result] \[<span class='scanner_red'>bleeding</span>\]"
-=======
 				if(E.blunt_dam > 0)
 					limb_result = "[limb_result] \[<span class='scanner_red'><b>[get_wound_severity(E.blunt_ratio)] blunt trauma</b></span>\]"
 				if(E.cut_dam > 0 || E.pierce_dam > 0)
@@ -254,7 +240,6 @@ REAGENT SCANNER
 				limb_damaged = TRUE
 				limb_result = "[limb_result] \[<span class='scanner_red'>bleeding</span>\]"
 
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 			if(E.status & ORGAN_BROKEN)
 				limb_damaged = TRUE
 				if(((E.organ_tag == BP_L_ARM) || (E.organ_tag == BP_R_ARM) || (E.organ_tag == BP_L_LEG) || (E.organ_tag == BP_R_LEG)) && (!E.splinted))
@@ -262,10 +247,6 @@ REAGENT SCANNER
 					found_fracture = TRUE
 				else
 					found_closed_fracture = TRUE
-<<<<<<< HEAD
-=======
-
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 			if(!found_bleed && (E.status & ORGAN_ARTERY_CUT))
 				found_bleed = TRUE
 

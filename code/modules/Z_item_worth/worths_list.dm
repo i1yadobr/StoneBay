@@ -109,7 +109,7 @@ var/list/worths = list(
 					/obj/item/ammo_casing/rocket = 400,
 					/obj/item/ammo_casing = 5,
 					/obj/item/ammo_magazine = 30,
-//MATERIAL STACKS,
+//MATERIAL STACKS
 					/obj/item/stack/material/marble = -20,
 					/obj/item/stack/material/diamond = -60,
 					/obj/item/stack/material/uranium = -120,
@@ -132,15 +132,9 @@ var/list/worths = list(
 					/obj/item/stack/material/glass/black = -8,
 					/obj/item/stack/material/glass/rblack = -16,
 					/obj/item/stack/material = -5,
-<<<<<<< HEAD
 //STACKS
 					/obj/item/stack/medical/gel/brute = -30,
 					/obj/item/stack/medical/gel/burn = -40,
-=======
-//STACKS,
-					/obj/item/stack/medical/gel/brute = -30,
-					/obj/item/stack/medical/gel/burn = -40,
->>>>>>> b5ca05cbdd (tweak(organs): complete damage rework)
 					/obj/item/stack/medical/splint = -25,
 					/obj/item/stack/medical = -15,
 					/obj/item/stack/nanopaste = -30,

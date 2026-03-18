@@ -247,9 +247,9 @@
 
 /obj/item/clothing/glasses/hud/process_hud(mob/M)
 	if(sec_hud)
-		process_sec_hud(M, 1)
+		process_sec_hud(M, TRUE, src)
 	if(med_hud)
-		process_med_hud(M, 1)
+		process_med_hud(M, TRUE, src)
 
 /obj/item/clothing/glasses/hud/on_update_icon()
 	ClearOverlays()

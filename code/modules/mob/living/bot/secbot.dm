@@ -461,7 +461,7 @@
 /mob/living/bot/secbot/Life()
 	..()
 	if(client)
-		process_sec_hud(src,1)
+		process_sec_hud(src, TRUE, src)
 	if(!client && prob(10))
 		to_chat(src, SPAN_NOTICE("...[pick(secbot_dreams)]..."))
 
