@@ -21,14 +21,13 @@ FLOOR SAFES
 	var/space = 0		//the combined w_class of everything in the safe
 	var/maxspace = 24	//the maximum combined w_class of stuff in the safe
 
-
-/obj/structure/safe/New()
+/obj/structure/safe/Initialize()
+	. = ..()
 	tumbler_1_pos = rand(0, 72)
 	tumbler_1_open = rand(0, 72)
 
 	tumbler_2_pos = rand(0, 72)
 	tumbler_2_open = rand(0, 72)
-
 
 /obj/structure/safe/Initialize()
 	for(var/obj/item/I in loc)
@@ -50,13 +49,11 @@ FLOOR SAFES
 		return 1
 	return 0
 
-
 /obj/structure/safe/proc/decrement(num)
 	num -= 1
 	if(num < 0)
 		num = 71
 	return num
-
 
 /obj/structure/safe/proc/increment(num)
 	num += 1
@@ -64,13 +61,11 @@ FLOOR SAFES
 		num = 0
 	return num
 
-
 /obj/structure/safe/on_update_icon()
 	if(open)
 		icon_state = "[initial(icon_state)]-open"
 	else
 		icon_state = initial(icon_state)
-
 
 /obj/structure/safe/attack_hand(mob/user as mob)
 	user.set_machine(src)
@@ -84,9 +79,9 @@ FLOOR SAFES
 		dat += "</table></center>"
 	show_browser(user, "<html><meta charset=\"utf-8\"><head><title>[name]</title></head><body>[dat]</body></html>", "window=safe;size=350x300")
 
-
 /obj/structure/safe/Topic(href, href_list)
-	if(!ishuman(usr))	return
+	if(!ishuman(usr))
+		return
 	var/mob/living/carbon/human/user = usr
 
 	var/canhear = 0
@@ -158,7 +153,6 @@ FLOOR SAFES
 		if(istype(I, /obj/item/clothing/accessory/stethoscope))
 			to_chat(user, "Hold [I] in one of your hands while you manipulate the dial.")
 			return
-
 
 /obj/structure/safe/ex_act(severity)
 	return

@@ -239,8 +239,8 @@
 
 	icon_state = "sword0"
 
-/obj/item/melee/energy/sword/one_hand/New()
-	..()
+/obj/item/melee/energy/sword/one_hand/Initialize()
+	. = ..()
 	var/list/colorparam = list("green" = "#68ff4d", "red" = "#ff5959", "blue" = "#4de4ff", "purple" = "#de4dff")
 	if(!blade_color)
 		blade_color = pick(colorparam)
@@ -308,8 +308,8 @@
 
 	var/wielded = FALSE
 
-/obj/item/melee/energy/sword/dualsaber/New()
-	..()
+/obj/item/melee/energy/sword/dualsaber/Initialize()
+	. = ..()
 	var/list/colorparam = list("green" = "#68ff4d", "red" = "#ff5959", "blue" = "#4de4ff", "purple" = "#de4dff")
 	if(!blade_color)
 		blade_color = pick(colorparam)
@@ -389,14 +389,11 @@
 	var/weakref/creator
 	var/datum/effect/effect/system/spark_spread/spark_system
 
-/obj/item/melee/energy/blade/New()
-	..()
+/obj/item/melee/energy/blade/Initialize()
+	. = ..()
 	spark_system = new /datum/effect/effect/system/spark_spread()
 	spark_system.set_up(5, 0, src)
 	spark_system.attach(src)
-
-/obj/item/melee/energy/blade/Initialize()
-	. = ..()
 	set_next_think(world.time)
 
 /obj/item/melee/energy/blade/Destroy()

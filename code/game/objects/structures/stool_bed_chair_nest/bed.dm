@@ -16,7 +16,7 @@
 	They must use the Resist button, or verb, to try breaking free of the buckles, but it will be noticeable and by no means fast."
 
 	icon = 'icons/obj/furniture.dmi'
-	icon_state = "bed"
+	icon_state = "bed_preview"
 	base_icon_state = "bed"
 	anchored = 1
 	can_buckle = 1
@@ -24,21 +24,17 @@
 	buckle_lying = 1
 	buckle_pixel_shift = "x=0;y=3"
 	appearance_flags = DEFAULT_APPEARANCE_FLAGS | LONG_GLIDE
-	var/material/material
-	var/material/padding_material
+	var/material/material = null
+	var/material/padding_material = null
 	var/material_alteration = MATERIAL_ALTERATION_ALL
 
-/obj/structure/bed/New(newloc, new_material, new_padding_material)
-	..(newloc)
+/obj/structure/bed/Initialize(mapload, new_material, new_padding_material)
+	. = ..(mapload)
 	color = null
-	if(!new_material)
-		new_material = MATERIAL_STEEL
-	material = get_material_by_name(new_material)
-	if(!istype(material))
-		qdel(src)
-		return
-	if(new_padding_material)
-		padding_material = get_material_by_name(new_padding_material)
+	material = get_material_by_name(new_material || material || MATERIAL_STEEL)
+	padding_material = new_padding_material || padding_material
+	if(padding_material)
+		padding_material = get_material_by_name(padding_material)
 	update_icon()
 
 /obj/structure/bed/get_material()
@@ -202,19 +198,23 @@
 	icon_state = "psychbed"
 	base_icon_state = "psychbed"
 	buckle_pixel_shift = "x=0;y=1"
+	material = MATERIAL_WOOD
+	padding_material = MATERIAL_LEATHER
 
-/obj/structure/bed/psych/New(newloc)
-	..(newloc, MATERIAL_WOOD, MATERIAL_LEATHER)
-
-/obj/structure/bed/padded/New(newloc)
-	..(newloc, MATERIAL_PLASTIC, MATERIAL_COTTON)
+/obj/structure/bed/padded
+	icon_state = "bed_padded_preview"
+	material = MATERIAL_PLASTIC
+	padding_material = MATERIAL_COTTON
 
 /obj/structure/bed/alien
 	name = "resting contraption"
 	desc = "This looks similar to contraptions from earth. Could aliens be stealing our technology?"
+	material = MATERIAL_RESIN
 
-/obj/structure/bed/alien/New(newloc)
-	..(newloc, MATERIAL_RESIN)
+/obj/structure/bed/captain
+	icon_state = "bed_padded_preview"
+	material = MATERIAL_GOLD
+	padding_material = "blue"
 
 /*
  * Roller beds
@@ -315,8 +315,8 @@
 	icon_state = "rollerbed_folded"
 	var/obj/item/roller/held
 
-/obj/item/roller_holder/New()
-	..()
+/obj/item/roller_holder/Initialize()
+	. = ..()
 	held = new /obj/item/roller(src)
 
 /obj/item/roller_holder/attack_self(mob/user)
@@ -378,7 +378,6 @@
 	else
 		unbuckle()
 
-
 /obj/structure/bed/roller/Move(newloc, direct)
 	. = ..()
 	if(!.)
@@ -387,7 +386,6 @@
 	if(buckled_bodybag)
 		buckled_bodybag.set_glide_size(glide_size)
 		buckled_bodybag.forceMove(loc)
-
 
 /obj/structure/bed/roller/proc/do_buckle_bodybag(obj/structure/closet/body_bag/B, mob/user)
 	if(isanimal(user))
@@ -460,8 +458,10 @@
 	buckle_pixel_shift = "x=0;y=3"
 	pull_slowdown = PULL_SLOWDOWN_LIGHT
 
-/obj/structure/bed/wheel/padded/New(newloc)
-	..(newloc, MATERIAL_PLASTIC, MATERIAL_COTTON)
+/obj/structure/bed/wheel/padded
+	material = MATERIAL_PLASTIC
+	padding_material = MATERIAL_COTTON
 
-/obj/structure/bed/wheel/luxury/New(newloc)
-	..(newloc, MATERIAL_GOLD, MATERIAL_CARPET)
+/obj/structure/bed/wheel/luxury
+	material = MATERIAL_GOLD
+	padding_material = MATERIAL_CARPET

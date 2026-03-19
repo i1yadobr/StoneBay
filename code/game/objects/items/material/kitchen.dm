@@ -19,18 +19,36 @@
 	force_divisor = 0.05 // 3 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.25 // 5 when thrown with weight 20 (steel)
 	material_amount = 1
-	var/loaded      //Descriptive string for currently loaded food object.
 	var/scoop_food = 1
+	var/obj/item/reagent_containers/food/forked_chunk/forked_chunk = null
 
-/obj/item/material/kitchen/utensil/New()
-	..()
-	if (prob(60))
+/obj/item/material/kitchen/utensil/Initialize()
+	. = ..()
+	if(prob(60))
 		src.pixel_y = rand(0, 4)
-	create_reagents(50)
-	return
 
-/obj/item/material/kitchen/utensil/attack(mob/living/carbon/M, mob/living/carbon/user)
+/obj/item/material/kitchen/utensil/Destroy()
+	QDEL_NULL(forked_chunk)
+	return ..()
 
+/obj/item/material/kitchen/utensil/on_update_icon()
+	ClearOverlays()
+	if(!forked_chunk)
+		return
+	var/image/I = image(icon, "loadedfood")
+	I.color = forked_chunk.color
+	I.appearance_flags |= RESET_COLOR
+	AddOverlays(I)
+
+/obj/item/material/kitchen/utensil/attack_self(mob/user)
+	if(!forked_chunk)
+		return
+	to_chat(user, SPAN("notice", "You drop \the [forked_chunk] from \the [src]."))
+	forked_chunk.forceMove(get_turf(src))
+	forked_chunk = null
+	update_icon()
+
+/obj/item/material/kitchen/utensil/attack(mob/living/carbon/M, mob/living/carbon/user, def_zone)
 	if(!istype(M))
 		return ..()
 
@@ -49,30 +67,27 @@
 		else
 			return ..()
 
-	if (reagents.total_volume > 0)
-		//TODO: Make a better way to fix it:
-		//Tempory fix a problem when can_force_feed() only funclionality with mob/living/carbon/human, not just a mob/living/carbon
-		var/mob/living/carbon/human/H = M
-		if(H == user)
-			if(!H.can_eat(loaded))
-				return
-			H.visible_message(SPAN("notice", "\The [user] eats some [loaded] from \the [src]."))
-		else
-			user.visible_message(SPAN("warning", "\The [user] begins to feed \the [H]!"))
-			if(!H.can_force_feed(user, loaded))
-				return
-			if(do_mob(user, H, time = 2 SECONDS))
-				return
-			if(!H.can_force_feed(user, loaded, check_resist = TRUE))
-				return
-			H.visible_message(SPAN("notice", "\The [user] feeds some [loaded] to \the [H] with \the [src]."))
-		reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
-		playsound(M.loc, 'sound/items/eatfood.ogg', rand(10, 40), 1)
-		ClearOverlays()
+	if(forked_chunk)
+		. = forked_chunk.attack(M, user, def_zone)
+		if(QDELETED(forked_chunk))
+			forked_chunk = null
+		update_icon()
 		return
 	else
-		to_chat(user, SPAN("warning", "You don't have anything on \the [src]."))//if we have help intent and no food scooped up DON'T STAB OURSELVES WITH THE FORK
+		to_chat(user, SPAN("notice", "You don't have anything on \the [src].")) // if we have help intent and no food scooped up DON'T STAB OURSELVES WITH THE FORK
 		return
+
+/obj/item/material/kitchen/utensil/examine(mob/user, infix)
+	. = ..()
+
+	if(!forked_chunk)
+		return
+
+	if(get_dist(src, user) > 1)
+		return
+
+	. += " There is a [forked_chunk.name] on it."
+	return
 
 /obj/item/material/kitchen/utensil/fork
 	name = "fork"
