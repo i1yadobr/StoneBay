@@ -60,8 +60,24 @@
 	beta_particle_resist = 4.8 MEGA ELECTRONVOLT
 	hawking_resist = 1 ELECTRONVOLT
 
-/obj/structure/window/Initialize()
-	. = ..()
+/obj/structure/window/Initialize(mapload, start_dir = null, constructed = 0)
+	. = ..(mapload)
+
+	//player-constructed windows
+	if(constructed)
+		set_anchored(FALSE)
+		state = 0
+
+	if(start_dir)
+		set_dir(start_dir)
+
+	if(is_full_window)
+		maxhealth *= 4
+
+	health = maxhealth
+
+	ini_dir = dir
+
 	// windows only block while reinforced and fulltile, so we'll use the proc
 	real_explosion_block = explosion_block
 
@@ -339,23 +355,6 @@
 	update_nearby_tiles(need_rebuild=1) //Compel updates before
 	updateSilicate()
 	update_nearby_tiles(need_rebuild=1)
-
-/obj/structure/window/New(Loc, start_dir=null, constructed=0)
-	..()
-
-	//player-constructed windows
-	if(constructed)
-		set_anchored(FALSE)
-
-	if(start_dir)
-		set_dir(start_dir)
-
-	if(is_full_window)
-		maxhealth *= 4
-
-	health = maxhealth
-
-	ini_dir = dir
 
 /obj/structure/window/Destroy()
 	set_density(0)

@@ -9,8 +9,8 @@
 	var/list/iconlist = list("asteroid_bigstone1","asteroid_bigstone2","asteroid_bigstone3","asteroid_bigstone4")
 	var/health = 40
 
-/obj/structure/rock/New()
-	..()
+/obj/structure/rock/Initialize()
+	. = ..()
 	icon_state = pick(iconlist)
 
 /obj/structure/rock/Destroy()

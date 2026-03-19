@@ -166,21 +166,21 @@
 	default_material = MATERIAL_STEEL
 	w_class = ITEM_SIZE_TINY	//it's real small
 
-/obj/item/material/shard/shrapnel/New(loc)
-	..(loc, MATERIAL_STEEL)
+/obj/item/material/shard/shrapnel
 	name = "shrapnel"
+	default_material = MATERIAL_STEEL
+	w_class = ITEM_SIZE_TINY
+
+/obj/item/material/shard/shrapnel/Initialize()
+	. = ..()
 	icon_state = "shrapnel[pick("large", "medium", "small")]"
 	update_icon()
 
 /obj/item/material/shard/plasma
 	item_state = "shard-plass"
-
-/obj/item/material/shard/plasma/New(loc)
-	..(loc, MATERIAL_PLASS)
+	default_material = MATERIAL_PLASS
 
 /obj/item/material/shard/bglass
 	item_state = "shard-bglass"
+	default_material = MATERIAL_BLACK_GLASS
 	uncoloreble = TRUE
-
-/obj/item/material/shard/bglass/New(loc)
-	..(loc, MATERIAL_BLACK_GLASS)
