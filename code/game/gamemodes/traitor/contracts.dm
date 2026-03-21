@@ -23,6 +23,7 @@ GLOBAL_LIST_INIT(contracts_steal_items, list(
 	"a head of personnel's jumpsuit" =                  list(CONTRACT_STEAL_UNDERPANTS, /obj/item/clothing/under/rank/head_of_personnel),
 	"the hypospray" =                                   list(CONTRACT_STEAL_SCIENCE, /obj/item/reagent_containers/hypospray/vial/cmo),
 	"the captain's pinpointer" =                        list(CONTRACT_STEAL_OPERATION, /obj/item/pinpointer),
+	"the captain's medal box" =                         list(CONTRACT_STEAL_OPERATION, /obj/item/storage/lockbox/medal),
 	"an ion pistol" =                                   list(CONTRACT_STEAL_MILITARY, /obj/item/gun/energy/ionrifle/small),
 	"an energy gun" =                                   list(CONTRACT_STEAL_MILITARY, /obj/item/gun/energy/egun),
 	"a laser pistol" =                                  list(CONTRACT_STEAL_MILITARY, /obj/item/gun/energy/laser/pistol),
