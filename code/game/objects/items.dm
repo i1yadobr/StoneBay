@@ -1154,3 +1154,6 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 		playsound(src, pickup_sound, volume, TRUE, extrarange = -5)
 	else
 		playsound(src, equip_sound, 75, TRUE, extrarange = -5)
+
+/obj/item/proc/get_belt_overlay() //Returns the icon used for overlaying the object on a belt
+	return mutable_appearance('icons/inv_slots/belts/belt_overlays.dmi', icon_state)

@@ -19,6 +19,12 @@
 	pickup_sound = SFX_PICKUP_TOOLBELT
 	equip_sound = SFX_EQUIP_TOOLBELT
 
+	var/content_overlays = FALSE //If this is true, the belt will gain overlays based on what it's holding
+
+/obj/item/weapon/storage/belt/Initialize()
+	. = ..()
+	update_icon()
+
 /obj/item/storage/belt/verb/toggle_layer()
 	set name = "Switch Belt Layer"
 	set category = "Object"
@@ -26,10 +32,15 @@
 	use_alt_layer = !use_alt_layer
 	update_icon()
 
-/obj/item/storage/on_update_icon()
+/obj/item/storage/belt/on_update_icon()
+	ClearOverlays()
 	if(ismob(loc))
 		var/mob/living/M = loc
 		M.update_inv_belt(TRUE)
+	if(content_overlays)
+		for(var/obj/item/I in contents)
+			var/mutable_appearance/M = I.get_belt_overlay()
+			AddOverlays(M)
 
 /obj/item/storage/belt/get_mob_overlay(mob/user_mob, slot)
 	. = ..()
@@ -81,6 +92,8 @@
 		/obj/item/device/lightreplacer,
 		/obj/item/device/robotanalyzer
 		)
+
+	content_overlays = TRUE
 
 /obj/item/storage/belt/utility/full/New()
 	..()
@@ -185,6 +198,8 @@
 		/obj/item/cell/ammo/charge,
 		/obj/item/ammo_casing/grenade
 		)
+
+	content_overlays = TRUE
 
 /obj/item/storage/belt/soulstone
 	name = "soul stone belt"
@@ -355,7 +370,6 @@
 /obj/item/storage/belt/sabre/Initialize()
 	. = ..()
 	new /obj/item/melee/sabre(src)
-	update_icon()
 
 /obj/item/storage/belt/sabre/on_update_icon()
 	icon_state = initial(base_icon_state)

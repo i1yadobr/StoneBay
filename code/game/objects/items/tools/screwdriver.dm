@@ -18,6 +18,8 @@
 		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 		)
 	icon_state = "screwdriver"
+	item_state = "screwdriver"
+	base_icon_state = "screwdriver"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT | SLOT_EARS
 	sharp = 1
@@ -34,39 +36,27 @@
 	lock_picking_level = 5
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	tool_behaviour = TOOL_SCREWDRIVER
-	var/randicon = TRUE
 
 	drop_sound = SFX_DROP_SCREWDRIVER
 	pickup_sound = SFX_PICKUP_SCREWDRIVER
 
-/obj/item/screwdriver/Initialize()
-	if(randicon)
-		switch(pick("red", "blue", "purple", "brown", "green", "cyan", "yellow"))
-			if("red")
-				icon_state = "screwdriver2"
-				item_state = "screwdriver"
-			if("blue")
-				icon_state = "screwdriver"
-				item_state = "screwdriver_blue"
-			if("purple")
-				icon_state = "screwdriver3"
-				item_state = "screwdriver_purple"
-			if("brown")
-				icon_state = "screwdriver4"
-				item_state = "screwdriver_brown"
-			if("green")
-				icon_state = "screwdriver5"
-				item_state = "screwdriver_green"
-			if("cyan")
-				icon_state = "screwdriver6"
-				item_state = "screwdriver_cyan"
-			if("yellow")
-				icon_state = "screwdriver7"
-				item_state = "screwdriver_yellow"
+	var/randicon = TRUE
+	var/static/list/handle_color = list(
+		"red",
+		"blue",
+		"purple",
+		"brown",
+		"green",
+		"cyan",
+		"yellow"
+	)
 
+/obj/item/screwdriver/Initialize()
+	. = ..()
+	if(randicon)
+		update_handle_icon()
 	if(prob(75))
 		pixel_y = rand(0, 16)
-	. = ..()
 	update_icon()
 
 /obj/item/screwdriver/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
@@ -102,11 +92,25 @@
 /obj/item/screwdriver/on_update_icon()
 	SetTransform(rotation = istype(loc, /obj/item/storage) ? -90 : 0)
 
+/obj/item/screwdriver/get_belt_overlay()
+	if(randicon)
+		var/mutable_appearance/screwdriver = mutable_appearance('icons/obj/clothing/belt_overlays.dmi', base_icon_state)
+		screwdriver.AddOverlays(screwdriver)
+		return screwdriver
+	else
+		return mutable_appearance('icons/obj/clothing/belt_overlays.dmi', icon_state)
+
+/obj/item/screwdriver/proc/update_handle_icon()
+	base_icon_state = "screwdriver_[pick(handle_color)]"
+	icon_state = base_icon_state
+	item_state = base_icon_state
+
 /obj/item/screwdriver/old
 	name = "old screwdriver"
 	desc = "Old-school flathead screwdriver made of plasteel, with a sturdy and heavy duraplastic handle."
 	icon_state = "legacyscrewdriver"
 	item_state = "screwdriver"
+	base_icon_state = "legacyscrewdriver"
 	force = 8.5
 	mod_weight = 0.4
 	mod_reach = 0.3
