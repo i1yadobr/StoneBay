@@ -381,32 +381,6 @@
 	var/key_count = count_by_type(contents, key_type)
 	icon_state = "[initial(icon_state)][key_count]"
 
-/obj/item/storage/lockbox/vials
-	name = "secure vial storage box"
-	desc = "A locked box for keeping things away from children."
-	icon = 'icons/obj/vialbox.dmi'
-	icon_state = "vialbox0"
-	item_state = "syringe_kit"
-	inspect_state = FALSE
-	w_class = ITEM_SIZE_NORMAL
-	max_w_class = ITEM_SIZE_TINY
-	max_storage_space = null
-	storage_slots = 6
-	req_access = list(access_virology)
-	can_hold = list(/obj/item/reagent_containers/vessel/beaker/vial)
-
-/obj/item/storage/lockbox/vials/on_update_icon()
-	var/total_contents = count_by_type(contents, /obj/item/reagent_containers/vessel/beaker/vial)
-	ClearOverlays()
-	icon_state = "vialbox[Floor(total_contents)]"
-	if (!broken)
-		AddOverlays(image(icon, src, "led[locked]"))
-		if(locked)
-			AddOverlays(image(icon, src, "cover"))
-	else
-		AddOverlays(image(icon, src, "ledb"))
-	return
-
 /*
  * Rolling Papers
  */

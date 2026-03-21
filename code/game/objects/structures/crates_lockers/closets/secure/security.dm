@@ -12,6 +12,7 @@
 		new /datum/atom_creator/weighted(list(/obj/item/storage/backpack/captain, /obj/item/storage/backpack/satchel/cap)),
 		new /datum/atom_creator/simple(/obj/item/storage/backpack/dufflebag/captain, 50),
 		/obj/item/storage/garment/captain,
+		/obj/item/storage/lockbox/medal,
 		/obj/item/device/radio/headset/heads/captain,
 		/obj/item/gun/energy/egun/elite,
 		/obj/item/storage/belt/sabre,

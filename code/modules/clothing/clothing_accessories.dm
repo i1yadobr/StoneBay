@@ -1,12 +1,12 @@
 /obj/item/clothing/proc/can_attach_accessory(obj/item/clothing/accessory/A)
 	if(istype(A) && LAZYISIN(valid_accessory_slots, A.slot))
-		.=1
+		. = TRUE
 	else
-		return 0
+		return FALSE
 	if(LAZYLEN(accessories) && LAZYISIN(restricted_accessory_slots, A.slot))
 		for(var/obj/item/clothing/accessory/AC in accessories)
-			if (AC.slot == A.slot && AC.slot != ACCESSORY_SLOT_COVER)
-				return 0
+			if(AC.slot == A.slot && AC.slot != ACCESSORY_SLOT_COVER)
+				return FALSE
 
 /obj/item/clothing/attackby(obj/item/I, mob/user)
 	if(istype(I, /obj/item/clothing/accessory))
@@ -73,8 +73,11 @@
 	set name = "Remove Accessory"
 	set category = "Object"
 	set src in usr
-	if(!istype(usr, /mob/living)) return
-	if(usr.stat) return
+
+	if(!istype(usr, /mob/living))
+		return
+	if(usr.stat)
+		return
 	if(!LAZYLEN(accessories))
 		return
 

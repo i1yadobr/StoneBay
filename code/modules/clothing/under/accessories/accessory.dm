@@ -2,6 +2,10 @@
 	name = "tie"
 	desc = "A neosilk clip-on tie."
 	icon = 'icons/obj/clothing/accessories.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/clothing/accessories/hand_l_default.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/clothing/accessories/hand_r_default.dmi'
+		)
 	icon_state = "tie"
 	item_state = ""	//no inhands
 	slot_flags = SLOT_TIE
