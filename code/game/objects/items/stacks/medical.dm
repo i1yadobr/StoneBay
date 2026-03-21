@@ -492,6 +492,7 @@
 	singular_name = "somatic gel dose"
 	desc = "A container of somatic gel, manufactured by Vey-Med. A bendable nozzle makes it easy to apply. Effectively seals up even severe wounds."
 	icon_state = "brutegel"
+	base_icon_state = "brutegel"
 	heal_brute = 10.0
 	origin_tech = list(TECH_BIO = 2)
 
@@ -558,6 +559,7 @@
 	singular_name = "burn gel dose"
 	desc = "A container of protein-renaturating gel, manufactured by Vey-Med. A bendable nozzle makes it easy to apply. It's said to renaturate proteins, effectively treating severe burns. Doesn't cause skin cancer. Probably."
 	icon_state = "burngel"
+	base_icon_state = "burngel"
 	heal_burn = 10
 	origin_tech = list(TECH_BIO = 3)
 
