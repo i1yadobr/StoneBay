@@ -12,8 +12,8 @@
 	You can scan the occupant's vitals without opening the bag by clicking the occupied bag with a health analyzer."
 
 	icon = 'icons/obj/cryobag.dmi'
-	icon_state = "bodybag_folded"
-	item_state = "bodybag_folded"
+	icon_state = "cryobag_folded"
+	item_state = "cryobag_folded"
 	origin_tech = list(TECH_BIO = 4)
 	var/stasis_power
 	var/bag_structure = /obj/structure/closet/body_bag/cryobag
@@ -30,6 +30,7 @@
 	name = "stasis bag"
 	desc = "A non-reusable plastic bag designed to prevent additional damage to an occupant, especially useful if short on time or in \
 	a hostile enviroment."
+	icon = 'icons/obj/cryobag.dmi'
 
 	description_info = "This stasis bag will preserve the occupant, stopping most forms of harm from occuring, such as from oxygen \
 	deprivation, irradiation, shock, and chemicals inside the occupant, at least until the bag is opened again.<br><br>\
@@ -38,14 +39,13 @@
 	the bag will protect the occupant from most outside enviromental hazards. <br><br>\
 	You can scan the occupant's vitals without opening the bag by clicking the occupied bag with a health analyzer."
 
-	icon = 'icons/obj/cryobag.dmi'
 	item_path = /obj/item/bodybag/cryobag
 
 	storage_types = CLOSET_STORAGE_MOBS
 	intact_closet = FALSE
 	var/datum/gas_mixture/airtank
 
-	var/syndi
+	var/syndi = FALSE
 
 	var/stasis_power = 20
 	var/degradation_time = 150 //ticks until stasis power degrades, ~5 minutes
@@ -145,7 +145,7 @@
 /obj/structure/closet/body_bag/cryobag/syndi
 	name = "modified stasis bag"
 	icon = 'icons/obj/syndi_cryobag.dmi'
-	syndi = 1
+	syndi = TRUE
 	item_path = /obj/item/bodybag/cryobag/syndi
 	stasis_power = 10
 	degradation_time = 300

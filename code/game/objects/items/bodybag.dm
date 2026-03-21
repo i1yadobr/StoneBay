@@ -9,7 +9,7 @@
 		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "bodybag_folded"
-	item_state = "bodybag_folded_c"
+	item_state = "bodybag_folded"
 	w_class = ITEM_SIZE_SMALL
 	pull_sound = SFX_PULL_BODY
 

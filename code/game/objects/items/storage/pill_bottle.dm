@@ -1,20 +1,20 @@
-
-/*
- * Pill Bottles
- */
 /obj/item/storage/pill_bottle
 	name = "pill bottle"
 	desc = "It's an airtight container for storing medication."
-	icon_state = "pill_canister"
 	icon = 'icons/obj/chemical.dmi'
-	item_state = "contsolid"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
+		)
+	icon_state = "pill_canister"
+	item_state = "pill_canister"
 	base_icon_state = "pill_canister"
 	w_class = ITEM_SIZE_SMALL
 	max_w_class = ITEM_SIZE_TINY
 	max_storage_space = 14
 	can_hold = list(/obj/item/reagent_containers/pill, /obj/item/dice, /obj/item/paper)
-	allow_quick_gather = 1
-	use_to_pickup = 1
+	allow_quick_gather = TRUE
+	use_to_pickup = TRUE
 	use_sound = 'sound/effects/using/bottles/use1.ogg'
 	var/label_color = null
 	var/spam_flag = FALSE

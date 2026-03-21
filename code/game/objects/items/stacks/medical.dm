@@ -253,188 +253,65 @@
 	affecting.salve()
 	return 1
 
-/obj/item/stack/medical/gel
-	name = "medical gel"
-	desc = "You should not be able to see this."
-	stack_empty = MEDICAL_STACK_FILLED
-	splittable = FALSE
+/obj/item/stack/medical/bandaids
+	name = "pack of band-aids"
+	singular_name = "band-aid"
+	desc = "Name brand NanoTrasen adhesive bandages. These can save you from various ouchies and boo boos."
+	icon_state = "bandaid"
+	item_state = "bandaid"
+	origin_tech = list(TECH_BIO = 1)
+	amount = 6
+	max_amount = 6
+	heal_brute = 7.5
 	stack_full = TRUE
-	max_amount = 20
-	amount = 20
+	stack_empty = MEDICAL_STACK_FILLED
+	splittable = 0
+	var/bandaged_per_use = 25
 
-/obj/item/stack/medical/gel/proc/refill(amt = 1)
-	if(get_amount() >= max_amount)
+/obj/item/stack/medical/bandaids/apply_on_human(mob/living/carbon/human/H, obj/item/organ/external/affecting, mob/user)
+	. = ..()
+	if(!.)
 		return 0
-	amount += amt
-	if(stack_empty == MEDICAL_STACK_EMPTY)
-		name = initial(name)
-		stack_empty = MEDICAL_STACK_FILLED
-	update_icon()
-	return 1
 
-/obj/item/stack/medical/gel/proc/refill_from_same(obj/item/stack/medical/gel/I, mob/user)
-	if(!istype(I))
-		return
+	if(affecting.is_bandaged())
+		to_chat(user, SPAN("notice", "[H]'s [affecting.name] doesn't seem to be bleeding."))
+		return 0
 
-	if(I.singular_name != singular_name)
-		return
+	user.visible_message(\
+		SPAN("notice", "\The [user] starts placing a band-aid on [H]'s [affecting.name]."),\
+		SPAN("notice", "You start placing a band-aid on [H]'s [affecting.name]."))
 
-	var/obj/item/stack/medical/gel/O = I
-	if(!O.amount)
-		to_chat(user, SPAN("warning", "You are trying to refill \the [src] using an empty container."))
-		return
-	var/amt_to_transfer = min((max_amount - amount), O.amount)
-	if(refill(amt_to_transfer))
-		to_chat(user, SPAN("notice", "You refill \the [src] with [amt_to_transfer] doses of [O]."))
-		O.use(amt_to_transfer)
+	if(!do_mob(user, H, 1.5 SECONDS))
+		to_chat(user, SPAN("warning", "You must stand still to place a band-aid."))
+		return 0
+
+	if(QDELETED(affecting))
+		to_chat(user, SPAN("warning", "[H] is missing that body part!"))
+		return 0
+
+	if(affecting.is_bandaged())
+		to_chat(user, SPAN("notice", "[H]'s [affecting.name] doesn't seem to be bleeding anymore!"))
+		return 0
+
+	affecting.bandage(bandaged_per_use)
+
+	if(affecting.is_bandaged())
+		user.visible_message(\
+			SPAN("notice", "\The [user] places a band-aid on [H]'s [affecting.name]."), \
+			SPAN("notice", "You place a band-aid on [H]'s [affecting.name]."))
 	else
-		to_chat(user, SPAN("notice", "\The [src] is already full."))
-
-/obj/item/stack/medical/gel/attackby(obj/item/W, mob/user)
-	if(istype(W, /obj/item/stack/medical/gel))
-		refill_from_same(W, user)
-		return
-	..()
-
-/obj/item/stack/medical/gel/brute
-	name = "somatic gel"
-	singular_name = "somatic gel dose"
-	desc = "A container of somatic gel, manufactured by Vey-Med. A bendable nozzle makes it easy to apply. Effectively seals up even severe wounds."
-	icon_state = "brutegel"
-	item_state = "brutegel"
-	heal_brute = 10.0
-	origin_tech = list(TECH_BIO = 2)
-
-/obj/item/stack/medical/gel/brute/apply_on_human(mob/living/carbon/human/H, obj/item/organ/external/affecting, mob/user)
-	. = ..()
-	if(!.)
-		return 0
-
-	if(affecting.status & ORGAN_BLEEDING)
-		to_chat(user, SPAN("warning", "You can't treat [H]'s [affecting.name] while it's bleeding!"))
-		return 0
-
-	if(!affecting.cut_dam && !affecting.pierce_dam)
-		to_chat(user, SPAN("notice", "There are no open wounds on [H]'s [affecting.name]!"))
-		return 0
-
-	user.visible_message(\
-		SPAN("notice", "\The [user] starts applying somatic gel on [H]'s [affecting.name]."),\
-		SPAN("notice", "You start applying somatic gel on [H]'s [affecting.name]."))
-
-	if(!do_mob(user, H, 3.5 SECONDS))
-		to_chat(user, SPAN("warning", "You must stand still to apply somatic gel."))
-		return 0
-
-	var/work_done = FALSE
-	while(TRUE)
-		if(QDELETED(H))
-			return 0
-
-		if(QDELETED(affecting))
-			to_chat(user, SPAN("warning", "[H] is missing that body part!"))
-			return 0
-
-		if(!affecting.cut_dam && !affecting.pierce_dam)
-			break
-
-		affecting.heal_sharp_damage(heal_brute, FALSE)
-		use(1)
-		work_done = TRUE
-
-		if(!get_amount())
-			if(!affecting.cut_dam && !affecting.pierce_dam)
-				to_chat(user, SPAN("warning", "\The [src] is used up."))
-			else
-				to_chat(user, SPAN("warning", "\The [src] is used up, but there's still a wound on [H]'s [affecting.name]!"))
-			break
-
-		if(!affecting.cut_dam && !affecting.pierce_dam)
-			break
-
-		if(!do_mob(user, H, 2.5 SECONDS))
-			to_chat(user, SPAN("warning", "You must stand still to apply somatic gel."))
-			break
-
-	if(work_done)
 		user.visible_message(\
-			SPAN("notice", "\The [user] applies somatic gel on [H]'s [affecting.name]."),\
-			SPAN("notice", "You apply somatic gel on [H]'s [affecting.name]."))
+			SPAN("notice", "\The [user] places a band-aid on [H]'s [affecting.name]."), \
+			SPAN("notice", "You place a band-aid on [H]'s [affecting.name], but it's still not enough!"))
 
-	return -1
-
-/obj/item/stack/medical/gel/burn
-	name = "burn gel"
-	singular_name = "burn gel dose"
-	desc = "A container of protein-renaturating gel, manufactured by Vey-Med. A bendable nozzle makes it easy to apply. It's said to renaturate proteins, effectively treating severe burns. Doesn't cause skin cancer. Probably."
-	icon_state = "burngel"
-	item_state = "burngel"
-	heal_burn = 10
-	origin_tech = list(TECH_BIO = 3)
-
-/obj/item/stack/medical/gel/burn/apply_on_human(mob/living/carbon/human/H, obj/item/organ/external/affecting, mob/user)
-	. = ..()
-	if(!.)
-		return 0
-
-	if(affecting.status & ORGAN_BLEEDING)
-		to_chat(user, SPAN("warning", "You can't treat [H]'s [affecting.name] while it's bleeding!"))
-		return 0
-
-	if(!affecting.burn_dam)
-		to_chat(user, SPAN("notice", "There are no open wounds on [H]'s [affecting.name]!"))
-		return 0
-
-	user.visible_message(\
-		SPAN("notice", "\The [user] starts applying burn gel on [H]'s [affecting.name]."),\
-		SPAN("notice", "You start applying burn gel on [H]'s [affecting.name]."))
-
-	if(!do_mob(user, H, 3.5 SECONDS))
-		to_chat(user, SPAN("warning", "You must stand still to apply burn gel."))
-		return 0
-
-	var/work_done = FALSE
-	while(TRUE)
-		if(QDELETED(H))
-			return 0
-
-		if(QDELETED(affecting))
-			to_chat(user, SPAN("warning", "[H] is missing that body part!"))
-			return 0
-
-		if(!affecting.burn_dam)
-			break
-
-		affecting.heal_burn_damage(heal_burn, FALSE)
-		use(1)
-		work_done = TRUE
-
-		if(!get_amount())
-			if(!affecting.burn_dam)
-				to_chat(user, SPAN("warning", "\The [src] is used up."))
-			else
-				to_chat(user, SPAN("warning", "\The [src] is used up, but there's still a burn on [H]'s [affecting.name]!"))
-			break
-
-		if(!affecting.burn_dam)
-			break
-
-		if(!do_mob(user, H, 2.5 SECONDS))
-			to_chat(user, SPAN("warning", "You must stand still to apply burn gel."))
-			break
-
-	if(work_done)
-		user.visible_message(\
-			SPAN("notice", "\The [user] applies burn gel on [H]'s [affecting.name]."),\
-			SPAN("notice", "You apply burn gel on [H]'s [affecting.name]."))
-
-	return -1
+	return 1
 
 /obj/item/stack/medical/splint
 	name = "medical splints"
 	singular_name = "medical splint"
 	desc = "Modular splints capable of supporting and immobilizing bones in both limbs and appendages."
 	icon_state = "splint"
+	item_state = "splint"
 	amount = 5
 	max_amount = 5
 	var/list/splintable_organs = list(BP_L_ARM, BP_R_ARM, BP_L_LEG, BP_R_LEG, BP_L_HAND, BP_R_HAND, BP_L_FOOT, BP_R_FOOT)	//List of organs you can splint, natch.
@@ -504,77 +381,28 @@
 	name = "makeshift splints"
 	singular_name = "makeshift splint"
 	desc = "For holding your limbs in place with duct tape and scrap metal."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/items/sheets_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/items/sheets_righthand.dmi'
+		)
 	icon_state = "tape-splint"
+	item_state = "rods" // Placeholder to avoid using the actual splint sprite
 	amount = 1
 	splintable_organs = list(BP_L_ARM, BP_R_ARM, BP_L_LEG, BP_R_LEG)
 
-/obj/item/stack/medical/bandaids
-	name = "pack of band-aids"
-	singular_name = "band-aid"
-	desc = "Name brand NanoTrasen adhesive bandages. These can save you from various ouchies and boo boos."
-	icon_state = "bandaid"
-	item_state = "cigpacket"
-	origin_tech = list(TECH_BIO = 1)
-	amount = 6
-	max_amount = 6
-	heal_brute = 7.5
-	stack_full = TRUE
-	stack_empty = MEDICAL_STACK_FILLED
-	splittable = 0
-	var/bandaged_per_use = 25
-
-/obj/item/stack/medical/bandaids/apply_on_human(mob/living/carbon/human/H, obj/item/organ/external/affecting, mob/user)
-	. = ..()
-	if(!.)
-		return 0
-
-	if(affecting.is_bandaged())
-		to_chat(user, SPAN("notice", "[H]'s [affecting.name] doesn't seem to be bleeding."))
-		return 0
-
-	user.visible_message(\
-		SPAN("notice", "\The [user] starts placing a band-aid on [H]'s [affecting.name]."),\
-		SPAN("notice", "You start placing a band-aid on [H]'s [affecting.name]."))
-
-	if(!do_mob(user, H, 1.5 SECONDS))
-		to_chat(user, SPAN("warning", "You must stand still to place a band-aid."))
-		return 0
-
-	if(QDELETED(affecting))
-		to_chat(user, SPAN("warning", "[H] is missing that body part!"))
-		return 0
-
-	if(affecting.is_bandaged())
-		to_chat(user, SPAN("notice", "[H]'s [affecting.name] doesn't seem to be bleeding anymore!"))
-		return 0
-
-	affecting.bandage(bandaged_per_use)
-
-	if(affecting.is_bandaged())
-		user.visible_message(\
-			SPAN("notice", "\The [user] places a band-aid on [H]'s [affecting.name]."), \
-			SPAN("notice", "You place a band-aid on [H]'s [affecting.name]."))
-	else
-		user.visible_message(\
-			SPAN("notice", "\The [user] places a band-aid on [H]'s [affecting.name]."), \
-			SPAN("notice", "You place a band-aid on [H]'s [affecting.name], but it's still not enough!"))
-
-	return 1
-
-/obj/item/stack/medical/gel/resurrection_serum
+/obj/item/stack/medical/resurrection_serum
 	name = "prototype serum injector"
 	singular_name = "serum dose"
 	desc = "A weird-looking injector with some sort of bloody-red serum inside."
 
 	description_antag = "This more-expensive-than-your-life-is liquid, rumored to be made from mysterious vampire-like creatures, is capable of bringing the dead back to life."
 
-	// TODO: Draw cool inhand icon
 	icon_state = "resurrect_serum"
-	//item_state = "resurrect_serum"
+	item_state = null
 	origin_tech = list(TECH_BIO = 10)
 	amount = 1
 
-/obj/item/stack/medical/gel/resurrection_serum/apply_on_human(mob/living/carbon/human/H, obj/item/organ/external/affecting, mob/user)
+/obj/item/stack/medical/resurrection_serum/apply_on_human(mob/living/carbon/human/H, obj/item/organ/external/affecting, mob/user)
 	. = ..()
 	if(!.)
 		return 0
@@ -596,7 +424,199 @@
 	to_chat(H, (SPAN("notice", "You hear a swarm of voices. ") + SPAN("changeling", "They tell us... ") + SPAN("notice", "They tell you to come back.")))
 	return 1
 
-/obj/item/stack/medical/gel/resurrection_serum/ten
+/obj/item/stack/medical/resurrection_serum/ten
 	name = "serum injector"
 	desc = "A weird-looking injector with some sort of bloody-red serum inside. For some reason you feel like this thing is unbeliveably valuable."
 	amount = 10
+
+/obj/item/stack/medical/gel
+	name = "medical gel"
+	desc = "You should not be able to see this."
+	item_state = null
+	stack_empty = MEDICAL_STACK_FILLED
+	splittable = FALSE
+	stack_full = TRUE
+	max_amount = 20
+	amount = 20
+
+/obj/item/stack/medical/gel/on_update_icon()
+	switch(amount)
+		if(20 to INFINITY)
+			icon_state = base_icon_state
+		if(15 to 19)
+			icon_state = "[base_icon_state]15"
+		if(10 to 14)
+			icon_state = "[base_icon_state]10"
+		if(5 to 9)
+			icon_state = "[base_icon_state]5"
+		if(0 to 4)
+			icon_state = "[base_icon_state]0"
+	update_held_icon()
+
+/obj/item/stack/medical/gel/proc/refill(amt = 1)
+	if(get_amount() >= max_amount)
+		return 0
+	amount += amt
+	if(stack_empty == MEDICAL_STACK_EMPTY)
+		name = initial(name)
+		stack_empty = MEDICAL_STACK_FILLED
+	update_icon()
+	return 1
+
+/obj/item/stack/medical/gel/proc/refill_from_same(obj/item/stack/medical/gel/I, mob/user)
+	if(!istype(I))
+		return
+
+	if(I.singular_name != singular_name)
+		return
+
+	var/obj/item/stack/medical/gel/O = I
+	if(!O.amount)
+		to_chat(user, SPAN("warning", "You are trying to refill \the [src] using an empty container."))
+		return
+	var/amt_to_transfer = min((max_amount - amount), O.amount)
+	if(refill(amt_to_transfer))
+		to_chat(user, SPAN("notice", "You refill \the [src] with [amt_to_transfer] doses of [O]."))
+		O.use(amt_to_transfer)
+	else
+		to_chat(user, SPAN("notice", "\The [src] is already full."))
+
+/obj/item/stack/medical/gel/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/stack/medical/gel))
+		refill_from_same(W, user)
+		return
+	..()
+
+/obj/item/stack/medical/gel/brute
+	name = "somatic gel"
+	singular_name = "somatic gel dose"
+	desc = "A container of somatic gel, manufactured by Vey-Med. A bendable nozzle makes it easy to apply. Effectively seals up even severe wounds."
+	icon_state = "brutegel"
+	base_icon_state = "brutegel"
+	heal_brute = 10.0
+	origin_tech = list(TECH_BIO = 2)
+
+/obj/item/stack/medical/gel/brute/apply_on_human(mob/living/carbon/human/H, obj/item/organ/external/affecting, mob/user)
+	. = ..()
+	if(!.)
+		return 0
+
+	if(affecting.status & ORGAN_BLEEDING)
+		to_chat(user, SPAN("warning", "You can't treat [H]'s [affecting.name] while it's bleeding!"))
+		return 0
+
+	if(!affecting.cut_dam && !affecting.pierce_dam)
+		to_chat(user, SPAN("notice", "There are no open wounds on [H]'s [affecting.name]!"))
+		return 0
+
+	user.visible_message(\
+		SPAN("notice", "\The [user] starts applying somatic gel on [H]'s [affecting.name]."),\
+		SPAN("notice", "You start applying somatic gel on [H]'s [affecting.name]."))
+
+	if(!do_mob(user, H, 3.5 SECONDS))
+		to_chat(user, SPAN("warning", "You must stand still to apply somatic gel."))
+		return 0
+
+	var/work_done = FALSE
+	while(TRUE)
+		if(QDELETED(H))
+			return 0
+
+		if(QDELETED(affecting))
+			to_chat(user, SPAN("warning", "[H] is missing that body part!"))
+			return 0
+
+		if(!affecting.cut_dam && !affecting.pierce_dam)
+			break
+
+		affecting.heal_sharp_damage(heal_brute, FALSE)
+		use(1)
+		work_done = TRUE
+
+		if(!get_amount())
+			if(!affecting.cut_dam && !affecting.pierce_dam)
+				to_chat(user, SPAN("warning", "\The [src] is used up."))
+			else
+				to_chat(user, SPAN("warning", "\The [src] is used up, but there's still a wound on [H]'s [affecting.name]!"))
+			break
+
+		if(!affecting.cut_dam && !affecting.pierce_dam)
+			break
+
+		if(!do_mob(user, H, 2.5 SECONDS))
+			to_chat(user, SPAN("warning", "You must stand still to apply somatic gel."))
+			break
+
+	if(work_done)
+		user.visible_message(\
+			SPAN("notice", "\The [user] applies somatic gel on [H]'s [affecting.name]."),\
+			SPAN("notice", "You apply somatic gel on [H]'s [affecting.name]."))
+
+	return -1
+
+/obj/item/stack/medical/gel/burn
+	name = "burn gel"
+	singular_name = "burn gel dose"
+	desc = "A container of protein-renaturating gel, manufactured by Vey-Med. A bendable nozzle makes it easy to apply. It's said to renaturate proteins, effectively treating severe burns. Doesn't cause skin cancer. Probably."
+	icon_state = "burngel"
+	base_icon_state = "burngel"
+	heal_burn = 10
+	origin_tech = list(TECH_BIO = 3)
+
+/obj/item/stack/medical/gel/burn/apply_on_human(mob/living/carbon/human/H, obj/item/organ/external/affecting, mob/user)
+	. = ..()
+	if(!.)
+		return 0
+
+	if(affecting.status & ORGAN_BLEEDING)
+		to_chat(user, SPAN("warning", "You can't treat [H]'s [affecting.name] while it's bleeding!"))
+		return 0
+
+	if(!affecting.burn_dam)
+		to_chat(user, SPAN("notice", "There are no open wounds on [H]'s [affecting.name]!"))
+		return 0
+
+	user.visible_message(\
+		SPAN("notice", "\The [user] starts applying burn gel on [H]'s [affecting.name]."),\
+		SPAN("notice", "You start applying burn gel on [H]'s [affecting.name]."))
+
+	if(!do_mob(user, H, 3.5 SECONDS))
+		to_chat(user, SPAN("warning", "You must stand still to apply burn gel."))
+		return 0
+
+	var/work_done = FALSE
+	while(TRUE)
+		if(QDELETED(H))
+			return 0
+
+		if(QDELETED(affecting))
+			to_chat(user, SPAN("warning", "[H] is missing that body part!"))
+			return 0
+
+		if(!affecting.burn_dam)
+			break
+
+		affecting.heal_burn_damage(heal_burn, FALSE)
+		use(1)
+		work_done = TRUE
+
+		if(!get_amount())
+			if(!affecting.burn_dam)
+				to_chat(user, SPAN("warning", "\The [src] is used up."))
+			else
+				to_chat(user, SPAN("warning", "\The [src] is used up, but there's still a burn on [H]'s [affecting.name]!"))
+			break
+
+		if(!affecting.burn_dam)
+			break
+
+		if(!do_mob(user, H, 2.5 SECONDS))
+			to_chat(user, SPAN("warning", "You must stand still to apply burn gel."))
+			break
+
+	if(work_done)
+		user.visible_message(\
+			SPAN("notice", "\The [user] applies burn gel on [H]'s [affecting.name]."),\
+			SPAN("notice", "You apply burn gel on [H]'s [affecting.name]."))
+
+	return -1

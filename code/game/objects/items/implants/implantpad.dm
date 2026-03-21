@@ -1,23 +1,24 @@
-//This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:32
-
 /obj/item/implantpad
 	name = "implant pad"
 	desc = "Used to reprogramm implants."
 	icon = 'icons/obj/items.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
+		)
 	icon_state = "implantpad-0"
-	// TODO: Draw cool inhand icon
-	item_state = "electronic"
+	item_state = "implantpad"
 	w_class = ITEM_SIZE_SMALL
 	var/obj/item/implant/imp
 
 /obj/item/implantpad/on_update_icon()
-	if (imp)
+	if(imp)
 		icon_state = "implantpad-1"
 	else
 		icon_state = "implantpad-0"
 
 /obj/item/implantpad/attack_hand(mob/user)
-	if ((imp && (user.l_hand == src || user.r_hand == src)))
+	if((imp && (user.l_hand == src || user.r_hand == src)))
 		user.pick_or_drop(imp)
 		imp.add_fingerprint(user)
 		add_fingerprint(user)

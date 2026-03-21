@@ -160,6 +160,9 @@
 /obj/item/defibrillator/compact
 	name = "compact defibrillator"
 	desc = "A belt-equipped defibrillator that can be rapidly deployed."
+	// Note: I don't know why, but the side sprites for the slim characters are using
+	// the default sprite instead of the ones drawn specifically for them.
+	// We need to figure this out and fix it
 	icon_state = "defibcompact"
 	item_state = "defibcompact"
 	w_class = ITEM_SIZE_NORMAL
@@ -172,7 +175,6 @@
 /obj/item/defibrillator/compact/loaded
 	bcell = /obj/item/cell/high
 
-
 /obj/item/defibrillator/compact/combat
 	name = "combat defibrillator"
 	desc = "A belt-equipped blood-red defibrillator that can be rapidly deployed. Does not have the restrictions or safeties of conventional defibrillators and can revive through space suits."
@@ -182,10 +184,9 @@
 	bcell = /obj/item/cell/high
 
 /obj/item/shockpaddles/linked/combat
-	combat = 1
-	safety = 0
+	combat = TRUE
+	safety = FALSE
 	chargetime = (1 SECONDS)
-
 
 //paddles
 
@@ -193,6 +194,10 @@
 	name = "defibrillator paddles"
 	desc = "A pair of plastic-gripped paddles with flat metal surfaces that are used to deliver powerful electric shocks."
 	icon = 'icons/obj/defibrillator.dmi'
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/medical_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
+		)
 	icon_state = "defibpaddles"
 	item_state = "defibpaddles"
 	improper_held_icon = TRUE
@@ -204,24 +209,24 @@
 	mod_reach = 0.75
 	mod_handy = 1.0
 
-	var/safety = 1 //if you can zap people with the paddles on harm mode
-	var/combat = 0 //If it can be used to revive people wearing thick clothing (e.g. spacesuits)
+	var/safety = TRUE //if you can zap people with the paddles on harm mode
+	var/combat = FALSE //If it can be used to revive people wearing thick clothing (e.g. spacesuits)
 	var/cooldowntime = (6 SECONDS) // How long in deciseconds until the defib is ready again after use.
 	var/chargetime = (2 SECONDS)
 	var/chargecost = 100 //units of charge
 	var/burn_damage_amt = 5
 
-	var/wielded = 0
-	var/cooldown = 0
-	var/busy = 0
+	var/wielded = FALSE
+	var/cooldown = FALSE
+	var/busy = FALSE
 
 /obj/item/shockpaddles/proc/set_charge_cooldown(delay)
-	cooldown = 1
+	cooldown = TRUE
 	update_icon()
 
 	spawn(delay)
 		if(cooldown)
-			cooldown = 0
+			cooldown = FALSE
 			update_icon()
 
 			make_announcement("beeps", "Unit is re-energized.", "notice")
@@ -230,10 +235,10 @@
 /obj/item/shockpaddles/update_twohanding()
 	var/mob/living/M = loc
 	if(istype(M) && is_held_twohanded(M))
-		wielded = 1
+		wielded = TRUE
 		SetName("[initial(name)] (wielded)")
 	else
-		wielded = 0
+		wielded = FALSE
 		SetName(initial(name))
 	update_icon()
 	..()
@@ -297,12 +302,12 @@
 		return ..() //Do a regular attack. Harm intent shocking happens as a hit effect
 
 	if(can_use(user, H))
-		busy = 1
+		busy = TRUE
 		update_icon()
 
 		do_revive(H, user)
 
-		busy = 0
+		busy = FALSE
 		update_icon()
 
 	return 1
@@ -310,12 +315,12 @@
 //Since harm-intent now skips the delay for deliberate placement, you have to be able to hit them in combat in order to shock people.
 /obj/item/shockpaddles/apply_hit_effect(mob/living/target, mob/living/user, hit_zone)
 	if(ishuman(target) && can_use(user, target))
-		busy = 1
+		busy = TRUE
 		update_icon()
 
 		do_electrocute(target, user, hit_zone)
 
-		busy = 0
+		busy = FALSE
 		update_icon()
 
 		return 1
@@ -451,13 +456,13 @@
 	if(!base)
 		return
 	if(safety)
-		safety = 0
+		safety = FALSE
 		to_chat(user, SPAN("warning", "You silently disable \the [src]'s safety protocols with the cryptographic sequencer."))
 		burn_damage_amt *= 3
 		base.update_icon()
 		return 1
 	else
-		safety = 1
+		safety = TRUE
 		to_chat(user, SPAN("notice", "You silently enable \the [src]'s safety protocols with the cryptographic sequencer."))
 		burn_damage_amt = initial(burn_damage_amt)
 		base.update_icon()
@@ -480,7 +485,7 @@
 	name = "defibrillator paddles"
 	desc = "A pair of advanced shockpaddles powered by a robot's internal power cell, able to penetrate thick clothing."
 	chargecost = 50
-	combat = 1
+	combat = TRUE
 	icon_state = "defibpaddles0"
 	item_state = "defibpaddles0"
 	cooldowntime = (3 SECONDS)
@@ -579,8 +584,8 @@
 	desc = "A pair of unusual looking paddles powered by an experimental miniaturized reactor. It possesses both the ability to penetrate armor and to deliver powerful shocks."
 	icon_state = "defibpaddles0"
 	item_state = "defibpaddles0"
-	combat = 1
-	safety = 0
+	combat = TRUE
+	safety = FALSE
 	chargetime = (1 SECONDS)
 	burn_damage_amt = 15
 
