@@ -104,6 +104,7 @@
 	name = "lockbox of loyalty implants"
 	req_access = list(access_security)
 
+// TODO: Move this to "startswith" list
 /obj/item/storage/lockbox/loyalty/Initialize()
 	. = ..()
 	new /obj/item/implantcase/loyalty(src)
@@ -116,6 +117,7 @@
 	desc = "You have a bad feeling about opening this."
 	req_access = list(access_security)
 
+// TODO: Move this to "startswith" list
 /obj/item/storage/lockbox/clusterbang/Initialize()
 	. = ..()
 	new /obj/item/grenade/flashbang/clusterbang(src)
@@ -131,12 +133,16 @@
 	icon_state = "vialbox0"
 	item_state = "syringe_kit"
 	inspect_state = FALSE
+
 	w_class = ITEM_SIZE_NORMAL
 	max_w_class = ITEM_SIZE_TINY
 	max_storage_space = null
 	storage_slots = 6
 	req_access = list(access_virology)
-	can_hold = list(/obj/item/reagent_containers/vessel/beaker/vial)
+
+	can_hold = list(
+		/obj/item/reagent_containers/vessel/beaker/vial
+	)
 
 /obj/item/storage/lockbox/vials/on_update_icon()
 	var/total_contents = count_by_type(contents, /obj/item/reagent_containers/vessel/beaker/vial)
