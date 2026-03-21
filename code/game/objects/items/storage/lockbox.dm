@@ -131,7 +131,7 @@
 		slot_r_hand_str = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 		)
 	icon_state = "vialbox0"
-	item_state = "syringe_kit"
+	item_state = "vialbox"
 	inspect_state = FALSE
 
 	w_class = ITEM_SIZE_NORMAL

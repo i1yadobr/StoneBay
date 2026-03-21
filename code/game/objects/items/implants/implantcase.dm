@@ -1,5 +1,3 @@
-//This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:32
-
 /obj/item/implantcase
 	name = "glass case"
 	desc = "A case containing an implant."
@@ -14,15 +12,15 @@
 	w_class = ITEM_SIZE_TINY
 	var/obj/item/implant/imp = null
 
-/obj/item/implantcase/New()
+/obj/item/implantcase/Initialize()
+	. = ..()
 	if(ispath(imp))
 		imp = new imp(src)
 		update_description()
-	..()
 	update_icon()
 
 /obj/item/implantcase/proc/update_description()
-	if (imp)
+	if(imp)
 		desc = "A case containing \a [imp]."
 		origin_tech = imp.origin_tech
 	else
@@ -30,19 +28,21 @@
 		origin_tech.Cut()
 
 /obj/item/implantcase/on_update_icon()
-	if (imp)
+	if(imp)
 		icon_state = "implantcase-[imp.implant_color]"
 	else
 		icon_state = "implantcase-0"
 	return
 
 /obj/item/implantcase/attackby(obj/item/I, mob/user)
-	if (istype(I, /obj/item/pen))
+	if(istype(I, /obj/item/pen))
 		var/t = input(user, "What would you like the label to be?", src.name, null)
 		if(!user.has_in_hands(I))
 			return
+
 		if((!in_range(src, usr) && loc != user))
 			return
+
 		t = sanitizeSafe(t, MAX_NAME_LEN)
 		if(t)
 			SetName("glass case - '[t]'")
@@ -50,10 +50,12 @@
 		else
 			SetName(initial(name))
 			desc = "A case containing an implant."
+
 	else if(istype(I, /obj/item/reagent_containers/syringe))
 		if(istype(imp,/obj/item/implant/chem))
 			imp.attackby(I,user)
-	else if (istype(I, /obj/item/implanter))
+
+	else if(istype(I, /obj/item/implanter))
 		var/obj/item/implanter/M = I
 		if (M.imp && !imp && !M.imp.implanted)
 			M.imp.forceMove(src)
@@ -66,7 +68,8 @@
 		update_description()
 		update_icon()
 		M.update_icon()
-	else if (istype(I, /obj/item/implant))
+
+	else if(istype(I, /obj/item/implant))
 		if(!user.drop(I, src))
 			return
 		to_chat(usr, SPAN("notice", "You slide \the [I] into \the [src]."))
