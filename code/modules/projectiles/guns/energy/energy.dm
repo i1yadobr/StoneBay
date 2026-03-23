@@ -305,6 +305,6 @@
 	projectile_type = /obj/item/projectile/energy/electrode/stunsphere
 
 	firemodes = list(
-		list(mode_name = "stun", modifystate = "eriflestun", projectile_type = /obj/item/projectile/energy/electrode,  fire_delay = 0.8 SECONDS, charge_cost = 10, burst = 2),
-		list(mode_name = "beam", modifystate = "eriflekill", projectile_type = /obj/item/projectile/beam/laser/lesser, fire_delay = 0.8 SECONDS, charge_cost = 20, burst = 1)
+		list(mode_name = "stun", modifystate = "erifle_altstun", projectile_type = /obj/item/projectile/energy/electrode,  fire_delay = 0.8 SECONDS, charge_cost = 10, burst = 2),
+		list(mode_name = "beam", modifystate = "erifle_altkill", projectile_type = /obj/item/projectile/beam/laser/lesser, fire_delay = 0.8 SECONDS, charge_cost = 20, burst = 1)
 	)
