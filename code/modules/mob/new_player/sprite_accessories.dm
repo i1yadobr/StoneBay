@@ -409,8 +409,8 @@
 	icon_state = "grande"
 	gender = FEMALE
 
-/datum/sprite_accessory/hair/mbraid
-	name = "Medium Braid"
+/datum/sprite_accessory/hair/shortbraid
+	name = "Short Braid"
 	icon_state = "shortbraid"
 	gender = FEMALE
 
@@ -418,6 +418,7 @@
 	name = "Long Braid"
 	icon_state = "hbraid"
 	gender = FEMALE
+	has_secondary = TRUE
 
 /datum/sprite_accessory/hair/braid
 	name = "Floorlength Braid"
@@ -438,6 +439,7 @@
 	name = "Updo"
 	icon_state = "updo"
 	gender = FEMALE
+	has_secondary = TRUE
 
 /datum/sprite_accessory/hair/skinhead
 	name = "Skinhead"
@@ -469,6 +471,7 @@
 	name = "Fringetail"
 	icon_state = "fringetail"
 	gender = FEMALE
+	has_secondary = TRUE
 
 /datum/sprite_accessory/hair/dandypomp
 	name = "Dandy Pompadour"
@@ -655,6 +658,7 @@
 	name = "Ronin"
 	icon_state = "ronin"
 	gender = MALE
+	has_secondary = TRUE
 
 /datum/sprite_accessory/hair/bowlcut2
 	name = "Bowl 2"
@@ -866,6 +870,7 @@
 	name = "Medium Braid"
 	icon_state = "mediumbraid"
 	gender = FEMALE
+	has_secondary = TRUE
 
 /datum/sprite_accessory/hair/modern
 	name = "Modern"
@@ -1019,6 +1024,7 @@
 	name = "Cotton"
 	icon_state = "cotton"
 	gender = FEMALE
+	has_secondary = TRUE
 
 /datum/sprite_accessory/hair/braided_hair
 	name = "Braided"
@@ -1097,6 +1103,144 @@ May God have mercy.
 	name = "Lynch Long"
 	icon_state = "lynch_long"
 
+/datum/sprite_accessory/hair/gantleponytail
+	name = "Gentle Ponytail"
+	icon_state = "gantleponytail"
+	has_secondary = TRUE
+
+/datum/sprite_accessory/hair/wisp
+	name = "Wisp"
+	icon_state = "wisp"
+
+/datum/sprite_accessory/hair/curly
+	name = "Curly"
+	icon_state = "curly"
+
+/datum/sprite_accessory/hair/wife
+	name = "Wife"
+	icon_state = "wife"
+
+/datum/sprite_accessory/hair/victory
+	name = "Victory"
+	icon_state = "victory"
+
+/datum/sprite_accessory/hair/mia
+	name = "Mia"
+	icon_state = "mia"
+
+/datum/sprite_accessory/hair/mialong
+	name = "Mialong"
+	icon_state = "mialong"
+
+/datum/sprite_accessory/hair/rockstarcurls
+	name = "Rockstar curls"
+	icon_state = "rockstarcurls"
+
+/datum/sprite_accessory/hair/poofy
+	name = "Poofy"
+	icon_state = "poffy"
+	has_secondary = TRUE
+
+/datum/sprite_accessory/hair/poofy2
+	name = "Poofy 2"
+	icon_state = "poofy2"
+
+/datum/sprite_accessory/hair/proper
+	name = "Proper"
+	icon_state = "proper"
+
+/datum/sprite_accessory/hair/jessica
+	name = "Jessica"
+	icon_state = "jessica"
+
+/datum/sprite_accessory/hair/country
+	name = "Country"
+	icon_state = "country"
+	has_secondary = TRUE
+
+/datum/sprite_accessory/hair/elize
+	name = "Elize"
+	icon_state = "elize"
+
+/datum/sprite_accessory/hair/newyou
+	name = "Newyou"
+	icon_state = "newyou"
+
+/datum/sprite_accessory/hair/highspikytail
+	name = "Spiky Ponytail (High)"
+	icon_state = "highspikytail"
+
+/datum/sprite_accessory/hair/gloomy
+	name = "Gloomy"
+	icon_state = "gloomy"
+
+/datum/sprite_accessory/hair/gloomymedium
+	name = "Gloomy (Medium)"
+	icon_state = "gloomy_medium"
+
+/datum/sprite_accessory/hair/gloomylong
+	name = "Gloomy (long)"
+	icon_state = "gloomy_long"
+
+/datum/sprite_accessory/hair/stacy
+	name = "Stacy"
+	icon_state = "stacy"
+
+/datum/sprite_accessory/hair/stacybun
+	name = "Stacy Bun"
+	icon_state = "stacybun"
+
+/datum/sprite_accessory/hair/runner
+	name = "Runner"
+	icon_state = "runner"
+
+/datum/sprite_accessory/hair/hairfre
+	name = "Hairfre"
+	icon_state = "hairfre"
+
+/datum/sprite_accessory/hair/bonnie
+	name = "Bonnie"
+	icon_state = "bonnie"
+
+/datum/sprite_accessory/hair/bonniemedium
+	name = "Bonnie (Medium)"
+	icon_state = "bonnie_medium"
+
+/datum/sprite_accessory/hair/bonnielong
+	name = "Bonnie (Long)"
+	icon_state = "bonnie_long"
+
+/datum/sprite_accessory/hair/ponytail8
+	name = "Ponytail 8"
+	icon_state = "ponytail8"
+
+/datum/sprite_accessory/hair/longemo2
+	name = "Long Emo Stylish"
+	icon_state = "longemo2"
+
+/datum/sprite_accessory/hair/comet
+	name = "Comet"
+	icon_state = "comet"
+
+/datum/sprite_accessory/hair/overeyetwo
+	name = "Overeye Bun"
+	icon_state = "overeyebun"
+
+/datum/sprite_accessory/hair/bedhead4
+	name = "Bedhead 4"
+	icon_state = "bedhead4"
+
+/datum/sprite_accessory/hair/allthefuzz
+	name = "All the fuzz"
+	icon_state = "allthefuzz"
+
+/datum/sprite_accessory/hair/royalcurls
+	name = "Royal curls"
+	icon_state = "royalcurls"
+
+/datum/sprite_accessory/hair/shy
+	name = "Shy"
+	icon_state = "shy"
 
 /*
 ///////////////////////////////////
@@ -2017,6 +2161,10 @@ May God have mercy.
 	name = "Fade (High)"
 	icon_state = "fade_high"
 
+/datum/sprite_accessory/marking/hair_fade/fade_high_inverse
+	name = "Fade (High, Inverse)"
+	icon_state = "fade_high_inverse"
+
 /datum/sprite_accessory/marking/hair_fade/fade_wavy
 	name = "Fade (Wavy)"
 	icon_state = "fade_wavy"
@@ -2044,3 +2192,11 @@ May God have mercy.
 /datum/sprite_accessory/marking/hair_fade/split_horz_low
 	name = "Split (Low)"
 	icon_state = "split_horz_low"
+
+/datum/sprite_accessory/marking/hair_fade/streaks
+	name = "Streaked"
+	icon_state = "streaks"
+
+/datum/sprite_accessory/marking/hair_fade/wavy_spike
+	name = "Spiked Wavy"
+	icon_state = "wavy_spiked"
