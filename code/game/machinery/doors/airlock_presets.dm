@@ -204,10 +204,6 @@
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_mai
 	glass = 1
-	open_sound_powered = 'sound/machines/airlock/glass_open.ogg'
-	close_sound_powered = 'sound/machines/airlock/glass_close.ogg'
-	open_sound_unpowered = 'sound/machines/airlock/glass_force_open.ogg'
-	close_sound_unpowered = 'sound/machines/airlock/glass_force_close.ogg'
 
 /obj/machinery/door/airlock/glass_maintenance/Initialize()
 	. = ..()
@@ -223,10 +219,8 @@
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_civil
 	glass = 1
-	open_sound_powered = 'sound/machines/airlock/glass_open.ogg'
-	close_sound_powered = 'sound/machines/airlock/glass_close.ogg'
-	open_sound_unpowered = 'sound/machines/airlock/glass_force_open.ogg'
-	close_sound_unpowered = 'sound/machines/airlock/glass_force_close.ogg'
+	open_sound_powered = 'sound/machines/airlock/glass_open1.ogg'
+	close_sound_powered = 'sound/machines/airlock/glass_close1.ogg'
 
 /obj/machinery/door/airlock/glass_civil/Initialize()
 	. = ..()
