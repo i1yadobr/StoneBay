@@ -52,6 +52,12 @@
 
 	if(slot == slot_belt_str && length(contents))
 		for(var/obj/item/I in contents)
+			// TODO: Make a few updates to the method for rendering objects on a characters belt
+			// - Create separate sprites directly on the '/obj/item/storage/belt' itself and on the belt slot, respectively
+			// - - Or, create a separate file to store only the render files for those sprites
+			// - It would also be a good idea to add a check for `body_build` here, since as it stands, it renders sprites incorrectly on slim/fat characters
+			// - Optionally, figure out how it numbers/sorts the items on the belt, and make this process traceable in the code
+			// - - Since we don't want the overlays to overlap, accordingly
 			ret.AddOverlays(image('icons/inv_slots/belts/mob.dmi', "[I.item_state ? I.item_state : I.icon_state]"))
 	return ret
 
@@ -67,8 +73,8 @@
 
 	icon_state = "utilitybelt"
 	item_state = "utility"
+
 	can_hold = list(
-		///obj/item/combitool,
 		/obj/item/crowbar,
 		/obj/item/screwdriver,
 		/obj/item/weldingtool,
@@ -102,8 +108,8 @@
 	new /obj/item/weldingtool(src)
 	new /obj/item/crowbar(src)
 	new /obj/item/wirecutters(src)
+	//TODO: Replace with /obj/item/stack/cable_coil/random, instead of the hardcoded pick()
 	new /obj/item/stack/cable_coil(src,30,pick("red","yellow","orange"))
-
 
 /obj/item/storage/belt/utility/atmostech/New()
 	..()
@@ -122,6 +128,7 @@
 	new /obj/item/crowbar/brace_jack(src)
 	new /obj/item/wirecutters/old(src)
 	new /obj/item/device/t_scanner(src)
+	//TODO: Create /obj/item/stack/cable_coil/red and replace it with them, instead of the hardcoded "red" color
 	new /obj/item/stack/cable_coil(src, 30, "red")
 
 /obj/item/storage/belt/medical
@@ -129,6 +136,7 @@
 	desc = "Can hold various medical equipment."
 	icon_state = "medicalbelt"
 	item_state = "medical"
+
 	can_hold = list(
 		/obj/item/device/healthanalyzer,
 		/obj/item/reagent_containers/dropper,
@@ -164,6 +172,7 @@
 	desc = "Can hold security gear like handcuffs and flashes."
 	icon_state = "securitybelt"
 	item_state = "security"
+
 	can_hold = list(
 		/obj/item/crowbar,
 		/obj/item/grenade,
@@ -176,7 +185,7 @@
 		/obj/item/reagent_containers/food/donut/,
 		/obj/item/melee/baton,
 		/obj/item/gun/energy/taser,
-		/obj/item/gun/energy/taser/revolver ,
+		/obj/item/gun/energy/taser/revolver,
 		/obj/item/shield/barrier,
 		/obj/item/shield/riot/tele,
 		/obj/item/flame/lighter,
@@ -207,6 +216,7 @@
 	icon_state = "soulstonebelt"
 	item_state = "soulstonebelt"
 	storage_slots = 6
+
 	can_hold = list(
 		/obj/item/device/soulstone
 		)
@@ -226,6 +236,7 @@
 	icon_state = "championbelt"
 	item_state = "champion"
 	storage_slots = 1
+
 	can_hold = list(
 		/obj/item/clothing/mask/luchador
 		)
@@ -268,6 +279,7 @@
 	storage_slots = 9
 	w_class = 4
 	max_w_class = 4 //Pickaxes are big.
+
 	can_hold = list(/obj/item/screwdriver,
 		/obj/item/weldingtool,
 		/obj/item/wirecutters,
@@ -344,6 +356,7 @@
 	storage_slots = 6
 	w_class = 3
 	max_w_class = 3
+
 	can_hold = list(
 		/obj/item/grenade/chem_grenade/cleaner,
 		/obj/item/device/lightreplacer,
@@ -365,6 +378,7 @@
 	storage_slots = 1
 	w_class = ITEM_SIZE_HUGE
 	max_w_class = ITEM_SIZE_HUGE
+
 	can_hold = list(/obj/item/melee/sabre)
 
 /obj/item/storage/belt/sabre/Initialize()

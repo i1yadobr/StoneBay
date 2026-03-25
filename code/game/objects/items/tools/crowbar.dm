@@ -21,6 +21,7 @@
 		)
 	icon_state = "crowbar"
 	item_state = "crowbar"
+	base_icon_state = "crowbar"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	force = 10.0
@@ -41,15 +42,16 @@
 
 /obj/item/crowbar/red
 	desc = "A heavy crowbar of solid steel, good and solid in your hand. The red paint gives it a truly robust look."
-	icon_state = "red_crowbar"
+	icon_state = "crowbar_red"
 	item_state = "crowbar_red"
+	base_icon_state = "crowbar_red"
 	armor_penetration = 20 // Red smakks betta
 
 /obj/item/crowbar/prybar
 	name = "pry bar"
 	desc = "A steel bar with a wedge. It comes in a variety of configurations - collect them all."
 	icon_state = "prybar"
-	item_state = "crowbar"
+	base_icon_state = "prybar"
 	force = 7.5
 	throwforce = 6.0
 	throw_range = 5
@@ -60,15 +62,29 @@
 	armor_penetration = 0 // Smol smakks bettan't
 	matter = list(MATERIAL_STEEL = 80)
 
+	var/static/list/handle_color = list(
+		"black",
+		"red",
+		"green",
+		"aubergine",
+		"blue"
+	)
+
 /obj/item/crowbar/prybar/Initialize()
-	icon_state = "prybar[pick("","_red","_green","_aubergine","_blue")]"
 	. = ..()
+	update_handle_icon()
+	update_icon()
+
+/obj/item/screwdriver/update_handle_icon()
+	base_icon_state = "prybar_[pick(handle_color)]"
+	icon_state = base_icon_state
 
 /obj/item/crowbar/emergency
 	name = "emergency bar"
 	desc = "A plastic bar with a wedge. Kind of awkward and widdly, yet it may save your life one day."
 	icon_state = "emergbar"
-	item_state = "crowbar_emerg"
+	item_state = "emergbar"
+	base_icon_state = "emergbar"
 	force = 6.0
 	throwforce = 5.0
 	throw_range = 5
@@ -94,6 +110,7 @@
 	desc = "A special crowbar that can be used to safely remove airlock braces from airlocks."
 	icon_state = "maintenance_jack"
 	item_state = "maintenance_jack"
+	base_icon_state = "maintenance_jack"
 	force = 13
 	mod_weight = 1.25
 	armor_penetration = 30 // A poor man's lucerne

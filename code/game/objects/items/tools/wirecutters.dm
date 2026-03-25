@@ -18,6 +18,8 @@
 		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 		)
 	icon_state = "cutters"
+	item_state = "cutters"
+	base_icon_state = "cutters"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	sharp = 1
@@ -35,16 +37,21 @@
 	edge = 1
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	tool_behaviour = TOOL_WIRECUTTER
-	var/randicon = TRUE
 
 	drop_sound = SFX_DROP_WIRECUTTER
 	pickup_sound = SFX_PICKUP_WIRECUTTER
 
+	var/randicon = TRUE
+	var/static/list/handle_color = list(
+		"grey",
+		"yellow"
+	)
+
 /obj/item/wirecutters/Initialize()
-	if(randicon && prob(50))
-		icon_state = "cutters-y"
-		item_state = "cutters_yellow"
 	. = ..()
+	if(randicon)
+		update_handle_icon()
+	update_icon()
 
 /obj/item/wirecutters/attack(mob/living/carbon/C as mob, mob/user as mob)
 	if(user.a_intent == I_HELP && (C.handcuffed) && (istype(C.handcuffed, /obj/item/handcuffs/cable)))
@@ -58,6 +65,11 @@
 		return
 	else
 		..()
+
+/obj/item/wirecutters/update_handle_icon()
+	base_icon_state = "cutters_[pick(handle_color)]"
+	icon_state = base_icon_state
+	item_state = base_icon_state
 
 /obj/item/wirecutters/old
 	name = "old wirecutters"

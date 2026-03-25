@@ -1155,5 +1155,9 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	else
 		playsound(src, equip_sound, 75, TRUE, extrarange = -5)
 
+/obj/item/proc/update_handle_icon() // Used for tools with random handle colors
+	return
+
+// TODO: Come up with a way to render the handle and head separately for certain tools that have this feature
 /obj/item/proc/get_belt_overlay() //Returns the icon used for overlaying the object on a belt
-	return mutable_appearance('icons/inv_slots/belts/belt_overlays.dmi', icon_state)
+	return mutable_appearance('icons/obj/clothing/belt_overlays.dmi', icon_state)

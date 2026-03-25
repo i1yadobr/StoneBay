@@ -92,15 +92,7 @@
 /obj/item/screwdriver/on_update_icon()
 	SetTransform(rotation = istype(loc, /obj/item/storage) ? -90 : 0)
 
-/obj/item/screwdriver/get_belt_overlay()
-	if(randicon)
-		var/mutable_appearance/screwdriver = mutable_appearance('icons/obj/clothing/belt_overlays.dmi', base_icon_state)
-		screwdriver.AddOverlays(screwdriver)
-		return screwdriver
-	else
-		return mutable_appearance('icons/obj/clothing/belt_overlays.dmi', icon_state)
-
-/obj/item/screwdriver/proc/update_handle_icon()
+/obj/item/screwdriver/update_handle_icon()
 	base_icon_state = "screwdriver_[pick(handle_color)]"
 	icon_state = base_icon_state
 	item_state = base_icon_state
