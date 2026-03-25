@@ -38,6 +38,9 @@
 		var/mob/living/M = loc
 		M.update_inv_belt(TRUE)
 	if(content_overlays)
+		// TODO: Determine whether it is possible to check for the presence of an item on the belt,
+		// and if it is already there, avoid drawing additional overlays on top of it
+		// That way, the same overlays will pile up on top of each other, which isn't cool
 		for(var/obj/item/I in contents)
 			var/mutable_appearance/M = I.get_belt_overlay()
 			AddOverlays(M)
