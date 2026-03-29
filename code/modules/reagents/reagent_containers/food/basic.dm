@@ -21,25 +21,13 @@
 		return
 	return ..()
 
-/obj/item/reagent_containers/food/spagetti
-	name = "Spaghetti"
-	desc = "A bundle of raw spaghetti."
-	icon_state = "spagetti"
-	filling_color = "#eddd00"
-	center_of_mass = "x=16;y=16"
-	nutriment_desc = list("crunchy dough" = 1)
-	nutriment_amt = 40
-	startswith = list(
-		/datum/reagent/nutriment/protein/gluten = 10
-		)
-	bitesize = 25 // 52.5 nutrition, 2 bites
-
 /obj/item/reagent_containers/food/rawcutlet
 	name = "raw cutlet"
 	desc = "A thin piece of raw meat."
 	icon = 'icons/obj/food_ingredients.dmi'
 	icon_state = "rawcutlet"
-	center_of_mass = "x=17;y=20"
+	filling_color = "#7a3d11"
+	center_of_mass = "x=16;y=16"
 	startswith = list(
 		/datum/reagent/nutriment/protein = 50
 		)
@@ -56,27 +44,35 @@
 		)
 	bitesize = 25 // 125 nutrition, 2 bites
 
-/obj/item/reagent_containers/food/rawfaggot
-	name = "raw faggot"
-	desc = "A raw faggot."
-	icon = 'icons/obj/food_ingredients.dmi'
-	icon_state = "rawfaggot"
-	center_of_mass = "x=16;y=15"
+/obj/item/reagent_containers/food/cutlet/raw
+	name = "raw cutlet"
+	desc = "A thin piece of raw meat."
+	icon_state = "rawcutlet"
 	startswith = list(
-		/datum/reagent/nutriment/protein = 25
+		/datum/reagent/nutriment/protein = 50
 		)
-	bitesize = 25 // 31.25 nutrition, 1 bite
+	bitesize = 25 // 62.5 nutrition, 2 bites
 
 /obj/item/reagent_containers/food/faggot
 	name = "faggot"
 	desc = "A great meal all round."
+	icon = 'icons/obj/food_ingredients.dmi'
 	icon_state = "faggot"
-	filling_color = "#db0000"
+	filling_color = "#7a3d11"
 	center_of_mass = "x=16;y=16"
 	startswith = list(
 		/datum/reagent/nutriment/protein/cooked = 25
 		)
 	bitesize = 25 // 62.5 nutrition, 1 bite
+
+/obj/item/reagent_containers/food/faggot/raw
+	name = "raw faggot"
+	desc = "A raw faggot."
+	icon_state = "rawfaggot"
+	startswith = list(
+		/datum/reagent/nutriment/protein = 25
+		)
+	bitesize = 25 // 31.25 nutrition, 1 bite
 
 /obj/item/reagent_containers/food/bacon
 	name = "bacon"
