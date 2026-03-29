@@ -21,6 +21,19 @@
 		return
 	return ..()
 
+/obj/item/reagent_containers/food/spagetti
+	name = "Spaghetti"
+	desc = "A bundle of raw spaghetti."
+	icon_state = "spagetti"
+	filling_color = "#eddd00"
+	center_of_mass = "x=16;y=16"
+	nutriment_desc = list("crunchy dough" = 1)
+	nutriment_amt = 40
+	startswith = list(
+		/datum/reagent/nutriment/protein/gluten = 10
+		)
+	bitesize = 25 // 52.5 nutrition, 2 bites
+
 /obj/item/reagent_containers/food/rawcutlet
 	name = "raw cutlet"
 	desc = "A thin piece of raw meat."
