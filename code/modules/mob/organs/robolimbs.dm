@@ -20,6 +20,8 @@ var/datum/robolimb/basic_robolimb
 	var/has_eyes_icon = TRUE                                                         // If set, will draw eyes overlay.
 	var/can_feel_pain = FALSE
 	var/skintone
+	var/brute_mod = 0.9	// How resistant this prosthetic type is to brute damage.
+	var/burn_mod = 1.1	// How resistant this prosthetic type is to burn damage.
 	var/list/species_cannot_use = list()
 	var/list/restricted_to = list()
 	var/list/applies_to_part = list()

@@ -24,6 +24,7 @@ var/list/organ_cache = list()
 	var/min_broken_damage = 0         // Damage before becoming broken
 	var/max_damage = 60               // Damage cap
 	var/rejecting                     // Is this organ already being rejected?
+	var/no_pain = FALSE
 
 	var/death_time
 	var/start_robotized = FALSE
@@ -45,17 +46,16 @@ var/list/organ_cache = list()
 		owner = loc
 		w_class = max(w_class + mob_size_difference(owner.mob_size, MOB_MEDIUM), 1) //smaller mobs have smaller organs.
 
-		if(owner.dna)
-			dna = owner.dna.Clone()
-			species = all_species[dna.species]
-		else
-			species = all_species[SPECIES_HUMAN]
-			log_debug("[src] spawned in [owner] without a proper DNA.")
+	dna = owner.dna ? owner.dna.Clone() : null
 
 	if(dna)
+		species = all_species[dna.species]
 		if(!blood_DNA)
 			blood_DNA = list()
 		blood_DNA[dna.unique_enzymes] = dna.b_type
+	else
+		species = all_species[SPECIES_HUMAN]
+		log_debug("[src] spawned in [owner] without a proper DNA.")
 
 	create_reagents(50 * (w_class-1)**2)
 	reagents.add_reagent(/datum/reagent/nutriment/protein, reagents.maximum_volume)
@@ -137,13 +137,14 @@ var/list/organ_cache = list()
 	return (damage >= min_broken_damage || (status & ORGAN_CUT_AWAY) || (status & ORGAN_BROKEN))
 
 /obj/item/organ/proc/set_dna(datum/dna/new_dna)
-	if(new_dna)
-		dna = new_dna.Clone()
-		if(!blood_DNA)
-			blood_DNA = list()
-		blood_DNA.Cut()
-		blood_DNA[dna.unique_enzymes] = dna.b_type
-		species = all_species[new_dna.species]
+	if(!new_dna)
+		return
+	dna = new_dna.Clone()
+	if(!blood_DNA)
+		blood_DNA = list()
+	blood_DNA.Cut()
+	blood_DNA[dna.unique_enzymes] = dna.b_type
+	species = all_species[new_dna.species]
 
 /obj/item/organ/proc/die()
 	damage = max_damage
@@ -223,9 +224,15 @@ var/list/organ_cache = list()
 
 
 /obj/item/organ/proc/robotize() //Being used to make robutt hearts, etc
+	if(BP_IS_ROBOTIC(src))
+		return FALSE
+
 	status = ORGAN_ROBOTIC
+	no_pain = TRUE
 	if(owner?.isSynthetic()) // If owner becomes fully synthetic - he receives all corresponding emotes.
 		owner.add_synth_emotes()
+
+	return TRUE
 
 /obj/item/organ/proc/mechassist() //Used to add things like pacemakers, etc
 	status = ORGAN_ASSISTED
@@ -260,11 +267,14 @@ var/list/organ_cache = list()
 	owner = null
 
 /obj/item/organ/proc/replaced(mob/living/carbon/human/target, obj/item/organ/external/affected)
+	if(QDELETED(target))
+		qdel_self()
+		return FALSE
 	owner = target
 	forceMove(owner) //just in case
 	if(BP_IS_ROBOTIC(src))
 		set_dna(owner.dna)
-	return 1
+	return TRUE
 
 /obj/item/organ/attack(mob/target, mob/user)
 	if(status & ORGAN_ROBOTIC || !istype(target) || !istype(user) || (user != target && user.a_intent == I_HELP))
@@ -283,7 +293,7 @@ var/list/organ_cache = list()
 	target.attackby(return_item(), user)
 
 /obj/item/organ/proc/can_feel_pain()
-	return (!BP_IS_ROBOTIC(src) && owner && (!owner.no_pain || !species || !(species.species_flags & SPECIES_FLAG_NO_PAIN)))
+	return (!no_pain && owner && !owner.no_pain && (!species || !(species.species_flags & SPECIES_FLAG_NO_PAIN)))
 
 /obj/item/organ/proc/is_usable()
 	return !(status & (ORGAN_CUT_AWAY|ORGAN_MUTATED|ORGAN_DEAD))
@@ -314,3 +324,9 @@ var/list/organ_cache = list()
 //used by stethoscope
 /obj/item/organ/proc/listen()
 	return
+
+/obj/item/organ/proc/apply_snowflake(flags)
+	if(flags & ORGAN_SNOWFLAKE_ROBOTIC)
+		robotize()
+	if(flags & ORGAN_SNOWFLAKE_NO_PAIN)
+		no_pain = TRUE

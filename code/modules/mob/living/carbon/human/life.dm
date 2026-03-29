@@ -795,7 +795,7 @@
 					else
 						hydration_icon.icon_state = "hydration5"
 
-		if(full_prosthetic)
+		if(cells)
 			var/obj/item/organ/internal/cell/C = internal_organs_by_name[BP_CELL]
 			if(istype(C))
 				var/chargeNum = Clamp(ceil(C.percent()/25), 0, 4)	//0-100 maps to 0-4, but give it a paranoid clamp just in case.
