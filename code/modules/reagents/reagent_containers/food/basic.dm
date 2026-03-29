@@ -34,18 +34,6 @@
 		)
 	bitesize = 25 // 52.5 nutrition, 2 bites
 
-/obj/item/reagent_containers/food/rawcutlet
-	name = "raw cutlet"
-	desc = "A thin piece of raw meat."
-	icon = 'icons/obj/food_ingredients.dmi'
-	icon_state = "rawcutlet"
-	filling_color = "#7a3d11"
-	center_of_mass = "x=16;y=16"
-	startswith = list(
-		/datum/reagent/nutriment/protein = 50
-		)
-	bitesize = 25 // 62.5 nutrition, 2 bites
-
 /obj/item/reagent_containers/food/cutlet
 	name = "cutlet"
 	desc = "A tasty meat slice."
