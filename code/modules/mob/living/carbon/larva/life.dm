@@ -31,8 +31,9 @@
 			death()
 			return FALSE
 
-	return TRUE
+	update_health_slowdown()
 
+	return TRUE
 
 // Currently both Dionaea and larvae like to eat radiation, so I'm defining the
 // rad absorbtion here. This will need to be changed if other baby aliens are added.

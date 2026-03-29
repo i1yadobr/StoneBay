@@ -920,8 +920,6 @@ GLOBAL_LIST_INIT(robot_modules, list(
 		if(E.uses<3 && prob(20))
 			E.uses++
 
-
-
 /obj/item/robot_module/syndicate
 	name = "illegal robot module"
 	icon_state = "robot_mod_black"
@@ -967,6 +965,7 @@ GLOBAL_LIST_INIT(robot_modules, list(
 	src.modules += new /obj/item/gun/energy/laser/mounted(src)
 	src.modules += new /obj/item/gun/energy/plasmacutter(src)
 	src.modules += new /obj/item/borg/combat/shield(src)
+	src.modules += new /obj/item/borg/combat/mobility(src)
 	src.emag = new /obj/item/gun/energy/lasercannon/mounted(src)
 	..()
 

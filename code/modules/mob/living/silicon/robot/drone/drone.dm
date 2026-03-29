@@ -79,7 +79,26 @@ var/list/mob_hat_cache = list()
 /mob/living/silicon/robot/drone/New()
 	..()
 
+	add_movespeed_modifier(/datum/movespeed_modifier/drone_movement)
 	register_signal(src, SIGNAL_MOVED, nameof(.proc/on_moved))
+
+	verbs += /mob/living/proc/hide
+
+	remove_language(LANGUAGE_ROBOT)
+	add_language(LANGUAGE_ROBOT, FALSE)
+	add_language(LANGUAGE_DRONE, TRUE)
+
+	// NO BRAIN.
+	mmi = null
+
+	//We need to screw with their HP a bit. They have around one fifth as much HP as a full borg.
+	for(var/V in components)
+		if(V != "power cell")
+			var/datum/robot_component/C = components[V]
+			C.max_damage = 10
+
+	verbs -= /mob/living/silicon/robot/verb/Namepick
+	update_icon()
 
 /mob/living/silicon/robot/drone/Destroy()
 	if(hat)
@@ -141,30 +160,10 @@ var/list/mob_hat_cache = list()
 	can_pull_size = ITEM_SIZE_NO_CONTAINER
 	can_pull_mobs = MOB_PULL_SAME
 
-/mob/living/silicon/robot/drone/New()
-
-	..()
-
-	verbs += /mob/living/proc/hide
-
-	remove_language(LANGUAGE_ROBOT)
-	add_language(LANGUAGE_ROBOT, FALSE)
-	add_language(LANGUAGE_DRONE, TRUE)
-
-	// NO BRAIN.
-	mmi = null
-
-	//We need to screw with their HP a bit. They have around one fifth as much HP as a full borg.
-	for(var/V in components) if(V != "power cell")
-		var/datum/robot_component/C = components[V]
-		C.max_damage = 10
-
-	verbs -= /mob/living/silicon/robot/verb/Namepick
-	update_icon()
-
 /mob/living/silicon/robot/drone/init()
 	additional_law_channels["Drone"] = ":d"
-	if(!module) module = new module_type(src)
+	if(!module)
+		module = new module_type(src)
 
 	flavor_text = "It's a tiny little repair drone. The casing is stamped with an corporate logo and the subscript: '[GLOB.using_map.company_name] Recursive Repair Systems: Fixing Tomorrow's Problem, Today!'"
 	playsound(src.loc, 'sound/signals/ping7.ogg', 50, 0)
@@ -231,7 +230,7 @@ var/list/mob_hat_cache = list()
 		to_chat(user, SPAN("danger", "\The [src] is hermetically sealed. You can't open the case."))
 		return
 
-	else if (istype(W, /obj/item/card/id)||istype(W, /obj/item/device/pda))
+	else if(istype(W, /obj/item/card/id)||istype(W, /obj/item/device/pda))
 
 		if(stat == 2)
 
@@ -302,11 +301,15 @@ var/list/mob_hat_cache = list()
 //DRONE LIFE/DEATH
 //For some goddamn reason robots have this hardcoded. Redefining it for our fragile friends here.
 /mob/living/silicon/robot/drone/update_health()
+	var/previous_health = health
 	if(status_flags & GODMODE)
 		health = 35
 		set_stat(CONSCIOUS)
 	else
 		health = 35 - (getBruteLoss() + getFireLoss())
+
+	if(health != previous_health)
+		update_health_slowdown()
 
 //Easiest to check this here, then check again in the robot proc.
 //Standard robots use config for crit, which is somewhat excessive for these guys.

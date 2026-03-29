@@ -313,6 +313,8 @@ human_delay = 0
 
 robot_delay = 0
 
+drone_delay = 0
+
 metroid_delay = 0
 
 animal_delay = 0

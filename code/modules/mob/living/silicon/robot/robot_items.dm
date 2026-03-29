@@ -76,7 +76,6 @@
 		else
 			to_chat(user, "The [src] is already empty.")
 
-
 /obj/item/portable_destructive_analyzer/afterattack(atom/target, mob/living/user, proximity)
 	if(!target)
 		return
@@ -267,9 +266,9 @@
 	// Unloads the tray, copied from base item's proc dropped() and altered
 	// see code/game/objects/items/weapons/kitchen.dm line 263
 
-	if ( isturf(target) || istype(target,/obj/structure/table) )
-		var foundtable = istype(target,/obj/structure/table/)
-		if ( !foundtable ) //it must be a turf!
+	if (isturf(target) || istype(target,/obj/structure/table))
+		var/foundtable = istype(target,/obj/structure/table/)
+		if (!foundtable) //it must be a turf!
 			for(var/obj/structure/table/T in target)
 				foundtable = 1
 				break
@@ -282,10 +281,9 @@
 		else					// they clicked on a table
 			dropspot = target.loc
 
-
 		ClearOverlays()
 
-		var droppedSomething = 0
+		var/droppedSomething = 0
 
 		for(var/obj/item/I in carrying)
 			I.dropInto(dropspot)
@@ -298,16 +296,13 @@
 						if(I)
 							step(I, pick(NORTH,SOUTH,EAST,WEST))
 							sleep(rand(2,4))
-		if ( droppedSomething )
-			if ( foundtable )
+		if (droppedSomething)
+			if (foundtable)
 				user.visible_message(SPAN("notice", "[user] unloads their service tray."))
 			else
 				user.visible_message(SPAN("notice", "[user] drops all the items on their tray."))
 
 	return ..()
-
-
-
 
 // A special pen for service droids. Can be toggled to switch between normal writting mode, and paper rename mode
 // Allows service droids to rename paper items.
@@ -320,7 +315,8 @@
 /obj/item/pen/robopen/attack_self(mob/user as mob)
 
 	var/choice = input("Would you like to change colour or mode?") as null|anything in list("Colour","Mode")
-	if(!choice) return
+	if(!choice)
+		return
 
 	playsound(src.loc, 'sound/effects/pop.ogg', 50, 0)
 
@@ -341,10 +337,10 @@
 // see code/modules/paperwork/paper.dm line 62
 
 /obj/item/pen/robopen/proc/RenamePaper(mob/user as mob,obj/paper as obj)
-	if ( !user || !paper )
+	if(!user || !paper)
 		return
 	var/n_name = sanitizeSafe(input(user, "What would you like to label the paper?", "Paper Labelling", null)  as text, 32)
-	if ( !user || !paper )
+	if(!user || !paper)
 		return
 
 	//n_name = copytext(n_name, 1, 32)
@@ -394,14 +390,39 @@
 	set src in range(0)
 
 	var/N = input("How much damage should the shield absorb?") in list("5","10","25","50","75","100")
-	if (N)
+	if(N)
 		shield_level = text2num(N)/100
 
+// TODO: Find a way to remove the extra speed when the module is deactivated
 /obj/item/borg/combat/mobility
 	name = "mobility module"
 	desc = "By retracting limbs and tucking in its head, a combat android can roll at high speeds."
 	icon = 'icons/obj/decals.dmi'
-	icon_state = "shock"
+	icon_state = "speed"
+	var/active = FALSE
+
+/obj/item/borg/combat/mobility/Destroy()
+	var/mob/living/silicon/robot/user_robot = usr
+	user_robot.remove_movespeed_modifier(/datum/movespeed_modifier/combat_mobility_speedup)
+	return ..()
+
+/obj/item/borg/combat/mobility/attack_self(mob/user)
+	if(!isrobot(user))
+		return
+
+	var/mob/living/silicon/robot/user_robot = user
+	if(user_robot.stat == UNCONSCIOUS)
+		return
+
+	active = !active
+	if(active)
+		user_robot.add_movespeed_modifier(/datum/movespeed_modifier/combat_mobility_speedup)
+		to_chat(user, SPAN("notice", "\The [src] is now enabled."))
+	else
+		user_robot.remove_movespeed_modifier(/datum/movespeed_modifier/combat_mobility_speedup)
+		to_chat(user, SPAN("notice", "\The [src] is now disabled."))
+
+	user_robot.update_icon()
 
 #define INFLATABLE_MODES list("walls", "doors", "panels")
 #define INFLATABLE_MODE_WALLS 1
@@ -573,7 +594,7 @@
 	var/inuse = 0
 
 /obj/item/robot_rack/Destroy()
-	if (length(held))
+	if(length(held))
 		while(length(held))
 			var/obj/item/R = held[length(held)]
 			R.forceMove(get_turf(src))
@@ -581,8 +602,8 @@
 	return ..()
 
 /obj/item/robot_rack/emp_act(severity)
-	if (length(held))
-		if (prob(40))
+	if(length(held))
+		if(prob(40))
 			var/obj/item/R = held[length(held)]
 			held -= R
 			R.forceMove(get_turf(src))
@@ -607,11 +628,11 @@
 		held += new o_type(src)
 
 /obj/item/robot_rack/proc/deploy(loc, mob/user)
-	if (!inuse)
+	if(!inuse)
 		if(!length(held))
 			to_chat(user, SPAN("notice", "The rack is empty."))
 			return
-		if (deploy_sound)
+		if(deploy_sound)
 			playsound(src.loc, deploy_sound, 10, 1)
 		inuse = 1
 		var/obj/item/R = held[length(held)]
@@ -631,13 +652,13 @@
 	deploy(get_turf(src),user)
 
 /obj/item/robot_rack/resolve_attackby(obj/O, mob/user, click_params)
-	if (!inuse)
-		for (var/T in object_type)
+	if(!inuse)
+		for(var/T in object_type)
 			if(istype(O, T))
 				if(length(held) < capacity)
 					var/mob/living/silicon/robot/R = user
 					for (var/I in R.module.modules)
-						if (I == O)
+						if(I == O)
 							return
 					inuse = 1
 					user.visible_message(SPAN("notice", "\The [user] started picking up [O]."))
@@ -661,14 +682,14 @@
 	. = ..()
 
 /obj/item/robot_rack/afterattack(atom/A, mob/user as mob, proximity)
-	if(!proximity) return
+	if(!proximity)
+		return
 	if(istype(A, /obj/structure/table) || istype(A, /turf/simulated/floor))
 		deploy(get_turf(A),user)
 
-
 /obj/item/robot_rack/proc/add_item_type(obj/T, text) //adds type of item in list of pickable items
 	object_type += T
-	if (text)
+	if(text)
 		desc += text
 
 /obj/item/robot_rack/medical
@@ -861,7 +882,6 @@
 			to_chat(usr, "Changed dispensing mode to [selected.name].")
 		return TOPIC_REFRESH
 
-
 /obj/item/robot_item_dispenser/afterattack(atom/A, mob/user as mob, proximity)
 	if(!proximity) return
 	if (!inuse)
@@ -967,7 +987,6 @@
 	item_types += new /datum/dispense_type("biohazard crate",/obj/structure/closet/crate/secure/biohazard, 100, 100)
 	..()
 
-
 /obj/item/robot_item_dispenser/bodybag
 	name = "bodybag synthesizer"
 	desc = "A device used to rapidly synthesize bodybags and stasis bags."
@@ -1022,7 +1041,6 @@
 	item_types += new /datum/dispense_type("wet floor sign",/obj/item/caution, 10, 70)
 	item_types += new /datum/dispense_type("mouse trap",/obj/item/device/assembly/mousetrap, 20, 50)
 	..()
-
 
 /obj/item/robot_item_dispenser/engineer
 	name = "construction part synthesizer"

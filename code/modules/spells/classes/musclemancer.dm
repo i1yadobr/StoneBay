@@ -13,7 +13,7 @@
 /datum/wizard_class/musclemancer/on_class_chosen(mob/user, obj/item/spellbook)
 	to_chat(user, SPAN("notice", "Suddenly, you realize you've never ever gotten your own spell book. What you've been holding is just a cream puff."))
 
-	user.mutations.Add(MUTATION_STRONG)
+	user.add_mutation(MUTATION_STRONG)
 	user.update_mutations()
 
 	var/datum/spell/CP = new /datum/spell/targeted/equip_item/cream_puff

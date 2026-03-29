@@ -88,6 +88,9 @@
 	. = ..()
 	if(species_language)
 		add_language(species_language)
+	update_move_intent_slowdown()
+	if(ignore_pull_slowdown)
+		add_movespeed_mod_immunities(src, /datum/movespeed_modifier/pull_slowdown)
 	language_menu = new (src)
 	add_think_ctx("dust", CALLBACK(src, nameof(.proc/dust)), 0)
 	add_think_ctx("dust_deletion", CALLBACK(src, nameof(.proc/dust_check_delete)), 0)
@@ -198,37 +201,10 @@
 	return 0
 
 /mob/proc/movement_delay()
-	. = 0
-	if(istype(loc, /turf))
-		var/turf/T = loc
-		. += T.movement_delay
+	if(istype(loc, /turf/space))
+		return cached_slowdown_space
 
-	switch(m_intent)
-		if(M_RUN)
-			if(drowsyness > 0)
-				. += config.movement.walk_speed
-			else
-				. += config.movement.run_speed
-		if(M_WALK)
-			. += config.movement.walk_speed
-
-	if(lying) //Crawling, it's slower
-		. += 10 + (weakened * 2)
-
-	if(pulling && !ignore_pull_slowdown)
-		var/area/A = get_area(src)
-		if(A.has_gravity)
-			if(istype(pulling, /obj))
-				var/obj/O = pulling
-				if(O.pull_slowdown == PULL_SLOWDOWN_WEIGHT)
-					. += between(0, O.w_class, ITEM_SIZE_GARGANTUAN) / 5
-				else
-					. += O.pull_slowdown
-			else if(istype(pulling, /mob))
-				var/mob/M = pulling
-				. += max(0, M.mob_size) / MOB_MEDIUM * (M.lying ? 2 : 0.5)
-			else
-				. += 1
+	return cached_slowdown
 
 /mob/proc/Life()
 //	if(organStructure)
@@ -540,6 +516,8 @@
 	if(pullin)
 		pullin.icon_state = "pull0"
 
+	remove_movespeed_modifier(/datum/movespeed_modifier/pull_slowdown)
+
 /mob/proc/start_pulling(atom/movable/AM)
 	if ( !AM || !usr || src==AM || !isturf(src.loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
 		return
@@ -593,6 +571,7 @@
 		pullin.icon_state = "pull1"
 
 	register_signal(AM, SIGNAL_QDELETING, nameof(.proc/stop_pulling))
+	update_pull_slowdown(AM)
 	var/datum/movement_handler/mob/delay/delay = GetMovementHandler(/datum/movement_handler/mob/delay)
 	if(delay)
 		delay.InstantUpdateGlideSize()
@@ -722,8 +701,10 @@
 		if(G.force_stand())
 			lying = 0
 
-	if(!prevent_update_icons && lying_old != lying)
-		update_icons()
+	if(lying_old != lying)
+		add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/lying, slowdown = (lying ? 10 + (weakened * 2) : 0))
+		if(!prevent_update_icons)
+			update_icons()
 
 /mob/proc/reset_layer()
 	if(lying)

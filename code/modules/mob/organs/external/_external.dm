@@ -127,6 +127,9 @@
 	else if(isnull(max_pain))
 		max_pain = max_damage * 1.5 // Should not ~probably~ happen
 
+	if(!mapload && owner)
+		owner.update_organ_movespeed()
+
 	if(owner?.snowflake_organs)
 		apply_snowflake(owner.snowflake_organs)
 
@@ -794,6 +797,8 @@ This function completely restores a damaged organ to perfect condition.
 			stump.update_damages()
 			stump.replaced(victim)
 
+	victim.update_organ_movespeed()
+
 	spawn(1) // Yes, we DO need to wait before regenerating icons since all the stuff takes a literal eternity
 		if(!QDELETED(victim)) // Since the victim can misteriously vanish during that spawn(1) causing runtimes
 			victim.update_health()
@@ -907,6 +912,8 @@ This function completely restores a damaged organ to perfect condition.
 		movement_tally += splinted_tally * damage_multiplier
 	else if(status & ORGAN_BROKEN)
 		movement_tally += broken_tally * damage_multiplier
+
+	owner.update_organ_movespeed()
 
 /obj/item/organ/external/proc/fracture()
 	if(!config.health.bones_can_break)
