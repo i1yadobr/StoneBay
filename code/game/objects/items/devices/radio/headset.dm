@@ -51,11 +51,11 @@
 	. += "[radio_desc]"
 
 /obj/item/device/radio/headset/handle_message_mode(mob/living/M as mob, message, channel)
-	if (channel == "special")
-		if (translate_binary)
+	if(channel == "special")
+		if(translate_binary)
 			var/datum/language/binary = all_languages["Robot Talk"]
 			binary.broadcast(M, message)
-		if (translate_hive)
+		if(translate_hive)
 			var/datum/language/hivemind = all_languages["Hivemind"]
 			hivemind.broadcast(M, message)
 		return null
@@ -63,7 +63,7 @@
 	return ..()
 
 /obj/item/device/radio/headset/receive_range(freq, level, aiOverride = 0)
-	if (aiOverride)
+	if(aiOverride)
 		return ..(freq, level)
 	if(ishuman(src.loc))
 		var/mob/living/carbon/human/H = src.loc
@@ -183,7 +183,7 @@
 	. = ..()
 
 /obj/item/device/radio/headset/heads/ai_integrated/receive_range(freq, level)
-	if (disabledAi)
+	if(disabledAi)
 		return -1 //Transciever Disabled.
 	return ..(freq, level, 1)
 
@@ -298,20 +298,15 @@
 
 	if(isScrewdriver(W))
 		if(keyslot1 || keyslot2)
-
-
 			for(var/ch_name in channels)
 				SSradio.remove_object(src, GLOB.radio_channels[ch_name])
 				secure_radio_connections[ch_name] = null
-
 
 			if(keyslot1)
 				var/turf/T = get_turf(user)
 				if(T)
 					keyslot1.dropInto(T)
 					keyslot1 = null
-
-
 
 			if(keyslot2)
 				var/turf/T = get_turf(user)
@@ -381,7 +376,6 @@
 
 		if(keyslot2.syndie)
 			src.syndie = 1
-
 
 	for (var/ch_name in channels)
 		if(!SSradio)

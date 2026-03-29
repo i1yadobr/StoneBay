@@ -19,9 +19,12 @@
 	pickup_sound = SFX_PICKUP_TOOLBELT
 	equip_sound = SFX_EQUIP_TOOLBELT
 
-	var/content_overlays = FALSE //If this is true, the belt will gain overlays based on what it's holding
+	// If belt should use item overlays based on contents
+	var/content_overlays = FALSE
+	// Constant offsets for displaying item overlays for contents
+	var/list/content_overlay_offsets = list(list(1, -4), list(8, -5), list(15, -4), list(4, 2), list(12, 2))
 
-/obj/item/weapon/storage/belt/Initialize()
+/obj/item/storage/belt/Initialize()
 	. = ..()
 	update_icon()
 
@@ -38,12 +41,26 @@
 		var/mob/living/M = loc
 		M.update_inv_belt(TRUE)
 	if(content_overlays)
-		// TODO: Determine whether it is possible to check for the presence of an item on the belt,
-		// and if it is already there, avoid drawing additional overlays on top of it
-		// That way, the same overlays will pile up on top of each other, which isn't cool
-		for(var/obj/item/I in contents)
-			var/mutable_appearance/M = I.get_belt_overlay()
-			AddOverlays(M)
+		if(!contents)
+			return
+
+		var/skip_null_overlay_counter = 0
+		for(var/i = 1, i <= length(content_overlay_offsets), i++)
+			if((i+skip_null_overlay_counter) > length(contents))
+				break
+			var/item_index = i + skip_null_overlay_counter
+			var/obj/item/stored_item = contents[item_index]
+			var/image/item_overlay = stored_item.get_belt_overlay()
+			if(isnull(item_overlay))
+				skip_null_overlay_counter++
+				i--
+				continue
+			var/list/offsets = content_overlay_offsets[i]
+			if(i > 3)
+				item_overlay.layer = src.layer - 0.01
+			item_overlay.pixel_x += offsets[1]
+			item_overlay.pixel_y += offsets[2]
+			AddOverlays(item_overlay)
 
 /obj/item/storage/belt/get_mob_overlay(mob/user_mob, slot)
 	. = ..()
@@ -104,35 +121,36 @@
 
 	content_overlays = TRUE
 
-/obj/item/storage/belt/utility/full/New()
-	..()
-	new /obj/item/screwdriver(src)
-	new /obj/item/wrench(src)
-	new /obj/item/weldingtool(src)
-	new /obj/item/crowbar(src)
-	new /obj/item/wirecutters(src)
-	//TODO: Replace with /obj/item/stack/cable_coil/random, instead of the hardcoded pick()
-	new /obj/item/stack/cable_coil(src,30,pick("red","yellow","orange"))
+/obj/item/storage/belt/utility/full
+	startswith = list(
+		/obj/item/screwdriver,
+		/obj/item/wrench,
+		/obj/item/weldingtool,
+		/obj/item/crowbar,
+		/obj/item/wirecutters,
+		/obj/item/stack/cable_coil/random
+	)
 
-/obj/item/storage/belt/utility/atmostech/New()
-	..()
-	new /obj/item/screwdriver(src)
-	new /obj/item/wrench(src)
-	new /obj/item/weldingtool(src)
-	new /obj/item/crowbar(src)
-	new /obj/item/wirecutters(src)
-	new /obj/item/device/t_scanner(src)
+/obj/item/storage/belt/utility/atmostech
+	startswith = list(
+		/obj/item/screwdriver,
+		/obj/item/wrench,
+		/obj/item/weldingtool,
+		/obj/item/crowbar,
+		/obj/item/wirecutters,
+		/obj/item/device/t_scanner
+	)
 
-/obj/item/storage/belt/utility/chief/New()
-	..()
-	new /obj/item/screwdriver/old(src)
-	new /obj/item/wrench/old(src)
-	new /obj/item/weldingtool/old(src)
-	new /obj/item/crowbar/brace_jack(src)
-	new /obj/item/wirecutters/old(src)
-	new /obj/item/device/t_scanner(src)
-	//TODO: Create /obj/item/stack/cable_coil/red and replace it with them, instead of the hardcoded "red" color
-	new /obj/item/stack/cable_coil(src, 30, "red")
+/obj/item/storage/belt/utility/chief
+	startswith = list(
+		/obj/item/screwdriver/old,
+		/obj/item/wrench/old,
+		/obj/item/weldingtool/old,
+		/obj/item/crowbar/brace_jack,
+		/obj/item/wirecutters/old,
+		/obj/item/device/t_scanner,
+		/obj/item/stack/cable_coil/red
+	)
 
 /obj/item/storage/belt/medical
 	name = "medical belt"
@@ -170,6 +188,8 @@
 	icon_state = "emsbelt"
 	item_state = "emsbelt"
 
+// TODO: Add a restriction on carrying pistols/tasers inside belts
+// You can have only one gun on your belt, or you can add a belt with an extra holster for a second/multiple gun/s
 /obj/item/storage/belt/security
 	name = "security belt"
 	desc = "Can hold security gear like handcuffs and flashes."
@@ -213,6 +233,13 @@
 
 	content_overlays = TRUE
 
+/obj/item/storage/belt/security/tactical
+	name = "combat belt"
+	desc = "Can hold security gear like handcuffs and flashes, with more pouches for more storage."
+	icon_state = "swatbelt"
+	item_state = "swatbelt"
+	storage_slots = 9
+
 /obj/item/storage/belt/soulstone
 	name = "soul stone belt"
 	desc = "Designed for ease of access to the shards during a fight, as to not let a single enemy spirit slip away."
@@ -224,14 +251,10 @@
 		/obj/item/device/soulstone
 		)
 
-/obj/item/storage/belt/soulstone/full/New()
-	..()
-	new /obj/item/device/soulstone(src)
-	new /obj/item/device/soulstone(src)
-	new /obj/item/device/soulstone(src)
-	new /obj/item/device/soulstone(src)
-	new /obj/item/device/soulstone(src)
-	new /obj/item/device/soulstone(src)
+/obj/item/storage/belt/soulstone/full
+	startswith = list(
+		/obj/item/device/soulstone = 6
+	)
 
 /obj/item/storage/belt/champion
 	name = "championship belt"
@@ -240,16 +263,7 @@
 	item_state = "champion"
 	storage_slots = 1
 
-	can_hold = list(
-		/obj/item/clothing/mask/luchador
-		)
-
-/obj/item/storage/belt/security/tactical
-	name = "combat belt"
-	desc = "Can hold security gear like handcuffs and flashes, with more pouches for more storage."
-	icon_state = "swatbelt"
-	item_state = "swatbelt"
-	storage_slots = 9
+	can_hold = list(/obj/item/clothing/mask/luchador)
 
 /obj/item/storage/belt/waistpack
 	name = "waist pack"
@@ -283,7 +297,8 @@
 	w_class = 4
 	max_w_class = 4 //Pickaxes are big.
 
-	can_hold = list(/obj/item/screwdriver,
+	can_hold = list(
+		/obj/item/screwdriver,
 		/obj/item/weldingtool,
 		/obj/item/wirecutters,
 		/obj/item/wrench,
@@ -314,6 +329,8 @@
 		/obj/item/storage/plants
 		)
 
+// TODO: Add a restriction on carrying pistols inside belts
+// You can have only one pistol on your belt, or you can add a belt with an extra holster for a second/multiple pistol/s
 /obj/item/storage/belt/military
 	name = "military belt"
 	desc = "A syndicate belt designed to be used by boarding parties. Its style is modeled after the hardsuits they wear."
@@ -384,9 +401,7 @@
 
 	can_hold = list(/obj/item/melee/sabre)
 
-/obj/item/storage/belt/sabre/Initialize()
-	. = ..()
-	new /obj/item/melee/sabre(src)
+	startswith = list(/obj/item/melee/sabre)
 
 /obj/item/storage/belt/sabre/on_update_icon()
 	icon_state = initial(base_icon_state)

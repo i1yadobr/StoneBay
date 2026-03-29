@@ -10,19 +10,19 @@
 	Why work yourself to the bone removing floor panels when you can simply look through them with submillimeter radiation?"
 
 	icon_state = "t-ray0"
+	item_state = "electronic"
+	base_icon_state = "t-ray"
 	slot_flags = SLOT_BELT
 	w_class = ITEM_SIZE_SMALL
-	item_state = "electronic"
 	matter = list(MATERIAL_STEEL = 150)
 	origin_tech = list(TECH_MAGNET = 1, TECH_ENGINEERING = 1)
 	action_button_name = "Toggle T-Ray scanner"
 
 	var/scan_range = 1
 
-	var/on = 0
+	var/on = FALSE
 	var/list/active_scanned = list() //assoc list of objects being scanned, mapped to their overlay
 	var/mob/user_mob //since making sure overlays are properly added and removed is pretty important, so we track the current user explicitly
-	var/base_state = "t-ray"
 
 	var/global/list/overlay_cache = list() //cache recent overlays
 
@@ -32,7 +32,7 @@
 	return ..()
 
 /obj/item/device/t_scanner/on_update_icon()
-	icon_state = "[base_state][on]"
+	icon_state = "[base_icon_state][on]"
 
 /obj/item/device/t_scanner/emp_act()
 	audible_message(src, SPAN("notice", " \The [src] buzzes oddly."), splash_override = "*buzz-z-z*")
@@ -149,8 +149,6 @@
 				continue //if it's already visible don't need an overlay for it
 			. += O
 
-
-
 /obj/item/device/t_scanner/proc/set_user_mob(mob/new_mob)
 	if(new_mob == user_mob)
 		return
@@ -171,11 +169,12 @@
 
 /obj/item/device/t_scanner/advanced
 	name = "\improper P-ray scanner"
-	desc = "A petahertz-ray emitter and scanner that can pick up the faintest traces of energy, used to detect the invisible. Has a significantly better range than t-ray scanners."
+	desc = "A petahertz-ray emitter and scanner that can pick up the faintest traces of energy, \
+			used to detect the invisible. Has a significantly better range than t-ray scanners."
 	icon_state = "p-ray0"
+	base_icon_state = "p-ray"
 	origin_tech = list(TECH_MAGNET = 3, TECH_ENGINEERING = 3)
 
-	base_state = "p-ray"
 	scan_range = 3
 
 #undef OVERLAY_CACHE_LEN

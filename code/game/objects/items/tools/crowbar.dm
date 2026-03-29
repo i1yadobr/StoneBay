@@ -75,7 +75,7 @@
 	update_handle_icon()
 	update_icon()
 
-/obj/item/screwdriver/update_handle_icon()
+/obj/item/crowbar/prybar/update_handle_icon()
 	base_icon_state = "prybar_[pick(handle_color)]"
 	icon_state = base_icon_state
 
@@ -97,12 +97,15 @@
 
 /obj/item/crowbar/emergency/vox
 	icon_state = "emergbar_vox"
+	base_icon_state = "emergbar_vox"
 
 /obj/item/crowbar/emergency/eng
 	icon_state = "emergbar_eng"
+	base_icon_state = "emergbar_eng"
 
 /obj/item/crowbar/emergency/sec
 	icon_state = "emergbar_sec"
+	base_icon_state = "emergbar_eng"
 
 // MAINTENANCE JACK - Allows removing of braces with certain delay.
 /obj/item/crowbar/brace_jack

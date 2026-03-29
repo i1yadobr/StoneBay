@@ -22,7 +22,6 @@
 	base_icon_state = "cutters"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
-	sharp = 1
 	force = 5.5
 	throw_range = 9
 	w_class = ITEM_SIZE_SMALL
@@ -33,8 +32,8 @@
 	matter = list(MATERIAL_STEEL = 80)
 	center_of_mass = "x=18;y=16"
 	attack_verb = list("pinched", "nipped")
-	sharp = 1
-	edge = 1
+	sharp = TRUE
+	edge = TRUE
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	tool_behaviour = TOOL_WIRECUTTER
 
@@ -43,7 +42,7 @@
 
 	var/randicon = TRUE
 	var/static/list/handle_color = list(
-		"grey",
+		"red",
 		"yellow"
 	)
 
@@ -69,13 +68,13 @@
 /obj/item/wirecutters/update_handle_icon()
 	base_icon_state = "cutters_[pick(handle_color)]"
 	icon_state = base_icon_state
-	item_state = base_icon_state
 
 /obj/item/wirecutters/old
 	name = "old wirecutters"
 	desc = "A very special pair of pliers with cutting edges. No excessive brackets and manipulators are needed to allow it to repair severed wiring."
 	icon_state = "legacycutters"
 	item_state = "cutters"
+	base_icon_state = "legacycutters"
 	force = 6.5
 	w_class = ITEM_SIZE_SMALL
 	mod_weight = 0.5

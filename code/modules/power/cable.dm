@@ -473,6 +473,8 @@ var/list/possible_cable_coil_colours
 		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 		)
 	icon_state = "coil"
+	item_state = "coil"
+	base_icon_state = "coil"
 	randpixel = 2
 	amount = MAXCOIL
 	max_amount = MAXCOIL
@@ -488,7 +490,6 @@ var/list/possible_cable_coil_colours
 	matter = list(MATERIAL_STEEL = 50, MATERIAL_GLASS = 20)
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
-	item_state = "coil"
 	attack_verb = list("whipped", "lashed", "disciplined", "flogged")
 	stacktype = /obj/item/stack/cable_coil
 	tool_behaviour = TOOL_COIL
@@ -538,17 +539,22 @@ var/list/possible_cable_coil_colours
 
 
 /obj/item/stack/cable_coil/on_update_icon()
-	if (!color)
+	if(!color)
 		color = possible_cable_coil_colours[pick(possible_cable_coil_colours)]
 	if(amount == 1)
-		icon_state = "coil1"
+		icon_state = "[base_icon_state]1"
 		SetName("cable piece")
 	else if(amount == 2)
-		icon_state = "coil2"
+		icon_state = "[base_icon_state]2"
 		SetName("cable piece")
 	else
 		icon_state = initial(icon_state)
 		SetName(initial(name))
+
+/obj/item/stack/cable_coil/get_belt_overlay()
+	var/mutable_appearance/cable_coil_appearance = mutable_appearance(GLOB.belt_overlays_icon, "coil")
+	cable_coil_appearance.color = color
+	return cable_coil_appearance
 
 /obj/item/stack/cable_coil/proc/set_cable_color(selected_color, user)
 	if(!selected_color)
@@ -756,8 +762,8 @@ var/list/possible_cable_coil_colours
 
 		use(1)
 
-		if (C.shock(user, 50))
-			if (prob(50)) //fail
+		if(C.shock(user, 50))
+			if(prob(50)) //fail
 				new /obj/item/stack/cable_coil(C.loc, 2, C.color)
 				qdel(C)
 				return
@@ -791,8 +797,8 @@ var/list/possible_cable_coil_colours
 		C.mergeDiagonalsNetworks(C.d2)
 
 	use(1)
-	if (C.shock(user, 50))
-		if (prob(50)) //fail
+	if(C.shock(user, 50))
+		if(prob(50)) //fail
 			new /obj/item/stack/cable_coil(C.loc, 1, C.color)
 			qdel(C)
 
@@ -803,11 +809,14 @@ var/list/possible_cable_coil_colours
 /obj/item/stack/cable_coil/cut
 	item_state = "coil2"
 
-/obj/item/stack/cable_coil/cut/New(loc)
-	..()
+/obj/item/stack/cable_coil/cut/Initialize()
+	. = ..()
 	src.amount = rand(1,2)
 	update_icon()
 	update_wclass()
+
+/obj/item/stack/cable_coil/red
+	color = COLOR_RED
 
 /obj/item/stack/cable_coil/yellow
 	color = COLOR_YELLOW
@@ -830,6 +839,8 @@ var/list/possible_cable_coil_colours
 /obj/item/stack/cable_coil/white
 	color = COLOR_WHITE
 
-/obj/item/stack/cable_coil/random/New()
+/obj/item/stack/cable_coil/random
+
+/obj/item/stack/cable_coil/random/Initialize()
+	. = ..()
 	color = possible_cable_coil_colours[pick(possible_cable_coil_colours)]
-	..()

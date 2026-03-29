@@ -1,9 +1,12 @@
 /obj/item/grenade/supermatter
 	name = "supermatter grenade"
 	icon_state = "banana"
+	// TODO: Add inhand icon for supermatter grenade (just yellow grenade)
 	item_state = "emergency_engi"
+	base_icon_state = "banana"
 	origin_tech = list(TECH_BLUESPACE = 5, TECH_MAGNET = 4, TECH_ENGINEERING = 5)
 	arm_sound = 'sound/effects/3.wav'
+
 	var/implode_at
 
 /obj/item/grenade/supermatter/detonate()
@@ -26,6 +29,7 @@
 		forceMove(get_turf(src))
 	playsound(src, 'sound/effects/supermatter.ogg', 100)
 	supermatter_pull(src, world.view, STAGE_THREE)
+
 	if(world.time > implode_at)
 		explosion(loc, 0, 1, 3, 4)
 		qdel(src)

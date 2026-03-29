@@ -2,13 +2,14 @@
 	name = "classic emp grenade"
 	icon_state = "emp"
 	item_state = "empgrenade"
+	base_icon_state = "emp"
 	origin_tech = list(TECH_MATERIAL = 2, TECH_MAGNET = 3)
 
-	detonate()
-		..()
-		if(empulse(src, 4, 10))
-			qdel(src)
-		return
+/obj/item/grenade/empgrenade/detonate()
+	..()
+	if(empulse(src, 4, 10))
+		qdel(src)
+	return
 
 /obj/item/grenade/empgrenade/low_yield
 	name = "low yield emp grenade"
@@ -17,8 +18,8 @@
 	item_state = "empgrenade"
 	origin_tech = list(TECH_MATERIAL = 2, TECH_MAGNET = 3)
 
-	detonate()
-		..()
-		if(empulse(src, 4, 1))
-			qdel(src)
-		return
+/obj/item/grenade/empgrenade/low_yield/detonate()
+	..()
+	if(empulse(src, 4, 1))
+		qdel(src)
+	return

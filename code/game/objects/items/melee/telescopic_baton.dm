@@ -14,6 +14,7 @@
 	armor_penetration = 10
 	pickup_sound = SFX_PICKUP_TELEBATON_FOLDED
 	drop_sound = SFX_DROP_TELEBATON_FOLDED
+
 	var/folded_pickup_sound = SFX_PICKUP_TELEBATON_FOLDED
 	var/folded_drop_sound = SFX_DROP_TELEBATON_FOLDED
 	var/unfolded_pickup_sound = SFX_PICKUP_TELEBATON_UNFOLDED
@@ -80,6 +81,11 @@
 			return
 	else
 		return ..()
+
+/obj/item/melee/telebaton/get_belt_overlay()
+	if(!(icon_state in GLOB.belt_overlays_icon_states))
+		return null
+	return mutable_appearance(GLOB.belt_overlays_icon, icon_state)
 
 /obj/item/melee/telebaton/bronze
 	name = "bronze-capped telescopic baton"

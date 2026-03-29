@@ -3,13 +3,15 @@
 #define STAGE_READY 2
 /obj/item/grenade/chem_grenade
 	name = "grenade casing"
+	desc = "A hand made chemical grenade."
 	icon_state = "chemg"
 	item_state = "chemg"
-	desc = "A hand made chemical grenade."
+	base_icon_state = "chemg"
 	w_class = ITEM_SIZE_SMALL
 	force = 2.0
 	det_time = null
 	unacidable = 1
+
 	var/stage = STAGE_BASIC
 	var/state = 0
 	var/list/beakers = new /list()
@@ -199,6 +201,7 @@
 	name = "large chem grenade"
 	desc = "An oversized grenade that affects a larger area."
 	icon_state = "large_grenade"
+	base_icon_state = "large_grenade"
 	allowed_containers = list(/obj/item/reagent_containers/vessel)
 	origin_tech = list(TECH_COMBAT = 3, TECH_MATERIAL = 3)
 	affected_area = 4

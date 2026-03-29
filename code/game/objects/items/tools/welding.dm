@@ -23,7 +23,7 @@
 		)
 	icon_state = "welder_m"
 	item_state = "welder"
-	base_icon_state = "welder"
+	base_icon_state = "welder_m"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	center_of_mass = "x=14;y=15"

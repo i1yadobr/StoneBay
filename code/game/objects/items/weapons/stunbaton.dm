@@ -10,7 +10,7 @@
 
 	icon_state = "stunbaton"
 	item_state = "baton"
-	icon = 'icons/obj/weapons.dmi'
+	base_icon_state = "stunbaton"
 	slot_flags = SLOT_BELT
 	force = 15
 	sharp = 0
@@ -24,18 +24,15 @@
 	attack_verb = list("beaten")
 	var/stunforce = 6
 	var/agonyforce = 75
-	var/status = 0		//whether the thing is on or not
+	var/status = FALSE		//whether the thing is on or not
 	var/obj/item/cell/bcell
 	var/hitcost = 10
 
-/obj/item/melee/baton/loaded
-	bcell = /obj/item/cell/device/high
-
-/obj/item/melee/baton/New()
+/obj/item/melee/baton/Initialize()
+	. = ..()
 	if(ispath(bcell))
 		bcell = new bcell(src)
 		update_icon()
-	..()
 
 /obj/item/melee/baton/Destroy()
 	if(bcell && !ispath(bcell))
@@ -46,25 +43,28 @@
 /obj/item/melee/baton/proc/deductcharge(chrgdeductamt)
 	if(bcell)
 		if(bcell.checked_use(chrgdeductamt))
-			return 1
+			return TRUE
 		else
-			status = 0
+			status = FALSE
 			update_icon()
-			return 0
+			return FALSE
 	return null
 
 /obj/item/melee/baton/on_update_icon()
 	if(status)
-		icon_state = "[initial(name)]_active"
-	else if(!bcell)
-		icon_state = "[initial(name)]_nocell"
-	else
-		icon_state = "[initial(name)]"
-
-	if(icon_state == "[initial(name)]_active")
+		icon_state = "[base_icon_state]_active"
 		set_light(0.4, 0.1, 1, 2, "#ff6a00")
-	else
+	else if(!bcell)
+		icon_state = "[base_icon_state]_nocell"
 		set_light(0)
+	else
+		icon_state = "[base_icon_state]"
+		set_light(0)
+
+/obj/item/melee/baton/get_belt_overlay()
+	if(!(icon_state in GLOB.belt_overlays_icon_states))
+		return null
+	return mutable_appearance(GLOB.belt_overlays_icon, icon_state)
 
 /obj/item/melee/baton/examine(mob/user, infix)
 	. = ..()
@@ -95,7 +95,7 @@
 			bcell.dropInto(loc)
 			bcell = null
 			to_chat(user, SPAN("notice", "You remove the cell from the [src]."))
-			status = 0
+			status = FALSE
 			update_icon()
 	else
 		..()
@@ -121,7 +121,7 @@
 // Also exists to ease "helpful" admin-abuse in case an bug prevents attack_self
 // to occur would appear. Hopefully it wasn't necessary.
 /obj/item/melee/baton/proc/change_status(s)
-	if (status != s)
+	if(status != s)
 		status = s
 		update_icon()
 
@@ -208,14 +208,17 @@
 		bcell.emp_act(severity)	//let's not duplicate code everywhere if we don't have to please.
 	..()
 
+/obj/item/melee/baton/loaded
+	bcell = /obj/item/cell/device/high
+
 // Stunbaton module for Security synthetics
 /obj/item/melee/baton/robot
 	name = "mounted baton"
+	icon_state = "mounted baton"
 	// TODO(rufus): remove direct reference to the robot's cell, determine the cell to use at the moment of usage and
 	//   call cell procs to use charge.
 	bcell = null
 	hitcost = 20
-	icon_state = "mounted baton"
 
 // Addition made by Techhead0, thanks for fullfilling the todo!
 /obj/item/melee/baton/robot/examine_cell(mob/user, prefix)
@@ -241,10 +244,10 @@
 // Updates the baton's cell to use user's own cell
 // Otherwise, if null (when the user isn't a robot), render it unuseable
 /obj/item/melee/baton/robot/proc/update_cell(mob/living/silicon/robot/user)
-	if (!user)
+	if(!user)
 		bcell = null
 		set_status(0)
-	else if (!bcell || bcell != user.cell)
+	else if(!bcell || bcell != user.cell)
 		// TODO(rufus): remove direct reference to the robot's cell, determine the cell to use at the moment of usage and
 		//   call cell procs to use charge.
 		bcell = user.cell // if it is null, nullify it anyway
@@ -269,6 +272,7 @@
 	desc = "An improvised stun baton."
 	icon_state = "stunprod_nocell"
 	item_state = "prod"
+	base_icon_state = "stunprod"
 	force = 3
 	mod_weight = 1.25
 	mod_reach = 1.25

@@ -4,6 +4,7 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "fire_extinguisher0"
 	item_state = "fire_extinguisher"
+	base_icon_state = "fire_extinguisher"
 	hitsound = 'sound/effects/fighting/smash.ogg'
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	force = 15.0
@@ -22,39 +23,16 @@
 	var/max_volume = 7.5 LITERS
 	var/last_use = 1.0
 	var/safety = 1
-	var/sprite_name = "fire_extinguisher"
 	var/ff_reagent = /datum/reagent/water/firefoam
 	var/external_source = FALSE
 
 	drop_sound = SFX_DROP_GASCAN
 	pickup_sound = SFX_PICKUP_GASCAN
 
-/obj/item/extinguisher/mini
-	name = "fire extinguisher"
-	desc = "A light and compact fibreglass-framed model fire extinguisher."
-	item_icons = list(
-		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
-		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
-		)
-	icon_state = "miniFE0"
-	item_state = "miniFE"
-	hitsound = null	//it is much lighter, after all.
-	force = 7.5
-	throwforce = 2
-	mod_handy = 0.7
-	mod_weight = 0.65
-	mod_reach = 0.6
-	armor_penetration = 5
-	w_class = ITEM_SIZE_SMALL
-	spray_amount = 0.25 LITERS
-	max_volume = 2 LITERS
-	sprite_name = "miniFE"
-	matter = list(MATERIAL_STEEL = 500)
-
-/obj/item/extinguisher/New()
+/obj/item/extinguisher/Initialize()
+	. = ..()
 	create_reagents(max_volume)
 	reagents.add_reagent(ff_reagent, max_volume)
-	..()
 
 /obj/item/extinguisher/examine(mob/user, infix)
 	. = ..()
@@ -66,7 +44,7 @@
 	if(external_source)
 		return
 	safety = !safety
-	src.icon_state = "[sprite_name][!safety]"
+	src.icon_state = "[base_icon_state][!safety]"
 	src.desc = "The safety is [safety ? "on" : "off"]."
 	to_chat(user, "The safety is [safety ? "on" : "off"].")
 
@@ -173,3 +151,25 @@
 			step(user, user.inertia_dir)
 	else
 		return ..()
+
+/obj/item/extinguisher/mini
+	name = "fire extinguisher"
+	desc = "A light and compact fibreglass-framed model fire extinguisher."
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/inhands/equipment/tools_lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
+		)
+	icon_state = "miniFE0"
+	item_state = "miniFE"
+	base_icon_state = "miniFE"
+	hitsound = null	//it is much lighter, after all.
+	force = 7.5
+	throwforce = 2
+	mod_handy = 0.7
+	mod_weight = 0.65
+	mod_reach = 0.6
+	armor_penetration = 5
+	w_class = ITEM_SIZE_SMALL
+	spray_amount = 0.25 LITERS
+	max_volume = 2 LITERS
+	matter = list(MATERIAL_STEEL = 500)

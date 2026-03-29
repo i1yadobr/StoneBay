@@ -22,7 +22,7 @@
 	base_icon_state = "screwdriver"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT | SLOT_EARS
-	sharp = 1
+	sharp = TRUE
 	force = 7.5
 	w_class = ITEM_SIZE_TINY
 	mod_weight = 0.35
@@ -95,7 +95,6 @@
 /obj/item/screwdriver/update_handle_icon()
 	base_icon_state = "screwdriver_[pick(handle_color)]"
 	icon_state = base_icon_state
-	item_state = base_icon_state
 
 /obj/item/screwdriver/old
 	name = "old screwdriver"

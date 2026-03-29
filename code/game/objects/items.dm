@@ -1159,5 +1159,15 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	return
 
 // TODO: Come up with a way to render the handle and head separately for certain tools that have this feature
+GLOBAL_VAR_INIT(belt_overlays_icon, 'icons/obj/clothing/belt_overlays.dmi')
+GLOBAL_LIST_INIT(belt_overlays_icon_states, icon_states(GLOB.belt_overlays_icon))
 /obj/item/proc/get_belt_overlay() //Returns the icon used for overlaying the object on a belt
-	return mutable_appearance('icons/obj/clothing/belt_overlays.dmi', icon_state)
+	var/target_icon_state
+	if(isnull(base_icon_state))
+		target_icon_state = icon_state
+	else
+		target_icon_state = base_icon_state
+	if(!(target_icon_state in GLOB.belt_overlays_icon_states))
+		return null
+	// TODO(rufus): check if mutable_appearance is really needed or if regula /image would suffice
+	return mutable_appearance(GLOB.belt_overlays_icon, target_icon_state)

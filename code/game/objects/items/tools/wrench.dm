@@ -50,13 +50,13 @@
 		update_handle_icon()
 	update_icon()
 
-/obj/item/wirecutters/update_handle_icon()
-	base_icon_state = "cutters_[pick(handle_color)]"
+/obj/item/wrench/update_handle_icon()
+	base_icon_state = "wrench_[pick(handle_color)]"
 	icon_state = base_icon_state
 
 /obj/item/wrench/plain
-	icon_state = "wrench"
-	base_icon_state = "wrench"
+	icon_state = "wrench_grey"
+	base_icon_state = "wrench_grey"
 	randicon = FALSE
 
 /obj/item/wrench/red
@@ -73,6 +73,7 @@
 	name = "old wrench"
 	desc = "It wrenches. It unwrenches. But more importantly, it's old as hell."
 	icon_state = "legacywrench"
+	base_icon_state = "legacywrench"
 	center_of_mass = "x=16;y=16"
 	matter = list(MATERIAL_PLASTEEL = 150)
 	force = 9.5

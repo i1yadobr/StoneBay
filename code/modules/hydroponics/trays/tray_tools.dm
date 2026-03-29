@@ -11,6 +11,7 @@
 		)
 	icon_state = "plantclippers"
 	item_state = "plantclippers"
+	base_icon_state = "plantclippers"
 	randicon = FALSE
 
 /obj/item/device/analyzer/plant_analyzer
@@ -60,7 +61,8 @@
 	print_report(user)
 
 /obj/item/device/analyzer/plant_analyzer/afterattack(obj/target, mob/user, flag)
-	if(!flag) return
+	if(!flag)
+		return
 
 	var/datum/seed/grown_seed
 	var/datum/reagents/grown_reagents

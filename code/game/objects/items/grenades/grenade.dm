@@ -12,6 +12,7 @@
 	throw_range = 20
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT|SLOT_MASK
+
 	var/active = FALSE
 	var/broken = FALSE // For if we would like to reuse assembly
 	var/det_time = null

@@ -71,24 +71,39 @@
 	desc = "A long, sturdy blade with a rugged handle. Leading the way to cursed treasures since before space travel."
 	icon_state = "machete"
 	item_state = "machete"
+	base_icon_state = "machete"
 	w_class = ITEM_SIZE_NORMAL
 	slot_flags = SLOT_BELT
 	force_const = 10
 	thrown_force_const = 5
 	material_amount = 3
 
+	var/randicon = TRUE
+	var/static/list/handle_color = list(
+		"green",
+		"red",
+		"blue",
+		"black",
+		"olive"
+	)
+
 /obj/item/material/hatchet/machete/Initialize()
-	icon_state = "machete[pick("","_red","_blue", "_black", "_olive")]"
 	. = ..()
+	if(randicon)
+		update_handle_icon()
+	update_icon()
+
+/obj/item/material/hatchet/machete/update_handle_icon()
+	base_icon_state = "machete_[pick(handle_color)]"
+	icon_state = base_icon_state
 
 /obj/item/material/hatchet/machete/deluxe
 	name = "deluxe machete"
 	desc = "A fine example of a machete, with a polished blade, wooden handle and a leather cord loop."
-	force_const = 12.5
-
-/obj/item/material/hatchet/machete/deluxe/Initialize()
-	. = ..()
 	icon_state = "machetedx"
+	base_icon_state = "machetedx"
+	force_const = 12.5
+	randicon = FALSE
 
 /obj/item/material/minihoe // -- Numbers
 	name = "mini hoe"
