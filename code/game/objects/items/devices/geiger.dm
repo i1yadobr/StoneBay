@@ -8,8 +8,11 @@
 
 	icon_state = "geiger_off"
 	item_state = "geiger"
+	base_icon_state = "geiger"
 	w_class = ITEM_SIZE_SMALL
+
 	action_button_name = "Toggle geiger counter"
+
 	var/scanning = FALSE
 	var/radiation_dose = 0
 	var/radiation_activity = 0
@@ -99,30 +102,30 @@
 
 /obj/item/device/geiger/on_update_icon()
 	if(!scanning)
-		icon_state = "geiger_off"
+		icon_state = "[base_icon_state]_off"
 		return 1
 
 	switch(radiation_dose)
 		if(null)
-			icon_state = "geiger_on_0"
+			icon_state = "[base_icon_state]_on_0"
 			return
 		if(-INFINITY to SPACE_RADIATION)
-			icon_state = "geiger_on_0"
+			icon_state = "[base_icon_state]_on_0"
 			return
 		if(SPACE_RADIATION to SAFE_RADIATION_DOSE)
-			icon_state = "geiger_on_1"
+			icon_state = "[base_icon_state]_on_1"
 			return
 		if(SAFE_RADIATION_DOSE to (0.05 SIEVERT))
-			icon_state = "geiger_on_2"
+			icon_state = "[base_icon_state]_on_2"
 			return
 		if((0.05 SIEVERT) to (0.25 SIEVERT))
-			icon_state = "geiger_on_3"
+			icon_state = "[base_icon_state]_on_3"
 			return
 		if((0.25 SIEVERT) to (1 SIEVERT))
-			icon_state = "geiger_on_4"
+			icon_state = "[base_icon_state]_on_4"
 			return
 		if((1 SIEVERT) to INFINITY)
-			icon_state = "geiger_on_5"
+			icon_state = "[base_icon_state]_on_5"
 			return
 
 /obj/item/device/geiger/proc/play_sound()

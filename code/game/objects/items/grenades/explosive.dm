@@ -18,6 +18,7 @@
 	desc = "A military fragmentation grenade, designed to explode in a deadly shower of fragments, while avoiding massive structural damage."
 	icon_state = "frggrenade"
 	item_state = "frggrenade"
+	base_icon_state = "frggrenade"
 
 	var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment = 1)
 	var/num_fragments = 72  //total number of fragments produced by the grenade
@@ -30,7 +31,8 @@
 	..()
 
 	var/turf/O = get_turf(src)
-	if(!O) return
+	if(!O)
+		return
 
 	if(explosion_size)
 		on_explosion(O)

@@ -18,9 +18,10 @@
 		slot_r_hand_str = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 		)
 	icon_state = "cutters"
+	item_state = "cutters"
+	base_icon_state = "cutters"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
-	sharp = 1
 	force = 5.5
 	throw_range = 9
 	w_class = ITEM_SIZE_SMALL
@@ -31,20 +32,25 @@
 	matter = list(MATERIAL_STEEL = 80)
 	center_of_mass = "x=18;y=16"
 	attack_verb = list("pinched", "nipped")
-	sharp = 1
-	edge = 1
+	sharp = TRUE
+	edge = TRUE
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	tool_behaviour = TOOL_WIRECUTTER
-	var/randicon = TRUE
 
 	drop_sound = SFX_DROP_WIRECUTTER
 	pickup_sound = SFX_PICKUP_WIRECUTTER
 
+	var/randicon = TRUE
+	var/static/list/handle_color = list(
+		"red",
+		"yellow"
+	)
+
 /obj/item/wirecutters/Initialize()
-	if(randicon && prob(50))
-		icon_state = "cutters-y"
-		item_state = "cutters_yellow"
 	. = ..()
+	if(randicon)
+		update_handle_icon()
+	update_icon()
 
 /obj/item/wirecutters/attack(mob/living/carbon/C as mob, mob/user as mob)
 	if(user.a_intent == I_HELP && (C.handcuffed) && (istype(C.handcuffed, /obj/item/handcuffs/cable)))
@@ -59,11 +65,16 @@
 	else
 		..()
 
+/obj/item/wirecutters/update_handle_icon()
+	base_icon_state = "cutters_[pick(handle_color)]"
+	icon_state = base_icon_state
+
 /obj/item/wirecutters/old
 	name = "old wirecutters"
 	desc = "A very special pair of pliers with cutting edges. No excessive brackets and manipulators are needed to allow it to repair severed wiring."
 	icon_state = "legacycutters"
 	item_state = "cutters"
+	base_icon_state = "legacycutters"
 	force = 6.5
 	w_class = ITEM_SIZE_SMALL
 	mod_weight = 0.5

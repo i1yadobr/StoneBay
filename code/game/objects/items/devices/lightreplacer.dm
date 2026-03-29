@@ -60,27 +60,17 @@
 	var/max_uses = 20
 	/// Assoc list of loaded bulbs [type] -> [amount]
 	var/list/bulbs_assoc = list(DEFAULT_BULB_TYPE = 10)
-	var/emagged = 0
+	var/emagged = FALSE
 	var/failmsg = ""
 	var/charge = 0
 	var/load_interval = 30
-	var/store_broken = 0// If set, this lightreplacer will suck up and store broken bulbs
+	var/store_broken = FALSE // If set, this lightreplacer will suck up and store broken bulbs
 	var/max_stored = 10
 	var/load_queue = FALSE
 
-/obj/item/device/lightreplacer/advanced
-	store_broken = 1
-	load_interval = 10
-	max_uses = 30
-	bulbs_assoc = list()
-	name = "advanced light replacer"
-	desc = "A specialised light replacer which stores more lights and refills faster from boxes."
-	icon_state = "adv_lightreplacer"
-	item_state = "adv_lightreplacer"
-
-/obj/item/device/lightreplacer/New()
+/obj/item/device/lightreplacer/Initialize()
+	. = ..()
 	failmsg = "The [name]'s refill light blinks red."
-	..()
 
 /obj/item/device/lightreplacer/examine(mob/user, infix)
 	. = ..()
@@ -90,7 +80,7 @@
 
 	. += "It has [bulbs_amt()] light\s remaining."
 
-	if (store_broken)
+	if(store_broken)
 		. += "It is storing [stored()]/[max_stored] broken light\s."
 
 /obj/item/device/lightreplacer/attackby(obj/item/W, mob/user)
@@ -158,7 +148,6 @@
 			return TRUE
 	return FALSE
 
-
 /obj/item/device/lightreplacer/proc/load_lights_from_box(obj/item/storage/box/box, mob/user)
 	var/boxstartloc = box.loc
 	var/ourstartloc = loc
@@ -196,7 +185,7 @@
 
 /obj/item/device/lightreplacer/proc/stored()
 	var/count = 0
-	for (var/obj/item/light/L in src)
+	for(var/obj/item/light/L in src)
 		count++
 
 	return count
@@ -214,7 +203,6 @@
 
 /obj/item/device/lightreplacer/on_update_icon()
 	icon_state = "lightreplacer[emagged]"
-
 
 /obj/item/device/lightreplacer/proc/Use(mob/user, obj/machinery/light/target)
 	playsound(src.loc, 'sound/machines/click.ogg', 50, 1)
@@ -242,7 +230,6 @@
 		charge = 0
 
 /obj/item/device/lightreplacer/proc/ReplaceLight(obj/machinery/light/target, mob/living/U)
-
 	if(target.get_status() == LIGHT_OK)
 		to_chat(U, "There is a working [target.get_fitting_name()] already inserted.")
 	else if(!CanUse(U))
@@ -269,7 +256,6 @@
 	return 1
 
 //Can you use it?
-
 /obj/item/device/lightreplacer/proc/CanUse(mob/living/user)
 	src.add_fingerprint(user)
 	//Not sure what else to check for. Maybe if clumsy?
@@ -277,6 +263,16 @@
 		return 1
 	else
 		return 0
+
+/obj/item/device/lightreplacer/advanced
+	name = "advanced light replacer"
+	desc = "A specialised light replacer which stores more lights and refills faster from boxes."
+	icon_state = "adv_lightreplacer"
+	item_state = "adv_lightreplacer"
+	store_broken = TRUE
+	load_interval = 10
+	max_uses = 30
+	bulbs_assoc = list()
 
 #undef LIGHT_OK
 #undef LIGHT_EMPTY

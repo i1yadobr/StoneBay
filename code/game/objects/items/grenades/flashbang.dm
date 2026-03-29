@@ -2,6 +2,7 @@
 	name = "flashbang"
 	icon_state = "flashbang"
 	item_state = "flashbang"
+	base_icon_state = "flashbang"
 	origin_tech = list(TECH_MATERIAL = 2, TECH_COMBAT = 1)
 	var/banglet = 0
 
@@ -80,6 +81,7 @@
 			if(!banglet && !istype(src, /obj/item/grenade/flashbang/clusterbang))
 				if(E.damage >= E.min_broken_damage)
 					to_chat(M, SPAN("danger", "You can't see anything!"))
+
 	if(M.ear_damage >= 15)
 		to_chat(M, SPAN("danger", "Your ears start to ring badly!"))
 		if(!banglet && !istype(src, /obj/item/grenade/flashbang/clusterbang))

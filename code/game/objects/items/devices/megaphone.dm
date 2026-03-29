@@ -18,7 +18,6 @@ GLOBAL_LIST_INIT(megaphone_insults, world.file2list("strings/translation/megapho
 	/// Last `world.time` device was successfully used.
 	var/last_use = 0
 
-
 /obj/item/device/megaphone/on_update_icon()
 	icon_state = "megaphone[active ? "_on" : ""]"
 

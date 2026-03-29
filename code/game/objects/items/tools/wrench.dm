@@ -19,6 +19,7 @@
 		)
 	icon_state = "wrench"
 	item_state = "wrench"
+	base_icon_state = "wrench"
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	force = 8.5
@@ -32,32 +33,47 @@
 	center_of_mass = "x=17;y=16"
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	tool_behaviour = TOOL_WRENCH
-	var/randicon = TRUE
 
 	drop_sound = SFX_DROP_WRENCH
 	pickup_sound = SFX_PICKUP_WRENCH
 
+	var/randicon = TRUE
+	var/static/list/handle_color = list(
+		"grey",
+		"red",
+		"black"
+	)
+
 /obj/item/wrench/Initialize()
-	if(randicon)
-		icon_state = "wrench[pick("","_red","_black")]"
 	. = ..()
+	if(randicon)
+		update_handle_icon()
+	update_icon()
+
+/obj/item/wrench/update_handle_icon()
+	base_icon_state = "wrench_[pick(handle_color)]"
+	icon_state = base_icon_state
 
 /obj/item/wrench/plain
-	icon_state = "wrench"
+	icon_state = "wrench_grey"
+	base_icon_state = "wrench_grey"
 	randicon = FALSE
 
 /obj/item/wrench/red
 	icon_state = "wrench_red"
+	base_icon_state = "wrench_red"
 	randicon = FALSE
 
 /obj/item/wrench/black
 	icon_state = "wrench_black"
+	base_icon_state = "wrench_black"
 	randicon = FALSE
 
 /obj/item/wrench/old
 	name = "old wrench"
 	desc = "It wrenches. It unwrenches. But more importantly, it's old as hell."
 	icon_state = "legacywrench"
+	base_icon_state = "legacywrench"
 	center_of_mass = "x=16;y=16"
 	matter = list(MATERIAL_PLASTEEL = 150)
 	force = 9.5
