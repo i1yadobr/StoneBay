@@ -7,7 +7,6 @@
 
 	throw_range = 4
 
-	var/equipment_slowdown = -1
 	var/list/hud_list[12]
 	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is imbedded in us.
 	var/obj/item/rig/wearing_rig // This is very not good, but it's much much better than calling get_rig() every update_canmove() call.
@@ -1769,11 +1768,13 @@
 /mob/living/carbon/human/proc/useblock_off()
 	src.setClickCooldown(3)
 	src.blocking = 0
+	remove_movespeed_modifier(/datum/movespeed_modifier/blocking)
 	if(src.block_icon) //in case we don't have the HUD and we use the hotkey
 		src.block_icon.icon_state = "act_block0"
 
 /mob/living/carbon/human/proc/useblock_on()
 	src.blocking = 1
+	add_movespeed_modifier(/datum/movespeed_modifier/blocking)
 	if(src.block_icon) //in case we don't have the HUD and we use the hotkey
 		src.block_icon.icon_state = "act_block1"
 

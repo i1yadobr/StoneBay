@@ -42,6 +42,7 @@
 /mob/living/carbon/human/Initialize()
 	. = ..()
 
+	add_movespeed_modifier(/datum/movespeed_modifier/human_delay)
 	AddElement(/datum/element/last_words)
 	add_think_ctx("remove_deaf", CALLBACK(src, nameof(.proc/remove_deaf)), 0)
 	add_think_ctx("remove_nearsighted", CALLBACK(src, nameof(.proc/remove_nearsighted)), 0)
@@ -425,11 +426,17 @@
 	var/body_temperature_difference = species.body_temperature - bodytemperature
 
 	if(abs(body_temperature_difference) < 0.5)
-		return //fuck this precision
+		if(bodytemperature != bodytemperature_lasttick)
+			update_bodytemp_slowdown()
+		bodytemperature_lasttick = bodytemperature
+		return //the hell this precision
 
 	if(on_fire)
-		if (stat == CONSCIOUS)
+		if(stat == CONSCIOUS)
 			src.emote("long_scream")
+
+		if(bodytemperature != bodytemperature_lasttick)
+			update_bodytemp_slowdown()
 
 		bodytemperature_lasttick = bodytemperature
 		return //too busy for pesky metabolic regulation
@@ -449,6 +456,9 @@
 		var/recovery_amt = min((body_temperature_difference / BODYTEMP_AUTORECOVERY_DIVISOR), -BODYTEMP_AUTORECOVERY_MINIMUM)	//We're dealing with negative numbers
 //		log_debug("Hot. Difference = [body_temperature_difference]. Recovering [recovery_amt]")
 		bodytemperature += recovery_amt
+
+	if(bodytemperature != bodytemperature_lasttick)
+		update_bodytemp_slowdown()
 
 	//This proc returns a number made up of the flags for body parts which you are protected on. (such as HEAD, UPPER_TORSO, LOWER_TORSO, etc. See setup.dm for the full list)
 /mob/living/carbon/human/proc/get_heat_protection_flags(temperature) //Temperature is the temperature you're being exposed to.

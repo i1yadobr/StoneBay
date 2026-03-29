@@ -6,38 +6,39 @@
 	desc = "Protected by FRM."
 	icon = 'icons/obj/module.dmi'
 	icon_state = "cyborg_upgrade"
-	var/locked = 0
-	var/require_module = 0
-	var/installed = 0
+	var/locked = FALSE
+	var/require_module = FALSE
+	var/installed = FALSE
 
 /obj/item/borg/upgrade/proc/can_install(type, mob/living/silicon/robot/R)
 	if(R.module)
 		var/t = locate(type) in R.module.supported_upgrades
-		if (!t)
+		if(!t)
 			to_chat(R, "Upgrade mounting error!  No suitable hardpoint detected!")
 			to_chat(usr, "There's no mounting point for the module!")
-			return 0
+			return FALSE
 		var/obj/item/borg/upgrade/U = locate(type) in R.contents
 		if(U && U.installed)
 			to_chat(R, "There is already a [src] present!")
 			to_chat(usr, "[src] is already installed!")
-			return 0
-	return 1
+			return FALSE
+	return TRUE
 
 /obj/item/borg/upgrade/proc/action(mob/living/silicon/robot/R)
 	if(R.is_ic_dead())
 		to_chat(usr, SPAN("warning", "The [src] will not function on a deceased robot."))
-		return 1
-	return 0
+		return TRUE
+	return FALSE
 
 /obj/item/borg/upgrade/reset
 	name = "robotic module reset board"
 	desc = "Used to reset a cyborg's module. Destroys any other upgrades applied to the robot."
 	icon_state = "cyborg_upgrade1"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/reset/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 	R.uneq_all()
 	if(R.restore_modtype_in_global_pull)
 		GLOB.robot_module_types |= R.modtype
@@ -50,22 +51,23 @@
 	qdel(R.module)
 	R.module = null
 	R.updatename("Default")
-	installed = 1
+	installed = TRUE
 
-	return 1
+	return TRUE
 
 /obj/item/borg/upgrade/remodel
 	name = "default model board"
 	desc = "Used to remodel a cyborg."
 	icon_state = "cyborg_upgrade1"
-	require_module = 0
+	require_module = FALSE
 	var/module = "Standard"
 
 /obj/item/borg/upgrade/remodel/advanced
 	icon_state = "cyborg_upgrade4"
 
 /obj/item/borg/upgrade/remodel/action(mob/living/silicon/robot/R, mob/user)
-	if(..()) return 0
+	if(..())
+		return FALSE
 	R.active_hud = 0
 	R.sensor_mode = 0
 	spawn(1)	//will do stuff after proc end so item can be put in borg
@@ -90,8 +92,8 @@
 		R.recalculate_synth_capacities()
 		R.updatename()
 		R.notify_ai(ROBOT_NOTIFICATION_NEW_MODULE, R.module.name)
-		installed = 1
-	return 1
+		installed = TRUE
+	return TRUE
 
 /obj/item/borg/upgrade/remodel/service
 	name = "service model board"
@@ -155,7 +157,8 @@
 	held_name = sanitizeSafe(input(user, "Enter new robot name", "Robot Reclassification", held_name), MAX_NAME_LEN)
 
 /obj/item/borg/upgrade/rename/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 	spawn(1)
 		while(held_name == initial(held_name))
 			held_name = sanitizeSafe(input(R, "Enter new robot name", "Robot Reclassification", held_name), MAX_NAME_LEN)
@@ -166,7 +169,7 @@
 		R.custom_name = held_name
 		R.real_name = held_name
 
-	return 1
+	return TRUE
 
 /obj/item/borg/upgrade/floodlight
 	name = "robot floodlight module"
@@ -174,28 +177,28 @@
 	icon_state = "cyborg_upgrade1"
 
 /obj/item/borg/upgrade/floodlight/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(R.intenselight)
 		to_chat(usr, "This cyborg's light was already upgraded")
-		return 0
+		return FALSE
 	else
 		R.intenselight = 1
 		R.update_robot_light()
 		to_chat(R, "Lighting systems upgrade detected.")
-		installed = 1
-	return 1
+		installed = TRUE
+	return TRUE
 
 /obj/item/borg/upgrade/restart
 	name = "robot emergency restart module"
 	desc = "Used to force a restart of a disabled-but-repaired robot, bringing it back online."
 	icon_state = "cyborg_upgrade1"
 
-
 /obj/item/borg/upgrade/restart/action(mob/living/silicon/robot/R)
 	if(R.health < 0)
 		to_chat(usr, "You have to repair the robot before using this module!")
-		return 0
+		return FALSE
 
 	if(!R.key)
 		for(var/mob/observer/ghost/ghost in GLOB.player_list)
@@ -206,24 +209,23 @@
 	R.switch_from_dead_to_living_mob_list()
 	R.dead = 0
 	R.notify_ai(ROBOT_NOTIFICATION_NEW_UNIT)
-	installed = 1
-	return 1
-
+	installed = TRUE
+	return TRUE
 
 /obj/item/borg/upgrade/vtec
 	name = "robotic VTEC Module"
 	desc = "Used to kick in a robot's VTEC systems, increasing their speed."
 	icon_state = "cyborg_upgrade2"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/vtec/action(mob/living/silicon/robot/R)
 	if(..())
 		return FALSE
 
-	if(R.speed == -1)
+	if(R.has_movespeed_modifier(/datum/movespeed_modifier/vtec_speedup))
 		return FALSE
 
-	R.speed--
+	R.add_movespeed_modifier(/datum/movespeed_modifier/vtec_speedup)
 	installed = TRUE
 	return TRUE
 
@@ -231,14 +233,14 @@
 	name = "robotic Rapid Taser Cooling Module"
 	desc = "Used to cool a mounted taser, increasing the potential current in it and thus its recharge rate."
 	icon_state = "cyborg_upgrade3_red"
-	require_module = 1
-
+	require_module = TRUE
 
 /obj/item/borg/upgrade/tasercooler/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src,R))
-		return 0
+		return FALSE
 	var/obj/item/gun/energy/taser/mounted/cyborg/T = locate() in R.module
 	if(!T)
 		T = locate() in R.module.contents
@@ -246,31 +248,32 @@
 		T = locate() in R.module.modules
 	if(!T)
 		to_chat(usr, "This robot has had its taser removed!")
-		return 0
+		return FALSE
 
 	if(T.recharge_time <= 2)
 		to_chat(R, "Maximum cooling achieved for this hardpoint!")
 		to_chat(usr, "There's no room for another cooling unit!")
-		return 0
+		return FALSE
 
 	else
 		T.recharge_time = max(2 , T.recharge_time - 4)
-		installed = 1
+		installed = TRUE
 
-	return 1
+	return TRUE
 
 /obj/item/borg/upgrade/lasercooler
 	name = "robotic Rapid Laser Carbine Cooling Module"
 	desc = "Used to cool a mounted laser carbine, increasing the potential current in it and thus its recharge rate."
 	icon_state = "cyborg_upgrade3_red"
-	require_module = 1
-
+	require_module = TRUE
 
 /obj/item/borg/upgrade/lasercooler/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src,R))
-		return 0
+		return FALSE
+
 	var/obj/item/gun/energy/laser/mounted/cyborg/T = locate() in R.module
 	if(!T)
 		T = locate() in R.module.contents
@@ -278,30 +281,31 @@
 		T = locate() in R.module.modules
 	if(!T)
 		to_chat(usr, "This robot has had its laser removed!")
-		return 0
+		return FALSE
 
 	if(T.recharge_time <= 2)
 		to_chat(R, "Maximum cooling achieved for this hardpoint!")
 		to_chat(usr, "There's no room for another cooling unit!")
-		return 0
+		return FALSE
 
 	else
 		T.recharge_time = max(2 , T.recharge_time - 4)
-		installed = 1
+		installed = TRUE
 
-	return 1
+	return TRUE
 
 /obj/item/borg/upgrade/jetpack
 	name = "robot jetpack"
 	desc = "A carbon dioxide jetpack suitable for low-gravity operations."
 	icon_state = "cyborg_upgrade3_orange"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/jetpack/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		var/obj/item/tank/jetpack/carbondioxide/J = new /obj/item/tank/jetpack/carbondioxide
 		J.toggle()
@@ -310,148 +314,157 @@
 		J.ion_trail.start()
 		for(var/obj/item/tank/jetpack/carbondioxide in R.module.modules)
 			R.internals = src
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/visor/thermal
 	name = "thermal visor upgrade"
 	desc = "Module contains callibration settings for cyborg visial sensors (THERMAL)."
 	icon_state = "cyborg_upgrade3_red"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/visor/thermal/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.avaliable_huds += "Thermal"
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/visor/nvg
 	name = "night visor upgrade"
 	desc = "Module contains callibration settings for cyborg visial sensors (NIGHT VISION)."
 	icon_state = "cyborg_upgrade3_red"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/visor/nvg/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.avaliable_huds += "Night Vision"
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/visor/flash_screen
 	name = "flash screen visor upgrade"
 	desc = "Module contains lenses with toggleable tint that protects against bright light."
 	icon_state = "cyborg_upgrade3"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/visor/flash_screen/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.avaliable_huds += "Flash Screen"
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/visor/meson
 	name = "meson visor upgrade"
 	desc = "Module contains callibration settings for cyborg visial sensors (MESON VISION)."
 	icon_state = "cyborg_upgrade3_brown"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/visor/meson/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.avaliable_huds += "Meson"
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/visor/x_ray
 	name = "x-ray visor upgrade"
 	desc = "Module contains callibration settings for cyborg visial sensors (X-RAY)."
 	icon_state = "cyborg_upgrade3_black"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/visor/x_ray/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.avaliable_huds += "X-Ray"
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/rcd
 	name = "engineering robot RCD"
 	desc = "A rapid construction device module for use during construction operations."
 	icon_state = "cyborg_upgrade3_orange"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/rcd/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/construction/rcd/borg(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/rped
 	name = "science robot RPED"
 	desc = "Special mechanical module made to store, sort, and apply standard machine parts."
 	icon_state = "cyborg_upgrade3_orange"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/rped/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/storage/part_replacer(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/bb_printer
 	name = "bodybag printer"
 	desc = "Special printer module designed to rapidly manufacture bodybags."
 	icon_state = "cyborg_upgrade3_cyan"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/bb_printer/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src,R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/robot_item_dispenser/bodybag(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/paramedic
 	name = "paramedic module"
 	desc = "A paramedic kit for cyborgs."
 	icon_state = "cyborg_upgrade3_cyan"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/paramedic/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		var/datum/matter_synth/medicine = new /datum/matter_synth/medicine(6000)
 		R.module.synths += medicine
@@ -462,21 +475,22 @@
 		B.charge_costs = list(1000)
 		B.synths = list(medicine)
 		R.module.modules += B
-		installed = 1
+		installed = TRUE
 
-		return 1
+		return TRUE
 
 /obj/item/borg/upgrade/paperwork
 	name = "paperwork module"
 	desc = "A paperwork kit for cyborgs."
 	icon_state = "cyborg_upgrade3_blue"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/paperwork/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/pen/robopen(R.module)
 		R.module.modules += new /obj/item/form_printer(R.module)
@@ -485,40 +499,42 @@
 		R.module.modules += new /obj/item/stamp(R.module)
 		R.module.modules += new /obj/item/stamp/denied(R.module)
 
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/cargo_managment
 	name = "cargo managment module"
 	desc = "A tool kit for cargo manipulation."
 	icon_state = "cyborg_upgrade3_brown"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/cargo_managment/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/device/destTagger(R.module)
 		R.module.modules += new /obj/item/packageWrap(R.module)
 		R.module.modules += new /obj/item/robot_item_dispenser/crates(R.module)
 		R.module.modules += new /obj/item/robot_rack/cargo(R.module)
 
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/detective
 	name = "detective module"
 	desc = "A detective kit for cyborgs."
 	icon_state = "cyborg_upgrade3_red"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/detective/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/gripper/detective(R.module)
 		R.module.modules += new /obj/item/robot_rack/detective(R.module)
@@ -533,20 +549,21 @@
 		R.module.modules += new /obj/item/scalpel(R.module)
 		R.module.modules += new /obj/item/autopsy_scanner(R.module)
 		R.module.modules += new /obj/item/evidencebag/cyborg(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/archeologist
 	name = "archeologist module"
 	desc = "A archeologist kit for cyborgs."
 	icon_state = "cyborg_upgrade3_purple"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/archeologist/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/pickaxe/archaeologist/brush(R.module)
 		R.module.modules += new /obj/item/pickaxe/archaeologist/one_pick(R.module)
@@ -565,121 +582,128 @@
 		R.module.modules += new /obj/item/robot_rack/archeologist(R.module)
 		R.module.modules += new /obj/item/device/ano_scanner(R.module)
 		R.module.modules += new /obj/item/device/depth_scanner(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/storage
 	name = "storage module"
 	desc = "A storage module for items."
 	icon_state = "cyborg_upgrade3"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/storage/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/robot_rack/general(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/organ_printer
 	name = "organ synthesizer module"
 	desc = "Special printer module designed to rapidly manufacture organs and limbs."
 	icon_state = "cyborg_upgrade3_cyan"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/organ_printer/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/robot_item_dispenser/organs(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/blood_printer
 	name = "blood synthesizer module"
 	desc = "Special printer module designed to rapidly synthesize blood."
 	icon_state = "cyborg_upgrade3_cyan"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/blood_printer/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/robot_item_dispenser/blood(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/art
 	name = "art module"
 	desc = "Contains instruments to create an art, but can robots create art?"
 	icon_state = "cyborg_upgrade3_yellow"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/art/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/robot_item_dispenser/canvas(R.module)
 		R.module.modules += new /obj/item/pen/crayon/rainbow(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/pipe_printer
 	name = "pipe printer module"
 	desc = "Special printer module designed to rapidly manufacture pipes."
 	icon_state = "cyborg_upgrade3_orange"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/pipe_printer/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/robot_item_dispenser/pipe(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/engineer_printer
 	name = "construction parts printer module"
 	desc = "Special printer module designed to rapidly manufacture construction part and basic circuits."
 	icon_state = "cyborg_upgrade3_orange"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/engineer_printer/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		R.module.modules += new /obj/item/robot_item_dispenser/engineer(R.module)
-		installed = 1
-		return 1
+		installed = TRUE
+		return TRUE
 
 /obj/item/borg/upgrade/syndicate
 	name = "illegal equipment module"
 	desc = "Unlocks the hidden, deadlier functions of a robot."
 	icon_state = "cyborg_upgrade3_black"
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/syndicate/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 
 	if(R.emagged == 1)
-		return 0
+		return FALSE
 
 	R.emagged = 1
-	installed = 1
-	return 1
+	installed = TRUE
+	return TRUE
 
 /obj/item/borg/upgrade/death_alarm
 	name = "death alarm module"
@@ -693,7 +717,7 @@
 /obj/item/borg/upgrade/death_alarm/proc/activate(cause)
 	var/area/t = get_area(host)
 	var/location = t.name
-	if (cause == "emp" && prob(50))
+	if(cause == "emp" && prob(50))
 		location =  pick(playerlocs)
 	if(!t.requires_power) // We assume areas that don't use power are some sort of special zones
 		var/area/default = world.area
@@ -709,19 +733,20 @@
 	GLOB.global_headset.autosay(death_message, ("[host]'s Death Alarm"), "Science")
 
 /obj/item/borg/upgrade/death_alarm/think()
-	if (!installed) return
+	if (!installed)
+		return
 
 	if(QDELETED(host)) // If the mob got gibbed
 		activate()
-		installed = 0
+		installed = FALSE
 		return
 	else if (!broken && active && host.is_ic_dead())
-		active = 0
+		active = FALSE
 		activate("death")
 	else if (broken)
 		qdel(src)
 	else if(!host.is_ooc_dead())
-		active = 1
+		active = TRUE
 
 	set_next_think(world.time + 1 SECOND)
 
@@ -731,27 +756,28 @@
 	if(severity == 1)
 		if(prob(60) && !broken)	//small chance of obvious meltdown
 			to_chat(host, SPAN_WARNING("Your \the [src] stopped receiving signals!"))
-			broken = 1
+			broken = TRUE
 			name = "melted circuit"
 			desc = "A charred circuit. Wonder what that used to be..."
 			set_next_think(0)
 
 /obj/item/borg/upgrade/death_alarm/action(mob/living/silicon/robot/R)
-	if(..()) return 0
+	if(..())
+		return FALSE
 	if(!can_install(src, R))
-		return 0
+		return FALSE
 	else
 		host = R
-		installed = 1
+		installed = TRUE
 		set_next_think(world.time)
-		return 1
+		return TRUE
 
 /obj/item/borg/upgrade/integrated_circuit_upgrade
 	name = "integrated circuit module"
 	desc = "A system that allows cyborgs to create and use integrated circuit assemblies."
 	icon_state = "cyborg_upgrade1_purple"
 	origin_tech = list(TECH_DATA = 3, TECH_MATERIAL = 5)
-	require_module = 1
+	require_module = TRUE
 
 /obj/item/borg/upgrade/integrated_circuit_upgrade/action(mob/living/silicon/robot/R)
 	if(..())

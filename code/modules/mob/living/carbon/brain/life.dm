@@ -64,11 +64,15 @@
 
 /mob/living/carbon/brain/handle_chemicals_in_body()
 	chem_effects.Cut()
+	update_chem_slowdown(null) // This can not be optimized unless chem effects are cached properly.
 
-	if(touching) touching.metabolize()
+	if(touching)
+		touching.metabolize()
 	var/datum/reagents/metabolism/ingested = get_ingested_reagents()
-	if(istype(ingested)) ingested.metabolize()
-	if(bloodstr) bloodstr.metabolize()
+	if(istype(ingested))
+		ingested.metabolize()
+	if(bloodstr)
+		bloodstr.metabolize()
 
 	confused = max(0, confused - 1)
 	// decrement dizziness counter, clamped to 0

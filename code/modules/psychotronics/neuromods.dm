@@ -55,7 +55,7 @@
 		return
 
 	user.verbs += /mob/living/carbon/human/proc/remotesay
-	user.mutations.Add(mRemotetalk)
+	user.add_mutation(mRemotetalk)
 
 /* - LANGUAGES - */
 
@@ -102,4 +102,4 @@
 /datum/neuromod/increase_speed/Handle(mob/living/user)
 	if (!user.additional_speed)
 		user.additional_speed = 1
-		user.mutations.Add(mRun)
+		user.add_mutation(mRun)

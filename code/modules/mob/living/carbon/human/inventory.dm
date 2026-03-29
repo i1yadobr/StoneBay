@@ -378,25 +378,6 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	return 1
 
-/mob/living/carbon/human/update_equipment_slowdown()
-	equipment_slowdown = -1
-	for(var/slot = slot_first to slot_last)
-		var/obj/item/I = get_equipped_item(slot)
-		if(I)
-			var/item_slowdown = 0
-			item_slowdown += I.slowdown_general
-			item_slowdown += I.slowdown_per_slot[slot]
-			item_slowdown += I.slowdown_accessory
-			if(item_slowdown > 0)
-				var/size_mod = 0
-				if(!(mob_size == MOB_MEDIUM))
-					size_mod = log(2, mob_size / MOB_MEDIUM)
-				if(species.strength + size_mod + 1 > 0)
-					item_slowdown = item_slowdown / (species.strength + size_mod + 1)
-				else
-					item_slowdown = item_slowdown - species.strength - size_mod
-			equipment_slowdown += item_slowdown
-
 // slot_is_accessible checks if `slot` is obstucted by any items in slots that cover it,
 // e.g. if accesss to glasses is blocked by a helmet the mob is wearing, and returns a boolean.
 //

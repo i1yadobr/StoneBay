@@ -11,10 +11,8 @@
 #define MATRIX_Vulp_Colorblind  list(0.50,	0.40,	0.10,	0.50,	0.40,	0.10,	0,		0.20,	0.80)
 #define MATRIX_Taj_Colorblind   list(0.40,	0.20,	0.40,	0.40,	0.60,	0,		0.20,	0.20,	0.60)
 
-
 /datum/modifier/trait
 	flags = MODIFIER_GENETIC	// We want traits to persist if the person gets cloned.
-
 
 /datum/modifier/trait/flimsy
 	name = "flimsy"
@@ -153,10 +151,10 @@
 	desc = "You don't feel cold!"
 
 /datum/modifier/trait/cold_resist/on_applied()
-	holder.mutations.Add(MUTATION_COLD_RESISTANCE)
+	holder.add_mutation(MUTATION_COLD_RESISTANCE)
 
 /datum/modifier/trait/cold_resist/on_expire()
-	holder.mutations.Remove(MUTATION_COLD_RESISTANCE)
+	holder.remove_mutation(MUTATION_COLD_RESISTANCE)
 
 /datum/modifier/trait/noslip
 	name = "No Slip"
@@ -172,7 +170,6 @@
 	name = "Blood Deficiency"
 	desc = "Your body can't produce enough blood to sustain itself."
 	var/min_blood = BLOOD_VOLUME_BAD // just barely survivable without treatment
-
 
 /datum/modifier/trait/blooddeficiency/on_applied()
 	if(!ishuman(holder))
@@ -193,10 +190,10 @@
 	if(carbon_target.species.species_flags & SPECIES_FLAG_NO_BLOOD) //can't lose blood if your species doesn't have any
 		return
 
-	if (carbon_target.get_blood_volume() == min_blood)
+	if(carbon_target.get_blood_volume() == min_blood)
 		return
 
-	if (carbon_target.get_blood_volume() < min_blood)
+	if(carbon_target.get_blood_volume() < min_blood)
 		carbon_target.regenerate_blood(carbon_target.species.blood_volume*min_blood - carbon_target.get_blood_volume_abs())
 		return
 	// Ensures that we don't reduce total blood volume below min_blood.
@@ -213,14 +210,3 @@
 /datum/modifier/trait/magicimmune
 	name = "Magic Immunity"
 	desc = "You're immune to magic"
-
-//TODO: Think about better way for slowdowning mobs, if that possible
-
-/datum/modifier/trait/slowdown
-	name = "Slowdown"
-	desc = "You're too slow"
-
-	slowdown = 0.5
-
-/datum/modifier/trait/slowdown/high
-	slowdown = 1

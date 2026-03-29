@@ -235,3 +235,8 @@
 
 /obj/get_mass()
 	return min(2**(w_class-1), 100)
+
+/obj/proc/change_pull_slowdown(new_slowdown)
+	pull_slowdown = new_slowdown
+	if(pulledby)
+		pulledby.update_pull_slowdown()
