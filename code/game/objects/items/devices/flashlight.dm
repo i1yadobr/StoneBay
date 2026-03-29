@@ -253,6 +253,11 @@
 	brightness_color = "#ffc58f"
 	light_overlay = FALSE
 
+/obj/item/device/flashlight/lantern/get_belt_overlay()
+	if(!(icon_state in GLOB.belt_overlays_icon_states))
+		return null
+	return mutable_appearance(GLOB.belt_overlays_icon, icon_state)
+
 /obj/item/device/flashlight/lantern/active
 	flashlight_outer_range = 4
 	on = TRUE
