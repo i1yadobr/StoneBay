@@ -15,8 +15,6 @@
 	mob.change_facial_hair(facial_hair_style)
 	to_chat(mob, SPAN("warning", "Your chin itches."))
 
-
-
 /datum/disease2/effect/adaptation_chem
 	name = "-intolerant Adaptation"
 	stage = 1
@@ -60,8 +58,6 @@
 	if(prob(30))
 		mob.jitteriness += 10
 
-
-
 /datum/disease2/effect/hair
 	name = "Hair Loss"
 	stage = 2
@@ -76,8 +72,6 @@
 			mob.h_style = mob.species.default_h_style
 			mob.update_hair()
 
-
-
 /datum/disease2/effect/blind
 	name = "Blackout Syndrome"
 	stage = 2
@@ -87,8 +81,6 @@
 	if(..())
 		return
 	mob.eye_blind = max(mob.eye_blind, 4)
-
-
 
 /datum/disease2/effect/adaptation_damage
 	name = "Hurt-intolerant Adaptation"
@@ -101,12 +93,10 @@
 /datum/disease2/effect/adaptation_damage/activate(mob/living/carbon/human/mob)
 	if(..())
 		return
-	for(var/obj/item/organ/external/E in mob.organs)
+	for(var/obj/item/organ/external/E in mob.external_organs)
 		var/dmg = E.get_damage()
 		if(dmg > 8*multiplier)
 			parent_disease.cure()
-
-
 
 /datum/disease2/effect/adaptation_rads
 	name = "Radiation-intolerant Adaptation"
@@ -147,8 +137,6 @@
 	if(mob.reagents.get_reagent_amount(data) < 5)
 		mob.reagents.add_reagent(data, 2)
 
-
-
 /datum/disease2/effect/mutation
 	name = "DNA Degradation"
 	stage = 3
@@ -158,8 +146,6 @@
 	if(..())
 		return
 	mob.apply_damage(2, CLONE)
-
-
 
 /datum/disease2/effect/mind
 	name = "Lazy Mind Syndrome"
@@ -173,8 +159,6 @@
 	if(B && B.damage < B.min_broken_damage)
 		B.take_internal_damage(5)
 
-
-
 /datum/disease2/effect/toxins
 	name = "Hyperacidity"
 	stage = 3
@@ -187,8 +171,6 @@
 	if(..())
 		return
 	mob.adjustToxLoss(multiplier)
-
-
 
 /datum/disease2/effect/escaping
 	name = "Forced Freedom Syndrome"
@@ -206,7 +188,6 @@
 		)
 	mob.drop(mob.handcuffed, force = TRUE)
 
-
 ////////////////////////STAGE 4/////////////////////////////////
 
 /datum/disease2/effect/killertoxins
@@ -221,8 +202,6 @@
 		return
 	mob.adjustToxLoss(2.5 * multiplier)
 
-
-
 /datum/disease2/effect/deaf
 	name = "Dead Ear Syndrome"
 	stage = 4
@@ -232,8 +211,6 @@
 	if(..())
 		return
 	mob.ear_deaf += 20
-
-
 
 /datum/disease2/effect/radian
 	name = "Radian's Syndrome"
@@ -247,7 +224,6 @@
 		return
 	var/datum/radiation/rad_info = new (3.7 TERA BECQUEREL * multiplier, RADIATION_ALPHA_PARTICLE)
 	mob.radiation += rad_info.calc_equivalent_dose(AVERAGE_HUMAN_WEIGHT)
-
 
 /datum/disease2/effect/gas
 	name = "Gas Synthesis"

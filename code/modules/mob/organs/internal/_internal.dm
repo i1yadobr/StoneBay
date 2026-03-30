@@ -47,7 +47,7 @@
 		owner.internal_organs_by_name -= organ_tag
 		while(null in owner.internal_organs)
 			owner.internal_organs -= null
-		var/obj/item/organ/external/E = owner.organs_by_name[parent_organ]
+		var/obj/item/organ/external/E = owner.external_organs_by_name[parent_organ]
 		if(istype(E))
 			E.internal_organs -= src
 	return ..()
@@ -122,7 +122,7 @@
 		owner.internal_organs_by_name -= organ_tag
 		while(null in owner.internal_organs)
 			owner.internal_organs -= null
-		var/obj/item/organ/external/E = owner.organs_by_name[parent_organ]
+		var/obj/item/organ/external/E = owner.external_organs_by_name[parent_organ]
 		if(istype(E)) E.internal_organs -= src
 	..()
 

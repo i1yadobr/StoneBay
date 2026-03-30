@@ -659,7 +659,7 @@ its easier to just keep the beam vertical.
 
 			if(affecting)
 				to_chat(M, SPAN("danger", "You land heavily on your [affecting.name]!"))
-				affecting.take_external_damage(damage, 0)
+				affecting.take_blunt_damage(damage)
 				if(affecting.parent)
 					affecting.parent.add_autopsy_data("Misadventure", damage)
 			else
