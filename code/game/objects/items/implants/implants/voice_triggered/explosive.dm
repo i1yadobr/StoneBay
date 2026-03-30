@@ -109,7 +109,7 @@
 	return replace_characters(phrase, replacechars)
 
 /obj/item/implant/voice_triggered/explosive/activate()
-	if (malfunction == MALFUNCTION_PERMANENT)
+	if(malfunction == MALFUNCTION_PERMANENT)
 		return
 
 	var/turf/T = get_turf(src)
@@ -129,19 +129,19 @@
 	if(!elevel)
 		elevel = "Full Explosion"
 	switch(elevel)
-		if ("Localized Limb")
-			if (part)
+		if("Localized Limb")
+			if(part)
 				if (istype(part,/obj/item/organ/external/chest) ||	\
 					istype(part,/obj/item/organ/external/groin))
-					part.take_external_damage(60, used_weapon = "Explosion")
+					part.take_blunt_damage(part.max_damage, "Explosion")
 				else
-					part.droplimb(0,DROPLIMB_BLUNT)
+					part.droplimb(0, DROPLIMB_BLUNT)
 			explosion(T, -1, -1, 2, 3)
-		if ("Destroy Body")
+		if("Destroy Body")
 			explosion(T, -1, 0, 1, 6)
 			if(ismob(imp_in))
 				imp_in.gib()
-		if ("Full Explosion")
+		if("Full Explosion")
 			explosion(T, 0, 1, 3, 6)
 			if(ismob(imp_in))
 				imp_in.gib()
@@ -158,17 +158,17 @@
 	return TRUE
 
 /obj/item/implant/voice_triggered/explosive/emp_act(severity)
-	if (malfunction)
+	if(malfunction)
 		return
 	malfunction = MALFUNCTION_TEMPORARY
-	switch (severity)
-		if (1)	//strong EMP will melt implant either making it go off, or disarming it
-			if (prob(25))
-				if (prob(50))
+	switch(severity)
+		if(1)	//strong EMP will melt implant either making it go off, or disarming it
+			if(prob(25))
+				if(prob(50))
 					activate()		//50% chance of bye bye
 				else
 					meltdown()		//50% chance of implant disarming
-	spawn (20)
+	spawn(20)
 		malfunction = 0
 
 /obj/item/implant/voice_triggered/explosive/Destroy()

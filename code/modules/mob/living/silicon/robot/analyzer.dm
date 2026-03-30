@@ -70,7 +70,7 @@
 			to_chat(user, "Key: <font color='#ffa500'>Electronics</font>/<font color='red'>Brute</font>")
 			to_chat(user, SPAN("notice", "External prosthetics:"))
 			var/organ_found
-			for(var/obj/item/organ/external/E in H.organs)
+			for(var/obj/item/organ/external/E in H.external_organs)
 				if(!BP_IS_ROBOTIC(E))
 					continue
 				organ_found = 1

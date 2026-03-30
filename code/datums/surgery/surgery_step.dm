@@ -138,7 +138,7 @@
 	return target_zone
 
 /**
- * Returns organ from 'organs_by_name' associative list based on tag, override
+ * Returns organ from 'external_organs_by_name' associative list based on tag, override
  * to rerturn something else.
  *
  * Vars:

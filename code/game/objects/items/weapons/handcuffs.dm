@@ -123,14 +123,14 @@
 	if(!handcuffed || a_intent != I_HURT || zone_sel.selecting != BP_MOUTH || wear_mask)
 		return
 
-	var/obj/item/organ/external/O = organs_by_name[(active_hand == ACTIVE_HAND_LEFT ? BP_L_HAND : BP_R_HAND)]
+	var/obj/item/organ/external/O = external_organs_by_name[(active_hand == ACTIVE_HAND_LEFT ? BP_L_HAND : BP_R_HAND)]
 	if(!O)
 		return
 
 	visible_message(SPAN("warning", "\The [src] chews on \his [O.name]!"), SPAN("warning", "You chew on your [O.name]!"))
 	admin_attacker_log(src, "chewed on their [O.name]!")
 
-	O.take_external_damage(3, 0, DAM_SHARP|DAM_EDGE, "teeth marks")
+	O.take_cut_damage(5, "teeth marks")
 
 /obj/item/handcuffs/cable
 	name = "cable restraints"

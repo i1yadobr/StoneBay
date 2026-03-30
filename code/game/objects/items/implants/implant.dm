@@ -93,7 +93,7 @@
 /obj/item/implant/proc/meltdown()	//breaks it down, making implant unrecongizible
 	to_chat(imp_in, SPAN("warning", "You feel something melting inside [part ? "your [part.name]" : "you"]!"))
 	if(part)
-		part.take_external_damage(burn = 15, used_weapon = "Electronics meltdown")
+		part.take_burn_damage(15, "Electronics meltdown")
 	else
 		var/mob/living/M = imp_in
 		M.apply_damage(15,BURN)

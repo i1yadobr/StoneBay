@@ -159,8 +159,8 @@
 			owner.grasp_limbs -= src
 		if(limb_flags & ORGAN_FLAG_CAN_STAND)
 			owner.stance_limbs -= src
-		owner.organs -= src
-		owner.organs_by_name -= organ_tag
+		owner.external_organs -= src
+		owner.external_organs_by_name -= organ_tag
 		owner.bad_external_organs -= src
 
 	drop_embedded_objects()
@@ -376,7 +376,7 @@
 		return FALSE
 
 	if(parent_organ)
-		parent = owner.organs_by_name[parent_organ]
+		parent = owner.external_organs_by_name[parent_organ]
 		if(!parent)
 			qdel_self() // Something went very, very wrong.
 			return FALSE
@@ -387,8 +387,8 @@
 	if(limb_flags & ORGAN_FLAG_CAN_STAND && length(owner.stance_limbs))
 		owner.stance_limbs[src] = TRUE
 
-	owner.organs_by_name[organ_tag] = src
-	owner.organs |= src
+	owner.external_organs_by_name[organ_tag] = src
+	owner.external_organs |= src
 
 	if(owner.mind?.vampire)
 		limb_flags &= ~ORGAN_FLAG_CAN_BREAK
@@ -522,8 +522,8 @@ This function completely restores a damaged organ to perfect condition.
 
 /obj/item/organ/external/remove_rejuv()
 	if(owner)
-		owner.organs -= src
-		owner.organs_by_name -= organ_tag
+		owner.external_organs -= src
+		owner.external_organs_by_name -= organ_tag
 	if(LAZYLEN(children))
 		for(var/obj/item/organ/external/E in children)
 			E.remove_rejuv()
@@ -788,7 +788,7 @@ This function completely restores a damaged organ to perfect condition.
 			stump.arterial_bleed_severity = arterial_bleed_severity
 			stump.adjust_pain(max_damage)
 
-			victim.organs |= stump
+			victim.external_organs |= stump
 
 			stump.movement_tally = stumped_tally * damage_multiplier
 			if(disintegrate != DROPLIMB_BURN)
@@ -1120,8 +1120,8 @@ This function completely restores a damaged organ to perfect condition.
 		parent = null
 
 	release_restraints(victim)
-	victim.organs -= src
-	victim.organs_by_name -= organ_tag
+	victim.external_organs -= src
+	victim.external_organs_by_name -= organ_tag
 
 	//Robotic limbs explode if sabotaged.
 	if(BP_IS_ROBOTIC(src) && (status & ORGAN_SABOTAGED))
