@@ -196,6 +196,36 @@ var/global/datum/body_build/default_body_build = new
 
 	ambiguous_gender = TRUE
 
+/datum/body_build/slim/flat/alt
+	name                 = "Slim Flat Alt"
+	index                = "_slim_flat_alt"
+	roboindex            = "_slim_flat_alt"
+	genders              = list(FEMALE)
+	clothing_icons       = list(
+		"slot_w_uniform" = 'icons/inv_slots/uniforms/mob_slim_flat_alt.dmi',
+		"slot_suit"      = 'icons/inv_slots/suits/mob_slim_flat_alt.dmi',
+		"slot_gloves"    = 'icons/inv_slots/gloves/mob_slim.dmi',
+		"slot_glasses"   = 'icons/inv_slots/glasses/mob_slim.dmi',
+		"slot_l_ear"     = 'icons/inv_slots/ears/mob_slim.dmi',
+		"slot_r_ear"     = 'icons/inv_slots/ears/mob_r_slim.dmi',
+		"slot_wear_mask" = 'icons/inv_slots/masks/mob_slim.dmi',
+		"slot_head"      = 'icons/inv_slots/hats/mob.dmi',
+		"slot_shoes"     = 'icons/inv_slots/shoes/mob_slim.dmi',
+		"slot_belt"      = 'icons/inv_slots/belts/mob_slim.dmi',
+		"slot_s_store"   = 'icons/inv_slots/suitstorage/mob_slim.dmi',
+		"slot_back"      = 'icons/inv_slots/back/mob_slim.dmi',
+		"slot_tie"       = 'icons/inv_slots/accessories/mob_slim_flat_alt.dmi',
+		"slot_hidden"    = 'icons/inv_slots/hidden/mob_slim_flat_alt.dmi',
+		"slot_wear_id"   = 'icons/inv_slots/misc/id.dmi',
+		"slot_l_hand"    = 'icons/mob/inhands/items_lefthand_slim.dmi',
+		"slot_r_hand"    = 'icons/mob/inhands/items_righthand_slim.dmi'
+		)
+	blood_icon           = 'icons/mob/human_races/masks/blood_human_slim_flat_alt.dmi'
+	dam_mask             = 'icons/mob/human_races/masks/dam_mask_human_slim_flat_alt.dmi'
+	bandages_icon        = 'icons/mob/human_races/bandages/mob_slim_flat_alt.dmi'
+
+	ambiguous_gender = TRUE
+
 /datum/body_build/fat
 	name                 = "Fat"
 	index                = "_fat"
