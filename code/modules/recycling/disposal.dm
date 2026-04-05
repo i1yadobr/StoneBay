@@ -534,10 +534,10 @@
 		if(!loc)
 			return // check if we got GC'd
 
-		if(hasmob && prob(3))
+		if(hasmob && prob(5))
 			for(var/mob/living/H in src)
-				if(!istype(H,/mob/living/silicon/robot/drone)) //Drones use the mailing code to move through the disposal system,
-					H.take_overall_damage(20, 0, 0, "Blunt Trauma", FALSE)//horribly maim any living creature jumping down disposals.  c'est la vie
+				if(!istype(H, /mob/living/silicon/robot/drone)) // Drones use the mailing code to move through the disposal system,
+					H.take_overall_damage(80, 0, 0, "Blunt Trauma")// horribly maim any living creature jumping down disposals.  c'est la vie
 
 		var/obj/structure/disposalpipe/curr = loc
 		last = curr
@@ -553,8 +553,6 @@
 		if(!(count--))
 			active = 0
 	return
-
-
 
 // find the turf which should contain the next pipe
 /obj/structure/disposalholder/proc/nextloc()
@@ -584,7 +582,6 @@
 
 	qdel(other)
 
-
 /obj/structure/disposalholder/proc/settag(new_tag)
 	destinationTag = new_tag
 
@@ -602,15 +599,15 @@
 
 	var/mob/living/U = user
 
-	if (U.stat)
+	if(U.stat)
 		return
 
 	THROTTLE_SHARED(cooldown, 100, U.last_special)
 	if(!cooldown)
 		return
 
-	if (src.loc)
-		for (var/mob/M in hearers(src.loc.loc))
+	if(src.loc)
+		for(var/mob/M in hearers(src.loc.loc))
 			to_chat(M, "<FONT size=[max(0, 5 - get_dist(src, M))]>CLONG, clong!</FONT>")
 
 	playsound(src.loc, 'sound/effects/clang.ogg', 50, 0, 0)
@@ -627,6 +624,7 @@
 
 // Disposal pipes
 
+//TODO: Update the code to meet current standards
 /obj/structure/disposalpipe
 	icon = 'icons/obj/pipes/disposal.dmi'
 	name = "disposal pipe"
