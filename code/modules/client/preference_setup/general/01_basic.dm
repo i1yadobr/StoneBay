@@ -102,8 +102,11 @@
 		return TOPIC_REFRESH_UPDATE_PREVIEW
 
 	else if(href_list["body_build"])
-		pref.body = next_in_list(pref.body, S.get_body_build_list(pref.gender))
-		return TOPIC_REFRESH_UPDATE_PREVIEW
+		var/list/body_builds = S.get_body_build_list(pref.gender)
+		var/new_body_build = input(user, "Choose your character's body build:", CHARACTER_PREFERENCE_INPUT_TITLE, pref.body) as null|anything in body_builds
+		if(new_body_build && CanUseTopic(user))
+			pref.body = new_body_build
+			return TOPIC_REFRESH_UPDATE_PREVIEW
 
 	else if(href_list["age"])
 		var/new_age = input(user, "Choose your character's age:\n([S.min_age]-[S.max_age])", CHARACTER_PREFERENCE_INPUT_TITLE, pref.age) as num|null
@@ -116,7 +119,8 @@
 		for(var/spawntype in spawntypes())
 			spawnkeys += spawntype
 		var/choice = input(user, "Where would you like to spawn when late-joining?") as null|anything in spawnkeys
-		if(!choice || !spawntypes()[choice] || !CanUseTopic(user))	return TOPIC_NOACTION
+		if(!choice || !spawntypes()[choice] || !CanUseTopic(user))
+			return TOPIC_NOACTION
 		pref.spawnpoint = choice
 		return TOPIC_REFRESH
 
