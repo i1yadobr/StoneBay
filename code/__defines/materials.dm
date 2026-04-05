@@ -90,6 +90,8 @@
 		MATERIAL_REINFORCED_GLASS           = icon(MATERIALS_ICON, "rglass"),
 		MATERIAL_PLASS                      = icon(MATERIALS_ICON, "plass"),
 		MATERIAL_REINFORCED_PLASS           = icon(MATERIALS_ICON, "rplass"),
+		MATERIAL_BLACK_GLASS                = icon(MATERIALS_ICON, "bglass"),
+		MATERIAL_REINFORCED_BLACK_GLASS     = icon(MATERIALS_ICON, "rbglass"),
 		MATERIAL_MARBLE                     = icon(MATERIALS_ICON, "marble"),
 		MATERIAL_TITANIUM                   = icon(MATERIALS_ICON, "titanium"),
 		MATERIAL_OSMIUM_CARBIDE_PLASTEEL    = icon(MATERIALS_ICON, "plasteel"),
