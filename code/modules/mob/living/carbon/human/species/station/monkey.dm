@@ -35,6 +35,10 @@
 	brute_mod = 1.5
 	burn_mod = 1.5
 
+	// An average adult rhesus macaque weighs ~10kg, and has a blood volume of ~60 ml/kg. But let's be *a bit* generous, so that they won't bleed out in seconds because of anything.
+	// Perhaps, they are the SPACE macaques who are twice as large - their icons back up the idea.
+	blood_volume = 1.2 LITERS
+
 	spawn_flags = SPECIES_IS_RESTRICTED | SPECIES_NO_FBP_CONSTRUCTION | SPECIES_NO_FBP_CHARGEN | SPECIES_NO_LACE
 	species_appearance_flags = HAS_LIPS | HAS_EYE_COLOR
 

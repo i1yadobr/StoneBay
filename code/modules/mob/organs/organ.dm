@@ -130,9 +130,6 @@ var/list/organ_cache = list()
 	food_organ.appearance = src
 	reagents.trans_to(food_organ, reagents.total_volume)
 
-/obj/item/organ/proc/update_health()
-	return
-
 /obj/item/organ/proc/is_broken()
 	return (damage >= min_broken_damage || (status & ORGAN_CUT_AWAY) || (status & ORGAN_BROKEN))
 
@@ -147,12 +144,15 @@ var/list/organ_cache = list()
 	species = all_species[new_dna.species]
 
 /obj/item/organ/proc/die()
+	if(status & ORGAN_DEAD)
+		return FALSE // Already dead
 	damage = max_damage
 	status |= ORGAN_DEAD
 	set_next_think(0)
 	death_time = world.time
 	if(owner && vital)
 		owner.death()
+	return TRUE
 
 /obj/item/organ/proc/cook_organ()
 	die()
