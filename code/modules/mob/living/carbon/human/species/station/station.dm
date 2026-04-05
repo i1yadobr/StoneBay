@@ -22,8 +22,10 @@
 		new /datum/body_build,
 		new /datum/body_build/slim,
 		new /datum/body_build/slim/alt,
-		new /datum/body_build/slim/flat,
 		new /datum/body_build/slim/male,
+		new /datum/body_build/slim/male/alt,
+		new /datum/body_build/slim/flat,
+		new /datum/body_build/slim/flat/alt,
 		new /datum/body_build/fat
 	)
 
