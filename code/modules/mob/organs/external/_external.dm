@@ -781,7 +781,7 @@ This function completely restores a damaged organ to perfect condition.
 			/// NOWOUNDS TODO: Better way to implement clean cut bleeding
 			parent_organ.take_cut_damage(min_broken_damage, "a limb amputation", TRUE)
 			parent_organ.update_damages()
-		else
+		else if(!is_stump())
 			var/obj/item/organ/external/stump/stump = new (victim, src)
 			stump.SetName("stump of \a [name]")
 			stump.artery_name = "mangled [artery_name]"
@@ -804,6 +804,11 @@ This function completely restores a damaged organ to perfect condition.
 			victim.update_health()
 			victim.update_damage_overlays()
 			victim.regenerate_icons()
+
+	// We don't want to see these broken pieces of shit lying around
+	if(is_stump())
+		qdel(src)
+		return
 
 	dir = 2
 	switch(disintegrate)

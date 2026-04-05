@@ -112,11 +112,14 @@
 		autofiring_by = fire_by
 		if(!already_autofiring)
 			already_autofiring = TRUE
-			set_next_think_ctx("autofire_context", world.time + burst_delay)
+			set_next_think_ctx("autofire_context", world.time + fire_delay)
 	else
 		clear_autofire()
 
 /obj/item/gun/proc/clear_autofire()
+	if(already_autofiring)
+		next_fire_time = world.time + fire_delay // No Arc Raiders' Kettle gameplay, please
+		. = TRUE
 	autofiring_at = null
 	autofiring_by = null
 	already_autofiring = FALSE
@@ -136,7 +139,7 @@
 	else if(can_autofire())
 		autofiring_by.set_dir(get_dir(src, autofiring_at))
 		Fire(autofiring_at, autofiring_by, null, (get_dist(autofiring_at, autofiring_by) <= 1), FALSE, FALSE, target_zone = autofiring_by.zone_sel?.selecting)
-		set_next_think_ctx("autofire_context", world.time + burst_delay)
+		set_next_think_ctx("autofire_context", world.time + fire_delay)
 
 /obj/item/gun/update_twohanding()
 	if(one_hand_penalty)
@@ -308,7 +311,8 @@
 
 		user.setMoveCooldown(move_delay)
 
-	next_fire_time = world.time + fire_delay
+	if(!autofire_enabled) // Let the autofire handling do its thing.
+		next_fire_time = world.time + fire_delay
 
 //obtains the next projectile to fire
 /obj/item/gun/proc/consume_next_projectile()
@@ -335,7 +339,6 @@
 
 //called after successfully firing
 /obj/item/gun/proc/handle_post_fire(atom/movable/firer, atom/target, pointblank = 0, reflex = 0, burstfire = 0)
-
 	if(!silenced && (burstfire != -1))
 		if(reflex)
 			firer.visible_message(
@@ -385,7 +388,6 @@
 		curloc.hotspot_expose(700, 5)
 
 	update_icon()
-
 
 /obj/item/gun/proc/process_point_blank(obj/projectile, mob/user, atom/target)
 	var/obj/item/projectile/P = projectile
