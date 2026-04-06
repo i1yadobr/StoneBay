@@ -22,12 +22,13 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	desc = "A simple match stick, used for lighting fine smokables."
 	icon = 'icons/obj/cigarettes.dmi'
 	icon_state = "match_unlit"
-	var/burnt = 0
-	var/smoketime = 5
 	w_class = ITEM_SIZE_TINY
 	origin_tech = list(TECH_MATERIAL = 1)
 	slot_flags = SLOT_EARS
 	attack_verb = list("burnt", "singed")
+
+	var/burnt = 0
+	var/smoketime = 5
 
 /obj/item/flame/match/think()
 	if(isliving(loc))
@@ -90,6 +91,7 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	attack_verb = list("burnt", "singed")
+
 	var/max_fuel = 5
 	var/flame_overlay = "cheapoverlay"
 	var/spam_flag = 0
@@ -165,12 +167,12 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	ClearOverlays()
 	if(lit)
 		icon_state = "[base_icon_state ? base_icon_state : initial(icon_state)]on"
-		item_state = "[initial(item_state)]on"
+		item_state = "[base_icon_state ? base_icon_state : initial(item_state)]on"
 		AddOverlays(image(icon, src, flame_overlay))
 		AddOverlays(emissive_appearance(icon, "[flame_overlay]-ea"))
 	else
 		icon_state = "[base_icon_state ? base_icon_state : initial(icon_state)]"
-		item_state = initial(item_state)
+		item_state = "[base_icon_state ? base_icon_state : initial(item_state)]"
 
 /obj/item/flame/attack(mob/living/carbon/M, mob/living/carbon/user)
 	if(!istype(M, /mob))
@@ -226,7 +228,6 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 		name = "expensive lighter"
 		desc = "It may be made of gold, but it doesn't make it any less crappy."
 		matter = list(MATERIAL_GOLD = 250)
-	item_state = base_icon_state
 	update_icon()
 	. = ..()
 
