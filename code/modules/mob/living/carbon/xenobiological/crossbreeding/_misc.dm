@@ -112,6 +112,7 @@
 	name = "metroid zippo"
 	desc = "A specialty zippo made from metroids and industry. Has a much hotter flame than normal."
 	icon_state = "zippo-metroid"
+	item_state = "zippo-metroid"
 	light_color = COLOR_PALE_GREEN_GRAY
 	flame_overlay = "metroidoverlay"
 

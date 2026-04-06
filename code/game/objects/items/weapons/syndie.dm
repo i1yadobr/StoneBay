@@ -55,7 +55,7 @@
 	name = "\improper Zippo lighter"  /*Sneaky, thanks Dreyfus.*/
 	desc = "The zippo."
 	icon_state = "c-4detonator_0"
-	item_state = "c-4detonator"
+	item_state = "c-4detonator_0"
 	w_class = ITEM_SIZE_TINY
 
 	var/obj/item/syndie/c4explosive/bomb
@@ -65,6 +65,7 @@
 	switch(src.icon_state)
 		if("c-4detonator_0")
 			src.icon_state = "c-4detonator_1"
+			src.item_state = "c-4detonator_1"
 			to_chat(user, "You flick open the lighter.")
 
 		if("c-4detonator_1")
@@ -83,7 +84,7 @@
 					return
 
 				if(choice)
-					if(choice == "Press the button.")
+					if(choice == "Press the button")
 						to_chat(user, SPAN("warning", "You press the button."))
 						flick("c-4detonator_click", src)
 						if(src.bomb)
@@ -93,4 +94,5 @@
 
 					else
 						src.icon_state = "c-4detonator_0"
+						src.item_state = "c-4detonator_0"
 						to_chat(user, "You close the lighter.")

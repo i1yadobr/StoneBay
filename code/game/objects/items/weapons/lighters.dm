@@ -22,12 +22,13 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	desc = "A simple match stick, used for lighting fine smokables."
 	icon = 'icons/obj/cigarettes.dmi'
 	icon_state = "match_unlit"
-	var/burnt = 0
-	var/smoketime = 5
 	w_class = ITEM_SIZE_TINY
 	origin_tech = list(TECH_MATERIAL = 1)
 	slot_flags = SLOT_EARS
 	attack_verb = list("burnt", "singed")
+
+	var/burnt = 0
+	var/smoketime = 5
 
 /obj/item/flame/match/think()
 	if(isliving(loc))
@@ -57,11 +58,11 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 /obj/item/flame/match/proc/burn_out()
 	lit = 0
 	burnt = 1
-	damtype = "brute"
-	icon_state = "match_burnt"
-	item_state = "cigoff"
 	name = "burnt match"
 	desc = "A match. This one has seen better days."
+	icon_state = "match_burnt"
+	item_state = "cigoff"
+	damtype = "brute"
 	set_light(0)
 	set_next_think(0)
 
@@ -90,11 +91,11 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	slot_flags = SLOT_BELT
 	attack_verb = list("burnt", "singed")
+
 	var/max_fuel = 5
 	var/flame_overlay = "cheapoverlay"
 	var/spam_flag = 0
 	var/requires_hold = TRUE
-	var/base_icon
 
 /obj/item/flame/lighter/Initialize()
 	. = ..()
@@ -165,13 +166,13 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 /obj/item/flame/lighter/on_update_icon()
 	ClearOverlays()
 	if(lit)
-		icon_state = "[base_icon ? base_icon : initial(icon_state)]on"
-		item_state = "[initial(item_state)]on"
+		icon_state = "[base_icon_state ? base_icon_state : initial(icon_state)]on"
+		item_state = "[base_icon_state ? base_icon_state : initial(item_state)]on"
 		AddOverlays(image(icon, src, flame_overlay))
 		AddOverlays(emissive_appearance(icon, "[flame_overlay]-ea"))
 	else
-		icon_state = "[base_icon ? base_icon : initial(icon_state)]"
-		item_state = initial(item_state)
+		icon_state = "[base_icon_state ? base_icon_state : initial(icon_state)]"
+		item_state = "[base_icon_state ? base_icon_state : initial(item_state)]"
 
 /obj/item/flame/attack(mob/living/carbon/M, mob/living/carbon/user)
 	if(!istype(M, /mob))
@@ -217,16 +218,17 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 		shutoff(silent = TRUE)
 	..()
 
+/obj/item/flame/lighter/random
+
 /obj/item/flame/lighter/random/Initialize()
 	if(prob(99.5))
-		base_icon = "lighter-[pick("red", "orange", "yellow", "green", "cyan", "blue", "purple", "white", "black")]"
+		base_icon_state = "lighter-[pick("red", "orange", "yellow", "green", "cyan", "blue", "purple", "white", "black")]"
 	else
-		base_icon = "lighter-gold"
+		base_icon_state = "lighter-gold"
 		name = "expensive lighter"
 		desc = "It may be made of gold, but it doesn't make it any less crappy."
 		matter = list(MATERIAL_GOLD = 250)
 	update_icon()
-	//item_state = icon_state // TODO: Draw item states for all the above, huh
 	. = ..()
 
 /obj/item/flame/lighter/zippo
@@ -260,6 +262,7 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	name = "\improper Captain's lighter"
 	desc = "You know you are in charge when your lighter is made of gold."
 	icon_state = "zippo-cap"
+	item_state = "zippo-cap"
 	max_fuel = 15
 	matter = list(MATERIAL_GOLD = 250)
 
@@ -267,107 +270,129 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	name = "\improper Democratic lighter"
 	desc = "Fueled with pure democracy! And a hint of democratic gasoline."
 	icon_state = "zippo-us"
+	item_state = "zippo-us"
 
 /obj/item/flame/lighter/zippo/third
 	name = "\improper Unethical lighter"
 	desc = "This one would go well along with HoS's attire."
 	icon_state = "zippo-third"
+	item_state = "zippo-third"
 
 /obj/item/flame/lighter/zippo/sov
 	name = "\improper Commie lighter"
 	desc = "You may think this one is yours, but in fact it's ours!"
 	icon_state = "zippo-sov"
+	item_state = "zippo-sov"
 
 /obj/item/flame/lighter/zippo/nt
 	name = "\improper NanoTrasen lighter"
 	desc = "Must be fueled with plasma or something."
 	icon_state = "zippo-nt"
+	item_state = "zippo-nt"
 
 /obj/item/flame/lighter/zippo/red
 	name = "red Zippo lighter"
 	desc = "It's a red Zippo. And don't you even say it's red and white."
 	icon_state = "zippo-red"
+	item_state = "zippo-red"
 
 /obj/item/flame/lighter/zippo/black
 	name = "black Zippo lighter"
 	desc = "A black Zippo lighter. These matter too, ya know."
 	icon_state = "zippo-black"
+	item_state = "zippo-black"
 
 /obj/item/flame/lighter/zippo/grav
 	name = "engraved Zippo lighter"
 	desc = "Perhaps, simplicity has its own pros."
 	icon_state = "zippo-grav"
+	item_state = "zippo-grav"
 
 /obj/item/flame/lighter/zippo/rainbow
 	name = "rainbow Zippo lighter"
 	desc = "As if putting oblong objects in your mouth wasn't enough."
 	icon_state = "zippo-rainbow"
+	item_state = "zippo-rainbow"
 
 /obj/item/flame/lighter/zippo/pt
 	name = "\improper T&P lighter"
 	desc = "They say its flame smells like maple syrup. More like burnt hair, if you ask me."
 	icon_state = "zippo-pt"
+	item_state = "zippo-pt"
 
 /obj/item/flame/lighter/zippo/onyx
 	name = "\improper Chaotic lighter"
 	desc = "Its flame is bright red. Why, you ask? A miracle, that's why!"
 	icon_state = "zippo-onyx"
+	item_state = "zippo-onyx"
 	flame_overlay = "zippo-onyxoverlay"
 
 /obj/item/flame/lighter/zippo/ablack
 	name = "\improper Tyranny lighter"
 	desc = "You asked for sweet tea. Life gave you robust coffee."
 	icon_state = "zippo-ablack"
+	item_state = "zippo-ablack"
 
 /obj/item/flame/lighter/zippo/agreen
 	name = "\improper Apple lighter"
 	desc = "Legend says, this apple cultivar used to grow on fern. Miraculously lawful, if that makes any sense."
 	icon_state = "zippo-agreen"
+	item_state = "zippo-agreen"
 
 /obj/item/flame/lighter/zippo/awhite
 	name = "\improper Extinguisher lighter"
-	desc = "Don't let your dreams stay dreams, even if you'll have to fight your way through with a fire extinguisher. Even if it's an extinguisher lighter."
+	desc = "Don't let your dreams stay dreams, even if you'll have to fight your way through with a fire extinguisher. \
+			Even if it's an extinguisher lighter."
 	icon_state = "zippo-awhite"
+	item_state = "zippo-awhite"
 
 /obj/item/flame/lighter/zippo/diona
 	name = "\improper Diona lighter"
 	desc = "It's definitely fueled with irony."
 	icon_state = "zippo-diona"
+	item_state = "zippo-diona"
 
 /obj/item/flame/lighter/zippo/rasta
 	name = "\improper Rasta lighter"
 	desc = "One hell of a proper way to light your joints."
 	icon_state = "zippo-rasta"
+	item_state = "zippo-rasta"
 
 /obj/item/flame/lighter/zippo/chrome
 	name = "chrome Zippo lighter"
 	desc = "It's shiny, it's cool, it requires a shitload of care."
 	icon_state = "zippo-chrome"
+	item_state = "zippo-chrome"
 
 /obj/item/flame/lighter/zippo/nuke
 	name = "\improper nuclear authentication lighter"
 	desc = "You don't want to go and try to stick it into a nuclear bomb, do you?"
 	icon_state = "zippo-nuke"
+	item_state = "zippo-nuke"
 
 /obj/item/flame/lighter/zippo/eng
 	name = "\improper Engineering lighter"
 	desc = "Its owner must be trusted. Should be trusted. May be trusted. Probably. In fact, shouldn't be."
 	icon_state = "zippo-eng"
+	item_state = "zippo-eng"
 
 /obj/item/flame/lighter/zippo/med
 	name = "\improper Medical lighter"
 	desc = "Doctors say, smoking kills. So you'd better do what doctors say, not what doctors do."
 	icon_state = "zippo-med"
+	item_state = "zippo-med"
 
 /obj/item/flame/lighter/zippo/sci
 	name = "\improper Science lighter"
 	desc = "THIS is how you set toxins on fire."
 	icon_state = "zippo-sci"
+	item_state = "zippo-sci"
 
 /obj/item/flame/lighter/zippo/clown
 	name = "\improper Clown lighter"
 	desc = "Just look at it, this zippo looks like a tiny clown! Now go ahead and tear his head off!"
 	icon_state = "zippo-clown"
+	item_state = "zippo-clown"
 
 /obj/item/flame/lighter/zippo/clown/light_effects(mob/user)
 	user.visible_message(SPAN("rose", "With a gentle honk, [user] flips open and lights [src] in one smooth movement."))
@@ -381,6 +406,7 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	name = "\improper Piggie lighter"
 	desc = "Hands down the best thing you can ever spend your money on."
 	icon_state = "zippo-pig"
+	item_state = "zippo-pig"
 
 /obj/item/flame/lighter/zippo/pig/light_effects(mob/user)
 	user.visible_message(SPAN("rose", "With a provocative oink, [user] flips open and lights [src] in one smooth movement."))
@@ -394,6 +420,7 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 	name = "suspicious Zippo lighter"
 	desc = "It must be searching for the Nuclear Auth Lighter."
 	icon_state = "zippo-syndie"
+	item_state = "zippo-syndie"
 
 /obj/item/flame/lighter/zippo/syndie/light_effects(mob/living/carbon/user)
 	if(user.mind?.syndicate_awareness == SYNDICATE_SUSPICIOUSLY_AWARE)
