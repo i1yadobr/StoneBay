@@ -226,7 +226,7 @@ CIGARETTES AND STUFF ARE IN 'SMOKABLES' FOLDER
 		name = "expensive lighter"
 		desc = "It may be made of gold, but it doesn't make it any less crappy."
 		matter = list(MATERIAL_GOLD = 250)
-	item_state = icon_state
+	item_state = base_icon_state
 	update_icon()
 	. = ..()
 
