@@ -39,12 +39,13 @@
 
 /obj/item/clothing/mask/smokable/pipe/die(nomessage = FALSE, nodestroy = FALSE)
 	..()
+	smoketime = 0
+	SetName("empty [initial(name)]")
 	new /obj/effect/decal/cleanable/ash(get_turf(src))
 	if(ismob(loc))
 		var/mob/living/M = loc
 		if (!nomessage)
 			to_chat(M, SPAN_NOTICE("Your [name] goes out, and you empty the ash."))
-
 
 // Actually i take this from cigarette, but... who cares?
 /obj/item/clothing/mask/smokable/pipe/attack(mob/living/M, mob/user, def_zone)
@@ -71,7 +72,6 @@
 		return TRUE
 
 	return ..()
-
 
 /obj/item/clothing/mask/smokable/pipe/attack_self(mob/user)
 	if(lit == 1)
@@ -121,21 +121,27 @@
 /obj/item/clothing/mask/smokable/pipe/generate_lighting_message(obj/tool, mob/holder)
 	if(!holder || !tool)
 		return ..()
+
 	if(src.loc != holder)
 		return ..()
 
 	if(istype(tool, /obj/item/flame/lighter/zippo))
 		return SPAN("rose", "With much care, [holder] lights \his [name] with \a [tool].")
+
 	if(istype(tool, /obj/item/flame/candle))
 		return SPAN_NOTICE("[holder] lights \his [name] with a hot wax from \a [tool].")
+
 	if(isitem(tool))
 		var/obj/item/I = tool
 		if(isWelder(I))
 			return SPAN_NOTICE("[holder] recklessly \his [name] with \a [tool].")
+
 	if(istype(tool, /obj/item/reagent_containers/rag))
 		return SPAN_WARNING("[holder] puts a piece of \a [tool] into \a [name] to light it up.")
+
 	if(istype(tool, /obj/item/clothing/mask/smokable/cigarette))
 		return SPAN_NOTICE("[holder] dips \his [tool.name] into \a [name] to light it up.")
+
 	if(istype(tool, /obj/machinery/light))
 		return SPAN_NOTICE("[holder] cleverly lights \his [name] by a red-hot incandescent spiral inside the broken lightbulb.")
 

@@ -37,7 +37,7 @@
 	return ..()
 
 /obj/machinery/flasher/on_update_icon()
-	if ( !(stat & (BROKEN|NOPOWER)) )
+	if(!(stat & (BROKEN|NOPOWER)))
 		icon_state = "[base_state]1"
 //		src.sd_SetLuminosity(2)
 	else
@@ -49,25 +49,25 @@
 	if(isWirecutter(W))
 		add_fingerprint(user, 0, W)
 		src.disable = !src.disable
-		if (src.disable)
+		if(src.disable)
 			user.visible_message(SPAN("warning", "[user] has disconnected the [src]'s flashbulb!"), SPAN("warning", "You disconnect the [src]'s flashbulb!"))
-		if (!src.disable)
+		if(!src.disable)
 			user.visible_message(SPAN("warning", "[user] has connected the [src]'s flashbulb!"), SPAN("warning", "You connect the [src]'s flashbulb!"))
 	else
 		..()
 
 //Let the AI trigger them directly.
 /obj/machinery/flasher/attack_ai()
-	if (src.anchored)
+	if(src.anchored)
 		return src.flash()
 	else
 		return
 
 /obj/machinery/flasher/proc/flash()
-	if (!(powered()))
+	if(!(powered()))
 		return
 
-	if ((src.disable) || (src.last_flash && world.time < src.last_flash + 150))
+	if((src.disable) || (src.last_flash && world.time < src.last_flash + 150))
 		return
 
 	playsound(src.loc, 'sound/weapons/flash.ogg', 100, 1)
@@ -75,12 +75,12 @@
 	src.last_flash = world.time
 	use_power_oneoff(1500)
 
-	for (var/mob/living/O in viewers(src, null))
-		if (get_dist(src, O) > src.range)
+	for(var/mob/living/O in viewers(src, null))
+		if(get_dist(src, O) > src.range)
 			continue
 
 		var/flash_time = strength
-		if (istype(O, /mob/living/carbon/human))
+		if(istype(O, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = O
 			if(!H.eyecheck() <= 0)
 				continue
@@ -92,9 +92,11 @@
 				H.flash_eyes()
 				E.damage += rand(1, 5)
 		if(!O.blinded)
-			if (istype(O,/mob/living/silicon/ai))
+			if(istype(O,/mob/living/silicon/ai))
 				return
-			if (istype(O,/mob/living/silicon/robot))
+			if(isbot(O))
+				return
+			if(istype(O,/mob/living/silicon/robot))
 				var/mob/living/silicon/robot/R = O
 				if (R.sensor_mode == FLASH_PROTECTION_VISION)
 					return
@@ -126,12 +128,12 @@
 		add_fingerprint(user)
 		anchored = !anchored
 
-		if (!anchored)
+		if(!anchored)
 			user.show_message(SPAN("warning", "\The [src] can now be moved."))
 			ClearOverlays()
 			proximity_monitor.set_range(0, TRUE)
 
-		else if (src.anchored)
+		else if(src.anchored)
 			user.show_message(SPAN("warning", "\The [src] is now secured."))
 			AddOverlays("[base_state]-s")
 			proximity_monitor.set_range(range, TRUE)
