@@ -63,6 +63,8 @@
 
 
 /obj/structure/table/MouseDrop_T(obj/O, mob/user, params)
+	if(isghost(user))
+		return
 	if(can_reinforce && (!user.stat) && istype(O, /obj/item/stack/material) && user.has_in_hands(O))
 		reinforce_table(O, user)
 	else if(!slide_object(O, user, params))
