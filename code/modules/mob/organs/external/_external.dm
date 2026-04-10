@@ -283,11 +283,14 @@
 					var/obj/item/organ/external/external_child = pick(children)
 					status |= ORGAN_CUT_AWAY
 					children.Remove(external_child)
-					external_child.forceMove(get_turf(src))
-					external_child.SetTransform(rotation = rand(180))
-					external_child.compile_icon()
-					compile_icon()
 					user.visible_message(SPAN("danger", "<b>[user]</b> cuts [external_child] from [src] with [W]!"))
+					external_child.forceMove(get_turf(src))
+					if(external_child.is_stump())
+						qdel(external_child)
+					else
+						external_child.SetTransform(rotation = round(rand(360), 45))
+						external_child.compile_icon()
+					compile_icon()
 				else
 					user.visible_message(SPAN("danger", "<b>[user]</b> cuts [src] open with [W]!"))
 					bone_stage++
@@ -408,7 +411,7 @@
 	if(parent)
 		if(!parent.children)
 			parent.children = list()
-		parent.children += src
+		parent.children |= src
 		/// NOWOUNDS TODO: Stump removal
 		parent.update_damages()
 
@@ -599,6 +602,9 @@ This function completely restores a damaged organ to perfect condition.
 	if(BP_IS_ROBOTIC(src)) // T-1000 would NOT be proud.
 		return
 
+	if(status & ORGAN_CUT_AWAY) // It's basically hanging on a scrap of flesh or a couple of staples, no bloodflow or anything.
+		return
+
 	var/mob/living/carbon/human/H
 	if(ishuman(owner))
 		H = owner
@@ -766,8 +772,15 @@ This function completely restores a damaged organ to perfect condition.
 	var/use_blood_colour = species.get_blood_colour(owner)
 	adjust_pain(60)
 
-	removed(null, 0, ignore_children, (disintegrate != DROPLIMB_EDGE))
-	if(QDELETED(src))
+	var/list/stuff_to_throw = list()
+	stuff_to_throw |= children
+	stuff_to_throw |= internal_organs
+	stuff_to_throw |= implants
+	stuff_to_throw |= embedded_objects
+
+	removed(null, TRUE, (disintegrate != DROPLIMB_EDGE))
+
+	if(QDELETED(src)) // Stumps get qdeleted during removed()
 		victim.update_health()
 		victim.update_damage_overlays()
 		victim.regenerate_icons()
@@ -781,7 +794,7 @@ This function completely restores a damaged organ to perfect condition.
 			/// NOWOUNDS TODO: Better way to implement clean cut bleeding
 			parent_organ.take_cut_damage(min_broken_damage, "a limb amputation", TRUE)
 			parent_organ.update_damages()
-		else if(!is_stump())
+		else
 			var/obj/item/organ/external/stump/stump = new (victim, src)
 			stump.SetName("stump of \a [name]")
 			stump.artery_name = "mangled [artery_name]"
@@ -805,32 +818,29 @@ This function completely restores a damaged organ to perfect condition.
 			victim.update_damage_overlays()
 			victim.regenerate_icons()
 
-	// We don't want to see these broken pieces of shit lying around
-	if(is_stump())
-		qdel(src)
-		return
+	dir = SOUTH
 
-	dir = 2
 	switch(disintegrate)
 		if(DROPLIMB_EDGE)
 			compile_icon()
 			add_blood(victim)
 			if(organ_tag == BP_HEAD)
-				SetTransform(rotation = 90)
+				SetTransform(rotation = pick(90, 270))
 			else
-				SetTransform(rotation = rand(180))
+				SetTransform(rotation = round(rand(360), 45))
 			forceMove(victim.loc)
 			update_icon_drop(victim)
 			if(!clean && !QDELETED(src)) // Throw limb around.
 				if(isturf(loc))
-					throw_at(get_edge_target_turf(src, pick(GLOB.alldirs)), rand(1, 3), rand(1, 2))
-				dir = 2
+					throw_at(get_edge_target_turf(src, pick(GLOB.alldirs)), rand(1, 3), 1)
+
 		if(DROPLIMB_BURN)
 			new /obj/effect/decal/cleanable/ash(victim.loc)
-			for(var/obj/item/I in src)
-				if(I.w_class > ITEM_SIZE_SMALL && !istype(I, /obj/item/organ))
+			for(var/obj/item/I in stuff_to_throw)
+				if(!QDELETED(I) && I.w_class > ITEM_SIZE_SMALL && !istype(I, /obj/item/organ))
 					I.forceMove(victim.loc)
 			qdel(src)
+
 		if(DROPLIMB_BLUNT)
 			var/obj/effect/decal/cleanable/blood/gibs/gore
 			if(BP_IS_ROBOTIC(src))
@@ -842,10 +852,12 @@ This function completely restores a damaged organ to perfect condition.
 					gore.basecolor = use_blood_colour
 					gore.update_icon()
 
-			for(var/obj/item/I in src)
+			for(var/obj/item/I in stuff_to_throw)
+				if(QDELETED(I))
+					continue
 				I.forceMove(victim.loc)
 				if(isturf(I.loc))
-					I.throw_at(get_edge_target_turf(I, pick(GLOB.alldirs)), rand(1, 2), rand(1, 2))
+					I.throw_at(get_edge_target_turf(I, pick(GLOB.alldirs)), rand(1, 2), 1)
 
 			qdel(src)
 
@@ -913,7 +925,9 @@ This function completely restores a damaged organ to perfect condition.
 
 /obj/item/organ/external/proc/update_tally()
 	movement_tally = initial(movement_tally)
-	if(splinted)
+	if(status & ORGAN_CUT_AWAY)
+		movement_tally += broken_tally * damage_multiplier
+	else if(splinted)
 		movement_tally += splinted_tally * damage_multiplier
 	else if(status & ORGAN_BROKEN)
 		movement_tally += broken_tally * damage_multiplier
@@ -923,6 +937,7 @@ This function completely restores a damaged organ to perfect condition.
 /obj/item/organ/external/proc/fracture()
 	if(!config.health.bones_can_break)
 		return
+
 	if((status & ORGAN_BROKEN) || !(limb_flags & ORGAN_FLAG_CAN_BREAK))
 		return
 
@@ -948,7 +963,7 @@ This function completely restores a damaged organ to perfect condition.
 	broken_description = pick("broken", "fracture", "hairline fracture")
 
 	// Fractures have a chance of getting you out of restraints
-	if (prob(25))
+	if(prob(25))
 		release_restraints()
 
 	// This is mostly for the ninja suit to stop ninja being so crippled by breaks.
@@ -1052,12 +1067,16 @@ This function completely restores a damaged organ to perfect condition.
 /obj/item/organ/external/proc/is_malfunctioning()
 	return (BP_IS_ROBOTIC(src) && (brute_dam + burn_dam) >= 10 && prob(brute_dam + burn_dam))
 
-/obj/item/organ/external/removed(mob/living/user, drop_organ = 1, ignore_children = 0, detach_children_and_internals = 0)
+/obj/item/organ/external/removed(mob/living/user, drop_organ = TRUE, detach_children_and_internals = FALSE)
 	if(!owner)
 		return
 
-	if(limb_flags & ORGAN_FLAG_CAN_GRASP) owner.grasp_limbs -= src
-	if(limb_flags & ORGAN_FLAG_CAN_STAND) owner.stance_limbs -= src
+	status |= ORGAN_CUT_AWAY
+
+	if(limb_flags & ORGAN_FLAG_CAN_GRASP)
+		owner.grasp_limbs -= src
+	if(limb_flags & ORGAN_FLAG_CAN_STAND)
+		owner.stance_limbs -= src
 
 	switch(body_part)
 		if(FOOT_LEFT, FOOT_RIGHT)
@@ -1104,28 +1123,28 @@ This function completely restores a damaged organ to perfect condition.
 			implant.forceMove(get_turf(src))
 
 	// Attached organs also fly off.
-	if(!ignore_children)
-		for(var/obj/item/organ/external/O in children)
-			O.removed()
-			if(!QDELETED(O) && !detach_children_and_internals)
-				O.forceMove(src)
+	for(var/obj/item/organ/external/O in children)
+		O.removed(user, detach_children_and_internals)
+		if(!QDELETED(O) && !detach_children_and_internals)
+			O.forceMove(src)
 
-				// if we didn't lose the organ we still want it as a child
-				children += O
-				O.parent = src
+			// if we didn't lose the organ we still want it as a child
+			children |= O
+			O.parent = src
 
 	// Grab all the internal giblets too.
 	for(var/obj/item/organ/organ in internal_organs)
-		organ.removed(user, 0, detach_children_and_internals)  // Organ stays inside and connected
-		if(!QDELETED(organ))
+		organ.removed(user, detach_children_and_internals, detach_children_and_internals)  // Organ stays inside and connected
+		if(!QDELETED(organ) && !detach_children_and_internals)
 			organ.forceMove(src)
 
+	release_restraints(victim)
+
 	// Remove parent references
-	if(parent)
+	if(parent && drop_organ)
 		parent.children -= src
 		parent = null
 
-	release_restraints(victim)
 	victim.external_organs -= src
 	victim.external_organs_by_name -= organ_tag
 
@@ -1143,7 +1162,7 @@ This function completely restores a damaged organ to perfect condition.
 		spawn(10)
 			qdel(spark_system)
 		qdel(src)
-	else if(is_stump())
+	else if(is_stump() && drop_organ)
 		qdel(src)
 
 /obj/item/organ/external/head/proc/disfigure(type = "brute")
