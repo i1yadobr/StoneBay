@@ -25,15 +25,8 @@
 /datum/nano_module/atmos_control/New(atmos_computer, list/req_access, list/req_one_access, monitored_alarm_ids)
 	..()
 
-	if(istype(req_access))
-		access.req_access = req_access
-	else if(req_access)
-		log_debug("\The [src] was given an unepxected req_access: [req_access]")
-
-	if(istype(req_one_access))
-		access.req_one_access = req_one_access
-	else if(req_one_access)
-		log_debug("\The [src] given an unepxected req_one_access: [req_one_access]")
+	access.req_access = req_access
+	access.req_one_access = req_one_access
 
 	if(monitored_alarm_ids)
 		for(var/obj/machinery/alarm/alarm in GLOB.alarm_list)
@@ -112,4 +105,4 @@
 	return extra_href
 
 /datum/topic_state/air_alarm/proc/has_access(mob/user)
-	return user && (isAI(user) || atmos_control.access.allowed(user) || atmos_control.emagged || air_alarm.rcon_setting == RCON_YES || (air_alarm.alarm_area.atmosalm && air_alarm.rcon_setting == RCON_AUTO))
+	return user && (isAI(user) || atmos_control.access.check_access(user) || atmos_control.emagged || air_alarm.rcon_setting == RCON_YES || (air_alarm.alarm_area.atmosalm && air_alarm.rcon_setting == RCON_AUTO))

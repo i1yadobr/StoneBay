@@ -8,7 +8,7 @@
 	item_state = "bronze"
 	slot = ACCESSORY_SLOT_MEDAL
 	coverage = 0.03 // Who said medals are useless?
-	armor = list(melee = 50, bullet = 90, laser = 120, energy = 65, bomb = 0, bio = 0)
+	armor_values = alist(melee = 50, bullet = 90, laser = 120, energy = 65, bomb = 0, bio = 0)
 	// Sprite used for medalbox
 	var/medaltype = "medal"
 

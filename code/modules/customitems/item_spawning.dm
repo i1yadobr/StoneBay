@@ -97,7 +97,7 @@
 
 /datum/custom_item/proc/apply_inherit_inhands(obj/item/item)
 	var/list/new_item_icons = list()
-	var/list/new_item_state_slots = list()
+	var/list/new_item_state_slots = alist()
 
 	var/list/available_states = icon_states(CUSTOM_ITEM_MOB)
 
@@ -117,7 +117,7 @@
 //this has to mirror the way update_inv_*_hand() selects the state
 /datum/custom_item/proc/get_state(obj/item/item, slot_str, hand_str)
 	var/t_state
-	if(item.item_state_slots && item.item_state_slots[slot_str])
+	if(item.item_state_slots?[slot_str])
 		t_state = item.item_state_slots[slot_str]
 	else if(item.item_state)
 		t_state = item.item_state

@@ -2,7 +2,7 @@
 /obj/item/clothing/head/helmet/space/skrell
 	name = "Skrellian helmet"
 	desc = "Smoothly contoured and polished to a shine. Still looks like a fishbowl."
-	armor = list(melee = 20, bullet = 20, laser = 50,energy = 50, bomb = 50, bio = 100)
+	armor_values = alist(melee = 20, bullet = 20, laser = 50,energy = 50, bomb = 50, bio = 100)
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
 	species_restricted = list(SPECIES_SKRELL,SPECIES_HUMAN)
 	rad_resist_type = /datum/rad_resist/space_vox
@@ -16,7 +16,7 @@
 /obj/item/clothing/suit/space/skrell
 	name = "Skrellian voidsuit"
 	desc = "Seems like a wetsuit with reinforced plating seamlessly attached to it. Very chic."
-	armor = list(melee = 20, bullet = 20, laser = 50,energy = 50, bomb = 50, bio = 100)
+	armor_values = alist(melee = 20, bullet = 20, laser = 50,energy = 50, bomb = 50, bio = 100)
 	allowed = list(/obj/item/device/flashlight,/obj/item/tank,/obj/item/storage/ore,/obj/item/device/t_scanner,/obj/item/pickaxe, /obj/item/construction/rcd)
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
@@ -38,7 +38,7 @@
 /obj/item/clothing/suit/space/vox
 	w_class = ITEM_SIZE_NORMAL
 	allowed = list(/obj/item/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/melee/baton,/obj/item/melee/energy/sword/pirate,/obj/item/handcuffs,/obj/item/tank)
-	armor = list(melee = 60, bullet = 50, laser = 40,energy = 15, bomb = 30, bio = 100)
+	armor_values = alist(melee = 60, bullet = 50, laser = 40,energy = 15, bomb = 30, bio = 100)
 	siemens_coefficient = 0.6
 	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
@@ -52,10 +52,10 @@
 
 /obj/item/clothing/suit/space/vox/New()
 	..()
-	slowdown_per_slot[slot_wear_suit] = DEFAULT_SLOWDOWN
+	AL_LAZYSET(slowdown_per_slot, slot_wear_suit, DEFAULT_SLOWDOWN)
 
 /obj/item/clothing/head/helmet/space/vox
-	armor = list(melee = 60, bullet = 50, laser = 40, energy = 15, bomb = 30, bio = 100)
+	armor_values = alist(melee = 60, bullet = 50, laser = 40, energy = 15, bomb = 30, bio = 100)
 	siemens_coefficient = 0.6
 	flags_inv = 0
 	species_restricted = list(SPECIES_VOX)
@@ -63,18 +63,18 @@
 
 /obj/item/clothing/head/helmet/space/vox/pressure
 	name = "alien helmet"
+	desc = "Hey, wasn't this a prop in \'The Abyss\'?"
 	icon_state = "vox-pressure"
 	item_state = "vox-pressure"
-	desc = "Hey, wasn't this a prop in \'The Abyss\'?"
-	armor = list(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 90, bio = 100)
+	armor_values = alist(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 90, bio = 100)
 
 /obj/item/clothing/suit/space/vox/pressure
 	name = "alien pressure suit"
+	desc = "A huge, armoured, pressurized suit, designed for distinctly nonhuman proportions."
 	icon_state = "vox-pressure"
 	item_state = "vox-pressure"
-	desc = "A huge, armoured, pressurized suit, designed for distinctly nonhuman proportions."
 	action_button_name = "Toggle Bio-RCD"
-	armor = list(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 90, bio = 100)
+	armor_values = alist(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 90, bio = 100)
 	var/tool_delay = 120 SECONDS
 	var/last_used = 0
 
@@ -102,11 +102,12 @@
 
 /obj/item/vox_rcd
 	name = "Deconstruction device"
-	var/charge = 3
-	var/mob/living/creator //This is just like ninja swords, needed to make sure dumb shit that removes the sword doesn't make it stay around.
+	desc = "A small device filled with biorobots."
 	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "voxrcd"
-	desc = "A small device filled with biorobots."
+
+	var/charge = 3
+	var/mob/living/creator //This is just like ninja swords, needed to make sure dumb shit that removes the sword doesn't make it stay around.
 	var/mode = 1 //We have 3 types of mode, 1 - deconstruct, 2 - construct, 3 - construct doors
 
 /obj/item/vox_rcd/attack_self(mob/user)
@@ -179,10 +180,11 @@
 
 /obj/item/alien_med_device
 	name = "Med-device"
-	var/charge = 3
+	desc = "A small bio-device with teeth."
 	icon = 'icons/obj/guns/gun.dmi'
 	icon_state = "voxrcd"
-	desc = "A small bio-device with teeth."
+
+	var/charge = 3
 	var/recharge_time = 120 SECONDS
 	var/max_ammo = 3
 	var/ammo = 3
@@ -221,17 +223,17 @@
 
 /obj/item/clothing/head/helmet/space/vox/carapace
 	name = "alien visor"
+	desc = "A glowing visor, perhaps stolen from a depressed Cylon."
 	icon_state = "vox-carapace"
 	item_state = "vox-carapace"
-	desc = "A glowing visor, perhaps stolen from a depressed Cylon."
 
 /obj/item/clothing/suit/space/vox/carapace
 	name = "alien carapace armour"
+	desc = "An armoured, segmented carapace with glowing purple lights. It looks pretty run-down."
 	icon_state = "vox-carapace"
 	item_state = "vox-carapace"
-	desc = "An armoured, segmented carapace with glowing purple lights. It looks pretty run-down."
 	action_button_name = "Toggle Protection"
-	armor = list(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 40, bio = 100)
+	armor_values = alist(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 40, bio = 100)
 	var/protection = FALSE
 
 /obj/item/clothing/suit/space/vox/carapace/attack_self(mob/user)
@@ -247,48 +249,48 @@
 
 	if(protection)
 		to_chat(H, SPAN("notice", "You activate the protection mode."))
-		slowdown_per_slot[slot_wear_suit] = PROTECTION_SLOWDOWN
-		armor = list(melee = 80, bullet = 80, laser = 80, energy = 80, bomb = 60, bio = 100)
+		AL_LAZYSET(slowdown_per_slot, slot_wear_suit, PROTECTION_SLOWDOWN)
+		armor_values = alist(melee = 80, bullet = 80, laser = 80, energy = 80, bomb = 60, bio = 100)
 		siemens_coefficient = 0.2
 
 		if(istype(H.head, /obj/item/clothing/head/helmet/space/vox/carapace))
-			H.head.armor = list(melee = 80, bullet = 80, laser = 80, energy = 80, bomb = 60, bio = 100)
+			H.head.armor_values = alist(melee = 80, bullet = 80, laser = 80, energy = 80, bomb = 60, bio = 100)
 			H.head.siemens_coefficient = 0.2
 
 		H.update_equipment_slowdown()
 	else
 		to_chat(H, SPAN("notice", "You deactivate the protection mode."))
-		slowdown_per_slot[slot_wear_suit] = DEFAULT_SLOWDOWN
-		armor = list(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 60, bio = 100)
+		AL_LAZYSET(slowdown_per_slot, slot_wear_suit, DEFAULT_SLOWDOWN)
+		armor_values = alist(melee = 60, bullet = 50, laser = 40, energy = 30, bomb = 60, bio = 100)
 		siemens_coefficient = 0.6
 
 		if(istype(H.head, /obj/item/clothing/head/helmet/space/vox/carapace))
-			H.head.armor = list(melee = 60, bullet = 50, laser = 40, energy = 40, bomb = 60, bio = 100)
+			H.head.armor_values = alist(melee = 60, bullet = 50, laser = 40, energy = 40, bomb = 60, bio = 100)
 			H.head.siemens_coefficient = 0.6
 
 		H.update_equipment_slowdown()
 
 /obj/item/clothing/head/helmet/space/vox/stealth
 	name = "alien stealth helmet"
+	desc = "A smoothly contoured, matte-black alien helmet."
 	icon_state = "vox-stealth"
 	item_state = "vox-stealth"
-	desc = "A smoothly contoured, matte-black alien helmet."
 	siemens_coefficient = 0
-	armor = list(melee = 25, bullet = 40, laser = 65, energy = 40, bomb = 20, bio = 100)
+	armor_values = alist(melee = 25, bullet = 40, laser = 65, energy = 40, bomb = 20, bio = 100)
 
 /obj/item/clothing/suit/space/vox/stealth
 	name = "alien stealth suit"
+	desc = "A sleek black suit. It seems to have a tail, and is very light."
 	icon_state = "vox-stealth"
 	item_state = "vox-stealth"
-	desc = "A sleek black suit. It seems to have a tail, and is very light."
 	action_button_name = "Toggle Cloak"
 	siemens_coefficient = 0
-	armor = list(melee = 25, bullet = 30, laser = 65, energy = 30, bomb = 20, bio = 100)
+	armor_values = alist(melee = 25, bullet = 30, laser = 65, energy = 30, bomb = 20, bio = 100)
 	var/cloak = FALSE
 
 /obj/item/clothing/suit/space/vox/stealth/New()
 	..()
-	slowdown_per_slot[slot_wear_suit] = NO_SLOWDOWN
+	AL_LAZYSET(slowdown_per_slot, slot_wear_suit, NO_SLOWDOWN)
 
 /obj/item/clothing/suit/space/vox/stealth/attack_self(mob/user)
 	var/mob/living/carbon/human/H = user
@@ -325,19 +327,19 @@
 
 /obj/item/clothing/head/helmet/space/vox/medic
 	name = "alien goggled helmet"
+	desc = "An alien helmet with enormous goggled lenses."
 	icon_state = "vox-medic"
 	item_state = "vox-medic"
-	desc = "An alien helmet with enormous goggled lenses."
-	armor = list(melee = 60, bullet = 50, laser = 40,energy = 15, bomb = 30, bio = 100)
+	armor_values = alist(melee = 60, bullet = 50, laser = 40,energy = 15, bomb = 30, bio = 100)
 	siemens_coefficient = 0.3
 
 /obj/item/clothing/suit/space/vox/medic
 	name = "alien armour"
+	desc = "An almost organic looking nonhuman pressure suit."
 	icon_state = "vox-medic"
 	item_state = "vox-medic"
-	desc = "An almost organic looking nonhuman pressure suit."
 	siemens_coefficient = 0.3
-	armor = list(melee = 60, bullet = 50, laser = 40,energy = 15, bomb = 30, bio = 100)
+	armor_values = alist(melee = 60, bullet = 50, laser = 40,energy = 15, bomb = 30, bio = 100)
 	action_button_name = "Toggle Nanobots"
 	var/nanobots = FALSE //user
 
@@ -354,12 +356,12 @@
 
 	if(nanobots)
 		to_chat(H, SPAN("notice", "Nanobots activated."))
-		slowdown_per_slot[slot_wear_suit] = PROTECTION_SLOWDOWN
+		AL_LAZYSET(slowdown_per_slot, slot_wear_suit, PROTECTION_SLOWDOWN)
 		set_light(0.5, 0.1, 3, 2, "#e09d37")
 		H.update_equipment_slowdown()
 	else
 		to_chat(H, SPAN("notice", "Nanobots deactivated."))
-		slowdown_per_slot[slot_wear_suit] = DEFAULT_SLOWDOWN
+		AL_LAZYSET(slowdown_per_slot, slot_wear_suit, DEFAULT_SLOWDOWN)
 		set_light(0)
 		H.update_equipment_slowdown()
 
@@ -428,8 +430,8 @@
 	item_state = "vox-casual-2"
 
 /obj/item/clothing/gloves/vox
-	desc = "These bizarre gauntlets seem to be fitted for... bird claws?"
 	name = "insulated gauntlets"
+	desc = "These bizarre gauntlets seem to be fitted for... bird claws?"
 	icon_state = "gloves-vox"
 	item_state = "gloves-vox"
 	siemens_coefficient = 0
@@ -437,9 +439,8 @@
 	species_restricted = list(SPECIES_VOX)
 
 /obj/item/clothing/shoes/magboots/vox
-
-	desc = "A pair of heavy, jagged armoured foot pieces, seemingly suitable for a velociraptor."
 	name = "vox magclaws"
+	desc = "A pair of heavy, jagged armoured foot pieces, seemingly suitable for a velociraptor."
 	item_state = "boots-vox"
 	icon_state = "boots-vox"
 	species_restricted = list(SPECIES_VOX)
@@ -447,8 +448,8 @@
 	action_button_name = "Toggle the magclaws"
 
 /obj/item/clothing/shoes/magboots/vox/attack_self(mob/user)
-	if(src.magpulse)
-		slowdown_per_slot[slot_shoes] = NO_SLOWDOWN
+	if(magpulse)
+		AL_LAZYSET(slowdown_per_slot, slot_shoes, NO_SLOWDOWN)
 		item_flags &= ~ITEM_FLAG_NOSLIP
 		magpulse = 0
 		canremove = 1
@@ -463,7 +464,7 @@
 			to_chat(user, "You will have to put on the [src] before you can do that.")
 			return
 
-		slowdown_per_slot[slot_shoes] = DEFAULT_SLOWDOWN
+		AL_LAZYSET(slowdown_per_slot, slot_shoes, DEFAULT_SLOWDOWN)
 		item_flags |= ITEM_FLAG_NOSLIP
 		magpulse = 1
 		canremove = 0	//kinda hard to take off magclaws when you are gripping them tightly.

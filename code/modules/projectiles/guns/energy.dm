@@ -153,7 +153,7 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 		if(registered_owner)
 			to_chat(user, "This weapon is already registered, you must reset it first.")
 			return
-		if(!allowed(user))
+		if(!check_access(user))
 			to_chat(user, SPAN("warning", "Access denied."))
 			return
 
@@ -172,7 +172,7 @@ GLOBAL_LIST_INIT(registered_weapons, list())
 	if(issilicon(usr))
 		return
 
-	if(allowed(usr))
+	if(check_access(usr))
 		usr.visible_message("[usr] presses the reset button on \the [src], resetting its registration.", "You press the reset button on \the [src], resetting its registration.")
 		registered_owner = null
 		GLOB.registered_weapons -= src

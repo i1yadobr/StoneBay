@@ -78,7 +78,7 @@
 			to_chat(user, SPAN("notice", "You swipe your card through the lock system of \the [src], but nothing happens."))
 			return
 
-		if(!allowed(user))
+		if(!check_access(ID))
 			show_splash_text(user, "access denied!", SPAN("warning", "\icon[src] Access Denied!"))
 			return
 

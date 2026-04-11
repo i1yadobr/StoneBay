@@ -1,25 +1,16 @@
 /mob/living/simple_animal/spiderbot
-
-	min_gas = null
-	max_gas = null
-	minbodytemp = 0
-	maxbodytemp = 500
-	mob_size = MOB_SMALL
-
-	var/obj/item/device/radio/borg/radio = null
-	var/mob/living/silicon/ai/connected_ai = null
-	var/obj/item/cell/cell = null
-	var/obj/machinery/camera/camera = null
-	var/obj/item/organ/internal/cerebrum/mmi/mmi = null
-	var/list/req_access = list(access_robotics) //Access needed to pop out the brain.
-	var/positronic
-
 	name = "spider-bot"
 	desc = "A skittering robotic friend!"
 	icon = 'icons/mob/robots_misc.dmi'
 	icon_state = "spiderbot-chassis"
 	icon_living = "spiderbot-chassis"
 	icon_dead = "spiderbot-smashed"
+
+	min_gas = null
+	max_gas = null
+	minbodytemp = 0
+	maxbodytemp = 500
+	mob_size = MOB_SMALL
 
 	wander = 0
 
@@ -34,12 +25,21 @@
 	response_disarm = "shoos"
 	response_harm   = "stomps on"
 
-	var/emagged = 0
-	var/obj/item/held_item = null //Storage for single item they can hold.
-	speed = -1                    //Spiderbots gotta go fast.
+	speed = -1                    // Spiderbots gotta go fast.
 	pass_flags = PASS_FLAG_TABLE
 	speak_emote = list("beeps","clicks","chirps")
 	bubble_icon = "robot"
+
+	var/obj/item/device/radio/borg/radio = null
+	var/mob/living/silicon/ai/connected_ai = null
+	var/obj/item/cell/cell = null
+	var/obj/machinery/camera/camera = null
+	var/obj/item/organ/internal/cerebrum/mmi/mmi = null
+	var/list/req_access = list(access_robotics) // Access needed to pop out the brain.
+	var/positronic
+
+	var/emagged = 0
+	var/obj/item/held_item = null // Storage for single item they can hold.
 
 /mob/living/simple_animal/spiderbot/New()
 	..()

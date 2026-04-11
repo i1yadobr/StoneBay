@@ -7,8 +7,9 @@
 	mod_weight = 0.1
 	mod_reach = 0.1
 	mod_handy = 0.1
+	attack_verb = "diced"
+
 	var/sides = 6
-	attack_verb = list("diced")
 
 /obj/item/dice/New()
 	..()

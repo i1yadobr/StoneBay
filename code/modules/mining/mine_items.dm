@@ -159,8 +159,8 @@
 
 /obj/item/pickaxe/sledgehammer/on_update_icon()
 	var/new_state = "[icon_state][wielded]"
-	item_state_slots[slot_l_hand_str] = new_state
-	item_state_slots[slot_r_hand_str] = new_state
+	AL_LAZYSET(item_state_slots, slot_l_hand_str, new_state)
+	AL_LAZYSET(item_state_slots, slot_r_hand_str, new_state)
 
 /obj/item/shovel
 	name = "shovel"

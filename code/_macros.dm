@@ -37,10 +37,14 @@
 #define ishuman(A) istype(A, /mob/living/carbon/human)
 
 #define ispromethean(A) (is_species(A, /datum/species/promethean))
+
 #define isgolem(A) (is_species(A, /datum/species/golem))
+
 #define isitem(A) istype(A, /obj/item)
 
 #define islist(A) istype(A, /list)
+
+#define isalist(A) ("[A]" == "/alist")
 
 #define isliving(A) istype(A, /mob/living)
 

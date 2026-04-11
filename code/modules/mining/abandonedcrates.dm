@@ -4,12 +4,13 @@
 	icon_state = "securecrate"
 	icon_opened = "securecrateopen"
 	icon_closed = "securecrate"
-	req_access = list()
+	req_access = null
+	locked = 1
+
 	var/list/code = list()
 	var/list/lastattempt = list()
 	var/attempts = 10
 	var/codelen = 4
-	locked = 1
 
 /obj/structure/closet/crate/secure/loot/New()
 	..()

@@ -27,7 +27,6 @@ SUBSYSTEM_DEF(overlays)
 	/// The number of appearances currently cached.
 	var/static/cache_size = 0
 
-
 /datum/controller/subsystem/overlays/Recover()
 	queue.Cut()
 	state_cache.Cut()
@@ -40,14 +39,11 @@ SUBSYSTEM_DEF(overlays)
 			continue
 		CHECK_TICK
 
-
 /datum/controller/subsystem/overlays/Initialize(start_uptime)
 	fire(FALSE, TRUE)
 
-
 /datum/controller/subsystem/overlays/stat_entry()
 	..("Queued Atoms: [length(queue)] | Cache Size: [cache_size]")
-
 
 /datum/controller/subsystem/overlays/fire(resumed, no_mc_tick)
 	var/queue_length = length(queue)
@@ -68,7 +64,6 @@ SUBSYSTEM_DEF(overlays)
 				return
 		queue.Cut(1, queue_length + 1)
 
-
 /datum/controller/subsystem/overlays/proc/GetStateAppearance(icon, state)
 	var/list/subcache = state_cache[icon]
 	if(!subcache)
@@ -80,14 +75,12 @@ SUBSYSTEM_DEF(overlays)
 		++cache_size
 	return subcache[state]
 
-
 /datum/controller/subsystem/overlays/proc/GetIconAppearance(icon)
 	if(!icon_cache[icon])
 		var/image/image = image(icon)
 		icon_cache[icon] = image.appearance
 		++cache_size
 	return icon_cache[icon]
-
 
 /datum/controller/subsystem/overlays/proc/GetAppearanceList(atom/subject, list/sources)
 	if(!sources)
@@ -116,7 +109,6 @@ SUBSYSTEM_DEF(overlays)
 				result += image
 	return result
 
-
 /// Immediately runs an overlay update.
 /atom/proc/ImmediateOverlayUpdate()
 	SHOULD_NOT_OVERRIDE(TRUE)
@@ -125,22 +117,21 @@ SUBSYSTEM_DEF(overlays)
 
 /**
 * Shared behavior for CutOverlays & CutUnderlays. Do not use directly.
-* null: nothing changed, do nothing
-* FALSE: update should be queued
-* TRUE: update should be queued, cache should be nulled
+* FALSE: nothing changed, do nothing
+* TRUE: update should be queued
 */
-/atom/proc/CutCacheBehavior(sources, cache)
+/atom/proc/CutCacheBehavior(sources, list/cache)
 	SHOULD_NOT_OVERRIDE(TRUE)
 	var/initial_length = length(cache)
 	if(!initial_length)
-		return
-	cache -= sources
-	var/after_length = length(cache)
-	if(!after_length)
-		return TRUE
-	if(initial_length > after_length)
 		return FALSE
 
+	LAZYREMOVE(cache, sources)
+	var/after_length = length(cache)
+	if(!after_length || initial_length > after_length)
+		return TRUE
+
+	return FALSE
 
 /// Enqueues the atom for an overlay update if not already queued
 /atom/proc/QueueOverlayUpdate()
@@ -150,7 +141,6 @@ SUBSYSTEM_DEF(overlays)
 	atom_flags |= ATOM_AWAITING_OVERLAY_UPDATE
 	SSoverlays.queue += src
 
-
 /// Builds the atom's overlay state from caches
 /atom/proc/UpdateOverlays()
 	SHOULD_NOT_OVERRIDE(TRUE)
@@ -158,16 +148,15 @@ SUBSYSTEM_DEF(overlays)
 	if(QDELING(src))
 		overlays.Cut()
 		return
-	if(length(atom_protected_overlay_cache))
-		if(length(atom_overlay_cache))
+	if(LAZYLEN(atom_protected_overlay_cache))
+		if(LAZYLEN(atom_overlay_cache))
 			overlays = atom_protected_overlay_cache + atom_overlay_cache
 		else
 			overlays = atom_protected_overlay_cache
-	else if(length(atom_overlay_cache))
+	else if(LAZYLEN(atom_overlay_cache))
 		overlays = atom_overlay_cache
 	else
 		overlays.Cut()
-
 
 /// Clears the atom's overlay cache(s) and queues an update if needed. Use CLEAR_TARGET_* flags.
 /atom/proc/ClearOverlays(cache_target = ATOM_ICON_CACHE_NORMAL)
@@ -182,7 +171,6 @@ SUBSYSTEM_DEF(overlays)
 			return
 		LAZYCLEARLIST(atom_overlay_cache)
 		QueueOverlayUpdate()
-
 
 /**
  * Adds specific overlay(s) to the atom.
@@ -205,14 +193,9 @@ SUBSYSTEM_DEF(overlays)
 	if(!length(sources))
 		return
 	if(cache_target & ATOM_ICON_CACHE_PROTECTED)
-		if(atom_protected_overlay_cache)
-			atom_protected_overlay_cache += sources
-		else
-			atom_protected_overlay_cache = sources
-	else if(atom_overlay_cache)
-		atom_overlay_cache += sources
+		LAZYADD(atom_protected_overlay_cache, sources)
 	else
-		atom_overlay_cache = sources
+		LAZYADD(atom_overlay_cache, sources)
 	QueueOverlayUpdate()
 
 
@@ -234,24 +217,18 @@ SUBSYSTEM_DEF(overlays)
 		var/outcome = CutCacheBehavior(sources, atom_protected_overlay_cache)
 		if(!isnull(outcome))
 			update = TRUE
-			if(outcome == TRUE)
-				atom_protected_overlay_cache = null
 	if(cache_target & ATOM_ICON_CACHE_NORMAL)
 		var/outcome = CutCacheBehavior(sources, atom_overlay_cache)
 		if(!isnull(outcome))
 			update = TRUE
-			if(outcome == TRUE)
-				atom_overlay_cache = null
 	if(update)
 		QueueOverlayUpdate()
-
 
 /// AddOverlays with ClearOverlays first. See AddOverlays for behavior.
 /atom/proc/SetOverlays(sources, cache_target = ATOM_ICON_CACHE_NORMAL)
 	SHOULD_NOT_OVERRIDE(TRUE)
 	ClearOverlays(cache_target)
 	AddOverlays(sources, cache_target)
-
 
 /**
  * Copy the overlays from another atom.
@@ -266,11 +243,10 @@ SUBSYSTEM_DEF(overlays)
 		ClearOverlays(cache_target)
 	if(!istype(other))
 		return
-	if(cache_target & ATOM_ICON_CACHE_PROTECTED)
+	if((cache_target & ATOM_ICON_CACHE_PROTECTED) && LAZYLEN(other.atom_protected_overlay_cache))
 		AddOverlays(other.atom_protected_overlay_cache, ATOM_ICON_CACHE_PROTECTED)
-	if(cache_target & ATOM_ICON_CACHE_NORMAL)
+	if((cache_target & ATOM_ICON_CACHE_NORMAL) && LAZYLEN(other.atom_overlay_cache))
 		AddOverlays(other.atom_overlay_cache, ATOM_ICON_CACHE_NORMAL)
-
 
 // Skin-deep API parity for images.
 // Reference <https://www.byond.com/docs/ref/#/atom/var/overlays> for permitted types.
@@ -280,18 +256,15 @@ SUBSYSTEM_DEF(overlays)
 	SHOULD_NOT_OVERRIDE(TRUE)
 	overlays += sources
 
-
 /// Removes sources from the image's overlays.
 /image/proc/CutOverlays(sources)
 	SHOULD_NOT_OVERRIDE(TRUE)
 	overlays -= sources
 
-
 /// Removes all of the image's overlays.
 /image/proc/ClearOverlays()
 	SHOULD_NOT_OVERRIDE(TRUE)
 	overlays.Cut()
-
 
 /// Copies the overlays from the atom other, clearing first if set, and using the caches indicated.
 /image/proc/CopyOverlays(atom/other, clear, cache_target = ATOM_ICON_CACHE_ALL)
@@ -300,7 +273,7 @@ SUBSYSTEM_DEF(overlays)
 		overlays.Cut()
 	if(!istype(other))
 		return
-	if(cache_target & ATOM_ICON_CACHE_PROTECTED)
+	if((cache_target & ATOM_ICON_CACHE_PROTECTED) && LAZYLEN(other.atom_protected_overlay_cache))
 		overlays |= other.atom_protected_overlay_cache
-	if(cache_target & ATOM_ICON_CACHE_NORMAL)
+	if((cache_target & ATOM_ICON_CACHE_NORMAL) && LAZYLEN(other.atom_overlay_cache))
 		overlays |= other.atom_overlay_cache

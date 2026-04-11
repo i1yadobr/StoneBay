@@ -1,6 +1,6 @@
 /obj/item/rig/attackby(obj/item/W as obj, mob/user as mob)
-
-	if(!istype(user,/mob/living)) return 0
+	if(!istype(user,/mob/living))
+		return 0
 
 	if(electrified != 0)
 		if(shock(user)) //Handles removing charge from the cell, as well. No need to do that here.
@@ -11,7 +11,7 @@
 		return chest.attackby(W,user)
 
 	// Lock or unlock the access panel.
-	if(W.get_id_card())
+	if(W?.get_id_card())
 		if(subverted)
 			locked = 0
 			to_chat(user, SPAN("danger", "It looks like the locking system has been shorted out."))
@@ -22,7 +22,7 @@
 			to_chat(user, SPAN("danger", "\The [src] doesn't seem to have a locking mechanism."))
 			return
 
-		if(security_check_enabled && !src.allowed(user))
+		if(security_check_enabled && !check_access(user))
 			to_chat(user, SPAN("danger", "Access denied."))
 			return
 
@@ -71,10 +71,11 @@
 					to_chat(user, SPAN("danger", "You can't install a powersuit module while the suit is being worn."))
 					return 1
 
-			if(!installed_modules) installed_modules = list()
-			if(installed_modules.len)
+			if(!installed_modules)
+				installed_modules = list()
+			if(length(installed_modules))
 				for(var/obj/item/rig_module/installed_mod in installed_modules)
-					if(!installed_mod.redundant && istype(installed_mod,W))
+					if(!installed_mod.redundant && istype(installed_mod, W))
 						to_chat(user, "The powersuit already has a module of that class installed.")
 						return 1
 
@@ -118,8 +119,10 @@
 		else if(isScrewdriver(W))
 
 			var/list/current_mounts = list()
-			if(cell) current_mounts   += "cell"
-			if(LAZYLEN(installed_modules)) current_mounts += "system module"
+			if(cell)
+				current_mounts   += "cell"
+			if(LAZYLEN(installed_modules))
+				current_mounts += "system module"
 
 			var/to_remove = input("Which would you like to modify?") as null|anything in current_mounts
 			if(!to_remove)
@@ -155,7 +158,7 @@
 							continue
 						possible_removals[module.name] = module
 
-					if(!possible_removals.len)
+					if(!length(possible_removals))
 						to_chat(user, "There are no installed modules to remove.")
 						return
 
@@ -184,19 +187,18 @@
 			return
 	..()
 
-
 /obj/item/rig/attack_hand(mob/user)
-
 	if(electrified != 0)
 		if(shock(user)) //Handles removing charge from the cell, as well. No need to do that here.
 			return
 	..()
 
 /obj/item/rig/emag_act(remaining_charges, mob/user)
-	if(!subverted)
-		req_access.Cut()
-		req_one_access.Cut()
-		locked = 0
-		subverted = 1
-		to_chat(user, SPAN("danger", "You short out the access protocol for the suit."))
-		return 1
+	if(subverted)
+		return FALSE
+	req_access = null
+	req_one_access = null
+	locked = FALSE
+	subverted = TRUE
+	to_chat(user, SPAN("danger", "You short out the access protocol for the suit."))
+	return TRUE
