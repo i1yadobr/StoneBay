@@ -305,20 +305,22 @@
 	if(color)
 		hairgb = color
 		color = null
-	var/tail = "fox_ears_tail"
 	if((slot == slot_head || slot == slot_l_ear || slot == slot_r_ear) && istype(user))
 		if(!hairgb)
 			hairgb = rgb(user.r_hair, user.g_hair, user.b_hair)
 		var/icon/ears = icon('icons/inv_slots/hats/mob.dmi', "fox_ears")
+		var/tail = "fox_ears_tail"
 		switch(user.body_build.name)
 			if("Slim")
-				tail = "fox_ears_tail_slim"
+				tail = "[tail]_slim"
+			if("Slim Flat")
+				tail = "[tail]_slim"
 			if("Slim Alt")
-				tail = "fox_ears_tail_slim_alt"
+				tail = "[tail]_slim_alt"
+			if("Slim Flat Alt")
+				tail = "[tail]_slim_alt"
 			if("Fat")
-				tail = "fox_ears_tail_fat"
-			else
-				tail = "fox_ears_tail"
+				tail = "[tail]_fat"
 		ears.Blend(icon('icons/inv_slots/hats/mob.dmi', tail), ICON_OVERLAY)
 		ears.Blend(hairgb, ICON_ADD)
 		ears.Blend(icon('icons/inv_slots/hats/mob.dmi', "[tail]_overlay"), ICON_OVERLAY)
