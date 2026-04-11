@@ -1,17 +1,62 @@
 //TODO: '/obj/item/underwear' requires global refactor
-// First -  Pull it up to '/obj/item/clothing', make it part of it
-// Second - Force it to be stored on the mob as '/obj/item/clothing', rather than in 'var/list/worn_underwear'
-// - You should also verify that ‘/obj/structure/undies_wardrobe’ is functioning properly
-// - And don't forget about the inventory menu with clothes, so that everything works as before
-// Third -  Change the operation of '/datum/category_collection/underwear' and make it compatible with the new underwear system
-// - In simpler terms, it also requires refactoring
-// Fourth (optional) - Add the possibility of socks falling off when cutting off the leg, and bottom falling off when cutting off the ass/groin
-// - For more details, see 'obj/item/organ/external/removed' proc
+
+/* New refactor order:
+ 1. Pull accessories (fingers, wrists, neck, etc.) out of underwear, make their own /obj/item/accessory type
+	as they have minimal behavior and don't really need to be a subtype of clothing.
+	Store in human.accessories and make helper procs to iterate over them and render.
+	Basically current underwear system becomes accessories system.
+	Accessories can be rendered on whatever layer they like, should define per item if they want to override
+	the default, e.g. cross or aquila that is worn over space suit.
+	Default layer for accessories is just above underwear layer.
+
+ 2. Make explicit slots under human defines for 4 underwear types: socks, top, bottom, undershirt.
+	Put underwear in those slots, render on a signle unified underwear level.
+	For equipping and unequipping underwear check the specific slot for occupancy.
+	Make sure loadout system knows how to put underwear in the correct slots, currently
+	all underwear is equipped through a single proc so this will need some refactoring.
+
+ 3. Change underwear type path to /obj/item/clothing/underwear.
+	Semantically conflicts with /obj/item/clothing/under, but there's a TODO to change that to clothing/uniform.
+	All procs that iterate over clothing were checked to not have any severe side effects for underwear becoming
+	clothing. There are 2-3 instances where this is affected: operating table will start removing underwear too,
+	temperature effect checks will also take underwear into account, and underwear may potentially affect armor,
+	so all clothing vars like armor, thickness etc should be basically zero for underwear unless explicitly
+	intended to have an effect. Most procs in the codebase iterate over specific slots instead of contents though,
+	so if underwear is to become effective, additional checks for new slots will have to be added.
+
+ 4. After above steps are done, make underwear and accessories drop on limb cutoffs/gibs,
+	can be triggered from /obj/item/organ/external/removed() proc on limbs.
+
+	Hands/wrists:
+	Accessories will have to check for fingers and rings slots. If they can choose side, anything equipped on the
+	side where the limb is removed should drop.
+	Worn accessories should no longer be able to swap sides if the opposite limb is missing, and should equip only
+	to the present limb by default.
+
+	Legs:
+	Socks slot underwear should drop just like shoes and gloves do when any of the legs/feet are removed.
+	This is an intended simplification for now. When there a system in place to render just one half of the clothing
+	if another limb is missing, the check can be replaced to dropping on both limbs missing.
+
+	Lower body:
+	Same as socks, lower underwear should drop of lower body is removed.
+
+ 5. Final checks:
+	- [ ] loadout offers correct selection of underwear clothing
+	- [ ] /datum/category_collection/underwear correctly handles new type paths
+	- [ ] loadout correctly renders accessories on their respective slots when previewing
+	- [ ] accessories that are spawned at roundstart are automatically equipped to correct slots or placed in storage
+	- [ ] underwear that is spawned at roundstart is automatically equipped to correct slots or placed in storage
+	- [ ] /obj/structure/undies_wardrobe works correctly
+	- [ ] committer of this refactoring is happy as they did a good job
+*/
 #define UNDERWEAR_SLOT_FREE       0
+
 #define UNDERWEAR_SLOT_SOCKS      0x1
 #define UNDERWEAR_SLOT_TOP        0x2
 #define UNDERWEAR_SLOT_BOTTOM     0x4
 #define UNDERWEAR_SLOT_UNDERSHIRT 0x8
+
 #define UNDERWEAR_SLOT_L_WRIST    0x10
 #define UNDERWEAR_SLOT_R_WRIST    0x20
 #define UNDERWEAR_SLOT_NECK       0x40

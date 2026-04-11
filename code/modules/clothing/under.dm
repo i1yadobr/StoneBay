@@ -1,5 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 //Under clothing
+// TODO: Rename path from '/obj/item/clothing/under' to '/obj/item/clothing/uniform'
 /obj/item/clothing/under
 	name = "under"
 	icon = 'icons/obj/clothing/uniforms.dmi'
