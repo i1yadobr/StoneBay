@@ -15,7 +15,7 @@
 /obj/machinery/computer/shuttle_control/attack_hand(user as mob)
 	if(..(user))
 		return
-	if(!allowed(user))
+	if(!check_access(user))
 		to_chat(user, SPAN("warning", "Access Denied."))
 		return 1
 

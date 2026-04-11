@@ -892,10 +892,12 @@ About the new airlock wires panel:
 	update_icon()
 	return 1
 
-/obj/machinery/door/airlock/allowed(mob/M)
+/obj/machinery/door/airlock/check_access()
 	if(locked)
-		return 0
-	return ..(M)
+		return FALSE // Completely locked
+	if(maint_all_access && check_access_list(list(access_maint_tunnels)))
+		return TRUE // We are a maintenance airlock and there's a full access to maints.
+	return ..()
 
 /obj/machinery/door/airlock/New(newloc, obj/structure/door_assembly/assembly = null)
 	..()
@@ -915,12 +917,14 @@ About the new airlock wires panel:
 
 		//update the door's access to match the electronics'
 		secured_wires = electronics.secure
-		if(electronics.one_access)
-			req_access.Cut()
-			req_one_access = src.electronics.conf_access
-		else
-			req_one_access.Cut()
-			req_access = src.electronics.conf_access
+		req_access = null
+		req_one_access = null
+
+		if(length(electronics.conf_access))
+			if(electronics.one_access)
+				req_one_access = list(electronics.conf_access)
+			else
+				req_access = list(electronics.conf_access)
 
 		//get the name from the assembly
 		if(assembly.created_name)
@@ -977,13 +981,12 @@ About the new airlock wires panel:
 		electronics = new /obj/item/airlock_electronics( src.loc )
 
 	//update the electronics to match the door's access
-	if(!req_access)
-		check_access()
-	if(req_access.len)
+	electronics.conf_access = null
+	if(length(req_access))
 		electronics.conf_access = req_access
-	else if(req_one_access.len)
+	else if(length(req_one_access))
 		electronics.conf_access = req_one_access
-		electronics.one_access = 1
+		electronics.one_access = TRUE
 
 /obj/machinery/door/airlock/emp_act(severity)
 	if(prob(20 / severity))

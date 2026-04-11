@@ -45,8 +45,8 @@
 	botcard.access = botcard_access.Copy()
 
 	access_scanner = new /obj(src)
-	access_scanner.req_access = req_access.Copy()
-	access_scanner.req_one_access = req_one_access.Copy()
+	access_scanner.req_access = req_access
+	access_scanner.req_one_access = req_one_access
 
 /mob/living/bot/Initialize()
 	. = ..()
@@ -96,8 +96,8 @@
 	explode()
 
 /mob/living/bot/attackby(obj/item/O, mob/user)
-	if(O.get_id_card())
-		if(access_scanner.allowed(user) && !open)
+	if(O?.get_id_card())
+		if(access_scanner.check_access(O) && !open)
 			locked = !locked
 			to_chat(user, SPAN("notice", "Controls are now [locked ? "locked." : "unlocked."]"))
 			Interact(usr)
@@ -203,7 +203,7 @@
 	return
 
 /mob/living/bot/proc/CanToggle(mob/user)
-	return (!RequiresAccessToToggle || access_scanner.allowed(user) || issilicon(user))
+	return (!RequiresAccessToToggle || access_scanner.check_access(user) || issilicon(user))
 
 /mob/living/bot/proc/CanAccessPanel(mob/user)
 	return (!locked || issilicon(user))

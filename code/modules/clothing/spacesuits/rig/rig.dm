@@ -7,18 +7,18 @@
  */
 
 /obj/item/rig
-
 	name = "powersuit control module"
-	icon = 'icons/obj/rig_modules.dmi'
 	desc = "A back-mounted powersuit deployment and control mechanism."
+	icon = 'icons/obj/rig_modules.dmi'
 	slot_flags = SLOT_BACK
-	req_one_access = list()
-	req_access = list()
 	w_class = ITEM_SIZE_HUGE
 	center_of_mass = null
 
+	req_one_access = null
+	req_access = null
+
 	// These values are passed on to all component pieces.
-	armor = list(melee = 40, bullet = 5, laser = 20,energy = 5, bomb = 35, bio = 100)
+	armor_values = alist(melee = 40, bullet = 5, laser = 20,energy = 5, bomb = 35, bio = 100)
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0.2
@@ -160,7 +160,8 @@
 			piece.siemens_coefficient = siemens_coefficient
 		piece.permeability_coefficient = permeability_coefficient
 		piece.unacidable = unacidable
-		if(islist(armor)) piece.armor = armor.Copy()
+		if(isalist(armor_values))
+			piece.armor_values = armor_values.Copy()
 
 	set_slowdown_and_vision(!offline)
 	update_icon(1)
@@ -211,7 +212,16 @@
 
 /obj/item/rig/proc/set_slowdown_and_vision(active)
 	if(chest)
-		chest.slowdown_per_slot[slot_wear_suit] = (active? online_slowdown : offline_slowdown)
+		if(active)
+			if(online_slowdown)
+				AL_LAZYSET(chest.slowdown_per_slot, slot_wear_suit, online_slowdown)
+			else
+				AL_LAZYREMOVE(chest.slowdown_per_slot, slot_wear_suit)
+		else
+			if(offline_slowdown)
+				AL_LAZYSET(chest.slowdown_per_slot, slot_wear_suit, offline_slowdown)
+			else
+				AL_LAZYREMOVE(chest.slowdown_per_slot, slot_wear_suit)
 	if(helmet)
 		helmet.tint = (active? vision_restriction : offline_vision_restriction)
 		helmet.update_vision()
@@ -327,10 +337,10 @@
 								helmet.update_light(wearer)
 
 					//sealed pieces become airtight, protecting against diseases
-					if (!seal_target)
-						piece.armor["bio"] = 100
-					else
-						piece.armor["bio"] = src.armor["bio"]
+					if(!seal_target)
+						AL_LAZYSET(piece.armor_values, "bio", 100)
+					else if(isalist(armor_values))
+						AL_LAZYSET(piece.armor_values, "bio", armor_values["bio"])
 
 				else
 					failed_to_seal = 1
@@ -627,7 +637,7 @@
 			return 0
 		if(user.back != src)
 			return 0
-		else if(!src.allowed(user))
+		else if(!check_access(user))
 			to_chat(user, SPAN("danger", "Unauthorized user. Access denied."))
 			return 0
 

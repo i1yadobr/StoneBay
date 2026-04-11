@@ -238,7 +238,7 @@ var/list/mob_hat_cache = list()
 				to_chat(user, SPAN("danger", "The interface is fried, and a distressing burned smell wafts from the robot's interior. You're not rebooting this one."))
 				return
 
-			if(!allowed(usr))
+			if(!check_access(usr))
 				to_chat(user, SPAN("danger", "Access denied."))
 				return
 
@@ -252,7 +252,7 @@ var/list/mob_hat_cache = list()
 			if(emagged)
 				return
 
-			if(allowed(usr))
+			if(check_access(usr))
 				shut_down()
 			else
 				to_chat(user, SPAN("danger", "Access denied."))

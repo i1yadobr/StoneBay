@@ -1,15 +1,15 @@
 
 /turf/simulated/open/airless
-	initial_gas = null
+	initial_gas = /decl/initial_gas_mix/empty
 
 /turf/simulated/open/airmix
-	initial_gas = list("oxygen" = MOLES_O2ATMOS, "nitrogen" = MOLES_N2ATMOS)
+	initial_gas = list("oxygen" = MOLES_O2_ATMOS, "nitrogen" = MOLES_N2_ATMOS)
 
 /turf/simulated/open/nitrogen
 	initial_gas = list("nitrogen" = ATMOSTANK_NITROGEN)
 
 /turf/simulated/open/nitrogen/engine
-	initial_gas = list("nitrogen" = MOLES_N2STANDARD)
+	initial_gas = list("nitrogen" = MOLES_N2_STANDARD)
 
 /turf/simulated/open/hydrogen
 	initial_gas = list("hydrogen" = ATMOSTANK_HYDROGEN)
@@ -34,4 +34,4 @@
 
 
 /turf/simulated/floor/grid/bluegrid/nitrogen
-	initial_gas = list("nitrogen" = MOLES_N2STANDARD)
+	initial_gas = list("nitrogen" = MOLES_N2_STANDARD)

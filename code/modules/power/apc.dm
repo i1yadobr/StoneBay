@@ -508,7 +508,7 @@
 			playsound(src.loc, 'sound/signals/error31.ogg', 50)
 			to_chat(user, SPAN("warning", "Access denied."))
 		else
-			if(src.allowed(usr) && !isWireCut(APC_WIRE_IDSCAN))
+			if(check_access(usr) && !isWireCut(APC_WIRE_IDSCAN))
 				playsound(src.loc, 'sound/signals/warning9.ogg', 25)
 				locked = !locked
 				to_chat(user, "You [ locked ? "lock" : "unlock"] the APC interface.")
@@ -900,7 +900,7 @@
 		return 1
 
 	if(href_list["reboot"])
-		if(!allowed(usr) && (locked && !emagged))
+		if(!check_access(usr) && (locked && !emagged))
 			to_chat(usr, SPAN_WARNING("You must unlock the panel to use this!"))
 			return 1
 

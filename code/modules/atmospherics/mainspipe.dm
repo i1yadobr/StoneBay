@@ -645,7 +645,7 @@ obj/machinery/atmospherics/mains_pipe/valve
 			return src.attack_hand(user)
 
 		attack_hand(mob/user as mob)
-			if(!src.allowed(user))
+			if(!check_access(user))
 				to_chat(user, SPAN("warning", "Access denied."))
 				return
 			..()

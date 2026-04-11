@@ -216,7 +216,7 @@
 	cabin_air = new
 	cabin_air.temperature = 20 CELSIUS
 	cabin_air.volume = 200
-	cabin_air.adjust_multi("oxygen", O2STANDARD*cabin_air.volume/(R_IDEAL_GAS_EQUATION*cabin_air.temperature), "nitrogen", N2STANDARD*cabin_air.volume/(R_IDEAL_GAS_EQUATION*cabin_air.temperature))
+	cabin_air.adjust_multi("oxygen", O2_STANDARD*cabin_air.volume/(R_IDEAL_GAS_EQUATION*cabin_air.temperature), "nitrogen", N2_STANDARD*cabin_air.volume/(R_IDEAL_GAS_EQUATION*cabin_air.temperature))
 	return cabin_air
 
 /obj/mecha/proc/add_radio()
@@ -787,7 +787,7 @@
 	var/obj/item/card/id/id_card = W.get_id_card()
 	if(id_card)
 		if(add_req_access || maint_access)
-			if(internals_access_allowed(usr))
+			if(internals_access_check_access(usr))
 				output_maintenance_dialog(id_card, user)
 				return
 			else
@@ -1104,7 +1104,7 @@
 	if(dna)
 		if(user.dna.unique_enzymes == dna)
 			passed = TRUE
-	else if(operation_allowed(user))
+	else if(operation_check_access(user))
 		passed = TRUE
 	if(!passed)
 		to_chat(user, SPAN("warning", "Access denied"))
@@ -1329,13 +1329,13 @@
 
 /obj/mecha/proc/operation_allowed(mob/living/carbon/human/H)
 	for(var/atom/ID in list(H.get_active_hand(), H.get_passive_hand(), H.wear_id, H.belt))
-		if(src.check_access(ID,src.operation_req_access))
+		if(check_access(ID,src.operation_req_access))
 			return TRUE
 	return FALSE
 
 /obj/mecha/proc/internals_access_allowed(mob/living/carbon/human/H)
 	for(var/atom/ID in list(H.get_active_hand(), H.get_passive_hand(), H.wear_id, H.belt))
-		if(src.check_access(ID,src.internals_req_access))
+		if(check_access(ID,src.internals_req_access))
 			return TRUE
 	return FALSE
 

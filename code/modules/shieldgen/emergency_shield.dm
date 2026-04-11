@@ -310,7 +310,7 @@
 
 
 	else if(istype(W, /obj/item/card/id) || istype(W, /obj/item/device/pda))
-		if(src.allowed(user))
+		if(check_access(user))
 			src.locked = !src.locked
 			to_chat(user, "The controls are now [src.locked ? "locked." : "unlocked."]")
 		else

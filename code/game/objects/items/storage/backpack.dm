@@ -297,7 +297,7 @@
 	icon_state = "pocketbook"
 	max_storage_space = DEFAULT_LARGEBOX_STORAGE
 	color = "#3F3F3F"
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "satchel-flat",
 		slot_r_hand_str = "satchel-flat",
 		)
@@ -357,7 +357,7 @@
 	name = "\improper NanoTrasen satchel"
 	desc = "Useful for holding research materials. The colors on it denote it as a NanoTrasen bag."
 	icon_state = "satchel-nt"
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "satchel-gen", // Looks surprisingly close
 		slot_r_hand_str = "satchel-gen",
 		)
@@ -383,7 +383,7 @@
 	desc = "A spacious backpack with lots of pockets, used by members of the Emergency Response Team."
 	icon_state = "ert_commander"
 	inspect_state = FALSE
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "securitypack",
 		slot_r_hand_str = "securitypack",
 		)
@@ -486,7 +486,7 @@
 		/obj/item/stack/tile/floor,
 		/obj/item/crowbar
 		)
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "satchel-flat",
 		slot_r_hand_str = "satchel-flat",
 		)
@@ -501,7 +501,7 @@
 	desc = "It's a backpack made of real space carp."
 	icon_state = "carppack"
 	inspect_state = FALSE
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "backpack",
 		slot_r_hand_str = "backpack",
 		)
@@ -510,7 +510,7 @@
 	name = "shoulder bag"
 	desc = "A complex backpack with multiple compartments."
 	icon_state = "shoulder_bag"
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "satchel",
 		slot_r_hand_str = "satchel",
 		)
@@ -520,7 +520,7 @@
 	desc = "Some say that humanity conquered space inside such things. Today it has obviously broken but looks neat, and you can store your stuff inside."
 	icon_state = "shipack"
 	inspect_state = FALSE
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "shipack",
 		slot_r_hand_str = "shipack",
 		)

@@ -13,12 +13,12 @@
 	name = "firesuit"
 	desc = "A suit that protects against fire and heat."
 	icon_state = "fire"
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "fire_suit",
 		slot_r_hand_str = "fire_suit",
 	)
 	w_class = ITEM_SIZE_HUGE//bulky item
-	armor = list(melee = 50, bullet = 30, laser = 70, energy = 5, bomb = 0, bio = 0)
+	armor_values = alist(melee = 50, bullet = 30, laser = 70, energy = 5, bomb = 0, bio = 0)
 	gas_transfer_coefficient = 0.90
 	permeability_coefficient = 0.50
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
@@ -31,29 +31,28 @@
 
 /obj/item/clothing/suit/fire/New()
 	..()
-	slowdown_per_slot[slot_wear_suit] = 1.0
+	AL_LAZYSET(slowdown_per_slot, slot_wear_suit, 1)
 
 /obj/item/clothing/suit/fire/firefighter
 	icon_state = "firesuit"
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "firefighter",
 		slot_r_hand_str = "firefighter",
 	)
-
 
 /obj/item/clothing/suit/fire/heavy
 	name = "firesuit"
 	desc = "A suit that protects against extreme fire and heat."
 	//icon_state = "thermal"
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "ro_suit",
 		slot_r_hand_str = "ro_suit",
 	)
-	w_class = ITEM_SIZE_HUGE//bulky item
+	w_class = ITEM_SIZE_HUGE //bulky item
 
 /obj/item/clothing/suit/fire/heavy/New()
 	..()
-	slowdown_per_slot[slot_wear_suit] = 1.5
+	AL_LAZYSET(slowdown_per_slot, slot_wear_suit, 1.5)
 
 /*
  * Bomb protection
@@ -62,7 +61,7 @@
 	name = "bomb hood"
 	desc = "Use in case of bomb."
 	icon_state = "bombsuit"
-	armor = list(melee = 70, bullet = 90, laser = 70, energy = 50, bomb = 90, bio = 0)
+	armor_values = alist(melee = 70, bullet = 90, laser = 70, energy = 50, bomb = 90, bio = 0)
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|BLOCKHAIR
 	body_parts_covered = HEAD|FACE|EYES
 	siemens_coefficient = 0
@@ -83,7 +82,7 @@
 	w_class = ITEM_SIZE_HUGE//bulky item
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
-	armor = list(melee = 70, bullet = 90, laser = 70, energy = 50, bomb = 90, bio = 0)
+	armor_values = alist(melee = 70, bullet = 90, laser = 70, energy = 50, bomb = 90, bio = 0)
 	flags_inv = HIDEJUMPSUIT|HIDETAIL
 	heat_protection = UPPER_TORSO|LOWER_TORSO
 	max_heat_protection_temperature = ARMOR_MAX_HEAT_PROTECTION_TEMPERATURE
@@ -91,7 +90,7 @@
 
 /obj/item/clothing/suit/bomb_suit/New()
 	..()
-	slowdown_per_slot[slot_wear_suit] = 2
+	AL_LAZYSET(slowdown_per_slot, slot_wear_suit, 2)
 
 /obj/item/clothing/head/bomb_hood/security
 	icon_state = "bombsuitsec"
@@ -107,18 +106,18 @@
  */
 /obj/item/clothing/head/radiation
 	name = "Radiation Hood"
-	icon_state = "rad"
 	desc = "A hood with radiation protective properties. Label: Made with lead, do not eat insulation."
+	icon_state = "rad"
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 20, bullet = 0, laser = 20, energy = 10, bomb = 0, bio = 60)
+	armor_values = alist(melee = 20, bullet = 0, laser = 20, energy = 10, bomb = 0, bio = 60)
 	rad_resist_type = /datum/rad_resist/suit_radiation
 
 /obj/item/clothing/suit/radiation
 	name = "Radiation suit"
 	desc = "A suit that protects against radiation. Label: Made with lead, do not eat insulation."
 	icon_state = "rad"
-	item_state_slots = list(
+	item_state_slots = alist(
 		slot_l_hand_str = "rad_suit",
 		slot_r_hand_str = "rad_suit",
 	)
@@ -127,7 +126,7 @@
 	permeability_coefficient = 0.50
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HANDS|FEET
 	allowed = list(/obj/item/device/flashlight, /obj/item/device/geiger, /obj/item/tank/emergency,/obj/item/clothing/head/radiation,/obj/item/clothing/mask/gas)
-	armor = list(melee = 20, bullet = 0, laser = 20, energy = 10, bomb = 0, bio = 60)
+	armor_values = alist(melee = 20, bullet = 0, laser = 20, energy = 10, bomb = 0, bio = 60)
 	flags_inv = HIDEJUMPSUIT|HIDETAIL|HIDEGLOVES|HIDESHOES
 
 	rad_resist_type = /datum/rad_resist/suit_radiation
@@ -139,4 +138,4 @@
 
 /obj/item/clothing/suit/radiation/New()
 	..()
-	slowdown_per_slot[slot_shoes] = 1.5
+	AL_LAZYSET(slowdown_per_slot, slot_wear_suit, 1)

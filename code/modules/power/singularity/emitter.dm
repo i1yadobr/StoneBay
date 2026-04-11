@@ -212,11 +212,11 @@
 					disconnect_from_network()
 		return
 
-	if(istype(W, /obj/item/card/id) || istype(W, /obj/item/device/pda))
+	if(W?.get_id_card())
 		if(emagged)
 			to_chat(user, SPAN("warning", "The lock seems to be broken."))
 			return
-		if(allowed(user))
+		if(check_access(W))
 			toggle_lock(user)
 		else
 			to_chat(user, SPAN("warning", "Access denied."))

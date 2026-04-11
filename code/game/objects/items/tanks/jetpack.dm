@@ -15,7 +15,7 @@
 	mod_weight = 1.75
 	mod_reach = 1.0
 	mod_handy = 0.5
-	distribute_pressure = ONE_ATMOSPHERE*O2STANDARD
+	distribute_pressure = ONE_ATMOSPHERE * O2_STANDARD
 	var/datum/effect/effect/system/trail/ion/ion_trail
 	var/on = 0.0
 	var/stabilization_on = 0

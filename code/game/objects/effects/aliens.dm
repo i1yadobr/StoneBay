@@ -249,10 +249,7 @@
 	return
 
 /obj/effect/alien/weeds/attackby(obj/item/W, mob/user)
-	if(W.attack_verb.len)
-		visible_message(SPAN("danger", "\The [src] have been [pick(W.attack_verb)] with \the [W][(user ? " by [user]." : ".")]"))
-	else
-		visible_message(SPAN("danger", "\The [src] have been attacked with \the [W][(user ? " by [user]." : ".")]"))
+	visible_message(SPAN("danger", "\The [src] have been [pick(W.attack_verb)] with \the [W][(user ? " by [user]." : ".")]"))
 
 	if(isWelder(W))
 		var/obj/item/weldingtool/WT = W

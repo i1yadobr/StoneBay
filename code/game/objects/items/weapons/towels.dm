@@ -1,5 +1,6 @@
 /obj/item/towel
 	name = "towel"
+	desc = "A soft cotton towel."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "towel"
 	item_flags = ITEM_FLAG_IS_BELT
@@ -9,15 +10,16 @@
 	mod_weight = 0.5
 	mod_reach = 0.75
 	mod_handy = 0.25
-	attack_verb = list("whipped")
+	attack_verb = "whipped"
 	hitsound = 'sound/weapons/towelwhip.ogg'
-	desc = "A soft cotton towel."
 	drop_sound = SFX_DROP_CLOTH
 	pickup_sound = SFX_PICKUP_CLOTH
 
 /obj/item/towel/attack_self(mob/living/user as mob)
 	user.visible_message(SPAN("notice", "[user] uses \the [src] to towel themselves off."))
 	playsound(user, 'sound/weapons/towelwipe.ogg', 25, 1)
+
+/obj/item/towel/random
 
 /obj/item/towel/random/New()
 	..()
@@ -28,4 +30,4 @@
 	desc = "The legendary Golden Fleece of Jason made real."
 	color = "#ffd700"
 	force = 1
-	attack_verb = list("smote")
+	attack_verb = "smote"

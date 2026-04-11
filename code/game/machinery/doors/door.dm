@@ -112,40 +112,52 @@
 	return TRUE
 
 /obj/machinery/door/Bumped(atom/AM)
-	if(p_open || operating) return
+	if(p_open || operating)
+		return
+
+	if(istype(AM, /mob/living/bot))
+		var/mob/living/bot/bot = AM
+		if(check_access(bot.botcard))
+			if(density)
+				INVOKE_ASYNC(src, nameof(.proc/open))
+		return
+
 	if(ismob(AM))
 		var/mob/M = AM
-		if(world.time - M.last_bumped <= 10) return	//Can bump-open one airlock per second. This is to prevent shock spam.
+		if(world.time - M.last_bumped <= 1 SECOND)
+			return	//Can bump-open one airlock per second. This is to prevent shock spam.
 		M.last_bumped = world.time
 		if(!M.restrained() && (!issmall(M) || ishuman(M)))
 			bumpopen(M)
 		return
 
-	if(istype(AM, /mob/living/bot))
-		var/mob/living/bot/bot = AM
-		if(src.check_access(bot.botcard))
-			if(density)
-				INVOKE_ASYNC(src, nameof(.proc/open))
-		return
-
 	if(istype(AM, /obj/mecha))
 		var/obj/mecha/mecha = AM
 		if(density)
-			if(mecha.occupant && (src.allowed(mecha.occupant) || src.check_access_list(mecha.operation_req_access)))
+			if(check_access(mecha.occupant) || check_access_list(mecha.operation_req_access))
 				INVOKE_ASYNC(src, nameof(.proc/open))
 			else
 				do_animate("deny")
 		return
+
 	if(istype(AM, /obj/structure/bed/chair/wheelchair))
 		var/obj/structure/bed/chair/wheelchair/wheel = AM
 		if(density)
-			if(wheel.pulling && (src.allowed(wheel.pulling)))
+			if(check_access(wheel.pulling))
 				INVOKE_ASYNC(src, nameof(.proc/open))
 			else
 				do_animate("deny")
 		return
-	return
 
+	if(isobj(AM) && density)
+		var/obj/O = AM
+		if(O.w_class >= ITEM_SIZE_NORMAL || O.get_id_card())
+			if(check_access(AM))
+				INVOKE_ASYNC(src, nameof(.proc/open))
+			else
+				do_animate("deny")
+
+	return
 
 /obj/machinery/door/CanPass(atom/movable/mover, turf/target)
 	if(istype(mover) && mover.pass_flags & PASS_FLAG_GLASS)
@@ -157,7 +169,6 @@
 		return !block_air_zones
 	return !density
 
-
 /obj/machinery/door/proc/bumpopen(mob/user)
 	if(operating)
 		return
@@ -165,7 +176,7 @@
 		return
 	add_fingerprint(user)
 	if(density)
-		if(allowed(user))
+		if(check_access(user))
 			INVOKE_ASYNC(src, nameof(.proc/open))
 		else
 			do_animate("deny")
@@ -193,7 +204,6 @@
 		//cap projectile damage so that there's still a minimum number of hits required to break the door
 		take_damage(min(damage, 100))
 
-
 /obj/machinery/door/hitby(atom/movable/AM, datum/thrownthing/TT)
 	..()
 	var/tforce = 0
@@ -202,6 +212,8 @@
 	else
 		tforce = AM:throwforce * (TT.speed/THROWFORCE_SPEED_DIVISOR)
 	take_damage(tforce)
+
+	Bumped(AM) // A bit hacky, but it works wonders.
 	return
 
 /obj/machinery/door/attack_ai(mob/user)
@@ -211,8 +223,8 @@
 	return src.attackby(user, user)
 
 /obj/machinery/door/attack_tk(mob/user)
-	if(requiresID() && !allowed(null))
-		return
+	if(requiresID() && !check_access())
+		return FALSE
 	..()
 
 /obj/machinery/door/attackby(obj/item/I, mob/user)
@@ -297,11 +309,13 @@
 				shake_animation(3, 3)
 		return
 
-	if(src.operating > 0 || isrobot(user))	return //borgs can't attack doors open because it conflicts with their AI-like interaction with them.
+	if(src.operating > 0 || isrobot(user))
+		return //borgs can't attack doors open because it conflicts with their AI-like interaction with them.
 
-	if(src.operating) return
+	if(src.operating)
+		return
 
-	if(allowed(user) && operable())
+	if(check_access(user) && operable())
 		if(density)
 			INVOKE_ASYNC(src, nameof(.proc/open))
 		else
@@ -334,7 +348,6 @@
 	update_icon()
 	return
 
-
 /obj/machinery/door/examine(mob/user, infix)
 	. = ..()
 
@@ -344,7 +357,6 @@
 		. += "\The [src] looks seriously damaged!"
 	else if(src.health < src.maxhealth * 3/4)
 		. += "\The [src] shows signs of damage!"
-
 
 /obj/machinery/door/set_broken(new_state)
 	. = ..()
@@ -369,14 +381,12 @@
 				take_damage(150)
 	return
 
-
 /obj/machinery/door/on_update_icon()
 	if(density)
 		icon_state = "door1"
 	else
 		icon_state = "door0"
 	return
-
 
 /obj/machinery/door/proc/do_animate(animation)
 	switch(animation)
@@ -398,7 +408,6 @@
 				flick("door_deny", src)
 				playsound(src.loc, 'sound/machines/buzz-two.ogg', 50, 0)
 	return
-
 
 /obj/machinery/door/proc/open(forced = FALSE)
 	var/wait = normalspeed ? 150 : 5
@@ -487,10 +496,10 @@
 /obj/machinery/door/proc/requiresID()
 	return 1
 
-/obj/machinery/door/allowed(mob/M)
+/obj/machinery/door/check_access()
 	if(!requiresID())
 		return ..(null) //don't care who they are or what they have, act as if they're NOTHING
-	return ..(M)
+	return ..()
 
 /obj/machinery/door/update_nearby_tiles(need_rebuild)
 	. = ..()
