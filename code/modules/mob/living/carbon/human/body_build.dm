@@ -29,6 +29,7 @@ var/global/datum/body_build/default_body_build = new
 		)
 
 	var/rig_back      = 'icons/inv_slots/rig/mob.dmi'
+	var/rig_modules   = 'icons/inv_slots/rig/modules/mob.dmi'
 	var/blood_icon    = 'icons/mob/human_races/masks/blood_human.dmi'
 	var/dam_mask      = 'icons/mob/human_races/masks/dam_mask_human.dmi'
 	var/bandages_icon = 'icons/mob/human_races/bandages/mob.dmi'
@@ -89,6 +90,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand_slim.dmi'
 		)
 	rig_back             = 'icons/inv_slots/rig/mob_slim.dmi'
+	rig_modules          = 'icons/inv_slots/rig/modules/mob_slim.dmi'
 	blood_icon           = 'icons/mob/human_races/masks/blood_human_slim.dmi'
 	dam_mask             = 'icons/mob/human_races/masks/dam_mask_human_slim.dmi'
 	bandages_icon        = 'icons/mob/human_races/bandages/mob_slim.dmi'
@@ -281,6 +283,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)
 	rig_back             = 'icons/inv_slots/rig/mob_fat.dmi'
+	rig_modules          = 'icons/inv_slots/rig/modules/mob_fat.dmi'
 	blood_icon           = 'icons/mob/human_races/masks/blood_human.dmi'
 	dam_mask             = 'icons/mob/human_races/masks/dam_mask_human.dmi'
 	bandages_icon        = 'icons/mob/human_races/bandages/mob_fat.dmi'
@@ -373,6 +376,7 @@ var/global/datum/body_build/default_body_build = new
 		"slot_r_hand"    = 'icons/mob/inhands/items_righthand.dmi'
 		)
 	rig_back             = 'icons/inv_slots/rig/mob_fat.dmi'
+	rig_modules          = 'icons/inv_slots/rig/modules/mob_fat.dmi'
 	bandages_icon        = 'icons/mob/human_races/bandages/mob_fat.dmi'
 
 	movespeed_modifier = /datum/movespeed_modifier/bodybuild/fat

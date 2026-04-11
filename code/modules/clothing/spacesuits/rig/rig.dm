@@ -584,7 +584,7 @@
 	if(installed_modules.len)
 		for(var/obj/item/rig_module/module in installed_modules)
 			if(module.suit_overlay)
-				chest.AddOverlays(image("icon" = 'icons/inv_slots/rig/modules.dmi', "icon_state" = "[module.suit_overlay]", "dir" = SOUTH))
+				chest.AddOverlays(image("icon" = 'icons/inv_slots/rig/modules/mob.dmi', "icon_state" = "[module.suit_overlay]", "dir" = SOUTH))
 
 	if(wearer)
 		wearer.update_inv_shoes()
@@ -607,9 +607,12 @@
 	if(slot != slot_back_str || offline)
 		return ret
 
-	for(var/obj/item/rig_module/module in installed_modules)
-		if(module.suit_overlay)
-			ret.AddOverlays(image('icons/inv_slots/rig/modules.dmi', module.suit_overlay))
+	if(ishuman(user_mob))
+		var/mob/living/carbon/human/user_human = user_mob
+		for(var/obj/item/rig_module/module in installed_modules)
+			if(module.suit_overlay)
+				var/icon_state = module.get_icon_state(slot)
+				ret.AddOverlays(image(user_human.body_build.rig_modules, icon_state))
 	return ret
 
 /obj/item/rig/proc/check_suit_access(mob/living/carbon/human/user)

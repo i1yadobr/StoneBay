@@ -65,20 +65,20 @@
 /obj/item/storage/belt/get_mob_overlay(mob/user_mob, slot)
 	. = ..()
 
-	if(slot == slot_l_hand_str || slot == slot_r_hand_str)
+	if(slot == slot_l_hand_str || slot == slot_r_hand_str || !content_overlays)
 		return
 
 	var/image/ret = .
 
-	if(slot == slot_belt_str && length(contents))
+	if(slot == slot_belt_str && length(contents) && ishuman(user_mob))
+		var/mob/living/carbon/human/user_human = user_mob
+		var/list/drawn_items = list()
 		for(var/obj/item/I in contents)
-			// TODO: Make a few updates to the method for rendering objects on a characters belt
-			// - Create separate sprites directly on the '/obj/item/storage/belt' itself and on the belt slot, respectively
-			// - - Or, create a separate file to store only the render files for those sprites
-			// - It would also be a good idea to add a check for `body_build` here, since as it stands, it renders sprites incorrectly on slim/fat characters
-			// - Optionally, figure out how it numbers/sorts the items on the belt, and make this process traceable in the code
-			// - - Since we don't want the overlays to overlap, accordingly
-			ret.AddOverlays(image('icons/inv_slots/belts/mob.dmi', "[I.item_state ? I.item_state : I.icon_state]"))
+			if(I.type in drawn_items)
+				continue
+			var/icon_state = I.get_icon_state(slot)
+			ret.AddOverlays(image(user_human.body_build.get_mob_icon(slot, icon_state), icon_state))
+			drawn_items += I.type
 	return ret
 
 /obj/item/storage/belt/utility
