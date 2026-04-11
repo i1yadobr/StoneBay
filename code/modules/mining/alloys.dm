@@ -2,6 +2,7 @@ GLOBAL_LIST_EMPTY(alloy_data)
 
 /hook/startup/proc/initialize_alloy_data()
 	ensure_alloy_data_initialised()
+	return TRUE
 
 /proc/ensure_alloy_data_initialised()
 	if(GLOB.alloy_data.len)

@@ -3,6 +3,7 @@ GLOBAL_LIST_EMPTY(ores_by_type)
 
 /hook/startup/proc/initialise_ore_data()
 	ensure_ore_data_initialised()
+	return TRUE
 
 /proc/ensure_ore_data_initialised()
 	if(GLOB.ore_data.len)
