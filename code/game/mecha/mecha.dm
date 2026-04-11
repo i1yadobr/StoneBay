@@ -785,9 +785,9 @@
 		return
 
 	var/obj/item/card/id/id_card = W.get_id_card()
-	if(id_card)
+	if(istype(id_card))
 		if(add_req_access || maint_access)
-			if(internals_access_check_access(usr))
+			if(internals_access_allowed(usr))
 				output_maintenance_dialog(id_card, user)
 				return
 			else
@@ -1104,7 +1104,7 @@
 	if(dna)
 		if(user.dna.unique_enzymes == dna)
 			passed = TRUE
-	else if(operation_check_access(user))
+	else if(operation_allowed(user))
 		passed = TRUE
 	if(!passed)
 		to_chat(user, SPAN("warning", "Access denied"))

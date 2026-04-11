@@ -101,8 +101,8 @@
 /obj/machinery/computer/shuttle_control/emag_act(remaining_charges, mob/user)
 	if (!hacked)
 		playsound(src.loc, 'sound/effects/computer_emag.ogg', 25)
-		req_access = list()
-		req_one_access = list()
+		req_access = null
+		req_one_access = null
 		hacked = 1
 		to_chat(user, "You short out the console's ID checking system. It's now available to everyone!")
 		return 1
