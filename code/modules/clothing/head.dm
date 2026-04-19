@@ -75,6 +75,7 @@
 /obj/item/clothing/head/proc/mob_wear_hat(mob/user)
 	if(!Adjacent(user))
 		return 0
+
 	var/success
 	if(istype(user, /mob/living/silicon/robot/drone))
 		var/mob/living/silicon/robot/drone/D = user
@@ -100,7 +101,6 @@
 	return 1
 
 /obj/item/clothing/head/on_update_icon(mob/user)
-
 	ClearOverlays()
 	var/mob/living/carbon/human/H
 	if(istype(user,/mob/living/carbon/human))
@@ -123,6 +123,6 @@
 		H.update_inv_head()
 
 /obj/item/clothing/head/update_clothing_icon()
-	if (ismob(src.loc))
+	if(ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_head()

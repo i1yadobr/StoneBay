@@ -291,7 +291,7 @@
 	slot_flags = SLOT_HEAD | SLOT_EARS
 	body_parts_covered = NO_BODYPARTS
 	siemens_coefficient = 1.5
-	item_icons = list()
+
 	var/hairgb = null
 
 /obj/item/clothing/head/fox/Initialize()
@@ -299,29 +299,35 @@
 	if(color)
 		hairgb = color
 		color = null
+	update_icon()
+
+/obj/item/clothing/head/fox/on_update_icon(mob/user)
+	ClearOverlays()
+	if(hairgb)
+		AddOverlays(overlay_image(icon, "fox_ears_overlay", hairgb, RESET_COLOR))
+
+	if(ishuman(user))
+		var/mob/living/carbon/human/user_human = user
+		if(user_human)
+			user_human.update_inv_head()
 
 /obj/item/clothing/head/fox/equipped(mob/living/carbon/human/user, slot)
 	. = ..()
 	if(color)
 		hairgb = color
 		color = null
-	var/tail = "fox_ears_tail"
 	if((slot == slot_head || slot == slot_l_ear || slot == slot_r_ear) && istype(user))
 		if(!hairgb)
 			hairgb = rgb(user.r_hair, user.g_hair, user.b_hair)
-		var/icon/ears = icon('icons/inv_slots/hats/mob.dmi', "fox_ears")
-		switch(user.body_build.name)
-			if("Slim")
-				tail = "fox_ears_tail_slim"
-			if("Slim Alt")
-				tail = "fox_ears_tail_slim_alt"
-			if("Fat")
-				tail = "fox_ears_tail_fat"
-			else
-				tail = "fox_ears_tail"
-		ears.Blend(icon('icons/inv_slots/hats/mob.dmi', tail), ICON_OVERLAY)
+			update_icon()
+		var/icon_path = 'icons/inv_slots/hats/mob.dmi'
+		var/icon/ears = icon(icon_path, "fox_ears")
+		var/tail = "fox_tail"
+		if(!("fox_tail[user.body_build.index]" in icon_states(icon_path)))
+			tail = "fox_tail[user.body_build.index]"
+		ears.Blend(icon(icon_path, tail), ICON_OVERLAY)
 		ears.Blend(hairgb, ICON_ADD)
-		ears.Blend(icon('icons/inv_slots/hats/mob.dmi', "[tail]_overlay"), ICON_OVERLAY)
+		ears.Blend(icon(icon_path, "[tail]_overlay"), ICON_OVERLAY)
 		icon_override = ears
 	else if(icon_override)
 		icon_override = null
