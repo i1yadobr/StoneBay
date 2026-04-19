@@ -141,10 +141,9 @@
 	return can_admin_interact()
 
 /obj/item/device/radio/proc/text_wires()
-	if (b_stat)
+	if(b_stat)
 		return wires.GetInteractWindow()
 	return
-
 
 /obj/item/device/radio/proc/text_sec_channel(chan_name, chan_stat)
 	var/list = !!(chan_stat&FREQ_LISTENING)!=0
@@ -169,28 +168,28 @@
 		return 1
 
 	usr.set_machine(src)
-	if (href_list["track"])
+	if(href_list["track"])
 		var/mob/target = locate(href_list["track"])
 		var/mob/living/silicon/ai/A = locate(href_list["track2"])
 		if(A && target)
 			A.ai_actual_track(target)
 		. = 1
 
-	else if (href_list["freq"])
+	else if(href_list["freq"])
 		var/new_frequency = (frequency + text2num(href_list["freq"]))
-		if ((new_frequency < PUBLIC_LOW_FREQ || new_frequency > PUBLIC_HIGH_FREQ))
+		if((new_frequency < PUBLIC_LOW_FREQ || new_frequency > PUBLIC_HIGH_FREQ))
 			new_frequency = sanitize_frequency(new_frequency)
 		set_frequency(new_frequency)
 		. = 1
-	else if (href_list["talk"])
+	else if(href_list["talk"])
 		ToggleBroadcast()
 		. = 1
-	else if (href_list["listen"])
+	else if(href_list["listen"])
 		var/chan_name = href_list["ch_name"]
-		if (!chan_name)
+		if(!chan_name)
 			ToggleReception()
 		else
-			if (channels[chan_name] & FREQ_LISTENING)
+			if(channels[chan_name] & FREQ_LISTENING)
 				channels[chan_name] &= ~FREQ_LISTENING
 			else
 				channels[chan_name] |= FREQ_LISTENING
@@ -233,28 +232,32 @@
 
 	// Otherwise, if a channel is specified, look for it.
 	if(channels && channels.len > 0)
-		if (message_mode == "department") // Department radio shortcut
+		if(message_mode == "department") // Department radio shortcut
 			message_mode = channels[1]
 
-		if (channels[message_mode]) // only broadcast if the channel is set on
+		if(channels[message_mode]) // only broadcast if the channel is set on
 			return secure_radio_connections[message_mode]
 
 	// If we were to send to a channel we don't have, drop it.
 	return null
 
 /obj/item/device/radio/talk_into(mob/living/M as mob, message, channel, verb = "says", datum/language/speaking = null)
-	if(!on) return 0 // the device has to be on
+	if(!on)
+		return 0 // the device has to be on
 	//  Fix for permacell radios, but kinda eh about actually fixing them.
-	if(!M || !message) return 0
+	if(!M || !message)
+		return 0
 
-	if(speaking && (speaking.language_flags & (NONVERBAL|SIGNLANG))) return 0
+	if(speaking && (speaking.language_flags & (NONVERBAL|SIGNLANG)))
+		return 0
 
 	var/mob/living/carbon/C = M
 	if((istype(C)) && (C.chem_effects[CE_SEDATE]))
 		to_chat(M, SPAN_WARNING("You're unable to reach \the [src]."))
 		return 0
 
-	if(istype(M)) M.trigger_aiming(TARGET_CAN_RADIO)
+	if(istype(M))
+		M.trigger_aiming(TARGET_CAN_RADIO)
 
 	//  Uncommenting this. To the above comment:
 	// 	The permacell radios aren't suppose to be able to transmit, this isn't a bug and this "fix" is just making radio wires useless. -Giacom
@@ -277,7 +280,7 @@
 
 	//#### Grab the connection datum ####//
 	var/datum/frequency/connection = handle_message_mode(M, message, channel)
-	if (!istype(connection))
+	if(!istype(connection))
 		return 0
 
 	var/turf/position = get_turf(src)
@@ -296,24 +299,24 @@
 	var/jobname // the mob's "job"
 
 	// --- Human: use their actual job ---
-	if (ishuman(M))
+	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
 		jobname = H.get_assignment()
 
 	// --- Carbon Nonhuman ---
-	else if (iscarbon(M)) // Nonhuman carbon mob
+	else if(iscarbon(M)) // Nonhuman carbon mob
 		jobname = "No id"
 
 	// --- AI ---
-	else if (isAI(M))
+	else if(isAI(M))
 		jobname = "AI"
 
 	// --- Cyborg ---
-	else if (isrobot(M))
+	else if(isrobot(M))
 		jobname = "Cyborg"
 
 	// --- Personal AI (pAI) ---
-	else if (istype(M, /mob/living/silicon/pai))
+	else if(istype(M, /mob/living/silicon/pai))
 		jobname = "Personal AI"
 
 	// --- Unidentifiable mob ---
@@ -324,12 +327,10 @@
 	// --- Modifications to the mob's identity ---
 
 	// The mob is disguising their identity:
-	if (ishuman(M) && M.GetVoice() != real_name)
+	if(ishuman(M) && M.GetVoice() != real_name)
 		displayname = M.GetVoice()
 		jobname = "Unknown"
 		voicemask = 1
-
-
 
   /* ###### Radio headsets can only broadcast through subspace ###### */
 	if(subspace_transmission)
@@ -427,18 +428,17 @@
 	// Send a mundane broadcast with limited targets:
 
 	//THIS IS TEMPORARY. YEAH RIGHT
-	if(!connection)	return 0	//~Carn
+	if(!connection)
+		return 0	//~Carn
 	return Broadcast_Message(connection, M, voicemask, pick(M.speak_emote),
 					  src, message, displayname, jobname, real_name, M.voice_name,
 					  filter_type, signal.data["compression"], GetConnectedZlevels(position.z), connection.frequency,verb,speaking,loud)
 
 
 /obj/item/device/radio/hear_talk(mob/M as mob, msg, verb = "says", datum/language/speaking = null)
-
-	if (broadcasting)
+	if(broadcasting)
 		if(get_dist(src, M) <= canhear_range)
 			talk_into(M, msg,null,verb,speaking)
-
 
 /*
 /obj/item/device/radio/proc/accept_rad(obj/item/device/radio/R as obj, message)
@@ -451,7 +451,6 @@
 		return null
 	return
 */
-
 
 /obj/item/device/radio/proc/receive_range(freq, level)
 	// check if this radio can receive on the given frequency, and if so,
@@ -470,20 +469,20 @@
 	if(freq in GLOB.antagonist_frequencies)
 		if(!(src.syndie))//Checks to see if it's allowed on that frequency, based on the encryption keys
 			return -1
-	if (!on)
+	if(!on)
 		return -1
-	if (!freq) //recieved on main frequency
-		if (!listening)
+	if(!freq) //recieved on main frequency
+		if(!listening)
 			return -1
 	else
 		var/accept = (freq==frequency && listening)
-		if (!accept)
-			for (var/ch_name in channels)
+		if(!accept)
+			for(var/ch_name in channels)
 				var/datum/frequency/RF = secure_radio_connections[ch_name]
 				if (RF && RF.frequency == freq && (channels[ch_name] & FREQ_LISTENING))
 					accept = 1
 					break
-		if (!accept)
+		if(!accept)
 			return -1
 	return canhear_range
 
@@ -492,7 +491,6 @@
 	var/range = receive_range(freq, level)
 	if(range > -1)
 		return get_mobs_or_objects_in_view(canhear_range, src)
-
 
 /obj/item/device/radio/examine(mob/user, infix)
 	. = ..()
@@ -506,7 +504,7 @@
 /obj/item/device/radio/attackby(obj/item/W as obj, mob/user as mob)
 	..()
 	user.set_machine(src)
-	if (!( isScrewdriver(W) ))
+	if(!(isScrewdriver(W)))
 		return
 
 	b_stat = !b_stat
@@ -521,7 +519,7 @@
 /obj/item/device/radio/emp_act(severity)
 	broadcasting = 0
 	listening = 0
-	for (var/ch_name in channels)
+	for(var/ch_name in channels)
 		channels[ch_name] = 0
 	..()
 
