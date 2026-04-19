@@ -403,7 +403,8 @@
 
 /obj/item/borg/combat/mobility/Destroy()
 	var/mob/living/silicon/robot/user_robot = usr
-	user_robot.remove_movespeed_modifier(/datum/movespeed_modifier/combat_mobility_speedup)
+	if(user_robot.has_movespeed_modifier(/datum/movespeed_modifier/combat_mobility_speedup))
+		user_robot.remove_movespeed_modifier(/datum/movespeed_modifier/combat_mobility_speedup)
 	return ..()
 
 /obj/item/borg/combat/mobility/attack_self(mob/user)

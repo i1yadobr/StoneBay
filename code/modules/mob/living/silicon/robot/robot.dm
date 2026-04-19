@@ -182,6 +182,7 @@
 /mob/living/silicon/robot/proc/init()
 	if(ispath(module))
 		new module(src)
+
 	if(lawupdate)
 		var/new_ai = select_active_ai_with_fewest_borgs()
 		if(new_ai)
@@ -222,7 +223,7 @@
 
 // setup the PDA and its name
 /mob/living/silicon/robot/proc/setup_PDA()
-	if (!rbPDA)
+	if(!rbPDA)
 		rbPDA = new /obj/item/device/pda/ai(src)
 	rbPDA.set_name_and_job(custom_name,"[modtype] [braintype]")
 
@@ -277,16 +278,16 @@
 
 	// NOTE: Personally, I hate boilerplate, but I currently don't have the mental capacity to deal with emotes code - intercepti0n
 	var/datum/robot_hull/old_hull = module_hulls[icontype]
-	for (var/datum/emote/typepath as anything in old_hull?.default_emotes)
+	for(var/datum/emote/typepath as anything in old_hull?.default_emotes)
 		var/datum/emote/emote_to_remove = GLOB.all_emotes[typepath]
 		clear_emote(emote_to_remove.key)
-		if (!isnull(emote_to_remove.statpanel_proc))
+		if(!isnull(emote_to_remove.statpanel_proc))
 			verbs -= emote_to_remove.statpanel_proc
 
-	for (var/datum/emote/typepath as anything in new_hull.default_emotes)
+	for(var/datum/emote/typepath as anything in new_hull.default_emotes)
 		var/datum/emote/emote_to_add = GLOB.all_emotes[typepath]
 		set_emote(emote_to_add.key, emote_to_add)
-		if (!isnull(emote_to_add.statpanel_proc))
+		if(!isnull(emote_to_add.statpanel_proc))
 			verbs |= emote_to_add.statpanel_proc
 
 	icontype = new_icontype
@@ -300,7 +301,7 @@
 	return TRUE
 
 /mob/living/silicon/robot/proc/set_module_hulls(list/new_hulls)
-	if (!LAZYLEN(new_hulls))
+	if(!LAZYLEN(new_hulls))
 		return
 
 	module_hulls = new_hulls.Copy()
@@ -342,7 +343,6 @@
 	if(module)
 		notify_ai(ROBOT_NOTIFICATION_NEW_MODULE, module.name)
 
-
 /mob/living/silicon/robot/proc/updatename(prefix)
 	if(prefix)
 		modtype = prefix
@@ -368,7 +368,7 @@
 	setup_PDA()
 
 	//We also need to update name of internal camera.
-	if (camera)
+	if(camera)
 		camera.c_tag = changed_name
 
 	//Flavour text.
@@ -382,16 +382,19 @@
 /mob/living/silicon/robot/verb/Namepick()
 	set category = "Silicon Commands"
 	if(custom_name)
-		return 0
+		to_chat(src, "You already have the custom name.")
+		return FALSE
 
-	spawn(0)
-		var/newname
-		newname = sanitizeSafe(input(src,"You are a robot. Enter a name, or leave blank for the default name.", "Name change","") as text, MAX_NAME_LEN)
-		if (newname)
-			custom_name = newname
+	INVOKE_ASYNC(src, nameof(.proc/name_choice))
 
-		updatename()
-		update_icon()
+/mob/living/silicon/robot/proc/name_choice()
+	var/newname
+	newname = sanitizeSafe(input(src,"You are a robot. Enter a name, or leave blank for the default name.", "Name change","") as text, MAX_NAME_LEN)
+	if(newname)
+		custom_name = newname
+
+	updatename()
+	update_icon()
 
 // this verb lets cyborgs see the stations manifest
 /mob/living/silicon/robot/verb/cmd_station_manifest()
@@ -404,7 +407,7 @@
 		return null
 
 	var/dat = "<meta charset=\"utf-8\"><HEAD><TITLE>[src.name] Self-Diagnosis Report</TITLE></HEAD><BODY>\n"
-	if (module)
+	if(module)
 		var/visors = ""
 		dat += "<b>Supported upgrades for [module]:</b><br>\n"
 		for(var/i in module.supported_upgrades)
@@ -416,7 +419,7 @@
 		dat += "<b>Supported visors for [module]:<br></b>\n"
 		dat += visors
 		dat += "<hr>"
-	for (var/V in components)
+	for(var/V in components)
 		var/datum/robot_component/C = components[V]
 		dat += "<b>[C.name]</b><br><table><tr><td>Brute Damage:</td><td>[C.brute_damage]</td></tr><tr><td>Electronics Damage:</td><td>[C.electronics_damage]</td></tr><tr><td>Powered:</td><td>[(!C.idle_usage || C.is_powered()) ? "Yes" : "No"]</td></tr><tr><td>Toggled:</td><td>[ C.toggled ? "Yes" : "No"]</td></table><br>"
 
@@ -449,7 +452,7 @@
 		return
 
 	var/datum/robot_component/CO = get_robot_component("diagnosis unit")
-	if (!cell_use_power(CO.active_usage))
+	if(!cell_use_power(CO.active_usage))
 		to_chat(src, SPAN("warning", "Low Power."))
 		return
 	var/dat = self_diagnosis()
@@ -463,7 +466,8 @@
 
 	var/list/installed_components = list()
 	for(var/V in components)
-		if(V == "power cell") continue
+		if(V == "power cell")
+			continue
 		var/datum/robot_component/C = components[V]
 		if(C.installed)
 			installed_components += V
@@ -497,7 +501,7 @@
 /mob/living/silicon/robot/proc/show_jetpack_pressure()
 	// if you have a jetpack, show the internal tank pressure
 	var/obj/item/tank/jetpack/current_jetpack = get_jetpack()
-	if (current_jetpack)
+	if(current_jetpack)
 		stat("Internal Atmosphere Info", current_jetpack.name)
 		stat("Tank Pressure", current_jetpack.air_contents.return_pressure())
 
@@ -512,7 +516,7 @@
 
 /mob/living/silicon/robot/proc/show_gps()
 	var/turf/T = get_turf(src)
-	if (T.z != 1 && T.z != 2)
+	if(T.z != 1 && T.z != 2)
 		stat(null, text("Current location: Unknown"))
 	else
 		stat(null, text("Current location:[T.x]:[T.y]:[T.z]"))
@@ -520,7 +524,7 @@
 // update the status screen display
 /mob/living/silicon/robot/Stat()
 	. = ..()
-	if (statpanel("Status"))
+	if(statpanel("Status"))
 		show_gps()
 		show_cell_power()
 		show_jetpack_pressure()
@@ -539,11 +543,12 @@
 		return shield_handled
 
 	..(Proj)
-	if(prob(75) && Proj.damage > 0) spark_system.start()
+	if(prob(75) && Proj.damage > 0)
+		spark_system.start()
 	return 2
 
 /mob/living/silicon/robot/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/handcuffs)) // fuck i don't even know why isrobot() in handcuff code isn't working so this will have to do
+	if(istype(W, /obj/item/handcuffs)) // fuck i don't even know why isrobot() in handcuff code isn't working so this will have to do
 		return
 
 	if(user.a_intent == I_HURT)
@@ -566,7 +571,7 @@
 				return
 
 	if(isWelder(W))
-		if (!getBruteLoss())
+		if(!getBruteLoss())
 			to_chat(user, "Nothing to fix here!")
 			return
 		var/obj/item/weldingtool/WT = W
@@ -584,11 +589,11 @@
 			O.show_message(SPAN("warning", "[user] has fixed some of the dents on [src]!"), VISIBLE_MESSAGE)
 
 	else if(isCoil(W) && (wiresexposed || istype(src,/mob/living/silicon/robot/drone)))
-		if (!getFireLoss())
+		if(!getFireLoss())
 			to_chat(user, "Nothing to fix here!")
 			return
 		var/obj/item/stack/cable_coil/coil = W
-		if (coil.use(1))
+		if(coil.use(1))
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			adjustFireLoss(-30)
 			update_health()
@@ -627,7 +632,8 @@
 				// Okay we're not removing the cell or an MMI, but maybe something else?
 				var/list/removable_components = list()
 				for(var/V in components)
-					if(V == "power cell") continue
+					if(V == "power cell")
+						continue
 					var/datum/robot_component/C = components[V]
 					if(C.installed == 1 || C.installed == -1)
 						removable_components += V
@@ -671,7 +677,7 @@
 		handle_selfinsert(W, user)
 		recalculate_synth_capacities()
 
-	else if (istype(W, /obj/item/cell) && opened)	// trying to put a cell inside
+	else if(istype(W, /obj/item/cell) && opened)	// trying to put a cell inside
 		var/datum/robot_component/C = components["power cell"]
 		if(wiresexposed)
 			to_chat(user, "Close the panel first.")
@@ -682,16 +688,18 @@
 		else if(user.drop(W, src))
 			cell = W
 			handle_selfinsert(W, user) //Just in case.
-			to_chat(user, "You insert the power cell.")
+			to_chat(user, "You insert \the [W].")
 			C.installed = 1
 			C.wrapped = W
 			C.install()
-			//This will mean that removing and replacing a power cell will repair the mount, but I don't care at this point. ~Z
+			// This will mean that removing and replacing a power cell will repair the mount, but I don't care at this point. ~Z
 			C.brute_damage = 0
 			C.electronics_damage = 0
+			// We want the icon updated here and now, feels better because immediate visual feedback
+			update_icon()
 
 	else if(isWirecutter(W) || isMultitool(W))
-		if (wiresexposed)
+		if(wiresexposed)
 			wires.Interact(user)
 		else
 			to_chat(user, "You can't reach the wiring.")
@@ -712,19 +720,21 @@
 			silicon_radio.attackby(W,user)//GTFO, you have your own procs
 		else
 			to_chat(user, "Unable to locate a radio.")
-	else if (istype(W, /obj/item/card/id) || istype(W, /obj/item/device/pda) || istype(W, /obj/item/card/robot))			// trying to unlock the interface with an ID card
+
+	else if(istype(W, /obj/item/card/id) || istype(W, /obj/item/device/pda) || istype(W, /obj/item/card/robot))			// trying to unlock the interface with an ID card
 		if(emagged)//still allow them to open the cover
 			to_chat(user, "The interface seems slightly damaged")
 		if(opened)
 			to_chat(user, "You must close the cover to swipe an ID card.")
 		else
-			if(check_access(usr))
+			if(allowed(usr))
 				locked = !locked
 				to_chat(user, "You [ locked ? "lock" : "unlock"] [src]'s interface.")
 				to_chat(src, "Your interface was [ locked ? "locked" : "unlocked"] by [user].")
 				update_icon()
 			else
 				to_chat(user, SPAN("warning", "Access denied."))
+
 	else if(istype(W, /obj/item/borg/upgrade/))
 		var/obj/item/borg/upgrade/U = W
 		if(!opened)
@@ -742,22 +752,19 @@
 				to_chat(usr, "Upgrade error!")
 
 	else
-		if( !(istype(W, /obj/item/device/robotanalyzer) || istype(W, /obj/item/device/healthanalyzer)) )
+		if(!(istype(W, /obj/item/device/robotanalyzer) || istype(W, /obj/item/device/healthanalyzer)))
 			spark_system.start()
 		return ..()
 
-
 /mob/living/silicon/robot/proc/handle_selfinsert(obj/item/W, mob/user)
-	if ((user == src) && istype(get_clicking_hand(),/obj/item/gripper))
+	if((user == src) && istype(get_clicking_hand(),/obj/item/gripper))
 		var/obj/item/gripper/H = get_clicking_hand()
-		if (W.loc == H) //if this triggers something has gone very wrong, and it's safest to abort
+		if(W.loc == H) //if this triggers something has gone very wrong, and it's safest to abort
 			return
-		else if (H.wrapped == W)
+		else if(H.wrapped == W)
 			H.wrapped = null
 
-
 /mob/living/silicon/robot/attack_hand(mob/user)
-
 	add_fingerprint(user)
 
 	if(istype(user,/mob/living/carbon/human))
@@ -788,19 +795,20 @@
 	return ..(user,Floor(damage/2),attack_message)
 
 /mob/living/silicon/robot/proc/allowed(mob/M)
-	//check if it doesn't require any access at all
+	// check if it doesn't require any access at all
 	if(check_access(null))
-		return 1
+		return TRUE
 	if(istype(M, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M
-		//if they are holding or wearing a card that has access, that works
+		// TODO: Make PDA access check work
+		// if they are holding or wearing a card that has access, that works
 		if(check_access(H.get_clicking_hand()) || check_access(H.wear_id))
-			return 1
+			return TRUE
 	else if(istype(M, /mob/living/silicon/robot))
 		var/mob/living/silicon/robot/R = M
 		if(check_access(R.get_clicking_hand()) || istype(R.get_clicking_hand(), /obj/item/card/robot))
-			return 1
-	return 0
+			return TRUE
+	return FALSE
 
 /mob/living/silicon/robot/proc/check_access(obj/item/card/id/I)
 	if(!length(req_access))
@@ -819,10 +827,6 @@
 
 	ClearOverlays()
 
-	//TODO: Solve the problem where the eyes don't turn on after the battery is inserted into the robot.
-	//It is possible to insert some small timer, since the error is hidden somewhere in '/mob/living/silicon/robot/set_stat(new_stat)'
-	//Because, even though an queue_icon_update() is called there, it either doesn't work,
-	//or due to the delay in changing the robot stat, it doesn't work correctly with the current system.
 	//TODO: (optionally) Add a cool and smooth appearance/disappearance of eyes
 	if(stat == CONSCIOUS && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES))
 		var/eyes_icon_state = "eyes-[using_hull.icon_state]"
@@ -845,6 +849,7 @@
 	if(!module)
 		choose_module()
 		return
+
 	var/dat = "<meta charset=\"utf-8\"><HEAD><TITLE>Modules</TITLE></HEAD><BODY>\n"
 	dat += {"
 	<B>Activated Modules</B>
@@ -856,14 +861,14 @@
 	<B>Installed Modules</B><BR><BR>"}
 
 
-	for (var/obj in module.modules)
-		if (!obj)
+	for(var/obj in module.modules)
+		if(!obj)
 			dat += text("<B>Resource depleted</B><BR>")
 		else if(activated(obj))
 			dat += text("[obj]: <B>Activated</B><BR>")
 		else
 			dat += text("[obj]: <A HREF='byond://?src=\ref[src];act=\ref[obj]'>Activate</A><BR>")
-	if (emagged)
+	if(emagged)
 		if(activated(module.emag))
 			dat += text("[module.emag]: <B>Activated</B><BR>")
 		else
@@ -876,26 +881,26 @@
 */
 	show_browser(src, dat, "window=robotmod")
 
-
 /mob/living/silicon/robot/Topic(href, href_list)
 	if(..())
 		return 1
+
 	if(usr != src)
 		return 1
 
-	if (href_list["showalerts"])
+	if(href_list["showalerts"])
 		open_subsystem(/datum/nano_module/alarm_monitor/all)
 		return 1
 
-	if (href_list["mod"])
+	if(href_list["mod"])
 		var/obj/item/O = locate(href_list["mod"])
 		if (istype(O) && (O.loc == src))
 			O.attack_self(src)
 		return 1
 
-	if (href_list["act"])
+	if(href_list["act"])
 		var/obj/item/O = locate(href_list["act"])
-		if (!istype(O))
+		if(!istype(O))
 			return 1
 
 		if(!((O in src.module.modules) || (O == src.module.emag)))
@@ -904,35 +909,42 @@
 		if(activated(O))
 			to_chat(src, "Already activated")
 			return 1
+
 		if(!module_state_1)
 			module_state_1 = O
 			O.hud_layerise()
 			contents += O
+
 		else if(!module_state_2)
 			module_state_2 = O
 			O.hud_layerise()
 			contents += O
+
 		else if(!module_state_3)
 			module_state_3 = O
 			O.hud_layerise()
 			contents += O
+
 		else
 			to_chat(src, "You need to disable a module first!")
 		installed_modules()
 		return 1
 
-	if (href_list["deact"])
+	if(href_list["deact"])
 		var/obj/item/O = locate(href_list["deact"])
 		if(activated(O))
 			if(module_state_1 == O)
 				module_state_1 = null
 				contents -= O
+
 			else if(module_state_2 == O)
 				module_state_2 = null
 				contents -= O
+
 			else if(module_state_3 == O)
 				module_state_3 = null
 				contents -= O
+
 			else
 				to_chat(src, "Module isn't activated.")
 		else
@@ -1000,7 +1012,6 @@
 	if(src.camera)
 		src.camera.clear_all_networks()
 
-
 /mob/living/silicon/robot/proc/ResetSecurityCodes()
 	set category = "Silicon Commands"
 	set name = "Reset Security Codes"
@@ -1023,6 +1034,7 @@
 	var/confirm = alert("Are you sure you want to unlock your systems and sever you from your AI and the robotics console? This cannot be undone.", "Confirm Unlock", "Yes", "No")
 	if(!R || confirm != "Yes")
 		return
+
 	emagged = 1
 	emag_master = name
 	if(module && istype(module,/obj/item/robot_module/security))
@@ -1146,6 +1158,7 @@
 			if(first_arg != second_arg)
 				to_chat(connected_ai, "<br><br>[SPAN("notice", "NOTICE - [braintype] reclassification detected: [first_arg] is now designated as [second_arg].")]<br>")
 				return
+
 /mob/living/silicon/robot/proc/disconnect_from_ai()
 	if(connected_ai)
 		sync() // One last sync attempt
@@ -1175,7 +1188,8 @@
 		return
 
 	if(opened)//Cover is open
-		if(emagged)	return//Prevents the X has hit Y with Z message also you cant emag them twice
+		if(emagged)
+			return//Prevents the X has hit Y with Z message also you cant emag them twice
 		if(wiresexposed)
 			to_chat(user, "You must close the panel first")
 			return
@@ -1263,7 +1277,7 @@
 
 /mob/living/silicon/robot/proc/drop_all_upgrades()
 	for(var/obj/item/borg/upgrade/U in src)
-		if (istype(U,/obj/item/borg/upgrade))
+		if(istype(U,/obj/item/borg/upgrade))
 			if(istype(U,/obj/item/borg/upgrade/remodel))
 				qdel(U)
 				continue
@@ -1275,7 +1289,7 @@
 			U.forceMove(get_turf(src))
 			U.installed = 0
 	sensor_mode = 0
-	if (ion_trail)
+	if(ion_trail)
 		ion_trail.stop()
 		qdel(ion_trail)
 		ion_trail = null
@@ -1301,7 +1315,6 @@
 	playsound(get_turf(src), S, volume, FALSE, range)
 
 /mob/living/silicon/robot/set_stat(new_stat)
-	. = ..()
-
 	if(stat != new_stat)
 		queue_icon_update()
+	. = ..()
