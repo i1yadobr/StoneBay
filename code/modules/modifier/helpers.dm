@@ -91,7 +91,7 @@
 			offset_x = (tf_offset_x || 0) + translate_x,
 			offset_y = (tf_offset_y || 0) + translate_y
 		),
-		time = lying ? 1 : 10,
+		time = lying ? 1 : 3,
 		flags = ANIMATION_PARALLEL
 	)
 

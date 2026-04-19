@@ -76,9 +76,9 @@
 	if(move)
 		var/obj/loc_landmark
 		for(var/obj/effect/landmark/start/sloc in GLOB.landmarks_list)
-			if (sloc.name != "AI")
+			if(sloc.name != "AI")
 				continue
-			if ((locate(/mob/living) in sloc.loc) || (locate(/obj/structure/AIcore) in sloc.loc))
+			if((locate(/mob/living) in sloc.loc) || (locate(/obj/structure/AIcore) in sloc.loc))
 				continue
 			loc_landmark = sloc
 		if (!loc_landmark)
@@ -87,10 +87,10 @@
 					if((locate(/mob/living) in tripai.loc) || (locate(/obj/structure/AIcore) in tripai.loc))
 						continue
 					loc_landmark = tripai
-		if (!loc_landmark)
+		if(!loc_landmark)
 			to_chat(O, "Oh god sorry we can't find an unoccupied AI spawn location, so we're spawning you on top of someone.")
 			for(var/obj/effect/landmark/start/sloc in GLOB.landmarks_list)
-				if (sloc.name == "AI")
+				if(sloc.name == "AI")
 					loc_landmark = sloc
 		O.forceMove(loc_landmark.loc)
 		O.on_mob_init()
@@ -126,7 +126,7 @@
 	O.gender = gender
 	O.set_invisibility(0)
 
-	if(mind)		//TODO
+	if(mind)
 		mind.transfer_to(O)
 		if(O.mind.assigned_role == "Cyborg")
 			O.mind.original_mob = weakref(O)
@@ -311,7 +311,6 @@
 	//Not in here? Must be untested!
 	return 0
 
-
 //This is barely a transformation but probably best file for it.
 /mob/living/carbon/human/proc/zombify()
 	RemoveHairAndFacials()
@@ -319,7 +318,7 @@
 		h.status |= ORGAN_DISFIGURED
 	mutations |= MUTATION_CLUMSY
 	src.visible_message(SPAN("danger", "\The [src]'s skin decays before your very eyes!"), SPAN("danger", "Your entire body is ripe with pain as it is consumed down to flesh and bones. You ... hunger. Not only for flesh, but to spread this gift."))
-	if (!src.mind || (src.mind && src.mind.special_role == "Zombie"))
+	if(!src.mind || (src.mind && src.mind.special_role == "Zombie"))
 		return
 	if(species != all_species[SPECIES_HUMAN])
 		ChangeToHusk()
@@ -328,12 +327,12 @@
 	update_eyes()
 	log_admin("[key_name(src)] has transformed into a zombie!")
 	Weaken(5)
-	if (should_have_organ(BP_HEART))
+	if(should_have_organ(BP_HEART))
 		vessel.add_reagent(/datum/reagent/blood, species.blood_volume - vessel.total_volume)
-	for (var/o in external_organs)
+	for(var/o in external_organs)
 		var/obj/item/organ/organ = o
 		organ.vital = 0
-		if (!BP_IS_ROBOTIC(organ))
+		if(!BP_IS_ROBOTIC(organ))
 			organ.rejuvenate(1)
 			organ.max_damage *= 3
 			organ.min_broken_damage = Floor(organ.max_damage * 0.75)
