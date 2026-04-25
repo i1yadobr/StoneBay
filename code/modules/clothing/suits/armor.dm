@@ -1,5 +1,6 @@
 
 /obj/item/clothing/suit/armor
+	icon = 'icons/obj/clothing/suits/armor.dmi'
 	allowed = list(
 		/obj/item/ammo_magazine,
 		/obj/item/ammo_casing,

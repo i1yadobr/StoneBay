@@ -1,6 +1,7 @@
 /obj/item/clothing/head/wizard
 	name = "wizard hat"
 	desc = "Strange-looking hat-wear that most certainly belongs to a real magic user."
+	icon = 'icons/obj/clothing/head/wizard.dmi'
 	icon_state = "wizard"
 	item_state = "wizhat"
 	//Not given any special protective value since the magic robes are full-body protection --NEO
@@ -63,6 +64,7 @@
 /obj/item/clothing/suit/wizrobe
 	name = "wizard robe"
 	desc = "A magnificant, gem-lined robe that seems to radiate power."
+	icon = 'icons/obj/clothing/suits/wizard.dmi'
 	icon_state = "wizard"
 	item_state = "wizard"
 	gas_transfer_coefficient = 0.01 // IT'S MAGICAL OKAY JEEZ +1 TO NOT DIE

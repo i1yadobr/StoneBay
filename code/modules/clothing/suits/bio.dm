@@ -1,12 +1,13 @@
 //Biosuit complete with shoes (in the item sprite)
 /obj/item/clothing/head/bio_hood
 	name = "bio hood"
+	desc = "A hood that protects the head and face from biological comtaminants."
+	icon = 'icons/obj/clothing/head/bio.dmi'
 	icon_state = "bio"
 	item_state_slots = alist(
 		slot_l_hand_str = "bio_hood",
 		slot_r_hand_str = "bio_hood",
 		)
-	desc = "A hood that protects the head and face from biological comtaminants."
 	permeability_coefficient = 0
 	armor_values = alist(melee = 5, bullet = 2.5, laser = 2.5,energy = 0, bomb = 0, bio = 100)
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|BLOCKHAIR
@@ -18,12 +19,13 @@
 /obj/item/clothing/suit/bio_suit
 	name = "bio suit"
 	desc = "A suit that protects against biological contamination."
+	icon = 'icons/obj/clothing/suits/bio.dmi'
 	icon_state = "bio"
 	item_state_slots = alist(
 		slot_l_hand_str = "bio_suit",
 		slot_r_hand_str = "bio_suit",
 	)
-	w_class = ITEM_SIZE_HUGE//bulky item
+	w_class = ITEM_SIZE_HUGE //bulky item
 	gas_transfer_coefficient = 0
 	permeability_coefficient = 0
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS

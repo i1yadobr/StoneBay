@@ -65,6 +65,7 @@
 /obj/item/clothing/head/collectable/beret
 	name = "collectable beret"
 	desc = "A Collectable red Beret. It smells faintly of Garlic."
+	icon = 'icons/obj/clothing/head/beret.dmi'
 	icon_state = "beret"
 	body_parts_covered = NO_BODYPARTS
 
@@ -127,6 +128,7 @@
 /obj/item/clothing/head/collectable/hardhat
 	name = "collectable hard hat"
 	desc = "WARNING! Offers no real protection, or luminosity, but it is damn fancy!"
+	icon = 'icons/obj/clothing/head/helmet.dmi'
 	icon_state = "hardhat0_old"
 	w_class = ITEM_SIZE_NORMAL
 	body_parts_covered = NO_BODYPARTS

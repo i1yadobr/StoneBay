@@ -18,9 +18,11 @@
 	item_state = "bartender_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+// TODO: Move all "/obj/item/clothing/under/rank/captain" to a separate file "captain.dm"
 /obj/item/clothing/under/rank/captain //Alright, technically not a 'civilian' but its better then giving a .dm file for a single define.
 	name = "captain's jumpsuit"
 	desc = "It's a blue jumpsuit with some gold markings denoting the rank of \"Captain\"."
+	icon = 'icons/obj/clothing/uniforms/captain.dmi'
 	icon_state = "captain"
 	item_state = "captain"
 
@@ -44,9 +46,11 @@
 	icon_state = "captain_alt"
 	item_state = "captain_alt"
 
+// TODO: Move all "/obj/item/clothing/under/rank/qm", to a separate file "cargo.dm"
 /obj/item/clothing/under/rank/qm
 	name = "quartermaster's jumpsuit"
 	desc = "It's a jumpsuit worn by the quartermaster. It's specially designed to prevent back injuries caused by pushing paper."
+	icon = 'icons/obj/clothing/uniforms/cargo.dmi'
 	icon_state = "qm"
 	item_state = "qm"
 
@@ -64,9 +68,11 @@
 	item_state = "qm_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
+// TODO: Move all "/obj/item/clothing/under/rank/cargotech", to a separate file "cargo.dm"
 /obj/item/clothing/under/rank/cargotech
 	name = "cargo technician's jumpsuit"
 	desc = "Shooooorts! They're comfy and easy to wear!"
+	icon = 'icons/obj/clothing/uniforms/cargo.dmi'
 	icon_state = "cargo"
 	item_state = "cargo"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
@@ -83,9 +89,11 @@
 	icon_state = "cargo_dress"
 	item_state = "cargo_dress"
 
+// TODO: Move all "/obj/item/clothing/under/rank/miner", to a separate file "cargo.dm"
 /obj/item/clothing/under/rank/miner
 	name = "shaft miner's jumpsuit"
 	desc = "It's a snappy jumpsuit with a sturdy set of overalls. It is very dirty."
+	icon = 'icons/obj/clothing/uniforms/cargo.dmi'
 	icon_state = "miner"
 	item_state = "miner"
 
@@ -137,6 +145,7 @@
 /obj/item/clothing/under/rank/clown
 	name = "clown suit"
 	desc = "<i>'HONK!'</i>"
+	icon = 'icons/obj/clothing/uniforms/clown.dmi'
 	icon_state = "clown"
 	item_state = "clown"
 
@@ -283,6 +292,7 @@
 /obj/item/clothing/under/lawyer
 	name = "Lawyer suit"
 	desc = "Slick threads."
+	icon = 'icons/obj/clothing/uniforms/suits.dmi'
 	icon_state = "lawyer_black"
 	item_state = "lawyer_black"
 
@@ -339,6 +349,7 @@
 /obj/item/clothing/under/librarian
 	name = "sensible suit"
 	desc = "It's very... sensible."
+	icon = 'icons/obj/clothing/uniforms/suits.dmi'
 	icon_state = "red_suit"
 	item_state = "red_suit"
 
@@ -357,6 +368,7 @@
 /obj/item/clothing/under/rank/mime
 	name = "mime's outfit"
 	desc = "It's not very colourful."
+	icon = 'icons/obj/clothing/uniforms/mime.dmi'
 	icon_state = "mime"
 	item_state = "mime"
 

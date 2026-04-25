@@ -4,9 +4,10 @@
 
 /obj/item/clothing/head/helmet/space
 	name = "Space helmet"
+	desc = "A special helmet designed for work in a hazardous, low-pressure environment."
+	icon = 'icons/obj/clothing/head/spacehelm.dmi'
 	icon_state = "space"
 	item_state = "space"
-	desc = "A special helmet designed for work in a hazardous, low-pressure environment."
 	item_flags = ITEM_FLAG_STOPPRESSUREDAMAGE | ITEM_FLAG_THICKMATERIAL | ITEM_FLAG_AIRTIGHT
 	flags_inv = BLOCKHAIR
 	permeability_coefficient = 0
@@ -23,14 +24,13 @@
 	species_restricted = list("exclude", SPECIES_DIONA, "Xenomorph")
 	flash_protection = FLASH_PROTECTION_MAJOR
 
-	var/obj/machinery/camera/camera
-
 	action_button_name = "Toggle Helmet Light"
 	light_overlay = "helmet_light"
 	brightness_on = 4
 	on = 0
 	rad_resist_type = /datum/rad_resist/space_gear
 
+	var/obj/machinery/camera/camera
 
 /obj/item/clothing/head/helmet/space/Destroy()
 	if(camera && !ispath(camera))
@@ -68,6 +68,7 @@
 /obj/item/clothing/suit/space
 	name = "Space suit"
 	desc = "A suit that protects against low pressure environments."
+	icon = 'icons/obj/clothing/suits/spacesuit.dmi'
 	icon_state = "space"
 	item_state = "space"
 	w_class = ITEM_SIZE_LARGE//large item

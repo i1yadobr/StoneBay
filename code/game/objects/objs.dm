@@ -1,13 +1,14 @@
 /obj
 	layer = OBJ_LAYER
 
-	var/obj_flags
 	vis_flags = VIS_INHERIT_PLANE|VIS_INHERIT_ID
+	animate_movement = 2
+	hitby_sound = 'sound/effects/metalhit2.ogg'
+	var/obj_flags
 	//Used to store information about the contents of the object.
 	var/list/matter
 	var/w_class // Size of the object.
 	var/unacidable = 0 //universal "unacidabliness" var, here so you can use it in any obj.
-	animate_movement = 2
 	var/throwforce = 1
 	// TODO: Refactor sharp system
 	// Allow sharpness level to be adjusted, similar to the TG system
@@ -20,7 +21,6 @@
 	var/pull_slowdown = PULL_SLOWDOWN_WEIGHT // How much it slows us down while we are pulling it
 	/// Used if the obj is dense.
 	var/rad_resist_type = /datum/rad_resist/none
-	hitby_sound = 'sound/effects/metalhit2.ogg'
 	var/turf_height_offset = 0
 	var/climb_delay = 2 SECONDS // Default for everything. Doesn't make the thing climbable on its own, it still requires ATOM_FLAG_CLIMBABLE.
 

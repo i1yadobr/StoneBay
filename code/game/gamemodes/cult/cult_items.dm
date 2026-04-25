@@ -53,7 +53,6 @@
 		to_chat(user, SPAN("warning", "An overwhelming feeling of dread comes over you as you pick up the cultist's sword. It would be wise to be rid of this blade quickly."))
 		user.make_dizzy(120)
 
-
 /obj/item/clothing/head/culthood
 	name = "cult hood"
 	icon_state = "culthood"
@@ -92,6 +91,7 @@
 /obj/item/clothing/suit/cultrobes/magusred
 	name = "magus robes"
 	desc = "A set of plated robes worn by the followers of Nar-Sie."
+	icon = 'icons/obj/clothing/suits/wizard.dmi'
 	icon_state = "magusred"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
@@ -111,8 +111,8 @@
 
 /obj/item/clothing/suit/space/cult
 	name = "cult armour"
-	icon_state = "cult_armour"
 	desc = "A bulky suit of armour, bristling with spikes. It looks space proof."
+	icon_state = "cult_armour"
 	allowed = list(/obj/item/book/tome,/obj/item/melee/cultblade,/obj/item/tank,/obj/item/device/suit_cooling_unit)
 	armor_values = alist(melee = 60, bullet = 50, laser = 60,energy = 15, bomb = 30, bio = 100)
 	siemens_coefficient = 0.2

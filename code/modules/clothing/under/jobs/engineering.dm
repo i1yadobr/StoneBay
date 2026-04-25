@@ -1,7 +1,9 @@
 //Contains: Engineering department jumpsuits
 /obj/item/clothing/under/rank/chief_engineer
 	name = "chief engineer's jumpsuit"
-	desc = "It's a high visibility jumpsuit given to those engineers insane enough to achieve the rank of \"Chief engineer\". It has minor radiation shielding."
+	desc = "It's a high visibility jumpsuit given to those engineers insane enough to achieve the rank of \"Chief engineer\". \
+			It has minor radiation shielding."
+	icon = 'icons/obj/clothing/uniforms/engineering.dmi'
 	icon_state = "chiefengineer"
 	item_state = "chief"
 	worn_state = "chief"
@@ -29,6 +31,7 @@
 /obj/item/clothing/under/rank/engineer
 	name = "engineer's jumpsuit"
 	desc = "It's an orange high visibility jumpsuit worn by engineers. It has minor radiation shielding."
+	icon = 'icons/obj/clothing/uniforms/engineering.dmi'
 	icon_state = "engine"
 	item_state = "engine"
 	worn_state = "engine"
@@ -56,6 +59,7 @@
 /obj/item/clothing/under/rank/atmospheric_technician
 	name = "atmospheric technician's jumpsuit"
 	desc = "It's a jumpsuit worn by atmospheric technicians."
+	icon = 'icons/obj/clothing/uniforms/engineering.dmi'
 	icon_state = "atmos"
 	item_state = "atmos_suit"
 	worn_state = "atmos"

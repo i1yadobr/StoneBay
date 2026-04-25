@@ -29,6 +29,7 @@
 
 	desc = copy.desc
 	name = copy.name
+	icon = copy.icon
 	icon_state = copy.icon_state
 	item_state = copy.item_state
 	body_parts_covered = copy.body_parts_covered
@@ -58,11 +59,6 @@
 				name += " \[[i++]\]"
 			.[name] = typepath
 
-/obj/item/clothing/under/chameleon/attackby(obj/item/card/id/W, mob/user)
-	if(!istype(W, /obj/item/card/id))
-		return
-	check_job(W, user, slot_w_uniform_str)
-
 /obj/item/clothing/under/chameleon
 //starts off as black
 	name = "black jumpsuit"
@@ -91,6 +87,11 @@
 		)
 		clothing_choices = generate_chameleon_choices(/obj/item/clothing/under, blocked, blocked_cat)
 
+/obj/item/clothing/under/chameleon/attackby(obj/item/card/id/W, mob/user)
+	if(!istype(W, /obj/item/card/id))
+		return
+	check_job(W, user, slot_w_uniform_str)
+
 /obj/item/clothing/under/chameleon/emp_act(severity)
 	name = "psychedelic"
 	desc = "Groovy!"
@@ -112,15 +113,12 @@
 //*****************
 //**Chameleon Hat**
 //*****************
-/obj/item/clothing/head/chameleon/attackby(obj/item/card/id/W, mob/user)
-	if(!istype(W, /obj/item/card/id))
-		return
-	check_job(W, user, slot_head_str)
 
 /obj/item/clothing/head/chameleon
 	name = "grey cap"
 	desc = "It looks like a plain hat, but upon closer inspection, there's an advanced holographic array installed inside. \
 			It seems to have a small dial inside."
+	icon = 'icons/obj/clothing/head/softcap.dmi'
 	icon_state = "greysoft"
 	origin_tech = list(TECH_ILLEGAL = 3)
 	body_parts_covered = NO_BODYPARTS
@@ -151,6 +149,11 @@
 	update_icon()
 	update_clothing_icon()
 
+/obj/item/clothing/head/chameleon/attackby(obj/item/card/id/W, mob/user)
+	if(!istype(W, /obj/item/card/id))
+		return
+	check_job(W, user, slot_head_str)
+
 /obj/item/clothing/head/chameleon/verb/change(picked in clothing_choices)
 	set name = "Change Hat/Helmet Appearance"
 	set category = "Chameleon Items"
@@ -165,15 +168,11 @@
 //******************
 //**Chameleon Suit**
 //******************
-/obj/item/clothing/suit/chameleon/attackby(obj/item/card/id/W, mob/user)
-	if(!istype(W, /obj/item/card/id))
-		return
-	check_job(W, user, slot_wear_suit_str)
-
 /obj/item/clothing/suit/chameleon
 	name = "armor"
 	desc = "It appears to be a vest of standard armor, except this is embedded with a hidden holographic cloaker, \
 			allowing it to change it's appearance, but offering no protection.. It seems to have a small dial inside."
+	icon = 'icons/obj/clothing/suits/armor.dmi'
 	icon_state = "armor"
 	item_state = "armor"
 	origin_tech = list(TECH_ILLEGAL = 3)
@@ -207,6 +206,11 @@
 		)
 		clothing_choices = generate_chameleon_choices(/obj/item/clothing/suit, blocked, blocked_cat)
 
+/obj/item/clothing/suit/chameleon/attackby(obj/item/card/id/W, mob/user)
+	if(!istype(W, /obj/item/card/id))
+		return
+	check_job(W, user, slot_wear_suit_str)
+
 /obj/item/clothing/suit/chameleon/emp_act(severity) //Because we don't have psych for all slots right now but still want a downside to EMP.  In this case your cover's blown.
 	SetName(initial(name))
 	desc = initial(desc)
@@ -228,11 +232,6 @@
 //*******************
 //**Chameleon Shoes**
 //*******************
-/obj/item/clothing/shoes/chameleon/attackby(obj/item/card/id/W, mob/user)
-	if(!istype(W, /obj/item/card/id))
-		return
-	check_job(W, user, slot_shoes_str)
-
 /obj/item/clothing/shoes/chameleon
 	name = "black shoes"
 	desc = "They're comfy black shoes, with clever cloaking technology built in. It seems to have a small dial on the back of each shoe."
@@ -255,6 +254,11 @@
 			/obj/item/clothing/shoes/magboots/rig
 		)
 		clothing_choices = generate_chameleon_choices(/obj/item/clothing/shoes, blocked, blocked_cat)
+
+/obj/item/clothing/shoes/chameleon/attackby(obj/item/card/id/W, mob/user)
+	if(!istype(W, /obj/item/card/id))
+		return
+	check_job(W, user, slot_shoes_str)
 
 /obj/item/clothing/shoes/chameleon/emp_act(severity) //Because we don't have psych for all slots right now but still want a downside to EMP.  In this case your cover's blown.
 	SetName(initial(name))
@@ -324,21 +328,13 @@
 	disguise(clothing_choices[picked], usr)
 
 	//so our overlays update.
-	if (ismob(src.loc))
+	if(ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_back()
 
 //********************
 //**Chameleon Gloves**
 //********************
-/obj/item/clothing/gloves/chameleon/attackby(obj/item/card/id/W, mob/user)
-	if(isWirecutter(W) || istype(W, /obj/item/scalpel) || isCoil(W))
-		to_chat(user, SPAN("notice", "That won't work.")) // Making it obvious
-		return
-	if(!istype(W, /obj/item/card/id))
-		return
-	check_job(W, user, slot_gloves_str)
-
 /obj/item/clothing/gloves/chameleon
 	name = "black gloves"
 	desc = "It looks like a pair of gloves, but it seems to have a small dial inside."
@@ -369,6 +365,14 @@
 			/obj/item/clothing/gloves/rig
 		)
 		clothing_choices = generate_chameleon_choices(/obj/item/clothing/gloves, blocked, blocked_cat)
+
+/obj/item/clothing/gloves/chameleon/attackby(obj/item/card/id/W, mob/user)
+	if(isWirecutter(W) || istype(W, /obj/item/scalpel) || isCoil(W))
+		to_chat(user, SPAN("notice", "That won't work.")) // Making it obvious
+		return
+	if(!istype(W, /obj/item/card/id))
+		return
+	check_job(W, user, slot_gloves_str)
 
 /obj/item/clothing/gloves/chameleon/emp_act(severity) //Because we don't have psych for all slots right now but still want a downside to EMP.  In this case your cover's blown.
 	SetName(initial(name))
@@ -401,11 +405,6 @@
 //******************
 //**Chameleon Mask**
 //******************
-/obj/item/clothing/mask/chameleon/attackby(obj/item/card/id/W, mob/user)
-	if(!istype(W, /obj/item/card/id))
-		return
-	check_job(W, user, slot_wear_mask_str)
-
 /obj/item/clothing/mask/chameleon
 	name = "gas mask"
 	desc = "It looks like a plain gask mask, but on closer inspection, it seems to have a small dial inside."
@@ -437,6 +436,11 @@
 		)
 		clothing_choices = generate_chameleon_choices(/obj/item/clothing/mask, blocked, blocked_cat)
 
+/obj/item/clothing/mask/chameleon/attackby(obj/item/card/id/W, mob/user)
+	if(!istype(W, /obj/item/card/id))
+		return
+	check_job(W, user, slot_wear_mask_str)
+
 /obj/item/clothing/mask/chameleon/emp_act(severity) //Because we don't have psych for all slots right now but still want a downside to EMP.  In this case your cover's blown.
 	SetName(initial(name))
 	desc = initial(desc)
@@ -459,11 +463,6 @@
 //*********************
 //**Chameleon Glasses**
 //*********************
-/obj/item/clothing/glasses/chameleon/attackby(obj/item/card/id/W, mob/user)
-	if(!istype(W, /obj/item/card/id))
-		return
-	check_job(W, user, slot_glasses_str)
-
 /obj/item/clothing/glasses/chameleon
 	name = "Optical Meson Scanner"
 	desc = "It looks like a plain set of mesons, but on closer inspection, it seems to have a small dial inside."
@@ -488,6 +487,11 @@
 			/obj/item/clothing/glasses/hud
 		)
 		clothing_choices = generate_chameleon_choices(/obj/item/clothing/glasses, blocked, blocked_cat)
+
+/obj/item/clothing/glasses/chameleon/attackby(obj/item/card/id/W, mob/user)
+	if(!istype(W, /obj/item/card/id))
+		return
+	check_job(W, user, slot_glasses_str)
 
 /obj/item/clothing/glasses/chameleon/emp_act(severity) //Because we don't have psych for all slots right now but still want a downside to EMP.  In this case your cover's blown.
 	SetName(initial(name))
@@ -563,7 +567,7 @@
 	desc = initial(desc)
 	icon_state = initial(icon_state)
 	update_icon()
-	if (ismob(src.loc))
+	if(ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_r_hand()
 		M.update_inv_l_hand()
@@ -596,7 +600,7 @@
 	disguise(gun_choices[picked], usr)
 
 	//so our overlays update.
-	if (ismob(src.loc))
+	if(ismob(src.loc))
 		var/mob/M = src.loc
 		M.update_inv_r_hand()
 		M.update_inv_l_hand()

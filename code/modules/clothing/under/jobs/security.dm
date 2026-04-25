@@ -11,6 +11,7 @@
 /obj/item/clothing/under/rank/security
 	name = "security officer's jumpsuit"
 	desc = "It's made of a slightly sturdier material than standard jumpsuits, to allow for robust protection."
+	icon = 'icons/obj/clothing/uniforms/security.dmi'
 	icon_state = "officer_red"
 	item_state = "officer_red"
 	armor_values = alist(melee = 20, bullet = 20, laser = 20, energy = 0, bomb = 0, bio = 0)
@@ -32,7 +33,9 @@
 
 /obj/item/clothing/under/rank/warden
 	name = "warden's jumpsuit"
-	desc = "It's made of a slightly sturdier material than standard jumpsuits, to allow for more robust protection. It has the word \"Warden\" written on the shoulders."
+	desc = "It's made of a slightly sturdier material than standard jumpsuits, to allow for more robust protection. \
+			It has the word \"Warden\" written on the shoulders."
+	icon = 'icons/obj/clothing/uniforms/security.dmi'
 	icon_state = "warden_red"
 	item_state = "warden_red"
 	armor_values = alist(melee = 20, bullet = 20, laser = 20, energy = 0, bomb = 0, bio = 0)
@@ -40,14 +43,16 @@
 
 /obj/item/clothing/under/rank/warden/skirt
 	name = "warden's jumpskirt"
-	desc = "It's made of a slightly sturdier material than standard jumpskirt, to allow for more robust protection. It has the word \"Warden\" written on the shoulders."
+	desc = "It's made of a slightly sturdier material than standard jumpskirt, to allow for more robust protection. \
+			It has the word \"Warden\" written on the shoulders."
 	icon_state = "warden_red_skirt"
 	item_state = "warden_red_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/warden/dress
 	name = "warden's jumpdress"
-	desc = "It's made of a slightly sturdier material than standard jumpdress, to allow for more robust protection. It has the word \"Warden\" written on the shoulders."
+	desc = "It's made of a slightly sturdier material than standard jumpdress, to allow for more robust protection. \
+			It has the word \"Warden\" written on the shoulders."
 	icon_state = "warden_red_dress"
 	item_state = "warden_red_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
@@ -55,6 +60,7 @@
 /obj/item/clothing/under/tactical
 	name = "tactical jumpsuit"
 	desc = "It's made of a slightly sturdier material than standard jumpsuits, to allow for robust protection."
+	icon = 'icons/obj/clothing/uniforms/centcom.dmi'
 	icon_state = "swatunder"
 	item_state = "swatunder"
 	armor_values = alist(melee = 10, bullet = 5, laser = 5,energy = 0, bomb = 0, bio = 0)
@@ -63,6 +69,7 @@
 /obj/item/clothing/under/security_pants
 	name = "security officer's trousers"
 	desc = "Red pants made of a slightly sturdier material, to allow for robust protection."
+	icon = 'icons/obj/clothing/uniforms/security.dmi'
 	icon_state = "secpants"
 	item_state = "secpants"
 	gender = PLURAL
@@ -79,6 +86,7 @@
 /obj/item/clothing/under/rank/det
 	name = "detective's suit"
 	desc = "A well-worn grey slacks."
+	icon = 'icons/obj/clothing/uniforms/security.dmi'
 	icon_state = "detective"
 	item_state = "detective"
 	gender = PLURAL
@@ -123,7 +131,9 @@
  */
 /obj/item/clothing/under/rank/head_of_security
 	name = "head of security's jumpsuit"
-	desc = "It's a jumpsuit worn by those few with the dedication to achieve the position of \"Head of Security\". It has additional armor to protect the wearer."
+	desc = "It's a jumpsuit worn by those few with the dedication to achieve the position of \"Head of Security\". \
+			It has additional armor to protect the wearer."
+	icon = 'icons/obj/clothing/uniforms/security.dmi'
 	icon_state = "hos_red"
 	item_state = "hos_red"
 	armor_values = alist(melee = 20, bullet = 25, laser = 25, energy = 0, bomb = 0, bio = 0)
@@ -131,14 +141,16 @@
 
 /obj/item/clothing/under/rank/head_of_security/skirt
 	name = "head of security's jumpskirt"
-	desc = "It's a jumpskirt worn by those few with the dedication to achieve the position of \"Head of Security\". It has additional armor to protect the wearer."
+	desc = "It's a jumpskirt worn by those few with the dedication to achieve the position of \"Head of Security\". \
+			It has additional armor to protect the wearer."
 	icon_state = "hos_red_skirt"
 	item_state = "hos_red_skirt"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/rank/head_of_security/dress
 	name = "head of security's jumpdress"
-	desc = "It's a jumpdress worn by those few with the dedication to achieve the position of \"Head of Security\". It has additional armor to protect the wearer."
+	desc = "It's a jumpdress worn by those few with the dedication to achieve the position of \"Head of Security\". \
+			It has additional armor to protect the wearer."
 	icon_state = "hos_red_dress"
 	item_state = "hos_red_dress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS

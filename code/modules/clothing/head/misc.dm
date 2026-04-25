@@ -1,5 +1,3 @@
-
-
 /obj/item/clothing/head/centcom/hat
 	name = "\improper CentComm. hat"
 	desc = "It's good to be emperor."
@@ -81,6 +79,7 @@
 /obj/item/clothing/head/plaguedoctorhat
 	name = "plague doctor's hat"
 	desc = "These were once used by Plague doctors. They're pretty much useless."
+	icon = 'icons/obj/clothing/head/bio.dmi'
 	icon_state = "plaguedoctor"
 	permeability_coefficient = 0.01
 	siemens_coefficient = 0.9
@@ -103,7 +102,9 @@
 
 /obj/item/clothing/head/syndicatefake
 	name = "red space-helmet replica"
-	desc = "A plastic replica of a bloodthirsty syndicate's space helmet, you'll look just like a real murderous criminal operative in this! This is a toy, it is not made for use in space!"
+	desc = "A plastic replica of a bloodthirsty syndicate's space helmet, \
+			you'll look just like a real murderous criminal operative in this! This is a toy, it is not made for use in space!"
+	icon = 'icons/obj/clothing/head/spacehelm.dmi'
 	item_state_slots = alist(
 		slot_l_hand_str = "syndicate-helm-black-red",
 		slot_r_hand_str = "syndicate-helm-black-red",
@@ -255,6 +256,7 @@
 /obj/item/clothing/head/witchwig
 	name = "witch costume wig"
 	desc = "Eeeee~heheheheheheh!"
+	icon = 'icons/obj/clothing/head/wizard.dmi'
 	icon_state = "witch"
 	item_state = "witch"
 	flags_inv = BLOCKHAIR
@@ -331,7 +333,8 @@
 
 /obj/item/clothing/head/cowboy_hat
 	name = "cowboy hat"
-	desc = "A wide-brimmed hat, in the prevalent style of America's frontier period. By SolGov law, you are required to wear this hat while watching True Grit."
+	desc = "A wide-brimmed hat, in the prevalent style of America's frontier period. \
+			By SolGov law, you are required to wear this hat while watching True Grit."
 	icon_state = "cowboyhat"
 	item_state = "cowboyhat"
 	armor_values = alist(melee = 10, bullet = 10, laser = 5,energy = 0, bomb = 0, bio = 0)
@@ -426,6 +429,7 @@
 /obj/item/clothing/head/vpp_cap
 	name = "vpp cap"
 	desc = "Green cap of unknown design. The emblem proudly bears the abbreviation V.P.P."
+	icon = 'icons/obj/clothing/head/softcap.dmi'
 	icon_state = "vpp_cap"
 	item_state = "vpp_cap"
 

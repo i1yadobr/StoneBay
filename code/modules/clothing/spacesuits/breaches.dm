@@ -48,7 +48,6 @@
 
 //Repair a certain amount of brute or burn damage to the suit.
 /obj/item/clothing/suit/space/proc/repair_breaches(damtype, amount, mob/user)
-
 	if(!LAZYLEN(breaches) || !can_breach  || !damage)
 		to_chat(user, "There are no breaches to repair on \the [src].")
 		return
@@ -65,7 +64,8 @@
 
 	var/amount_left = amount
 	for(var/datum/breach/B in valid_breaches)
-		if(!amount_left) break
+		if(!amount_left)
+			break
 
 		if(B.class <= amount_left)
 			amount_left -= B.class
@@ -90,7 +90,8 @@
 	if(!breaches)
 		breaches = list()
 
-	if(damage > 25) return //We don't need to keep tracking it when it's at 250% pressure loss, really.
+	if(damage > 25)
+		return //We don't need to keep tracking it when it's at 250% pressure loss, really.
 
 	//Increase existing breaches.
 	for(var/datum/breach/existing in breaches)
@@ -100,7 +101,7 @@
 
 		//keep in mind that 10 breach damage == full pressure loss.
 		//a breach can have at most 5 breach damage
-		if (existing.class < 5)
+		if(existing.class < 5)
 			var/needs = 5 - existing.class
 			if(amount < needs)
 				existing.class += amount
@@ -116,7 +117,7 @@
 
 			existing.patched = FALSE
 
-	if (amount)
+	if(amount)
 		//Spawn a new breach.
 		var/datum/breach/B = new()
 		breaches += B
@@ -136,7 +137,6 @@
 
 //Calculates the current extent of the damage to the suit.
 /obj/item/clothing/suit/space/proc/calc_breach_damage()
-
 	damage = 0
 	brute_damage = 0
 	burn_damage = 0

@@ -1,17 +1,18 @@
 /obj/item/clothing/head/soft
 	name = "cargo cap"
 	desc = "It's a peaked cap in a tasteless yellow color."
+	icon = 'icons/obj/clothing/head/softcap.dmi'
 	icon_state = "cargosoft"
 	item_state_slots = alist(
 		slot_l_hand_str = "helmet", //probably a placeholder
 		slot_r_hand_str = "helmet",
 		)
-	var/flipped = 0
+	var/flipped = FALSE
 	siemens_coefficient = 0.9
 	armor_values = alist(melee = 5, bullet = 5, laser = 5,energy = 0, bomb = 0, bio = 0)
 
-/obj/item/clothing/head/soft/New()
-	..()
+/obj/item/clothing/head/soft/Initialize()
+	. = ..()
 	update_icon()
 
 /obj/item/clothing/head/soft/on_update_icon()
@@ -21,7 +22,7 @@
 		icon_state = initial(icon_state)
 
 /obj/item/clothing/head/soft/dropped()
-	src.flipped=0
+	src.flipped = FALSE
 	update_icon()
 	..()
 

@@ -21,7 +21,7 @@
 	armor_values = alist(melee = 45, bullet = 35, laser = 35, energy = 10, bomb = 10, bio = 0)
 
 /obj/item/clothing/suit/armor/hos/jensen/fieldcoat/mob_can_equip(mob/user)
-	.=..()
+	. = ..()
 	if(user.gender == FEMALE)
 		to_chat(user, SPAN("warning", "You aren't sure you'll fit in this fascist cloth..."))
 		return 0
@@ -42,8 +42,10 @@
 	togglevisor(user)
 
 /obj/item/clothing/suit/storage/vest/police
-	name = " police armored vest"
-	desc = "A synthetic armor vest with a large webbing and additional ballistic plates. Has a name badge on the frontal plate, that reads 'Sgt. Bauer'"
+	name = "police armored vest"
+	desc = "A synthetic armor vest with a large webbing and additional ballistic plates. \
+			Has a name badge on the frontal plate, that reads 'Sgt. Bauer'"
+	icon = 'icons/obj/clothing/suits/armor.dmi'
 	icon_state = "policevest"
 	item_state = "policevest"
 	armor_values = alist(melee = 40, bullet = 40, laser = 45, energy = 15, bomb = 30, bio = 0)
@@ -62,7 +64,6 @@
 		)
 
 //Terror
-
 /obj/item/clothing/head/helmet/german
 	name = "stahlhelm"
 	desc = "A simple yet menacing looking steel helmet. Protects the head from bullets."
@@ -74,7 +75,6 @@
 	siemens_coefficient = 1
 
 //Schutze88
-
 /obj/item/clothing/head/HoS/german
 	name = "ancient cap"
 	desc = "An ancient cap, how did it survived to these days?"
@@ -89,7 +89,7 @@
 	armor_values = alist(melee = 35, bullet = 15, laser = 15, energy = 10, bomb = 10, bio = 0)
 
 /obj/item/clothing/suit/armor/hos/german/mob_can_equip(mob/user)
-	.=..()
+	. = ..()
 	if(user.gender == FEMALE)
 		to_chat(user, SPAN("warning", "You aren't sure you'll fit in this men's cloth..."))
 		return 0
@@ -104,7 +104,6 @@
 	item_state = "custom_forensics_red_long"
 
 //NeinAnimas
-
 /obj/item/clothing/suit/armor/hos/jensen/custom
 	name = "stylish trenchcoat"
 	desc = "A loose, unbelted trenchcoat of military style. Has a \"MILITA\" writen on chest."
@@ -116,13 +115,14 @@
 // Please, sign it ASAP
 
 /obj/item/clothing/suit/storage/toggle/det_trench/warfare
-    name = "comfy greatcoat"
-    desc = "A greatcoat that is holding small pieces of dirt and such. It feels underarmored, yet you're absolutely sure that it will keep out the cold."
-    icon_state = "redcoat"
-    armor_values = alist(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0)
+	name = "comfy greatcoat"
+	desc = "A greatcoat that is holding small pieces of dirt and such. It feels underarmored, \
+			yet you're absolutely sure that it will keep out the cold."
+	icon_state = "redcoat"
+	armor_values = alist(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0)
 
 /obj/item/clothing/suit/storage/toggle/det_trench/warfare/mob_can_equip(mob/user)
-	.=..()
+	. = ..()
 	if(user.gender == FEMALE)
 		to_chat(user, SPAN("warning", "You aren't sure you'll fit in this men's cloth..."))
 		return 0
@@ -131,7 +131,8 @@
 
 /obj/item/clothing/suit/storage/toggle/labcoat/amired
 	name = "fancy labcoat"
-	desc = "A suit that protects against minor chemical spills. This one looks especially special. Perhaps, its owner survived a fireaxey medbay massacre? Or just put it into a washing machine with some red cloth."
+	desc = "A suit that protects against minor chemical spills. This one looks especially special. \
+			Perhaps, its owner survived a fireaxey medbay massacre? Or just put it into a washing machine with some red cloth."
 	icon_state = "amicoat"
 
 /obj/item/clothing/suit/storage/toggle/labcoat/amired/toggle()
@@ -147,7 +148,9 @@
 // Gremy4uu
 /obj/item/clothing/suit/storage/vest/police_dark
 	name = "police armored vest"
-	desc = "A synthetic armor vest with a large webbing and additional ballistic plates. Instead of a label, there's a small picture of a bearded man beating someone down in a maintenance area."
+	desc = "A synthetic armor vest with a large webbing and additional ballistic plates. Instead of a label, \
+			there's a small picture of a bearded man beating someone down in a maintenance area."
+	icon = 'icons/obj/clothing/suits/armor.dmi'
 	icon_state = "policevest_dark"
 	item_state = "policevest_dark"
 	armor_values = alist(melee = 40, bullet = 40, laser = 45, energy = 15, bomb = 30, bio = 0)
@@ -166,8 +169,8 @@
 		)
 
 /obj/item/clothing/under/syndicate/tacticool/bundeswehr
-	desc = "A durable black suit worn by various private security members."
 	name = "tactical uniform"
+	desc = "A durable black suit worn by various private security members."
 	icon_state = "black"
 	item_state = "BW_uniform_r"
 	worn_state = "BW_uniform_r"
@@ -295,7 +298,6 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	heat_protection = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 
-
 /obj/item/device/modkit/hazardcoat
 	name = "ranger coat modkit"
 	desc = "A green coat with some kevlar inside it. Made specificly for warden's jacket."
@@ -347,9 +349,7 @@
 	..()
 	name = "O-S jumpsuit #[rand(1, 9999)]"
 
-
 // Sekonda
-
 /obj/item/clothing/suit/poncho/dominiancape
 	name = "Award cape"
 	desc = "A red silk cloak embroidered with gold threads"
@@ -361,6 +361,7 @@
 	name = "military trenchcoat"
 	desc = "A military trenchcoat with a leather belt and long, custom collar. This one's armor was striped away."
 
+	icon = 'icons/obj/clothing/suits/costume.dmi'
 	icon_state = "fieldcoat_light"
 	item_state = "fieldcoat_light"
 

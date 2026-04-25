@@ -37,6 +37,7 @@
 
 /obj/item/clothing/suit/space/rig
 	name = "chestpiece"
+	icon = 'icons/obj/clothing/suits/rig.dmi'
 	item_state = null // Otherwise RIG chestpieces always just use human icons. Why? No bloody clue. ~TheUnknownOne
 	allowed = list(/obj/item/device/flashlight,/obj/item/tank,/obj/item/device/suit_cooling_unit)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -123,6 +124,7 @@
 
 /obj/item/clothing/head/lightrig
 	name = "mask"
+	icon = 'icons/obj/clothing/head/rig.dmi'
 	body_parts_covered = HEAD|FACE|EYES
 	heat_protection =    HEAD|FACE|EYES
 	cold_protection =    HEAD|FACE|EYES
@@ -130,6 +132,7 @@
 
 /obj/item/clothing/suit/lightrig
 	name = "suit"
+	icon = 'icons/obj/clothing/suits/rig.dmi'
 	allowed = list(/obj/item/device/flashlight)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	heat_protection =    UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
