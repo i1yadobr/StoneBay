@@ -187,6 +187,7 @@
 	icon = 'icons/hud/screen.dmi'
 	screen_loc = ui_entire_screen
 	icon_state = "flash_const"
+	allstate = TRUE
 	plane = HUD_PLANE
 	layer = HUD_ABOVE_ITEM_LAYER - 1
 	color = "#000000"

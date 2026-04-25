@@ -37,6 +37,9 @@
 /datum/movement_handler/mob/death/DoMove(direction, mob/mover, is_external)
 	if(!mob.is_ooc_dead())
 		return
+	if(GLOB.cinematic.cinematic_screen)
+		// there's currently a cinematic being displayed, force them to watch it till the end :^)
+		return
 	. = MOVEMENT_HANDLED
 	if(!mob.client)
 		if(mover != mob)

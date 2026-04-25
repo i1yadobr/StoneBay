@@ -13,11 +13,8 @@ GLOBAL_DATUM_INIT(cinematic, /datum/cinematic, new)
 	if(cinematic_screen)
 		return	//already a cinematic in progress!
 
-	if(!override)
-		override = SSticker.mode
-	if(!override)
-		override = gamemode_cache["extended"]
-	if(!override)
+	var/datum/game_mode/current_gamemode = override || SSticker.mode || gamemode_cache["extended"]
+	if(!current_gamemode)
 		return
 
 	//initialise our cinematic screen object
@@ -39,7 +36,7 @@ GLOBAL_DATUM_INIT(cinematic, /datum/cinematic, new)
 			viewers[M.client] = M.stunned
 			M.stunned = 8000
 
-	override.nuke_act(cinematic_screen, station_missed) //cinematic happens here, as does mob death.
+	current_gamemode.nuke_act(cinematic_screen, station_missed) //cinematic happens here, as does mob death.
 	//If its actually the end of the round, wait for it to end.
 	//Otherwise if its a verb it will continue on afterwards.
 	sleep(15 SECONDS)
