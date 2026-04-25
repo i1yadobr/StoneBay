@@ -13,11 +13,8 @@ GLOBAL_DATUM_INIT(cinematic, /datum/cinematic, new)
 	if(cinematic_screen)
 		return	//already a cinematic in progress!
 
-	if(!override)
-		override = SSticker.mode
-	if(!override)
-		override = gamemode_cache["extended"]
-	if(!override)
+	var/datum/game_mode/current_gamemode = override || SSticker.mode || gamemode_cache["extended"]
+	if(!current_gamemode)
 		return
 
 	//initialise our cinematic screen object
@@ -27,23 +24,26 @@ GLOBAL_DATUM_INIT(cinematic, /datum/cinematic, new)
 	cinematic_screen.plane = HUD_PLANE
 	cinematic_screen.layer = HUD_ABOVE_ITEM_LAYER
 	cinematic_screen.mouse_opacity = 0
-	cinematic_screen.screen_loc = "1,0"
+	cinematic_screen.screen_loc = "BOTTOM,LEFT+50%"
+	cinematic_screen.appearance_flags = APPEARANCE_UI | TILE_BOUND
 
 	//Let's not discuss how this worked previously.
 	var/list/viewers = list()
-	for(var/mob/living/M in GLOB.living_mob_list_)
+	for(var/mob/M in GLOB.player_list)
 		if(M.client)
+			M.overlay_fullscreen("cinematic", /atom/movable/screen/fullscreen/cinematic_backdrop)
 			M.client.screen += cinematic_screen //show every client the cinematic
 			viewers[M.client] = M.stunned
 			M.stunned = 8000
 
-	override.nuke_act(cinematic_screen, station_missed) //cinematic happens here, as does mob death.
+	current_gamemode.nuke_act(cinematic_screen, station_missed) //cinematic happens here, as does mob death.
 	//If its actually the end of the round, wait for it to end.
 	//Otherwise if its a verb it will continue on afterwards.
-	sleep(30 SECONDS)
+	sleep(15 SECONDS)
 
 	for(var/client/C in viewers)
 		if(C.mob)
 			C.mob.stunned = viewers[C]
+		C.mob.clear_fullscreen("cinematic")
 		C.screen -= cinematic_screen
 	QDEL_NULL(cinematic_screen)
