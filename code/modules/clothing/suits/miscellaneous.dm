@@ -38,7 +38,6 @@
 	item_state = "pirate"
 	body_parts_covered = UPPER_TORSO|ARMS
 
-
 /obj/item/clothing/suit/hgpirate
 	name = "pirate captain coat"
 	desc = "Yarr."
@@ -47,20 +46,17 @@
 	flags_inv = HIDEJUMPSUIT
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 
-
 /obj/item/clothing/suit/greatcoat
 	name = "great coat"
 	desc = "A heavy great coat."
 	icon_state = "nazi"
 	item_state = "nazi"
 
-
 /obj/item/clothing/suit/johnny_coat
 	name = "johnny~~ coat"
 	desc = "Johnny~~"
 	icon_state = "johnny"
 	item_state = "johnny"
-
 
 /obj/item/clothing/suit/justice
 	name = "justice suit"
@@ -69,7 +65,6 @@
 	item_state = "justice"
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|HANDS|LEGS|FEET
-
 
 /obj/item/clothing/suit/judgerobe
 	name = "judge's robe"
@@ -80,7 +75,6 @@
 	allowed = list(/obj/item/storage/fancy/cigarettes,/obj/item/spacecash)
 	flags_inv = HIDEJUMPSUIT
 
-
 /obj/item/clothing/suit/apron/overalls
 	name = "coveralls"
 	desc = "A set of denim overalls."
@@ -88,10 +82,10 @@
 	item_state = "overalls"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
-
 /obj/item/clothing/suit/syndicatefake
 	name = "red space suit replica"
 	desc = "A plastic replica of the syndicate space suit, you'll look just like a real murderous syndicate agent in this! This is a toy, it is not made for use in space!"
+	icon = 'icons/obj/clothing/suits/spacesuit.dmi'
 	icon_state = "syndicate"
 	item_state = "syndicate"
 	w_class = ITEM_SIZE_NORMAL
@@ -107,7 +101,6 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
 
-
 /obj/item/clothing/suit/imperium_monk
 	name = "Imperium monk"
 	desc = "Have YOU killed a xenos today?"
@@ -115,7 +108,6 @@
 	item_state = "imperium_monk"
 	body_parts_covered = HEAD|UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS
 	flags_inv = HIDESHOES|HIDEJUMPSUIT
-
 
 /obj/item/clothing/suit/chickensuit
 	name = "Chicken Suit"
@@ -126,7 +118,6 @@
 	flags_inv = HIDESHOES|HIDEJUMPSUIT
 	siemens_coefficient = 2.0
 
-
 /obj/item/clothing/suit/monkeysuit
 	name = "Monkey Suit"
 	desc = "A suit that looks like a primate."
@@ -136,7 +127,6 @@
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
 	siemens_coefficient = 2.0
 
-
 /obj/item/clothing/suit/holidaypriest
 	name = "Holiday Priest"
 	desc = "This is a nice holiday my son."
@@ -144,7 +134,6 @@
 	item_state = "holidaypriest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	flags_inv = HIDEJUMPSUIT
-
 
 /obj/item/clothing/suit/cardborg
 	name = "cardborg suit"
@@ -178,7 +167,6 @@
 		C.drop(C.handcuffed, force = TRUE)
 		C.handcuffed = src
 
-
 /obj/item/clothing/suit/straight_jacket/dropped(mob/user)
 	if(ishuman(user))
 		var/mob/living/carbon/C = user
@@ -191,7 +179,6 @@
 	icon_state = "ianshirt"
 	item_state = "ianshirt"
 	body_parts_covered = UPPER_TORSO|ARMS
-
 
 //pyjamas
 //originally intended to be pinstripes >.>
@@ -232,6 +219,7 @@
 /obj/item/clothing/under/stripper
 	body_parts_covered = NO_BODYPARTS
 
+// TODO: Remove "/obj/item/clothing/under/stripper/stripper_pink" and "/obj/item/clothing/under/stripper/stripper_green", unused
 /obj/item/clothing/under/stripper/stripper_pink
 	name = "pink swimsuit"
 	desc = "A rather skimpy pink swimsuit."

@@ -111,6 +111,7 @@
 /obj/item/clothing/head/beret
 	name = "beret"
 	desc = "A beret, an artists favorite headwear."
+	icon = 'icons/obj/clothing/head/beret.dmi'
 	icon_state = "beret"
 	body_parts_covered = NO_BODYPARTS
 	armor_values = alist(melee = 5, bullet = 5, laser = 5,energy = 0, bomb = 0, bio = 0)

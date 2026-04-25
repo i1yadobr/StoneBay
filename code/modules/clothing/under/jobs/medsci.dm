@@ -3,14 +3,17 @@
  */
 /obj/item/clothing/under/rank/research_director
 	name = "research director's jumpsuit"
-	desc = "It's a jumpsuit worn by those with the know-how to achieve the position of \"Research Director\". Its fabric provides minor protection from biological contaminants."
+	desc = "It's a jumpsuit worn by those with the know-how to achieve the position of \"Research Director\". \
+			Its fabric provides minor protection from biological contaminants."
+	icon = 'icons/obj/clothing/uniforms/rnd.dmi'
 	icon_state = "director"
 	item_state = "director"
 	armor_values = alist(melee = 5, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 10)
 
 /obj/item/clothing/under/rank/research_director/rdalt
 	name = "head researcher uniform"
-	desc = "A dress suit and slacks stained with hard work and dedication to science. Perhaps other things as well, but mostly hard work and dedication."
+	desc = "A dress suit and slacks stained with hard work and dedication to science. \
+			Perhaps other things as well, but mostly hard work and dedication."
 	icon_state = "rdalt"
 	item_state = "rdalt"
 
@@ -31,6 +34,7 @@
 /obj/item/clothing/under/rank/scientist
 	name = "scientist's jumpsuit"
 	desc = "It's made of a special fiber that provides minor protection against biohazards. It has markings that denote the wearer as a scientist."
+	icon = 'icons/obj/clothing/uniforms/rnd.dmi'
 	icon_state = "science"
 	item_state = "science"
 	permeability_coefficient = 0.50
@@ -51,6 +55,7 @@
 /obj/item/clothing/under/rank/roboticist
 	name = "roboticist's jumpsuit"
 	desc = "It's a slimming black jumpsuit with reinforced seams; great for industrial work."
+	icon = 'icons/obj/clothing/uniforms/rnd.dmi'
 	icon_state = "robotics"
 	item_state = "robotics"
 	worn_state = "robotics"
@@ -77,6 +82,7 @@
 /obj/item/clothing/under/rank/chief_medical_officer
 	name = "chief medical officer's jumpsuit"
 	desc = "It's a jumpsuit worn by those with the experience to be \"Chief Medical Officer\". It provides minor biological protection."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "cmo"
 	item_state = "cmo"
 	permeability_coefficient = 0.50
@@ -99,6 +105,7 @@
 /obj/item/clothing/under/rank/geneticist
 	name = "geneticist's jumpsuit"
 	desc = "It's made of a special fiber that gives special protection against biohazards. It has a genetics rank stripe on it."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "genetics"
 	item_state = "genetics"
 	permeability_coefficient = 0.50
@@ -119,6 +126,7 @@
 /obj/item/clothing/under/rank/virologist
 	name = "virologist's jumpsuit"
 	desc = "It's made of a special fiber that gives special protection against biohazards. It has a virologist rank stripe on it."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "virology"
 	item_state = "virology"
 	permeability_coefficient = 0.50
@@ -139,6 +147,7 @@
 /obj/item/clothing/under/rank/chemist
 	name = "chemist's jumpsuit"
 	desc = "It's made of a special fiber that gives special protection against biohazards. It has a chemist rank stripe on it."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "chemistry"
 	item_state = "chemistry"
 	permeability_coefficient = 0.50
@@ -159,6 +168,7 @@
 /obj/item/clothing/under/rank/nursesuit
 	name = "nurse's suit"
 	desc = "It's a jumpsuit commonly worn by nursing staff in the medical department."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "nursesuit"
 	item_state = "nursesuit"
 	permeability_coefficient = 0.50
@@ -168,6 +178,7 @@
 /obj/item/clothing/under/rank/nurse
 	name = "nurse's dress"
 	desc = "A dress commonly worn by the nursing staff in the medical department."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "nurse"
 	item_state = "nurse"
 	permeability_coefficient = 0.50
@@ -176,7 +187,9 @@
 
 /obj/item/clothing/under/rank/medical
 	name = "medical doctor's jumpsuit"
-	desc = "It's made of a special fiber that provides minor protection against biohazards. It has a cross on the chest denoting that the wearer is trained medical personnel."
+	desc = "It's made of a special fiber that provides minor protection against biohazards. \
+			It has a cross on the chest denoting that the wearer is trained medical personnel."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "medical"
 	item_state = "medical"
 	permeability_coefficient = 0.5
@@ -196,7 +209,9 @@
 
 /obj/item/clothing/under/rank/medical/paramedic
 	name = "paramedic jumpsuit"
-	desc = "It's made of a special fiber that provides minor protection against biohazards. This one has a cross on the chest denoting that the wearer is trained medical personnel."
+	desc = "It's made of a special fiber that provides minor protection against biohazards. \
+			This one has a cross on the chest denoting that the wearer is trained medical personnel."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "paramedic"
 	item_state = "paramedic"
 
@@ -215,6 +230,7 @@
 /obj/item/clothing/under/rank/medical/scrubs
 	name = "scrubs"
 	desc = "A loose-fitting garment designed to provide minor protection against biohazards."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "scrubs"
 	item_state = "scrubs"
 
@@ -246,6 +262,7 @@
 /obj/item/clothing/under/rank/psych
 	name = "psychiatrist's jumpsuit"
 	desc = "A basic white jumpsuit. It has turqouise markings that denote the wearer as a psychiatrist."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "psych"
 	item_state = "psych"
 

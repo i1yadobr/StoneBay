@@ -1,6 +1,7 @@
 /obj/item/clothing/under/syndicate
 	name = "tactical turtleneck"
 	desc = "It's some non-descript, slightly suspicious looking, civilian clothing."
+	icon = 'icons/obj/clothing/uniforms/syndicate.dmi'
 	icon_state = "syndicate"
 	item_state = "syndicate"
 	worn_state = "syndicate"

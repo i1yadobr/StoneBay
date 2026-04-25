@@ -1,6 +1,7 @@
 /obj/item/clothing/under/skirt
 	name = "black skirt"
 	desc = "A black skirt, very fancy!"
+	icon = 'icons/obj/clothing/uniforms/skirt.dmi'
 	icon_state = "blackskirt"
 	item_state = "blackskirt"
 	worn_state = "blackskirt"
@@ -8,6 +9,7 @@
 	rolled_sleeves = -1
 	coverage = 0.8
 
+// TODO: Remove all three "/obj/item/clothing/under/skirt/plaid_#####", unused
 /obj/item/clothing/under/skirt/plaid_blue
 	name = "blue plaid skirt"
 	desc = "A preppy blue skirt with a white blouse."
@@ -36,6 +38,7 @@
 /obj/item/clothing/under/skirt_c
 	name = "short skirt"
 	desc = "A short skirt, made of some semi-gloss material."
+	icon = 'icons/obj/clothing/uniforms/skirt.dmi'
 	icon_state = "skirt_short"
 	worn_state = "skirt_short"
 	body_parts_covered = LOWER_TORSO
@@ -96,10 +99,12 @@
 	item_state = "skirt_tube"
 	worn_state = "skirt_tube"
 
+// TODO: Move this to the rest of "/obj/item/clothing/under/dress"
 // dresses
 /obj/item/clothing/under/skirt_c/dress
 	name = "short dress"
 	desc = "A short plain sleeveless dress."
+	icon = 'icons/obj/clothing/uniforms/dress.dmi'
 	icon_state = "shortdress"
 	item_state = "shortdress"
 	worn_state = "shortdress"

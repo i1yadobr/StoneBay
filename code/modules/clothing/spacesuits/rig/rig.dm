@@ -172,7 +172,6 @@
 		if(istype(M))
 			M.drop(piece, force = TRUE)
 
-
 	QDEL_NULL(wires)
 	QDEL_NULL(spark_system)
 
@@ -251,8 +250,8 @@
 	update_icon(1)
 
 /obj/item/rig/proc/toggle_seals(mob/initiator, instant)
-
-	if(sealing) return
+	if(sealing)
+		return
 
 	// Seal toggling can be initiated by the suit AI, too
 	if(!wearer)
@@ -273,8 +272,8 @@
 	if(!seal_target)
 		booting_L.icon_state = "boot_left"
 		booting_R.icon_state = "boot_load"
-		animate(booting_L, alpha=230, time=30, easing=SINE_EASING)
-		animate(booting_R, alpha=200, time=20, easing=SINE_EASING)
+		animate(booting_L, alpha = 230, time = 30, easing = SINE_EASING)
+		animate(booting_R, alpha = 200, time = 20, easing = SINE_EASING)
 		if(wearer.client)
 			wearer.client.screen += booting_L
 			wearer.client.screen += booting_R
@@ -358,7 +357,8 @@
 		qdel(booting_R)
 
 		for(var/obj/item/piece in list(helmet,boots,gloves,chest))
-			if(!piece) continue
+			if(!piece)
+				continue
 			piece.icon_state = "[initial(icon_state)][!seal_target ? "" : "_sealed"]"
 		canremove = !seal_target
 		if(airtight)
@@ -413,7 +413,6 @@
 	update_icon(1)
 
 /obj/item/rig/think()
-
 	// If we've lost any parts, grab them back.
 	var/mob/living/M
 	for(var/obj/item/piece in list(gloves,boots,helmet,chest))
@@ -474,7 +473,6 @@
 	return 0
 
 /obj/item/rig/proc/check_power_cost(mob/living/user, cost, use_unconcious, obj/item/rig_module/mod, user_is_ai)
-
 	if(!istype(user))
 		return 0
 
@@ -582,7 +580,6 @@
 		ui.set_auto_update(1)
 
 /obj/item/rig/on_update_icon(update_mob_icon)
-
 	//TODO: Maybe consider a cache for this (use mob_icon as blank canvas, use suit icon overlay).
 	ClearOverlays()
 	if(!mob_icon || update_mob_icon)
@@ -748,7 +745,7 @@
 						to_chat(wearer, SPAN("info", "<b>Your [use_obj.name] [use_obj.gender == PLURAL ? "retract" : "retracts"] swiftly.</b>"))
 						holder.drop(use_obj, src, TRUE)
 
-		else if (deploy_mode != ONLY_RETRACT)
+		else if(deploy_mode != ONLY_RETRACT)
 			if(check_slot && check_slot == use_obj)
 				return
 			use_obj.forceMove(wearer)
@@ -769,7 +766,8 @@
 
 	var/mob/living/carbon/human/H = M
 
-	if(!H || !istype(H)) return
+	if(!H || !istype(H))
+		return
 
 	if(H.back != src)
 		return
@@ -818,7 +816,8 @@
 			malfunction_delay = max(malfunction_delay, round(30/severity_class))
 
 	//drain some charge
-	if(cell) cell.emp_act(severity_class + 1)
+	if(cell)
+		cell.emp_act(severity_class + 1)
 
 	//possibly damage some modules
 	take_hit((100/severity_class), "electrical pulse", 1)
@@ -865,7 +864,8 @@
 	else if(valid_modules.len)
 		dam_module = pick(valid_modules)
 
-	if(!dam_module) return
+	if(!dam_module)
+		return
 
 	dam_module.damage++
 
@@ -889,7 +889,6 @@
 	return 0
 
 /obj/item/rig/proc/ai_can_move_suit(mob/user, check_user_module = 0, check_for_ai = 0)
-
 	if(check_for_ai)
 		if(!(locate(/obj/item/rig_module/ai_container) in contents))
 			return 0

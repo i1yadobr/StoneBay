@@ -1,6 +1,7 @@
 /obj/item/clothing/suit/storage/toggle/labcoat
 	name = "labcoat"
 	desc = "A suit that protects against minor chemical spills."
+	icon = 'icons/obj/clothing/suits/labcoat.dmi'
 	icon_state = "labcoat_open"
 	item_state = "labcoat_open"
 	icon_open = "labcoat_open"

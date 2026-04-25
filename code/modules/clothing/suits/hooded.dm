@@ -83,6 +83,7 @@
 /obj/item/clothing/suit/storage/hooded/wintercoat
 	name = "winter coat"
 	desc = "A heavy jacket made from 'synthetic' animal furs."
+	icon = 'icons/obj/clothing/suits/wintercoat.dmi'
 	icon_state = "coatwinter"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS

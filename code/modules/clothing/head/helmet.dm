@@ -1,6 +1,7 @@
 /obj/item/clothing/head/helmet
 	name = "helmet"
 	desc = "Reinforced headgear. Protects the head from impacts."
+	icon = 'icons/obj/clothing/head/helmet.dmi'
 	icon_state = "helmet"
 	item_state = "helmet"
 	valid_accessory_slots = list(ACCESSORY_SLOT_HELM_C, ACCESSORY_SLOT_HELM_H)

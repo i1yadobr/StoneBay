@@ -3,7 +3,7 @@
 // TODO: Rename path from '/obj/item/clothing/under' to '/obj/item/clothing/uniform'
 /obj/item/clothing/under
 	name = "under"
-	icon = 'icons/obj/clothing/uniforms.dmi'
+	icon = 'icons/obj/clothing/uniforms/uniform.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/uniforms/hand_l_default.dmi',
 		slot_r_hand_str = 'icons/mob/inhands/clothing/uniforms/hand_r_default.dmi'
@@ -18,6 +18,13 @@
 	coverage = 1.0
 
 	species_restricted = list("exclude", SPECIES_MONKEY)
+
+	valid_accessory_slots = list(ACCESSORY_SLOT_UTILITY,ACCESSORY_SLOT_HOLSTER,ACCESSORY_SLOT_ARMBAND,ACCESSORY_SLOT_RANK,ACCESSORY_SLOT_DEPT,ACCESSORY_SLOT_DECOR,ACCESSORY_SLOT_MEDAL,ACCESSORY_SLOT_INSIGNIA)
+	restricted_accessory_slots = list(ACCESSORY_SLOT_UTILITY,ACCESSORY_SLOT_HOLSTER,ACCESSORY_SLOT_ARMBAND,ACCESSORY_SLOT_RANK,ACCESSORY_SLOT_DEPT)
+
+	drop_sound = SFX_DROP_CLOTH
+	pickup_sound = SFX_PICKUP_CLOTH
+
 	var/has_sensor = SUIT_HAS_SENSORS //For the crew computer 2 = unable to change mode
 	var/sensor_mode = 0
 		/*
@@ -32,11 +39,6 @@
 	//convenience var for defining the icon state for the overlay used when the clothing is worn.
 	//Also used by rolling/unrolling.
 	var/worn_state = null
-	valid_accessory_slots = list(ACCESSORY_SLOT_UTILITY,ACCESSORY_SLOT_HOLSTER,ACCESSORY_SLOT_ARMBAND,ACCESSORY_SLOT_RANK,ACCESSORY_SLOT_DEPT,ACCESSORY_SLOT_DECOR,ACCESSORY_SLOT_MEDAL,ACCESSORY_SLOT_INSIGNIA)
-	restricted_accessory_slots = list(ACCESSORY_SLOT_UTILITY,ACCESSORY_SLOT_HOLSTER,ACCESSORY_SLOT_ARMBAND,ACCESSORY_SLOT_RANK,ACCESSORY_SLOT_DEPT)
-
-	drop_sound = SFX_DROP_CLOTH
-	pickup_sound = SFX_PICKUP_CLOTH
 
 /obj/item/clothing/under/New()
 	..()
@@ -59,7 +61,7 @@
 /obj/item/clothing/under/attack_hand(mob/user)
 	if(LAZYLEN(accessories))
 		..()
-	if ((ishuman(usr) || issmall(usr)) && src.loc == user)
+	if((ishuman(usr) || issmall(usr)) && src.loc == user)
 		return
 	..()
 
@@ -112,7 +114,6 @@
 		var/mob/M = src.loc
 		M.update_inv_w_uniform(0)
 		M.update_inv_wear_id()
-
 
 /obj/item/clothing/under/examine(mob/user, infix)
 	. = ..()
@@ -238,6 +239,9 @@
 		AL_LAZYSET(item_state_slots, slot_w_uniform_str, worn_state)
 		to_chat(usr, SPAN("notice", "You roll down your [src]'s sleeves."))
 	update_clothing_icon()
+
+/obj/item/clothing/under/rank
+	icon = 'icons/obj/clothing/uniforms/civilian.dmi'
 
 /obj/item/clothing/under/rank/New()
 	sensor_mode = pick(0,1,2,3)

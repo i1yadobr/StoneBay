@@ -14,13 +14,13 @@
 /obj/item/clothing/head/welding
 	name = "welding helmet"
 	desc = "A head-mounted face cover designed to protect the wearer completely from space-arc eye."
+	icon = 'icons/obj/clothing/head/welding.dmi'
 	icon_state = "welding"
 	item_state_slots = alist(
 		slot_l_hand_str = "welding",
 		slot_r_hand_str = "welding",
 		)
 	matter = list(MATERIAL_STEEL = 3000, MATERIAL_GLASS = 1000)
-	var/up = 0
 	armor_values = alist(melee = 70, bullet = 90, laser = 70, energy = 25, bomb = 35, bio = 0)
 	coverage = 1.0
 	flags_inv = (HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE)
@@ -28,13 +28,14 @@
 	action_button_name = "Flip Welding Mask"
 	siemens_coefficient = 0.9
 	w_class = ITEM_SIZE_NORMAL
-	var/base_state
 	flash_protection = FLASH_PROTECTION_MAJOR
 	tint = TINT_HEAVY
-	var/obj/item/welding_cover/cover = null
 
 	pickup_sound = SFX_PICKUP_HELMET
 	drop_sound = SFX_DROP_HELMET
+
+	var/up = FALSE
+	var/obj/item/welding_cover/cover = null
 
 /obj/item/clothing/head/welding/examine(mob/user, infix)
 	. = ..()
@@ -43,7 +44,7 @@
 		. += " [cover.cover_desc]"
 
 /obj/item/clothing/head/welding/New()
-	base_state = icon_state
+	base_icon_state = icon_state
 	if(ispath(cover))
 		cover = new cover(src)
 		icon_state = "[cover.icon_state]welding"
@@ -81,8 +82,8 @@
 			flags_inv |= (HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE)
 			flash_protection = initial(flash_protection)
 			tint = initial(tint)
-			icon_state = "[cover ? "[cover.icon_state]welding" : base_state]"
-			item_state = "[cover ? "[cover.icon_state]welding" : base_state]"
+			icon_state = "[cover ? "[cover.icon_state]welding" : base_icon_state]"
+			item_state = "[cover ? "[cover.icon_state]welding" : base_icon_state]"
 			to_chat(usr, "You flip the [src] down to protect your eyes.")
 			coverage = 1.0
 		else
@@ -91,8 +92,8 @@
 			flash_protection = FLASH_PROTECTION_NONE
 			tint = TINT_NONE
 			flags_inv &= ~(HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE)
-			icon_state = "[cover ? "[cover.icon_state]welding" : base_state]up"
-			item_state = "[cover ? "[cover.icon_state]welding" : base_state]up"
+			icon_state = "[cover ? "[cover.icon_state]welding" : base_icon_state]up"
+			item_state = "[cover ? "[cover.icon_state]welding" : base_icon_state]up"
 			to_chat(usr, "You push the [src] up out of your face.")
 			coverage = 0.6
 		update_clothing_icon()	//so our mob-overlays
@@ -112,11 +113,10 @@
 	to_chat(user, SPAN("notice", "You detach \the [cover] from \the [src]."))
 	cover.dropInto(get_turf(src))
 	cover = null
-	icon_state = "[base_state][src.up ? "up" : ""]"
-	item_state = "[base_state][src.up ? "up" : ""]"
+	icon_state = "[base_icon_state][src.up ? "up" : ""]"
+	item_state = "[base_icon_state][src.up ? "up" : ""]"
 	update_clothing_icon()
 	user.update_action_buttons()
-
 
 /obj/item/clothing/head/welding/demon
 	cover = /obj/item/welding_cover/demon
@@ -153,10 +153,11 @@
 	desc = "It's tasty looking!"
 	icon_state = "cake0"
 	item_state = "cake0"
-	var/onfire = 0
 	body_parts_covered = HEAD
 	armor_values = alist(melee = 5, bullet = 5, laser = 5, energy = 40, bomb = 0, bio = 0)
 	siemens_coefficient = 0.2 // A fancy man's taser absorber
+
+	var/onfire = FALSE
 
 /obj/item/clothing/head/cakehat/think()
 	if(!onfire)
@@ -168,14 +169,14 @@
 		if(M.l_hand == src || M.r_hand == src || M.head == src)
 			location = M.loc
 
-	if (istype(location, /turf))
+	if(istype(location, /turf))
 		location.hotspot_expose(700, 1)
 
 	set_next_think(world.time + 1 SECOND)
 
 /obj/item/clothing/head/cakehat/attack_self(mob/user as mob)
-	src.onfire = !( src.onfire )
-	if (src.onfire)
+	src.onfire = !(src.onfire)
+	if(src.onfire)
 		src.force = 3
 		src.damtype = "fire"
 		src.icon_state = "cake1"
@@ -199,11 +200,12 @@
 	name = "ushanka"
 	desc = "Perfect for winter in Siberia, da?"
 	icon_state = "ushankadown"
-	var/icon_state_up = "ushankaup"
 	flags_inv = HIDEEARS|BLOCKHEADHAIR
 	cold_protection = HEAD
 	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE
 	armor_values = alist(melee = 30, bullet = 5, laser = 5, energy = 0, bomb = 0, bio = 0)
+
+	var/icon_state_up = "ushankaup"
 
 /obj/item/clothing/head/ushanka/attack_self(mob/user as mob)
 	if(icon_state == initial(icon_state))
@@ -225,7 +227,7 @@
 /obj/item/clothing/head/pumpkinhead
 	name = "carved pumpkin"
 	desc = "A jack o' lantern! Believed to ward off evil spirits."
-	icon_state = "hardhat0_pumpkin"//Could stand to be renamed
+	icon_state = "hardhat0_pumpkin" //Could stand to be renamed
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|BLOCKHAIR
 	body_parts_covered = HEAD|FACE|EYES
 	brightness_on = 2

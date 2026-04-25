@@ -33,8 +33,9 @@
 
 /obj/item/rig/light/hacker
 	name = "cybersuit control module"
+	desc = "An advanced powered armour suit with many cyberwarfare enhancements. \
+			Comes with built-in insulated gloves for safely tampering with electronics."
 	suit_type = "cyber"
-	desc = "An advanced powered armour suit with many cyberwarfare enhancements. Comes with built-in insulated gloves for safely tampering with electronics."
 	icon_state = "hacker_rig"
 
 	req_access = list(access_syndicate)

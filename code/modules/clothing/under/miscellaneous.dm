@@ -26,6 +26,7 @@
 /obj/item/clothing/under/rank/rosa
 	name = "rosa dress"
 	desc = "A dress commonly worn by the nursing staff in the medical departament"
+	icon = 'icons/obj/clothing/uniforms/dress.dmi'
 	icon_state = "rosa"
 	item_state = "rosa"
 	permeability_coefficient = 0.50
@@ -41,6 +42,7 @@
 /obj/item/clothing/under/scratch
 	name = "white suit"
 	desc = "A white suit, suitable for an excellent host."
+	icon = 'icons/obj/clothing/uniforms/suits.dmi'
 	icon_state = "scratch"
 	item_state = "scratch"
 
@@ -59,12 +61,14 @@
 /obj/item/clothing/under/rank/mailman
 	name = "mailman's jumpsuit"
 	desc = "<i>'Special delivery!'</i>"
+	icon = 'icons/obj/clothing/uniforms/uniform.dmi'
 	icon_state = "mailman"
 	item_state = "mailman"
 
 /obj/item/clothing/under/rank/vice
 	name = "vice officer's jumpsuit"
 	desc = "It's the standard issue pretty-boy outfit, as seen on Holo-Vision."
+	icon = 'icons/obj/clothing/uniforms/security.dmi'
 	icon_state = "vice"
 	item_state = "vice"
 
@@ -72,6 +76,7 @@
 /obj/item/clothing/under/rank/centcom
 	name = "\improper Officer's Dress Uniform"
 	desc = "Gold trim on space-black cloth, this uniform displays the rank of \"Captain.\"."
+	icon = 'icons/obj/clothing/uniforms/centcom.dmi'
 	icon_state = "officer"
 	item_state = "officer"
 	displays_id = 0
@@ -99,6 +104,7 @@
 /obj/item/clothing/under/ert
 	name = "ERT tactical uniform"
 	desc = "A short-sleeved black uniform, paired with grey digital-camo cargo pants. It looks very tactical."
+	icon = 'icons/obj/clothing/uniforms/centcom.dmi'
 	icon_state = "ert_uniform"
 	item_state = "ert_uniform"
 	armor_values = alist(melee = 20, bullet = 20, laser = 30, energy = 0, bomb = 0, bio = 0)
@@ -106,9 +112,10 @@
 
 /obj/item/clothing/under/acj
 	name = "administrative cybernetic jumpsuit"
+	desc = "it's a cybernetically enhanced jumpsuit used for administrative duties."
+	icon = 'icons/obj/clothing/uniforms/syndicate.dmi'
 	icon_state = "syndicate"
 	item_state = "syndicate"
-	desc = "it's a cybernetically enhanced jumpsuit used for administrative duties."
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
@@ -149,24 +156,29 @@
 /obj/item/clothing/under/gentlesuit
 	name = "gentlemans suit"
 	desc = "A silk black shirt with a white tie and a matching gray vest and slacks. Feels proper."
+	icon = 'icons/obj/clothing/uniforms/suits.dmi'
 	icon_state = "gentlesuit"
 	item_state = "gentlesuit"
 
+// TODO: Remove "gimmick" path, and make "/obj/item/clothing/under/rank/captain/suit"
 /obj/item/clothing/under/gimmick/rank/captain/suit
 	name = "captain's suit"
 	desc = "A green suit and yellow necktie. Exemplifies authority."
+	icon = 'icons/obj/clothing/uniforms/captain.dmi'
 	icon_state = "green_suit"
 	item_state = "green_suit"
 
 /obj/item/clothing/under/gimmick/rank/head_of_personnel/suit
 	name = "head of personnel's suit"
 	desc = "A teal suit and yellow necktie. An authoritative yet tacky ensemble."
+	icon = 'icons/obj/clothing/uniforms/civilian.dmi'
 	icon_state = "hop_teal"
 	item_state = "hop_teal"
 
 /obj/item/clothing/under/suit_jacket
 	name = "black suit"
 	desc = "A black suit and red tie. Very formal."
+	icon = 'icons/obj/clothing/uniforms/suits.dmi'
 	icon_state = "black_suit"
 	item_state = "black_suit"
 
@@ -191,6 +203,7 @@
 /obj/item/clothing/under/blackskirt
 	name = "black skirt"
 	desc = "A black skirt, very fancy!"
+	icon = 'icons/obj/clothing/uniforms/skirt.dmi'
 	icon_state = "blackskirt"
 	item_state_slots = alist(
 		slot_hand_str = "black"
@@ -232,6 +245,7 @@
 /obj/item/clothing/under/phantom
 	name = "stylish red vest"
 	desc = "Looks stylish."
+	icon = 'icons/obj/clothing/uniforms/medical.dmi'
 	icon_state = "phantom"
 	item_state = "phantom"
 	item_state_slots = alist(
@@ -256,6 +270,7 @@
 /obj/item/clothing/under/dress
 	name = "dress"
 	desc = "A fancy dress."
+	icon = 'icons/obj/clothing/uniforms/dress.dmi'
 	icon_state = "maid"
 	item_state = "maid"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
@@ -306,6 +321,7 @@
 /obj/item/clothing/under/dress/captain_dress_alt
 	name = "captain's dress uniform"
 	desc = "Feminine fashion for the style concious captain."
+	icon = 'icons/obj/clothing/uniforms/captain.dmi'
 	// TODO: Remove "gloves" from the uniform sprite
 	icon_state = "captain_dress_alt"
 	item_state = "captain_dress_alt"
@@ -313,6 +329,7 @@
 /obj/item/clothing/under/dress/dress_hr
 	name = "human resources director uniform"
 	desc = "Superior class for the nosy H.R. Director."
+	icon = 'icons/obj/clothing/uniforms/civilian.dmi'
 	icon_state = "huresource"
 	item_state = "huresource"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
@@ -364,12 +381,14 @@
 /obj/item/clothing/under/dress/bar_f
 	name = "black bartender dress"
 	desc = "A black bartender dress with a white blouse."
+	icon = 'icons/obj/clothing/uniforms/civilian.dmi'
 	icon_state = "bar_f"
 	item_state = "bar_f"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 //wedding stuff
 /obj/item/clothing/under/wedding
+	icon = 'icons/obj/clothing/uniforms/dress.dmi'
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/wedding/bride_orange
@@ -408,11 +427,11 @@
 	flags_inv = HIDESHOES
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 
-
-
+// TODO: Move this to the "/obj/item/clothing/under/dress"
 /obj/item/clothing/under/sundress
 	name = "sundress"
 	desc = "Makes you want to frolic in a field of daisies."
+	icon = 'icons/obj/clothing/uniforms/dress.dmi'
 	icon_state = "sundress"
 	item_state = "sundress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
@@ -420,6 +439,7 @@
 /obj/item/clothing/under/sundress_white
 	name = "white sundress"
 	desc = "A white sundress decorated with purple lilies."
+	icon = 'icons/obj/clothing/uniforms/dress.dmi'
 	icon_state = "sundress_white"
 	item_state = "sundress_white"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
@@ -428,6 +448,7 @@
 /obj/item/clothing/under/captainformal
 	name = "captain's formal uniform"
 	desc = "A captain's formal-wear, for special occasions."
+	icon = 'icons/obj/clothing/uniforms/captain.dmi'
 	icon_state = "captain_formal"
 	item_state = "captain_formal"
 
@@ -442,6 +463,7 @@
 /obj/item/clothing/under/hosformalmale
 	name = "head of security's male formal uniform"
 	desc = "A male head of security's formal-wear, for special occasions."
+	icon = 'icons/obj/clothing/uniforms/security.dmi'
 	icon_state = "hos_formal_male"
 	item_state = "hos_formal_male"
 
@@ -449,6 +471,7 @@
 /obj/item/clothing/under/hosformalfem
 	name = "head of security's female formal uniform"
 	desc = "A female head of security's formal-wear, for special occasions."
+	icon = 'icons/obj/clothing/uniforms/security.dmi'
 	icon_state = "hos_formal_fem"
 	item_state = "hos_formal_fem"
 
@@ -461,12 +484,14 @@
 /obj/item/clothing/under/blazer
 	name = "blue blazer"
 	desc = "A bold but yet conservative outfit, red corduroys, navy blazer and a tie."
+	icon = 'icons/obj/clothing/uniforms/suits.dmi'
 	icon_state = "blue_blazer"
 	item_state = "blue_blazer"
 
 /obj/item/clothing/under/hazard
 	name = "hazard jumpsuit"
 	desc = "A high visibility jumpsuit made from heat and radiation resistant materials."
+	icon = 'icons/obj/clothing/uniforms/engineering.dmi'
 	icon_state = "hazard"
 	item_state = "hazard"
 	siemens_coefficient = 0.8
@@ -513,9 +538,11 @@
 	item_state = "tan_suit"
 	worn_state = "tan_suit"
 
+// TODO: Move this to the "/obj/item/clothing/under/dress"
 /obj/item/clothing/under/cheongsam
 	name = "cheongsam"
 	desc = "It is a cheongsam dress."
+	icon = 'icons/obj/clothing/uniforms/dress.dmi'
 	icon_state = "mai_yang"
 	item_state = "mai_yang"
 	worn_state = "mai_yang"
@@ -531,7 +558,9 @@
 
 /obj/item/clothing/under/veles
 	name = "Orange Veles jumpsuit"
-	desc = "A jumpsuit belonging to Veles Energetics Group, a large Nova Magnitka engineering company specialised on maintaining electrical networks. This one has orange top."
+	desc = "A jumpsuit belonging to Veles Energetics Group, \
+			a large Nova Magnitka engineering company specialised on maintaining electrical networks. This one has orange top."
+	icon = 'icons/obj/clothing/uniforms/engineering.dmi'
 	icon_state = "veles_orange"
 	item_state = "veles_orange"
 	worn_state = "veles_orange"
@@ -539,7 +568,8 @@
 
 /obj/item/clothing/under/veles/veles_blue
 	name = "Blue Veles jumpsuit"
-	desc = "A jumpsuit belonging to Veles Energetics Group, a large Nova Magnitka engineering company specialised on maintaining electrical networks. This one has blue top."
+	desc = "A jumpsuit belonging to Veles Energetics Group, \
+			a large Nova Magnitka engineering company specialised on maintaining electrical networks. This one has blue top."
 	icon_state = "veles_blue"
 	item_state = "veles_blue"
 	worn_state = "veles_blue"
@@ -572,6 +602,7 @@
 /obj/item/clothing/under/aether
 	name = "\improper Aether jumpsuit"
 	desc = "A jumpsuit belonging to Aether Atmospherics and Recycling, a company that supplies recycling and atmospheric systems to colonies."
+	icon = 'icons/obj/clothing/uniforms/engineering.dmi'
 	icon_state = "aether"
 	item_state = "aether"
 
@@ -604,7 +635,8 @@
 
 /obj/item/clothing/under/fig_leaf
 	name = "fig leaf"
-	desc = "And the eyes of them both were opened, and they knew that they were naked; and they sewed fig leaves together, and made themselves aprons."
+	desc = "And the eyes of them both were opened, and they knew that they were naked; \
+			and they sewed fig leaves together, and made themselves aprons."
 	icon_state = "fig_leaf"
 	item_state = "fig_leaf"
 	body_parts_covered = LOWER_TORSO

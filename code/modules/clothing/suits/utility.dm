@@ -17,7 +17,7 @@
 		slot_l_hand_str = "fire_suit",
 		slot_r_hand_str = "fire_suit",
 	)
-	w_class = ITEM_SIZE_HUGE//bulky item
+	w_class = ITEM_SIZE_HUGE //bulky item
 	armor_values = alist(melee = 50, bullet = 30, laser = 70, energy = 5, bomb = 0, bio = 0)
 	gas_transfer_coefficient = 0.90
 	permeability_coefficient = 0.50
@@ -79,7 +79,7 @@
 	name = "bomb suit"
 	desc = "A suit designed for safety when handling explosives."
 	icon_state = "bombsuit"
-	w_class = ITEM_SIZE_HUGE//bulky item
+	w_class = ITEM_SIZE_HUGE //bulky item
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
 	armor_values = alist(melee = 70, bullet = 90, laser = 70, energy = 50, bomb = 90, bio = 0)
@@ -93,6 +93,7 @@
 	AL_LAZYSET(slowdown_per_slot, slot_wear_suit, 2)
 
 /obj/item/clothing/head/bomb_hood/security
+	icon = 'icons/obj/clothing/head/helmet.dmi'
 	icon_state = "bombsuitsec"
 	body_parts_covered = HEAD
 
@@ -107,6 +108,7 @@
 /obj/item/clothing/head/radiation
 	name = "Radiation Hood"
 	desc = "A hood with radiation protective properties. Label: Made with lead, do not eat insulation."
+	icon = 'icons/obj/clothing/head/bio.dmi'
 	icon_state = "rad"
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD|FACE|EYES
@@ -116,12 +118,13 @@
 /obj/item/clothing/suit/radiation
 	name = "Radiation suit"
 	desc = "A suit that protects against radiation. Label: Made with lead, do not eat insulation."
+	icon = 'icons/obj/clothing/suits/bio.dmi'
 	icon_state = "rad"
 	item_state_slots = alist(
 		slot_l_hand_str = "rad_suit",
 		slot_r_hand_str = "rad_suit",
 	)
-	w_class = ITEM_SIZE_HUGE//bulky item
+	w_class = ITEM_SIZE_HUGE //bulky item
 	gas_transfer_coefficient = 0.90
 	permeability_coefficient = 0.50
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HANDS|FEET

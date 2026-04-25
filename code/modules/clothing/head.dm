@@ -2,7 +2,7 @@
 //Head
 /obj/item/clothing/head
 	name = "head"
-	icon = 'icons/obj/clothing/hats.dmi'
+	icon = 'icons/obj/clothing/head/hats.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/inhands/clothing/hats/hand_l_default.dmi',
 		slot_r_hand_str = 'icons/mob/inhands/clothing/hats/hand_r_default.dmi'
@@ -12,15 +12,15 @@
 	w_class = ITEM_SIZE_SMALL
 	coverage = 1.0
 
-	var/light_overlay = "helmet_light"
-	var/light_applied
-	var/brightness_on
-	var/on = 0
-
 	blood_overlay_type = "helmetblood"
 
 	drop_sound = SFX_DROP_HAT
 	pickup_sound = SFX_PICKUP_HAT
+
+	var/light_overlay = "helmet_light"
+	var/light_applied
+	var/brightness_on
+	var/on = 0
 
 /obj/item/clothing/head/get_mob_overlay(mob/user_mob, slot)
 	. = ..()
