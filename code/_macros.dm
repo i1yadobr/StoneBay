@@ -44,7 +44,7 @@
 
 #define islist(A) istype(A, /list)
 
-#define isalist(A) ("[A]" == "/alist")
+#define isalist(A) istype(A, /alist)
 
 #define isliving(A) istype(A, /mob/living)
 
