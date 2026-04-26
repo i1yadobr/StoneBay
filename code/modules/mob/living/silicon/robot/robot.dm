@@ -34,6 +34,9 @@
 	/// List of avaliable robot hulls
 	var/datum/robot_hull/module_hulls[0]
 
+	/// Used to render the robots eyes and to create a smooth fade-in or fade-out animation
+	var/atom/movable/robot_eyes
+
 //Hud stuff
 
 	var/atom/movable/screen/inv1 = null
@@ -154,6 +157,7 @@
 		cell_component.wrapped = cell
 		cell_component.installed = 1
 
+	update_icon()
 	add_robot_verbs()
 
 	hud_list[HEALTH_HUD]      = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
@@ -250,6 +254,7 @@
 	if(restore_modtype_in_global_pull)
 		GLOB.robot_module_types |= modtype
 
+	QDEL_NULL(robot_eyes)
 	QDEL_NULL(wires)
 	QDEL_NULL(module)
 	QDEL_NULL(inv1)
@@ -295,6 +300,7 @@
 	icon_state = new_hull.icon_state
 	footstep_sound = (new_hull.hull_flags & ROBOT_HULL_FLAG_HAS_FOOTSTEPS) ? new_hull.footstep_sound : null
 
+	QDEL_NULL(robot_eyes)
 	update_icon()
 	update_transform()
 
@@ -824,15 +830,20 @@
 
 /mob/living/silicon/robot/on_update_icon()
 	var/datum/robot_hull/using_hull = module_hulls[icontype]
+	var/eyes_icon_state = "eyes-[using_hull.icon_state]"
 
 	ClearOverlays()
+	if(!robot_eyes)
+		robot_eyes = new()
+		robot_eyes.icon = src.icon
+		robot_eyes.icon_state = eyes_icon_state
+		robot_eyes.vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_LAYER | VIS_INHERIT_ID
+		src.vis_contents += robot_eyes
 
-	//TODO: (optionally) Add a cool and smooth appearance/disappearance of eyes
-	if(stat == CONSCIOUS && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES))
-		var/eyes_icon_state = "eyes-[using_hull.icon_state]"
+	// src.vis_contents = null
 
-		AddOverlays(eyes_icon_state)
-		AddOverlays(emissive_appearance(icon, eyes_icon_state))
+	// if(stat == CONSCIOUS && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES))
+		// AddOverlays(emissive_appearance(icon, eyes_icon_state))
 
 	if(opened && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_PANEL))
 		var/panel_icon = using_hull.get_panel_icon()
@@ -1316,5 +1327,7 @@
 
 /mob/living/silicon/robot/set_stat(new_stat)
 	if(stat != new_stat)
+		var/eyes_alpha = new_stat == CONSCIOUS ? 255 : 0
+		animate(robot_eyes, time = 2 SECONDS, alpha = eyes_alpha)
 		queue_icon_update()
 	. = ..()
