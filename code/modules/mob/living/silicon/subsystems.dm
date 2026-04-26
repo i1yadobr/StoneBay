@@ -19,12 +19,6 @@
 		/datum/nano_module/law_manager
 	)
 
-/mob/living/silicon/Destroy()
-	for(var/subsystem in silicon_subsystems)
-		remove_subsystem(subsystem)
-	silicon_subsystems.Cut()
-	. = ..()
-
 /mob/living/silicon/proc/init_subsystems()
 	for(var/subsystem_type in silicon_subsystems)
 		init_subsystem(subsystem_type)

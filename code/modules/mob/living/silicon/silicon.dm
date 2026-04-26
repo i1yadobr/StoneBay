@@ -68,6 +68,10 @@ GLOBAL_LIST_EMPTY(all_synthetic_mind_to_data) // data: list of name and type of 
 	if(istype(idcard))
 		QDEL_NULL(idcard)
 
+	for(var/subsystem in silicon_subsystems)
+		remove_subsystem(subsystem)
+
+	silicon_subsystems.Cut()
 	queued_alarms.Cut()
 
 	return ..()

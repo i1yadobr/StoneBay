@@ -157,8 +157,9 @@
 		cell_component.wrapped = cell
 		cell_component.installed = 1
 
-	update_icon()
+	add_robot_eyes()
 	add_robot_verbs()
+	update_icon()
 
 	hud_list[HEALTH_HUD]      = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
 	hud_list[STATUS_HUD]      = new /image/hud_overlay('icons/mob/huds/hud.dmi', src, "hudblank")
@@ -254,6 +255,7 @@
 	if(restore_modtype_in_global_pull)
 		GLOB.robot_module_types |= modtype
 
+	vis_contents = null
 	QDEL_NULL(robot_eyes)
 	QDEL_NULL(wires)
 	QDEL_NULL(module)
@@ -270,6 +272,7 @@
 		qdel(components[i])
 	components.Cut()
 	QDEL_NULL(cell)
+
 	return ..()
 
 /mob/living/silicon/robot/proc/apply_hull(new_icontype)
@@ -300,7 +303,9 @@
 	icon_state = new_hull.icon_state
 	footstep_sound = (new_hull.hull_flags & ROBOT_HULL_FLAG_HAS_FOOTSTEPS) ? new_hull.footstep_sound : null
 
+	vis_contents = null
 	QDEL_NULL(robot_eyes)
+	add_robot_eyes()
 	update_icon()
 	update_transform()
 
@@ -828,28 +833,36 @@
 			return TRUE
 	return FALSE
 
-/mob/living/silicon/robot/on_update_icon()
+/mob/living/silicon/robot/proc/add_robot_eyes()
 	var/datum/robot_hull/using_hull = module_hulls[icontype]
-	var/eyes_icon_state = "eyes-[using_hull.icon_state]"
-
-	ClearOverlays()
-	if(!robot_eyes)
+	if(!robot_eyes && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES))
 		robot_eyes = new()
 		robot_eyes.icon = src.icon
-		robot_eyes.icon_state = eyes_icon_state
-		robot_eyes.vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_LAYER | VIS_INHERIT_ID
+		robot_eyes.icon_state = "eyes-[using_hull.icon_state]"
+		robot_eyes.vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_LAYER | VIS_INHERIT_DIR | VIS_INHERIT_ID
 		src.vis_contents += robot_eyes
 
-	// src.vis_contents = null
+/mob/living/silicon/robot/on_update_icon()
+	var/datum/robot_hull/using_hull = module_hulls[icontype]
 
-	// if(stat == CONSCIOUS && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES))
-		// AddOverlays(emissive_appearance(icon, eyes_icon_state))
+	ClearOverlays()
+	robot_eyes.ClearOverlays()
+
+	if(using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_EYES)
+		robot_eyes.AddOverlays(emissive_appearance(icon, "eyes-[using_hull.icon_state]"))
 
 	if(opened && (using_hull.hull_flags & ROBOT_HULL_FLAG_HAS_PANEL))
 		var/panel_icon = using_hull.get_panel_icon()
 		var/panel_icon_state = using_hull.get_panel_icon_state(wires = wiresexposed, cell = !!cell)
-
-		AddOverlays(icon(panel_icon, panel_icon_state))
+		var/panel_layer = incapacitated(INCAPACITATION_KNOCKDOWN) ? LYING_MOB_LAYER : initial(src.layer)
+		AddOverlays(image(panel_icon, src, panel_icon_state, panel_layer + 0.01))
+		// TODO: blocking on both eyes and the panel itself as some odd layering issues cause panel icon to sometimes show up
+		// through the emissive overlay, happens for a tick or two when pulling the robot through the darkness and changing dirs.
+		// This happened when emissive overlay and emissive blocker were both added to the eyes atom just once, in the add_robot_eyes().
+		// TODO: since it happens for a couple of frames, record and check what is actually showing through emissive, e.g. if it's
+		// emissive blocker not working properly because it's on a vis_contents atom, debug why it fails to block during those turns.
+		robot_eyes.AddOverlays(emissive_blocker(panel_icon, panel_icon_state))
+		// move emissive_appearance and emissive_blocker overlays to add_robot_eyes() if testing the TODO item above
 		AddOverlays(emissive_blocker(panel_icon, panel_icon_state))
 
 /mob/living/silicon/robot/proc/installed_modules()
@@ -1331,3 +1344,4 @@
 		animate(robot_eyes, time = 2 SECONDS, alpha = eyes_alpha)
 		queue_icon_update()
 	. = ..()
+	update_icon()
