@@ -855,6 +855,7 @@
 		var/panel_icon = using_hull.get_panel_icon()
 		var/panel_icon_state = using_hull.get_panel_icon_state(wires = wiresexposed, cell = !!cell)
 		var/panel_layer = incapacitated(INCAPACITATION_KNOCKDOWN) ? LYING_MOB_LAYER : initial(src.layer)
+
 		AddOverlays(image(panel_icon, src, panel_icon_state, panel_layer + 0.01))
 		// TODO: blocking on both eyes and the panel itself as some odd layering issues cause panel icon to sometimes show up
 		// through the emissive overlay, happens for a tick or two when pulling the robot through the darkness and changing dirs.
