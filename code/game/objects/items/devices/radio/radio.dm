@@ -544,10 +544,10 @@
 	subspace_transmission = 1
 
 /obj/item/device/radio/borg/ert
-	keyslot = /obj/item/device/encryptionkey/ert
+	keyslot = new /obj/item/device/encryptionkey/ert
 
 /obj/item/device/radio/borg/syndicate
-	keyslot = /obj/item/device/encryptionkey/syndicate
+	keyslot = new /obj/item/device/encryptionkey/syndicate
 
 /obj/item/device/radio/borg/New(mob/living/silicon/robot/loc)
 	if(!istype(loc))

@@ -86,7 +86,7 @@
 // This proc is usually called by the UnarmedAttack() proc, which in turn is called by the click handling system.
 // See code/_onclick/click.dm for an overview of click handling in general.
 /atom/proc/attack_hand(mob/user)
-	if(climbers.len && !(user in climbers))
+	if(LAZYLEN(climbers) && !(user in climbers))
 		object_shaken()
 		user.visible_message(SPAN("warning", "[user.name] shakes \the [src]."), SPAN("notice", "You shake \the [src]."))
 
