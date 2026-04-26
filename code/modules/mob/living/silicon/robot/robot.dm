@@ -1344,4 +1344,3 @@
 		animate(robot_eyes, time = 2 SECONDS, alpha = eyes_alpha)
 		queue_icon_update()
 	. = ..()
-	update_icon()
