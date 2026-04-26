@@ -1342,6 +1342,7 @@
 /mob/living/silicon/robot/set_stat(new_stat)
 	if(stat != new_stat)
 		var/eyes_alpha = new_stat == CONSCIOUS ? 255 : 0
+		// TODO: Add the ability to configure the fade-out or fade-it time based on the robot using_hull
 		animate(robot_eyes, time = 2 SECONDS, alpha = eyes_alpha)
 		queue_icon_update()
 	. = ..()
